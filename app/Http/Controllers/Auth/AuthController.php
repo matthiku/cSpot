@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Auth;
 
 use Log;
-use App\User;
+use App\Models\User;
 use Validator;
+use Socialite;
 use App\Mailers\AppMailer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
@@ -26,12 +28,14 @@ class AuthController extends Controller
 
     use AuthenticatesAndRegistersUsers, ThrottlesLogins;
 
+
     /**
      * Where to redirect users after login / registration.
      *
      * @var string
      */
     protected $redirectTo = '/home';
+
 
     /**
      * Create a new authentication controller instance.
@@ -42,6 +46,91 @@ class AuthController extends Controller
     {
         $this->middleware('guest', ['except' => 'logout']);
     }
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Socialite Implementation 
+    | part 1 of 3
+    | see http://www.codeanchor.net/blog/complete-laravel-socialite-tutorial/
+    |--------------------------------------------------------------------------
+    |
+    */
+    public function loginViaProvider(AuthenticateUser $authenticateUser, Request $request, $provider = null) 
+    {
+        return $authenticateUser->execute( $request->all(), $this, $provider );
+    }
+    // redirect to dashboard after a succesful login
+    public function userHasLoggedIn($user) {
+        \Session::flash( 'status', 'Welcome, '.$user->name.'! You have been logged in via '.$user->provider );
+        return redirect('/tasks');
+    }
+    /**
+     * Redirect the user to the Provider's authentication page.
+     *
+     * @return Response
+     */
+    public function redirectToProvider()
+    {
+        return Socialite::driver('github')->redirect();
+    }
+    /**
+     * Obtain the user information from GitHub.
+     *
+     * @return Response
+     */
+    public function handleProviderCallback()
+    {
+        $user = Socialite::driver('github')->user();
+        // $user->token;
+    }
+
+
+
+
+    /**
+     * Handle a login request to the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function login(Request $request)
+    {
+        $this->validate($request, [
+            $this->loginUsername() => 'required', 'password' => 'required',
+        ]);
+
+        Log::info('trying to login user '.$request->input('email'));
+
+        // If the class is using the ThrottlesLogins trait, we can automatically throttle
+        // the login attempts for this application. We'll key this by the username and
+        // the IP address of the client making these requests into this application.
+        $throttles = $this->isUsingThrottlesLoginsTrait();
+
+        if ($throttles && $this->hasTooManyLoginAttempts($request)) {
+            return $this->sendLockoutResponse($request);
+        }
+
+        $credentials = $this->getCredentials($request);
+
+        if (Auth::guard($this->getGuard())->attempt($credentials, $request->has('remember'))) {
+            return $this->handleUserWasAuthenticated($request, $throttles);
+        }
+
+        // If the login attempt was unsuccessful we will increment the number of attempts
+        // to login and redirect the user back to the login form. Of course, when this
+        // user surpasses their maximum number of attempts they will get locked out.
+        if ($throttles) {
+            $this->incrementLoginAttempts($request);
+        }
+
+        return $this->sendFailedLoginResponse($request);
+    }
+
+
+
+
 
     /**
      * Get a validator for an incoming registration request.
@@ -75,13 +164,13 @@ class AuthController extends Controller
             'password' => 'required'
         ]);
 
-        $user = User::create($request->all());
+        $user = User::create( $request->all() );
 
         Log::info('trying to send registration email to '.$user->name);
 
         $mailer->sendEmailConfirmationTo($user);
 
-        flash('Please confirm your email address.');
+        flash('Please check you inbox for an email containing a link to confirm your email address.');
 
         return redirect()->back();
     }
@@ -126,6 +215,8 @@ class AuthController extends Controller
      */
     protected function create(array $data)
     {
+        Log::info('creating new user record for '.$data['name']);
+
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],

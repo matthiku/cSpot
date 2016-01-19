@@ -1,0 +1,15 @@
+<?php
+
+// see https://tuts.codingo.me/laravel-social-and-email-authentication
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Role extends Model
+{
+    //
+
+    protected $fillable = ['name'];
+
+}

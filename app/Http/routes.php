@@ -22,21 +22,26 @@
 |
 */
 
-Route::group(['middleware' => ['web']], function () {
+Route::group(['middleware' => 'web'], function () {
     //
 
     Route::get('/', function () {
         return view('welcome');
     });
 
-});
+    Route::get('/home', 'HomeController@index');
 
-
-Route::group(['middleware' => 'web'], function () {
+    // all authorization routes
     Route::auth();
-
+    // confirm registration route from registration email
     Route::get('register/confirm/{token}', 'Auth\AuthController@confirmEmail');
 
 
-    Route::get('/home', 'HomeController@index');
+});
+
+
+// Routes for users with special rights
+Route::group(['prefix' => 'admin', 'middleware' => ['web', 'auth:,administrator']], function() {
+    //
+    Route::get('home', 'Admin\AdminController@index');
 });

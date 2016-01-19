@@ -2,7 +2,7 @@
 
 namespace App\Mailers;
 
-use App\User;
+use App\Models\User;
 use Illuminate\Contracts\Mail\Mailer;
 
 class AppMailer
@@ -30,6 +30,13 @@ class AppMailer
     protected $to;
 
     /**
+     * The subject of the email.
+     *
+     * @var string
+     */
+    protected $subject;
+
+    /**
      * The view for the email.
      *
      * @var string
@@ -43,6 +50,9 @@ class AppMailer
      */
     protected $data = [];
 
+
+
+
     /**
      * Create a new app mailer instance.
      *
@@ -53,6 +63,8 @@ class AppMailer
         $this->mailer = $mailer;
     }
 
+
+
     /**
      * Deliver the email confirmation.
      *
@@ -62,11 +74,15 @@ class AppMailer
     public function sendEmailConfirmationTo(User $user)
     {
         $this->to = $user->email;
-        $this->view = 'emails.confirm';
+        $this->subject = "Email address confirmation for c-SPOT app";
+        $this->view = 'auth.emails.confirm';
         $this->data = compact('user');
 
         $this->deliver();
     }
+
+
+
 
     /**
      * Deliver the email.
@@ -77,7 +93,10 @@ class AppMailer
     {
         $this->mailer->send($this->view, $this->data, function ($message) {
             $message->from($this->from, 'Administrator')
-                    ->to($this->to);
+                    ->to($this->to)
+                    ->subject($this->subject);
         });
     }
+
+
 }

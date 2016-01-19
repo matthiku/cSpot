@@ -18,15 +18,15 @@
 <body id="app-layout">
     <nav class="tek-nav navbar navbar-dark bg-inverse">
 
-      <a class="navbar-brand" href="#">c-SPOT</a>
+      <a class="navbar-brand" href="/">c-SPOT</a>
 
       <ul class="nav navbar-nav">
         <li class="nav-item {{ Request::is('classifieds/create') ? '' : 'active' }}">
-          <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+          <a class="nav-link" href="/home">Home <span class="sr-only">(current)</span></a>
         </li>
         @if (Auth::user())
         <li class="nav-item {{ Request::is('classifieds/create') ? 'active' : '' }}">
-          <a class="nav-link" href="/classifieds/create">Add Something</a>
+          <a class="nav-link" href="/home">Add Something</a>
         </li>
         @endif
       </ul>
@@ -34,9 +34,10 @@
       <ul class="nav navbar-nav pull-xs-right">
           <!-- Authentication Links -->
           @if (Auth::guest())
-              <!-- <li class="nav-item"><a class="nav-link" href="{{ url('/login') }}">Login</a></li> -->
+              <li class="nav-item"><a class="nav-link" href="{{ url('/login') }}">Login</a></li>
               <li class="nav-item"><a class="nav-link" href="{{ url('/register') }}">Register</a></li>
           @else
+              <li class="nav-item"><a class="nav-link" href="/{{ Auth::user()->hasRole('administrator') ? 'admin' : ' ' }}/home">{{ Auth::user()->hasRole('administrator') ? 'Admin' : ' ' }}</a></li>
               <li class="nav-item dropdown">
                   <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                       {{ Auth::user()->name }} <span class="caret"></span>

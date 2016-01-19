@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 //use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -13,25 +13,34 @@ use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract
 {
+
     use Authenticatable, CanResetPassword;
+
+
     /**
      * The database table used by the model.
      *
      * @var string
      */
     protected $table = 'users';
+
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = ['name', 'email', 'password'];
+
+
     /**
      * The attributes excluded from the model's JSON form.
      *
      * @var array
      */
     protected $hidden = ['password', 'remember_token'];
+
+
     /**
      * Boot the model.
      *
@@ -44,6 +53,8 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
             $user->token = str_random(30);
         });
     }
+
+
     /**
      * Set the password attribute.
      *
@@ -53,6 +64,9 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     {
         $this->attributes['password'] = bcrypt($password);
     }
+
+
+
     /**
      * Confirm the user.
      *
@@ -64,4 +78,37 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         $this->token = null;
         $this->save();
     }
+
+
+
+
+    // see https://tuts.codingo.me/laravel-social-and-email-authentication
+
+    public function roles()
+    {
+        return $this->belongsToMany('App\Models\Role')->withTimestamps();
+    }
+
+    public function hasRole($name)
+    {
+        foreach($this->roles as $role)
+        {
+            if($role->name == $name) return true;
+        }
+
+        return false;
+    }
+
+    public function assignRole($role)
+    {
+        return $this->roles()->attach($role);
+    }
+
+    public function removeRole($role)
+    {
+        return $this->roles()->detach($role);
+    }
+
+
+    
 }
