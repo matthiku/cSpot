@@ -101,6 +101,9 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
     public function assignRole($role)
     {
+        // Don't assign the same role again...
+        if ($this->hasRole($role->name)) { return; }
+        // link to the new role
         return $this->roles()->attach($role);
     }
 
@@ -109,6 +112,10 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         return $this->roles()->detach($role);
     }
 
+    public function isAdmin()
+    {
+        return $this->hasRole('administrator');
+    }
 
     
 }

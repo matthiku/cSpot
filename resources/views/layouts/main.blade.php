@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+
+  <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -13,10 +14,13 @@
 
     <!-- Custom styles for this template -->
     <link href="/css/style.css" rel="stylesheet">
-</head>
+    <link rel="stylesheet" href="/css/signin.css"/>
+    <link rel="stylesheet" href="/css/dashboard.css"/>
+  </head>
 
-<body id="app-layout">
-    <nav class="tek-nav navbar navbar-dark bg-inverse">
+
+  <body id="app-layout">
+    <nav class="tek-nav navbar navbar-dark bg-inverse navbar-full">
 
       <a class="navbar-brand" href="/">c-SPOT</a>
 
@@ -34,10 +38,10 @@
       <ul class="nav navbar-nav pull-xs-right">
           <!-- Authentication Links -->
           @if (Auth::guest())
-              <li class="nav-item"><a class="nav-link" href="{{ url('/login') }}">Login</a></li>
+              <li class="nav-item"><a class="nav-link" href="{{ url('/login') }}">Sign in</a></li>
               <li class="nav-item"><a class="nav-link" href="{{ url('/register') }}">Register</a></li>
           @else
-              <li class="nav-item"><a class="nav-link" href="/{{ Auth::user()->hasRole('administrator') ? 'admin' : ' ' }}/home">{{ Auth::user()->hasRole('administrator') ? 'Admin' : ' ' }}</a></li>
+              <li class="nav-item"><a class="nav-link" href="/{{ Auth::user()->hasRole('administrator') ? 'admin' : ' ' }}/users">{{ Auth::user()->hasRole('administrator') ? 'Admin' : ' ' }}</a></li>
               <li class="nav-item dropdown">
                   <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                       {{ Auth::user()->name }} <span class="caret"></span>
@@ -50,7 +54,7 @@
           @endif
       </ul>
 
-      @if (Auth::guest())
+      @if ( Auth::guest() )
       <form class="form-inline pull-xs-right" method="POST" role="form" action="{{ url('/login') }}">
         {!! csrf_field() !!}
         <div class="form-group">
@@ -75,55 +79,9 @@
 
 
 
-    <div class="container">
-
-      <div class="row">
-
-
-        <!-- 
-              sidebar 
-          -->
-        <div class="col-md-2">
-          @section('sidebar')
-            <div class="list-group">
-              <a href="/classifieds" class="list-group-item active">
-                All Items
-              </a>
-
-                
-              <!-- foreach($categories as $category) -->
-                <a href="#" class="list-group-item">item 1</a>
-                <a href="#" class="list-group-item">item 2</a>
-              <!-- endforeach -->
-            </div>
-            <br>
-            <form class="form-inline" method="GET" role="form" action="{{ url('classifieds/search') }}">
-              {!! csrf_field() !!}
-              <div class="form-group">
-                <input type="text" name="searchString" class="form-control-sm search-input" id="searchString" placeholder="search listings...">
-              </div>
-              <!-- <button type="submit" class="btn btn-sm btn-primary search-btn">Search</button> -->
-            </form>
-          @show
-        </div>
-
-
-
-        <!--
-             main page content 
-          -->
-        <div class="col-md-10">
-
-            @include('flash')
+    <div class="container-fluid">
 
             @yield('content')
-
-        </div>
-
-
-
-
-      </div><!-- row -->
 
     </div><!-- container -->
 
@@ -131,11 +89,11 @@
 
 
 
+
     <!-- JavaScripts -->
     <script src="/js/jquery.min.js"></script>
-    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
     <script src="/js/bootstrap.min.js"></script>
 
-</body>
+  </body>
 
 </html>

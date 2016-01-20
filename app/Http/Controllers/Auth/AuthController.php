@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use Log;
 use App\Models\User;
+use App\Models\Role;
 use Validator;
 use Socialite;
 use App\Mailers\AppMailer;
@@ -166,6 +167,10 @@ class AuthController extends Controller
 
         $user = User::create( $request->all() );
 
+        //Assign Role
+        $role = Role::whereName('user')->first();
+        $user->assignRole($role);
+        
         Log::info('trying to send registration email to '.$user->name);
 
         $mailer->sendEmailConfirmationTo($user);
@@ -223,4 +228,22 @@ class AuthController extends Controller
             'password' => bcrypt($data['password']),
         ]);
     }
+
+
+
+    /**
+     * 
+     */
+    public function getSocialRedirect( $provider )
+    {
+        $providerKey = \Config::get('services.' . $provider);
+        if(empty($providerKey))
+            return view('pages.status')
+                ->with('error','No such provider');
+
+        return Socialite::driver( $provider )->redirect();
+
+    }
+
+
 }

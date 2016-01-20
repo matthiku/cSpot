@@ -37,11 +37,23 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('register/confirm/{token}', 'Auth\AuthController@confirmEmail');
 
 
+    // Social (OAuth) authorization
+    $s = 'social.';
+    Route::get('/social/redirect/{provider}',   ['as' => $s . 'redirect',   'uses' => 'Auth\AuthController@getSocialRedirect']);
+    Route::get('/social/handle/{provider}',     ['as' => $s . 'handle',     'uses' => 'Auth\AuthController@getSocialHandle']);
+
+
 });
 
 
 // Routes for users with special rights
-Route::group(['prefix' => 'admin', 'middleware' => ['web', 'auth:,administrator']], function() {
-    //
-    Route::get('home', 'Admin\AdminController@index');
+Route::group(['prefix' => 'admin', 'middleware' => ['web']], function() {
+
+    // admin only: CRUD for users
+    Route::resource('users', 'Admin\UserController');    
+    Route::resource('roles', 'Admin\RoleController');    
+    // as forms cannot use DELETE method, we implement it as GET
+    Route::get('users/{users}/delete', 'Admin\UserController@destroy');    
+    Route::get('roles/{roles}/delete', 'Admin\RoleController@destroy');    
+
 });

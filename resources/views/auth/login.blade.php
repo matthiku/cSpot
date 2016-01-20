@@ -1,77 +1,78 @@
-@extends('layouts.app')
+@extends('layouts.main')
+
+@section('title', "Login User")
+
+@section('login', 'active')
 
 @section('content')
 
-@include('errors')
 
-<div class="container">
     <div class="row">
-        <div class="col-md-8 col-md-offset-2">
+        <div class="col-lg-6 col-lg-offset-3 signin-body">
+    @include('layouts.flashing')
+            
+            <form class="form-horizontal" role="form" method="POST" action="{{ url('/login') }}">
+                {!! csrf_field() !!}
 
+                <h2 class="card-header">Please sign in</h2>
 
-            <div class="card">
+                <div class="row form-group{{ $errors->has('email') ? ' has-error' : '' }}">
+                    <label class="col-md-3 col-md-offset-1 control-label">E-Mail Address</label>
 
-                <div class="card-header">
-                    <h3>Login</h3>
+                    <div class="col-md-6">
+                        <input required type="email" class="form-control" name="email" value="{{ old('email') }}">
+
+                        @if ($errors->has('email'))
+                            <span class="help-block">
+                                <strong>{{ $errors->first('email') }}</strong>
+                            </span>
+                        @endif
+                    </div>
                 </div>
 
-                <div class="card-block">
+                <div class="row form-group{{ $errors->has('password') ? ' has-error' : '' }}">
+                    <label class="col-md-3 col-md-offset-1 control-label">Password</label>
 
-                    <form class="form-horizontal" role="form" method="POST" action="{{ url('/login') }}">
-                        {!! csrf_field() !!}
+                    <div class="col-md-6">
+                        <input required type="password" class="form-control" name="password">
 
-                        <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-                            <label class="col-md-4 control-label">E-Mail Address</label>
+                        @if ($errors->has('password'))
+                            <span class="help-block">
+                                <strong>{{ $errors->first('password') }}</strong>
+                            </span>
+                        @endif
+                    </div>
+                </div>
 
-                            <div class="col-md-6">
-                                <input type="email" class="form-control" name="email" value="{{ old('email') }}">
-
-                                @if ($errors->has('email'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('email') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
+                <div class="row form-group">
+                    <div class="col-md-6 col-md-offset-4">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="remember"> Remember Me
+                            </label>
                         </div>
+                    </div>
+                </div>
 
-                        <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
-                            <label class="col-md-4 control-label">Password</label>
+                <div class="row form-group">
+                    <div class="col-md-6 col-md-offset-4">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa fa-btn fa-sign-in"></i> Login
+                        </button>
 
-                            <div class="col-md-6">
-                                <input type="password" class="form-control" name="password">
+                        <a class="btn btn-link" href="{{ url('/password/reset') }}">Forgot Your Password?</a>
+                    </div>
+                </div>
+                <h4>Or sign in using your provider:</h4>
 
-                                @if ($errors->has('password'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('password') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
+                <a href="/login/github" class="btn btn-lg btn-secondary" role="button"><i class="fa fa-github"></i> Github</a>
+                <a href="/login/google" class="btn btn-lg btn-secondary" role="button"><i class="fa fa-google"></i> Google</a>
+                <a href="/login/twitter" class="btn btn-lg btn-secondary" role="button"><i class="fa fa-twitter"></i> Twitter</a>
+                <a href="/login/facebook" class="btn btn-lg btn-secondary" role="button"><i class="fa fa-facebook"></i> Facebook</a>
+                <a href="/login/linkedin" class="btn btn-lg btn-secondary" role="button"><i class="fa fa-linkedin"></i> LinkedIn</a>
+            </form>
 
-                        <div class="form-group">
-                            <div class="col-md-6 col-md-offset-4">
-                                <div class="checkbox">
-                                    <label>
-                                        <input type="checkbox" name="remember"> Remember Me
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
+        </div>    
+    </div>
 
-                        <div class="form-group">
-                            <div class="col-md-6 col-md-offset-4">
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fa fa-btn fa-sign-in"></i> Login
-                                </button>
-
-                                <a class="btn btn-link" href="{{ url('/password/reset') }}">Forgot Your Password?</a>
-                            </div>
-                        </div>
-                    </form>
-
-                </div><!-- card-block -->
-            </div><!-- card -->
-        </div><!-- col -->
-    </div><!-- row -->
-</div><!-- container -->
 @endsection
