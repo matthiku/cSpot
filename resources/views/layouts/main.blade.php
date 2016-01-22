@@ -25,12 +25,15 @@
       <a class="navbar-brand" href="/">c-SPOT</a>
 
       <ul class="nav navbar-nav">
-        <li class="nav-item {{ Request::is('classifieds/create') ? '' : 'active' }}">
+        <li class="nav-item {{ Request::is('home') ? 'active' : '' }}">
           <a class="nav-link" href="/home">Home <span class="sr-only">(current)</span></a>
         </li>
         @if (Auth::user())
         <li class="nav-item {{ Request::is('classifieds/create') ? 'active' : '' }}">
-          <a class="nav-link" href="/home">Do Something</a>
+          <a class="nav-link" href="/home">Services</a>
+        </li>
+        <li class="nav-item {{ Request::is('classifieds/create') ? 'active' : '' }}">
+          <a class="nav-link" href="/home">Songs</a>
         </li>
         @endif
       </ul>
@@ -41,7 +44,8 @@
               <li class="nav-item"><a class="nav-link" href="{{ url('/login') }}">Sign in</a></li>
               <li class="nav-item"><a class="nav-link" href="{{ url('/register') }}">Register</a></li>
           @else
-              <li class="nav-item"><a class="nav-link" href="/admin/users">{{ Auth::user()->isAuthor() ? 'Admin' : ' ' }}</a></li>
+              <li class="nav-item"><a class="nav-link {{ Request::is('admin/*') ? 'active' : '' }}" 
+                   href="/admin/users">{{ Auth::user()->isAuthor() ? 'Admin' : ' ' }}</a></li>
               <li class="nav-item dropdown">
                   <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                       {{ Auth::user()->getFullName() }} <span class="caret"></span>

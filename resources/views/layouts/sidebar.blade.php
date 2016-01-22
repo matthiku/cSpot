@@ -5,7 +5,7 @@
         <ul class="nav nav-sidebar">
             @if(!Auth::guest())
                 <li class="@yield('tasks') ">
-                    <a href="/tasks">{{ (Auth::user()->id===1 || Auth::user()->isAdmin()) ? 'All' : 'Your' }} Services
+                    <a href="/spot/services">{{ (Auth::user()->id===1 || Auth::user()->isAdmin()) ? 'All' : 'Your' }} Services
                     <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="@yield('types')"><a href="/admin/types">Service Types</a></li>
