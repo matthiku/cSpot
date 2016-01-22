@@ -1,16 +1,4 @@
 <?php
-
-/*
-|--------------------------------------------------------------------------
-| Routes File
-|--------------------------------------------------------------------------
-|
-| Here is where you will register all of the routes in an application.
-| It's a breeze. Simply tell Laravel the URIs it should respond to
-| and give it the controller to call when that URI is requested.
-|
-*/
-
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -52,8 +40,12 @@ Route::group(['prefix' => 'admin', 'middleware' => ['web']], function() {
     // admin only: CRUD for users
     Route::resource('users', 'Admin\UserController');    
     Route::resource('roles', 'Admin\RoleController');    
+    Route::resource('types', 'Admin\TypeController');    
+    Route::resource('default_items', 'Admin\DefaultItemController');    
     // as forms cannot use DELETE method, we implement it as GET
     Route::get('users/{users}/delete', 'Admin\UserController@destroy');    
     Route::get('roles/{roles}/delete', 'Admin\RoleController@destroy');    
+    Route::get('types/{types}/delete', 'Admin\TypeController@destroy');    
+    Route::get('default_items/{default_items}/delete', 'Admin\DefaultItemController@destroy');    
 
 });

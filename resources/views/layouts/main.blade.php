@@ -30,7 +30,7 @@
         </li>
         @if (Auth::user())
         <li class="nav-item {{ Request::is('classifieds/create') ? 'active' : '' }}">
-          <a class="nav-link" href="/home">Add Something</a>
+          <a class="nav-link" href="/home">Do Something</a>
         </li>
         @endif
       </ul>
@@ -41,10 +41,10 @@
               <li class="nav-item"><a class="nav-link" href="{{ url('/login') }}">Sign in</a></li>
               <li class="nav-item"><a class="nav-link" href="{{ url('/register') }}">Register</a></li>
           @else
-              <li class="nav-item"><a class="nav-link" href="/{{ Auth::user()->hasRole('administrator') ? 'admin' : ' ' }}/users">{{ Auth::user()->hasRole('administrator') ? 'Admin' : ' ' }}</a></li>
+              <li class="nav-item"><a class="nav-link" href="/admin/users">{{ Auth::user()->isAuthor() ? 'Admin' : ' ' }}</a></li>
               <li class="nav-item dropdown">
                   <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                      {{ Auth::user()->name }} <span class="caret"></span>
+                      {{ Auth::user()->getFullName() }} <span class="caret"></span>
                   </a>
 
                   <div class="dropdown-menu" role="menu">
@@ -55,19 +55,18 @@
       </ul>
 
       @if ( Auth::guest() )
-      <form class="form-inline pull-xs-right" method="POST" role="form" action="{{ url('/login') }}">
+      <form class="form-inline pull-xs-right hidden-md-down" method="POST" role="form" action="{{ url('/login') }}">
+        Log in using @include('auth.social', ['hideLblText' => 'true']) or: 
         {!! csrf_field() !!}
         <div class="form-group">
-          <label class="sr-only" for="inputEmail">Email address</label>
           <input type="email" name="email" class="form-control-sm" id="inputEmail" placeholder="Enter email">
         </div>
-        <div class="form-group">
-          <label class="sr-only" for="inputPassword">Password</label>
-          <input type="password" name="password" class="form-control-sm" id="inputPassword" placeholder="Password">
+        <div class="form-group small-pw-input">
+          <input type="password" name="password" class="form-control-sm small-pw-input" id="inputPassword" placeholder="Password">
         </div>
-        <div class="checkbox">
+        <div class="checkbox hidden-xs-up">
           <label>
-            <input type="checkbox"name="remember"> Remember me
+            <input type="checkbox" name="remember" checked="checked"> Remember me
           </label>
         </div>
         <button type="submit" class="btn btn-sm btn-primary">Sign in</button> &nbsp; &nbsp; &nbsp;

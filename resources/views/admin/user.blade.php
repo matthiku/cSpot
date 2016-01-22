@@ -20,8 +20,10 @@
         {!! Form::open(array('action' => 'Admin\UserController@store')) !!}
     @endif
 
-        <p>{!! Form::label('name', 'User Name'); !!}<br>
-           {!! Form::text('name'); !!}</p>
+        <p>{!! Form::label('first_name', 'First Name'); !!}<br>
+           {!! Form::text('first_name'); !!}</p>
+        <p>{!! Form::label('last_name', 'Last Name'); !!}<br>
+           {!! Form::text('last_name'); !!}</p>
         <p>{!! Form::label('email', 'Email Address'); !!}<br>
            {!! Form::text('email'); !!}</p>
         <strong>Select Roles:</strong><br />

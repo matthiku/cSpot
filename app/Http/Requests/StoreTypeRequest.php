@@ -7,7 +7,7 @@ use App\Http\Requests\Request;
 use Illuminate\Support\Facades\Auth;
 
 
-class StoreUserRequest extends Request
+class StoreTypeRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -28,9 +28,7 @@ class StoreUserRequest extends Request
     {
         return [
             // validation rules
-            'first_name' => 'required',
-            'last_name'  => 'required',
-            'email'      => 'unique:users',
+            'name'        => 'required',
         ];
     }
 }

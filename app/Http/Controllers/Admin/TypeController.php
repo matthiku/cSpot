@@ -5,23 +5,14 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
-use App\Http\Requests\StoreRoleRequest;
+use App\Http\Requests\StoreTypeRequest;
 use App\Http\Controllers\Controller;
 
-use App\Models\Role;
-use App\Models\User;
+use App\Models\Type;
 
 
-class RoleController extends Controller
+class TypeController extends Controller
 {
-
-
-    /**
-     * define view names
-     */
-    protected $view_all = 'admin.roles';
-    protected $view_idx = 'admin.roles.index';
-    protected $view_one = 'admin.role';
 
 
 
@@ -44,10 +35,10 @@ class RoleController extends Controller
     public function index()
     {
         //
-        $roles = Role::get();
+        $types = Type::get();
 
-        $heading = 'Manage User Roles';
-        return view( $this->view_all, array('roles' => $roles, 'heading' => $heading) );
+        $heading = 'Manage list with Types of Services';
+        return view( 'admin.types', array('types' => $types, 'heading' => $heading) );
     }
 
 
@@ -62,7 +53,7 @@ class RoleController extends Controller
     public function create()
     {
         //
-        return view($this->view_one);
+        return view('admin.type');
     }
 
     /**
@@ -71,12 +62,12 @@ class RoleController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreRoleRequest $request)
+    public function store(StoreTypeRequest $request)
     {
         //
-        Role::create($request->all());
-        $status = 'New Role added.';
-        return \Redirect::route($this->view_idx)
+        Type::create( $request->except('_token') );
+        $status = 'New Type added.';
+        return \Redirect::route('admin.types.index')
                         ->with(['status' => $status]);
     }
 
@@ -94,10 +85,10 @@ class RoleController extends Controller
      */
     public function show($id)
     {
-        // get all -- USERS -- with this specific role id
-        $role    = Role::find($id);
-        $heading = 'User Management - Show '.$role->name;
-        return view( 'admin.users', array('users' => $role->users()->get(), 'heading' => $heading) );
+        // get all services of this specific type id
+        $type    = Type::find($id);
+        $heading = 'Show  Services of type '.$type->name;
+        return view( 'services', array('users' => $type->services()->get(), 'heading' => $heading) );
     }
 
 
@@ -114,13 +105,13 @@ class RoleController extends Controller
     public function edit($id)
     {
         // find a single resource by ID
-        $output = Role::find($id);
+        $output = Type::find($id);
         if ($output) {
-            return view( $this->view_one, array('role' => $output ) );
+            return view( 'admin.type', array('type' => $output ) );
         }
         //
-        $message = 'Error! Role with id "' . $id . '" not found';
-        return \Redirect::route($this->view_idx)
+        $message = 'Error! Type with id "' . $id . '" not found';
+        return \Redirect::route('admin.types.index')
                         ->with(['status' => $message]);
     }
 
@@ -131,29 +122,25 @@ class RoleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(StoreRoleRequest $request, $id)
+    public function update(StoreTypeRequest $request, $id)
     {
-        // default roles cannot be changed
-        if ($id<4)
-        {
-            return \Redirect::route($this->view_idx)
-                        ->with(['status' => 'System default roles cannot be changed!']);
-        }
         // was there any change?
-        $output = Role::find($id);
-        if ($request->input('name') == $output->name) 
-        {
-            return \Redirect::route($this->view_idx)
+        $output = Type::find($id);
+        if ($request->input('name') == $output->name) {
+            return \Redirect::route('admin.types.index')
                         ->with(['status' => 'no change']);
         }
-        // get this Role
-        Role::where('id', $id)
+        // get this Type
+        Type::where('id', $id)
                 ->update($request->except(['_method','_token']));
 
-        $message = 'Role with id "' . $id . '" updated';
-        return \Redirect::route($this->view_idx)
+        $message = 'Type with id "' . $id . '" updated';
+        return \Redirect::route('admin.types.index')
                         ->with(['status' => $message]);
     }
+
+
+
 
     /**
      * Remove the specified resource from storage.
@@ -165,16 +152,16 @@ class RoleController extends Controller
     {
         //
         // find a single resource by ID
-        $output = Role::find($id);
+        $output = Type::find($id);
         if ($output) {
             $output->delete();
-            $message = 'Role with id "' . $id . '" deleted.';
-            return \Redirect::route($this->view_idx)
+            $message = 'Type with id "' . $id . '" deleted.';
+            return \Redirect::route('admin.types.index')
                             ->with(['status' => $message]);
         }
         //
-        $message = 'Error! Role with ID "' . $id . '" not found';
-        return \Redirect::route($this->view_idx)
+        $message = 'Error! Type with ID "' . $id . '" not found';
+        return \Redirect::route('admin.types.index')
                         ->with(['status' => $message]);
     }
 }

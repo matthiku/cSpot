@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Http\Controllers\Controller;
 
 use App\Models\User;
@@ -17,13 +18,19 @@ class UserController extends Controller
 
 
     /**
+     * define view names
+     */
+    protected $view_all     = 'admin.users';
+    protected $view_all_idx = 'admin.users.index';
+    protected $view_one     = 'admin.user';
+
+    /**
      * Authentication
      */
     public function __construct() {
         $this->middleware('auth');
-        $this->middleware('admin');
-        $this->middleware('auth', ['except' => ['index', 'show']]);
-        $this->middleware('admin', ['except' => ['index', 'show', 'edit', 'update']]);
+        $this->middleware('role:editor', ['except' => ['index', 'show']]);
+        $this->middleware('role:administrator', ['only' => ['destroy', 'update']]);
     }
 
 
@@ -39,7 +46,7 @@ class UserController extends Controller
         $users = User::get();
 
         $heading = 'User Management';
-        return view( 'admin.users', array('users' => $users, 'heading' => $heading) );
+        return view( $this->view_all, array('users' => $users, 'heading' => $heading) );
     }
 
 
@@ -55,7 +62,7 @@ class UserController extends Controller
     {
         // list of possible user roles
         $roles = Role::all();
-        return view( 'admin.user', array('roles' => $roles ) );
+        return view( $this->view_one, array('roles' => $roles ) );
     }
 
     /**
@@ -70,7 +77,8 @@ class UserController extends Controller
         $user = new User;
 
         // update name and email addr
-        $user->name = $request->input('name');
+        $user->first_name = $request->input('first_name');
+        $user->last_name = $request->input('last_name');
         $user->email = $request->input('email');
         $user->save();
 
@@ -88,7 +96,7 @@ class UserController extends Controller
             }
         }
 
-        return \Redirect::route('admin.users.index')
+        return \Redirect::route($this->view_all_idx)
                         ->with(['status' => $message]);
     }
 
@@ -104,8 +112,10 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        //
-        return 'show user not implemented';
+        // $output = User::find($id);
+
+        $message = 'Sorry, show user not yet implemented.';
+        return redirect()->back()->with(['message' => $message]);
     }
 
 
@@ -129,7 +139,7 @@ class UserController extends Controller
         }
         //
         $message = 'User with id "' . $id . '" not found';
-        return \Redirect::route('admin.users.index')
+        return \Redirect::route($this->view_all_idx)
                         ->withError(['status' => $message]);
     }
 
@@ -141,7 +151,7 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(StoreUserRequest $request, $id)
+    public function update(UpdateUserRequest $request, $id)
     {
         // get the current user record
         $user = User::find($id);
@@ -159,16 +169,18 @@ class UserController extends Controller
                 if ($user->id<>1 || $role->name<>'administrator' ) {
                     $user->removeRole($role);
                 } else {
-                    $message .= '. Admin rights cannot be removed from first user!';
+                    $message .= '. Admin rights cannot be removed from user with id 1!';
                 }
             }
         }
 
         // update name and email addr
-        $user->name = $request->input('name');
-        $user->email = $request->input('email');
+        $user->first_name = $request->input('first_name');
+        $user->last_name  = $request->input('last_name');
+        $user->email      = $request->input('email');
+        $user->save();
 
-        return \Redirect::route('admin.users.index')
+        return \Redirect::route($this->view_all_idx)
                         ->with(['status' => $message]);
     }
 
@@ -190,7 +202,7 @@ class UserController extends Controller
             $user = User::where('id', $id)->delete();
             $message = 'User with id "' . $id . '" was deleted';
         }
-        return \Redirect::route('admin.users.index')
+        return \Redirect::route($this->view_all_idx)
                         ->with(['status' => $message]);
     }
 

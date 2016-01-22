@@ -18,15 +18,15 @@
 	@if (count($users))
 
 		<table class="table table-striped table-bordered 
-					@if(count($users)>5)
+					@if(count($users)>15)
 					 table-sm
 					@endif
 					 ">
 			<thead class="thead-default">
 				<tr>
 					<th>#</th>
-					<th>Name</th>
-					<th>Username</th>
+					<th>First Name</th>
+					<th>Last Name</th>
 					<th>Email</th>
 					<th>Role(s)</th>
 					<th>Joined</th>
@@ -39,36 +39,36 @@
 	        @foreach( $users as $user )
 				<tr>
 					<th scope="row">{{ $user->id }}</th>
-					<td>{{ $user->name }}</td>
-					<td>{{ $user->username }}</td>
+					<td>{{ $user->first_name }}</td>
+					<td>{{ $user->last_name }}</td>
 					<td>{{ $user->email }}</td>
-					<td>
-						@foreach ($user->roles as $role)
+					<td>@foreach ($user->roles as $role)
 							{{ $role->name }},
-						@endforeach
-					</td>
+						@endforeach</td>
 					<td>{{ $user->created_at }}</td>
-					<td>{{ $user->provider }}</td>
-					<td>{{ $user->provider_id }}</td>
+					<td>{{ '' }}</td>
+					<td>{{ '' }}</td>
 					<td>
 						<!-- <a class="btn btn-secondary btn-sm" title="Show Tasks" href='tasks/user/{{$user->id}}'><i class="fa fa-filter"></i></a> -->
-						<a class="btn btn-primary-outline btn-sm" title="Edit" href='/admin/users/{{$user->id}}/edit'  ><i class="fa fa-pencil"></i></a>
-						<a class="btn btn-danger  btn-sm" 	   title="Delete!" href='/admin/users/{{$user->id}}/delete'><i class="fa fa-trash" ></i></a>
+						@if( Auth::user()->isEditor() && $user->id > 1 )
+							<a class="btn btn-primary-outline btn-sm" title="Edit" href='/admin/users/{{$user->id}}/edit'  ><i class="fa fa-pencil"></i></a>
+						@endif
+						@if( Auth::user()->isAdmin() )
+							<a class="btn btn-danger  btn-sm" 	   title="Delete!" href='/admin/users/{{$user->id}}/delete'><i class="fa fa-trash" ></i></a>
+						@endif
 					</td>
 				</tr>
 	        @endforeach
 			</tbody>
 		</table>
 
-    @else
-
-    	No users found!
-
 	@endif
 
-	<a class="btn btn-primary-outline" href='/admin/users/create'>
-		<i class="fa fa-plus"> </i> &nbsp; Add a user
-	</a>
+	@if( Auth::user()->isEditor() )
+		<a class="btn btn-primary-outline" href='/admin/users/create'>
+			<i class="fa fa-plus"> </i> &nbsp; Add a user
+		</a>
+	@endif
 
 	
 @stop

@@ -5,23 +5,23 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
-use App\Http\Requests\StoreRoleRequest;
+use App\Http\Requests\StoreDefaultItemRequest;
 use App\Http\Controllers\Controller;
 
-use App\Models\Role;
-use App\Models\User;
+use App\Models\DefaultItem;
+use App\Models\Type;
 
 
-class RoleController extends Controller
+class DefaultItemController extends Controller
 {
 
 
     /**
      * define view names
      */
-    protected $view_all = 'admin.roles';
-    protected $view_idx = 'admin.roles.index';
-    protected $view_one = 'admin.role';
+    protected $view_all = 'admin.default_items';
+    protected $view_idx = 'admin.default_items.index';
+    protected $view_one = 'admin.default_item';
 
 
 
@@ -43,11 +43,11 @@ class RoleController extends Controller
      */
     public function index()
     {
-        //
-        $roles = Role::get();
+        // eager loading of related table
+        $default_items = DefaultItem::with('type')->get();
 
-        $heading = 'Manage User Roles';
-        return view( $this->view_all, array('roles' => $roles, 'heading' => $heading) );
+        $heading = 'Manage Default Service Items';
+        return view( $this->view_all, array('default_items' => $default_items, 'heading' => $heading) );
     }
 
 
@@ -61,8 +61,10 @@ class RoleController extends Controller
      */
     public function create()
     {
-        //
-        return view($this->view_one);
+        // get list of possible service types
+        $types = Type::all();
+        // show form
+        return view( $this->view_one, array('types' => $types));
     }
 
     /**
@@ -71,11 +73,11 @@ class RoleController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreRoleRequest $request)
+    public function store(StoreDefaultItemRequest $request)
     {
         //
-        Role::create($request->all());
-        $status = 'New Role added.';
+        DefaultItem::create( $request->all() );
+        $status = 'New DefaultItem added.';
         return \Redirect::route($this->view_idx)
                         ->with(['status' => $status]);
     }
@@ -94,10 +96,8 @@ class RoleController extends Controller
      */
     public function show($id)
     {
-        // get all -- USERS -- with this specific role id
-        $role    = Role::find($id);
-        $heading = 'User Management - Show '.$role->name;
-        return view( 'admin.users', array('users' => $role->users()->get(), 'heading' => $heading) );
+        $message = 'Sorry, show single resource not yet implemented.';
+        return redirect()->back()->with(['message' => $message]);
     }
 
 
@@ -114,12 +114,14 @@ class RoleController extends Controller
     public function edit($id)
     {
         // find a single resource by ID
-        $output = Role::find($id);
+        $output = DefaultItem::find($id);
         if ($output) {
-            return view( $this->view_one, array('role' => $output ) );
+            // get list of possible service types
+            $types = Type::all();            
+            return view( $this->view_one, array('default_item' => $output, 'types' => $types ) );
         }
         //
-        $message = 'Error! Role with id "' . $id . '" not found';
+        $message = 'Error! DefaultItem with id "' . $id . '" not found';
         return \Redirect::route($this->view_idx)
                         ->with(['status' => $message]);
     }
@@ -131,26 +133,20 @@ class RoleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(StoreRoleRequest $request, $id)
+    public function update(StoreDefaultItemRequest $request, $id)
     {
-        // default roles cannot be changed
-        if ($id<4)
-        {
-            return \Redirect::route($this->view_idx)
-                        ->with(['status' => 'System default roles cannot be changed!']);
-        }
         // was there any change?
-        $output = Role::find($id);
-        if ($request->input('name') == $output->name) 
+        $output = DefaultItem::find($id);
+        if ($request->input('text') == $output->text && $request->input('seq_no') == $output->seq_no ) 
         {
             return \Redirect::route($this->view_idx)
                         ->with(['status' => 'no change']);
         }
-        // get this Role
-        Role::where('id', $id)
+        // get this DefaultItem
+        DefaultItem::where('id', $id)
                 ->update($request->except(['_method','_token']));
 
-        $message = 'Role with id "' . $id . '" updated';
+        $message = 'DefaultItem with id "' . $id . '" updated';
         return \Redirect::route($this->view_idx)
                         ->with(['status' => $message]);
     }
@@ -165,15 +161,15 @@ class RoleController extends Controller
     {
         //
         // find a single resource by ID
-        $output = Role::find($id);
+        $output = DefaultItem::find($id);
         if ($output) {
             $output->delete();
-            $message = 'Role with id "' . $id . '" deleted.';
+            $message = 'DefaultItem with id "' . $id . '" deleted.';
             return \Redirect::route($this->view_idx)
                             ->with(['status' => $message]);
         }
         //
-        $message = 'Error! Role with ID "' . $id . '" not found';
+        $message = 'Error! DefaultItem with ID "' . $id . '" not found';
         return \Redirect::route($this->view_idx)
                         ->with(['status' => $message]);
     }

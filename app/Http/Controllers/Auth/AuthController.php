@@ -3,16 +3,23 @@
 namespace App\Http\Controllers\Auth;
 
 use Log;
+
 use App\Models\User;
 use App\Models\Role;
+use App\Models\Social;
+
 use Validator;
+use Auth;
+use Input;
 use Socialite;
+
 use App\Mailers\AppMailer;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Contracts\Auth\Guard;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
+
 
 class AuthController extends Controller
 {
@@ -38,53 +45,18 @@ class AuthController extends Controller
     protected $redirectTo = '/home';
 
 
+    protected $auth;
+
     /**
      * Create a new authentication controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Guard $auth)
     {
+        $this->auth = $auth;
+
         $this->middleware('guest', ['except' => 'logout']);
-    }
-
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | Socialite Implementation 
-    | part 1 of 3
-    | see http://www.codeanchor.net/blog/complete-laravel-socialite-tutorial/
-    |--------------------------------------------------------------------------
-    |
-    */
-    public function loginViaProvider(AuthenticateUser $authenticateUser, Request $request, $provider = null) 
-    {
-        return $authenticateUser->execute( $request->all(), $this, $provider );
-    }
-    // redirect to dashboard after a succesful login
-    public function userHasLoggedIn($user) {
-        \Session::flash( 'status', 'Welcome, '.$user->name.'! You have been logged in via '.$user->provider );
-        return redirect('/tasks');
-    }
-    /**
-     * Redirect the user to the Provider's authentication page.
-     *
-     * @return Response
-     */
-    public function redirectToProvider()
-    {
-        return Socialite::driver('github')->redirect();
-    }
-    /**
-     * Obtain the user information from GitHub.
-     *
-     * @return Response
-     */
-    public function handleProviderCallback()
-    {
-        $user = Socialite::driver('github')->user();
-        // $user->token;
     }
 
 
@@ -134,23 +106,6 @@ class AuthController extends Controller
 
 
     /**
-     * Get a validator for an incoming registration request.
-     *
-     * @param  array  $data
-     * @return \Illuminate\Contracts\Validation\Validator
-     */
-    protected function validator(array $data)
-    {
-        return Validator::make($data, [
-            'name' => 'required|max:255',
-            'email' => 'required|email|max:255|unique:users',
-            'password' => 'required|confirmed|min:6',
-        ]);
-    }
-
-
-
-    /**
      * Perform the registration.
      *
      * @param  Request   $request
@@ -160,9 +115,10 @@ class AuthController extends Controller
     public function register(Request $request, AppMailer $mailer) 
     {
         $this->validate($request, [
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
-            'password' => 'required'
+            'first_name' => 'required',
+            'last_name'  => 'required',
+            'email'      => 'required|email|unique:users',
+            'password'   => 'required',
         ]);
 
         $user = User::create( $request->all() );
@@ -177,7 +133,7 @@ class AuthController extends Controller
 
         flash('Please check you inbox for an email containing a link to confirm your email address.');
 
-        return redirect()->back();
+        return redirect('/');
     }
 
 
@@ -232,18 +188,85 @@ class AuthController extends Controller
 
 
     /**
-     * 
+     * User clicked on Social Auth button, redirect them to their provider for consent
      */
     public function getSocialRedirect( $provider )
     {
+        Log::info('getSocialRedirect - User trying to register using '.$provider);
+
         $providerKey = \Config::get('services.' . $provider);
+
         if(empty($providerKey))
-            return view('pages.status')
+            return view('auth.login')
                 ->with('error','No such provider');
 
         return Socialite::driver( $provider )->redirect();
 
     }
+
+    /**
+     * Provider used the "callback URL" and now we process the returned information
+     */
+    public function getSocialHandle( $provider )
+    {
+        Log::info('getSocialHandle - User gave consent to register using '.$provider);
+
+        $user = Socialite::driver( $provider )->user();
+
+        $code = Input::get('code');
+        if(!$code)
+            return redirect()->route('auth.login')
+                ->with('status', 'danger')
+                ->with('message', 'You did not share your profile data with our socail app.');
+        if(!$user->email)
+        {
+            return redirect()->route('auth.login')
+                ->with('status', 'danger')
+                ->with('message', 'You did not share your email with our social app. You need to visit App Settings and remove our app, than you can come back here and login again. Or you can create new account.');
+        }
+        $socialUser = null;
+        //Check is this email present
+        $userCheck = User::where('email', '=', $user->email)->first();
+        if(!empty($userCheck))
+        {
+            $socialUser = $userCheck;
+        }
+        else
+        {
+            $sameSocialId = Social::where('social_id', '=', $user->id)->where('provider', '=', $provider )->first();
+            if(empty($sameSocialId))
+            {
+                //There is no combination of this social id and provider, so create new one
+                $newSocialUser = new User;
+                $newSocialUser->email              = $user->email;
+                $name = explode(' ', $user->name);
+                $newSocialUser->first_name         = $name[0];
+                $newSocialUser->last_name          = $name[1];
+                $newSocialUser->save();
+                $socialData = new Social;
+                $socialData->social_id = $user->id;
+                $socialData->provider= $provider;
+                $newSocialUser->social()->save($socialData);
+                // Add role
+                $role = Role::whereName('user')->first();
+                $newSocialUser->assignRole($role);
+                $socialUser = $newSocialUser;
+            }
+            else
+            {
+                //Load this existing social user
+                $socialUser = $sameSocialId->user;
+            }
+        }
+
+        Log::info('getSocialHandle - trying to do social-sign in');
+
+        $this->auth->login($socialUser, true);
+
+        return redirect()->intended($this->redirectPath());
+
+    }
+
 
 
 }

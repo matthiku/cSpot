@@ -9,7 +9,8 @@
 
     <div class="row">
         <div class="col-lg-6 col-lg-offset-3 signin-body">
-    @include('layouts.flashing')
+
+            @include('layouts.flashing')
             
             <form class="form-horizontal" role="form" method="POST" action="{{ url('/login') }}">
                 {!! csrf_field() !!}
@@ -44,7 +45,7 @@
                     </div>
                 </div>
 
-                <div class="row form-group">
+                <div class="row">
                     <div class="col-md-6 col-md-offset-4">
                         <div class="checkbox">
                             <label>
@@ -59,17 +60,15 @@
                         <button type="submit" class="btn btn-primary">
                             <i class="fa fa-btn fa-sign-in"></i> Login
                         </button>
-
-                        <a class="btn btn-link" href="{{ url('/password/reset') }}">Forgot Your Password?</a>
+                        <a class="btn btn-primary-outline pull-right" href="{{ url('/password/reset') }}">Forgot Your Password?</a>
                     </div>
                 </div>
-                <h4>Or sign in using your provider:</h4>
+                <br/>
+                <center>
+                    <h4>Or sign in using your provider:</h4>
+                    @include('auth.social')
+                </center>
 
-                <a href="/login/github" class="btn btn-lg btn-secondary" role="button"><i class="fa fa-github"></i> Github</a>
-                <a href="/login/google" class="btn btn-lg btn-secondary" role="button"><i class="fa fa-google"></i> Google</a>
-                <a href="/login/twitter" class="btn btn-lg btn-secondary" role="button"><i class="fa fa-twitter"></i> Twitter</a>
-                <a href="/login/facebook" class="btn btn-lg btn-secondary" role="button"><i class="fa fa-facebook"></i> Facebook</a>
-                <a href="/login/linkedin" class="btn btn-lg btn-secondary" role="button"><i class="fa fa-linkedin"></i> LinkedIn</a>
             </form>
 
         </div>    

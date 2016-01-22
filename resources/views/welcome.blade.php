@@ -7,11 +7,13 @@
 
     <div class="container signin-body">
     
+        @include('layouts.flashing')
+
         @include('info')
 
         @if (Auth::guest())
-        <div class="form-signin">
-            <h2 class="form-signin-heading">Please Sign In</h2>
+        <div class="form-signin center">
+            <h2 class="form-signin-heading"><a href="/login">Please Sign In</a></h2>
         </div>
         @endif
 

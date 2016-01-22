@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Support\Facades\Auth;
 
 
-class AdminMiddleware
+class RoleMiddleware
 {
     /**
      * Handle an incoming request.
@@ -15,11 +15,17 @@ class AdminMiddleware
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle($request, Closure $next, $role)
     {
-        if (Auth::user()->id<>1 && !Auth::user()->is_admin ) {
-            return redirect('home')->with('error', 'Error! Unauthorized!');
+
+        if ( ! $request->user()->hasRole($role) )
+        {
+            return redirect('home')->with('error', $role .' - You are unauthorized for this request.');
         }
+
         return $next($request);
+
     }
+
+
 }

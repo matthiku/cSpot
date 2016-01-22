@@ -30,7 +30,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      *
      * @var array
      */
-    protected $fillable = ['name', 'email', 'password'];
+    protected $fillable = ['first_name', 'last_name', 'email', 'password'];
 
 
     /**
@@ -39,6 +39,27 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      * @var array
      */
     protected $hidden = ['password', 'remember_token'];
+
+
+
+
+    /**
+     * Relationship to Social table
+     */
+    public function social() 
+    {
+        return $this->hasMany('App\Models\Social');
+    }
+
+
+
+
+    public function getFullName() 
+    {
+        return $this->first_name.' '.$this->last_name;
+    }
+
+
 
 
     /**
@@ -109,12 +130,29 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
     public function removeRole($role)
     {
+        if ( $this->id==1 && $role->id<4 )
+        {
+            return false;
+        }
         return $this->roles()->detach($role);
     }
 
+
+    /**
+     * Define various access rights levels
+     * (highest to lowest)
+     */
     public function isAdmin()
     {
-        return $this->hasRole('administrator');
+        return $this->hasRole('administrator') ;
+    }
+    public function isEditor()
+    {
+        return $this->hasRole('administrator') || $this->hasRole('editor') ;
+    }
+    public function isAuthor()
+    {
+        return $this->hasRole('administrator') || $this->hasRole('editor') || $this->hasRole('author');
     }
 
     
