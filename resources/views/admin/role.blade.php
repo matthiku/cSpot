@@ -15,10 +15,10 @@
 
     @if (isset($role))
         <h2>Update Role</h2>
-        {!! Form::model( $role, array('route' => array('admin.roles.update', $role->id), 'method' => 'put') ) !!}
+        {!! Form::model( $role, array('route' => array('admin.roles.update', $role->id), 'method' => 'put', 'id' => 'inputForm') ) !!}
     @else
         <h2>Create Role</h2>
-        {!! Form::open(array('action' => 'Admin\RoleController@store')) !!}
+        {!! Form::open(array('action' => 'Admin\RoleController@store', 'id' => 'inputForm') ) !!}
     @endif
         <p>{!! Form::label('name', 'Role Name'); !!}<br>
            {!! Form::text('name'); !!}</p>
@@ -32,6 +32,8 @@
     @else
         <p>{!! Form::submit('Submit'); !!}
     @endif
+
+    <script type="text/javascript">document.forms.inputForm.name.focus()</script>
 
     <a href="/admin/roles">{!! Form::button('Cancel'); !!}</a></p>
     {!! Form::close() !!}

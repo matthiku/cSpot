@@ -24,21 +24,19 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      */
     protected $table = 'users';
 
-
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = ['first_name', 'last_name', 'email', 'password'];
-
-
     /**
      * The attributes excluded from the model's JSON form.
      *
      * @var array
      */
     protected $hidden = ['password', 'remember_token'];
+
 
 
 
@@ -50,6 +48,23 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     {
         return $this->hasMany('App\Models\Social');
     }
+
+
+    /**
+     * Relationship to the Plan model
+     *
+     * Each plan has a leader and a teacher.
+     * A user can "own" many plans as leader or teacher!
+     */
+    public function plans_as_leader()
+    {
+        return $this->hasMany('App\Models\Plan', 'leader_id');
+    }
+    public function plans_as_teacher()
+    {
+        return $this->hasMany('App\Models\Plan', 'teacher_id');
+    }
+
 
 
 
@@ -137,6 +152,12 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         return $this->roles()->detach($role);
     }
 
+
+    /**
+     * Get the user's Roles
+     * TODO
+     * public function getRoles()
+     */
 
     /**
      * Define various access rights levels

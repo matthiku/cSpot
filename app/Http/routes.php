@@ -34,6 +34,23 @@ Route::group(['middleware' => 'web'], function () {
 });
 
 
+
+// Routes for the core application
+Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() {
+
+    // show only upcoming service plans
+    Route::get('plans/future', ['as'=>'future', 'uses'=>'Cspot\PlanController@future']);
+    // CRUD resources for plans
+    Route::resource('plans', 'Cspot\PlanController');
+    Route::get('plans/{plans}/delete', 'Cspot\PlanController@destroy');    
+
+    Route::resource('songs', 'Cspot\SongController');
+
+});
+
+
+
+
 // Routes for users with special rights
 Route::group(['prefix' => 'admin', 'middleware' => ['web']], function() {
 

@@ -8,7 +8,14 @@ class Type extends Model
 {
     //
 
-    protected $table = 'types';
-
     protected $fillable = ['name'];
+
+
+
+    public function plans()
+    {
+        return $this->hasMany('App\Models\Plan', 'type_id');
+    }
+
+
 }

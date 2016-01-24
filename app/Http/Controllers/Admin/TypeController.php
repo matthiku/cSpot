@@ -85,10 +85,10 @@ class TypeController extends Controller
      */
     public function show($id)
     {
-        // get all services of this specific type id
+        // get all service plans of this specific type id
         $type    = Type::find($id);
-        $heading = 'Show  Services of type '.$type->name;
-        return view( 'services', array('users' => $type->services()->get(), 'heading' => $heading) );
+        $heading = 'Show  Service Plans of Type '.$type->name;
+        return view( 'cspot.plans', array('plans' => $type->plans()->get(), 'heading' => $heading) );
     }
 
 

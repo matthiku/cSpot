@@ -26,8 +26,9 @@
 				<tr>
 					<th>#</th>
 					<th>Name</th>
+					<th>No. of Plans</th>
 					 @if(Auth::user()->id===1 || Auth::user()->isAdmin())
-					<th>Action</th>
+						<th>Action</th>
 					@endif
 				</tr>
 			</thead>
@@ -36,6 +37,8 @@
 				<tr>
 					<th scope="row">{{ $type->id }}</th>
 					<td>{{ $type->name }}</td>
+					<td onclick="location.href='/admin/types/{{$type->id}}'" class="link" title="Show Plans of this type of Service">
+						{{ $type->plans->count() }}</td>
 					<td>
 						<!-- <a class="btn btn-secondary btn-sm" title="Show Users" href='/admin/types/{{$type->id}}'><i class="fa fa-filter"></i></a> -->
 						 @if( Auth::user()->isEditor() )

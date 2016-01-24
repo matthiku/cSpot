@@ -114,6 +114,8 @@ class AuthController extends Controller
      */
     public function register(Request $request, AppMailer $mailer) 
     {
+        Log::info('trying to validate user registration');
+
         $this->validate($request, [
             'first_name' => 'required',
             'last_name'  => 'required',
@@ -131,7 +133,7 @@ class AuthController extends Controller
 
         $mailer->sendEmailConfirmationTo($user);
 
-        flash('Please check you inbox for an email containing a link to confirm your email address.');
+        flash('Please check your inbox for an email containing a link to confirm your email address.');
 
         return redirect('/');
     }

@@ -30,3 +30,11 @@ textarea {
 .center {
     text-align: center;
 }
+
+.full-width input {
+    width: 100%;
+}
+
+.link {
+    cursor: pointer;
+}

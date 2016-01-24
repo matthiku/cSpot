@@ -12,7 +12,7 @@
 
             @include('layouts.flashing')
             
-            <form class="form-horizontal" role="form" method="POST" action="{{ url('/login') }}">
+            <form class="form-horizontal" role="form" method="POST" id="inputForm"  action="{{ url('/login') }}">
                 {!! csrf_field() !!}
 
                 <h2 class="card-header">Please sign in</h2>
@@ -70,6 +70,9 @@
                 </center>
 
             </form>
+
+            <script type="text/javascript">document.forms.inputForm.email.focus()</script>
+
 
         </div>    
     </div>

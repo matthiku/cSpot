@@ -15,10 +15,10 @@
 
     @if (isset($default_item))
         <h2>Update Default Item</h2>
-        {!! Form::model( $default_item, array('route' => array('admin.default_items.update', $default_item->id), 'method' => 'put') ) !!}
+        {!! Form::model( $default_item, array('route' => array('admin.default_items.update', $default_item->id), 'method' => 'put', 'id' => 'inputForm') ) !!}
     @else
         <h2>Create Default Item</h2>
-        {!! Form::open(array('action' => 'Admin\DefaultItemController@store')) !!}
+        {!! Form::open(array('action' => 'Admin\DefaultItemController@store', 'id' => 'inputForm')) !!}
     @endif
 
         <p>
@@ -50,6 +50,9 @@
 
     <a href="/admin/default_items">{!! Form::button('Cancel'); !!}</a></p>
     {!! Form::close() !!}
+
+
+    <script type="text/javascript">document.forms.inputForm.type_id.focus()</script>
 
     
 @stop

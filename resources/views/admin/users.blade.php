@@ -28,8 +28,6 @@
 				<th>Email</th>
 				<th>Role(s)</th>
 				<th>Joined</th>
-				<th>Provider</th>
-				<th>Prov.ID</th>
 				<th>Action</th>
 			</tr>
 		</thead>
@@ -41,11 +39,9 @@
 				<td>{{ $user->last_name }}</td>
 				<td>{{ $user->email }}</td>
 				<td>@foreach ($user->roles as $role)
-						{{ $role->name }},
+						{{ ucfirst($role->name) }},
 					@endforeach</td>
 				<td>{{ $user->created_at }}</td>
-				<td>{{ '' }}</td>
-				<td>{{ '' }}</td>
 				<td>
 					<!-- <a class="btn btn-secondary btn-sm" title="Show Tasks" href='tasks/user/{{$user->id}}'><i class="fa fa-filter"></i></a> -->
 					@if( Auth::user()->isAdmin() || (Auth::user()->isEditor() && $user->id > 1) )

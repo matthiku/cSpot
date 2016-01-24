@@ -13,7 +13,7 @@
 
             @include('layouts.flashing')
 
-            <form class="form-horizontal" role="form" method="POST" action="{{ url('/register') }}">
+            <form class="form-horizontal" role="form" method="POST" id="inputForm" action="{{ url('/register') }}">
                 {!! csrf_field() !!}
 
                 <h3 class="card-header">Register</h3>
@@ -104,6 +104,9 @@
                 </center>
 
             </form>
+
+            <script type="text/javascript">document.forms.inputForm.first_name.focus()</script>
+
 
         </div><!-- col -->
     </div><!-- row -->

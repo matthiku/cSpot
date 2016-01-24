@@ -14,10 +14,10 @@
 
     @if (isset($user))
         <h2>Update User</h2>
-        {!! Form::model( $user, array('route' => array('admin.users.update', $user->id), 'method' => 'put') ) !!}
+        {!! Form::model( $user, array('route' => array('admin.users.update', $user->id), 'method' => 'put', 'id' => 'inputForm') ) !!}
     @else
         <h2>Create User</h2>
-        {!! Form::open(array('action' => 'Admin\UserController@store')) !!}
+        {!! Form::open(array('action' => 'Admin\UserController@store', 'id' => 'inputForm')) !!}
     @endif
 
         <p>{!! Form::label('first_name', 'First Name'); !!}<br>
@@ -43,6 +43,8 @@
     @else
         <p>{!! Form::submit('Submit'); !!}
     @endif
+
+    <script type="text/javascript">document.forms.inputForm.first_name.focus()</script>
 
     <a href="/admin/users">{!! Form::button('Cancel'); !!}</a></p>
     {!! Form::close() !!}

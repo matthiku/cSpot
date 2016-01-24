@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<?php \Carbon\Carbon::setLocale('en');?>
+
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -29,11 +31,11 @@
           <a class="nav-link" href="/home">Home <span class="sr-only">(current)</span></a>
         </li>
         @if (Auth::user())
-        <li class="nav-item {{ Request::is('classifieds/create') ? 'active' : '' }}">
-          <a class="nav-link" href="/home">Services</a>
+        <li class="nav-item {{ Request::is('cpsot/plans*') ? 'active' : '' }}">
+          <a class="nav-link" href="/cspot/plans/future">Services</a>
         </li>
-        <li class="nav-item {{ Request::is('classifieds/create') ? 'active' : '' }}">
-          <a class="nav-link" href="/home">Songs</a>
+        <li class="nav-item {{ Request::is('cspot/songs*') ? 'active' : '' }}">
+          <a class="nav-link" href="/cspot/songs">Songs</a>
         </li>
         @endif
       </ul>

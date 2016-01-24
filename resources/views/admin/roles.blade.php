@@ -26,6 +26,7 @@
 				<tr>
 					<th>#</th>
 					<th>Name</th>
+					<th>No. of Users</th>
 					<th>Action</th>
 				</tr>
 			</thead>
@@ -33,7 +34,9 @@
 	        @foreach( $roles as $role )
 				<tr>
 					<th scope="row">{{ $role->id }}</th>
-					<td>{{ $role->name }}</td>
+					<td>{{ ucfirst($role->name) }}</td>
+					<td onclick="location.href='/admin/roles/{{$role->id}}'" class="link" title="Show users with that role">
+						{{ $role->users->count() }}</td>
 					<td>
 						<a class="btn btn-secondary btn-sm" title="Show Users" href='/admin/roles/{{$role->id}}'><i class="fa fa-filter"></i></a>
 						 @if( $role->id>3 &&   Auth::user()->isEditor() )
