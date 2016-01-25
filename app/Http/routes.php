@@ -52,7 +52,10 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     Route::get('plans/by_user/{user_id}/{all?}', 'Cspot\PlanController@by_user');    
     Route::get('plans/by_type/{type_id}/{all?}', 'Cspot\PlanController@by_type');    
     // update (append) the note for a plan
-    Route::put('plans/{plans}/addNote', ['as'=>'addNote', 'uses'=>'Cspot\PlanController@addNote']);    
+    Route::put('plans/{plans}/addNote', ['as'=>'addNote', 'uses'=>'Cspot\PlanController@addNote']);
+
+    Route::resource('items', 'Cspot\ItemController');
+    Route::get('items/{items}/delete', 'Cspot\ItemController@destroy');    
 
     // basic songs processing
     Route::resource('songs', 'Cspot\SongController');
