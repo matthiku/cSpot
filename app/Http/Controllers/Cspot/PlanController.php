@@ -40,6 +40,7 @@ class PlanController extends Controller
 
 
 
+
     /**
      * Display a listing of the resource.
      *
@@ -55,10 +56,9 @@ class PlanController extends Controller
                       ->orWhere('teacher_id', Auth::user()->id)
                       ->with('type')->get();
         }
-        $heading = 'Show Church Service Plans';
+        $heading = 'Show Service Plans';
         return view( $this->view_all, array('plans' => $plans, 'heading' => $heading) );
     }
-
 
 
 
@@ -75,8 +75,75 @@ class PlanController extends Controller
             ->orderBy('date')
             ->get();
 
-        $heading = 'Show Upcoming Church Service Plans';
+        $heading = 'Show Upcoming Service Plans';
         return view( $this->view_all, array('plans' => $plans, 'heading' => $heading) );
+    }
+
+
+
+    /**
+     * Display a listing of Service Plans filtered by user (leader/teacher)
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function by_user($user_id, $all=false)
+    {
+        //
+        if ($all) {
+            $plans = Plan::with('type')
+                ->where('leader_id', $user_id)
+                ->orWhere('teacher_id', $user_id)
+                ->orderBy('date','DESC')
+                ->get();
+            $heading = 'Show All Church Service Plans for ';
+        } else {
+            $plans = Plan::with('type')
+                ->whereDate('date', '>', Carbon::yesterday())
+                ->where('leader_id', $user_id)
+                ->orWhere('teacher_id', $user_id)
+                ->whereDate('date', '>', Carbon::yesterday())
+                ->orderBy('date')
+                ->get();
+            $heading = 'Show Upcoming Church Service Plans for ';
+        }
+
+        $heading .= User::find($user_id)->first_name;
+
+        return view( 
+            $this->view_all, 
+            array('plans' => $plans, 'heading' => $heading) 
+        );
+    }
+
+
+    /**
+     * Display a listing of Service Plans filtered by user (leader/teacher)
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function by_type($type_id, $all=false)
+    {
+        //
+        if ($all) {
+            $plans = Plan::with('type')
+                ->where('type_id', $type_id)
+                ->orderBy('date','DESC')
+                ->get();
+            $heading = 'Show All ';
+        } else {
+            $plans = Plan::with('type')
+                ->whereDate('date', '>', Carbon::yesterday())
+                ->where('type_id', $type_id)
+                ->orderBy('date')
+                ->get();
+            $heading = 'Show Upcoming ';
+        }
+        $heading .= Type::find($type_id)->name.'s';
+
+        return view( 
+            $this->view_all, 
+            array('plans' => $plans, 'heading' => $heading) 
+        );
     }
 
 

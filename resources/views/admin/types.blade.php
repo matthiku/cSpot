@@ -37,10 +37,10 @@
 				<tr>
 					<th scope="row">{{ $type->id }}</th>
 					<td>{{ $type->name }}</td>
-					<td onclick="location.href='/admin/types/{{$type->id}}'" class="link" title="Show Plans of this type of Service">
+					<td onclick="location.href='/admin/types/{{$type->id}}'" class="link" title="Show all Plans of this type of Service">
 						{{ $type->plans->count() }}</td>
 					<td>
-						<!-- <a class="btn btn-secondary btn-sm" title="Show Users" href='/admin/types/{{$type->id}}'><i class="fa fa-filter"></i></a> -->
+						<a class="btn btn-secondary btn-sm" title="Show upcoming Plans" href='/cspot/plans/by_type/{{$type->id}}'><i class="fa fa-filter"></i></a>
 						 @if( Auth::user()->isEditor() )
 						<a class="btn btn-primary-outline btn-sm" title="Edit" href='/admin/types/{{$type->id}}/edit'><i class="fa fa-pencil"></i></a>
 						<a class="btn btn-danger btn-sm" title="Delete!" href='/admin/types/{{$type->id}}/delete'><i class="fa fa-trash"></i></a>

@@ -14,6 +14,11 @@
 
     <h2>{{ $heading }}</h2>
 
+	<p>
+		<a href="/admin/users{{ Request::is('*/active') ? '' : '/active' }}">
+		<input type="checkbox" {{Request::is('*/active') ? 'checked' : ''}}>
+		Show only active users</a>
+	</p>
 
 	<table class="table table-striped table-bordered 
 				@if(count($users)>15)
@@ -43,12 +48,14 @@
 					@endforeach</td>
 				<td>{{ $user->created_at }}</td>
 				<td>
-					<!-- <a class="btn btn-secondary btn-sm" title="Show Tasks" href='tasks/user/{{$user->id}}'><i class="fa fa-filter"></i></a> -->
 					@if( Auth::user()->isAdmin() || (Auth::user()->isEditor() && $user->id > 1) )
 						<a class="btn btn-primary-outline btn-sm" title="Edit" href='/admin/users/{{$user->id}}/edit'  ><i class="fa fa-pencil"></i></a>
 						@if( Auth::user()->isAdmin() && $user->id > 1 )
 							<a class="btn btn-danger  btn-sm" 	   title="Delete!" href='/admin/users/{{$user->id}}/delete'><i class="fa fa-trash" ></i></a>
 						@endif
+					@endif
+					@if( $user->hasRole('teacher') || $user->hasRole('leader') )
+						<a class="btn btn-secondary btn-sm" title="Show Upcoming Plans" href='/cspot/plans/by_user/{{$user->id}}'><i class="fa fa-filter"></i></a>
 					@endif
 				</td>
 			</tr>

@@ -112,9 +112,20 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        // $output = User::find($id);
+        // show only active users
+        // TODO: this currently produces duplicates...
+        if ($id=='active')
+        {
+            $user1 = Role::find(4)->users()->get();
+            $users = Role::find(5)->users()->get();
+            foreach ($user1 as $value) {
+                $users->prepend($value);
+            }
+            $heading = 'Show Active Users';
+            return view( $this->view_all, array('users' => $users, 'heading' => $heading) );
+        }
 
-        $message = 'Sorry, show user not yet implemented.';
+        $message = 'Sorry, show single user not (yet) implemented.';
         return redirect()->back()->with(['message' => $message]);
     }
 

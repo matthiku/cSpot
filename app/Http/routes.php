@@ -35,15 +35,24 @@ Route::group(['middleware' => 'web'], function () {
 
 
 
-// Routes for the core application
+/*
+|--------------------------------------------------------------------------
+|    Routes for the core application
+|--------------------------------------------------------------------------
+*/
 Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() {
 
     // show only upcoming service plans
     Route::get('plans/future', ['as'=>'future', 'uses'=>'Cspot\PlanController@future']);
-    // CRUD resources for plans
+    // basic CRUD resources for plans
     Route::resource('plans', 'Cspot\PlanController');
+    // allow DELETE via the GET method
     Route::get('plans/{plans}/delete', 'Cspot\PlanController@destroy');    
+    // show filtered resources (only future by default!)
+    Route::get('plans/by_user/{user_id}/{all?}', 'Cspot\PlanController@by_user');    
+    Route::get('plans/by_type/{type_id}/{all?}', 'Cspot\PlanController@by_type');    
 
+    // basic songs processing
     Route::resource('songs', 'Cspot\SongController');
 
 });
@@ -51,7 +60,11 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
 
 
 
-// Routes for users with special rights
+/*
+|--------------------------------------------------------------------------
+| Routes for users with special rights
+|--------------------------------------------------------------------------
+*/
 Route::group(['prefix' => 'admin', 'middleware' => ['web']], function() {
 
     // admin only: CRUD for users

@@ -17,6 +17,18 @@
 
     <h2>{{ $heading }}</h2>
 
+	@if( Request::is('*/by_user/*') || Request::is('*/by_type/*') )
+		<p>
+			@if( Request::is('*/all') )
+				<a href="{{ url('/').'/'.Request::segment(1).'/'.Request::segment(2).'/'.Request::segment(3).'/'.Request::segment(4) }}">
+			@else
+				<a href="{{ Request::url() }}/all">
+			@endif
+			<input type="checkbox" {{Request::is('*/all') ? '' : 'checked'}}>
+			show only upcoming service plans</a>
+		</p>
+	@endif
+
 
 	@if (count($plans))
 		Total: {{ count($plans) }} Services
@@ -34,7 +46,7 @@
 					<th>Leader</th>
 					<th>Teacher</th>
 					<th>State</th>
-					<th>Updated at</th>
+					<th class="text-right">Updated at</th>
 					<th>by</th>
 					<th>Action</th>
 				</tr>
@@ -48,7 +60,7 @@
 					<td>{{ $plan->leader->first_name }}</td>
 					<td>{{ $plan->teacher->first_name }}</td>
 					<td>{{ $plan->state }}</td>
-					<td>{{ $plan->updated_at->formatLocalized('%d-%m-%Y %H:%M') }}</td>
+					<td class="text-right">{{ $plan->updated_at->formatLocalized('%d-%m-%Y %H:%M') }}</td>
 					<td>{{ ucfirst($plan->changer) }}</td>
 					<td>
 						<!-- <a class="btn btn-secondary btn-sm" title="Show Items" href='/cspot/items/{{$plan->id}}'><i class="fa fa-filter"></i></a> -->

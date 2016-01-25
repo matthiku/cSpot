@@ -22,14 +22,13 @@ class CreateRoles extends Migration
             $table->text('name');
             $table->timestamps();
         });
-        // insert default roles 1=admin, 2=editor, 3=author!
+        // insert access rights roles 1=admin, 2=editor, 3=author!
         DB::table('roles')->insert(['name'=>'administrator']);
         DB::table('roles')->insert(['name'=>'editor']);
         DB::table('roles')->insert(['name'=>'author']);
-        // insert some optional roles
+        // insert real life roles
         DB::table('roles')->insert(['name'=>'teacher']);
         DB::table('roles')->insert(['name'=>'leader']);
-        DB::table('roles')->insert(['name'=>'user']);
         DB::table('roles')->insert(['name'=>'retired']);
     }
 
