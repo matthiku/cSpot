@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Plan extends Model
 {
-    //
+    // mass assignment protection
 	protected $fillable = [
 		'date',
 		'leader_id',
@@ -42,6 +42,12 @@ class Plan extends Model
 	{
 		return $this->belongsTo('App\Models\Type');
 	}
+
+
+    public function items()
+    {
+        return $this->hasMany('App\Models\Item');
+    }
 
 
 }

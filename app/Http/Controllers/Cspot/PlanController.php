@@ -9,6 +9,7 @@ use App\Http\Requests\StorePlanRequest;
 use App\Http\Controllers\Controller;
 
 use App\Models\Plan;
+use App\Models\Item;
 use App\Models\Type;
 use App\Models\User;
 
@@ -34,7 +35,8 @@ class PlanController extends Controller
      * Authentication
      */
     public function __construct() {
-        $this->middleware('role:editor', ['except' => ['index', 'show', 'future']]);
+        $this->middleware('role:author', ['except' => ['index', 'show', 'future', 'edit', 'update', 'show']]);
+        $this->middleware('role:editor', ['only' => ['destroy', 'create']]);
     }
 
 
@@ -165,6 +167,7 @@ class PlanController extends Controller
         return view( $this->view_one, array('types' => $types, 'users' => $users) );
     }
 
+
     /**
      * Store a newly created resource in storage.
      *
@@ -217,7 +220,7 @@ class PlanController extends Controller
     public function edit($id)
     {
         // find a single resource by ID
-        $output = Plan::find($id);
+        $output = Plan::with('items')->find($id);
         if ($output) {
             // get list of service types
             $types = Type::get();
@@ -252,6 +255,27 @@ class PlanController extends Controller
                         ->with(['status' => $message]);
     }
 
+    public function addNote(Request $request, $id)
+    {
+        // update this Plan
+        $plan = Plan::find($id);
+
+        $changer = Auth::user()->first_name;
+        $note = $plan->info . '\nNote from '. $changer.'\n' . $request->input('info');
+
+        $plan->info = $note;
+        $plan->save();
+        //$plan->update();
+
+        $message = 'Plan with id "' . $id . '" updated';
+        return \Redirect::route($this->view_idx)
+                        ->with(['status' => $message]);
+    }
+
+
+
+
+
     /**
      * Remove the specified resource from storage.
      *
@@ -274,4 +298,6 @@ class PlanController extends Controller
         return \Redirect::route($this->view_idx)
                         ->with(['status' => $message]);
     }
+
+
 }

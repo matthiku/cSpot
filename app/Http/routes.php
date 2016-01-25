@@ -51,6 +51,8 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     // show filtered resources (only future by default!)
     Route::get('plans/by_user/{user_id}/{all?}', 'Cspot\PlanController@by_user');    
     Route::get('plans/by_type/{type_id}/{all?}', 'Cspot\PlanController@by_type');    
+    // update (append) the note for a plan
+    Route::put('plans/{plans}/addNote', ['as'=>'addNote', 'uses'=>'Cspot\PlanController@addNote']);    
 
     // basic songs processing
     Route::resource('songs', 'Cspot\SongController');
