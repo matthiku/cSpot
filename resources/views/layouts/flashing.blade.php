@@ -1,9 +1,19 @@
 @if (session()->has('message'))
-    <div class="alert alert-info">{{ session('message') }}</div>
+    <div class="alert alert-info alert-dismissable fade in" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        {{ session('message') }}
+    </div>
 @endif
 
 @if (session()->has('error'))
-    <div class="alert alert-warning">{{ session('error') }}</div>
+    <div class="alert alert-warning alert-dismissable fade in" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        {{ session('error') }}
+    </div>
 @endif
 
 

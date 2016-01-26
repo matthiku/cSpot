@@ -11,9 +11,9 @@
 
 @section('content')
 
-	@include('layouts.sidebar')
 
 	@include('layouts.flashing')
+	
 
     <h2>{{ $heading }}</h2>
 

@@ -54,6 +54,7 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     // update (append) the note for a plan
     Route::put('plans/{plans}/addNote', ['as'=>'addNote', 'uses'=>'Cspot\PlanController@addNote']);
 
+    Route::get('items/create/{plan_id}', 'Cspot\ItemController@create');    
     Route::resource('items', 'Cspot\ItemController');
     Route::get('items/{items}/delete', 'Cspot\ItemController@destroy');    
 

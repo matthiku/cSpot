@@ -11,10 +11,10 @@
 			<th>Song No.</th>
 			<th>Title</th>
 			<th>Comment</th>
-			<th>Version</th>
-			<th>Key</th>
-			@if( Auth::user()->isEditor() || Auth::user()->id==$plan->user_id )
-			<th>Action</th>
+			<th class="hidden-md-down">Version</th>
+			<th class="hidden-md-down">Key</th>
+			@if( Auth::user()->isEditor() || Auth::user()->id==$plan->leader_id || Auth::user()->id==$plan->teacher_id )
+				<th>Action</th>
 			@endif
 		</tr>
 	</thead>
@@ -26,9 +26,9 @@
 			<td>{{ ($item->song_id) ? $item->song->number : '' }}</td>
 			<td>{{ ($item->song_id) ? $item->song->title : '' }}</td>
 			<td>{{ $item->comment }}</td>
-			<td>{{ $item->version }}</td>
-			<td>{{ $item->key }}</td>
-			@if( Auth::user()->isEditor() || Auth::user()->id==$plan->user_id )
+			<td class="hidden-md-down">{{ $item->version }}</td>
+			<td class="hidden-md-down">{{ $item->key }}</td>
+			@if( Auth::user()->isEditor() || Auth::user()->id==$plan->leader_id || Auth::user()->id==$plan->teacher_id )
 			<td>
 				<a class="btn btn-secondary btn-sm" title="Insert Item before" href='/cspot/items/{{$item->id}}'><i class="fa fa-plus"></i></a>
 				<a class="btn btn-primary-outline btn-sm" title="Edit" href='/cspot/items/{{$item->id}}/edit'><i class="fa fa-pencil"></i></a>
@@ -40,8 +40,10 @@
 	</tbody>
 </table>
 
-@if( Auth::user()->isEditor() || Auth::user()->id==$plan->user_id )
-<a class="btn btn-primary-outline" href='/cspot/items/create'>
-	<i class="fa fa-plus"> </i> &nbsp; Append new item
-</a>
+@if( Auth::user()->isEditor() || Auth::user()->id==$plan->leader_id || Auth::user()->id==$plan->teacher_id )
+	<a class="btn btn-primary-outline" href='/cspot/items/create/{{$plan->id}}'>
+		<i class="fa fa-plus"> </i> &nbsp; Append new item
+	</a>
 @endif
+
+<hr>

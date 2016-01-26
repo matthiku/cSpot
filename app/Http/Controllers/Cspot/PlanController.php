@@ -234,7 +234,9 @@ class PlanController extends Controller
     public function edit($id)
     {
         // find a single resource by ID
-        $output = Plan::with('items')->find($id);
+        $output = Plan::with([
+                'items' => function ($query) { $query->orderBy('seq_no'); }])
+            ->find($id);
         if ($output) {
             // get list of service types
             $types = Type::get();

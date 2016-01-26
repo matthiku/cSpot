@@ -36,9 +36,12 @@
                 Service Plans <span class="caret"></span>
             </a>
             <div class="dropdown-menu" role="menu">
-              <a class="nav-link" href="/cspot/plans/future">Upcoming Plans</a>
-              <a class="nav-link" href="/cspot/plans">My Service Plans/a>
-              <a class="nav-link" href="/admin/types">Service Types/a>
+              <a class="dropdown-item" href="/cspot/plans/future">Upcoming Plans</a>
+              <a class="dropdown-item" href="/cspot/plans">My Service Plans</a>
+              @if( Auth::user()->isEditor() )
+                <a class="dropdown-item" href="/cspot/plans/create">Add New Plan</a>
+              @endif
+              <a class="dropdown-item" href="/admin/types">Service Types</a>
             </div>
         </li>
         <li class="nav-item {{ Request::is('cspot/songs*') ? 'active' : '' }}">
@@ -53,10 +56,20 @@
               <li class="nav-item"><a class="nav-link" href="{{ url('/login') }}">Sign in</a></li>
               <li class="nav-item"><a class="nav-link" href="{{ url('/register') }}">Register</a></li>
           @else
-              <li class="nav-item"><a class="nav-link {{ Request::is('admin/*') ? 'active' : '' }}" 
-                   href="/admin/users">{{ Auth::user()->isAuthor() ? 'Admin' : ' ' }}</a></li>
               <li class="nav-item dropdown">
-                  <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                  <a href="#" class="nav-link dropdown-toggle{{ Request::is('admin/*') ? ' active' : '' }}" 
+                     data-toggle="dropdown" role="button" aria-expanded="false">
+                      Admin <span class="caret"></span>
+                  </a>
+                  <div class="dropdown-menu" role="menu">
+                    <a class="dropdown-item" href="/admin/default_items">Default Items</a>
+                    <a class="dropdown-item" href="/admin/users">User List</a>
+                    <a class="dropdown-item" href="/admin/roles">User Roles</a>
+                  </div>
+              </li>
+              <li class="nav-item dropdown">
+                  <a href="#" class="nav-link dropdown-toggle" 
+                     data-toggle="dropdown" role="button" aria-expanded="false">
                       Welcome, {{ Auth::user()->getFullName() }} <span class="caret"></span>
                   </a>
 
@@ -92,11 +105,11 @@
 
 
 
-    <div class="container-fluid">
+    <div class="container-fluid app-content">
 
             @yield('content')
 
-    </div><!-- container -->
+    </div><!-- container fluid -->
 
 
 
