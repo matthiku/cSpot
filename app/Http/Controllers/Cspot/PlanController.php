@@ -12,6 +12,7 @@ use App\Models\Plan;
 use App\Models\Item;
 use App\Models\Type;
 use App\Models\User;
+use App\Models\DefaultItem;
 
 use Carbon\Carbon;
 use Auth;
@@ -177,12 +178,25 @@ class PlanController extends Controller
     public function store(StorePlanRequest $request)
     {
         // create new record
-        $plan = Plan::create($request->all());
+        $plan = Plan::create( $request->all() );
+
+        // set some defaults
         $plan->changer = Auth::user()->first_name;
         $plan->state = 1;
         $plan->save();
-        $status = 'New Plan added.';
-        return \Redirect::route($this->view_idx)
+
+        // insert default items if requested
+        if ($request->input('defaultItems')=='Y') {
+            $dItems = DefaultItem::where('type_id', $plan->type_id)->get();
+            $newItems = [];
+            foreach ($dItems as $dItem) {
+                array_push( $newItems, new Item(['seq_no'=>$dItem->seq_no, 'comment'=>$dItem->text]) );
+            }
+            $plan->items()->saveMany($newItems);
+        }
+
+        $status = 'New Plan added with id '.$plan->id;
+        return \Redirect::route('cspot.plans.edit', $plan->id)
                         ->with(['status' => $status]);
     }
 

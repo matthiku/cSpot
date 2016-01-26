@@ -45,7 +45,7 @@
 					<th>Service Type</th>
 					<th>Leader</th>
 					<th>Teacher</th>
-					<th>State</th>
+					<th<!-- > -->State</th>
 					<th class="text-right">Last updated on</th>
 					<th>by</th>
 					<th>Action</th>
@@ -59,14 +59,14 @@
 					<td>{{ $plan->type->name }}</td>
 					<td>{{ $plan->leader->first_name }}</td>
 					<td>{{ $plan->teacher->first_name }}</td>
-					<td>{{ $plan->state }}</td>
+					<!-- <td>{{ $plan->state }}</td> -->
 					<td class="text-right">{{ $plan->updated_at->formatLocalized('%d-%m-%Y %H:%M') }}</td>
 					<td>{{ ucfirst($plan->changer) }}</td>
 					<td>
 						<!-- <a class="btn btn-secondary btn-sm" title="Show Items" href='/cspot/items/{{$plan->id}}'><i class="fa fa-filter"></i></a> -->
-						@if( Auth::user()->isEditor() || Auth::user()->id == $plan->leader_id )
+						<!-- if( Auth::user()->isEditor() || Auth::user()->id == $plan->leader_id ) -->
 							<a class="btn btn-primary-outline btn-sm" title="Edit" href='/cspot/plans/{{$plan->id}}/edit'><i class="fa fa-pencil"></i></a>
-						@endif
+						<!-- endif -->
 						@if( Auth::user()->isEditor() )
 							<a class="btn btn-danger btn-sm" title="Delete!" href='/cspot/plans/{{$plan->id}}/delete'><i class="fa fa-trash"></i></a>
 						@endif

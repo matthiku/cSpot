@@ -7,8 +7,22 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+
 class ItemController extends Controller
 {
+
+
+
+    /**
+     * Authentication
+     */
+    public function __construct() {
+        $this->middleware('role:author', ['except' => ['index', 'show']]);
+    }
+
+
+
+
     /**
      * Display a listing of the resource.
      *
@@ -17,6 +31,8 @@ class ItemController extends Controller
     public function index()
     {
         //
+        $message = 'Sorry, this is not (yet) implemented.';
+        return redirect()->back()->with(['message' => $message]);
     }
 
     /**
@@ -26,7 +42,9 @@ class ItemController extends Controller
      */
     public function create()
     {
-        //
+        // 
+        $message = 'Sorry, this is not (yet) implemented.';
+        return redirect()->back()->with(['message' => $message]);
     }
 
     /**
@@ -49,6 +67,8 @@ class ItemController extends Controller
     public function show($id)
     {
         //
+        $message = 'Sorry, this is not (yet) implemented.';
+        return redirect()->back()->with(['message' => $message]);
     }
 
     /**
@@ -60,6 +80,8 @@ class ItemController extends Controller
     public function edit($id)
     {
         //
+        $message = 'Sorry, this is not (yet) implemented.';
+        return redirect()->back()->with(['message' => $message]);
     }
 
     /**

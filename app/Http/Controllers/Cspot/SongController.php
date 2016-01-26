@@ -90,10 +90,10 @@ class SongController extends Controller
      */
     public function show($id)
     {
-        // get all -- USERS -- with this specific song id
+        // get all -- PLANS -- with this specific song id
         $song    = Song::find($id);
-        $heading = 'Show '.$song->name;
-        return view( 'cspot.song_full', array('song' => $song, 'heading' => $heading) );
+        $heading = 'Show Plans using the Song '.$song->name;
+        return view( 'cspot.plans.index', array('plans' => $song->plans, 'heading' => $heading) );
     }
 
 

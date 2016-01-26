@@ -13,7 +13,9 @@
 			<th>Comment</th>
 			<th>Version</th>
 			<th>Key</th>
+			@if( Auth::user()->isEditor() || Auth::user()->id==$plan->user_id )
 			<th>Action</th>
+			@endif
 		</tr>
 	</thead>
 	<tbody>
@@ -26,14 +28,20 @@
 			<td>{{ $item->comment }}</td>
 			<td>{{ $item->version }}</td>
 			<td>{{ $item->key }}</td>
+			@if( Auth::user()->isEditor() || Auth::user()->id==$plan->user_id )
 			<td>
-				<!-- <a class="btn btn-secondary btn-sm" title="Show Users" href='/cspot/items/{{$item->id}}'><i class="fa fa-filter"></i></a> -->
-				 @if( Auth::user()->isEditor() || Auth::user()->id==$plan->user_id )
-					<a class="btn btn-primary-outline btn-sm" title="Edit" href='/cspot/items/{{$item->id}}/edit'><i class="fa fa-pencil"></i></a>
-					<a class="btn btn-danger btn-sm" title="Delete!" href='/cspot/items/{{$item->id}}/delete'><i class="fa fa-trash"></i></a>
-				@endif
+				<a class="btn btn-secondary btn-sm" title="Insert Item before" href='/cspot/items/{{$item->id}}'><i class="fa fa-plus"></i></a>
+				<a class="btn btn-primary-outline btn-sm" title="Edit" href='/cspot/items/{{$item->id}}/edit'><i class="fa fa-pencil"></i></a>
+				<a class="btn btn-danger btn-sm" title="Delete!" href='/cspot/items/{{$item->id}}/delete'><i class="fa fa-trash"></i></a>
 			</td>
+			@endif
 		</tr>
     @endforeach
 	</tbody>
 </table>
+
+@if( Auth::user()->isEditor() || Auth::user()->id==$plan->user_id )
+<a class="btn btn-primary-outline" href='/cspot/items/create'>
+	<i class="fa fa-plus"> </i> &nbsp; Append new item
+</a>
+@endif

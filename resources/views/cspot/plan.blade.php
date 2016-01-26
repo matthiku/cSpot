@@ -133,9 +133,27 @@
                 </div>
             </div>
 
+
+
             @if (isset($plan))
+
+                <!-- Show items for existing plan -->
                 @include('cspot.items')
+
+            @else
+
+                <!-- Checkbox to add default items into NEW plan -->
+                <input type="hidden" name="defaultItems" value="false">
+                <div class="checkbox">
+                  <label>
+                    <input checked="checked" type="checkbox" value="Y" name="defaultItems">
+                    Insert default items for this plan?
+                  </label>
+                </div>                
+        
             @endif
+
+
 
             <div class="row form-group full-width">
                 @if (Auth::user()->isEditor())
@@ -158,8 +176,10 @@
 
             @if (Auth::user()->isEditor())            
                 {!! Form::submit('Save changes'); !!}
+                <script type="text/javascript">document.forms.inputForm.date.focus()</script>
             @else
                 {!! Form::submit('Save Note'); !!}
+                <script type="text/javascript">document.forms.inputForm.info.focus()</script>
             @endif
 
             @if (Auth::user()->isAdmin())
@@ -170,13 +190,11 @@
 
         @else
             {!! Form::submit('Submit'); !!}
+            <script type="text/javascript">document.forms.inputForm.date.focus()</script>
         @endif
         <a href="/cspot/plans/future">{!! Form::button('Cancel'); !!}</a>
 
     {!! Form::close() !!}
-
-
-    <script type="text/javascript">document.forms.inputForm.date.focus()</script>
 
     
 @stop

@@ -59,9 +59,9 @@
 	@endif
 
 	@if( Auth::user()->isEditor() )
-	<a class="btn btn-primary-outline" href='/admin/roles/create'>
-		<i class="fa fa-plus"> </i> &nbsp; Add a new role
-	</a>
+		<a class="btn btn-primary-outline" href='/admin/roles/create'>
+			<i class="fa fa-plus"> </i> &nbsp; Add a new role
+		</a>
 	@endif
 
 	

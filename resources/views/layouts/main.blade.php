@@ -31,8 +31,15 @@
           <a class="nav-link" href="/home">Home <span class="sr-only">(current)</span></a>
         </li>
         @if (Auth::user())
-        <li class="nav-item {{ Request::is('cpsot/plans*') ? 'active' : '' }}">
-          <a class="nav-link" href="/cspot/plans/future">Services</a>
+        <li class="nav-item dropdown {{ Request::is('cspot/plans*') ? 'active' : '' }}">
+            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                Service Plans <span class="caret"></span>
+            </a>
+            <div class="dropdown-menu" role="menu">
+              <a class="nav-link" href="/cspot/plans/future">Upcoming Plans</a>
+              <a class="nav-link" href="/cspot/plans">My Service Plans/a>
+              <a class="nav-link" href="/admin/types">Service Types/a>
+            </div>
         </li>
         <li class="nav-item {{ Request::is('cspot/songs*') ? 'active' : '' }}">
           <a class="nav-link" href="/cspot/songs">Songs</a>
@@ -50,10 +57,11 @@
                    href="/admin/users">{{ Auth::user()->isAuthor() ? 'Admin' : ' ' }}</a></li>
               <li class="nav-item dropdown">
                   <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                      {{ Auth::user()->getFullName() }} <span class="caret"></span>
+                      Welcome, {{ Auth::user()->getFullName() }} <span class="caret"></span>
                   </a>
 
                   <div class="dropdown-menu" role="menu">
+                      <a class="dropdown-item" href="{{ url('/profile') }}"><i class="fa fa-btn fa-user"></i> Profile</a>
                       <a class="dropdown-item" href="{{ url('/logout') }}"><i class="fa fa-btn fa-sign-out"></i> Logout</a>
                   </div>
               </li>
