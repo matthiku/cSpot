@@ -117,6 +117,36 @@ class ItemController extends Controller
         return view( 'cspot.item', ['songs' => $songs, 'plan_id' => $plan_id, 'seq_no' => $seq_no, 'item' => $item] );
     }
 
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function editSong($id)
+    {
+        //
+        flash('Sorry, this is not (yet) implemented.');
+        return redirect()->back();
+    }
+
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function createSong($id)
+    {
+        //
+        flash('Sorry, this is not (yet) implemented.');
+        return redirect()->back();
+    }
+
+
+
     /**
      * Update the specified resource in storage.
      *

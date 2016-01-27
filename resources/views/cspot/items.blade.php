@@ -7,8 +7,8 @@
 	<thead class="thead-default">
 		<tr>
 			<th>#</th>
-			<th class="hidden-md-down">Song ID</th>
 			<th>Song No.</th>
+			<th>Book Ref.</th>
 			<th>Title</th>
 			<th>Comment</th>
 			<th class="hidden-md-down">Version</th>
@@ -20,17 +20,22 @@
 	</thead>
 	<tbody>
     @foreach( $plan->items as $item )
-		<tr>
-			<th scope="row">{{ $item->seq_no }}</th>
-			<td class="hidden-md-down">{{ ($item->song_id) ? $item->song_id : '' }}</td>
-			<td>{{ ($item->song_id) ? $item->song->number : '' }}</td>
-			<td>{{ ($item->song_id) ? $item->song->title : '' }}</td>
+		<tr class="link" onclick="location.href ='/cspot/plans/{{$plan->id}}/items/{{$item->id}}/edit'">
+			<td scope="row">{{ $item->seq_no }}</td>
+			<td>{{ ($item->song_id) ? $item->song->song_no : '' }}</td>
+			<td>{{ ($item->song_id) ? $item->song->book_ref : '' }}</td>
+			<td>
+				@if($item->song_id) 
+					{{ $item->song->title }} 
+					{{ $item->song->title_2 ? ' ('. $item->song->title_2 .')' : '' }}
+				@endif
+			</td>
 			<td>{{ $item->comment }}</td>
 			<td class="hidden-md-down">{{ $item->version }}</td>
 			<td class="hidden-md-down">{{ $item->key }}</td>
 			@if( Auth::user()->isEditor() || Auth::user()->id==$plan->leader_id || Auth::user()->id==$plan->teacher_id )
 			<td>
-				<a class="btn btn-secondary btn-sm" title="Insert earlier item" href='/cspot/items/create/{{$plan->id}}/{{$item->seq_no-0.1}}'><i class="fa fa-plus"></i></a>
+				<a class="btn btn-secondary btn-sm" title="Insert earlier item" href='/cspot/items/create/{{$plan->id}}/{{$item->seq_no-0.1}}'><i class="fa fa-reply"></i></a>
 				<a class="btn btn-primary-outline btn-sm" title="Edit" href='/cspot/plans/{{$plan->id}}/items/{{$item->id}}/edit/'><i class="fa fa-pencil"></i></a>
 				<a class="btn btn-danger btn-sm" title="Delete!" href='/cspot/items/{{$item->id}}/delete'><i class="fa fa-trash"></i></a>
 			</td>

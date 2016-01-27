@@ -39,8 +39,8 @@
 		</thead>
 		<tbody>
         @foreach( $users as $user )
-			<tr>
-				<th scope="row">{{ $user->id }}</th>
+				<tr class="link" onclick="location.href ='/admin/users/{{$user->id}}/edit'">
+				<td scope="row">{{ $user->id }}</td>
 				<td>{{ $user->first_name }}</td>
 				<td>{{ $user->last_name }}</td>
 				@if ( Auth::user()->isEditor() )

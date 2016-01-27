@@ -53,11 +53,17 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     Route::get('plans/by_type/{type_id}/{all?}', 'Cspot\PlanController@by_type');    
     // update (append) the note for a plan
     Route::put('plans/{plans}/addNote', ['as'=>'addNote', 'uses'=>'Cspot\PlanController@addNote']);
+    
+
+    // route to show form to update a new item for a plan
+    Route::get('plans/{plan_id}/items/{item_id}/edit', 'Cspot\ItemController@edit');    
+    // route to show form to edit song on an item
+    Route::get('plans/{plan_id}/items/{item_id}/song/edit', 'Cspot\ItemController@editSong');    
+    // route to show form to ADD a song as an item
+    Route::get('plans/{plan_id}/items/{seq_no}/song', 'Cspot\ItemController@createSong');    
 
     // route to show form to create a new item for a plan
     Route::get('items/create/{plan_id}/{seq_no}', 'Cspot\ItemController@create');    
-    // route to show form to update a new item for a plan
-    Route::get('plans/{plan_id}/items/{item_id}/edit', 'Cspot\ItemController@edit');    
     // generic item resource routes
     Route::resource('items', 'Cspot\ItemController');
     // specific delete route using 'get' method

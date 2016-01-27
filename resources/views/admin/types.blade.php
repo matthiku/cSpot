@@ -33,8 +33,8 @@
 			</thead>
 			<tbody>
 	        @foreach( $types as $type )
-				<tr>
-					<th scope="row">{{ $type->id }}</th>
+				<tr class="link" onclick="location.href ='/admin/types/{{$type->id}}/edit'">
+					<td scope="row">{{ $type->id }}</td>
 					<td>{{ $type->name }}</td>
 					<td onclick="location.href='/admin/types/{{$type->id}}'" class="link" title="Show all Plans of this type of Service">
 						{{ $type->plans->count() }}</td>

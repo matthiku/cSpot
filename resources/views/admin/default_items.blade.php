@@ -32,8 +32,8 @@
 			</thead>
 			<tbody>
 	        @foreach( $default_items as $default_item )
-				<tr>
-					<th scope="row">{{ $default_item->id }}</th>
+				<tr class="link" onclick="location.href ='/admin/default_items/{{$default_item->id}}/edit'">
+					<td scope="row">{{ $default_item->id }}</td>
 					<td>{{ $default_item->type_id.' ('.$default_item->type->name.')'  }}</td>
 					<td>{{ $default_item->seq_no }}</td>
 					<td>{{ $default_item->text }}</td>

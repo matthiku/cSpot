@@ -21,7 +21,7 @@ class CreateItemsTable extends Migration
             $table->integer('song_id')->unsigned()->nullable();
             $table->foreign('song_id')->references('id')->on('songs')->onDelete('no action');
             // `seq_no`, `comment`, `version`, `key
-            $table->decimal('seq_no',2,1);
+            $table->decimal('seq_no',3,1);
             $table->string('comment');
             $table->enum('version', ['ESV', 'NIV', 'NKJV', 'NASB', 'MSG', 'NLT', 'AMP', 'KJV', 'CEV']);
             $table->string('key');

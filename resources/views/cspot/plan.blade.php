@@ -187,7 +187,7 @@
         {!! Form::submit('Submit'); !!}
         <script type="text/javascript">document.forms.inputForm.date.focus()</script>
     @endif
-    <a href="#" onclick="history.go(-1)">{!! Form::button('Cancel'); !!}</a>
+    <a href="#" onclick="history.go(-1)">{!! Form::button('Back'); !!}</a>
 
     {!! Form::close() !!}
 

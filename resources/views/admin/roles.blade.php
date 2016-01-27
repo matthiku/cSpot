@@ -31,8 +31,8 @@
 			</thead>
 			<tbody>
 	        @foreach( $roles as $role )
-				<tr>
-					<th scope="row">{{ $role->id }}</th>
+				<tr class="link" onclick="location.href ='/admin/roles/{{$role->id}}/edit'">
+					<td scope="row">{{ $role->id }}</td>
 					<td>{{ ucfirst($role->name) }}</td>
 					<td onclick="location.href='/admin/roles/{{$role->id}}'" class="link" title="Show users with that role">
 						{{ $role->users->count() }}</td>

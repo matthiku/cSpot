@@ -53,8 +53,8 @@
 			</thead>
 			<tbody>
 	        @foreach( $plans as $plan )
-				<tr>
-					<th scope="row">{{ $plan->id }}</th>
+				<tr class="link" onclick="location.href ='/cspot/plans/{{$plan->id}}/edit'">
+					<td scope="row">{{ $plan->id }}</td>
 					<td>{{ $plan->date->formatLocalized('%A, %d %B %Y') }}</td>
 					<td>{{ $plan->type->name }}</td>
 					<td>{{ $plan->leader->first_name }}</td>

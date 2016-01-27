@@ -36,12 +36,12 @@
                 Service Plans <span class="caret"></span>
             </a>
             <div class="dropdown-menu" role="menu">
-              <a class="dropdown-item" href="/cspot/plans/future">Upcoming Plans</a>
-              <a class="dropdown-item" href="/cspot/plans">My Service Plans</a>
+              <a class="dropdown-item" href="/cspot/plans/future"><i class="fa fa-btn fa-calendar"></i> Upcoming Plans</a>
+              <a class="dropdown-item" href="/cspot/plans"><i class="fa fa-btn fa-calendar-check-o"></i> My Service Plans</a>
               @if( Auth::user()->isEditor() )
-                <a class="dropdown-item" href="/cspot/plans/create">Add New Plan</a>
+                <a class="dropdown-item" href="/cspot/plans/create"><i class="fa fa-btn fa-calendar-plus-o"></i> Add New Plan</a>
               @endif
-              <a class="dropdown-item" href="/admin/types">Service Types</a>
+              <a class="dropdown-item" href="/admin/types"><i class="fa fa-btn fa-bars"></i> Service Types</a>
             </div>
         </li>
         <li class="nav-item {{ Request::is('cspot/songs*') ? 'active' : '' }}">
@@ -62,9 +62,9 @@
                       Admin <span class="caret"></span>
                   </a>
                   <div class="dropdown-menu" role="menu">
-                    <a class="dropdown-item" href="/admin/default_items">Default Items</a>
-                    <a class="dropdown-item" href="/admin/users">User List</a>
-                    <a class="dropdown-item" href="/admin/roles">User Roles</a>
+                    <a class="dropdown-item" href="/admin/default_items"><i class="fa fa-btn fa-file-o"></i> Default Items</a>
+                    <a class="dropdown-item" href="/admin/users"><i class="fa fa-btn fa-users"></i> User List</a>
+                    <a class="dropdown-item" href="/admin/roles"><i class="fa fa-btn fa-user-times"></i> User Roles</a>
                   </div>
               </li>
               <li class="nav-item dropdown">
