@@ -1,7 +1,7 @@
 
 @extends('layouts.main')
 
-@section('title', "Create or Update a Plan")
+@section('title', "Create or Update a Service Plan")
 
 @if (isset($plan))
     @section('plans', 'active')
@@ -41,7 +41,7 @@
 
 
 
-    <div class="row">
+    <div class="row center">
         <div class="col-lg-3 col-md-6">
             <div class="row form-group">
                 {!! Form::label('date', 'Date'); !!}<br/>

@@ -45,7 +45,7 @@
 					<th>Service Type</th>
 					<th>Leader</th>
 					<th>Teacher</th>
-					<th<!-- > -->State</th>
+					<!-- <th>State</th> -->
 					<th class="text-right">Last updated on</th>
 					<th>by</th>
 					<th>Action</th>

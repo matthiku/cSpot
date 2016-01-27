@@ -35,7 +35,7 @@ class ItemController extends Controller
     public function index()
     {
         //
-        $message = 'Sorry, this is not (yet) implemented.';
+        flash('Sorry, this is not (yet) implemented.');
         return redirect()->back()->with(['message' => $message]);
     }
 
@@ -47,40 +47,40 @@ class ItemController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create($plan_id)
+    public function create($plan_id, $seq_no)
     {
         // get the plan to which we want to add an item
-        $plan = Plan::with('items')->find($plan_id);
+        $plan = Plan::with('items')->find( $plan_id );
         // get songs table
-        $songs = Song::get();
-        return view( 'cspot.item', ['songs' => $songs, 'plan' => $plan] );
+        $songs = '';//Song::get();
+        return view( 'cspot.item', ['songs' => $songs, 'plan' => $plan, 'seq_no' => $seq_no] );
     }
 
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created ITEM in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(StoreItemRequest $request)
     {
+        // review numbering of current items for this plan and insert the new item
+        $plan = insertItem( $request );
+
+        flash('New Item added.');
+        // see if user ticked checkbox to add another item after this one
+        if ($request->moreItems == "Y") {
+            // get songs table
+            $songs = '';//Song::get();
+            // return back to same view
+            return view( 'cspot.item', ['songs' => $songs, 'plan' => $plan, 'seq_no' => $plan->new_seq_no+0.5]);
+        }
+        // get plan id from the hidden input field in the form
         $plan_id = $request->input('plan_id');
-        // create a new Item using the input data from the request
-        $newItem = new Item( $request->except($plan_id) );
-        // getting the Plan model
-        $plan = Plan::find($plan_id);
-        // saving the new Item via the relationship to the Plan
-        $plan->items->save($newItem);
-
-        $status = 'New Item added.';
-        return \Redirect::back()
-                        ->with(['status' => $status, 'plan' => $plan]);
+        // back to full plan view 
+        return \Redirect::route('cspot.plans.edit', $plan_id);
     }
-
-
-
-
 
 
 
@@ -93,9 +93,11 @@ class ItemController extends Controller
     public function show($id)
     {
         //
-        $message = 'Sorry, this is not (yet) implemented.';
-        return redirect()->back()->with(['message' => $message]);
+        flash('Sorry, this is not (yet) implemented.');
+        return redirect()->back();
     }
+
+
 
     /**
      * Show the form for editing the specified resource.
@@ -103,11 +105,16 @@ class ItemController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($plan_id, $id)
     {
-        //
-        $message = 'Sorry, this is not (yet) implemented.';
-        return redirect()->back()->with(['message' => $message]);
+        // get current item
+        $item = Item::find($id);
+        $seq_no = $item->seq_no;
+
+        // dummy songs for now
+        $songs = '';
+        // send the form
+        return view( 'cspot.item', ['songs' => $songs, 'plan_id' => $plan_id, 'seq_no' => $seq_no, 'item' => $item] );
     }
 
     /**
@@ -119,8 +126,18 @@ class ItemController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        // get current item
+        $item = Item::find($id);
+        $item->update($request->except('_token'));
+        $plan_id = $item->plan_id;
+        // back to full plan view 
+        return \Redirect::route('cspot.plans.edit', $plan_id);
     }
+
+
+
+
+
 
     /**
      * Remove the specified resource from storage.
@@ -130,6 +147,14 @@ class ItemController extends Controller
      */
     public function destroy($id)
     {
-        //
+        // get item and delete it
+        $item = deleteItem($id);
+        if ($item) {
+            // back to full plan view 
+            flash('Item deleted.');
+            return \Redirect::back();
+        }
+        flash('Error! Item with ID "' . $id . '" not found');
+        return \Redirect::back();
     }
 }

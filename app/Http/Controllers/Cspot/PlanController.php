@@ -195,9 +195,8 @@ class PlanController extends Controller
             $plan->items()->saveMany($newItems);
         }
 
-        $status = 'New Plan added with id '.$plan->id;
-        return \Redirect::route('cspot.plans.edit', $plan->id)
-                        ->with(['status' => $status]);
+        flash('New Plan added with id '.$plan->id);
+        return \Redirect::route('cspot.plans.edit', $plan->id);
     }
 
 
@@ -246,9 +245,8 @@ class PlanController extends Controller
             return view( $this->view_one, array('plan' => $output, 'types' => $types, 'users' => $users ) );
         }
         //
-        $message = 'Error! Plan with id "' . $id . '" not found';
-        return \Redirect::route($this->view_idx)
-                        ->with(['status' => $message]);
+        flash('Error! Plan with id "' . $id . '" not found');
+        return \Redirect::route($this->view_idx);
     }
 
     /**
@@ -266,9 +264,8 @@ class PlanController extends Controller
         $plan->save();
         $plan->update( $request->except(['_method','_token']) );
 
-        $message = 'Plan with id "' . $id . '" updated';
-        return \Redirect::route($this->view_idx)
-                        ->with(['status' => $message]);
+        flash('Plan with id "' . $id . '" updated');
+        return \Redirect::route($this->view_idx);
     }
 
     public function addNote(Request $request, $id)
@@ -283,9 +280,8 @@ class PlanController extends Controller
         $plan->save();
         //$plan->update();
 
-        $message = 'Plan with id "' . $id . '" updated';
-        return \Redirect::route($this->view_idx)
-                        ->with(['status' => $message]);
+        flash('Plan with id "' . $id . '" updated');
+        return \Redirect::route($this->view_idx);
     }
 
 
@@ -305,14 +301,12 @@ class PlanController extends Controller
         $output = Plan::find($id);
         if ($output) {
             $output->delete();
-            $message = 'Plan with id "' . $id . '" deleted.';
-            return \Redirect::route($this->view_idx)
-                            ->with(['status' => $message]);
+            flash('Plan with id "' . $id . '" deleted.');
+            return \Redirect::route($this->view_idx);
         }
         //
-        $message = 'Error! Plan with ID "' . $id . '" not found';
-        return \Redirect::route($this->view_idx)
-                        ->with(['status' => $message]);
+        flash('Error! Plan with ID "' . $id . '" not found');
+        return \Redirect::route($this->view_idx);
     }
 
 

@@ -8,7 +8,6 @@
 
 @section('content')
 
-	@include('layouts.sidebar')
 
 	@include('layouts.flashing')
 
@@ -30,7 +29,9 @@
 				<th>#</th>
 				<th>First Name</th>
 				<th>Last Name</th>
-				{{ Auth::user()->isEditor() ? '<th>Email</th>' : '' }}
+				@if ( Auth::user()->isEditor() )
+					<th>Email</th>
+				@endif
 				<th>Role(s)</th>
 				<th>Joined</th>
 				<th>Action</th>
@@ -42,7 +43,9 @@
 				<th scope="row">{{ $user->id }}</th>
 				<td>{{ $user->first_name }}</td>
 				<td>{{ $user->last_name }}</td>
-				{{ Auth::user()->isEditor() ? '<td>'.$user->email.'</td>' : '' }}
+				@if ( Auth::user()->isEditor() )
+					<td>{{ $user->email }}</td>
+				@endif
 				<td>@foreach ($user->roles as $role)
 						{{ ucfirst($role->name) }},
 					@endforeach</td>

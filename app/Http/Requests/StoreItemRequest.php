@@ -28,8 +28,24 @@ class StoreItemRequest extends Request
     {
         return [
             // validation rules
-            'song_id' => 'integer',
+            'song_id' => 'integer|required_without:comment',
             'seq_no'  => 'required|numeric|min:0.1',
+            'comment' => 'required_without:song_id',
         ];
     }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            'song_id.required_without' => 'You must select a song or enter a comment',
+            'comment.required_without' => 'You must enter a comment or select a song',
+        ];
+    }    
+
+
 }

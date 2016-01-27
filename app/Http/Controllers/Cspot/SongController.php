@@ -71,9 +71,8 @@ class SongController extends Controller
     {
         //
         Song::create($request->all());
-        $status = 'New Song added.';
-        return \Redirect::route($this->view_idx)
-                        ->with(['status' => $status]);
+        flash('New Song added.');
+        return \Redirect::route($this->view_idx);
     }
 
 
@@ -115,9 +114,8 @@ class SongController extends Controller
             return view( $this->view_one, array('song' => $output ) );
         }
         //
-        $message = 'Error! Song with id "' . $id . '" not found';
-        return \Redirect::route($this->view_idx)
-                        ->with(['status' => $message]);
+        flash('Error! Song with id "' . $id . '" not found');
+        return \Redirect::route($this->view_idx);
     }
 
     /**
@@ -133,9 +131,8 @@ class SongController extends Controller
         Song::where('id', $id)
                 ->update($request->except(['_method','_token']));
 
-        $message = 'Song with id "' . $id . '" updated';
-        return \Redirect::route($this->view_idx)
-                        ->with(['status' => $message]);
+        flash('Song with id "' . $id . '" updated');
+        return \Redirect::route($this->view_idx);
     }
 
     /**
@@ -151,13 +148,12 @@ class SongController extends Controller
         $output = Song::find($id);
         if ($output) {
             $output->delete();
-            $message = 'Song with id "' . $id . '" deleted.';
+            flash('Song with id "' . $id . '" deleted.');
             return \Redirect::route($this->view_idx)
                             ->with(['status' => $message]);
         }
         //
-        $message = 'Error! Song with ID "' . $id . '" not found';
-        return \Redirect::route($this->view_idx)
-                        ->with(['status' => $message]);
+        flash('Error! Song with ID "' . $id . '" not found');
+        return \Redirect::route($this->view_idx);
     }
 }

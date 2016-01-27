@@ -7,7 +7,6 @@
 
 @section('content')
 
-    @include('layouts.sidebar')
 
     @include('layouts.flashing')
 
