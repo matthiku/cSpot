@@ -36,7 +36,7 @@ class ItemController extends Controller
     {
         //
         flash('Sorry, this is not (yet) implemented.');
-        return redirect()->back()->with(['message' => $message]);
+        return redirect()->back();
     }
 
 
@@ -50,10 +50,8 @@ class ItemController extends Controller
     public function create($plan_id, $seq_no)
     {
         // get the plan to which we want to add an item
-        $plan = Plan::with('items')->find( $plan_id );
-        // get songs table
-        $songs = '';//Song::get();
-        return view( 'cspot.item', ['songs' => $songs, 'plan' => $plan, 'seq_no' => $seq_no] );
+        $plan = Plan::find( $plan_id );
+        return view( 'cspot.item', ['plan' => $plan, 'seq_no' => $seq_no] );
     }
 
 
@@ -65,20 +63,40 @@ class ItemController extends Controller
      */
     public function store(StoreItemRequest $request)
     {
+        // searching for a song?
+        if ($request->has('search')) {
+            $search = '%'.$request->search.'%';
+            $songs = Song::where('title', 'like', $search)->
+                         orWhere('title_2', 'like', $search)->
+                         orWhere('song_no', 'like', $search)->
+                         orWhere('book_ref', 'like', $search)->
+                         orWhere('author', 'like', $search)->
+                         get();
+            if (!count($songs)) {
+                flash('No songs found for '.$request->search);
+                return redirect()->back()->withInput();
+            }
+            if (count($songs)==1) {
+                $request->song_id = $songs[0]->id;
+            } else {
+                // as we found several songs, user must select one
+                $request->session()->flash('songs', $songs);
+                return redirect()->back();
+            }
+        }
+
         // review numbering of current items for this plan and insert the new item
         $plan = insertItem( $request );
 
-        flash('New Item added.');
-        // see if user ticked checkbox to add another item after this one
+        // see if user ticked the checkbox to add another item after this one
         if ($request->moreItems == "Y") {
-            // get songs table
-            $songs = '';//Song::get();
             // return back to same view
-            return view( 'cspot.item', ['songs' => $songs, 'plan' => $plan, 'seq_no' => $plan->new_seq_no+0.5]);
+            return view( 'cspot.item', ['plan' => $plan, 'seq_no' => $plan->new_seq_no+0.5]);
         }
+
+        // back to full plan view, but first,
         // get plan id from the hidden input field in the form
         $plan_id = $request->input('plan_id');
-        // back to full plan view 
         return \Redirect::route('cspot.plans.edit', $plan_id);
     }
 
@@ -93,14 +111,14 @@ class ItemController extends Controller
     public function show($id)
     {
         //
-        flash('Sorry, this is not (yet) implemented.');
+        flash('Sorry, this is not implemented.');
         return redirect()->back();
     }
 
 
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for editing an ITEM.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -111,51 +129,26 @@ class ItemController extends Controller
         $item = Item::find($id);
         $seq_no = $item->seq_no;
 
-        // dummy songs for now
-        $songs = '';
+        $songs = []; # send empty song array
         // send the form
-        return view( 'cspot.item', ['songs' => $songs, 'plan_id' => $plan_id, 'seq_no' => $seq_no, 'item' => $item] );
-    }
-
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function editSong($id)
-    {
-        //
-        flash('Sorry, this is not (yet) implemented.');
-        return redirect()->back();
-    }
-
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function createSong($id)
-    {
-        //
-        flash('Sorry, this is not (yet) implemented.');
-        return redirect()->back();
+        return view( 'cspot.item', ['songs' => $songs, 'seq_no' => $seq_no, 'item' => $item] );
     }
 
 
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified ITEM in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(StoreItemRequest $request, $id)
     {
+        if ($request->has('search')) {
+            flash('Sorry, SEARCH is not (yet) implemented. Please delete the item and create a new one.');
+            return redirect()->back();
+        }
         // get current item
         $item = Item::find($id);
         $item->update($request->except('_token'));

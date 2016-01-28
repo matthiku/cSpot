@@ -28,9 +28,8 @@ class StoreItemRequest extends Request
     {
         return [
             // validation rules
-            'song_id' => 'integer|required_without:comment',
-            'seq_no'  => 'required|numeric|min:0.1',
-            'comment' => 'required_without:song_id',
+            'comment' => 'required_without_all:search,song_id',
+            'search'  => 'required_without_all:comment,song_id|min:3',
         ];
     }
 
@@ -42,8 +41,8 @@ class StoreItemRequest extends Request
     public function messages()
     {
         return [
-            'song_id.required_without' => 'You must select a song or enter a comment',
-            'comment.required_without' => 'You must enter a comment or select a song',
+            'comment.required_without' => 'Enter a note or search for a song',
+            'search.required_without'  => 'Search for a song or just enter a note',
         ];
     }    
 

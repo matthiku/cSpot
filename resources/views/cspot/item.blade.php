@@ -11,18 +11,27 @@
 
     @include('layouts.flashing')
 
+    @if (isset($item))
+        {!! Form::model( $item, array(
+            'route'  => array('cspot.items.update', $item->id), 
+            'method' => 'put', 
+            'id'     => 'inputForm',
+            'class'  => 'form-horizontal'
+            )) !!}
+    @else
+        {!! Form::open(array('action' => 'Cspot\ItemController@store', 'id' => 'inputForm')) !!}
+    @endif
+
+    {!! Form::hidden('seq_no', $seq_no) !!}
+    {!! Form::hidden('plan_id', isset($plan) ? $plan->id : $item->plan_id ) !!}
+
+
     <div class="row">
         @if (isset($item))
             <div class="col-sm-6">
-                <h2>Update Item No {{$item->seq_no}}</h2>
+                <h2>Update Item No {{$seq_no}}</h2>
             </div>
             <div class="col-sm-6 text-xs-right">
-                {!! Form::model( $item, array(
-                    'route'  => array('cspot.items.update', $item->id), 
-                    'method' => 'put', 
-                    'id'     => 'inputForm',
-                    'class'  => 'form-horizontal'
-                    )) !!}
 
                 {!! Form::submit('Save changes'); !!}
 
@@ -31,16 +40,11 @@
                         <i class="fa fa-trash" > </i> &nbsp; Delete
                     </a>
                 @endif
-                <a href="/cspot/plans/{{isset($plan) ? $plan->id : $plan_id}}/edit">{!! Form::button('Cancel - Back to Plan'); !!}</a>
+                <a href="/cspot/plans/{{$item->plan_id}}/edit">{!! Form::button('Cancel - Back to Plan'); !!}</a>
         @else
             <div class="col-sm-6">
                 <h2>Add Item</h2>
                 <h5>to the Service plan (id {{ $plan->id }}) for {{ $plan->date->formatLocalized('%A, %d %B %Y') }}</h5>
-
-                {!! Form::open(array('action' => 'Cspot\ItemController@store', 'id' => 'inputForm')) !!}
-
-                {!! Form::hidden('plan_id', isset($plan) ? $plan->id : $plan_id ) !!}
-                {!! Form::hidden('seq_no', $seq_no) !!}
         @endif
             </div>
     </div>
@@ -80,7 +84,10 @@
             </div>
         </div>
 
-        @if (isset($item->song->id))
+        @if ( isset($item->song->id) && $item->song_id<>0 )
+
+            {!! Form::hidden('song_id', $item->song_id) !!}
+
             <div class  = "col-lg-3 col-md-6">
                 <br>
                 <div  class="row form-group link" 
@@ -100,8 +107,15 @@
                                         <i class="fa fa-youtube"></i> Play on Youtube</a></h5>
                 </div>
                 <div class="row form-group">
-                    <a class="btn btn-secondary" href="/cspot/plans/{{$item->plan_id}}/items/{{$item->id}}/song/edit">
-                                        <i class="fa fa-pencil"></i> Change Song</a>
+                    To search for another song,
+                    {!! Form::label('search', 'enter song number, title or author or parts thereof:') !!}
+                    {!! Form::text('search') !!}
+                    <input type="submit" name="searchBtn" value="Search" />
+                    @if ($errors->has('search'))
+                        <br><span class="help-block">
+                            <strong>{{ $errors->first('search') }}</strong>
+                        </span>
+                    @endif
                 </div>
             </div>
 
@@ -114,9 +128,32 @@
 
         @else
             <br><br>
-            <div class="col-lg-3 col-md-6">
-                <a class="btn btn-secondary" href="/cspot/plans/{{$plan->id}}/items/{{$seq_no}}/song">
-                                    <i class="fa fa-pencil"></i> Select a Song</a>
+            <div class="col-lg-6 col-md-12">
+                @if ( Session::has('songs'))
+                    Select a song:
+                    <div class="c-inputs-stacked">
+                        @foreach (Session::get('songs') as $song)
+                            <label class="c-input c-radio" title="{{$song->lyrics}}">
+                                <input value="{{$song->id}}" name="song_id" type="radio">
+                                <span class="c-indicator"></span>
+                                {{$song->book_ref}}, 
+                                {{$song->title}}{{ $song->title_2 ? ' ('. $song->title_2 .')' : '' }},
+                                {{$song->author}}
+                            </label>
+                        @endforeach
+                    </div>
+                    Or search for another song -
+                @else
+                    To search for a song,
+                @endif
+                {!! Form::label('search', 'enter song number, title or author or parts thereof:') !!}<br/>
+                {!! Form::text('search') !!}
+                <input type="submit" name="searchBtn" value="Search" />
+                @if ($errors->has('search'))
+                    <br><span class="help-block">
+                        <strong>{{ $errors->first('search') }}</strong>
+                    </span>
+                @endif
             </div>
         @endif
 

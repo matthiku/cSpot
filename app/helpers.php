@@ -36,7 +36,7 @@ function insertItem( $request )
     $plan  = Plan::find($plan_id);
     // get all the items for this plan
     $items = $plan->items()->orderBy('seq_no')->get();
-    // numbering them countering with 1.0
+    // numbering the items, starting with 1.0
     $counter = 1.0;
     if ($new_seq_no <= $counter) {
         $new_seq_no = 1;
@@ -62,10 +62,20 @@ function insertItem( $request )
     // create a new Item using the input data from the request
     $newItem = new Item( $request->except(['seq_no', 'moreItems', '_token']) );
     $newItem->seq_no = $new_seq_no;
+    // check if a song id was provided in the request
+    if (isset($request->song_id)) {
+        $newItem->song_id = $request->song_id;
+    }
     // saving the new Item via the relationship to the Plan
     $plan->items()->save( $newItem );
     $plan->new_seq_no = $new_seq_no;
 
+    if( isset($newItem->song_id) ) {
+        $msg = $newItem->song->title;
+    } else {
+        $msg = $newItem->comment;
+    }
+    flash('New Item added: ' . $msg);
     return $plan;
 }
 

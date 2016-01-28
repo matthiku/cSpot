@@ -35,7 +35,7 @@
 			<td class="hidden-md-down">{{ $item->key }}</td>
 			@if( Auth::user()->isEditor() || Auth::user()->id==$plan->leader_id || Auth::user()->id==$plan->teacher_id )
 			<td>
-				<a class="btn btn-secondary btn-sm" title="Insert earlier item" href='/cspot/items/create/{{$plan->id}}/{{$item->seq_no-0.1}}'><i class="fa fa-reply"></i></a>
+				<a class="btn btn-secondary btn-sm" title="Insert earlier item" href='/cspot/plans/{{$plan->id}}/items/create/{{$item->seq_no-0.1}}'><i class="fa fa-reply"></i></a>
 				<a class="btn btn-primary-outline btn-sm" title="Edit" href='/cspot/plans/{{$plan->id}}/items/{{$item->id}}/edit/'><i class="fa fa-pencil"></i></a>
 				<a class="btn btn-danger btn-sm" title="Delete!" href='/cspot/items/{{$item->id}}/delete'><i class="fa fa-trash"></i></a>
 			</td>
@@ -46,7 +46,7 @@
 </table>
 
 @if( Auth::user()->isEditor() || Auth::user()->id==$plan->leader_id || Auth::user()->id==$plan->teacher_id )
-	<a class="btn btn-primary-outline" href='/cspot/items/create/{{$plan->id}}/{{$item->seq_no+1}}'>
+	<a class="btn btn-primary-outline" href='/cspot/plans/{{$plan->id}}/items/create/{{$item->seq_no+1}}'>
 		<i class="fa fa-plus"> </i> &nbsp; Add item {{$item->seq_no+1}}
 	</a>
 @endif

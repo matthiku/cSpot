@@ -37,7 +37,7 @@
 	        @foreach( $songs as $song )
 				<tr class="link" onclick="location.href ='/cspot/songs/{{$song->id}}/edit'">
 					<td scope="row">{{ $song->id }}</td>
-					<td>{{ $song->title }}</td>
+					<td>{{ $song->title }} {{ $song->title_2<>'' ? '('. $song->title_2 .')' : '' }}</td>
 					<!-- <td>{ { $song->title_2 }}</td> -->
 					<td>{{ $song->song_no }}</td>
 					<td>{{ $song->book_ref }}</td>
