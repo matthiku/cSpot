@@ -12,6 +12,9 @@ use App\Models\Song;
 use App\Models\Plan;
 use App\Models\Item;
 
+use DB;
+use Auth;
+
 class ItemController extends Controller
 {
 
@@ -51,7 +54,13 @@ class ItemController extends Controller
     {
         // get the plan to which we want to add an item
         $plan = Plan::find( $plan_id );
-        return view( 'cspot.item', ['plan' => $plan, 'seq_no' => $seq_no] );
+        $t = new Item();
+        $versionsEnum = $t->getVersionsEnum();
+        return view( 'cspot.item', [
+                'plan' => $plan, 
+                'seq_no' => $seq_no, 
+                'versionsEnum' => $versionsEnum
+            ]);
     }
 
 
@@ -65,21 +74,16 @@ class ItemController extends Controller
     {
         // searching for a song?
         if ($request->has('search')) {
-            $search = '%'.$request->search.'%';
-            $songs = Song::where('title', 'like', $search)->
-                         orWhere('title_2', 'like', $search)->
-                         orWhere('song_no', 'like', $search)->
-                         orWhere('book_ref', 'like', $search)->
-                         orWhere('author', 'like', $search)->
-                         get();
+            $songs = songSearch( '%'.$request->search.'%' );
             if (!count($songs)) {
                 flash('No songs found for '.$request->search);
                 return redirect()->back()->withInput();
             }
+            // success! just one song found, update the request with the song id
             if (count($songs)==1) {
                 $request->song_id = $songs[0]->id;
             } else {
-                // as we found several songs, user must select one
+                // as we found several songs, return to view as user must select one
                 $request->session()->flash('songs', $songs);
                 return redirect()->back();
             }
@@ -90,14 +94,15 @@ class ItemController extends Controller
 
         // see if user ticked the checkbox to add another item after this one
         if ($request->moreItems == "Y") {
+            // update seq no in the session
+            $request->session()->flash( 'new_seq_no', $plan->new_seq_no+0.5 );
             // return back to same view
-            return view( 'cspot.item', ['plan' => $plan, 'seq_no' => $plan->new_seq_no+0.5]);
+            return redirect()->back();
         }
 
         // back to full plan view, but first,
-        // get plan id from the hidden input field in the form
-        $plan_id = $request->input('plan_id');
-        return \Redirect::route('cspot.plans.edit', $plan_id);
+        // (get plan id from the hidden input field in the form)
+        return \Redirect::route( 'cspot.plans.edit', $request->input('plan_id') );
     }
 
 
@@ -111,6 +116,7 @@ class ItemController extends Controller
     public function show($id)
     {
         //
+
         flash('Sorry, this is not implemented.');
         return redirect()->back();
     }
@@ -126,12 +132,20 @@ class ItemController extends Controller
     public function edit($plan_id, $id)
     {
         // get current item
+        $plan = Plan::find( $plan_id );
         $item = Item::find($id);
         $seq_no = $item->seq_no;
+        $versionsEnum = $item->getVersionsEnum();
 
         $songs = []; # send empty song array
         // send the form
-        return view( 'cspot.item', ['songs' => $songs, 'seq_no' => $seq_no, 'item' => $item] );
+        return view( 'cspot.item', [
+                'plan' => $plan, 
+                'seq_no' => $seq_no, 
+                'item' => $item, 
+                'songs' => $songs, 
+                'versionsEnum' => $versionsEnum
+            ]);
     }
 
 
@@ -145,14 +159,35 @@ class ItemController extends Controller
      */
     public function update(StoreItemRequest $request, $id)
     {
-        if ($request->has('search')) {
-            flash('Sorry, SEARCH is not (yet) implemented. Please delete the item and create a new one.');
-            return redirect()->back();
-        }
-        // get current item
-        $item = Item::find($id);
-        $item->update($request->except('_token'));
+        $item    = Item::find($id);
         $plan_id = $item->plan_id;
+        $plan    = Plan::find( $plan_id );
+
+        // check if user can actually edit this plan
+        $user = Auth::user();
+        if( $user->isEditor() || $user->id == $plan->leader_id || $user->id == $plan->teacher_id )
+        {
+            // searching for a song?
+            if ($request->has('search')) {
+                $songs = songSearch( '%'.$request->search.'%' );
+                if (!count($songs)) {
+                    flash('No songs found for '.$request->search);
+                    return redirect()->back()->withInput();
+                }
+                if (count($songs)==1) {
+                    $request->song_id = $songs[0]->id;
+                } else {
+                    // as we found several songs, user must select one
+                    $request->session()->flash('songs', $songs);
+                    return redirect()->back();
+                }
+            }
+            // get current item
+            $item->update($request->except('_token'));
+        }
+        else {
+            flash('You are not authorized to edit this item. Please ask a leader or teacher or Admin.');
+        }
         // back to full plan view 
         return \Redirect::route('cspot.plans.edit', $plan_id);
     }
@@ -160,6 +195,27 @@ class ItemController extends Controller
 
 
 
+
+
+    /**
+     * MOVE the specified resource up or down in the list of items related to a plan.
+     *
+     * @param  int     $id
+     * @param  string  $direction
+     * @return \Illuminate\Http\Response
+     */
+    public function move($id, $direction)
+    {
+        // get item and delete it
+        $item = moveItem($id, $direction);
+        if ($item) {
+            // back to full plan view 
+            flash('Item moved.');
+            return \Redirect::back();
+        }
+        flash('Error! Item with ID "' . $id . '" not found');
+        return \Redirect::back();
+    }
 
 
     /**

@@ -82,7 +82,7 @@
         @else
             {!! Form::submit('Submit'); !!}
         @endif
-        <a href="/cspot/songs">{!! Form::button('Cancel'); !!}</a>
+        <a href="#" onclick="history.back()">{!! Form::button('Cancel'); !!}</a>
 
     {!! Form::close() !!}
 

@@ -33,7 +33,7 @@
 			</thead>
 			<tbody>
 	        @foreach( $types as $type )
-				<tr class="link" onclick="location.href ='/admin/types/{{$type->id}}/edit'">
+				<tr class="link" onclick="location.href='/cspot/plans/by_type/{{$type->id}}'">
 					<td scope="row">{{ $type->id }}</td>
 					<td>{{ $type->name }}</td>
 					<td onclick="location.href='/admin/types/{{$type->id}}'" class="link" title="Show all Plans of this type of Service">

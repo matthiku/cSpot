@@ -18,7 +18,7 @@
 
 
     @if (isset($plan))
-        <h2>Service Plan for {{ $plan->date->formatLocalized('%A, %d %B %Y') }}</h2>
+        <h2>Plan for "{{ $plan->type->name }}" on {{ $plan->date->formatLocalized('%A, %d %B %Y') }}</h2>
         @if (Auth::user()->isEditor())
             {!! Form::model( $plan, array(
                 'route'  => array('cspot.plans.update', $plan->id), 
@@ -44,7 +44,7 @@
     <div class="row center">
         <div class="col-lg-3 col-md-6">
             <div class="row form-group">
-                {!! Form::label('date', 'Date'); !!}<br/>
+                {!! Form::label('date', 'Date'); !!}
                 @if (Auth::user()->isEditor())
                     {!! Form::date( 'date', isset($plan) ? $plan->date : \Carbon\Carbon::now() ) !!}
                 @else
@@ -56,7 +56,7 @@
 
         <div class="col-lg-3 col-md-6">
             <div class="row form-group">
-                <label>Type of Service</label><br/>                        
+                <label>Type of Service</label>                 
                 <select name="type_id" class="c-select"{{ Auth::user()->isEditor() ? '' : ' disabled' }}>
                     <option {{ isset($plan) ? '' : 'selected'}}>
                         Select ...
@@ -80,7 +80,7 @@
 
         <div class="col-lg-3 col-md-6">
             <div class="row form-group">
-                <label>Leader </label><br/>
+                <label>Leader </label>
                 <select name="leader_id" class="c-select"{{ Auth::user()->isEditor() ? '' : ' disabled' }}>
                     <option {{ isset($plan) ? '' : 'selected'}}>
                         Select ...
@@ -105,7 +105,7 @@
 
         <div class="col-lg-3 col-md-6">
             <div class="row form-group">
-                <label>Teacher</label><br/>
+                <label>Teacher</label>
                 <select name="teacher_id" class="c-select"{{ Auth::user()->isEditor() ? '' : ' disabled' }}>
                     <option {{ isset($plan) ? '' : 'selected'}}>
                         Select ...
@@ -152,42 +152,46 @@
 
 
 
+    @if (isset($plan))
+
+        @if (Auth::user()->isEditor())            
+            &nbsp; {!! Form::submit('Save changes'); !!}
+            <script type="text/javascript">document.forms.inputForm.date.focus()</script>
+        @else
+            &nbsp; {!! Form::submit('Save Note'); !!}
+            <script type="text/javascript">document.forms.inputForm.info.focus()</script>
+        @endif
+
+        @if (Auth::user()->isAdmin())
+            &nbsp; <a class="btn btn-danger btn-sm"  plan="button" href="/cspot/plans/{{ $plan->id }}/delete">
+                <i class="fa fa-trash" > </i> &nbsp; Delete
+            </a>
+        @endif
+
+    @else
+        &nbsp; {!! Form::submit('Submit'); !!}
+        <script type="text/javascript">document.forms.inputForm.date.focus()</script>
+    @endif
+
+    &nbsp; <a href="#" onclick="history.go(-1)">{!! Form::button('Back'); !!}</a>
+
+
     <div class="form-group">
         @if (Auth::user()->isEditor())
-            {!! Form::label('info', 'Notes'); !!}<br/>
+            {!! Form::label('info', 'Notes:'); !!}
+            <br/>
             {!! Form::textarea('info') !!}
         @else
-            <p>Note(s) for this plan:</p>
-            <pre>{{ $plan->info }}</pre>
+            @if ($plan->info)
+                <h5>Notes for this Plan:</h5>
+                <pre>{!! $plan->info !!}</pre>
+            @endif
             Add note:
             <textarea name="info"></textarea>
         @endif
     </div>
 
 
-
-
-    @if (isset($plan))
-
-        @if (Auth::user()->isEditor())            
-            {!! Form::submit('Save changes'); !!}
-            <script type="text/javascript">document.forms.inputForm.date.focus()</script>
-        @else
-            {!! Form::submit('Save Note'); !!}
-            <script type="text/javascript">document.forms.inputForm.info.focus()</script>
-        @endif
-
-        @if (Auth::user()->isAdmin())
-            <a class="btn btn-danger btn-sm"  plan="button" href="/cspot/plans/{{ $plan->id }}/delete">
-                <i class="fa fa-trash" > </i> &nbsp; Delete
-            </a>
-        @endif
-
-    @else
-        {!! Form::submit('Submit'); !!}
-        <script type="text/javascript">document.forms.inputForm.date.focus()</script>
-    @endif
-    <a href="#" onclick="history.go(-1)">{!! Form::button('Back'); !!}</a>
 
     {!! Form::close() !!}
 

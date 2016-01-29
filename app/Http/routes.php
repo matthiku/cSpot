@@ -44,6 +44,8 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
 
     // show only upcoming service plans
     Route::get('plans/future', ['as'=>'future', 'uses'=>'Cspot\PlanController@future']);
+    // show only upcoming service plans
+    Route::get('plans/next', ['as'=>'next', 'uses'=>'Cspot\PlanController@next']);
     // basic CRUD resources for plans
     Route::resource('plans', 'Cspot\PlanController');
     // allow DELETE via the GET method
@@ -61,6 +63,8 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
 
     // generic item resource routes
     Route::resource('items', 'Cspot\ItemController');
+    // MOVE the specified resource up or down in the list of items related to a plan
+    Route::get('items/{items}/move/{direction}', 'Cspot\ItemController@move');    
     // specific delete route using 'get' method
     Route::get('items/{items}/delete', 'Cspot\ItemController@destroy');    
 

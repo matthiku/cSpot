@@ -36,12 +36,12 @@
                 Service Plans <span class="caret"></span>
             </a>
             <div class="dropdown-menu" role="menu">
-              <a class="dropdown-item" href="/cspot/plans/future"><i class="fa fa-btn fa-calendar"></i> Upcoming Plans</a>
-              <a class="dropdown-item" href="/cspot/plans"><i class="fa fa-btn fa-calendar-check-o"></i> My Service Plans</a>
+              <a class="dropdown-item" href="/cspot/plans/future"><i class="fa fa-btn fa-calendar fa-lg"></i> Upcoming Plans</a>
+              <a class="dropdown-item" href="/cspot/plans"><i class="fa fa-btn fa-calendar-check-o fa-lg"></i> My Service Plans</a>
               @if( Auth::user()->isEditor() )
-                <a class="dropdown-item" href="/cspot/plans/create"><i class="fa fa-btn fa-calendar-plus-o"></i> Add New Plan</a>
+                <a class="dropdown-item" href="/cspot/plans/create"><i class="fa fa-btn fa-calendar-plus-o fa-lg"></i> Add New Plan</a>
               @endif
-              <a class="dropdown-item" href="/admin/types"><i class="fa fa-btn fa-bars"></i> Service Types</a>
+              <a class="dropdown-item" href="/admin/types"><i class="fa fa-btn fa-bars fa-lg"></i> Service Types</a>
             </div>
         </li>
         <li class="nav-item {{ Request::is('cspot/songs*') ? 'active' : '' }}">
@@ -62,9 +62,9 @@
                       Admin <span class="caret"></span>
                   </a>
                   <div class="dropdown-menu" role="menu">
-                    <a class="dropdown-item" href="/admin/default_items"><i class="fa fa-btn fa-file-o"></i> Default Items</a>
-                    <a class="dropdown-item" href="/admin/users"><i class="fa fa-btn fa-users"></i> User List</a>
-                    <a class="dropdown-item" href="/admin/roles"><i class="fa fa-btn fa-user-times"></i> User Roles</a>
+                    <a class="dropdown-item" href="/admin/default_items"><i class="fa fa-btn fa-file-o fa-lg"></i> Default Items</a>
+                    <a class="dropdown-item" href="/admin/users"><i class="fa fa-btn fa-users fa-lg"></i> User List</a>
+                    <a class="dropdown-item" href="/admin/roles"><i class="fa fa-btn fa-user-times fa-lg"></i> User Roles</a>
                   </div>
               </li>
               <li class="nav-item dropdown">
@@ -74,8 +74,8 @@
                   </a>
 
                   <div class="dropdown-menu" role="menu">
-                      <a class="dropdown-item" href="{{ url('/profile') }}"><i class="fa fa-btn fa-user"></i> Profile</a>
-                      <a class="dropdown-item" href="{{ url('/logout') }}"><i class="fa fa-btn fa-sign-out"></i> Logout</a>
+                      <a class="dropdown-item" href="{{ url('/profile') }}"><i class="fa fa-btn fa-user fa-lg"></i> Profile</a>
+                      <a class="dropdown-item" href="{{ url('/logout') }}"><i class="fa fa-btn fa-sign-out fa-lg"></i> Logout</a>
                   </div>
               </li>
           @endif

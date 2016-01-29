@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Cspot;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use App\Http\Requests\StoreSongRequest;
 use App\Http\Controllers\Controller;
 
 use App\Models\Song;

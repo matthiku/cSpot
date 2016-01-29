@@ -83,6 +83,27 @@ class PlanController extends Controller
     }
 
 
+    /**
+     * Display the next Sunday's Service Plan
+     *
+     * WARNING: this depends on service type ids 0 and 1 to be Sunday Services!
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function next()
+    {
+        //
+        $plan = Plan::with('type')
+            ->whereDate('date', '>', Carbon::yesterday())
+            ->whereBetween('type_id', [0,1])
+            ->orderBy('date')
+            ->first();
+
+        // call the edit action for a single plan
+        return $this->edit($plan->id);
+    }
+
+
 
     /**
      * Display a listing of Service Plans filtered by user (leader/teacher)
@@ -265,8 +286,9 @@ class PlanController extends Controller
         $plan->update( $request->except(['_method','_token']) );
 
         flash('Plan with id "' . $id . '" updated');
-        return \Redirect::route($this->view_idx);
+        return redirect()->back();
     }
+
 
     public function addNote(Request $request, $id)
     {
@@ -274,14 +296,14 @@ class PlanController extends Controller
         $plan = Plan::find($id);
 
         $changer = Auth::user()->first_name;
-        $note = $plan->info . '\nNote from '. $changer.'\n' . $request->input('info');
+        $note = $plan->info . chr(0x0d) . 'Note from '. $changer.':'.chr(0x0d). $request->input('info');
 
         $plan->info = $note;
         $plan->save();
         //$plan->update();
 
-        flash('Plan with id "' . $id . '" updated');
-        return \Redirect::route($this->view_idx);
+        flash('Note added.');
+        return redirect()->back();
     }
 
 

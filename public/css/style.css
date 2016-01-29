@@ -46,3 +46,14 @@ textarea {
 .text-right {
     text-align: right;
 }
+
+label {
+    font-weight: 700;    
+}
+
+@media (max-width: 62em) {
+    .table-xs td {
+        padding: 0.1em;
+    }
+}
+

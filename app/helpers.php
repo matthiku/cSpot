@@ -2,6 +2,7 @@
 
 use App\Models\Item;
 use App\Models\Plan;
+use App\Models\Song;
 
 /**
  * Set a flash message in the session.
@@ -12,6 +13,23 @@ use App\Models\Plan;
 function flash($message) 
 {
     session()->flash('message', $message);
+}
+
+
+/**
+ * Search for songs
+ *
+ * @param  string $search
+ * @return collection $songs
+ */
+function songSearch( $search )
+{
+    return Song::where('title', 'like', $search)->
+             orWhere('title_2', 'like', $search)->
+             orWhere('song_no', 'like', $search)->
+             orWhere('book_ref', 'like', $search)->
+             orWhere('author', 'like', $search)->
+             get();
 }
 
 
@@ -90,21 +108,61 @@ function insertItem( $request )
  * @param object $items
  * @param number $new_seq_no
  */
+function moveItem($id, $direction)
+{
+    // this item should be moved
+    $moveItem = Item::find($id);
+    if (!$moveItem) { return false ;}
+    // 'move' the item by changing the seq no
+    $cur_seq_no = $moveItem->seq_no;
+    if ($direction == 'earlier') {$cur_seq_no -= 1.1;}
+    if ($direction == 'later'  ) {$cur_seq_no += 1.1;}
+    $moveItem->update(['seq_no' => $cur_seq_no]);
+
+     // get all items of the related plan
+    $plan  = Plan::find( $moveItem->plan_id );
+    $items = $plan->items()->orderBy('seq_no')->get();
+
+    // start the numbering of all items with 1.0
+    $counter = 1.0;
+    foreach ($items as $item) {
+        if ($item->seq_no <> $counter) {
+            $i = Item::find($item->id); # get the actual DB record
+            $item->seq_no = $counter;     # update the current selection
+            $i->seq_no = $counter;        # update the seq_no
+            $i->save();                 # save the record
+        }
+        $counter += 1.0;        
+    }
+    return true;
+}
+
+
+/**
+ * Delete an item from the list of items of a plan
+ *
+ * Make sure the new sequence number fits sequentially into 
+ *    the list of sequence numbers of the existing items for a plan
+ *    and that all current sequence numbers are in 1.0 steps
+ *
+ * @param object $items
+ * @param number $new_seq_no
+ */
 function deleteItem($id)
 {
     // this item should be deleted
-    $delitem = Item::find($id);
-    if (!$delitem) { return false ;}
+    $moveItem = Item::find($id);
+    if (!$moveItem) { return false ;}
 
      // get all items of the related plan
-    $plan  = Plan::find( $delitem->plan_id );
+    $plan  = Plan::find( $moveItem->plan_id );
     $items = $plan->items()->orderBy('seq_no')->get();
 
     // numbering them countering with 1.0
     $counter = 1.0;
     foreach ($items as $item) {
         if ($item->id == $id) {
-            $delitem->delete();            
+            $moveItem->delete();            
         } else {
             if ($item->seq_no <> $counter) {
                 $i = Item::find($item->id); # get the actual DB record
