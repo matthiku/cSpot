@@ -30,8 +30,13 @@
         <div class="col-sm-6">
         @if (isset($item))
                 <h2>Update Item No {{$seq_no}}</h2>
+                <h5>of the Service plan (id {{ $plan->id }}) for {{ $plan->date->formatLocalized('%A, %d %B %Y') }}</h5>
             </div>
             <div class="col-sm-6 text-xs-right">
+
+                Go to
+                &nbsp; <a href="/cspot/plans/{{$plan->id}}/items/{{$item->id}}/go/previous">{!! Form::button('Previous item') !!}</a>
+                &nbsp; <a href="/cspot/plans/{{$plan->id}}/items/{{$item->id}}/go/next">{!! Form::button('Next item') !!}</a>&nbsp; &nbsp; 
 
                 @if( Auth::user()->isEditor() || Auth::user()->id==$plan->leader_id || Auth::user()->id==$plan->teacher_id )
                     &nbsp; {!! Form::submit('Save changes'); !!}
@@ -42,7 +47,8 @@
                         <i class="fa fa-trash" > </i> &nbsp; Delete
                     </a>
                 @endif
-                &nbsp; <a href="/cspot/plans/{{$item->plan_id}}/edit">{!! Form::button('Cancel - Back to Plan'); !!}</a>
+
+                &nbsp; <a href="/cspot/plans/{{$item->plan_id}}/edit">{!! Form::button('Cancel - Back to Plan') !!}</a>
         @else
                 <h2>Add Item</h2>
                 <h5>to the Service plan (id {{ $plan->id }}) for {{ $plan->date->formatLocalized('%A, %d %B %Y') }}</h5>
@@ -50,6 +56,7 @@
             </div>
     </div>
 
+    <hr>
 
     <div class="row">
 
@@ -74,7 +81,6 @@
                     <br>
                     <select name="version" class="c-select">
                         <option {{ isset($item) ? '' : 'selected' }}>
-                            Select ...
                         </option>
                         @foreach ($versionsEnum as $vers)
                             <option 
@@ -205,7 +211,7 @@
     {!! Form::close() !!}
 
 
-    <script type="text/javascript">document.forms.inputForm.comment.focus()</script>
+    <script type="text/javascript">document.forms.inputForm.search.focus()</script>
 
     
 @stop

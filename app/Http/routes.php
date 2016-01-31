@@ -49,17 +49,19 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     // basic CRUD resources for plans
     Route::resource('plans', 'Cspot\PlanController');
     // allow DELETE via the GET method
-    Route::get('plans/{plans}/delete', 'Cspot\PlanController@destroy');    
+    Route::get('plans/{plan_id}/delete', 'Cspot\PlanController@destroy');    
     // show filtered resources (only future by default!)
     Route::get('plans/by_user/{user_id}/{all?}', 'Cspot\PlanController@by_user');    
     Route::get('plans/by_type/{type_id}/{all?}', 'Cspot\PlanController@by_type');    
     // update (append) the note for a plan
-    Route::put('plans/{plans}/addNote', ['as'=>'addNote', 'uses'=>'Cspot\PlanController@addNote']);
+    Route::put('plans/{plan_id}/addNote', ['as'=>'addNote', 'uses'=>'Cspot\PlanController@addNote']);
     
-    // route to show form to create a new item for a plan
+    // show form to create a new item for a plan
     Route::get('plans/{plan_id}/items/create/{seq_no}', 'Cspot\ItemController@create');    
-    // route to show form to update a new item for a plan
+    // show form to update a new item for a plan
     Route::get('plans/{plan_id}/items/{item_id}/edit', 'Cspot\ItemController@edit');    
+    // show form of next or previous item for a plan
+    Route::get('plans/{plan_id}/items/{item_id}/go/{direction}', 'Cspot\ItemController@next');
 
     // generic item resource routes
     Route::resource('items', 'Cspot\ItemController');

@@ -17,6 +17,18 @@ function flash($message)
 
 
 /**
+ * Set a flash ERROR message in the session.
+ *
+ * @param  string $message
+ * @return void
+ */
+function flashError($message) 
+{
+    session()->flash('error', $message);
+}
+
+
+/**
  * Search for songs
  *
  * @param  string $search
@@ -32,6 +44,39 @@ function songSearch( $search )
              get();
 }
 
+
+/**
+ * Go to next or previous item in the list of items of a plan
+ */
+function nextItem($plan_id, $item_id, $direction)
+{
+    $curItem = Item::find($item_id);
+    $plan    = Plan::find($plan_id);
+    // get all the items for this plan
+    $items   = $plan->items()->orderBy('seq_no')->get();
+
+    // get seq_no of desired next or previous item
+    if ($direction == 'next') {
+        if ($curItem->seq_no == count($items)) {
+            $new_seq_no = 1.0;
+        } else {
+            $new_seq_no = $curItem->seq_no+1;
+        }
+    } else {
+        if ($curItem->seq_no == 1.0) {
+            $new_seq_no = count($items);
+        } else {
+            $new_seq_no = $curItem->seq_no-1;
+        }
+    }
+    // find the new item id
+    foreach ($items as $item) {
+        if ($item->seq_no == $new_seq_no) {
+            return $item->id;
+        }
+    }
+    return $item->id;
+}
 
 
 /**

@@ -151,7 +151,7 @@
     @endif
 
 
-
+    &nbsp; &nbsp; 
     @if (isset($plan))
 
         @if (Auth::user()->isEditor())            
@@ -175,8 +175,8 @@
 
     &nbsp; <a href="#" onclick="history.go(-1)">{!! Form::button('Back'); !!}</a>
 
-
     <div class="form-group">
+        <br>
         @if (Auth::user()->isEditor())
             {!! Form::label('info', 'Notes:'); !!}
             <br/>

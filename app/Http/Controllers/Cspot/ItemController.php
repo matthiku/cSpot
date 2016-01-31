@@ -124,6 +124,24 @@ class ItemController extends Controller
 
 
     /**
+     * edit the previous or NEXT item in the list of items related to a plan.
+     *
+     * @param  int     $id
+     * @param  int     $id
+     * @param  string  $direction
+     * @return \Illuminate\Http\Response
+     */
+    public function next(Request $request, $plan_id, $item_id, $direction)
+    {
+        // get seq_no of next or previous item from helper function
+        $new_item_id = nextItem($plan_id, $item_id, $direction);
+        // call edit with new item id 
+        return $this->edit( $plan_id, $new_item_id );
+    }
+
+
+
+    /**
      * Show the form for editing an ITEM.
      *
      * @param  int  $id
@@ -206,7 +224,7 @@ class ItemController extends Controller
      */
     public function move($id, $direction)
     {
-        // get item and delete it
+        // call helper function to do the actual 'move'
         $item = moveItem($id, $direction);
         if ($item) {
             // back to full plan view 

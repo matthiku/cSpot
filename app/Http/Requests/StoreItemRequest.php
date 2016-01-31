@@ -28,7 +28,7 @@ class StoreItemRequest extends Request
     {
         return [
             // validation rules
-            'comment' => 'required_without_all:search,song_id',
+            'comment' => 'required_with:version|required_without_all:search,song_id',
             'search'  => 'required_without_all:comment,song_id|min:3',
         ];
     }
@@ -41,6 +41,7 @@ class StoreItemRequest extends Request
     public function messages()
     {
         return [
+            'comment.required_with' => 'You selected a bible version, please also provide a reference',
             'comment.required_without' => 'Enter a note or search for a song',
             'search.required_without'  => 'Search for a song or just enter a note',
         ];

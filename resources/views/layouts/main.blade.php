@@ -18,6 +18,9 @@
     <link href="/css/style.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/signin.css"/>
     <link rel="stylesheet" href="/css/dashboard.css"/>
+    
+    <script src="/js/tether.min.js"></script>
+    <script src="/js/jquery.min.js"></script>
   </head>
 
 
@@ -117,8 +120,14 @@
 
 
     <!-- JavaScripts -->
-    <script src="/js/jquery.min.js"></script>
     <script src="/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function() {
+          $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+          });
+        });
+    </script>
 
   </body>
 

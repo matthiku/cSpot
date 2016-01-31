@@ -36,8 +36,8 @@ class PlanController extends Controller
      * Authentication
      */
     public function __construct() {
-        $this->middleware('role:author', ['except' => ['index', 'show', 'future', 'edit', 'update', 'show']]);
-        $this->middleware('role:editor', ['only' => ['destroy', 'create']]);
+        $this->middleware('role:author', ['only' => ['by_user', 'by_type'] ]  );
+        $this->middleware('role:editor', ['only' => ['destroy', 'create'] ]  );
     }
 
 
@@ -254,19 +254,19 @@ class PlanController extends Controller
     public function edit($id)
     {
         // find a single resource by ID
-        $output = Plan::with([
+        $plan = Plan::with([
                 'items' => function ($query) { $query->orderBy('seq_no'); }])
             ->find($id);
-        if ($output) {
+        if ($plan) {
             // get list of service types
             $types = Type::get();
             // get list of users
             $users = User::orderBy('first_name')->get();
 
-            return view( $this->view_one, array('plan' => $output, 'types' => $types, 'users' => $users ) );
+            return view( $this->view_one, array('plan' => $plan, 'types' => $types, 'users' => $users ) );
         }
         //
-        flash('Error! Plan with id "' . $id . '" not found');
+        flashError('Plan with id "' . $id . '" not found');
         return \Redirect::route($this->view_idx);
     }
 
@@ -292,6 +292,10 @@ class PlanController extends Controller
 
     public function addNote(Request $request, $id)
     {
+        if (! $request->input('info')) {
+            flashError('Note was empty, nothing saved...');
+            return redirect()->back();
+        }
         // update this Plan
         $plan = Plan::find($id);
 
@@ -327,7 +331,7 @@ class PlanController extends Controller
             return \Redirect::route($this->view_idx);
         }
         //
-        flash('Error! Plan with ID "' . $id . '" not found');
+        flashError('Plan with ID "' . $id . '" not found');
         return \Redirect::route($this->view_idx);
     }
 
