@@ -1,5 +1,7 @@
 <?php
 
+# (C) 2016 Matthias Kuhs, Ireland
+
 use Illuminate\Database\Seeder;
 use App\Models\Role;
 

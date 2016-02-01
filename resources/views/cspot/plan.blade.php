@@ -1,4 +1,6 @@
 
+<!-- # (C) 2016 Matthias Kuhs, Ireland -->
+
 @extends('layouts.main')
 
 @section('title', "Create or Update a Service Plan")
@@ -173,7 +175,7 @@
         <script type="text/javascript">document.forms.inputForm.date.focus()</script>
     @endif
 
-    &nbsp; <a href="#" onclick="history.go(-1)">{!! Form::button('Back'); !!}</a>
+    &nbsp; <a href="/cspot/plans/future">{!! Form::button('Back'); !!}</a>
 
     <div class="form-group">
         <br>

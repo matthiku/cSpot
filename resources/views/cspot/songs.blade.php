@@ -1,3 +1,6 @@
+
+<!-- # (C) 2016 Matthias Kuhs, Ireland -->
+
 @extends('layouts.main')
 
 @section('title', $heading)
@@ -11,6 +14,14 @@
 
 	@include('layouts.flashing')
 
+	@if( Auth::user()->isEditor() )
+	<span class="pull-sm-right">
+		<a class="btn btn-primary-outline" href='/cspot/songs/create'>
+			<i class="fa fa-plus"> </i> &nbsp; Add a new song
+		</a>
+	</span>
+	@endif
+
     <h2>{{ $heading }}</h2>
 
 
@@ -23,12 +34,12 @@
 					 ">
 			<thead class="thead-default">
 				<tr>
-					<th>#</th>
+					<th class="hidden-md-down">#</th>
 					<th>Title</th>
 					<!-- <th>Title 2</th> -->
-					<th>Song No.</th>
+					<th class="hidden-md-down">Song No.</th>
 					<th>Book Ref.</th>
-					<th>Author</th>
+					<th class="hidden-md-down">Author</th>
 					<th>Youtube ID</th>
 					<th>Action</th>
 				</tr>
@@ -36,14 +47,18 @@
 			<tbody>
 	        @foreach( $songs as $song )
 				<tr class="link" onclick="location.href ='/cspot/songs/{{$song->id}}/edit'">
-					<td scope="row">{{ $song->id }}</td>
+					<td scope="row" class="hidden-md-down">{{ $song->id }}</td>
 					<td>{{ $song->title }} {{ $song->title_2<>'' ? '('. $song->title_2 .')' : '' }}</td>
 					<!-- <td>{ { $song->title_2 }}</td> -->
-					<td>{{ $song->song_no }}</td>
+					<td class="hidden-md-down">{{ $song->song_no }}</td>
 					<td>{{ $song->book_ref }}</td>
-					<td>{{ $song->author }}</td>
-					<td><a target="new" href="https://www.youtube.com/watch?v={{ $song->youtube_id }}">{{ $song->youtube_id }}</a></td>
-					<td>
+					<td class="hidden-md-down">{{ $song->author }}</td>
+					<td>@if (substr($song->youtube_id,0,2)=="PL")
+							<a target="new" href="hthttps://www.youtube.com/playlist?list={{ $song->youtube_id }}">YT Playlist</a></td>
+						@else
+							<a target="new" href="https://www.youtube.com/watch?v={{ $song->youtube_id }}">{{ $song->youtube_id }}</a></td>
+						@endif
+					<td class="nowrap">
 						<!-- <a class="btn btn-secondary btn-sm" title="Show Users" href='/cspot/songs/{{$song->id}}'><i class="fa fa-filter"></i></a> -->
 						 @if( Auth::user()->isEditor() )
 							<a class="btn btn-primary-outline btn-sm" title="Edit" href='/cspot/songs/{{$song->id}}/edit'><i class="fa fa-pencil"></i></a>
@@ -59,12 +74,6 @@
 
     	<p>No songs found!</p>
 
-	@endif
-
-	@if( Auth::user()->isEditor() )
-	<a class="btn btn-primary-outline" href='/cspot/songs/create'>
-		<i class="fa fa-plus"> </i> &nbsp; Add a new song
-	</a>
 	@endif
 
 	

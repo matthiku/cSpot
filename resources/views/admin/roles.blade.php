@@ -1,3 +1,6 @@
+
+<!-- # (C) 2016 Matthias Kuhs, Ireland -->
+
 @extends('layouts.main')
 
 @section('title', $heading)
@@ -36,7 +39,7 @@
 					<td>{{ ucfirst($role->name) }}</td>
 					<td onclick="location.href='/admin/roles/{{$role->id}}'" class="link" title="Show users with that role">
 						{{ $role->users->count() }}</td>
-					<td>
+					<td class="nowrap">
 						<a class="btn btn-secondary btn-sm" title="Show Users" href='/admin/roles/{{$role->id}}'><i class="fa fa-filter"></i></a>
 						 @if( $role->id>3 &&   Auth::user()->isEditor() )
 							<a class="btn btn-primary-outline btn-sm" title="Edit" href='/admin/roles/{{$role->id}}/edit'><i class="fa fa-pencil"></i></a>

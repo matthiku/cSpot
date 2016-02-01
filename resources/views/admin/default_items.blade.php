@@ -1,3 +1,6 @@
+
+<!-- # (C) 2016 Matthias Kuhs, Ireland -->
+
 @extends('layouts.main')
 
 @section('title', $heading)
@@ -37,7 +40,7 @@
 					<td>{{ $default_item->type_id.' ('.$default_item->type->name.')'  }}</td>
 					<td>{{ $default_item->seq_no }}</td>
 					<td>{{ $default_item->text }}</td>
-					<td>
+					<td class="nowrap">
 						<!-- <a class="btn btn-secondary btn-sm" title="Show Users" href='/admin/default_items/{{$default_item->id}}'><i class="fa fa-filter"></i></a> -->
 						 @if( Auth::user()->isEditor() )
 							<a class="btn btn-primary-outline btn-sm" title="Edit" href='/admin/default_items/{{$default_item->id}}/edit'><i class="fa fa-pencil"></i></a>

@@ -1,3 +1,6 @@
+.card {
+    background-color: #eee;
+}
 .app-content {
     padding: 0 1em;
 }
@@ -6,7 +9,7 @@
     margin-bottom: 15px;
 }
 
-img {
+.image {
     width: 100%;
     border: 1px #ccc solid ;
     border-radius: 10px;
@@ -57,3 +60,6 @@ label {
     }
 }
 
+.nowrap {
+    white-space: nowrap;
+}

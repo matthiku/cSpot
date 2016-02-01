@@ -1,3 +1,6 @@
+
+<!-- # (C) 2016 Matthias Kuhs, Ireland -->
+
 @extends('layouts.main')
 
 @section('title', $heading)
@@ -62,7 +65,7 @@
 					<!-- <td>{{ $plan->state }}</td> -->
 					<td class="text-right">{{ $plan->updated_at->formatLocalized('%d-%m-%Y %H:%M') }}</td>
 					<td>{{ ucfirst($plan->changer) }}</td>
-					<td>
+					<td class="nowrap">
 						<!-- <a class="btn btn-secondary btn-sm" title="Show Items" href='/cspot/items/{{$plan->id}}'><i class="fa fa-filter"></i></a> -->
 						<!-- if( Auth::user()->isEditor() || Auth::user()->id == $plan->leader_id ) -->
 							<a class="btn btn-primary-outline btn-sm" title="Edit" href='/cspot/plans/{{$plan->id}}/edit'><i class="fa fa-pencil"></i></a>

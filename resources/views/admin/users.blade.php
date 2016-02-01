@@ -1,3 +1,6 @@
+
+<!-- # (C) 2016 Matthias Kuhs, Ireland -->
+
 @extends('layouts.main')
 
 @section('title', $heading)
@@ -39,7 +42,10 @@
 		</thead>
 		<tbody>
         @foreach( $users as $user )
-				<tr class="link" onclick="location.href ='/admin/users/{{$user->id}}/edit'">
+				<tr @if(Auth::user()->isAdmin())
+						class="link" onclick="location.href ='/admin/users/{{$user->id}}/edit'"
+					@endif
+					>					
 				<td scope="row">{{ $user->id }}</td>
 				<td>{{ $user->first_name }}</td>
 				<td>{{ $user->last_name }}</td>
@@ -50,7 +56,7 @@
 						{{ ucfirst($role->name) }},
 					@endforeach</td>
 				<td>{{ $user->created_at }}</td>
-				<td>
+				<td class="nowrap">
 					@if( Auth::user()->isAdmin() || (Auth::user()->isEditor() && $user->id > 1) )
 						<a class="btn btn-primary-outline btn-sm" title="Edit" href='/admin/users/{{$user->id}}/edit'  ><i class="fa fa-pencil"></i></a>
 						@if( Auth::user()->isAdmin() && $user->id > 1 )

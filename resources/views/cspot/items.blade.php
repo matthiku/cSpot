@@ -1,4 +1,6 @@
 
+<!-- # (C) 2016 Matthias Kuhs, Ireland -->
+
 <div class="table-responsive">
 	<table class="table table-striped table-bordered {{ count($plan->items)>5 ? 'table-sm' : ''}} {{ count($plan->items)>10 ? 'table-xs' : ''}}">
 		<thead class="thead-default">
@@ -22,7 +24,7 @@
 	    @foreach( $plan->items as $item )
 			<tr class="link" onclick="location.href ='/cspot/plans/{{$plan->id}}/items/{{$item->id}}/edit'">
 				@if( Auth::user()->isEditor() || Auth::user()->id==$plan->leader_id || Auth::user()->id==$plan->teacher_id )
-				<td class="text-right">
+				<td class="text-right nowrap">
 					@if ($item->seq_no > 1)
 						<a class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="left" title="Move up" href='/cspot/items/{{$item->id}}/move/earlier'><i class="fa fa-angle-double-up"></i></a>
 					@endif
@@ -49,7 +51,7 @@
 				<td class="hidden-md-down">{{ $item->version }}</td>
 				<td class="hidden-md-down">{{ $item->key }}</td>
 				@if( Auth::user()->isEditor() || Auth::user()->id==$plan->leader_id || Auth::user()->id==$plan->teacher_id )
-				<td>
+				<td class="nowrap">
 					<a class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="left" title="Insert earlier item" href='/cspot/plans/{{$plan->id}}/items/create/{{$item->seq_no-0.1}}'><i class="fa fa-reply"></i></a>
 					<a class="btn btn-primary-outline btn-sm" data-toggle="tooltip" title="Edit" href='/cspot/plans/{{$plan->id}}/items/{{$item->id}}/edit/'><i class="fa fa-pencil"></i></a>
 					<a class="btn btn-danger btn-sm" data-toggle="tooltip" data-placement="right" title="Delete!" href='/cspot/items/{{$item->id}}/delete'><i class="fa fa-trash"></i></a>

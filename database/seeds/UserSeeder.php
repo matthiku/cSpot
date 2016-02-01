@@ -1,5 +1,7 @@
 <?php
 
+# (C) 2016 Matthias Kuhs, Ireland
+
 // see https://tuts.codingo.me/laravel-social-and-email-authentication
 
 use Illuminate\Database\Seeder;

@@ -10,6 +10,8 @@
 |
 */
 
+# (C) 2016 Matthias Kuhs, Ireland
+
 Route::group(['middleware' => 'web'], function () {
     //
 

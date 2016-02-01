@@ -1,3 +1,6 @@
+
+<!-- # (C) 2016 Matthias Kuhs, Ireland -->
+
 @extends('layouts.main')
 
 @section('title', $heading)
@@ -38,7 +41,7 @@
 					<td>{{ $type->name }}</td>
 					<td onclick="location.href='/admin/types/{{$type->id}}'" class="link" title="Show all Plans of this type of Service">
 						{{ $type->plans->count() }}</td>
-					<td>
+					<td class="nowrap">
 						<a class="btn btn-secondary btn-sm" title="Show upcoming Plans" href='/cspot/plans/by_type/{{$type->id}}'><i class="fa fa-filter"></i></a>
 						 @if( Auth::user()->isEditor() )
 						<a class="btn btn-primary-outline btn-sm" title="Edit" href='/admin/types/{{$type->id}}/edit'><i class="fa fa-pencil"></i></a>

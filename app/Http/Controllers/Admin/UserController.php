@@ -1,5 +1,7 @@
 <?php
 
+# (C) 2016 Matthias Kuhs, Ireland
+
 namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
@@ -11,6 +13,8 @@ use App\Http\Controllers\Controller;
 
 use App\Models\User;
 use App\Models\Role;
+
+use Auth;
 
 
 class UserController extends Controller
@@ -29,8 +33,8 @@ class UserController extends Controller
      */
     public function __construct() {
         $this->middleware('auth');
-        $this->middleware('role:editor', ['except' => ['index', 'show']]);
-        $this->middleware('role:administrator', ['only' => ['destroy', 'update']]);
+        $this->middleware('role:editor', ['except' => ['index', 'show', 'update']]);
+        $this->middleware('role:administrator', ['only' => ['destroy']]);
     }
 
 
@@ -125,8 +129,17 @@ class UserController extends Controller
             return view( $this->view_all, array('users' => $users, 'heading' => $heading) );
         }
 
-        $message = 'Sorry, show single user not (yet) implemented.';
-        return redirect()->back()->with(['message' => $message]);
+        // users can only see their own profile, unless they are Admins
+        if ( Auth::user()->id<>$id  &&   ! Auth::user()->isAdmin() ) {
+            flash('You are not authorized for this request.');
+            return redirect()->back();
+        }
+
+        // show the user profile
+        $heading = "Edit your profile";
+        $user = User::find($id);
+        $roles = Role::all();
+        return view($this->view_one, ['user' => $user, 'roles' => $roles, 'heading' => $heading]);
     }
 
 
@@ -164,6 +177,12 @@ class UserController extends Controller
      */
     public function update(UpdateUserRequest $request, $id)
     {
+        // users can only see their own profile, unless they are Admins
+        if ( Auth::user()->id<>$id  &&   ! Auth::user()->isAdmin() ) {
+            flash('You are not authorized for this request.');
+            return redirect()->back();
+        }
+
         // get the current user record
         $user = User::find($id);
 
@@ -188,7 +207,10 @@ class UserController extends Controller
         // update name and email addr
         $user->first_name = $request->input('first_name');
         $user->last_name  = $request->input('last_name');
-        $user->email      = $request->input('email');
+        // only Admins can change the email address
+        if (Auth::user()->isAdmin()) {
+            $user->email      = $request->input('email');
+        }
         $user->save();
 
         return \Redirect::route($this->view_all_idx)

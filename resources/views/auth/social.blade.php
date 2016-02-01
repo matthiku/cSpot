@@ -1,4 +1,6 @@
 
+<!-- # (C) 2016 Matthias Kuhs, Ireland -->
+
 <a href="/social/redirect/google"   class="btn btn-{{ isset($hideLblText) ? 'sm' : 'lg' }} btn-secondary" role="button">
     <i class="fa fa-google"  ></i>
     <span class="{{ isset($hideLblText) ? 'hidden-xs-up' : '' }}">Google</span>

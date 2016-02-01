@@ -1,5 +1,7 @@
 <?php
 
+# (C) 2016 Matthias Kuhs, Ireland
+
 namespace App\Http\Requests;
 
 use App\Http\Requests\Request;

@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<!-- # (C) 2016 Matthias Kuhs, Ireland -->
+
 <?php \Carbon\Carbon::setLocale('en');?>
 
   <head>
@@ -27,7 +29,7 @@
   <body id="app-layout">
     <nav class="tek-nav navbar navbar-dark bg-inverse navbar-full">
 
-      <a class="navbar-brand" href="/">c-SPOT</a>
+      <a class="navbar-brand" href="/"><img src="/images/xs-cspot.png" height="20" width="30"></a>
 
       <ul class="nav navbar-nav">
         <li class="nav-item {{ Request::is('home') ? 'active' : '' }}">
@@ -77,7 +79,7 @@
                   </a>
 
                   <div class="dropdown-menu" role="menu">
-                      <a class="dropdown-item" href="{{ url('/profile') }}"><i class="fa fa-btn fa-user fa-lg"></i> Profile</a>
+                      <a class="dropdown-item" href="{{ url('/admin/users/'.Auth::user()->id) }}"><i class="fa fa-btn fa-user fa-lg"></i> Profile</a>
                       <a class="dropdown-item" href="{{ url('/logout') }}"><i class="fa fa-btn fa-sign-out fa-lg"></i> Logout</a>
                   </div>
               </li>

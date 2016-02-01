@@ -1,5 +1,7 @@
 <?php
 
+# (C) 2016 Matthias Kuhs, Ireland
+
 use App\Models\Item;
 use App\Models\Plan;
 use App\Models\Song;
