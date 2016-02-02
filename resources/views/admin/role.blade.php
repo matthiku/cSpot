@@ -28,7 +28,7 @@
     @if (isset($role))
         <p>{!! Form::submit('Update'); !!}</p>
         <hr>
-        <a class="btn btn-danger btn-sm"  role="button" href="/admin/roles/{{ $role->id }}/delete">
+        <a class="btn btn-danger btn-sm"  role="button" href="{{ url('admin/roles/'.$role->id) }}/delete">
             <i class="fa fa-trash" > </i> &nbsp; Delete
         </a>
     @else

@@ -13,7 +13,7 @@
 
             @include('layouts.flashing')
 
-            <form class="form-horizontal form-signin" role="form" method="POST" action="{{ url('/password/email') }}">
+            <form class="form-horizontal form-signin" role="form" method="POST" action="{{ url('password/email') }}">
                 {!! csrf_field() !!}
 
                 <h3 class="card-header">Enter your email address to reset your password</h3>

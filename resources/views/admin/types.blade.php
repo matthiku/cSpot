@@ -36,16 +36,16 @@
 			</thead>
 			<tbody>
 	        @foreach( $types as $type )
-				<tr class="link" onclick="location.href='/cspot/plans/by_type/{{$type->id}}'">
+				<tr class="link" onclick="location.href='{{ url('cspot/plans/by_type/'.$type->id) }}'">
 					<td scope="row">{{ $type->id }}</td>
 					<td>{{ $type->name }}</td>
-					<td onclick="location.href='/admin/types/{{$type->id}}'" class="link" title="Show all Plans of this type of Service">
+					<td onclick="location.href='{{ url('admin/types/'.$type->id) }}'" class="link" title="Show all Plans of this type of Service">
 						{{ $type->plans->count() }}</td>
 					<td class="nowrap">
-						<a class="btn btn-secondary btn-sm" title="Show upcoming Plans" href='/cspot/plans/by_type/{{$type->id}}'><i class="fa fa-filter"></i></a>
+						<a class="btn btn-secondary btn-sm" title="Show upcoming Plans" href='{{ url('cspot/plans/by_type/'.$type->id ) }}'><i class="fa fa-filter"></i></a>
 						 @if( Auth::user()->isEditor() )
-						<a class="btn btn-primary-outline btn-sm" title="Edit" href='/admin/types/{{$type->id}}/edit'><i class="fa fa-pencil"></i></a>
-						<a class="btn btn-danger btn-sm" title="Delete!" href='/admin/types/{{$type->id}}/delete'><i class="fa fa-trash"></i></a>
+						<a class="btn btn-primary-outline btn-sm" title="Edit" href='{{ url('admin/types/'.$type->id) }}/edit'><i class="fa fa-pencil"></i></a>
+						<a class="btn btn-danger btn-sm" title="Delete!" href='{{ url('admin/types/'.$type->id) }}/delete'><i class="fa fa-trash"></i></a>
 						@endif
 					</td>
 				</tr>
@@ -60,7 +60,7 @@
 	@endif
 
 	@if(Auth::user()->isEditor())
-	<a class="btn btn-primary-outline" href='/admin/types/create'>
+	<a class="btn btn-primary-outline" href="{{ url('admin/types/create') }}">
 		<i class="fa fa-plus"> </i> &nbsp; Add a new type
 	</a>
 	@endif

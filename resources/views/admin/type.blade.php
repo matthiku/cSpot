@@ -28,14 +28,14 @@
     @if (isset($type))
         <p>{!! Form::submit('Update'); !!}</p>
         <hr>
-        <a class="btn btn-danger btn-sm"  type="button" href="/admin/types/{{ $type->id }}/delete">
+        <a class="btn btn-danger btn-sm"  type="button" href="{{ url('admin/types/'.$type->id) }}/delete">
             <i class="fa fa-trash" > </i> &nbsp; Delete
         </a>
     @else
         <p>{!! Form::submit('Submit'); !!}
     @endif
 
-    <a href="/admin/types">{!! Form::button('Cancel'); !!}</a></p>
+    <a href="{{url('admin/types')}}">{!! Form::button('Cancel'); !!}</a></p>
     {!! Form::close() !!}
 
     <script type="text/javascript">document.forms.inputForm.name.focus()</script>

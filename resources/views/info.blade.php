@@ -13,7 +13,7 @@
         <div class="col-md-9">
             <div class="panel panel-default">
                 
-                <div class="panel-heading">Welcome to <img src="/images/xs-cspot.png" height="20" width="30"> c-SPOT!</div>
+                <div class="panel-heading">Welcome to <img src="../images/xs-cspot.png" height="20" width="30"> c-SPOT!</div>
 
                 <br>
 

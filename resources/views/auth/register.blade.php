@@ -16,7 +16,7 @@
 
             @include('layouts.flashing')
 
-            <form class="form-horizontal" role="form" method="POST" id="inputForm" action="{{ url('/register') }}">
+            <form class="form-horizontal" role="form" method="POST" id="inputForm" action="{{ url('register') }}">
                 {!! csrf_field() !!}
 
                 <h3 class="card-header">Register</h3>

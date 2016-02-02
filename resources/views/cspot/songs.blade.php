@@ -16,7 +16,7 @@
 
 	@if( Auth::user()->isEditor() )
 	<span class="pull-sm-right">
-		<a class="btn btn-primary-outline" href='/cspot/songs/create'>
+		<a class="btn btn-primary-outline" href={{ url('cspot/songs/create') }}>
 			<i class="fa fa-plus"> </i> &nbsp; Add a new song
 		</a>
 	</span>
@@ -46,7 +46,7 @@
 			</thead>
 			<tbody>
 	        @foreach( $songs as $song )
-				<tr class="link" onclick="location.href ='/cspot/songs/{{$song->id}}/edit'">
+				<tr class="link" onclick="location.href ='{{ url('cspot/songs/'.$plan->id) }}/edit'">
 					<td scope="row" class="hidden-md-down">{{ $song->id }}</td>
 					<td>{{ $song->title }} {{ $song->title_2<>'' ? '('. $song->title_2 .')' : '' }}</td>
 					<!-- <td>{ { $song->title_2 }}</td> -->
@@ -54,15 +54,15 @@
 					<td>{{ $song->book_ref }}</td>
 					<td class="hidden-md-down">{{ $song->author }}</td>
 					<td>@if (substr($song->youtube_id,0,2)=="PL")
-							<a target="new" href="hthttps://www.youtube.com/playlist?list={{ $song->youtube_id }}">YT Playlist</a></td>
+							<a target="new" href="https://www.youtube.com/playlist?list={{ $song->youtube_id }}">YT Playlist</a></td>
 						@else
 							<a target="new" href="https://www.youtube.com/watch?v={{ $song->youtube_id }}">{{ $song->youtube_id }}</a></td>
 						@endif
 					<td class="nowrap">
 						<!-- <a class="btn btn-secondary btn-sm" title="Show Users" href='/cspot/songs/{{$song->id}}'><i class="fa fa-filter"></i></a> -->
 						 @if( Auth::user()->isEditor() )
-							<a class="btn btn-primary-outline btn-sm" title="Edit" href='/cspot/songs/{{$song->id}}/edit'><i class="fa fa-pencil"></i></a>
-							<a class="btn btn-danger btn-sm" title="Delete!" href='/cspot/songs/{{$song->id}}/delete'><i class="fa fa-trash"></i></a>
+							<a class="btn btn-primary-outline btn-sm" title="Edit" href='{{ url('cspot/songs/'.$plan->id) }}/edit'><i class="fa fa-pencil"></i></a>
+							<a class="btn btn-danger btn-sm" title="Delete!" href='{{ url('cspot/songs/'.$plan->id) }}/delete'><i class="fa fa-trash"></i></a>
 						@endif
 					</td>
 				</tr>

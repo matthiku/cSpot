@@ -165,7 +165,7 @@
         @endif
 
         @if (Auth::user()->isAdmin())
-            &nbsp; <a class="btn btn-danger btn-sm"  plan="button" href="/cspot/plans/{{ $plan->id }}/delete">
+            &nbsp; <a class="btn btn-danger btn-sm"  plan="button" href="{{ url('cspot/plans/'.$plan->id) }}/delete">
                 <i class="fa fa-trash" > </i> &nbsp; Delete
             </a>
         @endif
@@ -175,7 +175,7 @@
         <script type="text/javascript">document.forms.inputForm.date.focus()</script>
     @endif
 
-    &nbsp; <a href="/cspot/plans/future">{!! Form::button('Back'); !!}</a>
+    &nbsp; <a href="{{ url('cspot/plans/future') }}">{!! Form::button('Back'); !!}</a>
 
     <div class="form-group">
         <br>

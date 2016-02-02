@@ -18,6 +18,13 @@
 	@include('layouts.flashing')
 	
 
+
+	@if( Auth::user()->isEditor() )
+	<a class="btn btn-primary-outline pull-xs-right" href="{{ url('cspot/plans/create') }}">
+		<i class="fa fa-plus"> </i> &nbsp; Add a new plan
+	</a>
+	@endif
+
     <h2>{{ $heading }}</h2>
 
 	@if( Request::is('*/by_user/*') || Request::is('*/by_type/*') )
@@ -68,10 +75,10 @@
 					<td class="nowrap">
 						<!-- <a class="btn btn-secondary btn-sm" title="Show Items" href='/cspot/items/{{$plan->id}}'><i class="fa fa-filter"></i></a> -->
 						<!-- if( Auth::user()->isEditor() || Auth::user()->id == $plan->leader_id ) -->
-							<a class="btn btn-primary-outline btn-sm" title="Edit" href='/cspot/plans/{{$plan->id}}/edit'><i class="fa fa-pencil"></i></a>
+							<a class="btn btn-primary-outline btn-sm" title="Edit" href='{{ url('cspot/plans/'.$plan->id) }}/edit'><i class="fa fa-pencil"></i></a>
 						<!-- endif -->
 						@if( Auth::user()->isEditor() )
-							<a class="btn btn-danger btn-sm" title="Delete!" href='/cspot/plans/{{$plan->id}}/delete'><i class="fa fa-trash"></i></a>
+							<a class="btn btn-danger btn-sm" title="Delete!" href='{{ url('cspot/plans/'.$plan->id) }}/delete'><i class="fa fa-trash"></i></a>
 						@endif
 					</td>
 				</tr>
@@ -83,12 +90,6 @@
 
     	<p>No plans found!</p>
 
-	@endif
-
-	@if( Auth::user()->isEditor() )
-	<a class="btn btn-primary-outline" href='/cspot/plans/create'>
-		<i class="fa fa-plus"> </i> &nbsp; Add a new plan
-	</a>
 	@endif
 
 	

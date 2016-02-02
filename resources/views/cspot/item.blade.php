@@ -38,20 +38,20 @@
             <div class="col-sm-6 text-xs-right">
 
                 Go to
-                &nbsp; <a href="/cspot/plans/{{$plan->id}}/items/{{$item->id}}/go/previous">{!! Form::button('Previous item') !!}</a>
-                &nbsp; <a href="/cspot/plans/{{$plan->id}}/items/{{$item->id}}/go/next">{!! Form::button('Next item') !!}</a>&nbsp; &nbsp; 
+                &nbsp; <a href="{{ url('cspot/plans/'.$plan->id.'/items/'.$item->id.'/go/previous') }}">{!! Form::button('Previous item') !!}</a>
+                &nbsp; <a href="{{ url('cspot/plans/'.$plan->id.'/items/'.$item->id.'/go/next') }}">{!! Form::button('Next item') !!}</a>&nbsp; &nbsp; 
 
                 @if( Auth::user()->isEditor() || Auth::user()->id==$plan->leader_id || Auth::user()->id==$plan->teacher_id )
                     &nbsp; {!! Form::submit('Save changes'); !!}
                 @endif
 
                 @if (Auth::user()->isAdmin())
-                    &nbsp; <a class="btn btn-danger btn-sm"  item="button" href="/cspot/items/{{ $item->id }}/delete">
+                    &nbsp; <a class="btn btn-danger btn-sm"  item="button" href="{{ url('cspot/items/'. $item->id .'/delete') }}">
                         <i class="fa fa-trash" > </i> &nbsp; Delete
                     </a>
                 @endif
 
-                &nbsp; <a href="/cspot/plans/{{$item->plan_id}}/edit">{!! Form::button('Cancel - Back to Plan') !!}</a>
+                &nbsp; <a href="{{ url('cspot/plans/'.$item->plan_id) }}/edit">{!! Form::button('Cancel - Back to Plan') !!}</a>
         @else
                 <h2>Add Item</h2>
                 <h5>to the Service plan (id {{ $plan->id }}) for {{ $plan->date->formatLocalized('%A, %d %B %Y') }}</h5>
@@ -208,7 +208,7 @@
           </label>
         </div>                        
         {!! Form::submit('Submit'); !!}
-        &nbsp; <a href="/cspot/plans/{{isset($plan) ? $plan->id : $plan_id}}/edit">{!! Form::button('Cancel - Back to Plan'); !!}</a>
+        &nbsp; <a href="{{ url( 'cspot/plans/' . (isset($plan) ? $plan->id : $plan_id) )  }}/edit">{!! Form::button('Cancel - Back to Plan'); !!}</a>
     @endif
 
     {!! Form::close() !!}

@@ -42,7 +42,7 @@
     @if (isset($default_item))
         <p>{!! Form::submit('Update'); !!}</p>
         <hr>
-        <a class="btn btn-danger btn-sm"  default_item="button" href="/admin/default_items/{{ $default_item->id }}/delete">
+        <a class="btn btn-danger btn-sm"  default_item="button" href="{{ url('admin/default_items/'. $default_item->id) }}/delete">
             <i class="fa fa-trash" > </i> &nbsp; Delete
         </a>
     @else
@@ -50,7 +50,7 @@
     @endif
 
 
-    <a href="/admin/default_items">{!! Form::button('Cancel'); !!}</a></p>
+    <a href="{{ url('admin/default_items') }}">{!! Form::button('Cancel'); !!}</a></p>
     {!! Form::close() !!}
 
 

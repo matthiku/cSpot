@@ -17,7 +17,7 @@
                   <p>Welcome, <strong>{{ Auth::user()->first_name }}</strong>, to </p>
 
                   <h3 class="card-title">
-                    <img src="/images/xs-cspot.png" height="30" width="40">
+                    <img src="{{ url('images/xs-cspot.png') }}" height="30" width="40">
                     c-SPOT, the church-Service Planning Online Tool
                   </h3>
 
@@ -25,13 +25,13 @@
 
                   <p class="card-text">
                     <a data-toggle="tooltip" data-placement="left" title="Plans where you are leader or teacher"
-                       href="/cspot/plans" class="btn btn-lg btn-primary">
+                       href="{{ url('cspot/plans') }}" class="btn btn-lg btn-primary">
                         Your Service Plans</a> &nbsp; &nbsp; 
                     <a data-toggle="tooltip" data-placement="bottom" title="All upcoming service plans"
-                        href="/cspot/plans/future" class="btn btn-lg btn-info">
+                        href="{{ url('cspot/plans/future') }}" class="btn btn-lg btn-info">
                           Upcoming Service Plans</a> &nbsp;  &nbsp; 
                     <a data-toggle="tooltip" data-placement="right" title="Go directly to next Sunday's Service Plan"
-                        href="/cspot/plans/next" class="btn btn-lg btn-success">
+                        href="{{ url('cspot/plans/next') }}" class="btn btn-lg btn-success">
                           Next Sunday's Service Plan</a>
                   </p>
                 </div>

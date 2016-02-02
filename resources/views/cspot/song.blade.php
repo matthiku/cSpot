@@ -78,7 +78,7 @@
             {!! Form::submit('Save changes'); !!}
 
             @if (Auth::user()->isAdmin())
-                <a class="btn btn-danger btn-sm"  song="button" href="/cspot/songs/{{ $song->id }}/delete">
+                <a class="btn btn-danger btn-sm"  song="button" href="{{ url('cspot/plans/'.$plan->id) }}/delete">
                     <i class="fa fa-trash" > </i> &nbsp; Delete
                 </a>
             @endif

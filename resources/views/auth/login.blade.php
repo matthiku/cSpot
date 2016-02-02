@@ -15,7 +15,7 @@
 
             @include('layouts.flashing')
             
-            <form class="form-horizontal" role="form" method="POST" id="inputForm"  action="{{ url('/login') }}">
+            <form class="form-horizontal" role="form" method="POST" id="inputForm"  action="{{ url('login') }}">
                 {!! csrf_field() !!}
 
                 <h2 class="card-header">Please sign in</h2>
@@ -63,7 +63,7 @@
                         <button type="submit" class="btn btn-primary">
                             <i class="fa fa-btn fa-sign-in"></i> Login
                         </button>
-                        <a class="btn btn-primary-outline pull-right" href="{{ url('/password/reset') }}">Forgot Your Password?</a>
+                        <a class="btn btn-primary-outline pull-right" href="{{ url('password/reset') }}">Forgot Your Password?</a>
                     </div>
                 </div>
                 <br/>
