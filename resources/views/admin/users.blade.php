@@ -14,6 +14,13 @@
 
 	@include('layouts.flashing')
 
+
+	@if( Auth::user()->isEditor() )
+		<a class="btn btn-primary-outline pull-xs-right" href="{{ url('admin/users/create') }}">
+			<i class="fa fa-plus"> </i> &nbsp; Add a user
+		</a>
+	@endif
+
     <h2>{{ $heading }}</h2>
 
 	<p>
@@ -58,26 +65,19 @@
 				<td>{{ $user->created_at }}</td>
 				<td class="nowrap">
 					@if( Auth::user()->isAdmin() || (Auth::user()->isEditor() && $user->id > 1) )
-						<a class="btn btn-primary-outline btn-sm" title="Edit" href='/admin/users/{{$user->id}}/edit'  ><i class="fa fa-pencil"></i></a>
+						<a class="btn btn-primary-outline btn-sm" title="Edit" href='{{ url('admin/users/'. $user->id) }}/edit'  ><i class="fa fa-pencil"></i></a>
 						@if( Auth::user()->isAdmin() && $user->id > 1 )
-							<a class="btn btn-danger  btn-sm" 	   title="Delete!" href='/admin/users/{{$user->id}}/delete'><i class="fa fa-trash" ></i></a>
+							<a class="btn btn-danger  btn-sm" 	   title="Delete!" href='{{ url('admin/users/'. $user->id) }}/delete'><i class="fa fa-trash" ></i></a>
 						@endif
 					@endif
 					@if( $user->hasRole('teacher') || $user->hasRole('leader') )
-						<a class="btn btn-secondary btn-sm" title="Show Upcoming Plans" href='/cspot/plans/by_user/{{$user->id}}'><i class="fa fa-filter"></i></a>
-					@endif
+						<a class="btn btn-secondary btn-sm" title="Show Upcoming Plans" href="{{ url('cspot/plans/by_user/'.$user->id) }}"><i class="fa fa-filter"></i></a>					@endif
 				</td>
 			</tr>
         @endforeach
 		</tbody>
 	</table>
 
-
-	@if( Auth::user()->isEditor() )
-		<a class="btn btn-primary-outline" href='/admin/users/create'>
-			<i class="fa fa-plus"> </i> &nbsp; Add a user
-		</a>
-	@endif
 
 	
 @stop

@@ -16,11 +16,11 @@
 
         @if (Auth::guest())
             <div class="form-signin center">
-                <h2 class="form-signin-heading"><a href="/login">Please Sign In</a></h2>
+                <h2 class="form-signin-heading"><a href="{{url('login')}}">Please Sign In</a></h2>
             </div>
         @else
             <div class="form-signin center">
-                <h2 class="form-signin-heading"><a href="/home">Start using c-SPOT</a></h2>
+                <h2 class="form-signin-heading"><a href="{{url('home')}}">Start using c-SPOT</a></h2>
             </div>
         @endif
 

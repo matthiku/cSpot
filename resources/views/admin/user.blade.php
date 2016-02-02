@@ -48,7 +48,7 @@
         <p>{!! Form::submit('Update'); !!}</p>
         @if (Auth::user()->isAdmin())
             <hr>
-            <a class="btn btn-danger btn-sm"  role="button" href="/admin/users/{{ $user->id }}/delete">
+            <a class="btn btn-danger btn-sm"  role="button" href="{{ url('admin/users/'. $user->id) }}/delete">
                 <i class="fa fa-trash" > </i> &nbsp; Delete
             </a>
         @endif
