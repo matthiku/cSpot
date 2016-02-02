@@ -7,13 +7,13 @@
 
 
         <div class="col-md-3">
-            <img class="image" src="/images/cspot.png">
+            <img class="image" src="{{ url('images/cspot.png') }}">
         </div>
 
         <div class="col-md-9">
             <div class="panel panel-default">
                 
-                <div class="panel-heading">Welcome to <img src="../images/xs-cspot.png" height="20" width="30"> c-SPOT!</div>
+                <div class="panel-heading">Welcome to <img src="{{ url('images/xs-cspot.png') }}" height="20" width="30"> c-SPOT!</div>
 
                 <br>
 
@@ -26,7 +26,7 @@
                     <p>As an open source project, you can download the sources and modify the code according to your specific needs.</p>
                     <p>The project is currently hosted on Github under 
                         <a target="_new" href="https://github.com/matthiku/cSpot">https://github.com/matthiku/cSpot</a>
-                        where it can be 'cloned' (downloaded) to your own web server.
+                        from where it can be 'cloned' (downloaded) to your own web server.
                     </p>
                     <p>Installation instructions can be found in the readme file.</p>
                 </div>

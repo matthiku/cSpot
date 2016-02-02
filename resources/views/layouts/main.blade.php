@@ -122,7 +122,7 @@
 
 
     <!-- JavaScripts -->
-    <script src="/js/bootstrap.min.js"></script>
+    <script src="{{ url('js/bootstrap.min.js') }}"></script>
     <script>
         $(document).ready(function() {
           $(function () {
