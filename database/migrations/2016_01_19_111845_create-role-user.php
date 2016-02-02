@@ -24,10 +24,6 @@ class CreateRoleUser extends Migration
             $table->foreign('role_id')->references('id')->on('roles')->onDelete('no action');
             $table->timestamps();
         });
-        // set some default values
-        DB::table('role_user')->insert(['user_id'=>1, 'role_id'=>'1']);
-        DB::table('role_user')->insert(['user_id'=>1, 'role_id'=>'2']);
-        DB::table('role_user')->insert(['user_id'=>1, 'role_id'=>'3']);
     }
 
     /**
