@@ -219,12 +219,12 @@ class AuthController extends Controller
 
         $code = Input::get('code');
         if(!$code)
-            return redirect()->url('login')
+            return redirect()->route('login')
                 ->with('status', 'danger')
                 ->with('message', 'You did not share your profile data with our social app.');
         if(!$user->email)
         {
-            return redirect()->url('login')
+            return redirect()->route('login')
                 ->with('status', 'danger')
                 ->with('message', 'You did not share your email with our social app. You need to visit App Settings and remove our app, than you can come back here and login again. Or you can create new account.');
         }
