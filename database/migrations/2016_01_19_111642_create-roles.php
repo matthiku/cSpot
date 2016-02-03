@@ -31,6 +31,7 @@ class CreateRoles extends Migration
         DB::table('roles')->insert(['name'=>'teacher']);
         DB::table('roles')->insert(['name'=>'leader']);
         DB::table('roles')->insert(['name'=>'retired']);
+        DB::table('roles')->insert(['name'=>'user']);
     }
 
     /**

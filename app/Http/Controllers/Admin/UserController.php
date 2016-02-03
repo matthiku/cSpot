@@ -34,7 +34,7 @@ class UserController extends Controller
     public function __construct() {
         $this->middleware('auth');
         $this->middleware('role:editor', ['except' => ['index', 'show', 'update']]);
-        $this->middleware('role:administrator', ['only' => ['destroy']]);
+        $this->middleware('role:administrator', ['only' => ['destroy', 'create']]);
     }
 
 

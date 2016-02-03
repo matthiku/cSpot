@@ -15,7 +15,7 @@
 	@include('layouts.flashing')
 
 
-	@if( Auth::user()->isEditor() )
+	@if( Auth::user()->isAdmin() )
 		<a class="btn btn-primary-outline pull-xs-right" href="{{ url('admin/users/create') }}">
 			<i class="fa fa-plus"> </i> &nbsp; Add a user
 		</a>
