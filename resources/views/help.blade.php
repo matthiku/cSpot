@@ -3,7 +3,9 @@
 
 <div class="card card-block text-xs-center">
 
+
   <div id="accordion" role="tablist" aria-multiselectable="true">
+
     <div class="panel panel-default">
       <div class="panel-heading" role="tab" id="headingOne">
         <h4 class="panel-title">
@@ -12,7 +14,7 @@
           </a>
         </h4>
       </div>
-      <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+      <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
         <p>c-SPOT was designed to help churches organize their Sunday and Midweek services as well as other events.</p>
         <p>As an online tool, it provides event information to every person involved and allows them 
            to add or modify information accordingly.</p>
@@ -20,6 +22,7 @@
            can make modifications or even see certain details.</p>
       </div>
     </div>
+
     <div class="panel panel-default">
       <div class="panel-heading" role="tab" id="headingTwo">
         <h4 class="panel-title">
@@ -36,13 +39,14 @@
         their existing registration with one of the "big" service providers (like Google, Facebook, Twitter etc.) to be used 
         for this verification.<br>
         If a user chooses to allow <span  class="text-warning">provider verification</span>, they need to "authorize" c-SPOT <strong>once</strong> to access their basic account 
-        information on those accounts. From then on, no further login as required anymore as long as they are logged in to those 
+        information on those accounts. From then on, no further login is required anymore as long as they are logged in to those 
         providers in the same browser program.<br>
         <strong>Note: </strong>After the installation of this tool, the <span  class="text-warning">first</span> user to register will be be getting non-revokable 
-        Administrator rights! (In technical terms, this is the user with id number 1. Of course this can be manipulated in the 'users' 
+        Administrator rights! (In technical terms, this is the user with id number 1. Of course, like everything else, this can be manipulated in the 'users' 
         table of the database.)
       </div>
     </div>
+
     <div class="panel panel-default">
       <div class="panel-heading" role="tab" id="headingThree">
         <h4 class="panel-title">
@@ -52,15 +56,16 @@
         </h4>
       </div>
       <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
-        All data is stored in a single (mySQL) database. The major data tables are for <span class="font-italic">users, songs, 
+        User details and all information is stored in a (mySQL) database called 'cspot' in various tables. The major data tables are for <span class="font-italic">users, songs, 
         service plans</span> and <span class="font-italic">service plan items</span>.
         Auxilliary information is stored in tables for user roles, service plan types and standard items for service plans.<br>
         Users can see and/or modify all or various parts of the information depending on their <span class="text-warning">roles</span> 
         they have been given by an administrator.
-        Depending on those roles, users can be assigned as 'leader' or 'teacher' of a plan and as such are able to modify, add and 
+        Based on those roles, users can be assigned as 'leader' or 'teacher' of a plan and as such are able to modify, add and 
         delete plan items on those respective plans.
       </div>
     </div>
   </div>
+
 
 </div>                

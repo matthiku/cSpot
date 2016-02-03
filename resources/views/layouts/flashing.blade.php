@@ -18,6 +18,7 @@
     </script>
 @endif
 
+
 @if (session()->has('error'))
     <div id="myErrorModal" class="modal fade">
       <div class="modal-dialog" role="document">
@@ -45,18 +46,22 @@
 @endif
 
 
+
 @if (Session::has('status'))
-
-    <!-- Large modal -->
-    <button class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">Large modal</button>
-
-    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div id="myMsgModal" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            Status: {{ Session::get('status') }}
+            <div class="alert alert-info" role="alert">
+                Status: {{ Session::get('status') }}
+            </div>
         </div>
       </div>
     </div>
+    <script>
+        $(document).ready(function() {
+            $('#myMsgModal').modal('show');
+        });        
+    </script>
 @endif
 
 
