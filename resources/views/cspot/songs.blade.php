@@ -46,7 +46,7 @@
 			</thead>
 			<tbody>
 	        @foreach( $songs as $song )
-				<tr class="link" onclick="location.href ='{{ url('cspot/songs/'.$plan->id) }}/edit'">
+				<tr class="link" onclick="location.href ='{{ url('cspot/songs/'.$song->id) }}/edit'">
 					<td scope="row" class="hidden-md-down">{{ $song->id }}</td>
 					<td>{{ $song->title }} {{ $song->title_2<>'' ? '('. $song->title_2 .')' : '' }}</td>
 					<!-- <td>{ { $song->title_2 }}</td> -->
@@ -61,8 +61,8 @@
 					<td class="nowrap">
 						<!-- <a class="btn btn-secondary btn-sm" title="Show Users" href='/cspot/songs/{{$song->id}}'><i class="fa fa-filter"></i></a> -->
 						 @if( Auth::user()->isEditor() )
-							<a class="btn btn-primary-outline btn-sm" title="Edit" href='{{ url('cspot/songs/'.$plan->id) }}/edit'><i class="fa fa-pencil"></i></a>
-							<a class="btn btn-danger btn-sm" title="Delete!" href='{{ url('cspot/songs/'.$plan->id) }}/delete'><i class="fa fa-trash"></i></a>
+							<a class="btn btn-primary-outline btn-sm" title="Edit" href='{{ url('cspot/songs/'.$song->id) }}/edit'><i class="fa fa-pencil"></i></a>
+							<a class="btn btn-danger btn-sm" title="Delete!" href='{{ url('cspot/songs/'.$song->id) }}/delete'><i class="fa fa-trash"></i></a>
 						@endif
 					</td>
 				</tr>
