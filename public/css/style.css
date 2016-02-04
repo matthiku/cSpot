@@ -54,18 +54,46 @@ label {
     font-weight: 700;    
 }
 
+
+/* Large devices */
 @media (max-width: 62em) {
+
     .table-xs td {
         padding: 0.1em;
     }
 }
 
+
+/*Extra SMALL devices*/
 @media (max-width: 34em) {
+
     .nowrap {
         white-space: normal;
     }
+    .sm-full {
+        /* fill the whole width on small devices */
+        width: 100%;
+    }
+    .xs-center {
+        text-align: center;
+    }
+
+    .xs-widht-half {
+        min-width: 50%;
+    }
 }
 
+/* Extra SMALL devices */
+@media (max-width: 48em) {
+
+    .md-full {
+        /* fill the whole width on small devices */
+        width: 100%;
+    }
+}
+
+
+/* Small devices (landscape phones, 34em and up) */
 @media (min-width: 34em) {
 
     .nowrap {

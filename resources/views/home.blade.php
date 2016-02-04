@@ -24,15 +24,18 @@
                   <hr>
 
                   <p class="card-text">
-                    <a data-toggle="tooltip" data-placement="left" title="Plans where you are leader or teacher"
-                       href="{{ url('cspot/plans') }}" class="btn btn-lg btn-primary">
-                        Your Service Plans</a> &nbsp; &nbsp; 
-                    <a data-toggle="tooltip" data-placement="bottom" title="All upcoming service plans"
-                        href="{{ url('cspot/plans/future') }}" class="btn btn-lg btn-info">
-                          Upcoming Service Plans</a> &nbsp;  &nbsp; 
-                    <a data-toggle="tooltip" data-placement="right" title="Go directly to next Sunday's Service Plan"
-                        href="{{ url('cspot/plans/next') }}" class="btn btn-lg btn-success">
-                          Next Sunday's Service Plan</a>
+                    <a data-toggle="tooltip" title="Plans where you are leader or teacher"
+                       href="{{ url('cspot/plans') }}" 
+                       class="btn btn-lg btn-info md-full">
+                           Your Service Plans</a> &nbsp; &nbsp; 
+                    <a data-toggle="tooltip" title="All upcoming service plans"
+                        href="{{ url('cspot/plans/future') }}" 
+                        class="btn btn-lg btn-primary md-full">
+                            Upcoming Service Plans</a> &nbsp;  &nbsp; 
+                    <a data-toggle="tooltip" title="Go directly to next Sunday's Service Plan"
+                        href="{{ url('cspot/plans/next') }}" 
+                        class="btn btn-lg btn-success md-full">
+                            Next Sunday's Plan</a>
                   </p>
                 </div>
   

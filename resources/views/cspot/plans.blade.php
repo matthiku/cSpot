@@ -63,7 +63,7 @@
 			</thead>
 			<tbody>
 	        @foreach( $plans as $plan )
-				<tr class="link" onclick="location.href ='/cspot/plans/{{$plan->id}}/edit'">
+				<tr class="link" onclick="location.href='{{ url('cspot/plans/'.$plan->id) }}/edit'">
 					<td class="hidden-md-down" scope="row">{{ $plan->id }}</td>
 					<td class="hidden-md-down">{{ $plan->date->formatLocalized('%A, %d %B %Y') }}</td>
 					<td class="hidden-sm-down hidden-lg-up">{{ $plan->date->formatLocalized('%a, %d %B %Y') }}</td>

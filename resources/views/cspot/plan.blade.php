@@ -37,7 +37,7 @@
                 )) !!}
         @endif
     @else
-        <h2>Add a new Service Plan</h2>
+        <h2>Add Service Plan</h2>
         {!! Form::open(array('action' => 'Cspot\PlanController@store', 'id' => 'inputForm')) !!}
     @endif
 
@@ -143,7 +143,7 @@
 
         <!-- Checkbox to add default items into NEW plan -->
         <input type="hidden" name="defaultItems" value="false">
-        <div class="checkbox">
+        <div class="checkbox xs-center">
           <label>
             <input checked="checked" type="checkbox" value="Y" name="defaultItems">
             Insert default items for this plan?
@@ -152,30 +152,33 @@
 
     @endif
 
+    <div class="form-buttons xs-center">
+        &nbsp; &nbsp; 
+        @if (isset($plan))
 
-    &nbsp; &nbsp; 
-    @if (isset($plan))
+            @if (Auth::user()->isEditor())            
+                &nbsp; {!! Form::submit('Save changes'); !!}
+                <script type="text/javascript">document.forms.inputForm.date.focus()</script>
+            @else
+                &nbsp; {!! Form::submit('Save Note'); !!}
+                <script type="text/javascript">document.forms.inputForm.info.focus()</script>
+            @endif
 
-        @if (Auth::user()->isEditor())            
-            &nbsp; {!! Form::submit('Save changes'); !!}
-            <script type="text/javascript">document.forms.inputForm.date.focus()</script>
+            @if (Auth::user()->isAdmin())
+                &nbsp; <a class="btn btn-danger btn-sm"  plan="button" href="{{ url('cspot/plans/'.$plan->id) }}/delete">
+                    <i class="fa fa-trash" > </i> &nbsp; Delete
+                </a>
+            @endif
+
         @else
-            &nbsp; {!! Form::submit('Save Note'); !!}
-            <script type="text/javascript">document.forms.inputForm.info.focus()</script>
+            &nbsp; <input class="xs-widht-half" type="submit" value="Submit">
+
+            <script type="text/javascript">document.forms.inputForm.date.focus()</script>
         @endif
 
-        @if (Auth::user()->isAdmin())
-            &nbsp; <a class="btn btn-danger btn-sm"  plan="button" href="{{ url('cspot/plans/'.$plan->id) }}/delete">
-                <i class="fa fa-trash" > </i> &nbsp; Delete
-            </a>
-        @endif
-
-    @else
-        &nbsp; {!! Form::submit('Submit'); !!}
-        <script type="text/javascript">document.forms.inputForm.date.focus()</script>
-    @endif
-
-    &nbsp; <a href="{{ url('cspot/plans/future') }}">{!! Form::button('Back'); !!}</a>
+        &nbsp; <a href="{{ url('cspot/plans/future') }}">{!! Form::button('Back'); !!}</a>
+    </div>
+    
 
     <div class="form-group">
         <br>
