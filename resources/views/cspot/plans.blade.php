@@ -50,28 +50,30 @@
 					 ">
 			<thead class="thead-default">
 				<tr>
-					<th>#</th>
+					<th class="hidden-md-down">#</th>
 					<th>Date</th>
 					<th>Service Type</th>
 					<th>Leader</th>
 					<th>Teacher</th>
 					<!-- <th>State</th> -->
-					<th class="text-right">Last updated on</th>
-					<th>by</th>
+					<th class="text-right hidden-md-down">Last updated on</th>
+					<th class="hidden-md-down">by</th>
 					<th>Action</th>
 				</tr>
 			</thead>
 			<tbody>
 	        @foreach( $plans as $plan )
 				<tr class="link" onclick="location.href ='/cspot/plans/{{$plan->id}}/edit'">
-					<td scope="row">{{ $plan->id }}</td>
-					<td>{{ $plan->date->formatLocalized('%A, %d %B %Y') }}</td>
+					<td class="hidden-md-down" scope="row">{{ $plan->id }}</td>
+					<td class="hidden-md-down">{{ $plan->date->formatLocalized('%A, %d %B %Y') }}</td>
+					<td class="hidden-sm-down hidden-lg-up">{{ $plan->date->formatLocalized('%a, %d %B %Y') }}</td>
+					<td class="hidden-md-up">{{ $plan->date->formatLocalized('%a, %d %b') }}</td>
 					<td>{{ $plan->type->name }}</td>
 					<td>{{ $plan->leader->first_name }}</td>
 					<td>{{ $plan->teacher->first_name }}</td>
 					<!-- <td>{{ $plan->state }}</td> -->
-					<td class="text-right">{{ $plan->updated_at->formatLocalized('%d-%m-%Y %H:%M') }}</td>
-					<td>{{ ucfirst($plan->changer) }}</td>
+					<td class="text-right hidden-md-down">{{ $plan->updated_at->formatLocalized('%d-%m-%Y %H:%M') }}</td>
+					<td class="hidden-md-down">{{ ucfirst($plan->changer) }}</td>
 					<td class="nowrap">
 						<!-- <a class="btn btn-secondary btn-sm" title="Show Items" href='/cspot/items/{{$plan->id}}'><i class="fa fa-filter"></i></a> -->
 						<!-- if( Auth::user()->isEditor() || Auth::user()->id == $plan->leader_id ) -->

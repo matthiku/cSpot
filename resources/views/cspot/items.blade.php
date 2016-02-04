@@ -8,11 +8,12 @@
 				@if( Auth::user()->isEditor() || Auth::user()->id==$plan->leader_id || Auth::user()->id==$plan->teacher_id )
 					<th class="text-right">Move item</th>
 				@endif
-				<th>Item</th>
+				<th class="hidden-sm-down">Item</th>
 				<th class="hidden-md-down">Song No.</th>
-				<th>Book Ref.</th>
-				<th>Title</th>
-				<th>Comment</th>
+				<th class="hidden-xs-down">Book Ref.</th>
+				<th class="hidden-sm-down">Title</th>
+				<th class="hidden-sm-down">Comment</th>
+				<th class="hidden-md-up">Title/Comment</th>
 				<th class="hidden-md-down">Version</th>
 				<th class="hidden-md-down">Key</th>
 				@if( Auth::user()->isEditor() || Auth::user()->id==$plan->leader_id || Auth::user()->id==$plan->teacher_id )
@@ -35,12 +36,12 @@
 					@endif
 				</td>
 				@endif
-				<td scope="row">{{ $item->seq_no }}</td>
+				<td class="hidden-sm-down" scope="row">{{ $item->seq_no }}</td>
 				<td class="hidden-md-down">{{ ($item->song_id) ? $item->song->song_no : '' }}</td>
-				<td>
+				<td class="hidden-xs-down">
 					{{ ($item->song_id) ? $item->song->book_ref : '' }}
 				</td>
-				<td @if ($item->song_id)
+				<td class="hidden-sm-down" @if ($item->song_id)
 						title="{{ $item->song->lyrics }}"
 					@endif
 					>
@@ -49,7 +50,8 @@
 						{{ $item->song->title_2 ? ' ('. $item->song->title_2 .')' : '' }}
 					@endif
 				</td>
-				<td>{{ $item->comment }}</td>
+				<td class="hidden-sm-down">{{ $item->comment }}</td>
+				<td class="hidden-md-up">{{ $item->song_id ? $item->song->title.', ' : '' }}{{ $item->comment }}</td>
 				<td class="hidden-md-down">{{ $item->version }}</td>
 				<td class="hidden-md-down">{{ $item->key }}</td>
 				@if( Auth::user()->isEditor() || Auth::user()->id==$plan->leader_id || Auth::user()->id==$plan->teacher_id )
@@ -58,7 +60,7 @@
 						href='{{ url('cspot/plans/'.$plan->id) }}/items/create/{{$item->seq_no-0.1}}'><i class="fa fa-reply"></i></a>
 					<a class="btn btn-primary-outline btn-sm" data-toggle="tooltip" title="Edit" 
 						href='{{ url('cspot/plans/'.$plan->id) }}/items/{{$item->id}}/edit/'><i class="fa fa-pencil"></i></a>
-					<a class="btn btn-danger btn-sm" data-toggle="tooltip" data-placement="right" title="Delete!" 
+					<a class="btn btn-danger btn-sm" data-toggle="tooltip" title="Delete!" 
 						href='{{ url('cspot/items/'.$item->id) }}/delete'><i class="fa fa-trash"></i></a>
 				</td>
 				@endif

@@ -60,6 +60,16 @@ label {
     }
 }
 
-.nowrap {
-    white-space: nowrap;
+@media (max-width: 34em) {
+    .nowrap {
+        white-space: normal;
+    }
+}
+
+@media (min-width: 34em) {
+
+    .nowrap {
+        white-space: nowrap;
+    }
+
 }

@@ -38,12 +38,12 @@
 			<tr>
 				<th>#</th>
 				<th>First Name</th>
-				<th>Last Name</th>
+				<th class="hidden-md-down">Last Name</th>
 				@if ( Auth::user()->isEditor() )
-					<th>Email</th>
+					<th class="hidden-sm-down">Email</th>
 				@endif
 				<th>Role(s)</th>
-				<th>Joined</th>
+				<th class="hidden-md-down">Joined</th>
 				<th>Action</th>
 			</tr>
 		</thead>
@@ -55,14 +55,14 @@
 					>					
 				<td scope="row">{{ $user->id }}</td>
 				<td>{{ $user->first_name }}</td>
-				<td>{{ $user->last_name }}</td>
+				<td class="hidden-md-down">{{ $user->last_name }}</td>
 				@if ( Auth::user()->isEditor() )
-					<td>{{ $user->email }}</td>
+					<td class="hidden-sm-down">{{ $user->email }}</td>
 				@endif
 				<td>@foreach ($user->roles as $role)
 						{{ ucfirst($role->name) }},
 					@endforeach</td>
-				<td>{{ $user->created_at }}</td>
+				<td class="hidden-md-down">{{ $user->created_at }}</td>
 				<td class="nowrap">
 					@if( Auth::user()->isAdmin() || (Auth::user()->isEditor() && $user->id > 1) )
 						<a class="btn btn-primary-outline btn-sm" title="Edit" href='{{ url('admin/users/'. $user->id) }}/edit'  ><i class="fa fa-pencil"></i></a>
