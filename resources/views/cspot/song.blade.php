@@ -40,22 +40,21 @@
                 <div class="row form-group">
                    {!! Form::label('title', 'Song Title', ['class' => 'col-sm-4']); !!}
                    <div class="col-sm-8 full-width">{!! Form::text('title'); !!}</div>
+                    <a class="btn btn-default btn-sm" type="button" target="new" 
+                        href="https://olr.ccli.com/search/results?SearchTerm={{ $song->title.' '.$song->title_2.' '.$song->author }}">
+                        <i class="fa fa-search" > </i> &nbsp; CCLI search by song titles and author
+                    </a>
                 </div>
                 <div class="row form-group">
                     {!! Form::label('title_2', 'Subtitle', ['class' => 'col-sm-4']); !!}
-                    <div class="col-sm-8">{!! Form::text('title_2'); !!}
-                    <a class="btn btn-default btn-sm" type="button" target="new" 
-                        href="https://olr.ccli.com/search/results?SearchTerm={{ $song->title }}">
-                        <i class="fa fa-search" > </i> &nbsp; CCLI title search
-                    </a>
-                    </div>
+                    <div class="col-sm-8 full-width">{!! Form::text('title_2'); !!}</div>
                 </div>
                 <div class="row form-group">
                     {!! Form::label('song_no', 'CCLI Song No', ['class' => 'col-sm-4']); !!}
-                    <div class="col-sm-8">{!! Form::number('song_no'); !!}</div>
+                    <div class="col-sm-8 full-width">{!! Form::number('song_no'); !!}</div>
                     <a class="btn btn-default btn-sm" type="button" target="new" 
                         href="https://olr.ccli.com/search/results?SearchTerm={{ $song->song_no }}">
-                        <i class="fa fa-search" > </i> &nbsp; CCLI No.search
+                        <i class="fa fa-search" > </i> &nbsp; CCLI look-up (if number exists)
                     </a>
                 </div>
                 <div class="row form-group">
@@ -73,6 +72,10 @@
                 <div class="row form-group">
                     {!! Form::label('youtube_id', 'Youtube ID', ['class' => 'col-sm-4']); !!}
                     <div class="col-sm-8 full-width">{!! Form::text('youtube_id'); !!}</div>
+                    <a class="btn btn-default btn-sm" type="button" target="new" 
+                        href="https://www.youtube.com/results?search_query={{ $song->title }}">
+                        <i class="fa fa-youtube" > </i> &nbsp; YouTube search
+                    </a>
                 </div>
                 <div class="row form-group">
                     {!! Form::label('link', 'Link(s)', ['class' => 'col-sm-4']); !!}

@@ -16,7 +16,7 @@
 
         @if (Auth::guest())
             <div class="form-signin center">
-                <h2 class="form-signin-heading"><a href="{{url('login')}}">Please Sign In</a></h2>
+                    <h4><a href="{{url('login')}}">Sign in</a>  &nbsp;  &nbsp; or &nbsp;  &nbsp;  <a href="{{url('register')}}">Sign up</a></h4>
             </div>
         @else
             <div class="form-signin center">

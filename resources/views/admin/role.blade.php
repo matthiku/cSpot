@@ -37,7 +37,7 @@
 
     <script type="text/javascript">document.forms.inputForm.name.focus()</script>
 
-    <a href="/admin/roles">{!! Form::button('Cancel'); !!}</a></p>
+    <a href="{{ url('admin/roles/') }}">{!! Form::button('Cancel'); !!}</a></p>
     {!! Form::close() !!}
     
 @stop

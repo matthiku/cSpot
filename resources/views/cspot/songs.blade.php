@@ -37,7 +37,7 @@
 					<th class="hidden-md-down">#</th>
 					<th>Title</th>
 					<!-- <th>Title 2</th> -->
-					<th class="hidden-md-down">Song No.</th>
+					<th class="hidden-md-down">CCLI No.</th>
 					<th>Book Ref.</th>
 					<th class="hidden-md-down">Author</th>
 					<th>Youtube ID</th>

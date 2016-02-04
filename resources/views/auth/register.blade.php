@@ -102,7 +102,7 @@
 
                 <br />
                 <center>
-                    <h4>Or sign up using your account on one of these providers:</h4>
+                    <h4><strong>Or</strong> sign up using your account on one of these providers:</h4>
                     @include('auth.social')
                 </center>
 
