@@ -40,7 +40,8 @@
 					<th class="hidden-md-down">CCLI No.</th>
 					<th>Book Ref.</th>
 					<th class="hidden-md-down">Author</th>
-					<th>Youtube ID</th>
+					<th class="hidden-sm-down">License</th>
+					<th class="hidden-sm-down">Youtube ID</th>
 					<th>Action</th>
 				</tr>
 			</thead>
@@ -53,7 +54,8 @@
 					<td class="hidden-md-down">{{ $song->song_no }}</td>
 					<td>{{ $song->book_ref }}</td>
 					<td class="hidden-md-down">{{ $song->author }}</td>
-					<td>@if (substr($song->youtube_id,0,2)=="PL")
+					<td class="hidden-sm-down">{{ $song->license }}</td>
+					<td class="hidden-sm-down">@if (substr($song->youtube_id,0,2)=="PL")
 							<a target="new" href="https://www.youtube.com/playlist?list={{ $song->youtube_id }}">YT Playlist</a></td>
 						@else
 							<a target="new" href="https://www.youtube.com/watch?v={{ $song->youtube_id }}">{{ $song->youtube_id }}</a></td>

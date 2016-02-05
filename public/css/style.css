@@ -40,6 +40,10 @@ textarea {
 
 .full-width input {
     width: 100%;
+    max-width: 30em;
+}
+.fully-width {
+    width: 100%;
 }
 
 .link {

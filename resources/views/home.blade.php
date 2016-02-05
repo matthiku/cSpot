@@ -17,9 +17,13 @@
                   <p>Welcome, <strong>{{ Auth::user()->first_name }}</strong>, to </p>
 
                   <h3 class="card-title">
-                    <img src="{{ url('images/xs-cspot.png') }}" height="30" width="40">
                     c-SPOT, the church-Service Planning Online Tool
                   </h3>
+                  for
+                  <h4>
+                    <img src="{{ url('images/churchLogo.png') }}" height="30" width="40">
+                    {{ env('CHURCH_NAME') }}
+                  </h4>
 
                   <hr>
 

@@ -60,8 +60,11 @@ class SongController extends Controller
      */
     public function create()
     {
-        //
-        return view($this->view_one);
+        // get list of license types first
+        $l = new Song;
+        $licensesEnum = $l->getLicenseEnum();
+
+        return view($this->view_one, ['licensesEnum' => $licensesEnum]);
     }
 
     /**
@@ -74,7 +77,7 @@ class SongController extends Controller
     {
         //
         Song::create($request->all());
-        flash('New Song added.');
+        flash('New Song added: '.$request->title );
         return \Redirect::route($this->view_idx);
     }
 
@@ -114,7 +117,11 @@ class SongController extends Controller
         // find a single resource by ID
         $output = Song::find($id);
         if ($output) {
-            return view( $this->view_one, array('song' => $output ) );
+            // get list of license types first
+            $l = new Song;
+            $licensesEnum = $l->getLicenseEnum();
+
+            return view( $this->view_one, array('song' => $output, 'licensesEnum' => $licensesEnum ) );
         }
         //
         flash('Error! Song with id "' . $id . '" not found');
@@ -134,8 +141,8 @@ class SongController extends Controller
         Song::where('id', $id)
                 ->update($request->except(['_method','_token']));
 
-        flash('Song with id "' . $id . '" updated');
-        return \Redirect::route($this->view_idx);
+        flash( 'Song "'.$request->title.'" updated.' );
+        return \Redirect::route( $this->view_idx );
     }
 
     /**
@@ -151,9 +158,8 @@ class SongController extends Controller
         $output = Song::find($id);
         if ($output) {
             $output->delete();
-            flash('Song with id "' . $id . '" deleted.');
-            return \Redirect::route($this->view_idx)
-                            ->with(['status' => $message]);
+            flash( 'Song "'.$request->title.'" deleted.' );
+            return \Redirect::route( $this->view_idx );
         }
         //
         flash('Error! Song with ID "' . $id . '" not found');

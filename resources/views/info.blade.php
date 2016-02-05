@@ -13,7 +13,10 @@
         <div class="col-md-9">
             <div class="panel panel-default">
                 
-                <div class="panel-heading">Welcome to <img src="{{ url('images/xs-cspot.png') }}" height="20" width="30"> c-SPOT!</div>
+                <div class="panel-heading">
+                    <img src="{{ url('images/churchLogo.png') }}" height="20" width="30">
+                    {{ env('CHURCH_NAME') }}<br>Welcome to  c-SPOT!
+                </div>
 
                 <br>
 
@@ -21,6 +24,7 @@
                     <h4>the <span class="text-primary">c</span>hurch-<span class="text-primary">S</span>ervice 
                         <span class="text-primary">P</span>lanning <span class="text-primary">O</span>nline <span class="text-primary">T</span>ool</h4>
                     <br>
+
                     
                     <p>Create your own service planning database.<br>Install it on your church's web server and allow other users to participate.</p>
                     <p>As an open source project, you can download the sources and modify the code according to your specific needs.</p>
