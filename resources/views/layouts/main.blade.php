@@ -29,30 +29,6 @@
   <body id="app-layout">
     <nav class="tek-nav navbar navbar-dark bg-inverse navbar-full">
 
-      <a class="navbar-brand" href="{{ url('.') }}"><img src="{{ url('images/xs-cspot.png') }}" height="20" width="30"></a>
-
-      <ul class="nav navbar-nav">
-        @if (Auth::user())
-        <li class="nav-item dropdown {{ Request::is('cspot/plans*') ? 'active' : '' }}">
-            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                Planning <span class="caret"></span>
-            </a>
-            <div class="dropdown-menu" role="menu">
-              <a class="dropdown-item" href="{{ url('cspot/plans/next') }}"><i class="fa fa-btn fa-bell-o fa-lg"></i> &nbsp; Next Sunday</a>
-              <a class="dropdown-item" href="{{ url('cspot/plans/future') }}"><i class="fa fa-btn fa-calendar fa-lg"></i> &nbsp; Upcoming Plans</a>
-              <hr>
-              <a class="dropdown-item" href="{{ url('cspot/plans') }}"><i class="fa fa-btn fa-calendar-check-o fa-lg"></i> &nbsp; My Service Plans</a>
-              @if( Auth::user()->isEditor() )
-                <a class="dropdown-item" href="{{ url('cspot/plans/create') }}"><i class="fa fa-btn fa-calendar-plus-o fa-lg"></i> &nbsp; Add New Plan</a>
-              @endif
-              <a class="dropdown-item" href="{{ url('admin/types') }}"><i class="fa fa-btn fa-tasks fa-lg"></i> &nbsp; Service Types</a>
-              <hr>
-              <a class="dropdown-item" href="{{ url('cspot/songs') }}"><i class="fa fa-btn fa-music fa-lg"></i> &nbsp; Songs</a>
-            </div>
-        </li>
-        @endif
-      </ul>
-
       <ul class="nav navbar-nav pull-xs-right">
           <!-- Authentication Links -->
           @if (Auth::guest())
@@ -104,6 +80,32 @@
         <button type="submit" class="btn btn-sm btn-primary">Sign in</button> &nbsp; &nbsp; &nbsp;
       </form>
       @endif
+
+
+      <a class="navbar-brand" href="{{ url('.') }}"><img src="{{ url('images/xs-cspot.png') }}" height="20" width="30"></a>
+
+      <ul class="nav navbar-nav">
+        @if (Auth::user())
+        <li class="nav-item dropdown {{ Request::is('cspot/plans*') ? 'active' : '' }}">
+            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                Planning <span class="caret"></span>
+            </a>
+            <div class="dropdown-menu" role="menu">
+              <a class="dropdown-item" href="{{ url('cspot/plans/next') }}"><i class="fa fa-btn fa-bell-o fa-lg"></i> &nbsp; Next Sunday</a>
+              <a class="dropdown-item" href="{{ url('cspot/plans/future') }}"><i class="fa fa-btn fa-calendar fa-lg"></i> &nbsp; Upcoming Plans</a>
+              <hr>
+              <a class="dropdown-item" href="{{ url('cspot/plans') }}"><i class="fa fa-btn fa-calendar-check-o fa-lg"></i> &nbsp; My Service Plans</a>
+              @if( Auth::user()->isEditor() )
+                <a class="dropdown-item" href="{{ url('cspot/plans/create') }}"><i class="fa fa-btn fa-calendar-plus-o fa-lg"></i> &nbsp; Add New Plan</a>
+              @endif
+              <a class="dropdown-item" href="{{ url('admin/types') }}"><i class="fa fa-btn fa-tasks fa-lg"></i> &nbsp; Service Types</a>
+              <hr>
+              <a class="dropdown-item" href="{{ url('cspot/songs') }}"><i class="fa fa-btn fa-music fa-lg"></i> &nbsp; Songs</a>
+            </div>
+        </li>
+        @endif
+        <li class="hidden-md-down center">{{ env('CHURCH_NAME') }}</li>
+      </ul>
 
 
     </nav>
