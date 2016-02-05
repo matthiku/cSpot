@@ -2,17 +2,17 @@
 
 Create your own service planning database. Deploy for your church and allow other users to participate.
 
-As an open source project, you can download the sources ('clone') and run the tool from your own web site.
+As an open source project, you can download ('clone') the sources and run the tool from your own web site.
 
-**Developers**, please feel free to contribute! **Testers**, please send your bug reports and enhancement suggestions!
+**Developers**, please feel free to contribute and make pull requests! **Testers**, please send your bug reports and enhancement suggestions!
 
 
 ### Introduction
 c-SPOT was designed to help churches organize their Sunday and Midweek services as well as other events.
 
-As an online tool, it provides event information to every person involved and allows them to add or modify information accordingly.
+As a mobile-friendly online tool, it provides event information to every person involved and allows them to add or modify information accordingly.
 
-However, the ability to contribute to the plan details is based on distinct roles given to each user, so that only authorized people can make modifications or even see certain details.
+However, the ability to contribute to the plan items is based on distinct roles given to each user, so that only authorized people can make modifications or even see certain details.
 
 ### Authorization
 By default, c-SPOT is designed to allow for 'self-registration'. Very basic rights are given to a self-registered user. Any further rights must be assigned by a user with an "Administrator" role.
@@ -31,14 +31,20 @@ Users can see and/or modify all or various parts of the information depending on
 
 ## Technical Blah blah
 ### Code
+#### Backend
 This PHP project is based on the [Laravel 5.2 framework](https://laravel.com/) with the [Socialite](https://github.com/laravel/socialite) and [LaravelCollective](https://laravelcollective.com) extensions. 
+#### Frontend
+Currently, the focus is on the backend development so there is no AJAX and only little Javascript involved.
+
+The design is intended to be fully responsive with a mobile-first approach and uses the [Bootstrap framework](http://v4-alpha.getbootstrap.com/) in version 4. (Which is also beta but hopefully will be fully released before this project is out of beta!)
+
 #### Prerequisites
 For the requirements, check [Laravel's website](https://laravel.com/docs/5.2#installation). Mainly, you need to have console access to your web server and need to have [Composer](http://getcomposer.org) and [Git](http://git-scm.com/download) installed.
 
 Composer handles the various dependencies for the Laravel framework. Git is being used to clone the project from the Git hub and also to keep it updated afterwards. Insofar Git is optional and not needed to actually run the project.
 
 ##### Database
-c-SPOT uses mySQL, so your web server needs to have mySQL installed. However, Laravel allows for various other database tools, so you can actually modify this requirement.
+Out of the box, c-SPOT uses a mySQL database to save all the data. However, Laravel provides for various other database tools, so you can actually modify this requirement.
 
 
 ### Installation
@@ -46,7 +52,7 @@ c-SPOT uses mySQL, so your web server needs to have mySQL installed. However, La
 #### Mandatory Steps
 1. In the root of your web server's http or html directory (depending on Apache or Nginx), run the command `git clone https://github.com/matthiku/cSpot.git` to download c-SPOT and install it into the c-spot folder. (The folder can be renamed to your liking)
 2. Then run `composer install` to install all the dependencies
-3. In the root folder of the project, copy the file **.env.example** to **.env** to customize it for your environment. Mainly, configure your database name, user id and password for c-SPOT and enter the details for your mail server.
+3. In the root folder of the project, copy the file **.env.example** to **.env** to customize it for your environment. Mainly, configure your database name, db user name and db password for c-SPOT and enter the connectivity details for your mail server to be able to send confirmation emails to users.
 
 #### Optional Steps
 In order for the 'social logins' to work, you need to register your c-SPOT clone with some 'service providers' like Google or Faceook and enter the details also into the .env file.
@@ -54,11 +60,14 @@ In order for the 'social logins' to work, you need to register your c-SPOT clone
 
 ### Bugs/Enhancements:
 - Design flaws on mobile devices: 
-- [ ] buttons on welcome page and their tooltips
+
+- [x] buttons on welcome page and their tooltips
 - [ ] list of songs from song search on the new item page is awkward
-- [ ] obscure 'submit' button when adding a new service plan
+- [x] obscure 'submit' button when adding a new service plan
 - [x] too many main menu items, reduce them to one main menu and change the misleading term 'Admin'
+
 - Other issues
+
 - [ ] ...
 
 ### TODO:
@@ -71,6 +80,6 @@ In order for the 'social logins' to work, you need to register your c-SPOT clone
 
 ### Future Enhancements (c-SPOT 2.0)
 
-- Program the front-end as a Single Page App using AngularJS
+- Program the frontend as a Single Page App using AngularJS and the backend as a RESTful API
 - Enable user to programmatically select Bible references
 - Add feature to send lyrics and Bible verses to a projector

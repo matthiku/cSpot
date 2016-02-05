@@ -50,7 +50,7 @@
 		<tbody>
         @foreach( $users as $user )
 				<tr @if(Auth::user()->isAdmin())
-						class="link" onclick="location.href ='{{ url('admin/users/'.$user->id}}/edit'"
+						class="link" onclick="location.href ='{{ url('admin/users/'.$user->id) }}/edit'"
 					@endif
 					>					
 				<td scope="row">{{ $user->id }}</td>

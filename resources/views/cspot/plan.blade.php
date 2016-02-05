@@ -152,7 +152,7 @@
 
     @endif
 
-    <div class="form-buttons xs-center">
+    <div class="form-buttons xs-center pull-xs-right">
         &nbsp; &nbsp; 
         @if (isset($plan))
 

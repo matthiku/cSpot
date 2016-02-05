@@ -14,7 +14,21 @@
 
 	@include('layouts.flashing')
 
-    <h2>{{ $heading }}</h2>
+	@if(Auth::user()->isEditor())
+	<a class="btn btn-primary-outline pull-xs-right" href="{{ url('admin/types/create') }}">
+		<i class="fa fa-plus"> </i> &nbsp; Add a new type
+	</a>
+	@endif
+
+    <h2>
+    	{{ $heading }}
+    	<small class="text-muted">
+    		<a tabindex="0" href="#"
+    			data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="focus"
+    			data-content="Service Types determine the title of services and which default items can be inserted for new plans.">
+    			<i class="fa fa-question-circle"></i></a>
+		</small>
+	</h2>
 
 
 	@if (count($types))
@@ -57,12 +71,6 @@
 
     	No types found!
 
-	@endif
-
-	@if(Auth::user()->isEditor())
-	<a class="btn btn-primary-outline" href="{{ url('admin/types/create') }}">
-		<i class="fa fa-plus"> </i> &nbsp; Add a new type
-	</a>
 	@endif
 
 	

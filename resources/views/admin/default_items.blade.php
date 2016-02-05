@@ -14,7 +14,21 @@
 
 	@include('layouts.flashing')
 
-    <h2>{{ $heading }}</h2>
+	@if( Auth::user()->isEditor() )
+	<a class="btn btn-primary-outline pull-xs-right" href="{{ url('admin/default_items/create') }}">
+		<i class="fa fa-plus"> </i> &nbsp; Add a new default_item
+	</a>
+	@endif
+
+    <h2>
+    	{{ $heading }}
+    	<small class="text-muted">
+    		<a tabindex="0" href="#"
+    			data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="focus"
+    			data-content="Default items are parts of a service that are always the same. They can be inserted into new plans.">
+    			<i class="fa fa-question-circle"></i></a>
+		</small>
+	</h2>
 
 
 	@if (count($default_items))
@@ -41,7 +55,6 @@
 					<td>{{ $default_item->seq_no }}</td>
 					<td>{{ $default_item->text }}</td>
 					<td class="nowrap">
-						<!-- <a class="btn btn-secondary btn-sm" title="Show Users" href='/admin/default_items/{{$default_item->id}}'><i class="fa fa-filter"></i></a> -->
 						 @if( Auth::user()->isEditor() )
 							<a class="btn btn-primary-outline btn-sm" title="Edit" 
 								href="{{ url('admin/default_items/'.$default_item->id) }}/edit"><i class="fa fa-pencil"></i></a>
@@ -58,12 +71,6 @@
 
     	No default items found!
 
-	@endif
-
-	@if( Auth::user()->isEditor() )
-	<a class="btn btn-primary-outline" href="{{ url('admin/default_items/create') }}">
-		<i class="fa fa-plus"> </i> &nbsp; Add a new default_item
-	</a>
 	@endif
 
 	

@@ -14,7 +14,21 @@
 
 	@include('layouts.flashing')
 
-    <h2>{{ $heading }}</h2>
+	@if( Auth::user()->isEditor() )
+		<a class="btn btn-primary-outline pull-xs-right" href='{{ url('admin/roles/create') }}'>
+			<i class="fa fa-plus"> </i> &nbsp; Add a new role
+		</a>
+	@endif
+
+    <h2>
+    	{{ $heading }}
+    	<small class="text-muted">
+    		<a tabindex="0" href="#"
+    			data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="focus"
+    			data-content="User roles determine what users can do and whether they will be listed as teachers or leaders on a new service plan.">
+    			<i class="fa fa-question-circle"></i></a>
+		</small>
+	</h2>
 
 
 	@if (count($roles))
@@ -58,12 +72,6 @@
 
     	No roles found!
 
-	@endif
-
-	@if( Auth::user()->isEditor() )
-		<a class="btn btn-primary-outline" href='{{ url('admin/roles/create') }}'>
-			<i class="fa fa-plus"> </i> &nbsp; Add a new role
-		</a>
 	@endif
 
 	
