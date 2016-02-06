@@ -38,7 +38,7 @@ class PlanController extends Controller
      * Authentication
      */
     public function __construct() {
-        $this->middleware('role:author', ['only' => ['by_user', 'by_type'] ]  );
+        $this->middleware('role:author', ['only' => ['destroy'] ]  );
         $this->middleware('role:editor', ['only' => ['destroy', 'create'] ]  );
     }
 

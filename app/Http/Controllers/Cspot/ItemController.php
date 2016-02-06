@@ -24,11 +24,19 @@ class ItemController extends Controller
 
     /**
      * Authentication
+     *
+     * we must allow individual teachers or leaders to modify items of their own plans!
      */
-    public function __construct() {
-        $this->middleware('role:author', ['except' => ['index', 'show']]);
-    }
+    private function checkRights($plan) {
 
+        if ( auth()->user()->isEditor() // editor and higher can always
+          || auth()->user()->id == $plan->teacher_id 
+          || auth()->user()->id == $plan->leader_id  ) 
+             return;
+
+        flash('Only the leader or teacher or editors can modify this plan.');
+        return redirect()->back();
+    }
 
 
 
@@ -56,8 +64,15 @@ class ItemController extends Controller
     {
         // get the plan to which we want to add an item
         $plan = Plan::find( $plan_id );
+
+        // check user rights (teachers and leaders can edit items of their own plan)
+        $this->checkRights($plan);
+
+        // get array of possible bible versions
         $t = new Item();
         $versionsEnum = $t->getVersionsEnum();
+
+        // show the form
         return view( 'cspot.item', [
                 'plan' => $plan, 
                 'seq_no' => $seq_no, 
@@ -90,6 +105,10 @@ class ItemController extends Controller
                 return redirect()->back();
             }
         }
+
+        // check user rights (teachers and leaders can edit items of their own plan)
+        $plan = Plan::find( $request->input('plan_id') );
+        $this->checkRights($plan);
 
         // review numbering of current items for this plan and insert the new item
         $plan = insertItem( $request );
@@ -153,6 +172,7 @@ class ItemController extends Controller
     {
         // get current item
         $plan = Plan::find( $plan_id );
+
         $item = Item::find($id);
         $seq_no = $item->seq_no;
         $versionsEnum = $item->getVersionsEnum();
@@ -183,31 +203,28 @@ class ItemController extends Controller
         $plan_id = $item->plan_id;
         $plan    = Plan::find( $plan_id );
 
-        // check if user can actually edit this plan
-        $user = Auth::user();
-        if( $user->isEditor() || $user->id == $plan->leader_id || $user->id == $plan->teacher_id )
-        {
-            // searching for a song?
-            if ($request->has('search')) {
-                $songs = songSearch( '%'.$request->search.'%' );
-                if (!count($songs)) {
-                    flash('No songs found for '.$request->search);
-                    return redirect()->back()->withInput();
-                }
-                if (count($songs)==1) {
-                    $request->song_id = $songs[0]->id;
-                } else {
-                    // as we found several songs, user must select one
-                    $request->session()->flash('songs', $songs);
-                    return redirect()->back();
-                }
+        // searching for a song?
+        if ($request->has('search')) {
+            $songs = songSearch( '%'.$request->search.'%' );
+            if (!count($songs)) {
+                flash('No songs found for '.$request->search);
+                return redirect()->back()->withInput();
             }
-            // get current item
-            $item->update($request->except('_token'));
+            if (count($songs)==1) {
+                $request->song_id = $songs[0]->id;
+            } else {
+                // as we found several songs, user must select one
+                $request->session()->flash('songs', $songs);
+                return redirect()->back();
+            }
         }
-        else {
-            flash('You are not authorized to edit this item. Please ask a leader or teacher or Admin.');
-        }
+
+        // check user rights (teachers and leaders can edit items of their own plan)
+        $this->checkRights($plan);
+
+        // get current item
+        $item->update($request->except('_token'));
+
         // back to full plan view 
         return \Redirect::route('cspot.plans.edit', $plan_id);
     }
@@ -246,6 +263,12 @@ class ItemController extends Controller
      */
     public function destroy($id)
     {
+        // check user rights (teachers and leaders can edit items of their own plan)
+        $item    = Item::find($id);
+        $plan_id = $item->plan_id;
+        $plan    = Plan::find( $plan_id );
+        $this->checkRights($plan);
+
         // get item and delete it
         $item = deleteItem($id);
         if ($item) {

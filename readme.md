@@ -28,13 +28,28 @@ User details and all information is stored in a (mySQL) database called 'cspot' 
 
 Users can see and/or modify all or various parts of the information depending on their roles they have been given by an administrator. Based on those roles, users can be assigned as 'leader' or 'teacher' of a plan and as such are able to modify, add and delete plan items on those respective plans.
 
+### Roles and Rights
+Currently, the following user rights are assigned to roles:
+| Role | Rights |
+| ---- | ------ |
+| retired | used only to show historical plans with former teachers or leaders |
+| user | Can **see** (read) plans, items and user names and their roles. Can add notes to plans. |
+| leader | same as user, can edit items on plans to which they are assigned |
+| teacher | same as leader |
+| author | same as leader plus can create new plans |
+| editor | same as author plus can modify all plans and items, can modify default items |
+| administrator | same as editor plus manages the user table |
+
+## Mobile first approach
+So far, frontend design is very basic, but always with a mobile device in mind. Tables and input forms are designed to optimize the space available. For instance, less relevant columns in tables will be hidden to avoid horizontal scrolling.
+
 
 ## Technical Blah blah
 ### Code
-#### Backend
+##### Backend
 This PHP project is based on the [Laravel 5.2 framework](https://laravel.com/) with the [Socialite](https://github.com/laravel/socialite) and [LaravelCollective](https://laravelcollective.com) extensions. 
-#### Frontend
-Currently, the focus is on the backend development so there is no AJAX and only little Javascript involved.
+##### Frontend
+Currently, the development focus is still more on the backend. So far, there is no asynchronous interaction (AJAX) and only little Javascript involved.
 
 The design is intended to be fully responsive with a mobile-first approach and uses the [Bootstrap framework](http://v4-alpha.getbootstrap.com/) in version 4. (Which is also beta but hopefully will be fully released before this project is out of beta!)
 

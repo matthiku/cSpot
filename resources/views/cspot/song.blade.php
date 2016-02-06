@@ -108,8 +108,9 @@
                     @if ( isset($song) )
                         <a class="btn btn-default btn-sm" type="button" target="new" 
                             href="https://www.youtube.com/results?search_query={{ $song->title }}">
-                            <i class="fa fa-youtube" > </i> &nbsp; YouTube search
+                            <big class="fa fa-youtube" > </big> &nbsp; YouTube search
                         </a>
+                        <a target="new" href="https://www.youtube.com/watch?v={{ $song->youtube_id }}">Play on Youtube <big class="fa fa-youtube-play" ></big></a>
                     @endif
                 </div>
                 <div class="row form-group">
