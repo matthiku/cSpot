@@ -26,7 +26,14 @@
     overflow: hidden;
 }
 
+.c-select {
+    padding-top: 0.1em;
+    padding-bottom: 0.1em;
+}
 
+.plan-form-minw {
+    min-width: 230px;
+}
 
 .table td ,
 .table thead th {
@@ -54,6 +61,10 @@ textarea {
 
 .center {
     text-align: center;
+}
+
+.right {
+    text-align: right;
 }
 
 .full-width input {
