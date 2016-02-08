@@ -32,14 +32,19 @@
     <div class="row">
         <div class="col-sm-6">
         @if (isset($item))
-                <h2>Update Item No {{$seq_no}}</h2>
+                <h2>
+                    <a href="{{ url('cspot/plans/'.$plan->id.'/items/'.$item->id.'/go/previous') }}"
+                        title="go to previous item">
+                        <button><i class="fa fa-angle-double-left"></i></button></a>
+                    &nbsp; Update Item No {{$seq_no}} &nbsp; 
+                    <a href="{{ url('cspot/plans/'.$plan->id.'/items/'.$item->id.'/go/next') }}"
+                        title="go to next item">
+                        <button><i class="fa fa-angle-double-right"></i></button></a>
+                </h2>
                 <h5>of the Service plan (id {{ $plan->id }}) for {{ $plan->date->formatLocalized('%A, %d %B %Y') }}</h5>
             </div>
             <div class="col-sm-6 text-xs-right">
 
-                Go to
-                &nbsp; <a href="{{ url('cspot/plans/'.$plan->id.'/items/'.$item->id.'/go/previous') }}">{!! Form::button('Previous item') !!}</a>
-                &nbsp; <a href="{{ url('cspot/plans/'.$plan->id.'/items/'.$item->id.'/go/next') }}">{!! Form::button('Next item') !!}</a>&nbsp; &nbsp; 
 
                 @if( Auth::user()->isEditor() || Auth::user()->id==$plan->leader_id || Auth::user()->id==$plan->teacher_id )
                     &nbsp; {!! Form::submit('Save changes'); !!}

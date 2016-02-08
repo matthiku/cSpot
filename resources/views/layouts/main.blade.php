@@ -19,7 +19,7 @@
     <!-- Custom styles for this template -->
     <link href="{{ url('css/style.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ url('css/signin.css') }}"/>
-    <link rel="stylesheet" href="{{ url('css/dashboard.css') }}"/>
+    <!-- <link rel="stylesheet" href="{{ url('css/dashboard.css') }}"/> -->
     
     <script src="{{ url('js/tether.min.js') }}"></script>
     <script src="{{ url('js/jquery.min.js') }}"></script>

@@ -8,14 +8,14 @@
 				@if( Auth::user()->isEditor() || Auth::user()->id==$plan->leader_id || Auth::user()->id==$plan->teacher_id )
 					<th class="text-right">Move item</th>
 				@endif
-				<th class="hidden-sm-down">Item</th>
-				<th class="hidden-md-down">Song No.</th>
-				<th class="hidden-xs-down">Book Ref.</th>
+				<th class="hidden-sm-down center">Item</th>
+				<th class="hidden-md-down center">Song No.</th>
+				<th class="hidden-xs-down center">Book Ref.</th>
 				<th class="hidden-sm-down">Title</th>
-				<th class="hidden-sm-down">Comment</th>
-				<th class="hidden-md-up">Title/Comment</th>
-				<th class="hidden-md-down">Version</th>
-				<th class="hidden-md-down">Key</th>
+				<th class="hidden-sm-down center">Comment</th>
+				<th class="hidden-md-up center">Title/Comment</th>
+				<th class="hidden-md-down center">Version</th>
+				<th class="hidden-md-down center">Key</th>
 				@if( Auth::user()->isEditor() || Auth::user()->id==$plan->leader_id || Auth::user()->id==$plan->teacher_id )
 					<th>Action</th>
 				@endif
@@ -23,7 +23,16 @@
 		</thead>
 		<tbody>
 	    @foreach( $plan->items as $item )
-			<tr class="link" onclick="location.href ='{{ url('cspot/plans/'.$plan->id.'/items/'.$item->id) }}/edit'">
+
+			<?php 
+				$onclick = 'location.href='."'".url('cspot/plans/'.$plan->id.'/items/'.$item->id).'/edit'."'"; 
+				if (! $item->song()->exists()) { 
+					$item->comment="(Song with id ".$item->song_id.' missing!)'; 
+					$item->song_id = Null; 
+				} 
+			?>
+
+			<tr class="link" >
 				@if( Auth::user()->isEditor() || Auth::user()->id==$plan->leader_id || Auth::user()->id==$plan->teacher_id )
 				<td class="text-right nowrap">
 					@if ($item->seq_no > 1)
@@ -36,12 +45,12 @@
 					@endif
 				</td>
 				@endif
-				<td class="hidden-sm-down" scope="row">{{ $item->seq_no }}</td>
-				<td class="hidden-md-down">{{ ($item->song_id) ? $item->song->song_no : '' }}</td>
-				<td class="hidden-xs-down">
+				<td onclick={{$onclick}} class="hidden-sm-down center" scope="row">{{ $item->seq_no }}</td>
+				<td onclick={{$onclick}} class="hidden-md-down center">{{ $item->song_id ? $item->song->song_no : '' }}</td>
+				<td onclick={{$onclick}} class="hidden-xs-down center">
 					{{ ($item->song_id) ? $item->song->book_ref : '' }}
 				</td>
-				<td class="hidden-sm-down" @if ($item->song_id)
+				<td onclick={{$onclick}} class="hidden-sm-down" @if ($item->song_id)
 						title="{{ $item->song->lyrics }}"
 					@endif
 					>
@@ -50,17 +59,23 @@
 						{{ $item->song->title_2 ? ' ('. $item->song->title_2 .')' : '' }}
 					@endif
 				</td>
-				<td class="hidden-sm-down">{{ $item->comment }}</td>
-				<td class="hidden-md-up">{{ $item->song_id ? $item->song->title.', ' : '' }}{{ $item->comment }}</td>
-				<td class="hidden-md-down">{{ $item->version }}</td>
-				<td class="hidden-md-down">{{ $item->key }}</td>
+				<td onclick={{$onclick}} class="hidden-sm-down center">{{ $item->comment }}</td>
+				<td onclick={{$onclick}} class="hidden-md-up center">{{ $item->song_id ? $item->song->title.', ' : '' }}{{ $item->comment }}</td>
+				<td onclick={{$onclick}} class="hidden-md-down center">{{ $item->version }}</td>
+				<td onclick={{$onclick}} class="hidden-md-down center">{{ $item->key }}</td>
 				@if( Auth::user()->isEditor() || Auth::user()->id==$plan->leader_id || Auth::user()->id==$plan->teacher_id )
-				<td class="nowrap">
+				<td class="hidden-sm-down nowrap">
 					<a class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="left" title="Insert earlier item" 
 						href='{{ url('cspot/plans/'.$plan->id) }}/items/create/{{$item->seq_no-0.1}}'><i class="fa fa-reply"></i></a>
 					<a class="btn btn-primary-outline btn-sm" data-toggle="tooltip" title="Edit" 
 						href='{{ url('cspot/plans/'.$plan->id) }}/items/{{$item->id}}/edit/'><i class="fa fa-pencil"></i></a>
 					<a class="btn btn-danger btn-sm" data-toggle="tooltip" title="Delete!" 
+						href='{{ url('cspot/items/'.$item->id) }}/delete'><i class="fa fa-trash"></i></a>
+				</td>
+				<td class="hidden-md-up center nowrap">
+					<a class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="left" title="Insert earlier item" 
+						href='{{ url('cspot/plans/'.$plan->id) }}/items/create/{{$item->seq_no-0.1}}'><i class="fa fa-reply"></i></a>
+					<a class="btn btn-danger btn-sm" data-toggle="tooltip" data-placement="left" title="Delete!" 
 						href='{{ url('cspot/items/'.$item->id) }}/delete'><i class="fa fa-trash"></i></a>
 				</td>
 				@endif

@@ -19,7 +19,7 @@ class CreateItemsTable extends Migration
             $table->integer('plan_id')->unsigned()->index();
             $table->foreign('plan_id')->references('id')->on('plans')->onDelete('cascade');
             $table->integer('song_id')->unsigned()->nullable();
-            $table->foreign('song_id')->references('id')->on('songs')->onDelete('no action');
+            $table->foreign('song_id')->references('id')->on('songs')->onDelete('cascade');
             // `seq_no`, `comment`, `version`, `key
             $table->decimal('seq_no',3,1);
             $table->string('comment');
