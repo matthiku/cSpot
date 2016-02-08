@@ -30,6 +30,11 @@ Users can see and/or modify all or various parts of the information depending on
 
 ### Roles and Rights
 Currently, the following user rights are assigned to roles:
+
+see [Wiki](https://github.com/matthiku/cSpot/wiki/Home---Roles-and-Rights-Table)
+
+(why doesn't it work here?)
+
 | Role | Rights |
 | ---- | ------ |
 | retired | used only to show historical plans with former teachers or leaders |
