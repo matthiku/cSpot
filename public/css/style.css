@@ -26,6 +26,24 @@
     overflow: hidden;
 }
 
+
+
+.table td ,
+.table thead th {
+    vertical-align: middle;
+}
+
+.table-bordered td {
+    border-width: 2px;
+}
+
+.padding-sm {
+    padding: 2px !important;
+}
+.margin-sm {
+    padding: 2px !important;
+}
+
 textarea {
     width: 100%;
 }
@@ -71,6 +89,10 @@ label {
 /*Extra SMALL devices*/
 @media (max-width: 34em) {
 
+    h1,h2,h3,h4,h5 {
+        font-size: 100%;
+    }
+
     .nowrap {
         white-space: normal;
     }
@@ -96,6 +118,12 @@ label {
     }
 }
 
+@media (max-width: 48em) and (min-width: 34em) {
+
+    h1,h2,h3,h4,h5 {
+        font-size: 140%;
+    }
+}
 
 /* Small devices (landscape phones, 34em and up) */
 @media (min-width: 34em) {

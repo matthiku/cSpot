@@ -19,8 +19,35 @@
     @include('layouts.flashing')
 
 
+    <div class="form-buttons xs-center pull-xs-right">
+        &nbsp; &nbsp; 
+        @if (isset($plan))
+
+            @if (Auth::user()->isEditor())            
+                &nbsp; {!! Form::submit('Save changes'); !!}
+            @else
+                &nbsp; {!! Form::submit('Save Note'); !!}
+            @endif
+
+            @if (Auth::user()->isAdmin())
+                &nbsp; <a class="btn btn-danger btn-sm"  plan="button" href="{{ url('cspot/plans/'.$plan->id) }}/delete">
+                    <i class="fa fa-trash" > </i> &nbsp; Delete
+                </a>
+            @endif
+
+        @else
+            &nbsp; <input class="xs-widht-half" type="submit" value="Submit">
+
+            <script type="text/javascript">document.forms.inputForm.date.focus()</script>
+        @endif
+
+        &nbsp; <a href="{{ url('cspot/plans/future') }}">{!! Form::button('Back'); !!}</a>
+    </div>
+    
+
     @if (isset($plan))
-        <h2>Plan for "{{ $plan->type->name }}" on {{ $plan->date->formatLocalized('%A, %d %B %Y') }}</h2>
+        <h2 class="hidden-md-down">Plan for "{{ $plan->type->name }}" on {{ $plan->date->formatLocalized('%A, %d %B %Y') }}</h2>
+        <h2 class="hidden-lg-up hidden-xs-down">"{{ $plan->type->name }}" on {{ $plan->date->formatLocalized('%a, %d %B') }}</h2>
         @if (Auth::user()->isEditor())
             {!! Form::model( $plan, array(
                 'route'  => array('cspot.plans.update', $plan->id), 
@@ -152,33 +179,6 @@
 
     @endif
 
-    <div class="form-buttons xs-center pull-xs-right">
-        &nbsp; &nbsp; 
-        @if (isset($plan))
-
-            @if (Auth::user()->isEditor())            
-                &nbsp; {!! Form::submit('Save changes'); !!}
-                <script type="text/javascript">document.forms.inputForm.date.focus()</script>
-            @else
-                &nbsp; {!! Form::submit('Save Note'); !!}
-                <script type="text/javascript">document.forms.inputForm.info.focus()</script>
-            @endif
-
-            @if (Auth::user()->isAdmin())
-                &nbsp; <a class="btn btn-danger btn-sm"  plan="button" href="{{ url('cspot/plans/'.$plan->id) }}/delete">
-                    <i class="fa fa-trash" > </i> &nbsp; Delete
-                </a>
-            @endif
-
-        @else
-            &nbsp; <input class="xs-widht-half" type="submit" value="Submit">
-
-            <script type="text/javascript">document.forms.inputForm.date.focus()</script>
-        @endif
-
-        &nbsp; <a href="{{ url('cspot/plans/future') }}">{!! Form::button('Back'); !!}</a>
-    </div>
-    
 
     <div class="form-group">
         <br>
@@ -196,8 +196,19 @@
         @endif
     </div>
 
+    @if (isset($plan))
 
+        @if (Auth::user()->isEditor())            
+            &nbsp; {!! Form::submit('Save changes'); !!}
+            <script type="text/javascript">document.forms.inputForm.date.focus()</script>
+        @else
+            &nbsp; {!! Form::submit('Save Note'); !!}
+            <script type="text/javascript">document.forms.inputForm.info.focus()</script>
+        @endif
 
+    @endif
+
+    
     {!! Form::close() !!}
 
     

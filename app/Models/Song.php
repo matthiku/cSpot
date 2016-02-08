@@ -15,6 +15,8 @@ class Song extends Model
     // in cases where a song is still referred to by a plan
     use SoftDeletes;
 
+    
+
     protected $fillable = ['title', 'title_2', 'lyrics', 'song_no', 'book_ref', 'author', 'sequence', 'youtube_id', 'link', 'license'];
 
 
