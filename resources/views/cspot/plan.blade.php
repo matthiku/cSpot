@@ -42,11 +42,11 @@
 
     <!-- page header -->
     <div class="row">
-        <div class="col-md-9 col-xl-8 center">
+        <div class="col-md-9 col-xl-8 md-center">
 
             @if (isset($plan))
                 <h3 class="hidden-md-down">Plan for "{{ $plan->type->name }}" on {{ $plan->date->formatLocalized('%A, %d %B %Y') }}</h3>
-                <h3 class="hidden-lg-up hidden-xs-down">"{{ $plan->type->name }}" on {{ $plan->date->formatLocalized('%a, %d %B') }}</h3>
+                <h3 class="hidden-lg-up">"{{ $plan->type->name }}" on {{ $plan->date->formatLocalized('%a, %d %B') }}</h3>
             @else
                 <h3>Add Service Plan</h3>
             @endif
@@ -54,77 +54,69 @@
         </div>
 
 
-        <div class="col-md-3 col-xl-4">
+        <div class="col-md-3 col-xl-4 right md-center">
 
-            <div class="form-buttons center">
-                &nbsp; &nbsp; 
-                @if (isset($plan))
+            <div class="form-buttons">
+                <big>                    
+                    @if (isset($plan))
+                        @if (Auth::user()->isEditor())            
+                            {!! Form::submit('Save changes'); !!}
+                        @endif
 
-                    @if (Auth::user()->isEditor())            
-                        &nbsp; {!! Form::submit('Save changes'); !!}
                     @else
-                        &nbsp; {!! Form::submit('Save Note'); !!}
+                        <input class="xs-width-half" type="submit" value="Submit">
+
+                        <script type="text/javascript">document.forms.inputForm.date.focus()</script>
                     @endif
-
-                    @if (Auth::user()->isAdmin())
-                        &nbsp; <a class="btn btn-danger btn-sm"  plan="button" href="{{ url('cspot/plans/'.$plan->id) }}/delete">
-                            <i class="fa fa-trash" > </i> &nbsp; Delete
-                        </a>
-                    @endif
-
-                @else
-                    &nbsp; <input class="xs-width-half" type="submit" value="Submit">
-
-                    <script type="text/javascript">document.forms.inputForm.date.focus()</script>
-                @endif
-
-                &nbsp; <a href="{{ url('cspot/plans/future') }}">{!! Form::button('Back'); !!}</a>
+                </big>
             </div>  
 
         </div>
     </div>
 
-    <hr>
+    <hr class="hidden-sm-down">
+
+
 
     <div class="row center">
-        <div class="col-lg-4 col-md-6">
-            <div class="row form-group">
-                {!! Form::label('date', 'Date', ['class' => 'plan-form-minw right' ]); !!}
-                @if (Auth::user()->isEditor())
-                    {!! Form::date( 'date', isset($plan) ? $plan->date : \Carbon\Carbon::now(), ['class' => 'plan-form-minw center' ] ) !!}
-                @else
-                    {!! Form::date( 'date', isset($plan) ? $plan->date : \Carbon\Carbon::now(), ['disabled' => 'disabled', 'class' => 'plan-form-minw center'] ) !!}
-                @endif
-            </div>
-        </div>                    
 
 
-        <div class="col-lg-4 col-md-6">
-            <div class="row form-group">
-                <label class="plan-form-minw right">Type of Service</label>                 
-                <select name="type_id" class="plan-form-minw c-select"{{ Auth::user()->isEditor() ? '' : ' disabled' }}>
-                    <option {{ isset($plan) ? '' : 'selected'}}>
-                        Select ...
-                    </option>
-                    @foreach ($types as $type)
-                        <option 
-                            @if( ( ''<>old('type_id') && $type->id==old('type_id') )  ||  isset($plan) && $plan->type_id==$type->id )
-                                selected
-                            @endif
-                            value="{{ $type->id }}">{{ $type->name }}
+        @if (Auth::user()->isEditor())
+            <div class="col-lg-4 col-md-6">
+                <div class="row form-group">
+                    <label class="plan-form-minw right hidden-sm-down">Type of Service</label>                 
+                    <select name="type_id" class="plan-form-minw c-select">
+                        <option {{ isset($plan) ? '' : 'selected'}}>
+                            Select ...
                         </option>
-                    @endforeach
-                </select>
-                @if ($errors->has('type_id'))
-                    <br><span class="help-block">
-                        <strong>{{ $errors->first('type_id') }}</strong>
-                    </span>
-                @endif
+                        @foreach ($types as $type)
+                            <option 
+                                @if( ( ''<>old('type_id') && $type->id==old('type_id') )  ||  isset($plan) && $plan->type_id==$type->id )
+                                    selected
+                                @endif
+                                value="{{ $type->id }}">{{ $type->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @if ($errors->has('type_id'))
+                        <br><span class="help-block">
+                            <strong>{{ $errors->first('type_id') }}</strong>
+                        </span>
+                    @endif
+                </div>
             </div>
-        </div>
+
+        
+            <div class="col-lg-4 col-md-6">
+                <div class="row form-group">
+                    {!! Form::label('date', 'Date', ['class' => 'plan-form-minw right hidden-sm-down' ]); !!}
+                    {!! Form::date( 'date', isset($plan) ? $plan->date : \Carbon\Carbon::now(), ['class' => 'plan-form-minw center' ] ) !!}
+                </div>
+            </div>                    
+        @endif
+
 
         <div class="col-lg-4 col-md-6">
-
             <div class="col-sm-6">
                 <div class="row form-group">
                     <label>Leader </label>
@@ -148,7 +140,8 @@
                         </span>
                     @endif
                 </div>
-            </div>                    
+            </div>          
+
 
             <div class="col-sm-6">
                 <div class="row form-group">
@@ -206,6 +199,7 @@
             {!! Form::label('info', 'Notes:'); !!}
             <br/>
             {!! Form::textarea('info') !!}
+            <script>document.forms.inputForm.info.rows=5</script>
         @else
             @if ($plan->info)
                 <h5>Notes for this Plan:</h5>
@@ -216,6 +210,8 @@
         @endif
     </div>
 
+
+
     @if (isset($plan))
 
         @if (Auth::user()->isEditor())            
@@ -224,6 +220,12 @@
         @else
             &nbsp; {!! Form::submit('Save Note'); !!}
             <script type="text/javascript">document.forms.inputForm.info.focus()</script>
+        @endif
+
+        @if (Auth::user()->isAdmin())
+            &nbsp; <a class="btn btn-danger btn-sm"  plan="button" href="{{ url('cspot/plans/'.$plan->id) }}/delete">
+                <i class="fa fa-trash" > </i> &nbsp; Delete an empty Plan
+            </a>
         @endif
 
     @endif

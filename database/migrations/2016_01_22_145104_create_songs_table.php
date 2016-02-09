@@ -17,7 +17,7 @@ class CreateSongsTable extends Migration
             $table->string('title');
             $table->string('title_2');
             $table->text('lyrics');
-            $table->integer('song_no');
+            $table->integer('ccli_no');
             $table->string('book_ref');
             $table->string('author');
             $table->enum('license', ['PD','CCLI', 'Unknown'])nullable();

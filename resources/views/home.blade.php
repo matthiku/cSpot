@@ -17,7 +17,8 @@
                   <p>Welcome, <strong>{{ Auth::user()->first_name }}</strong>, to </p>
 
                   <h3 class="card-title">
-                    c-SPOT, the church-Service Planning Online Tool
+                        c-SPOT, the <span class="text-primary">c</span>hurch-<span class="text-primary">S</span>ervice 
+                        <span class="text-primary">P</span>lanning <span class="text-primary">O</span>nline <span class="text-primary">T</span>ool
                   </h3>
                   for
                   <h4>

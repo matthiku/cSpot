@@ -156,6 +156,11 @@ class TypeController extends Controller
         // find a single resource by ID
         $output = Type::find($id);
         if ($output) {
+            $plans = $output->plans()->get();
+            if ( count($plans) ) {
+                flashError('Type "' . $output->name . '" is still referred by Plans and cannot be deleted.');
+                return redirect()->back();
+            }
             $output->delete();
             $message = 'Type with id "' . $id . '" deleted.';
             return \Redirect::route('admin.types.index')

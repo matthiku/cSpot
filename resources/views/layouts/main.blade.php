@@ -41,22 +41,22 @@
                       Config <span class="caret"></span>
                   </a>
                   <div class="dropdown-menu" role="menu">
-                    <a class="dropdown-item" href="{{ url('admin/default_items') }}"><i class="fa fa-btn fa-list fa-lg"></i> &nbsp; Default Items</a>
+                    <a class="dropdown-item" href="{{ url('admin/default_items') }}"><i class="fa fa-btn fa-server fa-lg"></i> &nbsp; Default Items</a>
                     <hr>
                     <a class="dropdown-item" href="{{ url('admin/users') }}"><i class="fa fa-btn fa-users fa-lg"></i> &nbsp; User List</a>
                     <a class="dropdown-item" href="{{ url('admin/roles') }}"><i class="fa fa-btn fa-check-square-o fa-lg"></i> &nbsp; User Roles</a>
                   </d..iv>
               </li>
-              <li class="nav-item dropdown">
-                  <a href="#" class="nav-link dropdown-toggle" 
+              <li class="nav-item dropdown m-r-2">
+                  <a href="#" class="nav-link dropdown-toggle " 
                      data-toggle="dropdown" role="button" aria-expanded="false">
                       {{ Auth::user()->first_name }}
                       <span class="caret"></span>
                   </a>
 
                   <div class="dropdown-menu" role="menu">
-                      <a class="dropdown-item" href="{{ url('admin/users/'.Auth::user()->id) }}"><i class="fa fa-btn fa-user fa-lg"></i> Profile</a>
-                      <a class="dropdown-item" href="{{ url('logout') }}"><i class="fa fa-btn fa-sign-out fa-lg"></i> Logout</a>
+                      <a class="dropdown-item" href="{{ url('admin/users/'.Auth::user()->id) }}">Profile <i class="fa fa-btn fa-user fa-lg"></i></a>
+                      <a class="dropdown-item" href="{{ url('logout') }}">Logout <i class="fa fa-btn fa-sign-out fa-lg"></i></a>
                   </div>
               </li>
           @endif

@@ -20,20 +20,33 @@
 
                 <br>
 
-                <div class="panel-body">
+                <div class="panel-body center">
                     <h4>the <span class="text-primary">c</span>hurch-<span class="text-primary">S</span>ervice 
                         <span class="text-primary">P</span>lanning <span class="text-primary">O</span>nline <span class="text-primary">T</span>ool</h4>
                     <br>
 
-                    
-                    <p>Create your own service planning database.<br>Install it on your church's web server and allow other users to participate.</p>
-                    <p>As an open source project, you can download the sources and modify the code according to your specific needs.</p>
-                    <p>The project is currently hosted on Github under 
-                        <a target="_new" href="https://github.com/matthiku/cSpot">https://github.com/matthiku/cSpot</a>
-                        from where it can be 'cloned' (downloaded) to your own web server.
-                    </p>
-                    <p>Installation instructions can be found in the readme file.</p>
                 </div>
+
+                @if (Auth::guest())
+
+                    <div class="form-signin right">
+                        <h4>
+                            <a href="{{url('login')}}"><i class="fa fa-sign-in"></i> Sign in</a>  
+                            &nbsp; or &nbsp;
+                            <a href="{{url('register')}}"><i class="fa fa-list"></i> Sign up</a>
+                        </h4>
+                    </div>
+
+                @else
+
+                    <div class="form-signin right">
+                        <h2 class="form-signin-heading">
+                            <a href="{{url('home')}}">Start using c-SPOT</a>
+                        </h2>
+                    </div>
+
+                @endif
+
 
             </div>
         </div>

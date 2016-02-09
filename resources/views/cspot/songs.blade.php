@@ -51,7 +51,7 @@
 					<td scope="row" class="hidden-md-down">{{ $song->id }}</td>
 					<td>{{ $song->title }} {{ $song->title_2<>'' ? '('. $song->title_2 .')' : '' }}</td>
 					<!-- <td>{ { $song->title_2 }}</td> -->
-					<td class="hidden-md-down">{{ $song->song_no }}</td>
+					<td class="hidden-md-down">{{ $song->ccli_no }}</td>
 					<td>{{ $song->book_ref }}</td>
 					<td class="hidden-md-down">{{ $song->author }}</td>
 					<td class="hidden-sm-down">{{ $song->license }}</td>

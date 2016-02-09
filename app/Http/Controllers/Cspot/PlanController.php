@@ -324,17 +324,21 @@ class PlanController extends Controller
      */
     public function destroy($id)
     {
-        //
         // find a single resource by ID
         $output = Plan::find($id);
         if ($output) {
+            $items = $output->items()->get();
+            if ( count($items) ) {
+                flashError('Plan with ID "' . $id . '" still contains items and cannot be deleted.');
+                return redirect()->back();
+            }
             $output->delete();
             flash('Plan with id "' . $id . '" deleted.');
             return \Redirect::route($this->view_idx);
         }
         //
         flashError('Plan with ID "' . $id . '" not found');
-        return \Redirect::route($this->view_idx);
+        return redirect()->back();
     }
 
 

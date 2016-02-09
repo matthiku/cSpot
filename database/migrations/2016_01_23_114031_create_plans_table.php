@@ -20,7 +20,7 @@ class CreatePlansTable extends Migration
             $table->integer('teacher_id')->unsigned();
             $table->foreign('teacher_id')->references('id')->on('users')->onDelete('no action');
             $table->integer('type_id'   )->unsigned()->index();
-            $table->foreign('type_id'   )->references('id')->on('types')->onDelete('no action');
+            $table->foreign('type_id'   )->references('id')->on('types')->onDelete('restrict');
             $table->string('info', 2000);
             $table->tinyInteger('state');
             $table->string('changer');

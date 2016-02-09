@@ -104,6 +104,10 @@ label {
         font-size: 100%;
     }
 
+    .m-r-2 {
+        margin-right: 5px !important;
+    }
+
     .nowrap {
         white-space: normal;
     }
@@ -126,6 +130,9 @@ label {
     .md-full {
         /* fill the whole width on small devices */
         width: 100%;
+    }
+    .md-center {
+        text-align: center;
     }
 }
 

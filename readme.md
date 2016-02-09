@@ -31,10 +31,6 @@ Users can see and/or modify all or various parts of the information depending on
 ### Roles and Rights
 Currently, the following user rights are assigned to roles:
 
-see [Wiki](https://github.com/matthiku/cSpot/wiki/Home---Roles-and-Rights-Table)
-
-(why doesn't it work here?)
-
 | Role | Rights |
 | ---- | ------ |
 | retired | used only to show historical plans with former teachers or leaders |
@@ -46,7 +42,7 @@ see [Wiki](https://github.com/matthiku/cSpot/wiki/Home---Roles-and-Rights-Table)
 | administrator | same as editor plus manages the user table |
 
 ## Mobile first approach
-So far, frontend design is very basic, but always with a mobile device in mind. Tables and input forms are designed to optimize the space available. For instance, less relevant columns in tables will be hidden to avoid horizontal scrolling.
+So far, frontend design is very basic, but always with a mobile device in mind. Tables and input forms are designed to optimize the space available. For instance, less relevant columns in tables will be hidden to avoid horizontal scrolling and dates are being displayed in shorter from on smaller devices.
 
 
 ## Technical Blah blah

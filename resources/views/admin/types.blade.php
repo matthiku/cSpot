@@ -42,19 +42,26 @@
 				<tr>
 					<th>#</th>
 					<th>Name</th>
-					<th>No. of Plans</th>
+					<th>Total No. of Plans</th>
 					 @if(Auth::user()->id===1 || Auth::user()->isAdmin())
 						<th>Action</th>
 					@endif
 				</tr>
 			</thead>
+
 			<tbody>
+
 	        @foreach( $types as $type )
-				<tr class="link" onclick="location.href='{{ url('cspot/plans/by_type/'.$type->id) }}'">
+				<tr>
+
 					<td scope="row">{{ $type->id }}</td>
-					<td>{{ $type->name }}</td>
-					<td onclick="location.href='{{ url('admin/types/'.$type->id) }}'" class="link" title="Show all Plans of this type of Service">
-						{{ $type->plans->count() }}</td>
+
+					<td class="link" onclick="location.href='{{ url('cspot/plans/by_type/'.$type->id) }}'" 
+						title="Show all upcoming Plans of this Type of Service">{{ $type->name }}</td>
+
+					<td class="link" onclick="location.href='{{ url('cspot/plans/by_type/'.$type->id) }}/all'" 
+						title="Show all Plans of this Type of Service">{{ $type->plans->count() }}</td>
+
 					<td class="nowrap">
 						<a class="btn btn-secondary btn-sm" title="Show upcoming Plans" href='{{ url('cspot/plans/by_type/'.$type->id ) }}'><i class="fa fa-filter"></i></a>
 						 @if( Auth::user()->isEditor() )
@@ -62,9 +69,12 @@
 						<a class="btn btn-danger btn-sm" title="Delete!" href='{{ url('admin/types/'.$type->id) }}/delete'><i class="fa fa-trash"></i></a>
 						@endif
 					</td>
+
 				</tr>
 	        @endforeach
+
 			</tbody>
+
 		</table>
 
     @else
