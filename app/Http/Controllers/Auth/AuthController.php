@@ -91,7 +91,7 @@ class AuthController extends Controller
 
         if (Auth::guard($this->getGuard())->attempt($credentials, $request->has('remember'))) {
             $user = Auth::user();
-            $mailer->notifyAdmin( $user, 'User logged in on IP '.$request->ip() );
+            $mailer->notifyAdmin( $user, $user->getFullName() .' logged in on IP '.$request->ip() );
             return $this->handleUserWasAuthenticated($request, $throttles);
         }
 
