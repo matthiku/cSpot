@@ -91,7 +91,7 @@ class AuthController extends Controller
 
         if (Auth::guard($this->getGuard())->attempt($credentials, $request->has('remember'))) {
             $user = Auth::user();
-            $mailer->notifyAdmin( $user, 'User logged in' );
+            $mailer->notifyAdmin( $user, 'User logged in on IP '.$request->ip() );
             return $this->handleUserWasAuthenticated($request, $throttles);
         }
 
@@ -134,7 +134,7 @@ class AuthController extends Controller
         $user->assignRole($role);
         
         Log::info('trying to send registration email to '.$user->name);
-        $mailer->notifyAdmin( $user, 'new user registration' );
+        $mailer->notifyAdmin( $user, 'new user registration from IP '.$request->ip() );
 
         $mailer->sendEmailConfirmationTo($user);
 
@@ -252,7 +252,7 @@ class AuthController extends Controller
                 // perhaps the email contains a name?
                 $emailName = explode('@', $user->email)[0];
                 if ( strlen($user->name)<3 ) {
-                    $user->name = explode('.', $emailName);
+                    $user->name = str_replace( '.', ' ', $emailName );
                 }
 
                 // the name is hopefully a full name with first- and lastname
@@ -260,11 +260,12 @@ class AuthController extends Controller
                 $newSocialUser->first_name         = $name[0];
                 $newSocialUser->last_name          = count($name)>1 ? $name[1] : $name[0];
 
+                // save the new user
+                $newSocialUser->save();
+
                 // Add role
                 $role = Role::whereName('user')->first();
                 $newSocialUser->assignRole($role);
-                // save the new user
-                $newSocialUser->save();
 
                 // create record in the social table
                 $socialData = new Social;

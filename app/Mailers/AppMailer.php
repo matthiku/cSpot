@@ -97,7 +97,7 @@ class AppMailer
         $this->to      = $admin->email;
         $this->subject = $note;
         $this->view    = 'auth.emails.admin';
-        $this->data    = compact('user','note');
+        $this->data    = compact( 'user', 'note' );
 
         $this->deliver();
     }
@@ -116,7 +116,7 @@ class AppMailer
             $this->view, 
             $this->data, 
             function ($message) {
-                 $message->from(   $this->from, 'Administrator' )
+                 $message->from(   $this->from, 'c-SPOT Administrator' )
                          ->to(     $this->to )
                          ->subject($this->subject );
             }
