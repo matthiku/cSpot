@@ -3,7 +3,9 @@
 namespace App\Mailers;
 
 use App\Models\User;
+
 use Illuminate\Contracts\Mail\Mailer;
+
 
 class AppMailer
 {

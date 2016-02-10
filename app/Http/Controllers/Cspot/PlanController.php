@@ -61,7 +61,7 @@ class PlanController extends Controller
                       ->orWhere('teacher_id', Auth::user()->id)
                       ->with('type')->get();
         }
-        $heading = 'Show Service Plans';
+        $heading = 'Your Service Plans';
         return view( $this->view_all, array('plans' => $plans, 'heading' => $heading) );
     }
 
@@ -80,7 +80,7 @@ class PlanController extends Controller
             ->orderBy('date')
             ->get();
 
-        $heading = 'Show Upcoming Service Plans';
+        $heading = 'Upcoming Service Plans';
         return view( $this->view_all, array('plans' => $plans, 'heading' => $heading) );
     }
 
@@ -121,7 +121,7 @@ class PlanController extends Controller
                 ->orWhere('teacher_id', $user_id)
                 ->orderBy('date','DESC')
                 ->get();
-            $heading = 'Show All Church Service Plans for ';
+            $heading = 'All Church Service Plans for ';
         } else {
             $plans = Plan::with('type')
                 ->whereDate('date', '>', Carbon::yesterday())
@@ -130,7 +130,7 @@ class PlanController extends Controller
                 ->whereDate('date', '>', Carbon::yesterday())
                 ->orderBy('date')
                 ->get();
-            $heading = 'Show Upcoming Church Service Plans for ';
+            $heading = 'Upcoming Church Service Plans for ';
         }
 
         $heading .= User::find($user_id)->first_name;

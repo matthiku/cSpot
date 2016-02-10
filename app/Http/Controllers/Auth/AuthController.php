@@ -70,7 +70,7 @@ class AuthController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function login(Request $request)
+    public function login(Request $request, AppMailer $mailer)
     {
         $this->validate($request, [
             $this->loginUsername() => 'required', 'password' => 'required',
@@ -90,6 +90,8 @@ class AuthController extends Controller
         $credentials = $this->getCredentials($request);
 
         if (Auth::guard($this->getGuard())->attempt($credentials, $request->has('remember'))) {
+            $user = Auth::user();
+            $mailer->notifyAdmin( $user, 'User logged in' );
             return $this->handleUserWasAuthenticated($request, $throttles);
         }
 
@@ -164,7 +166,6 @@ class AuthController extends Controller
             // remove token from user record
             $user->confirmEmail();
             flash('You are now confirmed. Please sign in.');
-            // $mailer->notifyAdmin( $user, 'new user confirmed!' );
         }
 
         Log::info('email confirmed for user '.$user->name);
@@ -213,7 +214,7 @@ class AuthController extends Controller
     /**
      * Provider used the "callback URL" and now we process the returned information
      */
-    public function getSocialHandle( $provider )
+    public function getSocialHandle( $provider, AppMailer $mailer )
     {
         Log::info('getSocialHandle - User gave consent to register using '.$provider);
 
@@ -266,7 +267,7 @@ class AuthController extends Controller
         }
 
         Log::info('getSocialHandle - trying to do social-sign in');
-        // $mailer->notifyAdmin( $socialUser, 'new user confirmed via '.$socialData->provider );
+        $mailer->notifyAdmin( $socialUser, 'new user confirmed via '.$socialData->provider );
 
         $this->auth->login($socialUser, true);
 
