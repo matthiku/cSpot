@@ -87,9 +87,9 @@ In order for the 'social logins' to work, you need to register your c-SPOT clone
 - [ ] ...
 
 ### TODO:
-- [ ] Send email to Admin when a new user is registered
+- [x] Send email to Admin when a new user is registered
 - [x] Add CCLI Song number column into Songs table
-- [ ] Add License type column into Songs table (CCLI, PublicDomain or unknown)
+- [x] Add License type column into Songs table (CCLI, PublicDomain or unknown)
 - [x] On songs detail page, add a link to CCLI song usage reporting tool
 - [ ] Only users with CCLI licence number can access non-PD songs 
 - [x] Add button to search for song on Youtube

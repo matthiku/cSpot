@@ -73,10 +73,29 @@ class AppMailer
      */
     public function sendEmailConfirmationTo(User $user)
     {
-        $this->to = $user->email;
+        $this->to      = $user->email;
         $this->subject = "Email address confirmation for c-SPOT app";
-        $this->view = 'auth.emails.confirm';
-        $this->data = compact('user');
+        $this->view    = 'auth.emails.confirm';
+        $this->data    = compact('user');
+
+        $this->deliver();
+    }
+
+
+
+    /**
+     * Notify Admin via email 
+     *
+     * @param  User $user
+     * @return void
+     */
+    public function notifyAdmin(User $user, $note)
+    {
+        $admin = User::find(1);
+        $this->to      = $admin->email;
+        $this->subject = $note;
+        $this->view    = 'auth.emails.admin';
+        $this->data    = compact('user','note');
 
         $this->deliver();
     }
@@ -91,11 +110,15 @@ class AppMailer
      */
     public function deliver()
     {
-        $this->mailer->send($this->view, $this->data, function ($message) {
-            $message->from($this->from, 'Administrator')
-                    ->to($this->to)
-                    ->subject($this->subject);
-        });
+        $this->mailer->send( 
+            $this->view, 
+            $this->data, 
+            function ($message) {
+                 $message->from(   $this->from, 'Administrator' )
+                         ->to(     $this->to )
+                         ->subject($this->subject );
+            }
+        );
     }
 
 

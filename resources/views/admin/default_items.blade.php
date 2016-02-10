@@ -44,7 +44,7 @@
 					<th>Service Type</th>
 					<th>Sequence No.</th>
 					<th>Text</th>
-					<th>Action</th>
+					<th class="center">Action</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -54,9 +54,9 @@
 					<td>{{ $default_item->type_id.' ('.$default_item->type->name.')'  }}</td>
 					<td>{{ $default_item->seq_no }}</td>
 					<td>{{ $default_item->text }}</td>
-					<td class="nowrap">
+					<td class="nowrap center">
 						 @if( Auth::user()->isEditor() )
-							<a class="btn btn-primary-outline btn-sm" title="Edit" 
+							<a class="btn btn-primary-outline btn-sm hidden-lg-down" title="Edit" 
 								href="{{ url('admin/default_items/'.$default_item->id) }}/edit"><i class="fa fa-pencil"></i></a>
 							<a class="btn btn-danger btn-sm" title="Delete!" 
 								href="{{ url('admin/default_items/'.$default_item->id) }}/delete"><i class="fa fa-trash"></i></a>

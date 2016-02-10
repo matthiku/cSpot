@@ -9,7 +9,7 @@
 					<th class="text-right">Move item</th>
 				@endif
 				<th class="hidden-sm-down center">Item</th>
-				<th class="hidden-md-down center">CCLI No.</th>
+				<th class="hidden-lg-down center">CCLI No.</th>
 				<th class="hidden-xs-down center">Book Ref.</th>
 				<th class="hidden-sm-down">Title</th>
 				<th class="hidden-sm-down center">Comment</th>
@@ -52,7 +52,7 @@
 
 				<td onclick={{$onclick}} class="hidden-sm-down center" scope="row">{{ $item->seq_no }}</td>
 
-				<td onclick={{$onclick}} class="hidden-md-down center">
+				<td onclick={{$onclick}} class="hidden-lg-down center">
 					{{ $item->song_id ? $item->song->ccli_no : '' }}</td>
 
 				<td onclick={{$onclick}} class="hidden-xs-down center">
@@ -81,9 +81,9 @@
 					<td class="hidden-sm-down center nowrap">
 						<a class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="left" title="Insert earlier item" 
 							href='{{ url('cspot/plans/'.$plan->id) }}/items/create/{{$item->seq_no-0.1}}'><i class="fa fa-reply"></i></a>
-	<!-- 					<a class="btn btn-primary-outline btn-sm" data-toggle="tooltip" title="Edit" 
+	 					<a class="btn btn-primary-outline btn-sm hidden-lg-down" data-toggle="tooltip" title="Edit" 
 							href='{{ url('cspot/plans/'.$plan->id) }}/items/{{$item->id}}/edit/'><i class="fa fa-pencil"></i></a>
-	 -->					<a class="btn btn-danger btn-sm" data-toggle="tooltip" title="Delete!" 
+						<a class="btn btn-danger btn-sm" data-toggle="tooltip" title="Delete!" 
 							href='{{ url('cspot/items/'.$item->id) }}/delete'><i class="fa fa-trash"></i></a>
 					</td>
 					<td class="hidden-md-up center nowrap">

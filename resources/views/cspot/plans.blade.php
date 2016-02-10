@@ -50,15 +50,15 @@
 					 ">
 			<thead class="thead-default">
 				<tr>
-					<th class="hidden-md-down">#</th>
+					<th class="hidden-md-down center">#</th>
 					<th>Date</th>
 					<th>Service Type</th>
-					<th class="hidden-xs-down">Leader</th>
-					<th class="hidden-xs-down">Teacher</th>
-					<th class="hidden-sm-up">Leader, Teacher</th>
+					<th class="hidden-xs-down center">Leader</th>
+					<th class="hidden-xs-down center">Teacher</th>
+					<th class="hidden-sm-up center">Leader, Teacher</th>
 					<th class="text-right hidden-md-down">Last updated on</th>
 					<th class="hidden-md-down">by</th>
-					<th>Action</th>
+					<th class="center{{ Auth::user()->isEditor() ? ' ' : ' hidden-lg-down' }}">Action</th>
 				</tr>
 			</thead>
 
@@ -67,7 +67,7 @@
 	        @foreach( $plans as $plan )
 				<tr class="link" onclick="location.href='{{ url('cspot/plans/'.$plan->id) }}/edit'">
 
-					<td class="hidden-md-down" scope="row">{{ $plan->id }}</td>
+					<td class="hidden-md-down center" scope="row">{{ $plan->id }}</td>
 
 					<td class="hidden-md-down">{{ $plan->date->formatLocalized('%A, %d %B %Y') }}</td>
 					<td class="hidden-sm-down hidden-lg-up">{{ $plan->date->formatLocalized('%a, %d %B %Y') }}</td>
@@ -75,17 +75,17 @@
 
 					<td>{{ $plan->type->name }}</td>
 
-					<td class="hidden-xs-down">{{ $plan->leader->first_name }}</td>
-					<td class="hidden-xs-down">{{ $plan->teacher->first_name }}</td>
-					<td class="hidden-sm-up">
+					<td class="hidden-xs-down center">{{ $plan->leader->first_name }}</td>
+					<td class="hidden-xs-down center">{{ $plan->teacher->first_name }}</td>
+					<td class="hidden-sm-up center">
 						{{ $plan->leader->first_name }}{{ $plan->teacher_id<>0 ? ', '.$plan->teacher->first_name : '' }}
 					</td>
 
 					<td class="hidden-md-down text-right">{{ $plan->updated_at->formatLocalized('%d-%m-%Y %H:%M') }}</td>
 					<td class="hidden-md-down">{{ ucfirst($plan->changer) }}</td>
 
-					<td class="nowrap">
-						<a class="btn btn-primary-outline btn-sm" title="Edit" href='{{ url('cspot/plans/'.$plan->id) }}/edit'><i class="fa fa-pencil"></i></a>
+					<td class="nowrap center{{ Auth::user()->isEditor() ? '' : ' hidden-lg-down' }}">
+						<a class="btn btn-primary-outline btn-sm hidden-lg-down" title="Edit" href='{{ url('cspot/plans/'.$plan->id) }}/edit'><i class="fa fa-pencil"></i></a>
 						@if( Auth::user()->isEditor() )
 							<a class="btn btn-danger btn-sm" title="Delete!" href='{{ url('cspot/plans/'.$plan->id) }}/delete'><i class="fa fa-trash"></i></a>
 						@endif

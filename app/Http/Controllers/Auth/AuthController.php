@@ -132,6 +132,7 @@ class AuthController extends Controller
         $user->assignRole($role);
         
         Log::info('trying to send registration email to '.$user->name);
+        $mailer->notifyAdmin( $user, 'new user registration' );
 
         $mailer->sendEmailConfirmationTo($user);
 
@@ -163,6 +164,7 @@ class AuthController extends Controller
             // remove token from user record
             $user->confirmEmail();
             flash('You are now confirmed. Please sign in.');
+            $mailer->notifyAdmin( $user, 'new user confirmed!' );
         }
 
         Log::info('email confirmed for user '.$user->name);
@@ -264,6 +266,7 @@ class AuthController extends Controller
         }
 
         Log::info('getSocialHandle - trying to do social-sign in');
+        $mailer->notifyAdmin( $socialUser, 'new user confirmed via '.$socialData->provider );
 
         $this->auth->login($socialUser, true);
 

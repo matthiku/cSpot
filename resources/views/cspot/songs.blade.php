@@ -60,10 +60,10 @@
 						@else
 							<a target="new" href="https://www.youtube.com/watch?v={{ $song->youtube_id }}">{{ $song->youtube_id }}</a></td>
 						@endif
-					<td class="nowrap">
-						<!-- <a class="btn btn-secondary btn-sm" title="Show Users" href='/cspot/songs/{{$song->id}}'><i class="fa fa-filter"></i></a> -->
+					<td class="nowrap center">
+						<!-- <a class="btn btn-secondary btn-sm" title="Show Plans using this song" href='/cspot/plans/{{$song->id}}'><i class="fa fa-filter"></i></a> -->
 						 @if( Auth::user()->isEditor() )
-							<a class="btn btn-primary-outline btn-sm" title="Edit" href='{{ url('cspot/songs/'.$song->id) }}/edit'><i class="fa fa-pencil"></i></a>
+							<a class="btn btn-primary-outline btn-sm hidden-lg-down" title="Edit" href='{{ url('cspot/songs/'.$song->id) }}/edit'><i class="fa fa-pencil"></i></a>
 							<a class="btn btn-danger btn-sm" title="Delete!" href='{{ url('cspot/songs/'.$song->id) }}/delete'><i class="fa fa-trash"></i></a>
 						@endif
 					</td>

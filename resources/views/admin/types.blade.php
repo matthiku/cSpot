@@ -40,11 +40,11 @@
 					 ">
 			<thead class="thead-default">
 				<tr>
-					<th>#</th>
+					<th class="center">#</th>
 					<th>Name</th>
-					<th>Total No. of Plans</th>
-					 @if(Auth::user()->id===1 || Auth::user()->isAdmin())
-						<th>Action</th>
+					<th class="center">Total No. of Plans</th>
+					 @if( Auth::user()->id===1 || Auth::user()->isAdmin() )
+						<th class="center">Action</th>
 					@endif
 				</tr>
 			</thead>
@@ -54,19 +54,23 @@
 	        @foreach( $types as $type )
 				<tr>
 
-					<td scope="row">{{ $type->id }}</td>
+					<td class="center" scope="row">{{ $type->id }}</td>
 
 					<td class="link" onclick="location.href='{{ url('cspot/plans/by_type/'.$type->id) }}'" 
 						title="Show all upcoming Plans of this Type of Service">{{ $type->name }}</td>
 
-					<td class="link" onclick="location.href='{{ url('cspot/plans/by_type/'.$type->id) }}/all'" 
+					<td class="link center" onclick="location.href='{{ url('cspot/plans/by_type/'.$type->id) }}/all'" 
 						title="Show all Plans of this Type of Service">{{ $type->plans->count() }}</td>
 
-					<td class="nowrap">
+					<td class="nowrap center">
 						<a class="btn btn-secondary btn-sm" title="Show upcoming Plans" href='{{ url('cspot/plans/by_type/'.$type->id ) }}'><i class="fa fa-filter"></i></a>
 						 @if( Auth::user()->isEditor() )
-						<a class="btn btn-primary-outline btn-sm" title="Edit" href='{{ url('admin/types/'.$type->id) }}/edit'><i class="fa fa-pencil"></i></a>
-						<a class="btn btn-danger btn-sm" title="Delete!" href='{{ url('admin/types/'.$type->id) }}/delete'><i class="fa fa-trash"></i></a>
+							<a class="btn btn-primary-outline btn-sm" title="Edit" 
+								href='{{ url('admin/types/'.$type->id) }}/edit'>
+									<i class="fa fa-pencil"></i></a>
+							<a class="btn btn-danger btn-sm" title="Delete!" 
+								href='{{ url('admin/types/'.$type->id) }}/delete'>
+									<i class="fa fa-trash"></i></a>
 						@endif
 					</td>
 
