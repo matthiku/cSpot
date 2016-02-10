@@ -224,12 +224,12 @@ class AuthController extends Controller
         if(!$code)
             return redirect('login')
                 ->with('status', 'danger')
-                ->with('message', 'You did not share your profile data with our social app.');
+                ->with('message', 'You did not share your profile data with c-SPOT.');
         if(!$user->email)
         {
             return redirect('login')
                 ->with('status', 'danger')
-                ->with('message', 'You did not share your email with our social app. You need to visit App Settings and remove our app, than you can come back here and login again. Or you can create new account.');
+                ->with('message', 'You did not share your email with c-SPOT. You need to visit your '. $provider.' App Settings and remove c-SPOT, than you can come back here and login again. Or you can create a new account.');
         }
         $socialUser = null;
         //Check is this email present
@@ -241,22 +241,37 @@ class AuthController extends Controller
         else
         {
             $sameSocialId = Social::where('social_id', '=', $user->id)->where('provider', '=', $provider )->first();
-            if(empty($sameSocialId))
+            if( empty($sameSocialId) )
             {
-                //There is no combination of this social id and provider, so create new one
+                // As there is no combination of this social id and provider, 
+                // we create a new one
                 $newSocialUser = new User;
+
+                // the email address as provided by the service provider
                 $newSocialUser->email              = $user->email;
+                // perhaps the email contains a name?
+                $emailName = explode('@', $user->email)[0];
+                if ( strlen($user->name)<3 ) {
+                    $user->name = explode('.', $emailName);
+                }
+
+                // the name is hopefully a full name with first- and lastname
                 $name = explode(' ', $user->name);
                 $newSocialUser->first_name         = $name[0];
                 $newSocialUser->last_name          = count($name)>1 ? $name[1] : $name[0];
+
+                // Add role
+                $role = Role::whereName('user')->first();
+                $newSocialUser->assignRole($role);
+                // save the new user
                 $newSocialUser->save();
+
+                // create record in the social table
                 $socialData = new Social;
                 $socialData->social_id = $user->id;
                 $socialData->provider= $provider;
                 $newSocialUser->social()->save($socialData);
-                // Add role
-                $role = Role::whereName('user')->first();
-                $newSocialUser->assignRole($role);
+
                 $socialUser = $newSocialUser;
             }
             else
