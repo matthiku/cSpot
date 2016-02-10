@@ -247,7 +247,7 @@ class AuthController extends Controller
                 $newSocialUser->email              = $user->email;
                 $name = explode(' ', $user->name);
                 $newSocialUser->first_name         = $name[0];
-                $newSocialUser->last_name          = $name[1];
+                $newSocialUser->last_name          = count($name)>1 ? $name[1] : $name[0];
                 $newSocialUser->save();
                 $socialData = new Social;
                 $socialData->social_id = $user->id;
