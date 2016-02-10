@@ -51,10 +51,6 @@
     padding: 2px !important;
 }
 
-textarea {
-    width: 100%;
-}
-
 .search-input, .search-btn {
     width: 100%;
 }
@@ -102,6 +98,10 @@ label {
 
     h1,h2,h3,h4,h5 {
         font-size: 100%;
+    }
+
+    textarea {
+        width: 100%;
     }
 
     .m-r-2 {

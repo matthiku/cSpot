@@ -16,6 +16,8 @@ use App\Models\Type;
 use App\Models\User;
 use App\Models\DefaultItem;
 
+use App\Mailers\AppMailer;
+
 use Carbon\Carbon;
 use Auth;
 
@@ -92,7 +94,7 @@ class PlanController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function next()
+    public function nextSunday()
     {
         //
         $plan = Plan::with('type')
@@ -306,9 +308,29 @@ class PlanController extends Controller
 
         $plan->info = $note;
         $plan->save();
-        //$plan->update();
 
         flash('Note added.');
+        return redirect()->back();
+    }
+
+
+
+    public function sendReminder(Request $request, $id, $user_id, AppMailer $mailer)
+    {
+        // find the Plan
+        $plan = Plan::find($id);
+        // get the recipient
+        $recipient = User::find($user_id);
+        // verify validity of this request
+        if ($plan && $plan->isFuture() && Auth::user()->OwnsPlan($id) ) {
+
+            $mailer->planReminder( $recipient, $plan );
+
+            flash( 'Email sent to '.$recipient->getFullName() );
+            return redirect()->back();
+        }
+
+        flash('Plan not found!');
         return redirect()->back();
     }
 

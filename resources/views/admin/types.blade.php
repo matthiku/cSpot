@@ -24,8 +24,8 @@
     	{{ $heading }}
     	<small class="text-muted">
     		<a tabindex="0" href="#"
-    			data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="focus"
-    			data-content="Service Types determine the title of services and which default items can be inserted for new plans.">
+    			data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Service Types"
+    			data-content="... determine the title (name) of services and which standard items can be inserted for new plans.">
     			<i class="fa fa-question-circle"></i></a>
 		</small>
 	</h2>
@@ -33,7 +33,8 @@
 
 	@if (count($types))
 
-		<table class="table table-striped table-bordered 
+		<table style="max-width: 64em" 
+			class="table table-striped table-bordered 
 					@if(count($types)>5)
 					 table-sm
 					@endif
@@ -41,7 +42,7 @@
 			<thead class="thead-default">
 				<tr>
 					<th class="center">#</th>
-					<th>Name</th>
+					<th class="center">Name</th>
 					<th class="center">Total No. of Plans</th>
 					 @if( Auth::user()->id===1 || Auth::user()->isAdmin() )
 						<th class="center">Action</th>
@@ -56,7 +57,7 @@
 
 					<td class="center" scope="row">{{ $type->id }}</td>
 
-					<td class="link" onclick="location.href='{{ url('cspot/plans/by_type/'.$type->id) }}'" 
+					<td class="link center" onclick="location.href='{{ url('cspot/plans/by_type/'.$type->id) }}'" 
 						title="Show all upcoming Plans of this Type of Service">{{ $type->name }}</td>
 
 					<td class="link center" onclick="location.href='{{ url('cspot/plans/by_type/'.$type->id) }}/all'" 

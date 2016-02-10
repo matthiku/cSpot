@@ -1,5 +1,4 @@
 # The Church Service Planning Online Tool.
-
 Create your own service planning database. Deploy for your church and allow others to participate.
 
 As a free and open source project, you can download ('clone') the sources and run the tool from your own web site.
@@ -8,30 +7,30 @@ As a free and open source project, you can download ('clone') the sources and ru
 
 [Installation instructions](#installation)
 
-### Why c-SPOT?
-c-SPOT was designed to help (small) churches plan their Sunday and Midweek services as well as other events.
+### Why ch-SPOT?
+ch-SPOT was designed to help (small) churches plan their Sunday and Midweek services as well as other events.
 
 Many people don’t understand the complexities of making a church service happen. If you just turn up, it probably looks pretty straightforward! However, a lot goes on behind the scenes before the Sunday. This tool tries to help with that.
 
 #### History
 In our church, this was first done by the leader of the service, when he handed out his list of songs to the musicians on a Sunday morning. As things progressed, this was no longer viable, as musicians needed more time to practice the songs and the slides for the projection needed to be prepared. So we switched to sending emails around but quite often, things were changed after the email went out and then not everyone was up-to-date. 
 
-That's when the development of the predecessor of c-SPOT was started. It was my first trial of a project in PHP, mySQL, HTML and Javascript and therefore, while user-friendly, not very developer-friendly... Also, it was never designed to be used on mobile devices. After recently learning a lot about Laravel and Bootstrap, I finally decided to re-write this tool from scratch, with a popular PHP framwork and the mobile-first approach. Due to time constraints, however, it is (for now) without SPA, the "[single page application](https://en.wikipedia.org/wiki/Single-page_application)" design!
+That's when the development of the predecessor of ch-SPOT was started. It was my first trial of a project in PHP, mySQL, HTML and Javascript and therefore, while user-friendly, not very developer-friendly... Also, it was never designed to be used on mobile devices. After recently learning a lot about Laravel and Bootstrap, I finally decided to re-write this tool from scratch, with a popular PHP framwork and the mobile-first approach. Due to time constraints, however, it is (for now) without SPA, the "[single page application](https://en.wikipedia.org/wiki/Single-page_application)" design!
 
 #### New Design
 Out came an online tool, designed for mobile devices and desktop devices, fully responsive to all sizes of screens with the ability to still access and/or modify all the relevant data. Tables are adaptive so that more and more columns with less important information are hidden or their content displayed in a more compact way the smaller a device gets!
 
 ### Users
-c-SPOT provides event information and worship song lists to worship leaders, musicians and every other person involved in the service and allows them to add or modify information accordingly.
+ch-SPOT provides event information and worship song lists to worship leaders, musicians and every other person involved in the service and allows them to add or modify information accordingly.
 
 However, the ability to contribute to the plan items is based on distinct roles given to each user, so that only authorized people can make modifications or even see certain details.
 
 ### Authorization
-By default, c-SPOT is designed to allow for 'self-registration'. Very basic rights are given to a self-registered user. Any further rights must be assigned by a user with an "Administrator" role (see below).
+By default, ch-SPOT is designed to allow for 'self-registration'. Very basic rights are given to a self-registered user. Any further rights must be assigned by a user with an "Administrator" role (see below).
 
-Users just need an email address to register with c-SPOT (which will be verified by a link sent to that email address) or they can allow their existing registration with one of the "big" service providers (like Google, Facebook, Twitter etc.) to be used for this verification.
+Users just need an email address to register with ch-SPOT (which will be verified by a link sent to that email address) or they can allow their existing registration with one of the "big" service providers (like Google, Facebook, Twitter etc.) to be used for this verification.
 
-If a user chooses to allow provider verification, they need to "authorize" c-SPOT once to access their basic account information on those accounts. From then on, no further login is required anymore as long as they are logged in to those providers in the same browser program.
+If a user chooses to allow provider verification, they need to "authorize" ch-SPOT once to access their basic account information on those accounts. From then on, no further login is required anymore as long as they are logged in to those providers in the same browser program.
 
 **Note**: After the installation of this tool, the first user to register will be be getting non-revokable Administrator rights! (In technical terms, this is the user with id number '1'. Of course, like everything else, this can be manipulated in the 'users' table of the database.)
 
@@ -68,44 +67,23 @@ For the requirements, check [Laravel's website](https://laravel.com/docs/5.2#ins
 Composer handles the various dependencies for the Laravel framework. Git is being used to clone the project from the Git hub and also to keep it updated afterwards. Insofar Git is optional and not needed to actually run the project.
 
 ##### Database
-Out of the box, c-SPOT uses a mySQL database to save all the data. However, Laravel provides for various other database tools, so you can actually modify this requirement.
+Out of the box, ch-SPOT uses a mySQL database to save all the data. However, Laravel provides for various other database tools, so you can actually modify this requirement.
 
 
 ### Installation
 
 #### Mandatory Steps
-1. In the root of your web server's http or html directory (depending on Apache or Nginx), run the command `git clone https://github.com/matthiku/cSpot.git` to download c-SPOT and install it into the folder 'cspot'. (The folder can be renamed to your liking)
+1. In the root of your web server's http or html directory (depending on Apache or Nginx), run the command `git clone https://github.com/matthiku/cSpot.git` to download ch-SPOT and install it into the folder 'cspot'. (The folder can be renamed to your liking)
 2. Run `composer install` to install all the dependencies
-3. In the root folder of the project, copy the file **.env.example** to **.env** and customize it for your environment. Mainly, configure your database name, db user name and db password for c-SPOT and enter the connectivity details for your mail server in order to be able to send confirmation emails to users.
+3. In the root folder of the project, copy the file **.env.example** to **.env** and customize it for your environment. Mainly, configure your database name, db user name and db password for ch-SPOT and enter the connectivity details for your mail server in order to be able to send confirmation emails to users.
 4. Create a new (empty) database on your mySQL server with the aforementioned parameters (db name, user name and password etc.).
-5. Run `php artisan migrate` to initialize your c-SPOT database.
+5. Run `php artisan migrate` to initialize your ch-SPOT database.
 
 #### Recommended
-1. In order for the **social logins** to work, you need to register your own c-SPOT app with some 'service providers' like Google or Faceook and enter the relevant details also into your private .env file.
+1. In order for the **social logins** to work, you need to register your own ch-SPOT app with some 'service providers' like Google or Faceook and enter the relevant details also into your private .env file.
 2. Add your songs to the songs list
 
-### Bugs/Enhancements:
-- Design flaws on mobile devices: 
-
-- [x] buttons on welcome page and their tooltips
-- [ ] list of songs from song search on the single item page is awkward
-- [x] obscure 'submit' button when adding a new service plan
-- [x] too many main menu items, reduce them to one main menu and change the misleading term 'Admin'
-
-- Other issues
-
-- [ ] ...
-
-### TODO:
-- [x] Send email to Admin when a new user is registered
-- [x] Add CCLI Song number column into Songs table
-- [x] Add License type column into Songs table (CCLI, PublicDomain or unknown)
-- [x] On songs detail page, add a link to CCLI song usage reporting tool
-- [ ] Only users with CCLI licence number can access non-PD songs (add license colum to users table)
-- [x] Add button to search for song on Youtube
-- [ ] move all bug reports, todos and enhancements to Git's "issues"
-
-### Future Enhancements (c-SPOT 2.0)
+### Future Enhancements (ch-SPOT 2.0)
 
 - Pre-populate the songs database with popular **public domain** lyrics
 - Program the frontend as a Single Page App using AngularJS and the backend as a RESTful API

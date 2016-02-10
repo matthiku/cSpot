@@ -77,7 +77,11 @@
                @if ( isset($song) )
                     <a class="btn btn-default btn-sm" type="button" target="new" 
                         href="https://olr.ccli.com/search/results?SearchTerm={{ $song->title.' '.$song->title_2.' '.$song->author }}">
-                        <i class="fa fa-search" > </i> &nbsp; CCLI search by song titles and author
+                        <i class="fa fa-search" > </i> CCLI search &nbsp; 
+                    </a>
+                    <a class="btn btn-default btn-sm" type="button" target="new" 
+                        href="https://www.hymnal.net/en/search/all/all/{{ $song->title.' '.$song->title_2 }}">
+                        <i class="fa fa-search" > </i> hymnal.net search &nbsp; 
                     </a>
                 @endif
             </div>

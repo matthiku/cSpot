@@ -4,7 +4,8 @@
 
 namespace App\Models;
 
-//use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Models\Plan;
+use Auth;
 
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
@@ -152,6 +153,24 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
             return false;
         }
         return $this->roles()->detach($role);
+    }
+
+
+    /**
+     * Check if a user has rights to modify a plan
+     * either with Author or higher role
+     * or as leader or teacher of a plan
+     */
+    public function ownsPlan($plan_id)
+    {        
+        if ( Auth::user()->isAuthor() ) return true;
+
+        // find the Plan
+        $plan = Plan::find($id);
+        if ( $this->id==$plan->leader_id || $this->id==$plan->teacher_id ) {
+            return true;
+        }
+        return false;
     }
 
 

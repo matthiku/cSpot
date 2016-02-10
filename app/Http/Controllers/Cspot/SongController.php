@@ -43,7 +43,7 @@ class SongController extends Controller
     public function index()
     {
         //
-        $songs = Song::get();
+        $songs = Song::orderBy('title')->get();
 
         $heading = 'Manage Songs';
         return view( $this->view_all, array('songs' => $songs, 'heading' => $heading) );

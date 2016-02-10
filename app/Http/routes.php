@@ -47,7 +47,7 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     // show only upcoming service plans
     Route::get('plans/future', ['as'=>'future', 'uses'=>'Cspot\PlanController@future']);
     // show only upcoming service plans
-    Route::get('plans/next', ['as'=>'next', 'uses'=>'Cspot\PlanController@next']);
+    Route::get('plans/next', ['as'=>'next', 'uses'=>'Cspot\PlanController@nextSunday']);
     // basic CRUD resources for plans
     Route::resource('plans', 'Cspot\PlanController');
     // allow DELETE via the GET method
@@ -57,6 +57,9 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     Route::get('plans/by_type/{type_id}/{all?}', 'Cspot\PlanController@by_type');    
     // update (append) the note for a plan
     Route::put('plans/{plan_id}/addNote', ['as'=>'addNote', 'uses'=>'Cspot\PlanController@addNote']);
+
+    // send an email reminder to a leader or teacher for a plan
+    Route::get('plans/{plan_id}/remind/{user_id}', ['as'=>'sendReminder', 'uses'=>'Cspot\PlanController@sendReminder']);
     
     // show form to create a new item for a plan
     Route::get('plans/{plan_id}/items/create/{seq_no}', 'Cspot\ItemController@create');    

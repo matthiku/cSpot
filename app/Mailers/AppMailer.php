@@ -3,9 +3,10 @@
 namespace App\Mailers;
 
 use App\Models\User;
+use App\Models\Plan;
 
 use Illuminate\Contracts\Mail\Mailer;
-
+use Auth;
 
 class AppMailer
 {
@@ -30,6 +31,13 @@ class AppMailer
      * @var string
      */
     protected $to;
+
+    /**
+     * The recipient of the email.
+     *
+     * @var string
+     */
+    protected $cc;
 
     /**
      * The subject of the email.
@@ -93,11 +101,34 @@ class AppMailer
      */
     public function notifyAdmin(User $user, $note)
     {
+        // not needed on local dev installations...
+        if (env('APP_ENV')=='local') return;
+
         $admin = User::find(1);
         $this->to      = $admin->email;
         $this->subject = $note;
         $this->view    = 'auth.emails.admin';
         $this->data    = compact( 'user', 'note' );
+
+        $this->deliver();
+    }
+
+
+    /**
+     * Notify Leader or teacher of a plan
+     *
+     * @param  
+     * @return void
+     */
+    public function planReminder(User $recipient, Plan $plan)
+    {
+        $user      = Auth::user();
+        $admin     = User::find(1);
+        $this->cc  = $admin->email;
+        $this->to  = $recipient->email;
+        $this->subject = env('CHURCH_NAME').' - missing items for your Service Plan';
+        $this->view    = 'cspot.emails.reminder';
+        $this->data    = compact( 'user', 'recipient', 'plan' );
 
         $this->deliver();
     }

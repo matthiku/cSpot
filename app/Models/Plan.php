@@ -6,6 +6,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+use Carbon\Carbon;
+
+
 class Plan extends Model
 {
     // mass assignment protection
@@ -25,6 +28,13 @@ class Plan extends Model
 		'date', 'created_at', 'updated_at'
 	];
 	// protected $dateFormat = 'U';
+
+
+
+	public function isFuture()
+	{
+		return $this->date > Carbon::yesterday();
+	}
 
 
 	// the leader_id points to the id on the users table

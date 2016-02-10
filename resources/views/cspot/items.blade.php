@@ -8,7 +8,7 @@
 				@if( Auth::user()->isEditor() || Auth::user()->id==$plan->leader_id || Auth::user()->id==$plan->teacher_id )
 					<th class="text-right">Move item</th>
 				@endif
-				<th class="hidden-sm-down center">Item</th>
+				<th class="hidden-sm-down center">Order</th>
 				<th class="hidden-lg-down center">CCLI No.</th>
 				<th class="hidden-xs-down center">Book Ref.</th>
 				<th class="hidden-sm-down">Title</th>

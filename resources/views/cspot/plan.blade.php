@@ -127,8 +127,9 @@
                         @foreach ($users as $user)
                             @if( $user->hasRole('leader'))
                                 <option 
-                                    @if( ( ''<>old('leader_id') && $user->id==old('leader_id') )  ||  isset($plan) && $plan->leader_id==$user->id )
-                                        selected
+                                    @if(   ( ''<>old('leader_id') && $user->id==old('leader_id') )  
+                                        || ( isset($plan) && $plan->leader_id==$user->id ) )
+                                            selected
                                     @endif
                                     value="{{ $user->id }}">{{ $user->first_name }}</option>
                             @endif
@@ -138,6 +139,11 @@
                         <br><span class="help-block">
                             <strong>{{ $errors->first('leader_id') }}</strong>
                         </span>
+                    @endif
+                    @if ( $plan->isFuture() && Auth::user()->isAuthor() )
+                        <a href="{{ url('cspot/plans/'.$plan->id.'/remind/'.$plan->leader_id) }}" 
+                           class="btn btn-sm btn-secondary" role="button" title="Send reminder to leader">
+                            <i class="fa fa-envelope"></i></a>
                     @endif
                 </div>
             </div>          
@@ -154,7 +160,8 @@
                         @foreach ($users as $user)
                             @if( $user->hasRole('teacher'))
                                 <option 
-                                    @if( ( ''<>old('teacher_id') && $user->id==old('teacher_id') )  ||  isset($plan) && $plan->teacher_id==$user->id )
+                                    @if(   ( ''<>old('teacher_id') && $user->id==old('teacher_id') )  
+                                        || ( isset($plan) && $plan->teacher_id==$user->id ) )
                                         selected
                                     @endif
                                     value="{{ $user->id }}">{{ $user->first_name }}</option>
@@ -165,6 +172,11 @@
                         <br><span class="help-block">
                             <strong>{{ $errors->first('teacher_id') }}</strong>
                         </span>
+                    @endif
+                    @if ( $plan->isFuture()  &&  Auth::user()->ownsPlan($plan->id) )  )
+                        <a href="{{ url('cspot/plans/'.$plan->id.'/remind/'.$plan->teacher_id) }}" 
+                           class="btn btn-sm btn-secondary" role="button" title="Send reminder to teacher">
+                            <i class="fa fa-envelope"></i></a>
                     @endif
                 </div>
             </div>
