@@ -34,12 +34,14 @@
         @if (isset($item))
                 <h2>
                     <a href="{{ url('cspot/plans/'.$plan->id.'/items/'.$item->id.'/go/previous') }}"
+                        class="btn btn-secondary" role="button"
                         title="go to previous item">
-                        <button><i class="fa fa-angle-double-left"></i></button></a>
+                        <i class="fa fa-angle-double-left fa-lg"></i></a>
                     &nbsp; Update Item No {{$seq_no}} &nbsp; 
                     <a href="{{ url('cspot/plans/'.$plan->id.'/items/'.$item->id.'/go/next') }}"
+                        class="btn btn-secondary" role="button"
                         title="go to next item">
-                        <button><i class="fa fa-angle-double-right"></i></button></a>
+                        <i class="fa fa-angle-double-right fa-lg"></i></a>
                 </h2>
                 <h5>of the Service plan (id {{ $plan->id }}) for {{ $plan->date->formatLocalized('%A, %d %B %Y') }}</h5>
             </div>
