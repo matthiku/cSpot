@@ -32,30 +32,32 @@
 					 table-sm
 					@endif
 					 ">
+
 			<thead class="thead-default">
 				<tr>
 					<th class="hidden-md-down">#</th>
 					<th>Title</th>
-					<!-- <th>Title 2</th> -->
-					<th class="hidden-md-down">CCLI No.</th>
-					<th>Book Ref.</th>
 					<th class="hidden-md-down">Author</th>
-					<th class="hidden-sm-down">License</th>
-					<th class="hidden-sm-down">Youtube ID</th>
+					<th class="center hidden-sm-down">Usage</th>
+					<th class="center hidden-md-down">CCLI No.</th>
+					<th class="center">Book Ref.</th>
+					<th class="center hidden-sm-down">License</th>
+					<th class="center hidden-sm-down">Youtube ID</th>
 					<th>Action</th>
 				</tr>
 			</thead>
+
 			<tbody>
 	        @foreach( $songs as $song )
 				<tr class="link" onclick="location.href ='{{ url('cspot/songs/'.$song->id) }}/edit'">
 					<td scope="row" class="hidden-md-down">{{ $song->id }}</td>
 					<td>{{ $song->title }} {{ $song->title_2<>'' ? '('. $song->title_2 .')' : '' }}</td>
-					<!-- <td>{ { $song->title_2 }}</td> -->
-					<td class="hidden-md-down">{{ $song->ccli_no }}</td>
-					<td>{{ $song->book_ref }}</td>
 					<td class="hidden-md-down">{{ $song->author }}</td>
-					<td class="hidden-sm-down">{{ $song->license }}</td>
-					<td class="hidden-sm-down">@if (substr($song->youtube_id,0,2)=="PL")
+					<td class="center hidden-sm-down">{{ $song->items->count() }}</td>
+					<td class="center hidden-md-down">{{ $song->ccli_no }}</td>
+					<td class="center">{{ $song->book_ref }}</td>
+					<td class="center hidden-sm-down">{{ $song->license }}</td>
+					<td class="center hidden-sm-down">@if (substr($song->youtube_id,0,2)=="PL")
 							<a target="new" href="https://www.youtube.com/playlist?list={{ $song->youtube_id }}">YT Playlist</a></td>
 						@else
 							<a target="new" href="https://www.youtube.com/watch?v={{ $song->youtube_id }}">{{ $song->youtube_id }}</a></td>
@@ -69,8 +71,11 @@
 					</td>
 				</tr>
 	        @endforeach
+
 			</tbody>
+
 		</table>
+
 
     @else
 

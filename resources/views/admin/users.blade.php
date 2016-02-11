@@ -24,7 +24,7 @@
     <h2>{{ $heading }}</h2>
 
 	<p>
-		<a href="/admin/users{{ Request::is('*/active') ? '' : '/active' }}">
+		<a href="{{ url('/admin/users' . (Request::is('*/active') ? '' : '/active')) }}">
 		<input type="checkbox" {{Request::is('*/active') ? 'checked' : ''}}>
 		Show only active users</a>
 	</p>

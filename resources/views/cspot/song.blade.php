@@ -66,10 +66,15 @@
 
     </div>
 
+
+
     <hr>
+
+
 
     <div class="row">
         <div class="col-xl-6">
+
             
             <div class="row form-group">
                {!! Form::label('title', 'Song Title', ['class' => 'col-sm-4 col-md-3 col-lg-2 col-xl-4']); !!}
@@ -85,28 +90,38 @@
                     </a>
                 @endif
             </div>
+
+
             <div class="row form-group">
                 {!! Form::label('title_2', 'Subtitle', ['class' => 'col-sm-4 col-md-3 col-lg-2 col-xl-4']); !!}
                 <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width">{!! Form::text('title_2'); !!}</div>
             </div>
+
+
             <div class="row form-group">
                 {!! Form::label('ccli_no', 'CCLI Song No', ['class' => 'col-sm-4 col-md-3 col-lg-2 col-xl-4']); !!}
                 <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width">{!! Form::number('ccli_no'); !!}</div>
-                @if ( isset($song) )
+                @if ( isset($song)  && $song->ccli_no > 10000 )
                     <a class="btn btn-default btn-sm" type="button" target="new" 
                         href="https://olr.ccli.com/search/results?SearchTerm={{ $song->ccli_no }}">
-                        <i class="fa fa-search" > </i> &nbsp; CCLI look-up (if number exists)
+                        <i class="fa fa-search" > </i> &nbsp; CCLI look-up
                     </a>
                 @endif
             </div>
+
+
             <div class="row form-group">
                 {!! Form::label('book_ref', 'Book Ref.', ['class' => 'col-sm-4 col-md-3 col-lg-2 col-xl-4']); !!}
                 <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width">{!! Form::text('book_ref'); !!}</div>
             </div>
+
+
             <div class="row form-group">
                 {!! Form::label('author', 'Author', ['class' => 'col-sm-4 col-md-3 col-lg-2 col-xl-4']); !!}
                 <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width">{!! Form::text('author'); !!}</div>
             </div>
+
+
             <div class="row form-group">
                 <div class="col-sm-4 col-md-3 col-lg-2 col-xl-4">                    
                     {!! Form::label('license', 'Select a license:'); !!}
@@ -138,10 +153,14 @@
                     @endif
                 </div>
             </div>
+
+
             <div class="row form-group">
                 {!! Form::label('sequence', 'Sequence', ['class' => 'col-sm-4 col-md-3 col-lg-2 col-xl-4']); !!}
                 <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width">{!! Form::text('sequence'); !!}</div>
             </div>
+
+
             <div class="row form-group">
                 {!! Form::label('youtube_id', 'Youtube ID', ['class' => 'col-sm-4 col-md-3 col-lg-2 col-xl-4']); !!}
                 <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width">{!! Form::text('youtube_id'); !!}</div>
@@ -150,22 +169,37 @@
                         href="https://www.youtube.com/results?search_query={{ $song->title }}">
                         <big class="fa fa-youtube" > </big> &nbsp; YouTube search
                     </a>
-                    <a target="new" href="https://www.youtube.com/watch?v={{ $song->youtube_id }}">Play on Youtube <big class="fa fa-youtube-play" ></big></a>
+                    @if ( isset($song->youtube_id) )
+                        <a target="new" href="https://www.youtube.com/watch?v={{ $song->youtube_id }}">
+                            Play on Youtube <big class="fa fa-youtube-play" ></big></a>
+                    @endif
                 @endif
             </div>
+
+
             <div class="row form-group">
                 {!! Form::label('link', 'Link(s)', ['class' => 'col-sm-4 col-md-3 col-lg-2 col-xl-4']); !!}
                 <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width">{!! Form::text('link'); !!}</div>
+
             </div>
 
         </div>
+
+
         <div class="col-xl-6">
+
+            @if ( isset($song) )
+                Song Usage Count: <strong>{{ $song->items->count() }}</strong>
+            @endif
+            <hr>
 
             {!! Form::label('lyrics', 'Lyrics'); !!}<br/>
             {!! Form::textarea('lyrics'); !!}
 
         </div>
+
     </div>
+
 
 
     {!! Form::close() !!}

@@ -118,7 +118,7 @@
 
         <div class="col-lg-4 col-md-6">
             <div class="col-sm-6">
-                <div class="row form-group">
+                <div class="row form-group nowrap">
                     <label>Leader </label>
                     <select name="leader_id" class="c-select"{{ Auth::user()->isEditor() ? '' : ' disabled' }}>
                         <option {{ isset($plan) ? '' : 'selected'}}>
@@ -140,7 +140,7 @@
                             <strong>{{ $errors->first('leader_id') }}</strong>
                         </span>
                     @endif
-                    @if ( $plan->isFuture() && Auth::user()->isAuthor() )
+                    @if ( isset($plan) && $plan->isFuture() && Auth::user()->isAuthor() )
                         <a href="{{ url('cspot/plans/'.$plan->id.'/remind/'.$plan->leader_id) }}" 
                            class="btn btn-sm btn-secondary" role="button" title="Send reminder to leader">
                             <i class="fa fa-envelope"></i></a>
@@ -150,7 +150,7 @@
 
 
             <div class="col-sm-6">
-                <div class="row form-group">
+                <div class="row form-group nowrap">
                     <label>Teacher</label>
                     <select name="teacher_id" class="c-select"{{ Auth::user()->isEditor() ? '' : ' disabled' }}>
                         <option {{ isset($plan) ? '' : 'selected'}}>
@@ -173,7 +173,7 @@
                             <strong>{{ $errors->first('teacher_id') }}</strong>
                         </span>
                     @endif
-                    @if ( $plan->isFuture()  &&  Auth::user()->ownsPlan($plan->id) )  )
+                    @if ( isset($plan) && $plan->isFuture()  &&  Auth::user()->ownsPlan($plan->id) )
                         <a href="{{ url('cspot/plans/'.$plan->id.'/remind/'.$plan->teacher_id) }}" 
                            class="btn btn-sm btn-secondary" role="button" title="Send reminder to teacher">
                             <i class="fa fa-envelope"></i></a>

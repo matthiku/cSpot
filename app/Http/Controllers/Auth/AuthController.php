@@ -14,6 +14,7 @@ use Validator;
 use Auth;
 use Input;
 use Socialite;
+use Carbon\Carbon;
 
 use App\Mailers\AppMailer;
 use Illuminate\Http\Request;
@@ -91,7 +92,12 @@ class AuthController extends Controller
 
         if (Auth::guard($this->getGuard())->attempt($credentials, $request->has('remember'))) {
             $user = Auth::user();
+            // notify admin 
             $mailer->notifyAdmin( $user, $user->getFullName() .' logged in on IP '.$request->ip() );
+            // write last login field in users table
+            $user->last_login = Carbon::now();
+            $user->save();
+            
             return $this->handleUserWasAuthenticated($request, $throttles);
         }
 
@@ -283,7 +289,7 @@ class AuthController extends Controller
         }
 
         Log::info('getSocialHandle - trying to do social-sign in');
-        $mailer->notifyAdmin( $socialUser, 'new user confirmed via '.$socialData->provider );
+        $mailer->notifyAdmin( $socialUser, 'User confirmed via '.$provider );
 
         $this->auth->login($socialUser, true);
 

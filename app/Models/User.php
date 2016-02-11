@@ -166,7 +166,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         if ( Auth::user()->isAuthor() ) return true;
 
         // find the Plan
-        $plan = Plan::find($id);
+        $plan = Plan::find($plan_id);
         if ( $this->id==$plan->leader_id || $this->id==$plan->teacher_id ) {
             return true;
         }

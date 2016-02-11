@@ -17,6 +17,8 @@ class UpdateUsersTable extends Migration
             $table->renameColumn('name', 'first_name');
             // add last_name field
             $table->string('last_name');
+            // add last login date
+            $table->timestamp('last_login');
         });
     }
 
