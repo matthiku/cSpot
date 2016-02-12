@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Reminder to enter mssing items</title>
 </head>
+
 <body>
     <p>Dear {{ $user->first_name }},</p>
 
@@ -17,4 +19,5 @@
     </p>
 
 </body>
+
 </html>

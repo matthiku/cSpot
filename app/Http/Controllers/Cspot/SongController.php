@@ -128,6 +128,11 @@ class SongController extends Controller
         return \Redirect::route($this->view_idx);
     }
 
+
+
+
+
+
     /**
      * Update the specified resource in storage.
      *
@@ -142,8 +147,14 @@ class SongController extends Controller
                 ->update($request->except(['_method','_token']));
 
         flash( 'Song "'.$request->title.'" updated.' );
-        return \Redirect::route( $this->view_idx );
+        return redirect()->back();
     }
+
+
+
+
+
+
 
     /**
      * Remove the specified resource from storage.

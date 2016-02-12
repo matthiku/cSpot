@@ -20,9 +20,10 @@ class CreateSongsTable extends Migration
             $table->integer('ccli_no');
             $table->string('book_ref');
             $table->string('author');
-            $table->enum('license', ['PD','CCLI', 'Unknown'])nullable();
+            $table->enum('license', ['PD','CCLI', 'Other', 'Unknown'])nullable();
             $table->string('sequence');
             $table->string('youtube_id');
+            $table->integer('hymnaldotnet_id');
             $table->string('link');
             $table->softDeletes(); // in order to retain DB integrity, songs are only marked as deleted
             $table->timestamps();

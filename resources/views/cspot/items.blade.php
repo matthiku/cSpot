@@ -9,13 +9,13 @@
 					<th class="text-right">Move item</th>
 				@endif
 				<th class="hidden-sm-down center">Order</th>
-				<th class="hidden-lg-down center">CCLI No.</th>
 				<th class="hidden-xs-down center">Book Ref.</th>
 				<th class="hidden-sm-down">Title</th>
 				<th class="hidden-sm-down center">Comment</th>
 				<th class="hidden-md-up center">Title/Comment</th>
 				<th class="hidden-md-down center">Version</th>
-				<th class="hidden-md-down center">Key</th>
+				<th class="hidden-lg-down center">Key</th>
+				<th class="hidden-sm-down center">Links</th>
 				@if( Auth::user()->isEditor() || Auth::user()->id==$plan->leader_id || Auth::user()->id==$plan->teacher_id )
 					<th class="center">Insert / Delete</th>
 				@endif
@@ -50,10 +50,7 @@
 					</td>
 				@endif
 
-				<td onclick={{$onclick}} class="hidden-sm-down center" scope="row">{{ $item->seq_no }}</td>
-
-				<td onclick={{$onclick}} class="hidden-lg-down center">
-					{{ $item->song_id ? $item->song->ccli_no : '' }}</td>
+				<td class="hidden-sm-down center" scope="row">{{ $item->seq_no }}</td>
 
 				<td onclick={{$onclick}} class="hidden-xs-down center">
 					{{ ($item->song_id) ? $item->song->book_ref : '' }}</td>
@@ -75,24 +72,40 @@
 
 				<td onclick={{$onclick}} class="hidden-md-down center">{{ $item->version }}</td>
 
-				<td onclick={{$onclick}} class="hidden-md-down center">{{ $item->key }}</td>
+				<td onclick={{$onclick}} class="hidden-lg-down center">{{ $item->key }}</td>
+
+				<td class="hidden-sm-down center">
+					<big>
+					@if ($item->song_id)
+	                    @if ( $item->song->hymnaldotnet_id > 0 )
+	                        <a target="new" title="See on hymnal.net" 
+	                            href="https://www.hymnal.net/en/hymn/h/{{ $item->song->hymnaldotnet_id }}">
+	                            <i class="fa fa-music"></i> </a> &nbsp; 
+	                    @endif
+	                    @if ( strlen($item->song->youtube_id)>0 )
+	                        <a target="new" title="Play on YouTube" class="red" 
+	                        	href="https://www.youtube.com/watch?v={{ $item->song->youtube_id }}">
+	                             <i class="fa fa-youtube-play"></i></a>
+	                    @endif
+					@endif
+					</big>
+				</td>
+
 
 				@if( Auth::user()->isEditor() || Auth::user()->id==$plan->leader_id || Auth::user()->id==$plan->teacher_id )
-					<td class="hidden-sm-down center nowrap">
+					<td class="center nowrap">
+
 						<a class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="left" title="Insert earlier item" 
 							href='{{ url('cspot/plans/'.$plan->id) }}/items/create/{{$item->seq_no-0.1}}'><i class="fa fa-reply"></i></a>
-	 					<a class="btn btn-primary-outline btn-sm hidden-lg-down" data-toggle="tooltip" title="Edit" 
+
+	 					<a class="hidden-sm-down btn btn-primary-outline btn-sm hidden-lg-down" data-toggle="tooltip" title="Edit" 
 							href='{{ url('cspot/plans/'.$plan->id) }}/items/{{$item->id}}/edit/'><i class="fa fa-pencil"></i></a>
+
 						<a class="btn btn-danger btn-sm" data-toggle="tooltip" title="Delete!" 
 							href='{{ url('cspot/items/'.$item->id) }}/delete'><i class="fa fa-trash"></i></a>
 					</td>
-					<td class="hidden-md-up center nowrap">
-						<a class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="left" title="Insert earlier item" 
-							href='{{ url('cspot/plans/'.$plan->id) }}/items/create/{{$item->seq_no-0.1}}'><i class="fa fa-reply"></i></a>
-						<a class="btn btn-danger btn-sm" data-toggle="tooltip" data-placement="left" title="Delete!" 
-							href='{{ url('cspot/items/'.$item->id) }}/delete'><i class="fa fa-trash"></i></a>
-					</td>
 				@endif
+
 
 			</tr>
 

@@ -58,7 +58,7 @@
                 </div>
 
                 <div class="col-xs-4">
-                    <big><a href="{{ url('cspot/songs') }}">{!! Form::button('Cancel', ['class'=>'fully-width']); !!}</a></big>
+                    <big><a href="{{ url('cspot/songs') }}">{!! Form::button('All Songs', ['class'=>'fully-width']); !!}</a></big>
                 </div>
 
             </div>
@@ -80,13 +80,13 @@
                {!! Form::label('title', 'Song Title', ['class' => 'col-sm-4 col-md-3 col-lg-2 col-xl-4']); !!}
                <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width">{!! Form::text('title'); !!}</div>
                @if ( isset($song) )
-                    <a class="btn btn-default btn-sm" type="button" target="new" 
+                    &nbsp; <a class="btn btn-sm" type="button" target="new" 
                         href="https://olr.ccli.com/search/results?SearchTerm={{ $song->title.' '.$song->title_2.' '.$song->author }}">
-                        <i class="fa fa-search" > </i> CCLI search &nbsp; 
+                        <i class="fa fa-search" > </i> CCLI search 
                     </a>
-                    <a class="btn btn-default btn-sm" type="button" target="new" 
+                    &nbsp; <a class="btn btn-sm" type="button" target="new" 
                         href="https://www.hymnal.net/en/search/all/all/{{ $song->title.' '.$song->title_2 }}">
-                        <i class="fa fa-search" > </i> hymnal.net search &nbsp; 
+                        <i class="fa fa-search" > </i> hymnal.net search 
                     </a>
                 @endif
             </div>
@@ -99,26 +99,14 @@
 
 
             <div class="row form-group">
-                {!! Form::label('ccli_no', 'CCLI Song No', ['class' => 'col-sm-4 col-md-3 col-lg-2 col-xl-4']); !!}
-                <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width">{!! Form::number('ccli_no'); !!}</div>
-                @if ( isset($song)  && $song->ccli_no > 10000 )
-                    <a class="btn btn-default btn-sm" type="button" target="new" 
-                        href="https://olr.ccli.com/search/results?SearchTerm={{ $song->ccli_no }}">
-                        <i class="fa fa-search" > </i> &nbsp; CCLI look-up
-                    </a>
-                @endif
+                {!! Form::label('author', 'Author', ['class' => 'col-sm-4 col-md-3 col-lg-2 col-xl-4']); !!}
+                <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width">{!! Form::text('author'); !!}</div>
             </div>
 
 
             <div class="row form-group">
                 {!! Form::label('book_ref', 'Book Ref.', ['class' => 'col-sm-4 col-md-3 col-lg-2 col-xl-4']); !!}
-                <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width">{!! Form::text('book_ref'); !!}</div>
-            </div>
-
-
-            <div class="row form-group">
-                {!! Form::label('author', 'Author', ['class' => 'col-sm-4 col-md-3 col-lg-2 col-xl-4']); !!}
-                <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width">{!! Form::text('author'); !!}</div>
+                <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8">{!! Form::text('book_ref'); !!}</div>
             </div>
 
 
@@ -156,6 +144,32 @@
 
 
             <div class="row form-group">
+                {!! Form::label('hymnaldotnet_id', 'Hymnal.Net id', ['class' => 'col-sm-4 col-md-3 col-lg-2 col-xl-4']); !!}
+                <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8">{!! Form::number('hymnaldotnet_id'); !!}
+                    @if ( isset($song)  && $song->hymnaldotnet_id > 0 )
+                        <a class="btn btn-sm" type="button" target="new" 
+                            href="https://www.hymnal.net/en/hymn/h/{{ $song->hymnaldotnet_id }}">
+                            <i class="fa fa-music" > </i> See song on Hymnal.Net
+                        </a>
+                    @endif
+                </div>
+            </div>
+
+
+            <div class="row form-group">
+                {!! Form::label('ccli_no', 'CCLI Song No', ['class' => 'col-sm-4 col-md-3 col-lg-2 col-xl-4']); !!}
+                <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8">{!! Form::number('ccli_no'); !!}
+                    @if ( isset($song)  && $song->ccli_no > 10000 )
+                        <a class="btn btn-sm" type="button" target="new" 
+                            href="https://olr.ccli.com/search/results?SearchTerm={{ $song->ccli_no }}">
+                            <i class="fa fa-search" > </i> CCLI look-up
+                        </a>
+                    @endif
+                </div>
+            </div>
+
+
+            <div class="row form-group">
                 {!! Form::label('sequence', 'Sequence', ['class' => 'col-sm-4 col-md-3 col-lg-2 col-xl-4']); !!}
                 <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width">{!! Form::text('sequence'); !!}</div>
             </div>
@@ -165,13 +179,14 @@
                 {!! Form::label('youtube_id', 'Youtube ID', ['class' => 'col-sm-4 col-md-3 col-lg-2 col-xl-4']); !!}
                 <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width">{!! Form::text('youtube_id'); !!}</div>
                 @if ( isset($song) )
-                    <a class="btn btn-default btn-sm" type="button" target="new" 
+                    &nbsp; <a class="btn btn-sm" type="button" target="new" 
                         href="https://www.youtube.com/results?search_query={{ $song->title }}">
-                        <big class="fa fa-youtube" > </big> &nbsp; YouTube search
+                        <big class="fa fa-youtube" > </big> YouTube search
                     </a>
-                    @if ( isset($song->youtube_id) )
-                        <a target="new" href="https://www.youtube.com/watch?v={{ $song->youtube_id }}">
-                            Play on Youtube <big class="fa fa-youtube-play" ></big></a>
+                    @if ( strlen($song->youtube_id)>0 )
+                        &nbsp; <a class="btn btn-sm" type="button" target="new" 
+                            href="https://www.youtube.com/watch?v={{ $song->youtube_id }}">
+                            <big class="fa fa-youtube-play"></big> Play on Youtube</a>
                     @endif
                 @endif
             </div>

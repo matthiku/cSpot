@@ -351,8 +351,8 @@ class PlanController extends Controller
         if ($output) {
             $items = $output->items()->get();
             if ( count($items) ) {
-                flashError('Plan with ID "' . $id . '" still contains items and cannot be deleted.');
-                return redirect()->back();
+                flashError('Plan with ID "' . $id . '" still contains items and cannot be deleted. Please review this plan now.');
+                return $this->edit($id);
             }
             $output->delete();
             flash('Plan with id "' . $id . '" deleted.');
