@@ -5,11 +5,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use DB;
 
 
 class Item extends Model
 {
+    
+    use SoftDeletes;
 
     // mass assignment protection
     protected $fillable = [

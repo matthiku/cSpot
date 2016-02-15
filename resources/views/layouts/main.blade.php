@@ -23,7 +23,12 @@
     
     <script src="{{ url('js/tether.min.js') }}"></script>
     <script src="{{ url('js/jquery.min.js') }}"></script>
+
+    <script src="{{ url('js/app.js') }}"></script>
+
   </head>
+
+
 
 
   <body id="app-layout">
@@ -125,17 +130,6 @@
 
     <!-- JavaScripts -->
     <script src="{{ url('js/bootstrap.min.js') }}"></script>
-    <script>
-        $(document).ready(function() {
-          $(function () {
-            $('[data-toggle="tooltip"]').tooltip();
-            $('[data-toggle="popover"]').popover();
-            $('.popover-dismiss').popover({
-                trigger: 'focus'
-            });
-          });
-        });
-    </script>
 
   </body>
 

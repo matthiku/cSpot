@@ -21,6 +21,7 @@ class Song extends Model
         'title',
         'title_2',
         'lyrics',
+        'chords',
         'ccli_no',
         'book_ref',
         'author',
@@ -41,6 +42,26 @@ class Song extends Model
     {
         return $this->hasMany('App\Models\Item');
     }
+
+
+
+
+    /**
+     * Check if the YouTube id contains the full URL -
+     * we only want to save the ID part
+     *
+     * @param  string  $value
+     * @return string
+     */
+    public function setYoutubeIdAttribute( $value )
+    {
+        if ( strpos($value, '=') !== FALSE ) {
+            $new_yt_id = explode('=', $value);
+            $value = $new_yt_id[1];
+        }
+        $this->attributes['youtube_id'] = $value;
+    }
+
 
 
 

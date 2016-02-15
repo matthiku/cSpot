@@ -27,6 +27,7 @@ class CreateItemsTable extends Migration
             $table->string('key');
 
             $table->timestamps();
+            $table->softDeletes(); 
         });
     }
 

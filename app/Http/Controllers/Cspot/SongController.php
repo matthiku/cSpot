@@ -143,8 +143,12 @@ class SongController extends Controller
     public function update(StoreSongRequest $request, $id)
     {
         // get this Song
-        Song::where('id', $id)
-                ->update($request->except(['_method','_token']));
+        $song = Song::find($id);
+        // update from request
+        $song->update($request->except(['_method','_token','youtube_id']));
+        // handle yt id seperately
+        $song->youtube_id = $request->youtube_id;
+        $song->save();
 
         flash( 'Song "'.$request->title.'" updated.' );
         return redirect()->back();

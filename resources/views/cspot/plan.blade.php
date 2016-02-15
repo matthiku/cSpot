@@ -276,15 +276,6 @@
                     $('.form-submit').show();
                     $(that).parent().addClass('has-warning');
                 }
-                function blink(selector){
-                    $(selector).animate({opacity:0}, 50, "linear", function(){
-                        $(this).delay(50);
-                        $(this).animate({opacity:1}, 50, function(){
-                            blink(this);
-                        });
-                        $(this).delay(950);
-                    });
-                }
                 blink( $(".blink") );
             </script>
 

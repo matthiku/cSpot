@@ -14,6 +14,7 @@
     <script>
         $(document).ready(function() {
             $('#myMsgModal').modal('show');
+            delayedCloseFlashingModals($('#myMsgModal'));
         });        
     </script>
 @endif
@@ -60,6 +61,7 @@
     <script>
         $(document).ready(function() {
             $('#myMsgModal').modal('show');
+            delayedCloseFlashingModals($('#myMsgModal'));
         });        
     </script>
 @endif
