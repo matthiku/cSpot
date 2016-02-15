@@ -257,6 +257,7 @@ class ItemController extends Controller
 
     /**
      * Remove the specified resource from storage.
+     *(if the model allows soft-deletes)
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -279,4 +280,51 @@ class ItemController extends Controller
         flash('Error! Item with ID "' . $id . '" not found');
         return \Redirect::back();
     }
+
+
+
+
+    /**
+     * Restore the item (previously soft-deleted)
+     *(if the model allows soft-deletes)
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function restore($id)
+    {
+        // check user rights (teachers and leaders can edit items of their own plan)
+        $item    = Item::onlyTrashed()->find($id);
+        $plan_id = $item->plan_id;
+        $plan    = Plan::find( $plan_id );
+        $this->checkRights($plan);
+
+        // get item and delete it
+        $item = restoreItem($id);
+        if ($item) {
+            // back to full plan view 
+            flash('Item restored.');
+            return \Redirect::back();
+        }
+        flash('Error! Item with ID "' . $id . '" not found');
+        return \Redirect::back();
+    }
+
+
+
+    /**
+     * PERMANENTLY DELETE an item 
+     *
+     */
+    public function permDelete( $id )
+    {
+        // this item should be restored
+        $item    = Item::onlyTrashed()->find($id);
+        if (!$item) { return false ;}
+
+        $item->forceDelete();
+
+        return \Redirect::back();
+    }
 }
+

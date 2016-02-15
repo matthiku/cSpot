@@ -1,3 +1,8 @@
+.trashed {
+    display: none;
+    background-color: #ccc !important;
+}
+
 .red {
     color: red;
 }

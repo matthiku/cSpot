@@ -72,8 +72,12 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     Route::resource('items', 'Cspot\ItemController');
     // MOVE the specified resource up or down in the list of items related to a plan
     Route::get('items/{items}/move/{direction}', 'Cspot\ItemController@move');    
-    // specific delete route using 'get' method
+    // specific (soft) delete route using 'get' method
     Route::get('items/{items}/delete', 'Cspot\ItemController@destroy');    
+    // permanently delete an item
+    Route::get('items/{items}/permDelete', 'Cspot\ItemController@permDelete');    
+    // restor a soft-delted item
+    Route::get('items/{items}/restore', 'Cspot\ItemController@restore');    
 
     // basic songs processing
     Route::resource('songs', 'Cspot\SongController');

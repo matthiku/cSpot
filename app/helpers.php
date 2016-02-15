@@ -30,6 +30,7 @@ function flashError($message)
 }
 
 
+
 /**
  * Search for songs
  *
@@ -45,6 +46,7 @@ function songSearch( $search )
              orWhere('author', 'like', $search)->
              get();
 }
+
 
 
 /**
@@ -79,6 +81,8 @@ function nextItem($plan_id, $item_id, $direction)
     }
     return $item->id;
 }
+
+
 
 
 /**
@@ -145,6 +149,8 @@ function insertItem( $request )
 }
 
 
+
+
 /**
  * Delete an item from the list of items of a plan
  *
@@ -185,8 +191,12 @@ function moveItem($id, $direction)
 }
 
 
+
+
 /**
  * Delete an item from the list of items of a plan
+ *
+ * (the model migth allow soft deletes!)
  *
  * Make sure the new sequence number fits sequentially into 
  *    the list of sequence numbers of the existing items for a plan
@@ -213,8 +223,8 @@ function deleteItem($id)
         } else {
             if ($item->seq_no <> $counter) {
                 $i = Item::find($item->id); # get the actual DB record
-                $item->seq_no = $counter;     # update the current selection
-                $i->seq_no = $counter;        # update the seq_no
+                $item->seq_no = $counter;   # update the current selection
+                $i->seq_no = $counter;      # update the seq_no
                 $i->save();                 # save the record
             }
             $counter += 1.0;        
@@ -222,3 +232,44 @@ function deleteItem($id)
     }
     return true;
 }
+
+
+
+/**
+ * RESTORE an item 
+ *
+ * (the model migth allow soft deletes!)
+ *
+ * Make sure the new sequence number fits sequentially into 
+ *    the list of sequence numbers of the existing items for a plan
+ *    and that all current sequence numbers are in 1.0 steps
+ *
+ * @param object $items
+ * @param number $new_seq_no
+ */
+function restoreItem($id)
+{
+    // this item should be restored
+    $item    = Item::onlyTrashed()->find($id);
+    if (!$item) { return false ;}
+
+    $item->restore();
+
+     // get all items of the related plan
+    $plan  = Plan::find( $item->plan_id );
+    $items = $plan->items()->orderBy('seq_no')->get();
+
+    // numbering them countering with 1.0
+    $counter = 1.0;
+    foreach ($items as $item) {
+        if ($item->seq_no <> $counter) {
+            $i = Item::find($item->id); # get the actual DB record
+            $item->seq_no = $counter;   # update the current selection
+            $i->seq_no = $counter;      # update the seq_no
+            $i->save();                 # save the record
+        }
+        $counter += 1.0;        
+    }
+    return true;
+}
+

@@ -11,9 +11,9 @@
 				@endif
 				<th class="hidden-sm-down center">Order</th>
 				<th class="hidden-xs-down center">Book Ref.</th>
-				<th class="hidden-sm-down">Title</th>
+				<th class="hidden-sm-down"       >Title</th>
 				<th class="hidden-sm-down center">Comment</th>
-				<th class="hidden-md-up center">Title/Comment</th>
+				<th class="hidden-md-up center"  >Title/Comment</th>
 				<th class="hidden-md-down center">Version</th>
 				<th class="hidden-lg-down center"><small>Chords?</small></th>
 				<th class="hidden-sm-down center">Links</th>
@@ -29,26 +29,34 @@
 
 			<?php 
 				$onclick = 'location.href='."'".url('cspot/plans/'.$plan->id.'/items/'.$item->id).'/edit'."'"; 
-				// check if there is a song id but the song is not i the database
+				// check if there is a song_id but no song in the database!
 				if ( $item->song_id && ! $item->song()->exists()) { 
 					$item->comment="(Song with id ".$item->song_id.' missing!)'; 
 					$item->song_id = Null; 
 				} 
 			?>
 
-			<tr title="click/touch for details" data-toggle="tooltip">
+			<tr title="click/touch for details" data-toggle="tooltip"
+				@if ($item->deleted_at)
+					class="trashed"
+				@endif
+				>
 
 				@if( Auth::user()->ownsPlan($plan->id) )
-					<td class="text-right nowrap">
-						@if ($item->seq_no > 1)
-							<a class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="left" title="Move up" 
-								href='{{ url('cspot/items/'.$item->id) }}/move/earlier'><i class="fa fa-angle-double-up"></i></a>
-						@endif
-						@if ($item->seq_no < count($plan->items))
-							<a class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="right" title="Move down" 
-								href='{{ url('cspot/items/'.$item->id) }}/move/later'><i class="fa fa-angle-double-down"></i></a>
-						@endif
-					</td>
+					@if( $item->deleted_at )
+						<td></td>
+					@else
+						<td class="text-right nowrap">
+							@if ($item->seq_no > 1)
+								<a class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="left" title="Move up" 
+									href='{{ url('cspot/items/'.$item->id) }}/move/earlier'><i class="fa fa-angle-double-up"></i></a>
+							@endif
+							@if ($item->seq_no < count($plan->items))
+								<a class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="right" title="Move down" 
+									href='{{ url('cspot/items/'.$item->id) }}/move/later'><i class="fa fa-angle-double-down"></i></a>
+							@endif
+						</td>
+					@endif
 				@endif
 
 				<td class="hidden-sm-down center link" scope="row">{{ $item->seq_no }}</td>
@@ -101,15 +109,22 @@
 
 				@if( Auth::user()->ownsPlan($plan->id) )
 					<td class="center nowrap">
+						@if ($item->deleted_at)
+							<a class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="left" title="Restore this item" 
+								href='{{ url('cspot/items/'.$item->id) }}/restore'><i class="fa fa-undo"></i></a>
 
-						<a class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="left" title="Insert earlier item" 
-							href='{{ url('cspot/plans/'.$plan->id) }}/items/create/{{$item->seq_no-0.1}}'><i class="fa fa-reply"></i></a>
+							<a class="btn btn-danger btn-sm" data-toggle="tooltip" title="Delete permanently!" 
+								href='{{ url('cspot/items/'.$item->id) }}/permDelete'><i class="fa fa-trash"></i></a>
+						@else
+							<a class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="left" title="Insert earlier item" 
+								href='{{ url('cspot/plans/'.$plan->id) }}/items/create/{{$item->seq_no-0.1}}'><i class="fa fa-reply"></i></a>
 
-	 					<a class="hidden-sm-down btn btn-primary-outline btn-sm hidden-lg-down" data-toggle="tooltip" title="Edit" 
-							href='{{ url('cspot/plans/'.$plan->id) }}/items/{{$item->id}}/edit/'><i class="fa fa-pencil"></i></a>
+		 					<a class="hidden-sm-down btn btn-primary-outline btn-sm hidden-lg-down" data-toggle="tooltip" title="Edit" 
+								href='{{ url('cspot/plans/'.$plan->id) }}/items/{{$item->id}}/edit/'><i class="fa fa-pencil"></i></a>
 
-						<a class="btn btn-danger btn-sm" data-toggle="tooltip" title="Delete!" 
-							href='{{ url('cspot/items/'.$item->id) }}/delete'><i class="fa fa-trash"></i></a>
+							<a class="btn btn-warning btn-sm" data-toggle="tooltip" title="Remove" 
+								href='{{ url('cspot/items/'.$item->id) }}/delete'><i class="fa fa-trash"></i></a>
+						@endif
 					</td>
 				@endif
 
@@ -134,11 +149,11 @@
 
 @if( $trashedItems->count() )
 	<div class="center">
-		This plan containsv&nbsp;<big>{{ $trashedItems->count() }}</big>&nbsp;'trashed'&nbsp;items. &nbsp;
-		<a href="#" onclick="showTrashedItems()"><i class="fa fa-list-ul"></i>&nbsp;Show</a> &nbsp;
+		This plan contains&nbsp;<big>{{ $trashedItems->count() }}</big>&nbsp;'trashed'&nbsp;item{{$trashedItems->count()>1 ? 's' : ''}}: &nbsp;
+		<a href="#" onclick="$('.trashed').show()"><i class="fa fa-list-ul"></i>&nbsp;Show</a> &nbsp;
 		@if( Auth::user()->ownsPlan($plan->id) )
 			<a href="#" class="text-success"><i class="fa fa-undo"></i>&nbsp;Restore&nbsp;all</a> &nbsp;
-			<a href="#" class="text-danger"><i class="fa fa-trash"></i>&nbsp;Delete&nbsp;permanently</a>
+			<a href="#" class="text-danger"><i class="fa fa-trash"></i>&nbsp;Delete&nbsp;all&nbsp;permanently</a>
 		@endif
 	</div>
 @endif

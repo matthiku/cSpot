@@ -259,7 +259,7 @@ class PlanController extends Controller
     {
         // find a single resource by ID
         $plan = Plan::with([
-                'items' => function ($query) { $query->orderBy('seq_no'); }])
+                'items' => function ($query) { $query->withTrashed()->orderBy('seq_no'); }])
             ->find($id);
 
         if ($plan) {
@@ -269,7 +269,7 @@ class PlanController extends Controller
             $users = User::orderBy('first_name')->get();
             // get list of trashed items (if any)
             $trashedItems = Item::onlyTrashed()->where('plan_id', $id)->get();
-
+            
             return view( 
                 $this->view_one, 
                 array(
