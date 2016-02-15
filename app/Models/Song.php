@@ -17,7 +17,20 @@ class Song extends Model
 
     
 
-    protected $fillable = ['title', 'title_2', 'lyrics', 'ccli_no', 'book_ref', 'author', 'sequence', 'youtube_id', 'link', 'license', 'hymnaldotnet_id'];
+    protected $fillable = [
+        'title',
+        'title_2',
+        'lyrics',
+        'ccli_no',
+        'book_ref',
+        'author',
+        'sequence',
+        'youtube_id',
+        'link',
+        'license',
+        'hymnaldotnet_id',
+        'chords',
+    ];
 
 
 

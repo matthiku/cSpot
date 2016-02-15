@@ -6,7 +6,8 @@
 		<thead class="thead-default">
 			<tr>
 				@if( Auth::user()->isEditor() || Auth::user()->id==$plan->leader_id || Auth::user()->id==$plan->teacher_id )
-					<th class="text-right">Move item</th>
+					<th class="text-right" data-toggle="tooltip" title="Move an item one place up or down.">
+						Move item</th>
 				@endif
 				<th class="hidden-sm-down center">Order</th>
 				<th class="hidden-xs-down center">Book Ref.</th>
@@ -14,10 +15,10 @@
 				<th class="hidden-sm-down center">Comment</th>
 				<th class="hidden-md-up center">Title/Comment</th>
 				<th class="hidden-md-down center">Version</th>
-				<th class="hidden-lg-down center">Key</th>
+				<th class="hidden-lg-down center"><small>Chords?</small></th>
 				<th class="hidden-sm-down center">Links</th>
 				@if( Auth::user()->isEditor() || Auth::user()->id==$plan->leader_id || Auth::user()->id==$plan->teacher_id )
-					<th class="center">Insert / Delete</th>
+					<th class="center">Action</th>
 				@endif
 			</tr>
 		</thead>
@@ -35,7 +36,7 @@
 				} 
 			?>
 
-			<tr class="link" title="click/touch to edit">
+			<tr title="click/touch for details" data-toggle="tooltip">
 
 				@if( Auth::user()->isEditor() || Auth::user()->id==$plan->leader_id || Auth::user()->id==$plan->teacher_id )
 					<td class="text-right nowrap">
@@ -50,9 +51,9 @@
 					</td>
 				@endif
 
-				<td class="hidden-sm-down center" scope="row">{{ $item->seq_no }}</td>
+				<td class="hidden-sm-down center link" scope="row">{{ $item->seq_no }}</td>
 
-				<td onclick={{$onclick}} class="hidden-xs-down center">
+				<td onclick={{$onclick}} class="hidden-xs-down center link">
 					{{ ($item->song_id) ? $item->song->book_ref : '' }}</td>
 
 				<td onclick={{$onclick}} class="hidden-sm-down" @if ($item->song_id)
@@ -65,14 +66,20 @@
 					@endif
 				</td>
 
-				<td onclick={{$onclick}} class="hidden-sm-down center">{{ $item->comment }}</td>
+				<td onclick={{$onclick}} class="hidden-sm-down center link">{{ $item->comment }}</td>
 
-				<td onclick={{$onclick}} class="hidden-md-up center">
+				<td onclick={{$onclick}} class="hidden-md-up center link">
 					{{ $item->song_id ? $item->song->title.', ' : '' }}{{ $item->comment }}</td>
 
-				<td onclick={{$onclick}} class="hidden-md-down center">{{ $item->version }}</td>
+				<td onclick={{$onclick}} class="hidden-md-down center link">{{ $item->version }}</td>
 
-				<td onclick={{$onclick}} class="hidden-lg-down center">{{ $item->key }}</td>
+				<td class="hidden-lg-down center">
+					@if ($item->song_id)
+						@if ( strlen($item->song->chords)>20 )
+							<i class="fa fa-check"></i>
+						@endif
+					@endif
+				</td>
 
 				<td class="hidden-sm-down center">
 					<big>

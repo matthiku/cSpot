@@ -60,7 +60,11 @@
                 <big>                    
                     @if (isset($plan))
                         @if (Auth::user()->isEditor())            
-                            {!! Form::submit('Save changes'); !!}
+                            {!! Form::submit('Save changes', [
+                                'data-toggle' => 'tooltip', 
+                                'data-placement' => 'left',
+                                'title' => 'Click to save changes to notes, service type, date, leader or teacher',
+                            ]); !!}
                         @endif
 
                     @else
@@ -82,13 +86,15 @@
 
 
         @if (Auth::user()->isEditor())
-            <div class="col-lg-4 col-md-6">
+            <div class="col-xl-4 col-lg-6">
                 <div class="row form-group">
                     <label class="plan-form-minw right hidden-sm-down">Type of Service</label>                 
                     <select name="type_id" class="plan-form-minw c-select">
-                        <option {{ isset($plan) ? '' : 'selected'}}>
-                            Select ...
-                        </option>
+                        @if (! isset($plan))
+                            <option selected>
+                                Select ...
+                            </option>
+                        @endif
                         @foreach ($types as $type)
                             <option 
                                 @if( ( ''<>old('type_id') && $type->id==old('type_id') )  ||  isset($plan) && $plan->type_id==$type->id )
@@ -107,7 +113,7 @@
             </div>
 
         
-            <div class="col-lg-4 col-md-6">
+            <div class="col-xl-4 col-lg-6">
                 <div class="row form-group">
                     {!! Form::label('date', 'Date', ['class' => 'plan-form-minw right hidden-sm-down' ]); !!}
                     {!! Form::date( 'date', isset($plan) ? $plan->date : \Carbon\Carbon::now(), ['class' => 'plan-form-minw center' ] ) !!}
@@ -116,14 +122,16 @@
         @endif
 
 
-        <div class="col-lg-4 col-md-6">
+        <div class="col-xl-4 col-lg-12">
             <div class="col-sm-6">
                 <div class="row form-group nowrap">
                     <label>Leader </label>
                     <select name="leader_id" class="c-select"{{ Auth::user()->isEditor() ? '' : ' disabled' }}>
-                        <option {{ isset($plan) ? '' : 'selected'}}>
-                            Select ...
-                        </option>
+                        @if (! isset($plan))
+                            <option selected>
+                                Select ...
+                            </option>
+                        @endif
                         @foreach ($users as $user)
                             @if( $user->hasRole('leader'))
                                 <option 
@@ -131,7 +139,8 @@
                                         || ( isset($plan) && $plan->leader_id==$user->id ) )
                                             selected
                                     @endif
-                                    value="{{ $user->id }}">{{ $user->first_name }}</option>
+                                    value="{{ $user->id }}">{{ $user->first_name }}
+                                </option>
                             @endif
                         @endforeach
                     </select>
@@ -142,7 +151,8 @@
                     @endif
                     @if ( isset($plan) && $plan->isFuture() && Auth::user()->isAuthor() )
                         <a href="{{ url('cspot/plans/'.$plan->id.'/remind/'.$plan->leader_id) }}" 
-                           class="btn btn-sm btn-secondary" role="button" title="Send reminder to leader">
+                           class="btn btn-sm btn-secondary" role="button"
+                           data-toggle="tooltip" title="Send reminder to leader to insert missing items">
                             <i class="fa fa-envelope"></i></a>
                     @endif
                 </div>
@@ -152,11 +162,19 @@
             <div class="col-sm-6">
                 <div class="row form-group nowrap">
                     <label>Teacher</label>
+                    <big>
+                        <a tabindex="0" href="#"
+                            data-container="body" data-toggle="tooltip"
+                            title="Select 'none' if the leader is also the teacher">
+                            <i class="fa fa-question-circle"></i></a>
+                    </big>
                     <select name="teacher_id" class="c-select"{{ Auth::user()->isEditor() ? '' : ' disabled' }}>
-                        <option {{ isset($plan) ? '' : 'selected'}}>
-                            Select ...
-                        </option>
-                        <option value="0">None</option>
+                        @if (! isset($plan))
+                            <option selected>
+                                Select ...
+                            </option>
+                            <option value="0">None</option>
+                        @endif
                         @foreach ($users as $user)
                             @if( $user->hasRole('teacher'))
                                 <option 
@@ -175,7 +193,8 @@
                     @endif
                     @if ( isset($plan) && $plan->isFuture()  &&  Auth::user()->ownsPlan($plan->id) )
                         <a href="{{ url('cspot/plans/'.$plan->id.'/remind/'.$plan->teacher_id) }}" 
-                           class="btn btn-sm btn-secondary" role="button" title="Send reminder to teacher">
+                           class="btn btn-sm btn-secondary" role="button" 
+                           data-toggle="tooltip" title="Send reminder to teacher to insert missing items">
                             <i class="fa fa-envelope"></i></a>
                     @endif
                 </div>
@@ -226,17 +245,23 @@
 
     @if (isset($plan))
 
-        @if (Auth::user()->isEditor())            
-            &nbsp; {!! Form::submit('Save changes'); !!}
+        @if (Auth::user()->isEditor()) &nbsp; 
+            {!! Form::submit('Save changes', [
+                'data-toggle' => 'tooltip', 
+                'title' => 'Click to save changes to notes, service type, date, leader or teacher',
+            ]) !!}
             <script type="text/javascript">document.forms.inputForm.date.focus()</script>
         @else
             &nbsp; {!! Form::submit('Save Note'); !!}
             <script type="text/javascript">document.forms.inputForm.info.focus()</script>
         @endif
 
-        @if (Auth::user()->isAdmin())
-            &nbsp; <a class="btn btn-danger btn-sm"  plan="button" href="{{ url('cspot/plans/'.$plan->id) }}/delete">
-                <i class="fa fa-trash" > </i> &nbsp; Delete an empty Plan
+        @if (Auth::user()->isAdmin()) &nbsp; 
+            <a class="btn btn-danger btn-sm" type="button" data-toggle="tooltip" 
+                title="You can only delete a plan that contains no items. Delete the items first!" 
+                href="{{ url('cspot/plans/'.$plan->id) }}/delete">
+                <i class="fa fa-trash" > </i>
+                &nbsp; Delete an empty Plan
             </a>
         @endif
 

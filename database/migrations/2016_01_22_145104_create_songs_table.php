@@ -17,6 +17,7 @@ class CreateSongsTable extends Migration
             $table->string('title');
             $table->string('title_2');
             $table->text('lyrics');
+            $table->text('chords');
             $table->integer('ccli_no');
             $table->string('book_ref');
             $table->string('author');

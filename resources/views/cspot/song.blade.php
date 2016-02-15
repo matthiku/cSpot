@@ -210,6 +210,9 @@
 
             {!! Form::label('lyrics', 'Lyrics'); !!}<br/>
             {!! Form::textarea('lyrics'); !!}
+            <br>
+            {!! Form::label('chords', 'Chords'); !!}<br/>
+            {!! Form::textarea('chords'); !!}
 
         </div>
 

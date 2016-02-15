@@ -166,10 +166,19 @@
             </div>
 
             <div class="col-lg-6 col-md-12">
-                <div class="row form-group">
+                <div class="row form-group link" id="lyrics" title="click to show chords!" 
+                     onclick="$('#chords').show();$('#lyrics').hide();">
                     <h4>Lyrics</h4>
                     <pre>{{ $item->song->lyrics }}</pre>
                 </div>
+                <div class="row form-group link" id="chords" title="click to show chords!" 
+                     onclick="$('#lyrics').show();$('#chords').hide();">
+                    <h4>Chords</h4>
+                    <pre>{{ $item->song->chords }}</pre>
+                </div>
+                <script>
+                    
+                </script>
             </div>
 
         @else
