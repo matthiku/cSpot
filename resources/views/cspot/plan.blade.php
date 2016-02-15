@@ -57,14 +57,18 @@
         <div class="col-md-3 col-xl-4 right md-center">
 
             <div class="form-buttons">
-                <big>                    
+                <big>
                     @if (isset($plan))
-                        @if (Auth::user()->isEditor())            
+                        @if (Auth::user()->isEditor())
+                            <span class="has-warning">
                             {!! Form::submit('Save changes', [
-                                'data-toggle' => 'tooltip', 
+                                'data-toggle'    => 'tooltip', 
                                 'data-placement' => 'left',
-                                'title' => 'Click to save changes to notes, service type, date, leader or teacher',
-                            ]); !!}
+                                'class'          => 'form-submit text-help blink',
+                                'style'          => 'display: none',
+                                'disabled'       => 'disabled',
+                                'title'          => 'Click to save changes to notes, service type, date, leader or teacher',
+                            ]); !!}</span>
                         @endif
 
                     @else
@@ -88,8 +92,8 @@
         @if (Auth::user()->isEditor())
             <div class="col-xl-4 col-lg-6">
                 <div class="row form-group">
-                    <label class="plan-form-minw right hidden-sm-down">Type of Service</label>                 
-                    <select name="type_id" class="plan-form-minw c-select">
+                    <!-- <label class="form-control-label plan-form-minw right hidden-sm-down">Type of Service</label>                  -->
+                    <select name="type_id" class="form-control text-help plan-form-minw c-select" onchange="enableSaveButton(this)">
                         @if (! isset($plan))
                             <option selected>
                                 Select ...
@@ -113,20 +117,25 @@
             </div>
 
         
-            <div class="col-xl-4 col-lg-6">
+            <div class="col-xl-3 col-lg-6">
                 <div class="row form-group">
-                    {!! Form::label('date', 'Date', ['class' => 'plan-form-minw right hidden-sm-down' ]); !!}
-                    {!! Form::date( 'date', isset($plan) ? $plan->date : \Carbon\Carbon::now(), ['class' => 'plan-form-minw center' ] ) !!}
+                    <!-- {!! Form::label('date', 'Date', ['class' => 'form-control-label plan-form-minw right hidden-sm-down' ]); !!} -->
+                    {!! Form::date( 
+                        'date', 
+                        isset($plan) ? $plan->date : \Carbon\Carbon::now(), 
+                        ['class' => 'plan-form-minw center', 'onchange' => 'enableSaveButton(this)' ] 
+                    ) !!}
                 </div>
             </div>                    
         @endif
 
 
-        <div class="col-xl-4 col-lg-12">
+        <div class="col-xl-5 col-lg-12">
             <div class="col-sm-6">
                 <div class="row form-group nowrap">
-                    <label>Leader </label>
-                    <select name="leader_id" class="c-select"{{ Auth::user()->isEditor() ? '' : ' disabled' }}>
+                    <label class="form-control-label">Leader </label>
+                    <select name="leader_id" class="form-control text-help c-select" onchange="enableSaveButton(this)"
+                            {{ Auth::user()->isEditor() ? '' : ' disabled' }}>
                         @if (! isset($plan))
                             <option selected>
                                 Select ...
@@ -161,14 +170,15 @@
 
             <div class="col-sm-6">
                 <div class="row form-group nowrap">
-                    <label>Teacher</label>
+                    <label class="form-control-label">Teacher
                     <big>
                         <a tabindex="0" href="#"
                             data-container="body" data-toggle="tooltip"
                             title="Select 'none' if the leader is also the teacher">
                             <i class="fa fa-question-circle"></i></a>
                     </big>
-                    <select name="teacher_id" class="c-select"{{ Auth::user()->isEditor() ? '' : ' disabled' }}>
+                    <select name="teacher_id" class="form-control text-help c-select" onchange="enableSaveButton(this)"
+                            {{ Auth::user()->isEditor() ? '' : ' disabled' }}>
                         @if (! isset($plan))
                             <option selected>
                                 Select ...
@@ -197,6 +207,7 @@
                            data-toggle="tooltip" title="Send reminder to teacher to insert missing items">
                             <i class="fa fa-envelope"></i></a>
                     @endif
+                    </label>
                 </div>
             </div>
         </div>                    
@@ -227,10 +238,13 @@
     <div class="form-group">
         <br>
         @if (Auth::user()->isEditor())
-            {!! Form::label('info', 'Notes:'); !!}
+            {!! Form::label('info', 'Notes:', ['class' => 'form-control-label']); !!}
             <br/>
             {!! Form::textarea('info') !!}
-            <script>document.forms.inputForm.info.rows=5</script>
+            <script>
+                document.forms.inputForm.info.rows=5;
+                $('#info').attr('onchange',"enableSaveButton(this)");
+            </script>
         @else
             @if ($plan->info)
                 <h5>Notes for this Plan:</h5>
@@ -246,17 +260,40 @@
     @if (isset($plan))
 
         @if (Auth::user()->isEditor()) &nbsp; 
+            <span class="has-warning">
             {!! Form::submit('Save changes', [
                 'data-toggle' => 'tooltip', 
-                'title' => 'Click to save changes to notes, service type, date, leader or teacher',
+                'class'       => 'form-submit text-help blink',
+                'style'       => 'display: none',
+                'disabled'    => 'disabled',
+                'title'       => 'Click to save changes to notes, service type, date, leader or teacher',
             ]) !!}
-            <script type="text/javascript">document.forms.inputForm.date.focus()</script>
+            </span>
+            <script>
+                document.forms.inputForm.date.focus();
+                function enableSaveButton(that) {
+                    $('.form-submit').removeAttr('disabled');
+                    $('.form-submit').show();
+                    $(that).parent().addClass('has-warning');
+                }
+                function blink(selector){
+                    $(selector).animate({opacity:0}, 50, "linear", function(){
+                        $(this).delay(50);
+                        $(this).animate({opacity:1}, 50, function(){
+                            blink(this);
+                        });
+                        $(this).delay(950);
+                    });
+                }
+                blink( $(".blink") );
+            </script>
+
         @else
             &nbsp; {!! Form::submit('Save Note'); !!}
             <script type="text/javascript">document.forms.inputForm.info.focus()</script>
         @endif
 
-        @if (Auth::user()->isAdmin()) &nbsp; 
+        @if ( Auth::user()->isAdmin()  &&  $plan->items->count()==0 ) &nbsp; 
             <a class="btn btn-danger btn-sm" type="button" data-toggle="tooltip" 
                 title="You can only delete a plan that contains no items. Delete the items first!" 
                 href="{{ url('cspot/plans/'.$plan->id) }}/delete">

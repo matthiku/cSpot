@@ -33,10 +33,11 @@
 .c-select {
     padding-top: 0.1em;
     padding-bottom: 0.1em;
+    width: inherit;
 }
 
 .plan-form-minw {
-    min-width: 230px;
+    min-width: 220px;
 }
 
 .table td ,
@@ -93,6 +94,12 @@ label {
 
     .table-xs td {
         padding: 0.1em;
+    }
+}
+@media (min-width: 62em) {
+
+    .nowrap {
+        white-space: normal;
     }
 }
 
