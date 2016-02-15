@@ -171,12 +171,14 @@
             <div class="col-sm-6">
                 <div class="row form-group nowrap">
                     <label class="form-control-label">Teacher
-                    <big>
-                        <a tabindex="0" href="#"
-                            data-container="body" data-toggle="tooltip"
-                            title="Select 'none' if the leader is also the teacher">
-                            <i class="fa fa-question-circle"></i></a>
-                    </big>
+                    @if ( ! isset($plan) || (isset($plan) && Auth::user()->ownsPlan($plan->id)) )
+                        <big>
+                            <a tabindex="0" href="#"
+                                data-container="body" data-toggle="tooltip"
+                                title="Select 'none' if the leader is also the teacher">
+                                <i class="fa fa-question-circle"></i></a>
+                        </big>
+                    @endif
                     <select name="teacher_id" class="form-control text-help c-select" onchange="enableSaveButton(this)"
                             {{ Auth::user()->isEditor() ? '' : ' disabled' }}>
                         @if (! isset($plan))
@@ -203,7 +205,7 @@
                     @endif
                     @if ( isset($plan) && $plan->isFuture()  &&  Auth::user()->ownsPlan($plan->id) )
                         <a href="{{ url('cspot/plans/'.$plan->id.'/remind/'.$plan->teacher_id) }}" 
-                           class="btn btn-sm btn-secondary" role="button" 
+                           class="btn btn-sm btn-secondary" role="button" data-placement="left"
                            data-toggle="tooltip" title="Send reminder to teacher to insert missing items">
                             <i class="fa fa-envelope"></i></a>
                     @endif
@@ -217,6 +219,8 @@
 
 
     @if (isset($plan))
+
+
         <!-- Show items for existing plan -->
 
         @include('cspot.items')
@@ -233,6 +237,9 @@
         </div>                
 
     @endif
+
+
+
 
 
     <div class="form-group">
@@ -286,7 +293,7 @@
 
         @if ( Auth::user()->isAdmin()  &&  $plan->items->count()==0 ) &nbsp; 
             <a class="btn btn-danger btn-sm" type="button" data-toggle="tooltip" 
-                title="You can only delete a plan that contains no items. Delete the items first!" 
+                title="You can only delete a plan that contains no items." 
                 href="{{ url('cspot/plans/'.$plan->id) }}/delete">
                 <i class="fa fa-trash" > </i>
                 &nbsp; Delete an empty Plan

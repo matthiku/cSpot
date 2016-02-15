@@ -5,7 +5,7 @@
 	<table class="table table-striped table-bordered {{ count($plan->items)>5 ? 'table-sm' : ''}} {{ count($plan->items)>10 ? 'table-xs' : ''}}">
 		<thead class="thead-default">
 			<tr>
-				@if( Auth::user()->isEditor() || Auth::user()->id==$plan->leader_id || Auth::user()->id==$plan->teacher_id )
+				@if( Auth::user()->ownsPlan($plan->id) )
 					<th class="text-right" data-toggle="tooltip" title="Move an item one place up or down.">
 						Move item</th>
 				@endif
@@ -17,7 +17,7 @@
 				<th class="hidden-md-down center">Version</th>
 				<th class="hidden-lg-down center"><small>Chords?</small></th>
 				<th class="hidden-sm-down center">Links</th>
-				@if( Auth::user()->isEditor() || Auth::user()->id==$plan->leader_id || Auth::user()->id==$plan->teacher_id )
+				@if( Auth::user()->ownsPlan($plan->id) )
 					<th class="center">Action</th>
 				@endif
 			</tr>
@@ -38,7 +38,7 @@
 
 			<tr title="click/touch for details" data-toggle="tooltip">
 
-				@if( Auth::user()->isEditor() || Auth::user()->id==$plan->leader_id || Auth::user()->id==$plan->teacher_id )
+				@if( Auth::user()->ownsPlan($plan->id) )
 					<td class="text-right nowrap">
 						@if ($item->seq_no > 1)
 							<a class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="left" title="Move up" 
@@ -99,7 +99,7 @@
 				</td>
 
 
-				@if( Auth::user()->isEditor() || Auth::user()->id==$plan->leader_id || Auth::user()->id==$plan->teacher_id )
+				@if( Auth::user()->ownsPlan($plan->id) )
 					<td class="center nowrap">
 
 						<a class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="left" title="Insert earlier item" 
@@ -124,9 +124,21 @@
 </div>
 
 
-@if( Auth::user()->isEditor() || Auth::user()->id==$plan->leader_id || Auth::user()->id==$plan->teacher_id )
-	<a class="btn btn-sm btn-primary-outline" href='{{ url('cspot/plans/'.$plan->id) }}/items/create/{{isset($item) ? $item->seq_no+1 : 1}}'>
-		<i class="fa fa-plus"> </i> &nbsp; Add item {{ isset($item) ? $item->seq_no+1 : 1 }}.0
-	</a>
+@if( Auth::user()->ownsPlan($plan->id) )
+	<div class="pull-left">
+		<a class="btn btn-sm btn-primary-outline" href='{{ url('cspot/plans/'.$plan->id) }}/items/create/{{isset($item) ? $item->seq_no+1 : 1}}'>
+			<i class="fa fa-plus"> </i> &nbsp; Add item {{ isset($item) ? $item->seq_no+1 : 1 }}.0
+		</a>
+	</div>
 @endif
 
+@if( $trashedItems->count() )
+	<div class="center">
+		This plan containsv&nbsp;<big>{{ $trashedItems->count() }}</big>&nbsp;'trashed'&nbsp;items. &nbsp;
+		<a href="#" onclick="showTrashedItems()"><i class="fa fa-list-ul"></i>&nbsp;Show</a> &nbsp;
+		@if( Auth::user()->ownsPlan($plan->id) )
+			<a href="#" class="text-success"><i class="fa fa-undo"></i>&nbsp;Restore&nbsp;all</a> &nbsp;
+			<a href="#" class="text-danger"><i class="fa fa-trash"></i>&nbsp;Delete&nbsp;permanently</a>
+		@endif
+	</div>
+@endif

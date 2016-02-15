@@ -261,13 +261,24 @@ class PlanController extends Controller
         $plan = Plan::with([
                 'items' => function ($query) { $query->orderBy('seq_no'); }])
             ->find($id);
+
         if ($plan) {
             // get list of service types
             $types = Type::get();
             // get list of users
             $users = User::orderBy('first_name')->get();
+            // get list of trashed items (if any)
+            $trashedItems = Item::onlyTrashed()->where('plan_id', $id)->get();
 
-            return view( $this->view_one, array('plan' => $plan, 'types' => $types, 'users' => $users ) );
+            return view( 
+                $this->view_one, 
+                array(
+                    'plan'         => $plan, 
+                    'types'        => $types, 
+                    'users'        => $users, 
+                    'trashedItems' => $trashedItems, 
+                ) 
+            );
         }
         //
         flashError('Plan with id "' . $id . '" not found');
