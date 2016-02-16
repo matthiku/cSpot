@@ -56,6 +56,19 @@
 
         <div class="col-md-3 col-xl-4 right md-center">
 
+            <div class="pull-xs-left plan-details">
+                <big>
+                    Leader:&nbsp;<strong>{{ $plan->leader->first_name }}</strong>, &nbsp;
+                    Teacher:&nbsp;<strong>{{ $plan->teacher->first_name }}</strong>
+                </big>
+            </div>
+
+            @if (Auth::user()->isEditor())
+                <div class="pull-xs-right plan-details">
+                    (<a href="#" onclick="$('.plan-details').toggle()">edit plan details</a>)
+                </div>
+            @endif
+
             <div class="form-buttons">
                 <big>
                     @if (isset($plan))
@@ -82,11 +95,8 @@
         </div>
     </div>
 
-    <hr class="hidden-sm-down">
 
-
-
-    <div class="row center">
+    <div class="plan-details row center" style="display: none">
 
 
         @if (Auth::user()->isEditor())
@@ -257,7 +267,7 @@
                 <h5>Notes for this Plan:</h5>
                 <pre>{!! $plan->info !!}</pre>
             @endif
-            Add note:
+            Add note:<br>
             <textarea name="info"></textarea>
         @endif
     </div>

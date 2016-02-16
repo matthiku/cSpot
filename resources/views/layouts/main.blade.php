@@ -24,7 +24,7 @@
     <script src="{{ url('js/tether.min.js') }}"></script>
     <script src="{{ url('js/jquery.min.js') }}"></script>
 
-    <script src="{{ url('js/app.js') }}"></script>
+    <script src="{{ url('js/helpers.js') }}"></script>
 
   </head>
 

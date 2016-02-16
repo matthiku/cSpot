@@ -1,15 +1,27 @@
 
 
 $(document).ready(function() {
+
   $(function () {
     $('[data-toggle="tooltip"]').tooltip();
+
     $('[data-toggle="popover"]').popover();
     $('.popover-dismiss').popover({
         trigger: 'focus'
     });
   });
+  
 });
 
+
+function toggleTrashed() {
+    $('.trashed').toggle();
+    if ($('#toggleBtn').text() == 'Show') {
+        $('#toggleBtn').text('Hide');
+    } else {
+        $('#toggleBtn').text('Show');
+    }
+}
 
 
 function blink(selector){

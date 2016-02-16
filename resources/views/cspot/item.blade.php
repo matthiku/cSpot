@@ -35,15 +35,15 @@
                 <h2>
                     <a href="{{ url('cspot/plans/'.$plan->id.'/items/'.$item->id.'/go/previous') }}"
                         class="btn btn-secondary" role="button"
-                        title="go to previous item">
+                        title="go to previous item" data-toggle="tooltip" data-placement="right" >
                         <i class="fa fa-angle-double-left fa-lg"></i></a>
                     &nbsp; Update Item No {{$seq_no}} &nbsp; 
                     <a href="{{ url('cspot/plans/'.$plan->id.'/items/'.$item->id.'/go/next') }}"
                         class="btn btn-secondary" role="button"
-                        title="go to next item">
+                        title="go to next item" data-toggle="tooltip" data-placement="right">
                         <i class="fa fa-angle-double-right fa-lg"></i></a>
                 </h2>
-                <h5>of the Service plan (id {{ $plan->id }}) for {{ $plan->date->formatLocalized('%A, %d %B %Y') }}</h5>
+                <h5>of the Service plan for {{ $plan->date->formatLocalized('%A, %d %B %Y') }}</h5>
             </div>
             <div class="col-sm-6 text-xs-right">
 
@@ -109,10 +109,6 @@
                     @endif
                 </div>  
 
-                <div class="col-xs-12">
-                    {!! Form::label('key', 'Key'); !!}
-                    <p>{!! Form::text('key'); !!}</p>
-                </div>
             </div>
         </div>
 
@@ -121,28 +117,36 @@
             {!! Form::hidden('song_id', $item->song_id) !!}
 
             <div class="col-lg-3 col-md-6">
-                <div  class="row form-group link" 
-                    onclick="location.href='{{ route('cspot.songs.edit', $item->song_id) }}'"
-                      title="Click to edit this song">
-                    <h4>Song Number</h4>
-                    <p>{{ $item->song->book_ref }}</p>
+                @if ( ! Session::has('songs') )
+                    <div class="row form-group link" 
+                        onclick="location.href='{{ route('cspot.songs.edit', $item->song_id) }}'"
+                          title="Click to edit this song" data-toggle="tooltip">
 
-                    <h4>Song Title</h4>
-                    <p>
-                        {{ isset($item->song->title) ? $item->song->title : '' }}
-                        {{ isset($item->song->title_2) ? ' ('. $item->song->title_2 .')' : '' }}
-                    </p>
-                </div>
-                <div class="row form-group">
-                    <h5><a target="new" href="https://www.youtube.com/watch?v={{ $item->song->youtube_id }}">
-                                        Play on <i class="fa fa-youtube"></i> Youtube</a></h5>
-                </div>
+                        <h4>Song Number</h4>
+                        <p>{{ $item->song->book_ref }}</p>
+
+                        <h4>Song Title</h4>
+                        <p> {{ isset($item->song->title) ? $item->song->title : '' }}
+                            {{ isset($item->song->title_2) ? ' ('. $item->song->title_2 .')' : '' }}
+                        </p>
+                    </div>
+
+                    <div class="row form-group">
+                        <div class="pull-xs-right m-r-3 xl-big"><a target="new" href="https://www.youtube.com/watch?v={{ $item->song->youtube_id }}"
+                                title="Play on YouTube" data-toggle="tooltip"><i class="red fa fa-youtube-play"></i></a>
+                        </div>
+                        <h6>Musical Instructions (e.g. Key)</h6>
+                        <p>{!! Form::text('key'); !!}
+                        </p>
+                    </div>
+                @endif
+
                 <div class="row form-group">
                     @if ( Session::has('songs'))
-                        Select another song and click 'Save changes':
+                        Select a new song and click 'Save changes':
                         <div class="c-inputs-stacked">
                             @foreach (Session::get('songs') as $song)
-                                <label class="c-input c-radio" title="{{$song->lyrics}}">
+                                <label class="c-input c-radio" title="{{$song->lyrics}}" data-toggle="tooltip">
                                     <input value="{{$song->id}}" name="song_id" type="radio">
                                     <span class="c-indicator"></span>
                                     {{$song->book_ref}}, 
@@ -152,6 +156,7 @@
                         </div>
                         Or search for still another song. Just
                     @else
+                        <hr>
                         To search for another song,
                     @endif
                     {!! Form::label('search', 'enter song number, title or author or parts thereof:') !!}
@@ -165,21 +170,23 @@
                 </div>
             </div>
 
-            <div class="col-lg-6 col-md-12">
-                <div class="row form-group link" id="lyrics" title="click to show chords!" 
-                     onclick="$('#chords').show();$('#lyrics').hide();">
-                    <h4>Lyrics</h4>
-                    <pre>{{ $item->song->lyrics }}</pre>
+            @if ( ! Session::has('songs') )
+                <div class="col-lg-6 col-md-12">
+                    <div class="row form-group link" id="lyrics" title="click to show chords!" data-toggle="tooltip"
+                         onclick="$('#chords').show();$('#lyrics').hide();">
+                        <h4>Lyrics</h4>
+                        <pre>{{ $item->song->lyrics }}</pre>
+                    </div>
+                    <div class="row form-group link" id="chords" title="click to show lyrics!" data-toggle="tooltip"
+                         onclick="$('#lyrics').show();$('#chords').hide();">
+                        <h4>Chords</h4>
+                        <pre>{{ $item->song->chords }}</pre>
+                    </div>
+                    <script>
+                        
+                    </script>
                 </div>
-                <div class="row form-group link" id="chords" title="click to show chords!" 
-                     onclick="$('#lyrics').show();$('#chords').hide();">
-                    <h4>Chords</h4>
-                    <pre>{{ $item->song->chords }}</pre>
-                </div>
-                <script>
-                    
-                </script>
-            </div>
+            @endif
 
         @else
             <br>
@@ -188,7 +195,7 @@
                     Select a song:
                     <div class="c-inputs-stacked">
                         @foreach (Session::get('songs') as $song)
-                            <label class="c-input c-radio" title="{{$song->lyrics}}">
+                            <label class="c-input c-radio" title="{{$song->lyrics}}" data-toggle="tooltip" data-placement="bottom">
                                 <input value="{{$song->id}}" name="song_id" type="radio">
                                 <span class="c-indicator"></span>
                                 {{$song->book_ref}}, 

@@ -268,7 +268,7 @@ class PlanController extends Controller
             // get list of users
             $users = User::orderBy('first_name')->get();
             // get list of trashed items (if any)
-            $trashedItems = Item::onlyTrashed()->where('plan_id', $id)->get();
+            $trashedItemsCount = Item::onlyTrashed()->where('plan_id', $id)->count();
             
             return view( 
                 $this->view_one, 
@@ -276,7 +276,7 @@ class PlanController extends Controller
                     'plan'         => $plan, 
                     'types'        => $types, 
                     'users'        => $users, 
-                    'trashedItems' => $trashedItems, 
+                    'trashedItemsCount' => $trashedItemsCount, 
                 ) 
             );
         }

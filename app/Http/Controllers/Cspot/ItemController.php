@@ -96,7 +96,7 @@ class ItemController extends Controller
                 flash('No songs found for '.$request->search);
                 return redirect()->back()->withInput();
             }
-            // success! just one song found, update the request with the song id
+            // Success! Just one song found! Update the request with the new song_id
             if (count($songs)==1) {
                 $request->song_id = $songs[0]->id;
             } else {
@@ -112,11 +112,12 @@ class ItemController extends Controller
 
         // review numbering of current items for this plan and insert the new item
         $plan = insertItem( $request );
+        
+        // update seq no in the session
+        $request->session()->flash( 'new_seq_no', $plan->new_seq_no+0.5 );
 
         // see if user ticked the checkbox to add another item after this one
         if ($request->moreItems == "Y") {
-            // update seq no in the session
-            $request->session()->flash( 'new_seq_no', $plan->new_seq_no+0.5 );
             // return back to same view
             return redirect()->back();
         }
@@ -180,10 +181,10 @@ class ItemController extends Controller
         $songs = []; # send empty song array
         // send the form
         return view( 'cspot.item', [
-                'plan' => $plan, 
-                'seq_no' => $seq_no, 
-                'item' => $item, 
-                'songs' => $songs, 
+                'plan'         => $plan, 
+                'seq_no'       => $seq_no, 
+                'item'         => $item, 
+                'songs'        => $songs, 
                 'versionsEnum' => $versionsEnum
             ]);
     }
@@ -256,7 +257,7 @@ class ItemController extends Controller
 
 
     /**
-     * Remove the specified resource from storage.
+     * REMOVE the specified resource from storage.
      *(if the model allows soft-deletes)
      *
      * @param  int  $id
@@ -275,7 +276,7 @@ class ItemController extends Controller
         if ($item) {
             // back to full plan view 
             flash('Item deleted.');
-            return \Redirect::back();
+            return \Redirect::route('cspot.plans.edit', $plan_id);
         }
         flash('Error! Item with ID "' . $id . '" not found');
         return \Redirect::back();

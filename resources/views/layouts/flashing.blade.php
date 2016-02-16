@@ -5,7 +5,7 @@
     <div id="myMsgModal" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="alert alert-info" role="alert">
+            <div class="alert alert-info center" role="alert">
                 {{ session('message') }}
             </div>
         </div>
@@ -52,7 +52,7 @@
     <div id="myMsgModal" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="alert alert-info" role="alert">
+            <div class="alert alert-info center" role="alert">
                 Status: {{ Session::get('status') }}
             </div>
         </div>

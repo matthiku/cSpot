@@ -1,3 +1,11 @@
+.xl-big {
+    font-size: 200%;
+}
+
+.tooltip-wide {
+    min-width: 420px;
+}
+
 .trashed {
     display: none;
     background-color: #ccc !important;
