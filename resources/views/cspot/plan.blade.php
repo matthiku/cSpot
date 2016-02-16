@@ -56,12 +56,14 @@
 
         <div class="col-md-3 col-xl-4 right md-center">
 
-            <div class="pull-xs-left plan-details">
-                <big>
-                    Leader:&nbsp;<strong>{{ $plan->leader->first_name }}</strong>, &nbsp;
-                    Teacher:&nbsp;<strong>{{ $plan->teacher->first_name }}</strong>
-                </big>
-            </div>
+            @if (isset($plan))
+                <div class="pull-xs-left plan-details">
+                    <big>
+                        Leader:&nbsp;<strong>{{ $plan->leader->first_name }}</strong>, &nbsp;
+                        Teacher:&nbsp;<strong>{{ $plan->teacher->first_name }}</strong>
+                    </big>
+                </div>
+            @endif
 
             @if (Auth::user()->isEditor())
                 <div class="pull-xs-right plan-details">
