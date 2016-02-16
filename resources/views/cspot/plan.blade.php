@@ -65,7 +65,7 @@
                 </div>
             @endif
 
-            @if (Auth::user()->isEditor())
+            @if ( Auth::user()->isEditor() && isset($plan) ) 
                 <div class="pull-xs-right plan-details">
                     (<a href="#" onclick="$('.plan-details').toggle()">edit plan details</a>)
                 </div>
@@ -98,7 +98,11 @@
     </div>
 
 
-    <div class="plan-details row center" style="display: none">
+    <div class="plan-details row center" 
+        @if (isset($plan))
+            style="display: none"
+        @endif
+    >
 
 
         @if (Auth::user()->isEditor())
