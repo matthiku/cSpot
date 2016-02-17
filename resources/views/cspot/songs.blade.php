@@ -51,7 +51,11 @@
 
 			<tbody>
 	        @foreach( $songs as $song )
-				<tr class="link" onclick="location.href ='{{ url('cspot/songs/'.$song->id) }}/edit'">
+				<tr 
+					@if ( Auth::user()->isEditor() )
+						class="link" onclick="location.href ='{{ url('cspot/songs/'.$song->id) }}/edit'"
+					@endif
+				>
 
 					<td scope="row" class="hidden-md-down">{{ $song->id }}</td>
 

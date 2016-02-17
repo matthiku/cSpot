@@ -20,6 +20,7 @@ class UpdateUsersTable extends Migration
             // add last login date
             $table->timestamp('last_login');
         });
+        DB::table('users')->insert(['id'=>0, 'first_name'=>'none', 'last_name'=>'none']);
     }
 
     /**

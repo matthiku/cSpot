@@ -103,8 +103,13 @@ class PlanController extends Controller
             ->orderBy('date')
             ->first();
 
-        // call the edit action for a single plan
-        return $this->edit($plan->id);
+        // issue #27 (error when no plan was found)
+        if ($plan) {            
+            // call the edit action for a single plan
+            return $this->edit($plan->id);
+        }
+        flash('No upcoming Sunday Service plan found!');
+        return Redirect::back();
     }
 
 
