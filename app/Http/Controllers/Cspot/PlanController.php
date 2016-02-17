@@ -109,7 +109,7 @@ class PlanController extends Controller
             return $this->edit($plan->id);
         }
         flash('No upcoming Sunday Service plan found!');
-        return Redirect::back();
+        return redirect()->back();
     }
 
 

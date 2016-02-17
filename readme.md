@@ -49,7 +49,7 @@ Currently, the following user rights are assigned to roles:
 | leader | same as user, can edit items on plans to which they are assigned |
 | teacher | same as leader |
 | author | same as leader plus can create new plans |
-| editor | same as author plus can modify all plans and items, can modify default items |
+| editor | same as author plus can modify all plans and items, can modify default items, an edits songs |
 | administrator | same as editor plus management of all users and their roles |
 
 ## Technical Blah blah

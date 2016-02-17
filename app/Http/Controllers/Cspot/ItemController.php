@@ -300,7 +300,7 @@ class ItemController extends Controller
         $plan    = Plan::find( $plan_id );
         $this->checkRights($plan);
 
-        // get item and delete it
+        // get item and restore it
         $item = restoreItem($id);
         if ($item) {
             // back to full plan view 
@@ -321,11 +321,51 @@ class ItemController extends Controller
     {
         // this item should be restored
         $item    = Item::onlyTrashed()->find($id);
-        if (!$item) { return false ;}
+        if (!$item) return false ;
 
         $item->forceDelete();
 
+        flash('Trashed item with id '.$id.' deleted permanently');
         return \Redirect::back();
     }
+
+
+    /**
+     * PERMANENTLY DELETE all trashed items of a plan
+     *
+     */
+    public function deleteAllTrashed( $plan_id )
+    {
+        // this item should be restored
+        $items = Item::onlyTrashed()->where('plan_id', $plan_id);
+        if (!$items) return false;
+
+        $items->forceDelete();
+
+        flash('All trashed items deleted');
+        return \Redirect::back();
+    }
+
+
+    /**
+     * RESTORE all trashed items of a plan
+     *
+     */
+    public function restoreAllTrashed( $plan_id )
+    {
+        // this item should be restored
+        $items = Item::onlyTrashed()->where('plan_id', $plan_id)->get();
+        if (!$items) return false;
+
+        // restore all items and try to restore their correct sequence number
+        foreach ($items as $item) {
+            restoreItem($item->id);
+        }
+
+        flash('All trashed items restored. Please review the sequence!');
+        return \Redirect::back();
+    }
+
+
 }
 

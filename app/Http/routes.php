@@ -44,45 +44,54 @@ Route::group(['middleware' => 'web'], function () {
 */
 Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() {
 
+    // PLANS
+
     // show only upcoming service plans
     Route::get('plans/future', ['as'=>'future', 'uses'=>'Cspot\PlanController@future']);
-    // show only upcoming service plans
-    Route::get('plans/next', ['as'=>'next', 'uses'=>'Cspot\PlanController@nextSunday']);
+    // show only next Sunday Service plan
+    Route::get('plans/next',   ['as'=>'next',   'uses'=>'Cspot\PlanController@nextSunday']);
+
     // basic CRUD resources for plans
-    Route::resource('plans', 'Cspot\PlanController');
+    Route::resource('plans',                        'Cspot\PlanController');
     // allow DELETE via the GET method
-    Route::get('plans/{plan_id}/delete', 'Cspot\PlanController@destroy');    
+    Route::get('plans/{plan_id}/delete',            'Cspot\PlanController@destroy');    
     // show filtered resources (only future by default!)
-    Route::get('plans/by_user/{user_id}/{all?}', 'Cspot\PlanController@by_user');    
-    Route::get('plans/by_type/{type_id}/{all?}', 'Cspot\PlanController@by_type');    
+    Route::get('plans/by_user/{user_id}/{all?}',    'Cspot\PlanController@by_user');    
+    Route::get('plans/by_type/{type_id}/{all?}',    'Cspot\PlanController@by_type');    
     // update (append) the note for a plan
     Route::put('plans/{plan_id}/addNote', ['as'=>'addNote', 'uses'=>'Cspot\PlanController@addNote']);
 
     // send an email reminder to a leader or teacher for a plan
     Route::get('plans/{plan_id}/remind/{user_id}', ['as'=>'sendReminder', 'uses'=>'Cspot\PlanController@sendReminder']);
     
-    // show form of next or previous item for a plan
-    Route::get('plans/{plan_id}/items/{item_id}/go/{direction}', 'Cspot\ItemController@next');
-    // show form to create a new item for a plan
-    Route::get('plans/{plan_id}/items/create/{seq_no}', 'Cspot\ItemController@create');    
-    // show form to update a new item for a plan
-    Route::get('plans/{plan_id}/items/{item_id}/edit', 'Cspot\ItemController@edit');    
 
+    // ITEMS
+
+    // show form of next or previous item for a plan
+    Route::get('plans/{plan_id}/items/{item_id}/go/{direction}',    'Cspot\ItemController@next');
+    // show form to create a new item for a plan
+    Route::get('plans/{plan_id}/items/create/{seq_no}',             'Cspot\ItemController@create');    
+    // show form to update a new item for a plan
+    Route::get('plans/{plan_id}/items/{item_id}/edit',              'Cspot\ItemController@edit');    
     // generic item resource routes
     Route::resource('items', 'Cspot\ItemController');
     // MOVE the specified resource up or down in the list of items related to a plan
-    Route::get('items/{items}/move/{direction}', 'Cspot\ItemController@move');    
+    Route::get('items/{items}/move/{direction}',                    'Cspot\ItemController@move');    
     // specific (soft) delete route using 'get' method
-    Route::get('items/{items}/delete', 'Cspot\ItemController@destroy');    
+    Route::get('items/{items}/delete',                  'Cspot\ItemController@destroy');    
     // permanently delete an item
-    Route::get('items/{items}/permDelete', 'Cspot\ItemController@permDelete');    
+    Route::get('items/{items}/permDelete',              'Cspot\ItemController@permDelete');    
     // restor a soft-delted item
-    Route::get('items/{items}/restore', 'Cspot\ItemController@restore');    
+    Route::get('items/{items}/restore',                 'Cspot\ItemController@restore');    
+    // delete all trashed items of a plan
+    Route::get('plans/{plan_id}/items/trashed/restore', 'Cspot\ItemController@restoreAllTrashed');    
+    // delete all trashed items of a plan
+    Route::get('plans/{plan_id}/items/trashed/delete',  'Cspot\ItemController@deleteAllTrashed');    
 
     // basic songs processing
-    Route::resource('songs', 'Cspot\SongController');
+    Route::resource('songs',            'Cspot\SongController');
     // specific delete route using 'get' method
-    Route::get('songs/{songs}/delete', 'Cspot\SongController@destroy');    
+    Route::get('songs/{songs}/delete',  'Cspot\SongController@destroy');    
 
 });
 

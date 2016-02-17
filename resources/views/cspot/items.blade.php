@@ -155,8 +155,11 @@
 			This plan contains&nbsp;<big>{{ $trashedItemsCount }}</big>&nbsp;'trashed'&nbsp;item{{$trashedItemsCount>1 ? 's' : ''}}: &nbsp;
 			<i class="fa fa-list-ul"></i>&nbsp;<a href="#" id="toggleBtn" onclick="toggleTrashed()">Show</a> &nbsp;
 			@if( Auth::user()->ownsPlan($plan->id) )
-				<a href="#" class="text-success"><i class="fa fa-undo"></i>&nbsp;Restore&nbsp;all</a> &nbsp;
-				<a href="#" class="text-danger"><i class="fa fa-trash"></i>&nbsp;Delete&nbsp;all&nbsp;permanently</a>
+				<a href="{{ url('cspot/plans/'.$plan->id.'/items/trashed/restore') }}" 
+					class="text-success"><i class="fa fa-undo"></i>&nbsp;Restore&nbsp;all</a> &nbsp;
+				<a href="{{ url('cspot/plans/'.$plan->id.'/items/trashed/delete') }}" 
+					class="text-danger"><i class="fa fa-trash"></i
+						>&nbsp;Delete&nbsp;{{ $trashedItemsCount>1 ? 'all&nbsp;'.$trashedItemsCount : 'trashed' }}&nbsp;permanently</a>
 			@endif
 		</div>
 	@endif
