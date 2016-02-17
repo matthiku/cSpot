@@ -22,7 +22,7 @@ class UpdateItemsTable extends Migration
                 // `seq_no`, `comment`, `version`, `key
                 $table->decimal('seq_no',3,1);
                 $table->string('comment');
-                $table->enum('version', ['ESV', 'NIV', 'NKJV', 'NASB', 'MSG', 'NLT', 'AMP', 'KJV', 'CEV']);
+                $table->enum('version', ['ESV', 'NIV', 'NKJV', 'NASB', 'MSG', 'NLT', 'AMP', 'KJV', 'CEV'])->nullable();
                 $table->string('key');
             });
         }
