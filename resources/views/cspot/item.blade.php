@@ -29,42 +29,50 @@
     {!! Form::hidden('plan_id', isset($plan) ? $plan->id : $item->plan_id ) !!}
 
 
+
     <div class="row">
-        <div class="col-sm-6">
+        <div class="col-md-6">
         @if (isset($item))
-                <h2>
+                <h2 class="nowrap">
                     <a href="{{ url('cspot/plans/'.$plan->id.'/items/'.$item->id.'/go/previous') }}"
                         class="btn btn-secondary" role="button"
-                        title="go to previous item" data-toggle="tooltip" data-placement="right" >
-                        <i class="fa fa-angle-double-left fa-lg"></i></a>
-                    &nbsp; Update Item No {{$seq_no}} &nbsp; 
+                        title="go to previous item" data-toggle="tooltip" data-placement="right">
+                        <i class="fa fa-angle-double-left fa-lg"></i>
+                    </a> 
+                    Update Item No {{$seq_no}}
                     <a href="{{ url('cspot/plans/'.$plan->id.'/items/'.$item->id.'/go/next') }}"
                         class="btn btn-secondary" role="button"
                         title="go to next item" data-toggle="tooltip" data-placement="right">
-                        <i class="fa fa-angle-double-right fa-lg"></i></a>
+                        <i class="fa fa-angle-double-right fa-lg"></i>
+                    </a>
                 </h2>
-                <h5>of the Service plan for {{ $plan->date->formatLocalized('%A, %d %B %Y') }}</h5>
+                <h5 class="hidden-md-down">of the Service plan for {{ $plan->date->formatLocalized('%A, %d %B %Y') }}</h5>
+                <h4 class="hidden-lg-up">of plan for {{ $plan->date->formatLocalized('%a, %d %b') }}</h4>
             </div>
-            <div class="col-sm-6 text-xs-right">
 
+            <div class="col-md-6 text-xs-right nowrap">
 
                 @if( Auth::user()->isEditor() || Auth::user()->id==$plan->leader_id || Auth::user()->id==$plan->teacher_id )
                     &nbsp; {!! Form::submit('Save changes'); !!}
                 @endif
 
                 @if (Auth::user()->isAdmin())
-                    &nbsp; <a class="btn btn-danger btn-sm"  item="button" href="{{ url('cspot/items/'. $item->id .'/delete') }}">
-                        <i class="fa fa-trash" > </i> &nbsp; Delete
+                    &nbsp; 
+                    <a class="btn btn-danger btn-sm"  item="button" href="{{ url('cspot/items/'. $item->id .'/delete') }}">
+                        <i class="fa fa-trash" > </i> 
+                        &nbsp; Delete
                     </a>
                 @endif
-
-                &nbsp; <a href="{{ url('cspot/plans/'.$item->plan_id) }}/edit">{!! Form::button('Cancel - Back to Plan') !!}</a>
+                &nbsp; 
+                <a class="hidden-xs-down" href="{{ url('cspot/plans/'.$item->plan_id) }}/edit">{!! Form::button('Cancel - Back to Plan') !!}</a>
+                <a class="hidden-sm-up" href="{{ url('cspot/plans/'.$item->plan_id) }}/edit">{!! Form::button('Cancel - Back') !!}</a>
         @else
                 <h2>Add Item</h2>
                 <h5>to the Service plan (id {{ $plan->id }}) for {{ $plan->date->formatLocalized('%A, %d %B %Y') }}</h5>
         @endif
             </div>
     </div>
+
 
     <hr>
 
