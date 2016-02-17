@@ -30,7 +30,7 @@ function blink(selector){
         $(this).animate({opacity:1}, 150, function(){
             blink(this);
         });
-        $(this).delay(950);
+        $(this).delay(500);
     });
 }
 
@@ -41,4 +41,6 @@ function delayedCloseFlashingModals(selector) {
 }
 function closeMyModal(selector) {
     $(selector).modal('hide');
+    // set focus again on main input field
+    $('.main-input').focus();    
 }

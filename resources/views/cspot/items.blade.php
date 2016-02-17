@@ -120,7 +120,7 @@
 								href='{{ url('cspot/items/'.$item->id) }}/permDelete'><i class="fa fa-trash"></i></a>
 						@else
 							<a class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="left" title="Insert earlier item" 
-								href='{{ url('cspot/plans/'.$plan->id) }}/items/create/{{$item->seq_no-0.1}}'><i class="fa fa-reply"></i></a>
+								href='{{ url('cspot/plans/'.$plan->id) }}/items/create/before/{{$item->id}}'><i class="fa fa-reply"></i></a>
 
 		 					<a class="hidden-sm-down btn btn-primary-outline btn-sm hidden-lg-down" data-toggle="tooltip" title="Edit" 
 								href='{{ url('cspot/plans/'.$plan->id) }}/items/{{$item->id}}/edit/'><i class="fa fa-pencil"></i></a>

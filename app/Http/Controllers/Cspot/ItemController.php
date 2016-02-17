@@ -60,7 +60,7 @@ class ItemController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create($plan_id, $seq_no)
+    public function create(Request $request, $plan_id, $seq_no)
     {
         // get the plan to which we want to add an item
         $plan = Plan::find( $plan_id );
@@ -71,6 +71,14 @@ class ItemController extends Controller
         // get array of possible bible versions
         $t = new Item();
         $versionsEnum = $t->getVersionsEnum();
+
+        // check if this is an insertion of an item BEFORE another item
+        if ($request->is('*/before/*')) {
+            $item_id = $seq_no;
+            $item = Item::find($item_id);
+            // Make sure we always insert the new item right BEOFRE the current item
+            $seq_no = $item->seq_no - 0.1;
+        }
 
         // show the form
         return view( 'cspot.item', [
@@ -112,9 +120,6 @@ class ItemController extends Controller
 
         // review numbering of current items for this plan and insert the new item
         $plan = insertItem( $request );
-        
-        // update seq no in the session
-        $request->session()->flash( 'new_seq_no', $plan->new_seq_no+0.5 );
 
         // see if user ticked the checkbox to add another item after this one
         if ($request->moreItems == "Y") {

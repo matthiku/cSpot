@@ -70,6 +70,8 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     // show form of next or previous item for a plan
     Route::get('plans/{plan_id}/items/{item_id}/go/{direction}',    'Cspot\ItemController@next');
     // show form to create a new item for a plan
+    Route::get('plans/{plan_id}/items/create/before/{item_id}',     'Cspot\ItemController@create');    
+    // show form to create a new item for a plan
     Route::get('plans/{plan_id}/items/create/{seq_no}',             'Cspot\ItemController@create');    
     // show form to update a new item for a plan
     Route::get('plans/{plan_id}/items/{item_id}/edit',              'Cspot\ItemController@edit');    

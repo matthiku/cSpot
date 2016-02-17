@@ -25,7 +25,7 @@
         {!! Form::open(array('action' => 'Cspot\ItemController@store', 'id' => 'inputForm')) !!}
     @endif
 
-    {!! Form::hidden('seq_no', Session::has('new_seq_no') ? Session::get('new_seq_no') : $seq_no) !!}
+    {!! Form::hidden('seq_no', $seq_no) !!}
     {!! Form::hidden('plan_id', isset($plan) ? $plan->id : $item->plan_id ) !!}
 
 
@@ -237,7 +237,12 @@
     {!! Form::close() !!}
 
 
-    <script type="text/javascript">document.forms.inputForm.search.focus()</script>
+    <script>
+        // set focus on main input field
+        document.forms.inputForm.search.focus();
+        // add class in order to identify main input field later after flash messages
+        document.forms.inputForm.search.setAttribute('class', 'main-input');
+    </script>
 
     
 @stop

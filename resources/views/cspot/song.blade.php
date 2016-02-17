@@ -223,7 +223,11 @@
     {!! Form::close() !!}
 
 
-    <script type="text/javascript">document.forms.inputForm.title.focus()</script>
+    <script>
+        // define field that should always get input focus
+        document.forms.inputForm.title.focus()
+        document.forms.inputForm.title.setAttribute('class', 'main-input');
+    </script>
 
     
 @stop
