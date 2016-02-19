@@ -14,6 +14,7 @@ class Item extends Model
     
     use SoftDeletes;
 
+
     // mass assignment protection
     protected $fillable = [
         'plan_id',
@@ -23,9 +24,20 @@ class Item extends Model
         'version',
         'key',
     ];
+
     protected $hidden = [
         'created_at', 'updated_at'
     ];
+
+
+
+    /**
+     * All of the relationships to be touched.
+     *
+     * @var array
+     */
+    protected $touches = ['plan'];
+
 
 
     public function plan() 
@@ -39,6 +51,7 @@ class Item extends Model
     {
         return $this->belongsTo('App\Models\Song');
     }
+
 
 
     public function getVersionsEnum()

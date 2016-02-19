@@ -53,19 +53,20 @@
 					<th class="hidden-md-down center">#</th>
 					<th>Date</th>
 					<th>Service Type</th>
+					<th class="hidden-sm-down center"># items</th>
 					<th class="hidden-xs-down center">Leader</th>
 					<th class="hidden-xs-down center">Teacher</th>
 					<th class="hidden-sm-up center">Leader, Teacher</th>
 					<th class="text-right hidden-md-down">Last updated on</th>
 					<th class="hidden-md-down">by</th>
-					<th class="center{{ Auth::user()->isEditor() ? ' ' : ' hidden-lg-down' }}">Action</th>
 				</tr>
 			</thead>
 
 
 			<tbody>
 	        @foreach( $plans as $plan )
-				<tr class="link" onclick="location.href='{{ url('cspot/plans/'.$plan->id) }}/edit'">
+				<tr class="link" onclick="location.href='{{ url('cspot/plans/'.$plan->id) }}/edit'"
+					data-toggle="tooltip" title="Click on a plan to view/edit it">
 
 					<td class="hidden-md-down center" scope="row">{{ $plan->id }}</td>
 
@@ -75,6 +76,7 @@
 
 					<td>{{ $plan->type->name }}</td>
 
+					<td class="hidden-sm-down center">{{ $plan->items->count() }}</td>
 					<td class="hidden-xs-down center">{{ $plan->leader->first_name }}</td>
 					<td class="hidden-xs-down center">{{ $plan->teacher->first_name }}</td>
 					<td class="hidden-sm-up center">
@@ -83,13 +85,6 @@
 
 					<td class="hidden-md-down text-right">{{ $plan->updated_at->formatLocalized('%d-%m-%Y %H:%M') }}</td>
 					<td class="hidden-md-down">{{ ucfirst($plan->changer) }}</td>
-
-					<td class="nowrap center{{ Auth::user()->isEditor() ? '' : ' hidden-lg-down' }}">
-						<a class="btn btn-primary-outline btn-sm hidden-lg-down" title="Edit" href='{{ url('cspot/plans/'.$plan->id) }}/edit'><i class="fa fa-pencil"></i></a>
-						@if( Auth::user()->isEditor() )
-							<a class="btn btn-danger btn-sm" title="Delete!" href='{{ url('cspot/plans/'.$plan->id) }}/delete'><i class="fa fa-trash"></i></a>
-						@endif
-					</td>
 
 				</tr>
 	        @endforeach

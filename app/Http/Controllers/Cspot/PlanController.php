@@ -365,9 +365,9 @@ class PlanController extends Controller
         // find a single resource by ID
         $output = Plan::find($id);
         if ($output) {
-            $items = $output->items()->get();
+            $items = $output->items()->withTrashed()->get();
             if ( count($items) ) {
-                flashError('Plan with ID "' . $id . '" still contains items and cannot be deleted. Please review this plan now.');
+                flashError('Plan with ID "' . $id . '" still contains items (incl. binned items) and cannot be deleted. Please review this plan now.');
                 return $this->edit($id);
             }
             $output->delete();
