@@ -18,9 +18,16 @@
 
             <form class="form-horizontal" role="form" method="POST" id="inputForm" action="{{ url('register') }}">
                 {!! csrf_field() !!}
-
-                <h3 class="card-header">Register</h3>
                 
+                <center>
+                    <h4><strong>Sign up</strong> using your account with one of those providers:</h4>
+                    @include('auth.social')
+                </center>
+                <br />
+                <br />
+
+
+                <h3 class="card-header">Or register here:</h3>
 
                 <div class="row form-group{{ $errors->has('first_name') ? ' has-error' : '' }}">
                     <label class="col-md-3 col-md-offset-1 control-label">First Name</label>
@@ -99,12 +106,6 @@
                         </button>
                     </div>
                 </div>
-
-                <br />
-                <center>
-                    <h4><strong>Or</strong> sign up using your account on one of these providers:</h4>
-                    @include('auth.social')
-                </center>
 
             </form>
 

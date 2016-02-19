@@ -17,8 +17,15 @@
             
             <form class="form-horizontal" role="form" method="POST" id="inputForm"  action="{{ url('login') }}">
                 {!! csrf_field() !!}
+        
+                <center>
+                    <h4>Sign in with your account with one of those service providers:</h4>
+                    @include('auth.social')
+                </center>
+                <br />
+                <br />
 
-                <h2 class="card-header">Please sign in</h2>
+                <h2 class="card-header">Or sign in via email:</h2>
 
                 <div class="row form-group{{ $errors->has('email') ? ' has-error' : '' }}">
                     <label class="col-md-3 col-md-offset-1 control-label">E-Mail Address</label>
@@ -66,11 +73,6 @@
                         <a class="btn btn-primary-outline pull-right" href="{{ url('password/reset') }}">Forgot Your Password?</a>
                     </div>
                 </div>
-                <br/>
-                <center>
-                    <h4>Or sign in using your provider:</h4>
-                    @include('auth.social')
-                </center>
 
             </form>
 
