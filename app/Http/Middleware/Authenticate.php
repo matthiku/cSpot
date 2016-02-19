@@ -26,7 +26,7 @@ class Authenticate
             }
         }
 
-        Log::info('handling an incoming request for '.Auth::user()->getFullName() . ' to path '.$request->path());
+        Log::info($request->ip().' handling an incoming request for '.Auth::user()->getFullName() . ' to path '.$request->path());
 
         return $next( $request );
 

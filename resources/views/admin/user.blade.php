@@ -41,6 +41,12 @@
         @else
             {!! Form::hidden('email') !!}
             {{ isset($user) ? $user->email : '' }}
+            <br />
+            <br />
+            <label>Your Roles:</label>
+            @foreach ($user->roles as $key => $role)
+                {{ ucfirst($role->name) }}{{ $key+1<$user->roles->count() ? ',' : '' }}
+            @endforeach
         @endif
 
 

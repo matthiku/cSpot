@@ -77,7 +77,7 @@ class AuthController extends Controller
             $this->loginUsername() => 'required', 'password' => 'required',
         ]);
 
-        Log::info('trying to login user '.$request->input('email'));
+        Log::info($request->ip().' trying to login user '.$request->input('email'));
 
         // If the class is using the ThrottlesLogins trait, we can automatically throttle
         // the login attempts for this application. We'll key this by the username and
@@ -124,7 +124,7 @@ class AuthController extends Controller
      */
     public function register(Request $request, AppMailer $mailer) 
     {
-        Log::info('trying to validate user registration');
+        Log::info($request->ip().' trying to validate user registration');
 
         $this->validate($request, [
             'first_name' => 'required',
@@ -139,7 +139,7 @@ class AuthController extends Controller
         $role = Role::whereName('user')->first();
         $user->assignRole($role);
         
-        Log::info('trying to send registration email to '.$user->name);
+        Log::info($request->ip().' trying to send registration email to '.$user->name);
         $mailer->notifyAdmin( $user, 'new user registration from IP '.$request->ip() );
 
         $mailer->sendEmailConfirmationTo($user);

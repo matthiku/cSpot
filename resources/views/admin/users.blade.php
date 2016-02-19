@@ -59,8 +59,8 @@
 				@if ( Auth::user()->isEditor() )
 					<td class="hidden-sm-down">{{ $user->email }}</td>
 				@endif
-				<td>@foreach ($user->roles as $role)
-						{{ ucfirst($role->name) }},
+				<td>@foreach ($user->roles as $key => $role)
+                	{{ ucfirst($role->name) }}{{ $key+1<$user->roles->count() ? ',' : '' }}
 					@endforeach</td>
 				<td class="hidden-md-down">{{ $user->created_at }}</td>
 				<td class="nowrap">
