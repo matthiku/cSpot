@@ -47,7 +47,7 @@
                     </a>
                 </h2>
                 <h5 class="hidden-md-down">of the Service plan for {{ $plan->date->formatLocalized('%A, %d %B %Y') }}</h5>
-                <h4 class="hidden-lg-up">of plan for {{ $plan->date->formatLocalized('%a, %d %b') }}</h4>
+                <h4 class="hidden-lg-up">in plan for {{ $plan->date->formatLocalized('%a, %d %b') }}</h4>
             </div>
 
             <div class="col-md-6 text-xs-right nowrap">

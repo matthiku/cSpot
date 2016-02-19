@@ -21,7 +21,7 @@
         </h4>
       </div>
       <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
-        <p>ch-SPOT was designed to help your church organize their Sunday and Midweek services as well as other events.</p>
+        <p>c-SPOT was designed to help your church organize their Sunday and Midweek services as well as other events.</p>
         <p>As an online tool, it provides event information to every person involved and allows them 
            to add or modify information accordingly.</p>
         <p>However, the ability to contribute to the plan details is based on distinct <span class="text-warning">roles</span> given to each user, so that only authorized people
@@ -38,11 +38,11 @@
         </h4>
       </div>
       <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
-        <p>By default, ch-SPOT is designed to allow for 'self-registration'. That means, once you've signed up, either by email or a service provider (see below), you can immediately look into most of the data. However, only very basic access rights are given to a self-registered user, so
+        <p>By default, c-SPOT is designed to allow for 'self-registration'. That means, once you've signed up, either by email or a service provider (see below), you can immediately look into most of the data. However, only very basic access rights are given to a self-registered user, so
               any further rights must be assigned by a user with an "Administrator" role.</p>
         <p>To sign up, just provide your name, <span class="text-success">email address</span> and create a new password. An email containing a verification link will be sent to that email address. Be sure to click on that link - once you received the email - in order to 'release' your account!</p>
         <p>Alternatively, and without the need for an extra password, you can allow your existing registration with one of the "big" <strong>service providers</strong> (like Google, Facebook, Twitter etc.) to be used for this verification process. Just click on the symbol of the service provider you want to use. You will be forwarded <strong>once</strong> to a special page of your service provider for confirmation.</p>
-        <p>If you agree to use this <span  class="text-warning">"provider verification"</span>, ch-SPOT will be "authorized" to access your basic account 
+        <p>If you agree to use this <span  class="text-warning">"provider verification"</span>, c-SPOT will be "authorized" to access your basic account 
                 information on those accounts (usually name and email address). From then on, <strong>no further login is required anymore</strong> as long as you are logged in to those 
                 providers in the same browser program.</p>
         <p>So with that, no need to remember another password!</p>

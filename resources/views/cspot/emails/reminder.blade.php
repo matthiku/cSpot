@@ -15,7 +15,7 @@
     on {{ $plan->date->formatLocalized('%A, %d %B %Y') }}</h3>
 
     <p>Best Regards,<br>    
-    Your ch-SPOT Admin
+    Your c-SPOT Admin
     </p>
 
 </body>

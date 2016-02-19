@@ -15,7 +15,7 @@
                 
                 <div class="panel-heading">
                     <img src="{{ url('images/churchLogo.png') }}" height="20" width="30">
-                    {{ env('CHURCH_NAME') }}<br>Welcome to  ch-SPOT!
+                    {{ env('CHURCH_NAME') }}<br>Welcome to  c-SPOT!
                 </div>
 
                 <br>
@@ -41,7 +41,7 @@
 
                     <div class="form-signin right">
                         <h2 class="form-signin-heading">
-                            <a href="{{url('home')}}">Start using ch-SPOT</a>
+                            <a href="{{url('home')}}">Start using c-SPOT</a>
                         </h2>
                     </div>
 

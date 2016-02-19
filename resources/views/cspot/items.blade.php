@@ -6,17 +6,34 @@
 		<thead class="thead-default">
 			<tr>
 				@if( Auth::user()->ownsPlan($plan->id) )
-					<th class="text-right" data-toggle="tooltip" title="Move an item one place up or down.">
-						Re-order</th>
+					<th class="text-right" 
+						data-toggle="tooltip" data-placement="right" title="Move an item one place up or down. The sequence number will be adjusted accordinglyl"
+						>Re-order</th>
 				@endif
-				<th class="hidden-sm-down center">Order</th>
-				<th class="hidden-xs-down center">Book Ref.</th>
-				<th class="hidden-sm-down"       >Title</th>
-				<th class="hidden-sm-down center">Comment</th>
-				<th class="hidden-md-up center"  >Title/Comment</th>
-				<th class="hidden-md-down center">Version</th>
-				<th class="hidden-lg-down center"><small>Chords?</small></th>
-				<th class=" center">Links</th>
+				<th class="hidden-sm-down center"
+						data-toggle="tooltip" title="Numbers are automatically assigned according to the position of the item."
+					>Order</th>
+				<th class="hidden-xs-down center"
+						data-toggle="tooltip" title="Song book reference. MP='Mission Praise'"
+					>Book Ref.</th>
+				<th class="hidden-sm-down"       
+						data-toggle="tooltip" title="Title and subtitle (if any) of the selected song."
+					>Title</th>
+				<th class="hidden-sm-down center"
+						data-toggle="tooltip" title="Additional comments for a song or description of activity."
+					>Comment</th>
+				<th class="hidden-md-up center"  
+						data-toggle="tooltip" title="Song Title and/or activity description."
+					>Title/Comment</th>
+				<th class="hidden-md-down center"
+						data-toggle="tooltip" title="Bible translation to be used for Bible readings."
+					>Version</th>
+				<th class="hidden-lg-down center"
+						data-toggle="tooltip" title="Music-related instructions like key or repetition."
+					><small>Chords?</small></th>
+				<th class="center"
+						data-toggle="tooltip" title="Links to YouTube videos or sheetmusic for song items."
+					>Links</th>
 				@if( Auth::user()->ownsPlan($plan->id) )
 					<th class="center">Action</th>
 				@endif
