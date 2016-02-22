@@ -1,3 +1,16 @@
+.border {
+    border: 1px #bbb solid;
+    border-radius: 5px;
+}
+
+.bg-grey {
+    background-color: #eee;
+}
+
+.big {
+    font-size: 140%;
+}
+
 .xl-big {
     font-size: 200%;
 }
@@ -122,6 +135,7 @@ label {
 
     h1,h2,h3,h4,h5 {
         font-size: 100%;
+        font-weight: bold;
     }
 
     textarea {
