@@ -11,6 +11,7 @@ use App\Http\Requests\StoreSongRequest;
 use App\Http\Controllers\Controller;
 
 use App\Models\Song;
+use App\Models\Plan;
 
 
 class SongController extends Controller
@@ -121,7 +122,11 @@ class SongController extends Controller
             $l = new Song;
             $licensesEnum = $l->getLicenseEnum();
 
-            return view( $this->view_one, array('song' => $output, 'licensesEnum' => $licensesEnum ) );
+            return view( $this->view_one, array(
+                'song'         => $output, 
+                'licensesEnum' => $licensesEnum,
+                'plansUsingThisSong' => $output->plansUsingThisSong(),
+            ));
         }
         //
         flash('Error! Song with id "' . $id . '" not found');

@@ -203,16 +203,38 @@
 
         <div class="col-xl-6">
 
-            @if ( isset($song) )
-                Song Usage Count: <strong>{{ $song->items->count() }}</strong>
-            @endif
-            <hr>
-
             {!! Form::label('lyrics', 'Lyrics'); !!}<br/>
             {!! Form::textarea('lyrics'); !!}
             <br>
+
             {!! Form::label('chords', 'Chords'); !!}<br/>
             {!! Form::textarea('chords'); !!}
+            <br>
+
+            @if ( isset($song) )
+                Song Usage History: (used <strong>{{ count($plansUsingThisSong) }}</strong> times)
+                @if ( count($plansUsingThisSong) )
+                    <table class="table table-striped table-normal table-hover table-sm">
+                        <thead class="thead-default">
+                            <th>Date</th>
+                            <th>Leader</th>
+                        </thead>
+                        <tbody>
+                        @foreach ($plansUsingThisSong as $plan)
+                            <tr>
+                                <td class="link" onclick="location.href='{{ url('cspot/plans/'.$plan->id) }}/edit'">
+                                    {{ $plan->date->formatLocalized('%A, %d %B %Y') }}
+                                </td>
+                                <td class="link" onclick="location.href='{{ url('cspot/plans/by_user/'.$plan->leader_id) }}/edit'">
+                                    {{ $plan->leader->first_name }}
+                                </td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+                @endif
+            @endif
+
 
         </div>
 

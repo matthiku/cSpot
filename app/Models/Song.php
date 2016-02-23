@@ -47,6 +47,42 @@ class Song extends Model
 
 
     /**
+     * Get collection of plans using this song
+     * (use this to count the number of times this song was used)
+     */
+    public function plansUsingThisSong() {
+
+        $id = $this->id;
+
+        // get list of plans using this song
+        $plans = Plan::whereHas('items', function ($query) use ($id) {
+            $query->where('song_id', $id);
+        })->orderBy('id', 'desc')->get();
+
+        return $plans;
+    }
+
+
+    /**
+     * Get last date of plans this song was being used
+     */
+    public function lastPlanUsingThisSong() {
+
+        $id = $this->id;
+
+        // get list of plans using this song
+        $plan = Plan::whereHas('items', function ($query) use ($id) {
+            $query->where('song_id', $id);
+        })->orderBy('id', 'desc')->first();
+
+        return $plan;
+    }
+
+
+
+
+
+    /**
      * Check if the YouTube id contains the full URL -
      * we only want to save the ID part
      *

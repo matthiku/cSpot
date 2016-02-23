@@ -125,82 +125,60 @@
             <div id="col-2-song" class="col-xl-4 col-lg-3 col-md-6 col-sm-12 col-xs-12 bg-grey">
                 <div class="col-xs-12 center">
 
-                    @if ( ! Session::has('songs') )
-
-                        <div class="row song-details form-group">
-                            <h5>{{ $item->song->title ? $item->song->title : '' }}
-                                @if ($item->song->title_2)
-                                    <br>({{ $item->song->title_2 }})
-                                @endif
-                            </h5>
-                            @if ($item->song->book_ref)
-                                <h6>{{ $item->song->book_ref }}</h6>
+                    <div class="row song-details form-group">
+                        <h5>{{ $item->song->title ? $item->song->title : '' }}
+                            @if ($item->song->title_2)
+                                <br>({{ $item->song->title_2 }})
                             @endif
-                        </div>
+                        </h5>
+                        @if ($item->song->book_ref)
+                            <h6>{{ $item->song->book_ref }}</h6>
+                        @endif
+                    </div>
 
-                        <div class="row song-details">
+                    <div class="row song-details">
 
-                            <h6>Musical Instructions (e.g. Key)</h6>
-                            <p>{!! Form::text('key'); !!}
-                            </p>
+                        <h6>Musical Instructions (e.g. Key)</h6>
+                        <p>{!! Form::text('key'); !!}
+                        </p>
 
-                            @if ($item->song->youtube_id)
-                                <a href="https://www.youtube.com/watch?v={{ $item->song->youtube_id }}" 
-                                    target="new" class="pull-xs-left" 
-                                      title="Play on YouTube" data-toggle="tooltip">
-                                    <i class="red fa fa-youtube-play"></i>&nbsp;play</a> &nbsp; &nbsp; &nbsp; &nbsp;
-                            @endif
+                        @if ($item->song->youtube_id)
+                            <a href="https://www.youtube.com/watch?v={{ $item->song->youtube_id }}" 
+                                target="new" class="pull-xs-left" 
+                                  title="Play on YouTube" data-toggle="tooltip">
+                                <i class="red fa fa-youtube-play"></i>&nbsp;play</a> &nbsp; &nbsp; &nbsp; &nbsp;
+                        @endif
 
-                            <a href="#" 
-                                onclick="$('.song-search').show();$('.song-details').hide();" 
-                                title="Select another song" data-toggle="tooltip"
-                            ><i class="fa fa-exchange"></i>&nbsp;change song</a> &nbsp; &nbsp;
+                        <a href="#" 
+                            onclick="$('.song-search').show();$('.song-details').hide();" 
+                            title="Select another song" data-toggle="tooltip"
+                        ><i class="fa fa-exchange"></i>&nbsp;change song</a> &nbsp; &nbsp;
 
-                            <a href="#" class="pull-xs-right" 
-                                onclick="location.href='{{ route('cspot.songs.edit', $item->song_id) }}'" 
-                                  title="Edit details of this song" data-toggle="tooltip"
-                            ><i class="fa fa-edit"></i>&nbsp;edit song</a>
-                            
-                            <hr class="narrow">
-                            @if ( $usageCount )
-                                (Song was used before in <strong>{{ $usageCount }}</strong> service(s), 
-                                last on <strong>{{ $newestUsage->date->formatLocalized('%A, %d %b %Y') }}</strong>)
-                            @else
-                                (Song was never used before this service)
-                            @endif
+                        <a href="#" class="pull-xs-right" 
+                            onclick="location.href='{{ route('cspot.songs.edit', $item->song_id) }}'" 
+                              title="Edit details of this song" data-toggle="tooltip"
+                        ><i class="fa fa-edit"></i>&nbsp;edit song</a>
+                        
+                        <hr class="narrow">
+                        @if ( $usageCount )
+                            (Song was used before in <strong>{{ $usageCount }}</strong> service(s), 
+                            last on <strong>{{ $newestUsage->date->formatLocalized('%A, %d %b %Y') }}</strong>)
+                        @else
+                            (Song was never used before this service)
+                        @endif
 
-                        </div>
+                    </div>
 
-                        <script>
-                            $(document).ready( function() {
-                                $('.song-search').hide();
-                            });
-                        </script>
-
-                    @endif
+                    <script>
+                        $(document).ready( function() {
+                            $('.song-search').hide();
+                        });
+                    </script>
 
 
                     <div class="row form-group">
-                        @if ( Session::has('songs'))
-                            Select a new song and click 'Save changes':
-                            <div class="c-inputs-stacked">
-                                @foreach (Session::get('songs') as $song)
-                                    <label class="c-input c-radio" title="{{$song->lyrics}}" data-toggle="tooltip">
-                                        <input value="{{$song->id}}" name="song_id" type="radio">
-                                        <span class="c-indicator"></span>
-                                        {{ $song->book_ref ? $song->book_ref.',' : '' }}
-                                        {{ $song->title }}
-                                        {{ $song->title_2 ? '('. $song->title_2 .')' : '' }},
-                                    </label>
-                                @endforeach
-                            </div>
-                            Or search for still another song. Just
-                        @else
-                            <div class="song-search">
-                                To search for another song,
-                            </div>
-                        @endif
                         <div class="song-search">
+                            To search for another song,
                             {!! Form::label('search', 'enter song number, title or author or parts thereof:') !!}
                             {!! Form::text('search') !!}
                             <input type="submit" name="searchBtn" value="Search" />
@@ -214,43 +192,25 @@
                 </div>
             </div>
 
-            @if ( ! Session::has('songs') )
-                <div id="col-3-lyrics" class="col-xl-5 col-lg-6 col-md-12 col-sm-12 col-xs-12 center">
-                    <div class="row form-group link" id="lyrics" title="click to show chords!" data-toggle="tooltip"
-                         onclick="$('#chords').show();$('#lyrics').hide();">
-                        <h4>Lyrics</h4>
-                        <pre>{{ $item->song->lyrics }}</pre>
-                    </div>
-                    <div class="row form-group link" id="chords" title="click to show lyrics!" data-toggle="tooltip"
-                         onclick="$('#lyrics').show();$('#chords').hide();">
-                        <h4>Chords</h4>
-                        <pre>{{ $item->song->chords }}</pre>
-                    </div>
-                    <script>
-                        
-                    </script>
+            <div id="col-3-lyrics" class="col-xl-5 col-lg-6 col-md-12 col-sm-12 col-xs-12 center">
+                <div class="row form-group link" id="lyrics" title="click to show chords!" data-toggle="tooltip"
+                     onclick="$('#chords').show();$('#lyrics').hide();">
+                    <h4>Lyrics</h4>
+                    <pre>{{ $item->song->lyrics }}</pre>
                 </div>
-            @endif
+                <div class="row form-group link" id="chords" title="click to show lyrics!" data-toggle="tooltip"
+                     onclick="$('#lyrics').show();$('#chords').hide();">
+                    <h4>Chords</h4>
+                    <pre>{{ $item->song->chords }}</pre>
+                </div>
+                <script>
+                    
+                </script>
+            </div>
 
         @else
             <div id="col-2-song-search" class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
-                @if ( Session::has('songs'))
-                    Select a song:
-                    <div class="c-inputs-stacked">
-                        @foreach (Session::get('songs') as $song)
-                            <label class="c-input c-radio" title="{{ substr($song->lyrics, 0, 250).' ...' }}" data-toggle="tooltip" data-placement="bottom">
-                                <input value="{{ $song->id }}" name="song_id" type="radio">
-                                <span class="c-indicator">                                    
-                                </span>{{ $song->book_ref ? $song->book_ref.', ' : '' 
-                                }}{{ $song->title}}{{ $song->title_2 ? ' ('. $song->title_2 .')' : '' }}
-                                <hr class="narrow">
-                            </label>
-                        @endforeach
-                    </div>
-                    Or search for another song -
-                @else
-                    To search for a song,
-                @endif
+                To search for a song,
                 {!! Form::label('search', 'enter song number, title or author or parts thereof:') !!}<br/>
                 {!! Form::text('search') !!}
                 <input type="submit" name="searchBtn" value="Search" />

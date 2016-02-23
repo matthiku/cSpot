@@ -43,7 +43,7 @@
 	@if (count($plans))
 		Total: {{ count($plans) }} Services
 
-		<table class="table table-striped table-bordered 
+		<table class="table table-striped table-bordered table-hover
 					@if(count($plans)>15)
 					 table-sm
 					@endif

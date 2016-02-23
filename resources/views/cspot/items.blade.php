@@ -2,7 +2,8 @@
 <!-- # (C) 2016 Matthias Kuhs, Ireland -->
 
 <div class="table-responsive">
-	<table class="table table-striped table-bordered {{ count($plan->items)>5 ? 'table-sm' : ''}} {{ count($plan->items)>10 ? 'table-xs' : ''}}">
+	<table class="table table-striped table-bordered table-hover
+		{{ count($plan->items)>5 ? 'table-sm' : ''}} {{ count($plan->items)>10 ? 'table-xs' : ''}}">
 		<thead class="thead-default">
 			<tr>
 				@if( Auth::user()->ownsPlan($plan->id) )

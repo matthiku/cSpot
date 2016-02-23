@@ -1,3 +1,19 @@
+.c-select-compact {
+    line-height: 1;
+}
+
+.c-inputs-stacked .c-input::after {
+    margin-bottom: 1rem;
+}
+
+.c-radio-small {
+    margin-left: 1.5rem;
+}
+
+.table-normal {
+    width: initial;
+}
+
 .narrow {
     margin: 0;
     padding: 0;
