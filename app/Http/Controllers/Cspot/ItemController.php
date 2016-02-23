@@ -109,7 +109,12 @@ class ItemController extends Controller
                 $request->song_id = $songs[0]->id;
             } else {
                 // as we found several songs, return to view as user must select one
-                return view('cspot.item_select_song', ['songs' => $songs, 'plan_id' => $request->input('plan_id'), 'item_id' => 0]);
+                return view('cspot.item_select_song', [
+                    'songs'   => $songs, 
+                    'plan_id' => $request->input('plan_id'), 
+                    'item_id' => 0,
+                    'seq_no'  => $request->seq_no,
+                ]);
             }
         }
 
@@ -234,7 +239,12 @@ class ItemController extends Controller
                 $request->song_id = $songs[0]->id;
             } else {
                 // as we found several songs, user must select one
-                return view('cspot.item_select_song', ['songs' => $songs, 'plan_id' => $plan_id, 'item_id' => $id]);
+                return view('cspot.item_select_song', [
+                    'songs' => $songs, 
+                    'plan_id' => $plan_id, 
+                    'item_id' => $id,
+                    'seq_no'  => $request->seq_no,
+                ]);
             }
         }
 
