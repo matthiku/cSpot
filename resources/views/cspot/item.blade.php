@@ -160,6 +160,14 @@
                                 onclick="location.href='{{ route('cspot.songs.edit', $item->song_id) }}'" 
                                   title="Edit details of this song" data-toggle="tooltip"
                             ><i class="fa fa-edit"></i>&nbsp;edit song</a>
+                            
+                            <hr class="narrow">
+                            @if ( $usageCount )
+                                (Song was used before in <strong>{{ $usageCount }}</strong> service(s), 
+                                last on <strong>{{ $newestUsage->date->formatLocalized('%A, %d %b %Y') }}</strong>)
+                            @else
+                                (Song was never used before this service)
+                            @endif
 
                         </div>
 
@@ -225,16 +233,17 @@
             @endif
 
         @else
-            <div id="col-2-song-search" class="col-lg-6 col-md-12">
+            <div id="col-2-song-search" class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
                 @if ( Session::has('songs'))
                     Select a song:
                     <div class="c-inputs-stacked">
                         @foreach (Session::get('songs') as $song)
-                            <label class="c-input c-radio border" title="{{$song->lyrics}}" data-toggle="tooltip" data-placement="bottom">
-                                <input value="{{$song->id}}" name="song_id" type="radio">
+                            <label class="c-input c-radio" title="{{ substr($song->lyrics, 0, 250).' ...' }}" data-toggle="tooltip" data-placement="bottom">
+                                <input value="{{ $song->id }}" name="song_id" type="radio">
                                 <span class="c-indicator">                                    
-                                </span>{{ $song->book_ref ? $song->book_ref.',' : '' 
+                                </span>{{ $song->book_ref ? $song->book_ref.', ' : '' 
                                 }}{{ $song->title}}{{ $song->title_2 ? ' ('. $song->title_2 .')' : '' }}
+                                <hr class="narrow">
                             </label>
                         @endforeach
                     </div>

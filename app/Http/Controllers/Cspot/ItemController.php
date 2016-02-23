@@ -183,6 +183,19 @@ class ItemController extends Controller
         $seq_no = $item->seq_no;
         $versionsEnum = $item->getVersionsEnum();
 
+        // If this is a song, find out the last time it was used, 
+        // that is: Find the newest plan containing an item with this song
+        $newestUsage = [];
+        $usageCount = 0;
+        if ($item->song) {
+            $plans = Plan::whereHas('items', function ($query) use ($item) {
+                $query->where('song_id', $item->song_id);
+            })->where('date', '<', $plan->date)->orderBy('date', 'desc');
+            $usageCount = count($plans->get());
+            $newestUsage = $plans->first();
+        } 
+
+
         $songs = []; # send empty song array
         // send the form
         return view( 'cspot.item', [
@@ -190,7 +203,9 @@ class ItemController extends Controller
                 'seq_no'       => $seq_no, 
                 'item'         => $item, 
                 'songs'        => $songs, 
-                'versionsEnum' => $versionsEnum
+                'versionsEnum' => $versionsEnum,
+                'usageCount'   => $usageCount,
+                'newestUsage'  => $newestUsage,
             ]);
     }
 
