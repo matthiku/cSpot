@@ -71,6 +71,10 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     Route::get('plans/{plan_id}/items/{item_id}/go/{direction}',    'Cspot\ItemController@next');
     // show form to create a new item for a plan
     Route::get('plans/{plan_id}/items/create/before/{item_id}',     'Cspot\ItemController@create');    
+    // insert new item with song_id 
+    Route::get('plans/{plan_id}/items/store/seq_no/{seq_no}/song/{song_id}/{moreItems?}',     'Cspot\ItemController@insertSong');    
+    // update item with new song_id 
+    Route::get('plans/{plan_id}/items/update/item/{item_id}/song/{song_id}',     'Cspot\ItemController@updateSong');    
     // show form to create a new item for a plan
     Route::get('plans/{plan_id}/items/create/{seq_no}',             'Cspot\ItemController@create');    
     // show form to update a new item for a plan

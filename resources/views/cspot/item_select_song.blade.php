@@ -14,13 +14,6 @@
 
     @include('layouts.flashing')
 
-    {!! Form::open(array('action' => 'Cspot\ItemController@store', 'id' => 'inputForm', 'name' => 'inputForm')) !!}
-
-    {!! Form::hidden('plan_id', $plan_id) !!}
-    {!! Form::hidden('item_id', $item_id) !!}
-    {!! Form::hidden('seq_no',  $seq_no) !!}
-    {!! Form::hidden('_method', 'POST') !!}
-
     <div class="row">
         <div class="col-md-6">
             <h2>Select a Song</h2>
@@ -32,7 +25,7 @@
 
     <script>
         function submitForm() {
-            document.getElementById('btnSubmit').click();
+            $('#btnSubmit').click();
         }
     </script>
 
@@ -40,22 +33,22 @@
         <div class="col-lg-6">
 
 
-            <div class="c-inputs-stacked c-select-compact">
+            <div>
 
                 @foreach ($songs as $song)
-                    <label class="c-input c-radio c-radio-label"
-                        onclick="submitForm()"
+                    <a 
+                        @if ($item_id)
+                            href='{{ url('cspot/plans/'.$plan_id) }}/items/update/item/{{$item_id }}/song/{{ $song->id }}' 
+                        @else
+                            href='{{ url('cspot/plans/'.$plan_id) }}/items/store/seq_no/{{$seq_no }}/song/{{ $song->id }}/{{$moreItems}}' 
+                        @endif
+                        class="btn btn-primary-outline" role="button"
                         title="{{ substr($song->lyrics, 0, 250).' ...' }}" data-toggle="tooltip" data-placement="bottom">
-
-                        <input value="{{ $song->id }}" name="song_id" type="radio">
-
-                        <span class="c-indicator"></span>
                         {{ $song->book_ref ? $song->book_ref.',' : '' }}
                         {{ $song->title }}
                         {{ $song->title_2 ? '('. $song->title_2 .')' : '' }}
                         <br>
-
-                        <small class="c-radio-small">
+                        <small>
                             @if ( $song->items->count() )
                                 (used {{ $song->items->count() }} times, last on 
                                 {{ $song->lastPlanUsingThisSong()->date->formatLocalized('%d-%b-%y') }})
@@ -64,35 +57,25 @@
                             @endif
                         </small>
 
-                    </label>
+                    </a>
+                    <br>
                 @endforeach
 
             </div>
 
-            <input type="submit" name="btnSubmit" value="Submit" />
             <br>
             <br>
 
 
             <div class="bg-grey center">
-                Or search for still another song.
-                <br>
-                {!! Form::label('search', 'Just enter song number, title or author or parts thereof:') !!}
-                <br>
-                {!! Form::text('search') !!}
-                <input type="submit" name="searchBtn" value="Search" />
-                @if ($errors->has('search'))
-                    <br><span class="help-block">
-                        <strong>{{ $errors->first('search') }}</strong>
-                    </span>
-                @endif
-                <br>
+                    <a href='#' onclick='window.history.back();' 
+                        class="btn btn-primary-outline" role="button">Back ...</a>
+
             </div>
 
         </div>
     </div>
 
-    {!! Form::close() !!}
 
     
 @stop

@@ -82,8 +82,8 @@ class ItemController extends Controller
 
         // show the form
         return view( 'cspot.item', [
-                'plan' => $plan, 
-                'seq_no' => $seq_no, 
+                'plan'         => $plan, 
+                'seq_no'       => $seq_no, 
                 'versionsEnum' => $versionsEnum
             ]);
     }
@@ -110,10 +110,11 @@ class ItemController extends Controller
             } else {
                 // as we found several songs, return to view as user must select one
                 return view('cspot.item_select_song', [
-                    'songs'   => $songs, 
-                    'plan_id' => $request->input('plan_id'), 
-                    'item_id' => 0,
-                    'seq_no'  => $request->seq_no,
+                    'songs'      => $songs, 
+                    'plan_id'    => $request->input('plan_id'), 
+                    'item_id'    => 0,
+                    'seq_no'     => $request->seq_no,
+                    'moreItems'  => $request->moreItems,
                 ]);
             }
         }
@@ -136,6 +137,54 @@ class ItemController extends Controller
         return \Redirect::route( 'cspot.plans.edit', $request->input('plan_id') );
     }
 
+
+    /**
+     * Directly insert a song as a new item into a plan
+     */
+    public function insertSong($plan_id, $seq_no, $song_id, $moreItems=null )
+    {
+        // check user rights (teachers and leaders can edit items of their own plan)
+        $plan = Plan::find( $plan_id );
+        $this->checkRights($plan);
+
+        $item = new Item(['seq_no' => $seq_no, 'song_id' => $song_id]);
+
+        $newItem = $plan->items()->save($item);
+
+        $item = moveItem($newItem->id, 'static');
+
+        if ($moreItems=='Y') {
+            $versionsEnum = $newItem->getVersionsEnum();
+
+            // insert another item after the just created item
+            $seq_no = $newItem->seq_no + 1;
+
+            // show the form
+            return view( 'cspot.item', [
+                    'plan'         => $plan, 
+                    'seq_no'       => $seq_no, 
+                    'versionsEnum' => $versionsEnum
+                ]);
+        }
+
+        return \Redirect::route( 'cspot.plans.edit', $plan_id );
+    }
+
+
+    /**
+     * Directly update an item with a new song
+     */
+    public function updateSong($plan_id, $item_id, $song_id )
+    {
+        // check user rights (teachers and leaders can edit items of their own plan)
+        $plan = Plan::find( $plan_id );
+        $this->checkRights($plan);
+
+        $item = Item::find($item_id);
+        $item->update(['song_id' => $song_id]);
+
+        return \Redirect::route( 'cspot.plans.edit', $plan_id );
+    }
 
 
     /**
@@ -240,10 +289,11 @@ class ItemController extends Controller
             } else {
                 // as we found several songs, user must select one
                 return view('cspot.item_select_song', [
-                    'songs' => $songs, 
-                    'plan_id' => $plan_id, 
-                    'item_id' => $id,
-                    'seq_no'  => $request->seq_no,
+                    'songs'     => $songs, 
+                    'plan_id'   => $plan_id, 
+                    'item_id'   => $id,
+                    'seq_no'    => $request->seq_no,
+                    'moreItems' => 'N',
                 ]);
             }
         }
