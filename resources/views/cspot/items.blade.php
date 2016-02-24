@@ -85,7 +85,10 @@
 					{{ ($item->song_id) ? $item->song->book_ref : '' }}</td>
 
 				<td {{$onclick}} class="hidden-sm-down" @if ($item->song_id)
-						title="{{ $item->song->lyrics }}" data-toggle="tooltip" data-placement="bottom"
+						title="{{ substr($item->song->lyrics,0,500) }}" data-toggle="tooltip" 
+						@if ($item->seq_no<10)
+							data-placement="bottom"
+						@endif
 						data-template='<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><pre class="tooltip-inner tooltip-wide"></pre></div>'
 					@endif
 					>

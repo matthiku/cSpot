@@ -212,7 +212,7 @@
             <br>
 
             @if ( isset($song) )
-                Song Usage History: (used <strong>{{ count($plansUsingThisSong) }}</strong> times)
+                <h4>Song Usage History: <small>(used <strong>{{ count($plansUsingThisSong) }}</strong> times)</small></h4>
                 @if ( count($plansUsingThisSong) )
                     <table class="table table-striped table-normal table-hover table-sm">
                         <thead class="thead-default">

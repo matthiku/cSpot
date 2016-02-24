@@ -1,6 +1,8 @@
 
 <!-- # (C) 2016 Matthias Kuhs, Ireland -->
 
+<?php Use Carbon\Carbon; ?>
+
 @extends('layouts.main')
 
 @section('title', "Create or Update Plan Item")
@@ -64,7 +66,7 @@
                     <a class="hidden-xs-down" href="{{ url('cspot/plans/'.$item->plan_id) }}/edit">{!! Form::button('Cancel - Back to Plan') !!}</a>
                     <a class="hidden-sm-up" href="{{ url('cspot/plans/'.$item->plan_id) }}/edit">{!! Form::button('Cancel - Back') !!}</a>
             @else
-                    <h2>Add Item</h2>
+                    <h2>Add Item No {{ $seq_no }}.0</h2>
                     <h5>to the Service plan (id {{ $plan->id }}) for {{ $plan->date->formatLocalized('%A, %d %B %Y') }}</h5>
             @endif
         </div>
@@ -126,7 +128,10 @@
                 <div class="col-xs-12 center">
 
                     <div class="row song-details form-group">
-                        <h5>{{ $item->song->title ? $item->song->title : '' }}
+                        <h5 class="m-t-1">
+                            <i class="pull-xs-left fa fa-music"></i>
+                            <i class="pull-xs-right fa fa-music"></i>
+                            {{ $item->song->title ? $item->song->title : '' }}
                             @if ($item->song->title_2)
                                 <br>({{ $item->song->title_2 }})
                             @endif
@@ -144,25 +149,26 @@
 
                         @if ($item->song->youtube_id)
                             <a href="https://www.youtube.com/watch?v={{ $item->song->youtube_id }}" 
-                                target="new" class="pull-xs-left" 
+                                target="new" class="pull-xs-left btn btn-primary-outline btn-sm" 
                                   title="Play on YouTube" data-toggle="tooltip">
                                 <i class="red fa fa-youtube-play"></i>&nbsp;play</a> &nbsp; &nbsp; &nbsp; &nbsp;
                         @endif
 
-                        <a href="#" 
+                        <a href="#" class="btn btn-primary-outline btn-sm"
                             onclick="$('.song-search').show();$('.song-details').hide();" 
                             title="Select another song" data-toggle="tooltip"
                         ><i class="fa fa-exchange"></i>&nbsp;change song</a> &nbsp; &nbsp;
 
-                        <a href="#" class="pull-xs-right" 
+                        <a href="#" class="pull-xs-right btn btn-primary-outline btn-sm" 
                             onclick="location.href='{{ route('cspot.songs.edit', $item->song_id) }}'" 
                               title="Edit details of this song" data-toggle="tooltip"
                         ><i class="fa fa-edit"></i>&nbsp;edit song</a>
                         
-                        <hr class="narrow">
+                        <hr>
                         @if ( $usageCount )
-                            (Song was used before in <strong>{{ $usageCount }}</strong> service(s), 
-                            last on <strong>{{ $newestUsage->date->formatLocalized('%A, %d %b %Y') }}</strong>)
+                            (Song was used before in <strong>{{ $usageCount }}</strong> service(s) -
+                            lastly <strong title="{{ $newestUsage->date }}">
+                                {{ Carbon::now()->diffForHumans( $newestUsage->date, true ) }} ago</strong>)
                         @else
                             (Song was never used before this service)
                         @endif

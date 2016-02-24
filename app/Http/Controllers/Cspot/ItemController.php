@@ -97,6 +97,7 @@ class ItemController extends Controller
      */
     public function store(StoreItemRequest $request)
     {
+        $plan = Plan::find( $request->input('plan_id') );
         // searching for a song?
         if ($request->has('search')) {
             $songs = songSearch( '%'.$request->search.'%' );
@@ -110,8 +111,8 @@ class ItemController extends Controller
             } else {
                 // as we found several songs, return to view as user must select one
                 return view('cspot.item_select_song', [
-                    'songs'      => $songs, 
-                    'plan_id'    => $request->input('plan_id'), 
+                    'songs'      => $songs,
+                    'plan'       => $plan,
                     'item_id'    => 0,
                     'seq_no'     => $request->seq_no,
                     'moreItems'  => $request->moreItems,
@@ -120,7 +121,6 @@ class ItemController extends Controller
         }
 
         // check user rights (teachers and leaders can edit items of their own plan)
-        $plan = Plan::find( $request->input('plan_id') );
         $this->checkRights($plan);
 
         // review numbering of current items for this plan and insert the new item
@@ -147,7 +147,11 @@ class ItemController extends Controller
         $plan = Plan::find( $plan_id );
         $this->checkRights($plan);
 
-        $item = new Item(['seq_no' => $seq_no, 'song_id' => $song_id]);
+        $item = new Item([
+            'seq_no' => $seq_no, 
+            'song_id' => $song_id,
+            'comment' => '(from insertSong)',
+        ]);
 
         $newItem = $plan->items()->save($item);
 
@@ -158,6 +162,9 @@ class ItemController extends Controller
 
             // insert another item after the just created item
             $seq_no = $newItem->seq_no + 1;
+
+            // send confirmation to view
+            flash('New item No '.$newItem->seq_no.' inserted with song '.$newItem->song->title);
 
             // show the form
             return view( 'cspot.item', [
@@ -171,20 +178,7 @@ class ItemController extends Controller
     }
 
 
-    /**
-     * Directly update an item with a new song
-     */
-    public function updateSong($plan_id, $item_id, $song_id )
-    {
-        // check user rights (teachers and leaders can edit items of their own plan)
-        $plan = Plan::find( $plan_id );
-        $this->checkRights($plan);
 
-        $item = Item::find($item_id);
-        $item->update(['song_id' => $song_id]);
-
-        return \Redirect::route( 'cspot.plans.edit', $plan_id );
-    }
 
 
     /**
@@ -200,6 +194,8 @@ class ItemController extends Controller
         flash('Sorry, this is not implemented.');
         return redirect()->back();
     }
+
+
 
 
 
@@ -290,7 +286,7 @@ class ItemController extends Controller
                 // as we found several songs, user must select one
                 return view('cspot.item_select_song', [
                     'songs'     => $songs, 
-                    'plan_id'   => $plan_id, 
+                    'plan'      => $plan, 
                     'item_id'   => $id,
                     'seq_no'    => $request->seq_no,
                     'moreItems' => 'N',
@@ -302,11 +298,35 @@ class ItemController extends Controller
         $this->checkRights($plan);
 
         // get current item
-        $item->update($request->except('_token'));
+        $item->update( $request->except('_token') );
 
         // back to full plan view 
         return \Redirect::route('cspot.plans.edit', $plan_id);
     }
+
+
+
+    /**
+     * Directly update an item with a new song
+     */
+    public function updateSong($plan_id, $item_id, $song_id )
+    {
+        // check user rights (teachers and leaders can edit items of their own plan)
+        $plan = Plan::find( $plan_id );
+        $this->checkRights($plan);
+
+        $item = Item::find($item_id);
+        $item->update([
+            'song_id' => $song_id,
+            'comment' => '(from updateSong)',
+        ]);
+
+        // send confirmation to view
+        flash('New item No '.$item->seq_no.' inserted with song '.$item->song->title);
+
+        return \Redirect::route( 'cspot.plans.edit', $plan_id );
+    }
+
 
 
 
