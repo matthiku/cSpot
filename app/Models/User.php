@@ -196,6 +196,10 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     {
         return $this->hasRole('administrator') || $this->hasRole('editor') || $this->hasRole('author');
     }
+    public function isLeader()
+    {
+        return $this->hasRole('administrator') || $this->hasRole('editor') || $this->hasRole('author') || $this->hasRole('leader');
+    }
 
     
 }

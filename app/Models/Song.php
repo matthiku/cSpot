@@ -6,7 +6,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+
 use DB;
+use Auth;
 
 
 class Song extends Model
@@ -79,6 +81,24 @@ class Song extends Model
     }
 
 
+
+    /**
+     * Only users with a leader role are allowed to see song lyrics of non-PD songs
+     *
+     * Leaders (and users with higher roles) are normally part of the local church
+     * and therefore covered by the church's CCLI MRL license.
+     */
+    public function getLyricsAttribute( $value )
+    {
+        // return full value for all PD songs and for users >= Leaders
+        if ($this->license=='PD' || Auth::user()->isLeader() ) {
+            return $value;
+        }
+
+        // return only part of the lyrics and a note
+        return substr($value, 0, 100).'...(copyrighted material)';
+
+    }
 
 
 
