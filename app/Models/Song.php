@@ -101,6 +101,25 @@ class Song extends Model
     }
 
 
+    /**
+     * Only users with a leader role are allowed to see song lyrics of non-PD songs
+     *
+     * Leaders (and users with higher roles) are normally part of the local church
+     * and therefore covered by the church's CCLI MRL license.
+     */
+    public function getChordsAttribute( $value )
+    {
+        // return full value for all PD songs and for users >= Leaders
+        if ($this->license=='PD' || Auth::user()->isLeader() ) {
+            return $value;
+        }
+
+        // return only part of the lyrics and a note
+        return substr($value, 0, 100).'...(copyrighted material)';
+
+    }
+
+
 
     /**
      * Check if the YouTube id contains the full URL -

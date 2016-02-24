@@ -107,6 +107,10 @@
 .fully-width {
     width: 100%;
 }
+.full-btn {
+    padding-left: 2px;
+    padding-right: 2px;    
+}
 
 .link {
     cursor: pointer;

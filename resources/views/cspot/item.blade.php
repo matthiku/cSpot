@@ -124,11 +124,11 @@
 
             {!! Form::hidden('song_id', $item->song_id) !!}
 
-            <div id="col-2-song" class="col-xl-4 col-lg-3 col-md-6 col-sm-12 col-xs-12 bg-grey">
-                <div class="col-xs-12 center">
+            <div id="col-2-song" class="col-xl-4 col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                <div class="card card-block text-xs-center" style="padding-bottom: 0;">
 
                     <div class="row song-details form-group">
-                        <h5 class="m-t-1">
+                        <h5 class="card-title">
                             <i class="pull-xs-left fa fa-music"></i>
                             <i class="pull-xs-right fa fa-music"></i>
                             {{ $item->song->title ? $item->song->title : '' }}
@@ -141,37 +141,47 @@
                         @endif
                     </div>
 
-                    <div class="row song-details">
+                    <div class="card-text">
 
                         <h6>Musical Instructions (e.g. Key)</h6>
                         <p>{!! Form::text('key'); !!}
                         </p>
 
-                        @if ($item->song->youtube_id)
-                            <a href="https://www.youtube.com/watch?v={{ $item->song->youtube_id }}" 
-                                target="new" class="pull-xs-left btn btn-primary-outline btn-sm" 
-                                  title="Play on YouTube" data-toggle="tooltip">
-                                <i class="red fa fa-youtube-play"></i>&nbsp;play</a> &nbsp; &nbsp; &nbsp; &nbsp;
-                        @endif
+                        <div class="row">
+                            Note: 
+                            @if ( $usageCount )
+                                Song was used before in <strong>{{ $usageCount }}</strong> service(s) -
+                                lastly <strong title="{{ $newestUsage->date }}">
+                                    {{ Carbon::now()->diffForHumans( $newestUsage->date, true ) }} ago</strong>
+                            @else
+                                Song was never used before in a service
+                            @endif
+                        </div>
+                        <br>
 
-                        <a href="#" class="btn btn-primary-outline btn-sm"
-                            onclick="$('.song-search').show();$('.song-details').hide();" 
-                            title="Select another song" data-toggle="tooltip"
-                        ><i class="fa fa-exchange"></i>&nbsp;change song</a> &nbsp; &nbsp;
-
-                        <a href="#" class="pull-xs-right btn btn-primary-outline btn-sm" 
-                            onclick="location.href='{{ route('cspot.songs.edit', $item->song_id) }}'" 
-                              title="Edit details of this song" data-toggle="tooltip"
-                        ><i class="fa fa-edit"></i>&nbsp;edit song</a>
+                        <div class="row">
+                            <div class="col-xs-4 full-btn">
+                                @if ($item->song->youtube_id)
+                                    <a href="https://www.youtube.com/watch?v={{ $item->song->youtube_id }}" 
+                                        target="new" class="fully-width btn btn-primary-outline btn-sm" 
+                                          title="Play on YouTube" data-toggle="tooltip">
+                                    <i class="red fa fa-youtube-play"></i>&nbsp;play</a>
+                                @endif
+                            </div>
+                            <div class="col-xs-4 full-btn">
+                                <a href="#" class="fully-width btn btn-primary-outline btn-sm"
+                                    onclick="$('.song-search').show();$('.song-details').hide();" 
+                                    title="Select another song" data-toggle="tooltip"
+                                ><i class="fa fa-exchange"></i>&nbsp;change song</a>
+                            </div>
+                            <div class="col-xs-4 full-btn">
+                                <a href="#" class="fully-width btn btn-primary-outline btn-sm" 
+                                    onclick="location.href='{{ route('cspot.songs.edit', $item->song_id) }}'" 
+                                      title="Edit details of this song" data-toggle="tooltip"
+                                ><i class="fa fa-edit"></i>&nbsp;edit song</a>
+                            </div>
+                        </div>
                         
-                        <hr>
-                        @if ( $usageCount )
-                            (Song was used before in <strong>{{ $usageCount }}</strong> service(s) -
-                            lastly <strong title="{{ $newestUsage->date }}">
-                                {{ Carbon::now()->diffForHumans( $newestUsage->date, true ) }} ago</strong>)
-                        @else
-                            (Song was never used before this service)
-                        @endif
 
                     </div>
 
