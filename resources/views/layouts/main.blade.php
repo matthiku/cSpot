@@ -26,7 +26,7 @@
 
     <script src="{{ url('js/helpers.js') }}"></script>
     <script>
-        var __app_url = {{  Request::url() }};
+        var __app_url = "{{ url('/') }}";
     </script>
 
   </head>
