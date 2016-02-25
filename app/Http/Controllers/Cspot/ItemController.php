@@ -170,11 +170,14 @@ class ItemController extends Controller
             // send confirmation to view
             flash('New item No '.$newItem->seq_no.' inserted with song '.$newItem->song->title);
 
+            $bibleBooks = new BibleBooks();
+            
             // show the form
             return view( 'cspot.item', [
                     'plan'         => $plan, 
                     'seq_no'       => $seq_no, 
-                    'versionsEnum' => $versionsEnum
+                    'versionsEnum' => $versionsEnum,
+                    'bibleBooks'   => $bibleBooks,
                 ]);
         }
 
@@ -248,6 +251,7 @@ class ItemController extends Controller
             $newestUsage = $plans->first();
         } 
 
+        $bibleBooks = new BibleBooks();
 
         $songs = []; # send empty song array
         // send the form
@@ -259,6 +263,7 @@ class ItemController extends Controller
                 'versionsEnum' => $versionsEnum,
                 'usageCount'   => $usageCount,
                 'newestUsage'  => $newestUsage,
+                'bibleBooks'   => $bibleBooks,
             ]);
     }
 

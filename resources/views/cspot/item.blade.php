@@ -41,7 +41,7 @@
                             title="go to previous item" data-toggle="tooltip" data-placement="right">
                             <i class="fa fa-angle-double-left fa-lg"></i>
                         </a> 
-                        Update Item No {{$seq_no}}
+                        Review Item No {{$seq_no}}
                         <a href="{{ url('cspot/plans/'.$plan->id.'/items/'.$item->id.'/go/next') }}"
                             class="btn btn-secondary" role="button"
                             title="go to next item" data-toggle="tooltip" data-placement="right">
@@ -78,77 +78,78 @@
 
     <div class="row">
 
-        <div id="col-1-comment" class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        @if ( isset($item) && ! $item->song_id )
+            <div id="col-1-comment" class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-xs-12">
 
-            <div class="row form-group">
+                <div class="row form-group">
 
-                <div class="col-xs-12 full-width">
-                    {!! Form::label('comment', 'Comments / notes'); !!}
-                    <p>
-                        {!! Form::text('comment'); !!}
-                        @if ($errors->has('comment'))
-                            <br><span class="help-block">
-                                <strong>{{ $errors->first('comment') }}</strong>
-                            </span>
-                        @endif
-                    </p>
-                </div> 
+                    <div class="col-xs-12 full-width">
+                        {!! Form::label('comment', 'Bible reference, comments or notes'); !!}
+                        <p>
+                            @if( Auth::user()->ownsPlan($plan->id) )
+                                {!! Form::text('comment'); !!}
+                            @else
+                                {!! Form::text('comment', $item->comment, ['disabled'=>'disabled']); !!}
+                            @endif
+                            @if ($errors->has('comment'))
+                                <br><span class="help-block">
+                                    <strong>{{ $errors->first('comment') }}</strong>
+                                </span>
+                            @endif
+                        </p>
+                    </div> 
 
+                    
+                    @if( Auth::user()->ownsPlan($plan->id) )
+                    <div class="col-xs-12 full-width bg-grey p-t-1 p-b-1">
+                        <h5>Add Bible Reference(s)</h5>
 
-                <div class="col-xs-12 full-width bg-grey">
-                    <h5>Built Bible Reference</h5>
+                        <select name="from-book" id="from-book" 
+                                onchange="showNextSelect('from', 'chapter')">
+                            <option selected="TRUE" value=" "> </option>
+                            @foreach ($bibleBooks->getArrayOfBooks() as $book)
+                                <option value="{{ $book }}">{{ $book }}</option>
+                            @endforeach                        
+                        </select>
 
-                    <select name="from-book" id="from-book" 
-                            onchange="showNextSelect('from', 'chapter')">
-                        <option selected="TRUE" value=" "> </option>
-                        @foreach ($bibleBooks->getArrayOfBooks() as $fromBook)
-                            <option value="{{ $fromBook }}">{{ $fromBook }}</option>
-                        @endforeach                        
-                    </select>
-
-                    ch.
-                    <select name="from-chapter" id="from-chapter" style="display: none;"
-                            onchange="showNextSelect('from', 'verse')">
-                        <option selected="" value=" "> </option>
-                    </select>
-                    verse 
-                    <select name="from-verse" id="from-verse" style="display: none;" 
-                            onchange="showNextSelect('to', 'verse')">
-                        <option selected="" value=" "> </option>
-                    </select>
-                    to 
-                    <select name="to-verse" id="to-verse" class="select-version" style="display: none;">
-                        <option selected="" value=" "> </option>
-                    </select>
-                </div>
-
-
-                <div class="col-xs-12 select-version" style="display: none;">
-                    {!! Form::label('version', 'Select version:'); !!}
-                    <select name="version" onchange="populateComment()">
-                        <option {{ isset($item) ? '' : 'selected' }}>
-                        </option>
-                        @foreach ($versionsEnum as $vers)
-                            <option 
-                                @if ( isset($item) && $vers==$item->version )
-                                    selected
-                                @endif
-                                value="{{ $vers }}">{{ $vers }}
-                            </option>
-                        @endforeach
-                    </select>
-                    @if ($errors->has('version'))
-                        <br>
-                        <span class="help-block">
-                            <strong>{{ $errors->first('version') }}</strong>
-                        </span>
+                        <div class="pull-xs-right select-reference" style="display: none;">                    
+                            ch.
+                            <select name="from-chapter" id="from-chapter" style="display: none;" 
+                                    onchange="showNextSelect('from', 'verse')">
+                                <option selected="" value=" "> </option>
+                            </select>
+                            verse 
+                            <select name="from-verse" id="from-verse" style="display: none;"
+                                    onchange="showNextSelect('to', 'verse')">
+                                <option selected="" value=" "> </option>
+                            </select>
+                            to 
+                            <select name="to-verse" id="to-verse" style="display: none;"
+                                    onchange="$('.select-version').show();">
+                                <option selected="" value=" "> </option>
+                            </select>
+                        </div>
+                    </div>
                     @endif
-                </div>  
 
-                <hr>
 
+                    <div class="col-xs-12 select-version bg-grey" style="display: none;">
+                        {!! Form::label('version', 'Select version:'); !!}
+                        <select name="version" id="version" onchange="populateComment()">
+                            <option {{ isset($item) ? '' : 'selected' }}>
+                            </option>
+                            @foreach ($versionsEnum as $vers)
+                                <option value="{{ $vers }}">{{ $vers }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>  
+
+                    <hr>
+
+                </div>
             </div>
-        </div>
+        @endif 
 
         @if ( isset($item->song->id) && $item->song_id<>0 )
 
@@ -176,8 +177,11 @@
                     <div class="card-text song-details">
 
                         <h6>Musical Instructions (e.g. Key)</h6>
-                        <p>{!! Form::text('key'); !!}
-                        </p>
+                        @if( Auth::user()->ownsPlan($item->plan_id) )
+                            <p>{!! Form::text('key'); !!}</p>
+                        @else
+                            <p>{!! Form::text('key', $item->key, ['disabled'=>'disabled']); !!}</p>
+                        @endif
 
                         <div class="row">
                             Note: 
@@ -261,17 +265,21 @@
             </div>
 
         @else
-            <div id="col-2-song-search" class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
-                To search for a song,
-                {!! Form::label('search', 'enter song number, title or author or parts thereof:') !!}<br/>
-                {!! Form::text('search') !!}
-                <input type="submit" name="searchBtn" value="Search" />
-                @if ($errors->has('search'))
-                    <br><span class="help-block">
-                        <strong>{{ $errors->first('search') }}</strong>
-                    </span>
+            @if( Auth::user()->ownsPlan($plan->id) )
+                @if ( isset($item) && ! $item->comment )
+                    <div id="col-2-song-search" class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                        To search for a song,
+                        {!! Form::label('search', 'enter song number, title or author or parts thereof:') !!}<br/>
+                        {!! Form::text('search') !!}
+                        <input type="submit" name="searchBtn" value="Search" />
+                        @if ($errors->has('search'))
+                            <br><span class="help-block">
+                                <strong>{{ $errors->first('search') }}</strong>
+                            </span>
+                        @endif
+                    </div>
                 @endif
-            </div>
+            @endif
         @endif
 
     </div>

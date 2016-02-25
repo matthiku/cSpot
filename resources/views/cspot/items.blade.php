@@ -14,27 +14,35 @@
 				<th class="hidden-sm-down center"
 						data-toggle="tooltip" title="Numbers are automatically assigned according to the position of the item."
 					>Order</th>
+
 				<th class="hidden-xs-down center"
-						data-toggle="tooltip" title="Song book reference. MP='Mission Praise'"
-					>Book Ref.</th>
-				<th class="hidden-sm-down"       
+						data-toggle="tooltip" title="Hymn book reference. MP='Mission Praise'"
+					>Book#</th>
+
+				<th class="hidden-lg-down"       
 						data-toggle="tooltip" title="Title and subtitle (if any) of the selected song."
-					>Title</th>
-				<th class="hidden-sm-down center"
-						data-toggle="tooltip" title="Additional comments for a song or description of activity."
-					>Comment</th>
-				<th class="hidden-md-up center"  
+					><i class="fa fa-music"></i> Song Title</th>
+
+				<th class="hidden-lg-down center"
+						data-toggle="tooltip" title="Bible Readings, additional comments or description of activity."
+					>Comment/Bible Reference</th>
+
+				<th class="hidden-xl-up center"  
 						data-toggle="tooltip" title="Song Title and/or activity description."
 					>Title/Comment</th>
-				<th class="hidden-md-down center"
-						data-toggle="tooltip" title="Bible translation to be used for Bible readings."
-					>Version</th>
+
+				<th class="hidden-sm-down center"
+						data-toggle="tooltip" title="Instructions for musicians etc."
+					>Instructions</th>
+
 				<th class="hidden-lg-down center"
-						data-toggle="tooltip" title="Music-related instructions like key or repetition."
+						data-toggle="tooltip" title="Lyrics with chords for guitars"
 					><small>Chords?</small></th>
+
 				<th class="center"
 						data-toggle="tooltip" title="Links to YouTube videos or sheetmusic for song items."
 					>Links</th>
+
 				@if( Auth::user()->ownsPlan($plan->id) )
 					<th class="center">Action</th>
 				@endif
@@ -84,7 +92,8 @@
 				<td {{$onclick}} {{$tooltip}} class="hidden-xs-down center link">
 					{{ ($item->song_id) ? $item->song->book_ref : '' }}</td>
 
-				<td {{$onclick}} class="hidden-sm-down" @if ($item->song_id)
+
+				<td {{$onclick}} class="hidden-lg-down" @if ($item->song_id)
 						title="{{ substr($item->song->lyrics,0,500) }}" data-toggle="tooltip" 
 						@if ($item->seq_no<10)
 							data-placement="bottom"
@@ -98,12 +107,21 @@
 					@endif
 				</td>
 
-				<td {{$onclick}} {{$tooltip}} class="hidden-sm-down center link">{{ $item->comment }}</td>
+				<td {{$onclick}} {{$tooltip}} class="hidden-lg-down center link">{{ $item->comment }}</td>
 
-				<td {{$onclick}} {{$tooltip}} class="hidden-md-up center link">
-					{{ $item->song_id ? $item->song->title.', ' : '' }}{{ $item->comment }}</td>
+				<td {{$onclick}} {{$tooltip}} class="hidden-xl-up link">
+					@if ($item->song_id )
+						<i class="fa fa-music"></i>&nbsp;{{ $item->song->title }}
+					@endif
+					@if (preg_match('/[(][A-Z]{3}[)]/', $item->comment) )
+						<i class="fa fa-book"></i>&nbsp;{{ $item->comment }}
+					@else
+						{{ $item->comment }}
+					@endif
+				</td>
 
-				<td {{$onclick}} {{$tooltip}} class="hidden-md-down center link">{{ $item->version }}</td>
+
+				<td {{$onclick}} {{$tooltip}} class="hidden-sm-down center link">{{ $item->key }}</td>
 
 				<td class="hidden-lg-down center">
 					@if ($item->song_id)

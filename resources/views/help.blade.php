@@ -57,15 +57,17 @@
           </a>
         </h4>
       </div>
-      <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
-        <p>Verified users can see and/or modify all or various parts of the information depending on their <span class="text-warning">roles</span> 
+        <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+            <p>Verified users can see and/or modify all or various parts of the information depending on their <span class="text-warning">roles</span> 
                 they have been given by an administrator.</p>
-        <p>Based on those roles, users can be assigned as 'leader' or 'teacher' of a plan and as such are able to modify, add and 
+            <p>Based on those roles, users can be assigned as 'leader' or 'teacher' of a plan and as such are able to modify, add and 
                 delete plan items on those respective plans.</p>
-        <p>(User details and all information is stored in a (mySQL) database called 'cspot' in various tables. The major data tables are for 
+            <p>Copyrighted material like lyrics can only be viewed by users with the role of 'leader' or higher since they are assumed to be
+                part of the local church and therefore covered by the church's MRL license from SongSelect. (http://uk.ccli.com/songselect/) </p>
+            <p>(User details and all information is stored in a (mySQL) database called 'cspot' in various tables. The major data tables are for 
                 <span class="font-italic">users, songs, service plans</span> and <span class="font-italic">service plan items</span>. 
                 Auxilliary information is stored in tables for user roles, service plan types and standard items for service plans.)</p>
-      </div>
+        </div>
     </div>
 
     <div class="panel panel-default">
