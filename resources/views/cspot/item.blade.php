@@ -78,79 +78,6 @@
 
     <div class="row">
 
-        @if ( isset($item) && ! $item->song_id )
-            <div id="col-1-comment" class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-xs-12">
-
-                <div class="row form-group">
-
-                    <div class="col-xs-12 full-width">
-                        {!! Form::label('comment', 'Bible reference, comments or notes'); !!}
-                        <p>
-                            @if( Auth::user()->ownsPlan($plan->id) )
-                                {!! Form::text('comment'); !!}
-                            @else
-                                {!! Form::text('comment', $item->comment, ['disabled'=>'disabled']); !!}
-                            @endif
-                            @if ($errors->has('comment'))
-                                <br><span class="help-block">
-                                    <strong>{{ $errors->first('comment') }}</strong>
-                                </span>
-                            @endif
-                        </p>
-                    </div> 
-
-                    
-                    @if( Auth::user()->ownsPlan($plan->id) )
-                    <div class="col-xs-12 full-width bg-grey p-t-1 p-b-1">
-                        <h5>Add Bible Reference(s)</h5>
-
-                        <select name="from-book" id="from-book" 
-                                onchange="showNextSelect('from', 'chapter')">
-                            <option selected="TRUE" value=" "> </option>
-                            @foreach ($bibleBooks->getArrayOfBooks() as $book)
-                                <option value="{{ $book }}">{{ $book }}</option>
-                            @endforeach                        
-                        </select>
-
-                        <div class="pull-xs-right select-reference" style="display: none;">                    
-                            ch.
-                            <select name="from-chapter" id="from-chapter" style="display: none;" 
-                                    onchange="showNextSelect('from', 'verse')">
-                                <option selected="" value=" "> </option>
-                            </select>
-                            verse 
-                            <select name="from-verse" id="from-verse" style="display: none;"
-                                    onchange="showNextSelect('to', 'verse')">
-                                <option selected="" value=" "> </option>
-                            </select>
-                            to 
-                            <select name="to-verse" id="to-verse" style="display: none;"
-                                    onchange="$('.select-version').show();">
-                                <option selected="" value=" "> </option>
-                            </select>
-                        </div>
-                    </div>
-                    @endif
-
-
-                    <div class="col-xs-12 select-version bg-grey" style="display: none;">
-                        {!! Form::label('version', 'Select version:'); !!}
-                        <select name="version" id="version" onchange="populateComment()">
-                            <option {{ isset($item) ? '' : 'selected' }}>
-                            </option>
-                            @foreach ($versionsEnum as $vers)
-                                <option value="{{ $vers }}">{{ $vers }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>  
-
-                    <hr>
-
-                </div>
-            </div>
-        @endif 
-
         @if ( isset($item->song->id) && $item->song_id<>0 )
 
 
@@ -266,7 +193,7 @@
 
         @else
             @if( Auth::user()->ownsPlan($plan->id) )
-                @if ( isset($item) && ! $item->comment )
+                @if ( ! isset($item) ||  (isset($item) && ! $item->comment) )
                     <div id="col-2-song-search" class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
                         To search for a song,
                         {!! Form::label('search', 'enter song number, title or author or parts thereof:') !!}<br/>
@@ -281,6 +208,80 @@
                 @endif
             @endif
         @endif
+
+        @if ( !isset($item) || (isset($item) && ! $item->song_id) )
+            <!-- <div id="col-1-comment" class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-xs-12"> -->
+            <div id="col-1-comment" class="col-xs-12">
+
+                <div class="row form-group bg-grey">
+
+                    <div class="col-xs-12 full-width">
+                        {!! Form::label('comment', 'Comments or notes'); !!}
+                        <p>
+                            @if( Auth::user()->ownsPlan($plan->id) )
+                                {!! Form::text('comment'); !!}
+                            @else
+                                {!! Form::text('comment', $item->comment, ['disabled'=>'disabled']); !!}
+                            @endif
+                            @if ($errors->has('comment'))
+                                <br><span class="help-block">
+                                    <strong>{{ $errors->first('comment') }}</strong>
+                                </span>
+                            @endif
+                        </p>
+                    </div> 
+
+                    
+                    @if( Auth::user()->ownsPlan($plan->id) )
+                    <div class="col-xs-12 full-width p-b-1">
+                        <h6>Add Bible Reference(s)</h6>
+
+                        <select name="from-book" id="from-book" class="pull-xs-left" 
+                                onchange="showNextSelect('from', 'chapter')">
+                            <option selected="TRUE" value=" "> </option>
+                            @foreach ($bibleBooks->getArrayOfBooks() as $book)
+                                <option value="{{ $book }}">{{ $book }}</option>
+                            @endforeach                        
+                        </select>&nbsp;
+
+                        <span class="select-reference" style="display: none;">                    
+                            ch.
+                            <select name="from-chapter" id="from-chapter" style="display: none;" 
+                                    onchange="showNextSelect('from', 'verse')">
+                                <option selected="" value=" "> </option>
+                            </select>
+                            verse 
+                            <select name="from-verse" id="from-verse" style="display: none;"
+                                    onchange="showNextSelect('to', 'verse')">
+                                <option selected="" value=" "> </option>
+                            </select>
+                            to 
+                            <select name="to-verse" id="to-verse" style="display: none;"
+                                    onchange="$('.select-version').show();">
+                                <option selected="" value=" "> </option>
+                            </select>
+                        </span>
+                    </div>
+                    @endif
+
+
+                    <div class="col-xs-12 select-version " style="display: none;">
+                        {!! Form::label('version', 'Select version:'); !!}
+                        <select name="version" id="version" onchange="populateComment()">
+                            <option {{ isset($item) ? '' : 'selected' }}>
+                            </option>
+                            @foreach ($versionsEnum as $vers)
+                                <option value="{{ $vers }}">{{ $vers }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>  
+
+                    <hr>
+
+                </div>
+            </div>
+        @endif 
 
     </div>
 
