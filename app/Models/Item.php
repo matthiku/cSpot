@@ -6,7 +6,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use DB;
 
 
 class Item extends Model
@@ -53,11 +52,5 @@ class Item extends Model
     }
 
 
-
-    public function getVersionsEnum()
-    {
-        $versions = explode("','", substr(DB::select("SHOW COLUMNS FROM ".(new \App\Models\Item)->getTable()." LIKE 'version'")[0]->Type, 6, -2));
-        return $versions;        
-    }
 
 }

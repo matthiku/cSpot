@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 use Snap\BibleBooks\BibleBooks;
 
 use App\Http\Requests;
-use App\Http\Requests\StoreItemRequest;
 use App\Http\Controllers\Controller;
 
 use App\Models\Song;
@@ -71,8 +70,8 @@ class ItemController extends Controller
         $this->checkRights($plan);
 
         // get array of possible bible versions
-        $t = new Item();
-        $versionsEnum = $t->getVersionsEnum();
+        $versionsEnum = json_decode(env('BIBLE_VERSIONS'));
+
 
         // check if this is an insertion of an item BEFORE another item
         if ($request->is('*/before/*')) {
@@ -100,7 +99,7 @@ class ItemController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreItemRequest $request)
+    public function store(Request $request)
     {
         $plan = Plan::find( $request->input('plan_id') );
         // searching for a song?
@@ -162,7 +161,7 @@ class ItemController extends Controller
         $item = moveItem($newItem->id, 'static');
 
         if ($moreItems=='Y') {
-            $versionsEnum = $newItem->getVersionsEnum();
+            $versionsEnum = json_decode(env('BIBLE_VERSIONS'));
 
             // insert another item after the just created item
             $seq_no = $newItem->seq_no + 1;
@@ -237,7 +236,7 @@ class ItemController extends Controller
 
         $item = Item::find($id);
         $seq_no = $item->seq_no;
-        $versionsEnum = $item->getVersionsEnum();
+        $versionsEnum = json_decode(env('BIBLE_VERSIONS'));
 
         // If this is a song, find out the last time it was used, 
         // that is: Find the newest plan containing an item with this song
@@ -276,7 +275,7 @@ class ItemController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(StoreItemRequest $request, $id)
+    public function update(Request $request, $id)
     {
         $item    = Item::find($id);
         $plan_id = $item->plan_id;
