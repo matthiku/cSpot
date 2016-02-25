@@ -256,8 +256,7 @@
                                 <option selected="" value=" "> </option>
                             </select>
                             to 
-                            <select name="to-verse" id="to-verse" style="display: none;"
-                                    onchange="$('.select-version').show();">
+                            <select name="to-verse" id="to-verse" style="display: none;">
                                 <option selected="" value=" "> </option>
                             </select>
                         </span>

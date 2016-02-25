@@ -49,11 +49,12 @@ function showNextSelect(fromOrTo, what) {
                 x.add(option);
             }
             // if book has only one chapter, populate the verses right now
-            if (what=='chapter' && data==1) {
+            if (what=='chapter') {
                 showNextSelect(fromOrTo, 'verse');
             }
             if (fromOrTo=='from' && what=='verse') {
                 showNextSelect('to', 'verse');
+                $('.select-version').show();                
             }
             $('#'+fromOrTo+'-'+what).show();
         }
@@ -74,8 +75,8 @@ function populateComment() {
     $('#comment').val( oldComment
         + $('#from-book').val()+' '
         + $('#from-chapter').val()+':'
-        + $('#from-verse').val()+'-'
-        + $('#to-verse').val() + ' ('
+        + $('#from-verse').val() 
+        +($('#to-verse').val() != $('#from-verse').val() ? '-'+$('#to-verse').val() : '') + ' ('
         + $('#version').val() + ')'
         );
 
