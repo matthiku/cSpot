@@ -54,7 +54,7 @@ function showNextSelect(fromOrTo, what) {
     }
 
     // API call to get the books/chapter/verses data
-    $.get(url, function(data, status) {
+    $.get(__app_url+url, function(data, status) {
 
         // access the <select> element 
         var x = document.getElementById(fromOrTo+'-'+what);

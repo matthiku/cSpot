@@ -25,6 +25,9 @@
     <script src="{{ url('js/jquery.min.js') }}"></script>
 
     <script src="{{ url('js/helpers.js') }}"></script>
+    <script>
+        var __app_url = {{  Request::url() }};
+    </script>
 
   </head>
 
