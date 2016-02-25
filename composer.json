@@ -9,7 +9,8 @@
         "laravel/framework": "5.2.*",
         "laravel/socialite": "^2.0",
         "laravelcollective/html": "5.2.*",
-        "doctrine/dbal": "^2.5"
+        "doctrine/dbal": "^2.5",
+        "snap/bible-books": "0.1.*@dev"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

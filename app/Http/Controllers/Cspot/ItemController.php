@@ -6,6 +6,8 @@ namespace App\Http\Controllers\Cspot;
 
 use Illuminate\Http\Request;
 
+use Snap\BibleBooks\BibleBooks;
+
 use App\Http\Requests;
 use App\Http\Requests\StoreItemRequest;
 use App\Http\Controllers\Controller;
@@ -80,11 +82,14 @@ class ItemController extends Controller
             $seq_no = $item->seq_no - 0.1;
         }
 
+        $bibleBooks = new BibleBooks();
+
         // show the form
         return view( 'cspot.item', [
                 'plan'         => $plan, 
                 'seq_no'       => $seq_no, 
-                'versionsEnum' => $versionsEnum
+                'versionsEnum' => $versionsEnum,
+                'bibleBooks'   => $bibleBooks,
             ]);
     }
 
@@ -150,7 +155,6 @@ class ItemController extends Controller
         $item = new Item([
             'seq_no' => $seq_no, 
             'song_id' => $song_id,
-            'comment' => '(from insertSong)',
         ]);
 
         $newItem = $plan->items()->save($item);
@@ -318,7 +322,6 @@ class ItemController extends Controller
         $item = Item::find($item_id);
         $item->update([
             'song_id' => $song_id,
-            'comment' => '(from updateSong)',
         ]);
 
         // send confirmation to view

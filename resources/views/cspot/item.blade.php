@@ -78,12 +78,12 @@
 
     <div class="row">
 
-        <div id="col-1-comment" class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12">
+        <div id="col-1-comment" class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-xs-12">
 
             <div class="row form-group">
 
                 <div class="col-xs-12 full-width">
-                    {!! Form::label('comment', 'Comments, notes or a Bible Reference'); !!}
+                    {!! Form::label('comment', 'Comments / notes'); !!}
                     <p>
                         {!! Form::text('comment'); !!}
                         @if ($errors->has('comment'))
@@ -94,10 +94,38 @@
                     </p>
                 </div> 
 
-                <div class="col-xs-12">
-                    {!! Form::label('version', 'For bible references, select a version:'); !!}
-                    <br>
-                    <select name="version" class="c-select">
+
+                <div class="col-xs-12 full-width bg-grey">
+                    <h5>Built Bible Reference</h5>
+
+                    <select name="from-book" id="from-book" 
+                            onchange="showNextSelect('from', 'chapter')">
+                        <option selected="TRUE" value=" "> </option>
+                        @foreach ($bibleBooks->getArrayOfBooks() as $fromBook)
+                            <option value="{{ $fromBook }}">{{ $fromBook }}</option>
+                        @endforeach                        
+                    </select>
+
+                    ch.
+                    <select name="from-chapter" id="from-chapter" style="display: none;"
+                            onchange="showNextSelect('from', 'verse')">
+                        <option selected="" value=" "> </option>
+                    </select>
+                    verse 
+                    <select name="from-verse" id="from-verse" style="display: none;" 
+                            onchange="showNextSelect('to', 'verse')">
+                        <option selected="" value=" "> </option>
+                    </select>
+                    to 
+                    <select name="to-verse" id="to-verse" class="select-version" style="display: none;">
+                        <option selected="" value=" "> </option>
+                    </select>
+                </div>
+
+
+                <div class="col-xs-12 select-version" style="display: none;">
+                    {!! Form::label('version', 'Select version:'); !!}
+                    <select name="version" onchange="populateComment()">
                         <option {{ isset($item) ? '' : 'selected' }}>
                         </option>
                         @foreach ($versionsEnum as $vers)
@@ -117,14 +145,18 @@
                     @endif
                 </div>  
 
+                <hr>
+
             </div>
         </div>
 
         @if ( isset($item->song->id) && $item->song_id<>0 )
 
+
             {!! Form::hidden('song_id', $item->song_id) !!}
 
-            <div id="col-2-song" class="col-xl-4 col-lg-3 col-md-6 col-sm-12 col-xs-12">
+
+            <div id="col-2-song" class="col-xl-4 col-lg-6 col-md-6 col-sm-12 col-xs-12">
                 <div class="card card-block text-xs-center" style="padding-bottom: 0;">
 
                     <div class="row song-details form-group">
@@ -141,7 +173,7 @@
                         @endif
                     </div>
 
-                    <div class="card-text">
+                    <div class="card-text song-details">
 
                         <h6>Musical Instructions (e.g. Key)</h6>
                         <p>{!! Form::text('key'); !!}
@@ -160,7 +192,7 @@
                         <br>
 
                         <div class="row">
-                            <div class="col-xs-4 full-btn">
+                            <div class="col-xs-12 col-sm-4 full-btn">
                                 @if ($item->song->youtube_id)
                                     <a href="https://www.youtube.com/watch?v={{ $item->song->youtube_id }}" 
                                         target="new" class="fully-width btn btn-primary-outline btn-sm" 
@@ -168,18 +200,22 @@
                                     <i class="red fa fa-youtube-play"></i>&nbsp;play</a>
                                 @endif
                             </div>
-                            <div class="col-xs-4 full-btn">
-                                <a href="#" class="fully-width btn btn-primary-outline btn-sm"
-                                    onclick="$('.song-search').show();$('.song-details').hide();" 
-                                    title="Select another song" data-toggle="tooltip"
-                                ><i class="fa fa-exchange"></i>&nbsp;change song</a>
-                            </div>
-                            <div class="col-xs-4 full-btn">
-                                <a href="#" class="fully-width btn btn-primary-outline btn-sm" 
-                                    onclick="location.href='{{ route('cspot.songs.edit', $item->song_id) }}'" 
-                                      title="Edit details of this song" data-toggle="tooltip"
-                                ><i class="fa fa-edit"></i>&nbsp;edit song</a>
-                            </div>
+                            @if ( Auth::user()->ownsPlan($item->plan_id) )
+                                <div class="col-xs-12 col-sm-4 full-btn">
+                                    <a href="#" class="fully-width btn btn-primary-outline btn-sm"
+                                        onclick="$('.song-search').show();$('.song-details').hide();" 
+                                        title="Select another song" data-toggle="tooltip"
+                                    ><i class="fa fa-exchange"></i>&nbsp;change song</a>
+                                </div>
+                            @endif
+                            @if (Auth::user()->isEditor() )
+                                <div class="col-xs-12 col-sm-4 full-btn">
+                                    <a href="#" class="fully-width btn btn-primary-outline btn-sm" 
+                                        onclick="location.href='{{ route('cspot.songs.edit', $item->song_id) }}'" 
+                                          title="Edit details of this song" data-toggle="tooltip"
+                                    ><i class="fa fa-edit"></i>&nbsp;edit song</a>
+                                </div>
+                            @endif
                         </div>
                         
 
@@ -208,7 +244,7 @@
                 </div>
             </div>
 
-            <div id="col-3-lyrics" class="col-xl-5 col-lg-6 col-md-12 col-sm-12 col-xs-12 center">
+            <div id="col-3-lyrics" class="col-xl-5 col-lg-12 col-md-12 col-sm-12 col-xs-12 center">
                 <div class="row form-group link" id="lyrics" title="click to show chords!" data-toggle="tooltip"
                      onclick="$('#chords').show();$('#lyrics').hide();">
                     <h4>Lyrics</h4>

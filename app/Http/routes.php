@@ -33,6 +33,11 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/social/handle/{provider}',     ['as' => $s . 'handle',     'uses' => 'Auth\AuthController@getSocialHandle']);
 
 
+    // bible reference object
+    Route::get('bible/books', 'BibleController@books'); // get all books
+    Route::get('bible/books/{book}', 'BibleController@chapters'); // get chapter numbers of a book
+    Route::get('bible/books/{book}/chapter/{chapter}', 'BibleController@verses'); // get verse numbers of a chapter
+
 });
 
 
