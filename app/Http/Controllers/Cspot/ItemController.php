@@ -224,7 +224,7 @@ class ItemController extends Controller
 
 
     /**
-     * Show the form for editing an ITEM.
+     * Show the form for editing an existing ITEM.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -236,6 +236,7 @@ class ItemController extends Controller
 
         $item = Item::find($id);
         $seq_no = $item->seq_no;
+
         $versionsEnum = json_decode(env('BIBLE_VERSIONS'));
 
         // If this is a song, find out the last time it was used, 

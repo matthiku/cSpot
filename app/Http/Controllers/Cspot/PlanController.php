@@ -246,7 +246,7 @@ class PlanController extends Controller
         // get all -- USERS -- with this specific plan id
         $plan    = Plan::find($id);
         $heading = 'Show '.$plan->name;
-        return view( 'cspot.plan_full', array('plan' => $plan, 'heading' => $heading) );
+        return view( $this->view_all, array('plan' => $plan, 'heading' => $heading) );
     }
 
 

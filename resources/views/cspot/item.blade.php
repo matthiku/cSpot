@@ -210,13 +210,13 @@
         @endif
 
         @if ( !isset($item) || (isset($item) && ! $item->song_id) )
-            <!-- <div id="col-1-comment" class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-xs-12"> -->
+            <!-- WAS: <div id="col-1-comment" class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-xs-12"> -->
             <div id="col-1-comment" class="col-xs-12">
 
                 <div class="row form-group bg-grey">
 
                     <div class="col-xs-12 full-width">
-                        {!! Form::label('comment', 'Comments or notes'); !!}
+                        {!! Form::label('comment', 'Comments or notes', ['id'=>'comment-label']); !!}
                         <p>
                             @if( Auth::user()->ownsPlan($plan->id) )
                                 {!! Form::text('comment'); !!}
@@ -264,7 +264,7 @@
                     @endif
 
 
-                    <div class="col-xs-12 select-version " style="display: none;">
+                    <div class="col-xs-12 select-version" style="display: none;">
                         {!! Form::label('version', 'Select version:'); !!}
                         <select name="version" id="version" onchange="populateComment()">
                             <option {{ isset($item) ? '' : 'selected' }}>
@@ -276,7 +276,16 @@
                         </select>
                     </div>  
 
-                    <hr>
+                    <div class="col-lg-6 col-sm-12" id="bible-passages">
+                        <h5>title</h5>
+                        <div>
+                            passage
+                        </div>
+                        <div class="small">
+                            copyright
+                        </div><hr>
+                        <div id="waiting" style="display: none;"><i class="fa fa-spinner fa-spin"></i> leafing through the pages....</div>
+                    </div>
 
                 </div>
             </div>
@@ -300,12 +309,14 @@
     {!! Form::close() !!}
 
 
-    <script>
-        // set focus on main input field
-        document.forms.inputForm.search.focus();
-        // add class in order to identify main input field later after flash messages
-        document.forms.inputForm.search.setAttribute('class', 'main-input');
-    </script>
+    @if (! isset($item))
+        <script>
+            // set focus on main input field (only when adding a new item)
+            document.forms.inputForm.search.focus();
+            // add class in order to identify main input field later after flash messages
+            document.forms.inputForm.search.setAttribute('class', 'main-input');
+        </script>
+    @endif
 
     
 @stop

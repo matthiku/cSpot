@@ -33,10 +33,15 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/social/handle/{provider}',     ['as' => $s . 'handle',     'uses' => 'Auth\AuthController@getSocialHandle']);
 
 
-    // bible reference object
-    Route::get('bible/books', 'BibleController@books'); // get all books
-    Route::get('bible/books/{book}', 'BibleController@chapters'); // get chapter numbers of a book
-    Route::get('bible/books/{book}/chapter/{chapter}', 'BibleController@verses'); // get verse numbers of a chapter
+    // API route to compile bible references
+    Route::get('bible/books',                           'BibleController@books'); // get all books
+    Route::get('bible/books/all/chapters',              'BibleController@allChapters'); // get chapter numbers of ALL books
+    Route::get('bible/books/all/verses',                'BibleController@allVerses'); // get chapter numbers of ALL books
+    Route::get('bible/books/{book}',                    'BibleController@chapters'); // get chapter numbers of a book
+    Route::get('bible/books/{book}/chapters/{chapter}', 'BibleController@verses'); // get verse numbers of a chapter
+    // get bible texts
+    Route::get('bible/text/{version}/{book}/{chapter}/','BibleController@getChapter'); // get bible text
+    Route::get('bible/passage/{version}/{book}/{chapter}/{verseFrom}/{verseTo}/','BibleController@getText'); // get bible passage
 
 });
 

@@ -87,7 +87,10 @@
 					@endif
 				@endif
 
-				<td class="hidden-sm-down center link" scope="row">{{ $item->seq_no }}</td>
+
+				<td class="hidden-sm-down center link" scope="row">
+					{{ $item->seq_no }}</td>
+
 
 				<td {{$onclick}} {{$tooltip}} class="hidden-xs-down center link">
 					{{ ($item->song_id) ? $item->song->book_ref : '' }}</td>
@@ -107,7 +110,10 @@
 					@endif
 				</td>
 
-				<td {{$onclick}} {{$tooltip}} class="hidden-lg-down center link">{{ $item->comment }}</td>
+
+				<td {{$onclick}} {{$tooltip}} class="hidden-lg-down center">
+					{{ $item->comment }}</td>
+
 
 				<td {{$onclick}} {{$tooltip}} class="hidden-xl-up link">
 					@if ($item->song_id )
@@ -121,7 +127,9 @@
 				</td>
 
 
-				<td {{$onclick}} {{$tooltip}} class="hidden-sm-down center link">{{ $item->key }}</td>
+				<td {{$onclick}} {{$tooltip}} class="hidden-sm-down center link">
+					{{ $item->key }}</td>
+
 
 				<td class="hidden-lg-down center">
 					@if ($item->song_id)
@@ -130,6 +138,7 @@
 						@endif
 					@endif
 				</td>
+
 
 				<td class="center">
 					<big>
@@ -204,3 +213,15 @@
 	@endif
 
 @endif
+
+
+<script src="http://www.blueletterbible.org/assets/scripts/blbToolTip/BLB_ScriptTagger-min.js" type="text/javascript"></script>
+<script type="text/javascript">
+BLB.Tagger.Translation = 'ESV';
+BLB.Tagger.HyperLinks = 'all'; // 'all', 'none', 'hover'
+BLB.Tagger.HideTanslationAbbrev = false;
+BLB.Tagger.TargetNewWindow = true;
+BLB.Tagger.Style = 'par'; // 'line' or 'par'
+BLB.Tagger.NoSearchTagNames = ''; // HTML element list
+BLB.Tagger.NoSearchClassNames = 'noTag doNotTag'; // CSS class list
+</script>
