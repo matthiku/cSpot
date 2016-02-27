@@ -11,12 +11,16 @@ use Snap\BibleBooks\BibleBooks;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+
 use App\Models\Song;
 use App\Models\Plan;
 use App\Models\Item;
 
 use DB;
 use Auth;
+
+
+
 
 class ItemController extends Controller
 {
@@ -251,6 +255,10 @@ class ItemController extends Controller
             $newestUsage = $plans->first();
         } 
 
+        // check if comment contains a bible reference, then get the bible text
+        $bibleTexts = getBibleTexts($item->comment);
+
+        // array of books of the bible
         $bibleBooks = new BibleBooks();
 
         $songs = []; # send empty song array
@@ -264,6 +272,7 @@ class ItemController extends Controller
                 'usageCount'   => $usageCount,
                 'newestUsage'  => $newestUsage,
                 'bibleBooks'   => $bibleBooks,
+                'bibleTexts'   => $bibleTexts,
             ]);
     }
 

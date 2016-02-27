@@ -277,13 +277,16 @@
                     </div>  
 
                     <div class="col-lg-6 col-sm-12" id="bible-passages">
-                        <h5>title</h5>
-                        <div>
-                            passage
-                        </div>
-                        <div class="small">
-                            copyright
-                        </div><hr>
+                        @foreach ($bibleTexts as $btext)
+                            <h5>{{ $btext->display }} ({{ $btext->version_abbreviation }})</h5>
+                            <div>
+                                {!! $btext->text !!}
+                            </div>
+                            <div class="small">
+                                {!! $btext->copyright !!}
+                            </div>
+                            <hr>
+                        @endforeach
                         <div id="waiting" style="display: none;"><i class="fa fa-spinner fa-spin"></i> leafing through the pages....</div>
                     </div>
 

@@ -6,6 +6,9 @@ use App\Models\Item;
 use App\Models\Plan;
 use App\Models\Song;
 
+use App\Http\Controllers\Cspot\BibleController;
+
+
 /**
  * Set a flash message in the session.
  *
@@ -273,3 +276,62 @@ function restoreItem($id)
     return true;
 }
 
+
+
+/**
+ * check if string contains bible references, 
+ * returns the bible texts as an array
+ *
+ * @param string $refString
+ * @return array bible text from bibles.org
+ */
+function getBibleTexts($refString) 
+{
+    // regex pattern to match bible references (http://stackoverflow.com/questions/22254746/bible-verse-regex)
+    $pattern = '/(\d*)\s*([a-z]+)\s*(\d+)(?::(\d+))?(\s*-\s*(\d+)(?:\s*([a-z]+)\s*(\d+))?(?::(\d+))?)?/i';
+    $bibleTexts = [];
+    $bb = new BibleController;
+    $books = json_decode( $bb->books()->getContent() );
+
+    if ( preg_match($pattern, $refString) ) {
+
+        // several refs are seperated by semicolon
+        $refs = explode(';', $refString);
+
+        foreach ($refs as $ref) {
+            $parts   = explode('(', $ref );
+            $version = explode(')', $parts[1] );
+            $bref    = preg_split( '/[\s,:-]+/', $parts[0] );
+            $num = 0;
+            // check if the first word really is the name of a bible book 
+            foreach ($bref as $br) {
+                if (! in_array( ucfirst($br), $books) ) {
+                    $num += 1;
+                } else { break; }
+            }
+            // Not correct book name found?
+            if (sizeof($bref)-$num < 3 ) continue;
+
+            $book    = $bref[$num];
+            $chapter = $bref[$num+1];
+            $verseFr = $bref[$num+2];            
+            if (isset($bref[$num+3])) {
+                $verseTo = $bref[$num+3];
+            } else {
+                $verseTo = $verseFr;
+            }
+            // execute the text search
+            $text = $bb->getBibleText($version[0], $book, $chapter, $verseFr, $verseTo);
+
+            // was the search successful? then it should contain at least one passage array
+            $result = json_decode( $text->getContent())->response->search->result->passages;
+            if ( count($result) > 0 ) {
+                $text = $result[0];
+                $text->text = str_ireplace( 'h3', 'strong', $text->text );
+                $text->text = str_ireplace( 'h2', 'i', $text->text );
+                $bibleTexts[] = $text;
+            }                
+        }
+    }
+    return $bibleTexts;
+}

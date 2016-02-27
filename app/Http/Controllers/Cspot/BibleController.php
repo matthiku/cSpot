@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Cspot;
 
 use Illuminate\Http\Request;
 
@@ -25,7 +25,11 @@ class BibleController extends Controller
 
 
 
-    // get list of all books
+    /**
+      * get list (array) of all books
+      *
+      * @return array books
+      */
     public function books()
     {
         return response()->json( $this->getBible()->getArrayOfBooks() );
@@ -90,7 +94,7 @@ class BibleController extends Controller
 
     protected function getWebsite($url)
     {
-        $token = env('BIBLE_ORG_API_TOKEN');
+        $token = env('BIBLES_ORG_API_TOKEN');
         if (!$token) return;
 
         // Set up cURL
@@ -135,7 +139,7 @@ class BibleController extends Controller
     /**
      * Get bible text (whole chapters) via API from bibles.org
      */
-    public function getText($version, $book, $chapter, $verseFrom, $verseTo)
+    public function getBibleText($version, $book, $chapter, $verseFrom, $verseTo)
     {
         // only certain versions are accessible via the API
         $versions = array( 'NASB', 'ESV', 'MSG', 'AMP', 'CEVUK', 'KJVA');
