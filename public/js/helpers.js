@@ -34,7 +34,8 @@ $(document).ready(function() {
  * Build a Bible Reference string
  */
 function showNextSelect(fromOrTo, what) {
-    book = $('#from-book').val();
+    book    = $('#from-book').val();
+    chapter = $('#from-chapter').val();
 
     // make sure all fields are visible now
     $('.select-reference').show();
@@ -45,6 +46,8 @@ function showNextSelect(fromOrTo, what) {
 
     // API call to get the books/chapter/verses data
     if (typeof(bibleBooks)=='object') {
+        // make the element visible
+        $('#'+fromOrTo+'-'+what).show();
 
         // minimum value for the 'to' verse is the 'from' verse
         minNumber = 1
@@ -55,6 +58,8 @@ function showNextSelect(fromOrTo, what) {
         // are wee looking at chapters of a book or verses of a chapter?
         if (what=='chapter') {
             maxNumber = Object.keys(bibleBooks[book]).length;
+        } else {
+            maxNumber = bibleBooks[book][chapter];
         }
 
         // populate the select input with the relevant numbers
@@ -72,7 +77,6 @@ function showNextSelect(fromOrTo, what) {
             showNextSelect('to', 'verse');
             $('.select-version').show();                
         }
-        $('#'+fromOrTo+'-'+what).show();
     };
 }
 

@@ -93,6 +93,7 @@ class ItemController extends Controller
                 'seq_no'       => $seq_no, 
                 'versionsEnum' => $versionsEnum,
                 'bibleBooks'   => $bibleBooks,
+                'bibleTexts'   => [],
             ]);
     }
 
