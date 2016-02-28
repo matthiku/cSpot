@@ -159,18 +159,16 @@
                     </script>
 
 
-                    <div class="row form-group">
-                        <div class="song-search">
-                            To search for another song,
-                            {!! Form::label('search', 'enter song number, title or author or parts thereof:') !!}
-                            {!! Form::text('search') !!}
-                            <input type="submit" name="searchBtn" value="Search" />
-                            @if ($errors->has('search'))
-                                <br><span class="help-block">
-                                    <strong>{{ $errors->first('search') }}</strong>
-                                </span>
-                            @endif
-                        </div>
+                    <div class="row form-group song-search">
+                        To search for another song,
+                        {!! Form::label('search', 'enter song number, title or author or parts thereof:') !!}
+                        {!! Form::text('search') !!}
+                        <input type="submit" name="searchBtn" value="Search" />
+                        @if ($errors->has('search'))
+                            <br><span class="help-block">
+                                <strong>{{ $errors->first('search') }}</strong>
+                            </span>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -193,19 +191,23 @@
 
         @else
             @if( Auth::user()->ownsPlan($plan->id) )
-                @if ( ! isset($item) ||  (isset($item) && ! $item->comment) )
-                    <div id="col-2-song-search" class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
-                        To search for a song,
-                        {!! Form::label('search', 'enter song number, title or author or parts thereof:') !!}<br/>
-                        {!! Form::text('search') !!}
-                        <input type="submit" name="searchBtn" value="Search" />
-                        @if ($errors->has('search'))
-                            <br><span class="help-block">
-                                <strong>{{ $errors->first('search') }}</strong>
-                            </span>
-                        @endif
-                    </div>
-                @endif
+                
+                <div id="col-2-song-search" 
+                    class="col-lg-6 col-md-12 col-sm-12 col-xs-12 m-b-1"
+                    @if ( isset($item)  &&  $item->comment) )
+                        style="display: none;"
+                    @endif
+                    >
+                    To search for a song,
+                    {!! Form::label('search', 'enter song number, title or author or parts thereof:') !!}<br/>
+                    {!! Form::text('search') !!}
+                    <input type="submit" name="searchBtn" value="Search" />
+                    @if ($errors->has('search'))
+                        <br><span class="help-block">
+                            <strong>{{ $errors->first('search') }}</strong>
+                        </span>
+                    @endif
+                </div>
             @endif
         @endif
 
@@ -234,6 +236,9 @@
                     
                     @if( Auth::user()->ownsPlan($plan->id) )
                     <div class="col-xs-12 full-width p-b-1">
+
+                        <a href="#" onclick="$('#col-2-song-search').show();">Add Song</a>
+
                         <h6>Add Bible Reference(s)</h6>
 
                         <select name="from-book" id="from-book" class="pull-xs-left" 

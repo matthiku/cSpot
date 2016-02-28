@@ -304,15 +304,23 @@ function getBibleTexts($refString)
             $bref    = preg_split( '/[\s,:-]+/', $parts[0] );
             $num = 0;
             // check if the first word really is the name of a bible book 
-            foreach ($bref as $br) {
-                if (! in_array( ucfirst($br), $books) ) {
+            foreach ($bref as $key => $br) {
+                if ( ( $br=='1' || $br=='2' || $br=='3' ) && in_array($br.' '.$bref[$key+1], $books) ) {
+                    break;
+                }
+                if ( ! in_array( ucfirst($br), $books)) {
                     $num += 1;
                 } else { break; }
-            }
+            } 
             // Not correct book name found?
             if (sizeof($bref)-$num < 3 ) continue;
 
-            $book    = $bref[$num];
+            if ($bref[$num]==1 || $bref[$num]==2 || $bref[$num]==3) {
+                $book    = $bref[$num] . '+' . $bref[1+$num];
+                $num++;
+            } else {
+                $book    = $bref[$num];
+            } 
             $chapter = $bref[$num+1];
             $verseFr = $bref[$num+2];            
             if (isset($bref[$num+3])) {
@@ -324,7 +332,9 @@ function getBibleTexts($refString)
             $text = $bb->getBibleText($version[0], $book, $chapter, $verseFr, $verseTo);
 
             // was the search successful? then it should contain at least one passage array
-            $result = json_decode( $text->getContent())->response->search->result->passages;
+            $result = json_decode( $text->getContent() );   
+            $result = $result->response->search->result->passages;
+
             if ( count($result) > 0 ) {
                 $text = $result[0];
                 $text->text = str_ireplace( 'h3', 'strong', $text->text );
