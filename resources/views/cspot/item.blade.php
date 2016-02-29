@@ -30,8 +30,8 @@
     {!! Form::hidden('seq_no', $seq_no) !!}
     {!! Form::hidden('plan_id', isset($plan) ? $plan->id : $item->plan_id ) !!}
 
-    @if ( isset($before_item) )
-        {!! Form::hidden('before_item_id', $before_item->id) !!}
+    @if ( isset($beforeItem) )
+        {!! Form::hidden('beforeItem_id', $beforeItem->id) !!}
     @endif
 
 
@@ -69,8 +69,8 @@
                     <a class="hidden-xs-down" href="{{ url('cspot/plans/'.$item->plan_id) }}/edit">{!! Form::button('Cancel - Back to Plan') !!}</a>
                     <a class="hidden-sm-up" href="{{ url('cspot/plans/'.$item->plan_id) }}/edit">{!! Form::button('Cancel - Back') !!}</a>
             @else
-                @if ( isset($before_item) )
-                    <h2>Insert Item before "{{ $before_item->seq_no }} {{ $before_item->comment }}"
+                @if ( isset($beforeItem) )
+                    <h2>Insert Item before "{{ $beforeItem->seq_no }} {{ $beforeItem->comment }}"
                     </h2>
                 @else
                     <h2>Add Item No {{ $seq_no }}.0</h2>

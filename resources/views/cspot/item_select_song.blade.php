@@ -16,8 +16,8 @@
 
     <div class="row">
         <div class="col-md-6">
-            <h2>Select a Song for item {{ $seq_no }}.0 </h2>
-            <h5>of plan for {{ $plan->type->name }} on {{ $plan->date->formatLocalized('%d-%b-%Y') }}</h5>
+            <h2>Select a Song for item {{ $seq_no }}.0</h2>
+            <h5>in plan for {{ $plan->type->name }} on {{ $plan->date->formatLocalized('%d-%b-%Y') }}</h5>
         </div>
     </div>
     
@@ -32,7 +32,7 @@
                     @if ($item_id)
                         href='{{ url('cspot/plans/'.$plan->id) }}/items/update/item/{{$item_id }}/song/{{ $song->id }}' 
                     @else
-                        href='{{ url('cspot/plans/'.$plan->id) }}/items/store/seq_no/{{$seq_no }}/song/{{ $song->id }}/{{$moreItems}}' 
+                        href='{{ url('cspot/plans/'.$plan->id) }}/items/store/seq_no/{{$seq_no }}/song/{{ $song->id }}/{{$moreItems}}/{{$beforeItem_id}}' 
                     @endif
                     class="btn btn-primary-outline btn-sm btn-select" role="button"
                     title="{{ substr($song->lyrics, 0, 250).' ...' }}" data-toggle="tooltip" 
