@@ -45,6 +45,10 @@
         <div class="col-md-9 col-xl-8 md-center">
 
             @if (isset($plan))
+                <div class="pull-xs-right">
+                    <a href="#"><i class="fa fa-music">&nbsp;</i>Chords Only</a>
+                </div>
+
                 <h3 class="hidden-md-down">Plan for "{{ $plan->type->name }}" on {{ $plan->date->formatLocalized('%A, %d %B %Y') }}</h3>
                 <h3 class="hidden-lg-up">"{{ $plan->type->name }}" on {{ $plan->date->formatLocalized('%a, %d %B') }}</h3>
             @else
@@ -67,11 +71,14 @@
                 </div>
             @endif
 
+
             @if ( Auth::user()->isEditor() && isset($plan) ) 
                 <div class="pull-xs-right plan-details">
-                    (<a href="#" onclick="$('.plan-details').toggle()">edit plan details</a>)
+                    &nbsp; (<a href="#" onclick="$('.plan-details').toggle()">Edit Plan Details</a>)
                 </div>
             @endif
+
+
 
             <div class="form-buttons">
                 <big>
@@ -261,7 +268,6 @@
 
 
     <div class="form-group">
-        <br>
         @if (Auth::user()->isEditor())
             {!! Form::label('info', 'Notes:', ['class' => 'form-control-label']); !!}
             <br/>
