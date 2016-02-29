@@ -300,6 +300,7 @@ function getBibleTexts($refString)
 
         foreach ($refs as $ref) {
             $parts   = explode('(', $ref );
+            if (count($parts)<2) continue;
             $version = explode(')', $parts[1] );
             $bref    = preg_split( '/[\s,:-]+/', $parts[0] );
             $num = 0;

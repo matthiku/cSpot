@@ -45,6 +45,8 @@ class ItemController extends Controller
 
 
 
+
+
     /**
      * Display a listing of the resource.
      *
@@ -56,6 +58,8 @@ class ItemController extends Controller
         flash('Sorry, this is not (yet) implemented.');
         return redirect()->back();
     }
+
+
 
 
 
@@ -98,6 +102,9 @@ class ItemController extends Controller
                 'bibleTexts'   => [],
             ]);
     }
+
+
+
 
 
     /**
@@ -169,6 +176,8 @@ class ItemController extends Controller
     }
 
 
+
+
     /**
      * Directly insert a song as a new item into a plan
      */
@@ -223,6 +232,7 @@ class ItemController extends Controller
 
 
 
+
     /**
      * Display the specified resource.
      *
@@ -231,11 +241,23 @@ class ItemController extends Controller
      */
     public function show($id)
     {
-        //
+        $item = Item::find($id);
 
-        flash('Sorry, this is not implemented.');
-        return redirect()->back();
+        $bibleTexts = getBibleTexts($item->comment);
+
+        // TDOD get list of items for this plan, each with a prober 'title'
+        $items = $item->plan->items->sortBy('seq_no')->all();
+
+        return view('cspot.chords', [
+
+                'item' => $item,
+
+                'items' => $items,
+
+                'bibleTexts' => $bibleTexts,
+            ]);
     }
+
 
 
 
@@ -249,13 +271,19 @@ class ItemController extends Controller
      * @param  string  $direction
      * @return \Illuminate\Http\Response
      */
-    public function next(Request $request, $plan_id, $item_id, $direction)
+    public function next(Request $request, $plan_id, $item_id, $direction, $chords=null)
     {
         // get seq_no of next or previous item from helper function
         $new_item_id = nextItem($plan_id, $item_id, $direction);
+
         // call edit with new item id 
-        return $this->edit( $plan_id, $new_item_id );
+        if ($chords==null) {
+            return $this->edit( $plan_id, $new_item_id );
+        } 
+        return $this->show( $new_item_id );
     }
+
+
 
 
 

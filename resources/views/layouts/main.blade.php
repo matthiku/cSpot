@@ -62,7 +62,7 @@
                       <span class="caret"></span>
                   </a>
 
-                  <div class="dropdown-menu" role="menu">
+                  <div class="dropdown-menu dropdown-menu-right" role="menu">
                       <a class="dropdown-item" href="{{ url('admin/users/'.Auth::user()->id) }}">Profile <i class="fa fa-btn fa-user fa-lg"></i></a>
                       <a class="dropdown-item" href="{{ url('logout') }}">Logout <i class="fa fa-btn fa-sign-out fa-lg"></i></a>
                   </div>

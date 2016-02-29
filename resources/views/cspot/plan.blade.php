@@ -46,7 +46,7 @@
 
             @if (isset($plan))
                 <div class="pull-xs-right">
-                    <a href="#"><i class="fa fa-music">&nbsp;</i>Chords Only</a>
+                    <a href="{{ url('cspot/items/').'/'.$plan->firstItem()->id }}"><i class="fa fa-music">&nbsp;</i>Chords View</a>
                 </div>
 
                 <h3 class="hidden-md-down">Plan for "{{ $plan->type->name }}" on {{ $plan->date->formatLocalized('%A, %d %B %Y') }}</h3>
