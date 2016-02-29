@@ -81,7 +81,7 @@
                             {!! Form::submit('Save changes', [
                                 'data-toggle'    => 'tooltip', 
                                 'data-placement' => 'left',
-                                'class'          => 'form-submit text-help blink',
+                                'class'          => 'form-submit text-help',
                                 'style'          => 'display: none',
                                 'disabled'       => 'disabled',
                                 'title'          => 'Click to save changes to notes, service type, date, leader or teacher',
@@ -288,7 +288,7 @@
             <span class="has-warning">
             {!! Form::submit('Save changes', [
                 'data-toggle' => 'tooltip', 
-                'class'       => 'form-submit text-help blink',
+                'class'       => 'form-submit text-help',
                 'style'       => 'display: none',
                 'disabled'    => 'disabled',
                 'title'       => 'Click to save changes to notes, service type, date, leader or teacher',
@@ -301,10 +301,9 @@
 
                 function enableSaveButton(that) {
                     $('.form-submit').removeAttr('disabled');
-                    $('.form-submit').show();
+                    blink('.form-submit');
                     $(that).parent().addClass('has-warning');
                 }
-                blink( $(".blink") );
             </script>
 
         @else
