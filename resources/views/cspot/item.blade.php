@@ -245,7 +245,9 @@
                     @if( Auth::user()->ownsPlan($plan->id) )
                     <div class="col-xs-12 full-width p-b-1">
 
-                        <a href="#" onclick="$('#col-2-song-search').show();">Add Song</a>
+                        @if ( isset($item) )
+                            <a href="#" onclick="$('#col-2-song-search').show();">Add Song</a>
+                        @endif
 
                         <h6>Add Bible Reference(s)</h6>
 

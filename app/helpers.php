@@ -312,9 +312,10 @@ function getBibleTexts($refString)
                     $num += 1;
                 } else { break; }
             } 
-            // Not correct book name found?
+            // No correct book name found?
             if (sizeof($bref)-$num < 3 ) continue;
 
+            // book name can be preceeded by a 1,2 or 3
             if ($bref[$num]==1 || $bref[$num]==2 || $bref[$num]==3) {
                 $book    = $bref[$num] . '+' . $bref[1+$num];
                 $num++;
@@ -322,25 +323,26 @@ function getBibleTexts($refString)
                 $book    = $bref[$num];
             } 
             $chapter = $bref[$num+1];
-            $verseFr = $bref[$num+2];            
-            if (isset($bref[$num+3])) {
-                $verseTo = $bref[$num+3];
-            } else {
+            $verseFr = $bref[$num+2];   
+            $verseTo = '';         
+            if ( isset($bref[$num+3]) ) $verseTo = $bref[$num+3];
+            if ( $verseTo == '' || ! is_numeric($verseTo) ) {
                 $verseTo = $verseFr;
-            }
+            } 
             // execute the text search
             $text = $bb->getBibleText($version[0], $book, $chapter, $verseFr, $verseTo);
 
             // was the search successful? then it should contain at least one passage array
-            $result = json_decode( $text->getContent() );   
-            $result = $result->response->search->result->passages;
-
-            if ( count($result) > 0 ) {
-                $text = $result[0];
-                $text->text = str_ireplace( 'h3', 'strong', $text->text );
-                $text->text = str_ireplace( 'h2', 'i', $text->text );
-                $bibleTexts[] = $text;
-            }                
+            try {
+                $result = json_decode( $text->getContent())->response->search->result->passages ;
+                if ( count($result) > 0 ) {
+                    $text = $result[0];
+                    $text->text = str_ireplace( 'h3', 'strong', $text->text );
+                    $text->text = str_ireplace( 'h2', 'i', $text->text );
+                    $bibleTexts[] = $text;
+                }
+            }
+            catch(Exception $e) { echo 'failed to convert '.$text->__toString(); }
         }
     }
     return $bibleTexts;

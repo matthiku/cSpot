@@ -40,7 +40,7 @@
 	@endif
 
 
-	@if (count($plans))
+	@if ( isset($plans) && count($plans) )
 		Total: {{ count($plans) }} Services
 
 		<table class="table table-striped table-bordered table-hover
