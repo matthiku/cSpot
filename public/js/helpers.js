@@ -113,6 +113,7 @@ function populateComment() {
     $('.select-version').hide();
     $('#col-2-song-search').hide();
     $('#comment-label').text('Bible Reading');
+    blink('.save-buttons');
 }
 
 function emptyRefSelect(fromOrTo, what) {
@@ -125,14 +126,20 @@ function emptyRefSelect(fromOrTo, what) {
     }
 }
 
-function showScriptureText(version,book,chapter,fromVerse,toVerse) {
+function showScriptureText(version,book,chapter,fromVerse,toVerse) 
+{
+
+    book = book.replace(' ', '+');
 
     $.get(__app_url+'/bible/passage/'+version+'/'+book+'/'+chapter+'/'+fromVerse+'/'+toVerse , 
-        function(data, status) {
-            if ( status == 'success') {
-                //myText = JSON.parse(data);
+        function(data, status) 
+        {
+            if ( status == 'success') 
+            {
+                $('#waiting').hide();
                 passage = data.response.search.result.passages;
-                if (passage.length>0) {
+                if (passage.length>0) 
+                {
                     text = (passage[0].text).replace(/h3/g, 'strong');
                     text = text.replace(/h2/g, 'i');
                     $('#bible-passages').append( 
@@ -141,10 +148,14 @@ function showScriptureText(version,book,chapter,fromVerse,toVerse) {
                         '<div class="small">' + passage[0].copyright + '</div><hr>'                        
                     );                         
                 } 
-                else {
+                else 
+                {
                     $('#show-passages').html('(passage not found)');
                 }
-                $('#waiting').hide();
+            }
+            else 
+            {
+                $('#waiting').append(' Not found! ' + data);
             }
         }
     );
@@ -178,6 +189,7 @@ function toggleTrashed() {
 
 
 function blink(selector){
+    $(selector).show();
     $(selector).animate({opacity:0}, 150, "linear", function(){
         $(this).delay(50);
         $(this).animate({opacity:1}, 150, function(){

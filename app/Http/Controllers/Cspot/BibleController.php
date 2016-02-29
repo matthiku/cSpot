@@ -150,7 +150,11 @@ class BibleController extends Controller
         $url = "https://bibles.org/v2/passages.js?q[]=$book+$chapter:$verseFrom-$verseTo&version=eng-$version";
         // "https://bibles.org/v2/passages.js?q[]=acts+1:12-15&version=eng-esv"
 
-        return response()->json( $this->getWebsite($url) );
+        $result = $this->getWebsite($url);
+        if ($result) {
+            return response()->json( $result );
+        }
+        return response()->json("requested failed, no bible text fetched!", 404);
 
     }
 

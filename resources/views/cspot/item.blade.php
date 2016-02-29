@@ -58,7 +58,10 @@
                 <div class="col-md-6 text-xs-right nowrap">
 
                     @if( Auth::user()->ownsPlan($item->plan_id) )
-                        &nbsp; {!! Form::submit('Save changes'); !!}
+                        &nbsp;
+                        <span class="save-buttons" style="display: none;">
+                            {!! Form::submit('Save changes'); !!}
+                        </span>
                         &nbsp; 
                         <a class="btn btn-danger btn-sm"  item="button" href="{{ url('cspot/items/'. $item->id .'/delete') }}">
                             <i class="fa fa-trash" > </i> 
@@ -227,7 +230,7 @@
 
                     <div class="col-xs-12 full-width">
                         {!! Form::label('comment', 'Comments or notes', ['id'=>'comment-label']); !!}
-                        <p>
+                        <p onclick="blink('.save-buttons')">
                             @if( Auth::user()->ownsPlan($plan->id) )
                                 {!! Form::text('comment'); !!}
                             @else
@@ -319,8 +322,10 @@
             <input checked="checked" type="checkbox" value="Y" name="moreItems">
             Tick to add another item to this plan after saving this one
           </label>
-        </div>                        
-        {!! Form::submit('Submit'); !!}
+        </div>
+        <span class="save-buttons" style="display: none;">
+            {!! Form::submit('Submit'); !!}
+        </span>
         &nbsp; <a href="{{ url( 'cspot/plans/' . (isset($plan) ? $plan->id : $plan_id) )  }}/edit">{!! Form::button('Cancel - Back to Plan'); !!}</a>
     @endif
 

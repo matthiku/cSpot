@@ -275,7 +275,7 @@
                 <h5>Notes for this Plan:</h5>
                 <pre>{!! $plan->info !!}</pre>
             @endif
-            Add note:<br>
+            <br>Add note:<br>
             <textarea name="info"></textarea>
         @endif
     </div>
