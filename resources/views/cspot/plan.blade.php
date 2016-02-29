@@ -59,8 +59,10 @@
             @if (isset($plan))
                 <div class="pull-xs-left plan-details">
                     <big>
-                        Leader:&nbsp;<strong>{{ $plan->leader->first_name }}</strong>, &nbsp;
-                        Teacher:&nbsp;<strong>{{ $plan->teacher->first_name }}</strong>
+                        Leader:&nbsp;<strong>{{ $plan->leader->first_name }}</strong> &nbsp;
+                        @if ($plan->teacher->first_name<>'none')
+                            Teacher:&nbsp;<strong>{{ $plan->teacher->first_name }}</strong>
+                        @endif
                     </big>
                 </div>
             @endif

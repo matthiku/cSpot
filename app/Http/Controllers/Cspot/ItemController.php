@@ -77,12 +77,13 @@ class ItemController extends Controller
         $versionsEnum = json_decode(env('BIBLE_VERSIONS'));
 
 
+        $before_item = null;
         // check if this is an insertion of an item BEFORE another item
         if ($request->is('*/before/*')) {
             $item_id = $seq_no;
-            $item = Item::find($item_id);
+            $before_item = Item::find($item_id);
             // Make sure we always insert the new item right BEOFRE the current item
-            $seq_no = $item->seq_no - 0.1;
+            $seq_no = $before_item->seq_no - 0.1;
         }
 
         $bibleBooks = new BibleBooks();
@@ -90,7 +91,8 @@ class ItemController extends Controller
         // show the form
         return view( 'cspot.item', [
                 'plan'         => $plan, 
-                'seq_no'       => $seq_no, 
+                'before_item'  => $before_item, 
+                'seq_no'       => $seq_no,
                 'versionsEnum' => $versionsEnum,
                 'bibleBooks'   => $bibleBooks,
                 'bibleTexts'   => [],
@@ -124,6 +126,7 @@ class ItemController extends Controller
                     'plan'       => $plan,
                     'item_id'    => 0,
                     'seq_no'     => $request->seq_no,
+                    'before_item'=> $request->before_item,
                     'moreItems'  => $request->moreItems,
                 ]);
             }
@@ -150,22 +153,29 @@ class ItemController extends Controller
     /**
      * Directly insert a song as a new item into a plan
      */
-    public function insertSong($plan_id, $seq_no, $song_id, $moreItems=null )
+    public function insertSong($plan_id, $seq_no, $song_id, $moreItems=null, $before_item=null )
     {
         // check user rights (teachers and leaders can edit items of their own plan)
         $plan = Plan::find( $plan_id );
         $this->checkRights($plan);
 
+        // find the seq_no ot the item before which I want to insert this new item
+        if ( isset($before_item) ) {
+            $seq_no = $before_item->seq_no - 0.1;
+        }
+
+        // create a new items object add it to this plan
         $item = new Item([
             'seq_no' => $seq_no, 
             'song_id' => $song_id,
         ]);
-
         $newItem = $plan->items()->save($item);
 
+        // re-number all items 
         $item = moveItem($newItem->id, 'static');
 
         if ($moreItems=='Y') {
+
             $versionsEnum = json_decode(env('BIBLE_VERSIONS'));
 
             // insert another item after the just created item
@@ -182,6 +192,7 @@ class ItemController extends Controller
                     'seq_no'       => $seq_no, 
                     'versionsEnum' => $versionsEnum,
                     'bibleBooks'   => $bibleBooks,
+                    'bibleTexts'   => [],
                 ]);
         }
 

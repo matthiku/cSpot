@@ -30,6 +30,9 @@
     {!! Form::hidden('seq_no', $seq_no) !!}
     {!! Form::hidden('plan_id', isset($plan) ? $plan->id : $item->plan_id ) !!}
 
+    @if ( isset($before_item) )
+        {!! Form::hidden('before_item_id', $before_item->id) !!}
+    @endif
 
 
     <div class="row">
@@ -66,8 +69,13 @@
                     <a class="hidden-xs-down" href="{{ url('cspot/plans/'.$item->plan_id) }}/edit">{!! Form::button('Cancel - Back to Plan') !!}</a>
                     <a class="hidden-sm-up" href="{{ url('cspot/plans/'.$item->plan_id) }}/edit">{!! Form::button('Cancel - Back') !!}</a>
             @else
+                @if ( isset($before_item) )
+                    <h2>Insert Item before "{{ $before_item->seq_no }} {{ $before_item->comment }}"
+                    </h2>
+                @else
                     <h2>Add Item No {{ $seq_no }}.0</h2>
-                    <h5>to the Service plan (id {{ $plan->id }}) for {{ $plan->date->formatLocalized('%A, %d %B %Y') }}</h5>
+                @endif
+                <h5>in the Service plan (id {{ $plan->id }}) for {{ $plan->date->formatLocalized('%A, %d %B %Y') }}</h5>
             @endif
         </div>
     </div>
