@@ -126,13 +126,16 @@
 
     <!-- ================================================================================ -->
     <div id="main-content">
+    <!-- ================================================================================ -->
 
         @if ($item->song_id )
             @if ($item->key)
                 <h4 class="red">{{ $item->key }}</h4>
             @endif
             @if ($item->song->chords )
-                <pre class="big" id="chords">{{ $item->song->chords }}</pre>
+                <div class="col-lg-6">
+                    <pre class="big" id="chords">{{ $item->song->chords }}</pre>
+                </div>
             @else
                 <pre class="big">{{ $item->song->lyrics }}</pre>
             @endif

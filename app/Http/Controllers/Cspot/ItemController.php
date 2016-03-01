@@ -284,6 +284,9 @@ class ItemController extends Controller
         if ($chords==null) {
             return $this->edit( $plan_id, $new_item_id );
         } 
+        if ($chords=='chords') {
+            return $this->show( $new_item_id );
+        }
         return $this->show( $new_item_id, $chords );
     }
 

@@ -79,7 +79,7 @@ function identifyHeadings(str)
 {
     var patt = /^(Verse|Chorus|bridge)/i;
     if ( patt.test(str) ) return ' text-xs-center bg-success';
-    var patt = /^(Capo|Intro|Other|\()/;
+    var patt = /^(Capo|Key|Intro|Other|\()/;
     if ( patt.test(str) ) return ' text-primary';
     return '';
 }

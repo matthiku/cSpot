@@ -1,3 +1,19 @@
+
+.text-present {
+    color: yellow;
+    font-size: 80px;
+    font-family: "Times New Roman", Georgia, Serif;
+}
+.text-present>.p>.v {
+    color: white;
+}
+.text-present>.p, .text-present>.p>.wj, .text-present>.q1, .text-present>.q2 {
+    font-size: 80px;
+}
+.text-present>.p>.v::after {
+    content: " ";
+}
+
 .underscore {
     padding-bottom: 2px;
     border-bottom: 1px solid #ccc;

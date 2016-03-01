@@ -17,6 +17,10 @@
     <!-- remove main navbar -->
     <script>
         $('#main-navbar').detach();
+        $(document).ready(function() {
+            $('body').addClass('bg-inverse');
+            $('.text-present>.p>.v').prepend('<br>');
+        });
     </script>
 
 
@@ -24,28 +28,25 @@
 
 
     <!-- ================================================================================ -->
-    <div id="main-content">
+    <div id="main-content" class="bg-inverse">
 
         @if ($item->song_id )
-            @if ($item->key)
-                <h4 class="red">{{ $item->key }}</h4>
-            @endif
             @if ($item->song->lyrics )
-                <pre class="big">{{ $item->song->lyrics }}</pre>
+                <pre class="text-present display-1" id="lyrics">
+                    {{ $item->song->lyrics }}
+                </pre>
             @endif
         @endif
 
         @if ($bibleTexts)
-            <div class="col-xl-6">
+            <div class="bg-inverse">
                 @foreach ($bibleTexts as $btext)
-                    <h3>{{ $btext->display }} ({{ $btext->version_abbreviation }})</h3>
-                    <div class="big">{!! $btext->text !!}</div>
+                    <h1>{{ $btext->display }} ({{ $btext->version_abbreviation }})</h1>
+                    <div class="text-present display-1">{!! $btext->text !!}</div>
                     <div class="small">{!! $btext->copyright !!}</div>
                     <hr>
                 @endforeach
             </div>
-        @else
-            <div>{{ $item->comment ? '('.$item->comment.')' : '' }}</div>
         @endif
 
     </div>
@@ -58,7 +59,7 @@
         <ul class="nav navbar-nav pull-xs-right">
             <li>
                 <a href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/go/next/present') }}"
-                    class="nav-item btn btn-warning" role="button">
+                    class="nav-item btn btn-warning" role="button" id="go-next-item">
                     <i class="fa fa-angle-double-right fa-lg"></i>
                 </a>
             </li>
@@ -125,7 +126,7 @@
         <ul class="nav navbar-nav pull-xs-left">
             <li>
                 <a href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/go/previous/present') }}"
-                    class="nav-link btn btn-warning" role="button">
+                    class="nav-link btn btn-warning" role="button" id="go-previous-item">
                     <i class="fa fa-angle-double-left fa-lg"></i>
                 </a> 
             </li>
