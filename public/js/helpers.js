@@ -24,8 +24,39 @@ $(document).ready(function() {
         }
     });
 
+    
+    // handle keyboard events
+    $(document).keydown(function( event ) {
+        // key codes: 37=left arrow, 39=right, 38=up, 40=down, 34=PgDown, 33=pgUp, 36=home, 35=End, 32=space
+        //event.preventDefault();
+        console.log(event.keyCode);
+        switch (event.keyCode) {
+            case 37: navigateTo('previous'); break;
+            case 39: navigateTo('next');    break;
+            case 32: navigateTo('next');   break;
+            case 36: navigateTo('first'); break;
+            case 35: navigateTo('last'); break;
+            default: break;
+        }
+    });    
+    // handle swiping on smartphones
+    $('#main-content').on("swipeleft",function(){
+        navigateTo('next');
+    });
+    $('#main-content').on("swiperight",function(){
+        navigateTo('previous'); 
+    });
+    
+
 });
 
+
+
+function navigateTo(where) 
+{
+    a = document.getElementById('go-'+where+'-item');
+    a.click();
+}
 
 
 

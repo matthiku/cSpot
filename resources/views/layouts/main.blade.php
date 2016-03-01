@@ -35,7 +35,9 @@
 
 
   <body id="app-layout">
-    <nav class="tek-nav navbar navbar-dark bg-inverse navbar-full">
+
+
+    <nav id="main-navbar" class="tek-nav navbar navbar-dark bg-inverse navbar-full">
 
       <ul class="nav navbar-nav pull-xs-right">
           <!-- Authentication Links -->
@@ -63,8 +65,8 @@
                   </a>
 
                   <div class="dropdown-menu dropdown-menu-right" role="menu">
-                      <a class="dropdown-item" href="{{ url('admin/users/'.Auth::user()->id) }}">Profile <i class="fa fa-btn fa-user fa-lg"></i></a>
-                      <a class="dropdown-item" href="{{ url('logout') }}">Logout <i class="fa fa-btn fa-sign-out fa-lg"></i></a>
+                      <a class="dropdown-item" href="{{ url('admin/users/'.Auth::user()->id) }}"><i class="fa fa-btn fa-user fa-lg"></i> Profile</a>
+                      <a class="dropdown-item" href="{{ url('logout') }}"><i class="fa fa-btn fa-sign-out fa-lg"></i> Logout</a>
                   </div>
               </li>
           @endif

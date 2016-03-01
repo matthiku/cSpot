@@ -64,8 +64,14 @@ class Plan extends Model
 
     public function firstItem() 
     {
+        $items = $items = $this->items;
+        return $items->sortBy('seq_no')->first();
+    }
+
+    public function lastItem() 
+    {
     	$items = $items = $this->items;
-    	return $items->sortBy('seq_no')->first();
+    	return $items->sortByDesc('seq_no')->first();
     }
 
 }
