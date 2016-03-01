@@ -239,7 +239,7 @@ class ItemController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id, $present=null)
     {
         $item = Item::find($id);
 
@@ -248,12 +248,16 @@ class ItemController extends Controller
         // TDOD get list of items for this plan, each with a prober 'title'
         $items = $item->plan->items->sortBy('seq_no')->all();
 
+        if ($present) {
+            return view('cspot.present', [
+                    'item' => $item,
+                    'items' => $items,
+                    'bibleTexts' => $bibleTexts,
+                ]);
+        }
         return view('cspot.chords', [
-
                 'item' => $item,
-
                 'items' => $items,
-
                 'bibleTexts' => $bibleTexts,
             ]);
     }
@@ -280,7 +284,7 @@ class ItemController extends Controller
         if ($chords==null) {
             return $this->edit( $plan_id, $new_item_id );
         } 
-        return $this->show( $new_item_id );
+        return $this->show( $new_item_id, $chords );
     }
 
 

@@ -80,19 +80,23 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     // show form of next or previous item for a plan
     Route::get('plans/{plan_id}/items/{item_id}/go/{direction}/{chords?}',    'Cspot\ItemController@next');
     // show form to create a new item for a plan
-    Route::get('plans/{plan_id}/items/create/before/{item_id}',     'Cspot\ItemController@create');    
+    Route::get('plans/{plan_id}/items/create/before/{item_id}',                     'Cspot\ItemController@create');    
     // insert new item with song_id 
     Route::get('plans/{plan_id}/items/store/seq_no/{seq_no}/song/{song_id}/{moreItems?}/{beforeItem?}',     'Cspot\ItemController@insertSong');    
     // update item with new song_id 
     Route::get('plans/{plan_id}/items/update/item/{item_id}/song/{song_id}',     'Cspot\ItemController@updateSong');    
     // show form to create a new item for a plan
-    Route::get('plans/{plan_id}/items/create/{seq_no}',             'Cspot\ItemController@create');    
+    Route::get('plans/{plan_id}/items/create/{seq_no}',             '       Cspot\ItemController@create');    
     // show form to update a new item for a plan
-    Route::get('plans/{plan_id}/items/{item_id}/edit',              'Cspot\ItemController@edit');    
+    Route::get('plans/{plan_id}/items/{item_id}/edit',                  'Cspot\ItemController@edit');    
+    // presentation view of a plan
+    Route::get('items/{items}/{present?}',                          'Cspot\ItemController@show');
+
     // generic item resource routes
     Route::resource('items', 'Cspot\ItemController');
+
     // MOVE the specified resource up or down in the list of items related to a plan
-    Route::get('items/{items}/move/{direction}',                    'Cspot\ItemController@move');    
+    Route::get('items/{items}/move/{direction}',        'Cspot\ItemController@move');
     // specific (soft) delete route using 'get' method
     Route::get('items/{items}/delete',                  'Cspot\ItemController@destroy');    
     // permanently delete an item
