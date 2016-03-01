@@ -89,6 +89,8 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     Route::get('plans/{plan_id}/items/create/{seq_no}',             '       Cspot\ItemController@create');    
     // show form to update a new item for a plan
     Route::get('plans/{plan_id}/items/{item_id}/edit',                  'Cspot\ItemController@edit');    
+    // delete an item
+    Route::get('items/{items}/delete',                          'Cspot\ItemController@delete');
     // presentation view of a plan
     Route::get('items/{items}/{present?}',                          'Cspot\ItemController@show');
 
