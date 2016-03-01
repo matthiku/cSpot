@@ -29,7 +29,7 @@ $(document).ready(function() {
     $(document).keydown(function( event ) {
         // key codes: 37=left arrow, 39=right, 38=up, 40=down, 34=PgDown, 33=pgUp, 36=home, 35=End, 32=space
         //event.preventDefault();
-        console.log(event.keyCode);
+        // console.log(event.keyCode);
         switch (event.keyCode) {
             case 37: navigateTo('previous'); break;
             case 39: navigateTo('next');    break;
@@ -48,13 +48,71 @@ $(document).ready(function() {
     });
     
 
+
+    if ( $('#chords').text() != '' ) {
+        reDisplayChords();
+    }
+
 });
 
 
 
+function reDisplayChords()
+{
+    // get the chords text and split it into lines
+    chords = $('#chords').text().split('\n');
+    // empty the exisint pre tag
+    $('#chords').text('');
+    // analyse each line and put it back into single pre tags
+    for (var i = 0; i <= chords.length - 1; i++) {
+        // if a line looks like chords, make it red
+        if ( identifyChords(chords[i]) ) {
+            $('#chords').append('<pre class="red m-b-0">'+chords[i]+'</pre>');
+        }
+        else {
+            hdr = identifyHeadings(chords[i]);
+            $('#chords').append('<pre class="m-b-0 '+hdr+'">'+chords[i]+'</pre>');
+        }
+    }
+}
+function identifyHeadings(str)
+{
+    var patt = /^(Verse|Chorus|bridge)/i;
+    if ( patt.test(str) ) return ' text-xs-center bg-success';
+    var patt = /^(Capo|Intro|Other|\()/;
+    if ( patt.test(str) ) return ' text-primary';
+    return '';
+}
+function identifyChords(str)
+{
+    
+    var patt = /[klopqrtvwxyz1345689]/g;
+    if ( patt.test(str) ) return false;
+    
+    var patt = /\b[CDEFGAB](?:#{1,2}|b{1,2})?(?:maj7?|min7?|sus2?|m?)\b/g;
+    if ( patt.test(str) ) return true;
+    
+    var patt = /\b[CDEFGB]\b/g;
+    if ( patt.test(str) ) return true;
+
+    return false;
+}
+
+
+/** 
+ * Navigate to next item
+ *
+ * @string direction - part of the ID of an anchor on the calling page that executes the navigation
+ */
 function navigateTo(where) 
 {
+    // prevent this if user is in an input field or similar area
+    if (document.activeElement.tagName != "BODY") return;
+
+    // get the element that contains the proper link
     a = document.getElementById('go-'+where+'-item');
+
+    // simulate a click on this element
     a.click();
 }
 
