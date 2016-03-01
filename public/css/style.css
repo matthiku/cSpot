@@ -1,11 +1,20 @@
 
 .text-present {
     color: yellow;
-    font-size: 80px;
+    font-size: xx-large;
     font-family: "Times New Roman", Georgia, Serif;
+}
+pre.text-present {
+    font-size: 80px;
 }
 .text-present>.p>.v {
     color: white;
+    font-size: xx-large;
+}
+.text-present>.p>.s1, .text-present>.p>.nd {
+    color: white;
+    font-style: italic;
+    font-size: 80px];
 }
 .text-present>.p, .text-present>.p>.wj, .text-present>.q1, .text-present>.q2 {
     font-size: 80px;

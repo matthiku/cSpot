@@ -32,17 +32,17 @@
 
         @if ($item->song_id )
             @if ($item->song->lyrics )
-                <pre class="text-present display-1" id="lyrics">
+                <pre class="text-present" id="lyrics">
                     {{ $item->song->lyrics }}
                 </pre>
             @endif
         @endif
 
         @if ($bibleTexts)
-            <div class="bg-inverse">
+            <div class="bg-inverse text-present">
                 @foreach ($bibleTexts as $btext)
                     <h1>{{ $btext->display }} ({{ $btext->version_abbreviation }})</h1>
-                    <div class="text-present display-1">{!! $btext->text !!}</div>
+                    <div class="text-present">{!! $btext->text !!}</div>
                     <div class="small">{!! $btext->copyright !!}</div>
                     <hr>
                 @endforeach
