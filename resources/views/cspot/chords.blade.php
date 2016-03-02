@@ -58,14 +58,14 @@
                 @endforeach
                 @if (Auth::user()->ownsPlan($item->plan_id))
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" 
+                    <a class="dropdown-item" id="go-edit"
                         href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/edit') }}">
                         <i class="fa fa-pencil"></i>
                         Edit this item
                     </a>
                 @endif
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" 
+                <a class="dropdown-item" id="go-back"
                     href="{{ url('cspot/plans/'.$item->plan_id.'/edit') }}">
                     <i class="fa fa-undo"></i>
                     Back to plan overview
@@ -125,7 +125,7 @@
 
 
     <!-- ================================================================================ -->
-    <div id="main-content">
+    <div id="main">
     <!-- ================================================================================ -->
 
         @if ($item->song_id )
@@ -133,11 +133,11 @@
                 <h4 class="red">{{ $item->key }}</h4>
             @endif
             @if ($item->song->chords )
-                <div class="col-lg-6">
+                <div class="m-b-3">
                     <pre class="big" id="chords">{{ $item->song->chords }}</pre>
                 </div>
             @else
-                <pre class="big">{{ $item->song->lyrics }}</pre>
+                <pre class="big m-b-3">{{ $item->song->lyrics }}</pre>
             @endif
         @endif
 

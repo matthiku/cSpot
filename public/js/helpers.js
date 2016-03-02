@@ -27,30 +27,39 @@ $(document).ready(function() {
     
     // handle keyboard events
     $(document).keydown(function( event ) {
-        // key codes: 37=left arrow, 39=right, 38=up, 40=down, 34=PgDown, 33=pgUp, 36=home, 35=End, 32=space
+        // key codes: 37=left arrow, 39=right, 38=up, 40=down, 34=PgDown, 33=pgUp, 
+        //            36=home, 35=End, 32=space, 27=Esc, 66=e
         //event.preventDefault();
-        // console.log(event.keyCode);
+        console.log('pressed key code: '+event.keyCode);
         switch (event.keyCode) {
-            case 37: navigateTo('previous'); break;
-            case 39: navigateTo('next');    break;
-            case 32: navigateTo('next');   break;
-            case 36: navigateTo('first'); break;
-            case 35: navigateTo('last'); break;
+            case 37: navigateTo('previous-item'); break;
+            case 36: navigateTo('first-item');   break;
+            case 39: navigateTo('next-item');   break;
+            case 32: navigateTo('next-item');  break;
+            case 35: navigateTo('last-item'); break;
+            case 27: navigateTo('back');     break;
+            case 66: navigateTo('back');    break;
+            case 69: navigateTo('edit');   break;
             default: break;
         }
     });    
     // handle swiping on smartphones
-    $('#main-content').on("swipeleft",function(){
+    $('#main').on("swipeleft",function(){
+        alert('swipeleft');
         navigateTo('next');
     });
-    $('#main-content').on("swiperight",function(){
+    $('#main').on("swiperight",function(){
+        alert('swiperight');
         navigateTo('previous'); 
     });
     
 
-
+    // re-design the showing of lyrics interspersed with guitar chords
     if ( $('#chords').text() != '' ) {
-        reDisplayChords();
+        // only do this for PRE tags, not on input fields etc...
+        if ($('#chords')[0].nodeName == 'PRE') {
+            reDisplayChords();
+        }
     }
 
 });
@@ -110,10 +119,12 @@ function navigateTo(where)
     if (document.activeElement.tagName != "BODY") return;
 
     // get the element that contains the proper link
-    a = document.getElementById('go-'+where+'-item');
+    a = document.getElementById('go-'+where);
+    // link doesn't exist:
+    if (a==null) return;
 
     // simulate a click on this element
-    a.click();
+    window.location.href = a.href;
 }
 
 

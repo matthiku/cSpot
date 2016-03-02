@@ -243,10 +243,24 @@ class PlanController extends Controller
      */
     public function show($id)
     {
-        // get all -- USERS -- with this specific plan id
-        $plan    = Plan::find($id);
-        $heading = 'Show '.$plan->name;
-        return view( $this->view_all, array('plan' => $plan, 'heading' => $heading) );
+        // get plan with items ordered by seq no
+        $plan = Plan::with([
+                'items' => function ($query) { $query->orderBy('seq_no'); }])
+            ->find($id);
+
+        $types = Type::get();
+        // get list of users
+        $users = User::orderBy('first_name')->get();
+
+        return view( 
+            $this->view_one, 
+            array(
+                'plan'         => $plan, 
+                'types'        => $types, 
+                'users'        => $users, 
+                'trashedItemsCount' => 0, 
+            )
+        );
     }
 
 
