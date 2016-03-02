@@ -44,13 +44,13 @@ $(document).ready(function() {
         }
     });    
     // handle swiping on smartphones
-    $('#main').on("swipeleft",function(){
+    $('#app-layout').on("swipeleft",function(){
         alert('swipeleft');
-        navigateTo('next');
+        navigateTo('next-item');
     });
-    $('#main').on("swiperight",function(){
+    $('#app-layout').on("swiperight",function(){
         alert('swiperight');
-        navigateTo('previous'); 
+        navigateTo('previous-item'); 
     });
     
 

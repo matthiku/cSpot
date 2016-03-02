@@ -23,6 +23,7 @@
     
     <script src="{{ url('js/tether.min.js') }}"></script>
     <script src="{{ url('js/jquery.min.js') }}"></script>
+    <script src="{{ url('js/jquery.event.swipe.js') }}"></script>
 
     <script src="{{ url('js/helpers.js') }}"></script>
     <script>
