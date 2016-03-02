@@ -101,13 +101,16 @@ function nextItem($plan_id, $item_id, $direction)
 function insertItem( $request )
 {
     // get plan id from the hidden input field in the form
-    $plan_id = $request->input('plan_id');
+    $plan_id = $request->plan_id;
     // get new seq no for this item
-    $new_seq_no = $request->input('seq_no');
+    $new_seq_no = $request->seq_no;
     // get the Plan model and find the plan
     $plan  = Plan::find($plan_id);
     // get all the items for this plan
     $items = $plan->items()->orderBy('seq_no')->get();
+
+    Log::info('INSERTITEM-newSeqNo old:'.$new_seq_no);
+
     // numbering the items, starting with 1.0
     $counter = 1.0;
     if ($new_seq_no <= $counter) {
@@ -141,6 +144,8 @@ function insertItem( $request )
     // saving the new Item via the relationship to the Plan
     $plan->items()->save( $newItem );
     $plan->new_seq_no = $new_seq_no;
+
+    Log::info('INSERTITEM-newSeqNo new:'.$new_seq_no);
 
     if( isset($newItem->song_id) ) {
         $msg = $newItem->song->title;

@@ -72,6 +72,7 @@ function reDisplayChords()
     $('#chords').text('');
     // analyse each line and put it back into single pre tags
     for (var i = 0; i <= chords.length - 1; i++) {
+        if (chords[i].length==0) continue;
         // if a line looks like chords, make it red
         if ( identifyChords(chords[i]) ) {
             $('#chords').append('<pre class="red m-b-0">'+chords[i]+'</pre>');
@@ -84,8 +85,8 @@ function reDisplayChords()
 }
 function identifyHeadings(str)
 {
-    var patt = /^(Verse|Chorus|bridge)/i;
-    if ( patt.test(str) ) return ' text-xs-center bg-success';
+    var patt = /^(Verse|Chorus|bridge|coda|end)/i;
+    if ( patt.test(str) ) return ' p-l-3 bg-success';
     var patt = /^(Capo|Key|Intro|Other|\()/;
     if ( patt.test(str) ) return ' text-primary';
     return '';

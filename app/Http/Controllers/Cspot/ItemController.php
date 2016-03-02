@@ -18,7 +18,7 @@ use App\Models\Item;
 
 use DB;
 use Auth;
-
+use Log;
 
 
 
@@ -86,10 +86,11 @@ class ItemController extends Controller
         $beforeItem = null;
         // check if this is an insertion of an item BEFORE another item
         if ($request->is('*/before/*')) {
-            $item_id = $seq_no;
-            $beforeItem = Item::find($item_id);
+            // here, $seq_no actually is the id of the item before which we want to insert a new item
+            $beforeItem = Item::find( $seq_no );
             // Make sure we always insert the new item right BEOFRE the current item
             $seq_no = ($beforeItem->seq_no) - 0.1;
+            Log::info( 'CREATE-Showing form to create new item to be inserted before '.$beforeItem->seq_no.' '.$beforeItem->id.' - '.$beforeItem->comment );
         }
 
         // show the form
@@ -128,6 +129,7 @@ class ItemController extends Controller
                 $request->song_id = $songs[0]->id;
             } else {
                 // as we found several songs, return to view as user must select one
+                Log::info('STORE-search resulted in several songs - SeqNo:'.$request->seq_no.' BeforeITemId:'.$request->beforeItem_id);
                 return view('cspot.item_select_song', [
                     'songs'      => $songs,
                     'plan'       => $plan,
@@ -147,6 +149,9 @@ class ItemController extends Controller
             $beforeItem = Item::find($request->beforeItem_id);
             $request->seq_no = ($beforeItem->seq_no) - 0.1;
         }
+
+        $xfi = isset($beforeItem->id) ? $beforeItem->id.' seqNo:'.$beforeItem->seq_no : 'missing!';
+        Log::info('STORE-Inserting new item into plan with seqNo '.$request->seq_no.' - befItemId? '.$xfi);
 
         // review numbering of current items for this plan and insert the new item
         $plan = insertItem( $request );
@@ -187,6 +192,7 @@ class ItemController extends Controller
         $plan = Plan::find( $plan_id );
         $this->checkRights($plan);
 
+        $beforeItem = [];
         // find the seq_no ot the item before which I want to insert this new item
         if ( isset($beforeItem_id) ) {
             $beforeItem = Item::find($beforeItem_id);
@@ -202,6 +208,8 @@ class ItemController extends Controller
 
         // re-number all items 
         $item = moveItem($newItem->id, 'static');
+
+        Log::info('INSERSONG-'.$seq_no.' new Id:'.$newItem->id.' new seqNo:'.$newItem->seq_no.' befItemId:'.$beforeItem_id);
 
         if ($moreItems=='Y') {
 
@@ -220,6 +228,7 @@ class ItemController extends Controller
                     'plan'         => $plan, 
                     'seq_no'       => $seq_no, 
                     'versionsEnum' => $versionsEnum,
+                    'beforeItem'   => $beforeItem,
                     'bibleBooks'   => $bibleBooks,
                     'bibleTexts'   => [],
                 ]);
