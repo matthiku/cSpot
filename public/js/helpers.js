@@ -45,11 +45,9 @@ $(document).ready(function() {
     });    
     // handle swiping on smartphones
     $('#app-layout').on("swipeleft",function(){
-        alert('swipeleft');
         navigateTo('next-item');
     });
     $('#app-layout').on("swiperight",function(){
-        alert('swiperight');
         navigateTo('previous-item'); 
     });
     
@@ -123,8 +121,12 @@ function navigateTo(where)
     // link doesn't exist:
     if (a==null) return;
 
-    // simulate a click on this element
-    window.location.href = a.href;
+    if (a.onclick==null) {
+        // try to go to the location defined in href
+        window.location.href = a.href;        
+    }    
+    // try to simulate a click on this element
+    a.click();
 }
 
 

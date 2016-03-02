@@ -69,8 +69,10 @@
                         </a>
                     @endif
                     &nbsp; 
-                    <a class="hidden-xs-down" href="{{ url('cspot/plans/'.$item->plan_id) }}/edit">{!! Form::button('Cancel - Back to Plan') !!}</a>
-                    <a class="hidden-sm-up" href="{{ url('cspot/plans/'.$item->plan_id) }}/edit">{!! Form::button('Cancel - Back') !!}</a>
+                    <a class="hidden-xs-down" href="{{ url('cspot/plans/'.$item->plan_id) }}/edit" id="go-back">
+                        {!! Form::button('Cancel - Back to Plan') !!}</a>
+                    <a class="hidden-sm-up" href="{{ url('cspot/plans/'.$item->plan_id) }}/edit">
+                        {!! Form::button('Cancel - Back') !!}</a>
             @else
                 @if ( isset($beforeItem) )
                     <h2>Insert Item before "{{ $beforeItem->seq_no }} {{ $beforeItem->comment }}"
@@ -152,7 +154,7 @@
                             @endif
                             @if (Auth::user()->isEditor() )
                                 <div class="col-xs-12 col-sm-4 full-btn">
-                                    <a href="#" class="fully-width btn btn-primary-outline btn-sm" 
+                                    <a href="#" class="fully-width btn btn-primary-outline btn-sm" accesskey="69" id="go-edit"
                                         onclick="location.href='{{ route('cspot.songs.edit', $item->song_id) }}'" 
                                           title="Edit details of this song" data-toggle="tooltip"
                                     ><i class="fa fa-edit"></i>&nbsp;edit song</a>

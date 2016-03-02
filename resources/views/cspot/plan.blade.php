@@ -49,7 +49,7 @@
                     <a href="{{ url('cspot/items/').'/'.$plan->firstItem()->id }}"><i class="fa fa-music">&nbsp;</i>Chords</a>
                 </div>
                 <div class="pull-xs-right m-r-1">
-                    <a href="{{ url('cspot/items/'.$plan->firstItem()->id.'/present/') }}"><i class="fa fa-music">&nbsp;</i>Present</a>
+                    <a href="{{ url('cspot/items/'.$plan->firstItem()->id.'/present/') }}"><i class="fa fa-tv">&nbsp;</i>Present</a>
                 </div>
 
                 <h3 class="hidden-md-down">Plan for "{{ $plan->type->name }}" on {{ $plan->date->formatLocalized('%A, %d %B %Y') }}</h3>

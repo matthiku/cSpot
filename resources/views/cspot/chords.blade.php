@@ -40,11 +40,11 @@
                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Go to
             </button>
-            <div class="dropdown-menu dropdown-menu-right bg-faded">
+            <div class="dropdown-menu dropdown-menu-right bg-info">
                 @foreach ($items as $menu_item)
                     <a class="dropdown-item nowrap 
                         @if ($item->id == $menu_item->id)
-                            bg-info
+                            bg-faded
                         @endif
                         "
                         href="{{ url('cspot/items/').'/'.$menu_item->id }}">
