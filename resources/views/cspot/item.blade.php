@@ -35,7 +35,8 @@
     @endif
 
 
-    <div class="row">
+    <div class="row" id=title-bar>
+
         <div class="col-md-6">
             @if (isset($item))
                     <h2 class="nowrap">
@@ -83,6 +84,7 @@
                 <h5>in the Service plan (id {{ $plan->id }}) for {{ $plan->date->formatLocalized('%A, %d %B %Y') }}</h5>
             @endif
         </div>
+
     </div>
 
 
@@ -91,14 +93,19 @@
 
     <div class="row">
 
+
+        <!-- show only if a song is already linked to this item -->
         @if ( isset($item->song->id) && $item->song_id<>0 )
 
 
             {!! Form::hidden('song_id', $item->song_id) !!}
 
 
+            <!-- 
+                show song details 
+            -->
             <div id="col-2-song" class="col-xl-4 col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                <div class="card card-block text-xs-center" style="padding-bottom: 0;">
+                <div class="card card-block text-xs-center p-b-1">
 
                     <div class="row song-details form-group">
                         <h5 class="card-title">
@@ -172,37 +179,36 @@
                     </script>
 
 
+                    <!-- show song search input field if requested -->
                     <div class="row form-group song-search">
                         To search for another song,
-                        {!! Form::label('search', 'enter song number, title or author or parts thereof:') !!}
-                        {!! Form::text('search') !!}
-                        <input type="submit" name="searchBtn" value="Search" />
-                        @if ($errors->has('search'))
-                            <br><span class="help-block">
-                                <strong>{{ $errors->first('search') }}</strong>
-                            </span>
-                        @endif
+                        @include('cspot.snippets.song_search')
                     </div>
+
                 </div>
+
+                @include('cspot.snippets.comment_input')
+
             </div>
 
+            <!-- 
+                show song lyrics and/or chords 
+            -->
             <div id="col-3-lyrics" class="col-xl-5 col-lg-12 col-md-12 col-sm-12 col-xs-12 center">
                 <div class="row form-group link" id="lyrics" title="click to show chords!" data-toggle="tooltip"
-                     onclick="$('#chords').show();$('#lyrics').hide();">
+                     onclick="$('#chords-div').show();$('#lyrics').hide();">
                     <h4>Lyrics</h4>
                     <pre>{{ $item->song->lyrics }}</pre>
                 </div>
-                <div class="row form-group link" id="chords" title="click to show lyrics!" data-toggle="tooltip"
-                     onclick="$('#lyrics').show();$('#chords').hide();">
+                <div class="row form-group link" id="chords-div" title="click to show lyrics!" data-toggle="tooltip"
+                     onclick="$('#lyrics').show();$('#chords-div').hide();">
                     <h4>Chords</h4>
-                    <pre>{{ $item->song->chords }}</pre>
+                    <pre id="chords">{{ $item->song->chords }}</pre>
                 </div>
-                <script>
-                    
-                </script>
             </div>
 
         @else
+            <!-- show song search only for authorized users -->
             @if( Auth::user()->ownsPlan($plan->id) )
                 
                 <div id="col-2-song-search" 
@@ -212,41 +218,24 @@
                     @endif
                     >
                     To search for a song,
-                    {!! Form::label('search', 'enter song number, title or author or parts thereof:') !!}<br/>
-                    {!! Form::text('search') !!}
-                    <input type="submit" name="searchBtn" value="Search" />
-                    @if ($errors->has('search'))
-                        <br><span class="help-block">
-                            <strong>{{ $errors->first('search') }}</strong>
-                        </span>
-                    @endif
+                    @include('cspot.snippets.song_search')
                 </div>
             @endif
+
+            @include('cspot.snippets.comment_input')
+
         @endif
 
+
+        <!-- 
+            show bible ref data for new items or for existing items with no song linked 
+        -->
         @if ( !isset($item) || (isset($item) && ! $item->song_id) )
-            <!-- WAS: <div id="col-1-comment" class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-xs-12"> -->
             <div id="col-1-comment" class="col-xs-12">
 
                 <div class="row form-group bg-grey">
-
-                    <div class="col-xs-12 full-width">
-                        {!! Form::label('comment', 'Comments or notes', ['id'=>'comment-label']); !!}
-                        <p onclick="blink('.save-buttons')">
-                            @if( Auth::user()->ownsPlan($plan->id) )
-                                {!! Form::text('comment'); !!}
-                            @else
-                                {!! Form::text('comment', $item->comment, ['disabled'=>'disabled']); !!}
-                            @endif
-                            @if ($errors->has('comment'))
-                                <br><span class="help-block">
-                                    <strong>{{ $errors->first('comment') }}</strong>
-                                </span>
-                            @endif
-                        </p>
-                    </div> 
-
                     
+                    <!-- allow bible verses selection for authorized users -->
                     @if( Auth::user()->ownsPlan($plan->id) )
                     <div class="col-xs-12 full-width p-b-1">
 
@@ -283,7 +272,7 @@
                     </div>
                     @endif
 
-
+                    <!-- select bible version to be used -->
                     <div class="col-xs-12 select-version" style="display: none;">
                         {!! Form::label('version', 'Select version:'); !!}
                         <select name="version" id="version" onchange="populateComment()">
@@ -296,6 +285,7 @@
                         </select>
                     </div>  
 
+                    <!-- show the selected bible verses -->
                     <div class="col-lg-6 col-sm-12" id="bible-passages">
                         @foreach ($bibleTexts as $btext)
                             <h5>{{ $btext->display }} ({{ $btext->version_abbreviation }})</h5>
@@ -316,8 +306,12 @@
 
     </div>
 
+
+
     @if (! isset($item))
-        <!-- See if user wants to add more items to this plan -->
+        <!-- 
+            See if user wants to add even more items to this plan 
+        -->
         <input type="hidden" name="moreItems" value="false">
         <div class="checkbox">
           <label>
