@@ -99,6 +99,8 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
 
     // MOVE the specified resource up or down in the list of items related to a plan
     Route::get('items/{items}/move/{direction}',        'Cspot\ItemController@move');
+    // change the seq no of an item
+    Route::get('items/{items}/seq_no/{seq_no}',         'Cspot\ItemController@update');
     // specific (soft) delete route using 'get' method
     Route::get('items/{items}/delete',                  'Cspot\ItemController@destroy');    
     // permanently delete an item

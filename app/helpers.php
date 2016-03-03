@@ -188,10 +188,10 @@ function moveItem($id, $direction)
     $counter = 1.0;
     foreach ($items as $item) {
         if ($item->seq_no <> $counter) {
-            $i = Item::find($item->id); # get the actual DB record
+            $i = Item::find($item->id);   # get the actual DB record
             $item->seq_no = $counter;     # update the current selection
             $i->seq_no = $counter;        # update the seq_no
-            $i->save();                 # save the record
+            $i->save();                   # save the record
         }
         $counter += 1.0;        
     }

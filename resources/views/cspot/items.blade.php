@@ -63,16 +63,23 @@
 				} 
 			?>
 
-			<tr id="tr-item-{{ $item->seq_no }}"
+			<tr id="tr-item-{{ $item->seq_no }}" data-item-id="{{ $item->id }}"
 				@if ($item->deleted_at)
 					class="trashed text-muted"
 				@endif
 				>
 
 
-
-				<td class="hidden-sm-down center drag-item" scope="row">
-					{{ $item->seq_no }}</td>
+				<td class="hidden-sm-down drag-item" scope="row" title="drag item into the new position">
+					<span class="pull-xs-right">{{ $item->seq_no }}</span>
+					@if ($item->seq_no == (count($plan->items)-$trashedItemsCount) )
+						<i class="fa fa-long-arrow-up">
+					@elseif ($item->seq_no > 1)
+						<i class="fa fa-arrows-v">
+					@else
+						<i class="fa fa-long-arrow-down">
+					@endif
+				</td>
 
 
 				<td {{$onclick}} {{$tooltip}} class="hidden-xs-down center link">

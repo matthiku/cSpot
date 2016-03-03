@@ -361,14 +361,14 @@ class ItemController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id, $seq_no=null)
     {
         $item    = Item::find($id);
         $plan_id = $item->plan_id;
         $plan    = Plan::find( $plan_id );
 
         // searching for a song?
-        if ($request->has('search')) {
+        if ( $request->has('search') && $seq_no != null ) {
             $songs = songSearch( '%'.$request->search.'%' );
             if (!count($songs)) {
                 flash('No songs found for '.$request->search);
@@ -391,8 +391,16 @@ class ItemController extends Controller
         // check user rights (teachers and leaders can edit items of their own plan)
         $this->checkRights($plan);
 
-        // get current item
-        $item->update( $request->except('_token') );
+        if ($seq_no==null) {
+            // get current item and update it
+            $item->update( $request->except('_token') );
+        } else {
+            // only update the sequence number
+            $item->seq_no = $seq_no;
+            $item->save();
+            $newItem = moveItem( $item->id, 'static');
+            flash('item '.$item->id . ' moved into new position.');
+        }
 
         // back to full plan view 
         return \Redirect::route('cspot.plans.edit', $plan_id);

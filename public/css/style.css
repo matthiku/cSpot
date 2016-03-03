@@ -1,6 +1,9 @@
+.drag-item {
+    cursor: handle;
+}
 .drag-item:hover {
-    border: 1px solid red;
-    background-color: brightyellow;
+    border: 2px solid #def;
+    background-color: #abc;
 }
 
 .text-present {
