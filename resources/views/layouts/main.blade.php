@@ -16,13 +16,18 @@
     <link href="{{ url('css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ url('css/font-awesome.min.css') }}" rel="stylesheet">
 
+    <!-- jQuery UI css    (not needed at the moment )   -->
+    <link href="{{ url('css/jquery-ui.min.css') }}" rel="stylesheet">
+    <!-- <link href="{{ url('css/jquery-ui.structure.min.css') }}" rel="stylesheet"> -->
+    <!-- <link href="{{ url('css/jquery-ui.theme.min.css') }}" rel="stylesheet"> -->
+    
     <!-- Custom styles for this template -->
     <link href="{{ url('css/style.css') }}" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url('css/signin.css') }}"/>
-    <!-- <link rel="stylesheet" href="{{ url('css/dashboard.css') }}"/> -->
+    <link href="{{ url('css/signin.css') }}" rel="stylesheet">
     
     <script src="{{ url('js/tether.min.js') }}"></script>
     <script src="{{ url('js/jquery.min.js') }}"></script>
+    <script src="{{ url('js/jquery-ui.min.js') }}"></script>
     <script src="{{ url('js/jquery.detect_swipe.js') }}"></script>
 
     <script src="{{ url('js/helpers.js') }}"></script>

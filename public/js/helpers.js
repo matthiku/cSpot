@@ -24,6 +24,20 @@ $(document).ready(function() {
         }
     });
 
+
+    /***
+     * Make items on Plan page draggable
+     */
+    $("#tbody-items").sortable({
+        items   : "> tr",
+        appendTo: "parent",
+        cursor  : 'move',
+        helper  : "clone",
+        stop    : function (event, ui) {
+            alert('move finished!'+ui.item[0].nodeName);
+        },
+    }).disableSelection();
+
     
     // handle keyboard events
     $(document).keydown(function( event ) {

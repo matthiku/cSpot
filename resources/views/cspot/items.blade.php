@@ -6,13 +6,8 @@
 		{{ count($plan->items)>5 ? 'table-sm' : ''}} {{ count($plan->items)>10 ? 'table-xs' : ''}}">
 		<thead class="thead-default">
 			<tr>
-				@if( Auth::user()->ownsPlan($plan->id) )
-					<th class="text-right" 
-						data-toggle="tooltip" data-placement="right" title="Move an item one place up or down. The sequence number will be adjusted accordinglyl"
-						>Re-order</th>
-				@endif
-				<th class="hidden-sm-down center"
-						data-toggle="tooltip" title="Numbers are automatically assigned according to the position of the item."
+				<th class="hidden-sm-down center" data-placement="right"
+						data-toggle="tooltip" title="Drag and Drop items to move them to a different position in the plan!"
 					>Order</th>
 
 				<th class="hidden-xs-down center"
@@ -50,7 +45,11 @@
 		</thead>
 
 
-		<tbody>
+		<tbody 
+			@if( Auth::user()->ownsPlan($plan->id) )
+				id="tbody-items"
+			@endif
+			>
 	    @foreach( $plan->items as $item )
 
 			<?php 
@@ -64,31 +63,15 @@
 				} 
 			?>
 
-			<tr
+			<tr id="tr-item-{{ $item->seq_no }}"
 				@if ($item->deleted_at)
 					class="trashed text-muted"
 				@endif
 				>
 
-				@if( Auth::user()->ownsPlan($plan->id) )
-					@if( $item->deleted_at )
-						<td></td>
-					@else
-						<td class="text-right nowrap">
-							@if ($item->seq_no > 1)
-								<a class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="right" title="Move up" 
-									href='{{ url('cspot/items/'.$item->id) }}/move/earlier'><i class="fa fa-angle-double-up"></i></a>
-							@endif
-							@if ($item->seq_no < (count($plan->items)-$trashedItemsCount) )
-								<a class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="right" title="Move down" 
-									href='{{ url('cspot/items/'.$item->id) }}/move/later'><i class="fa fa-angle-double-down"></i></a>
-							@endif
-						</td>
-					@endif
-				@endif
 
 
-				<td class="hidden-sm-down center link" scope="row">
+				<td class="hidden-sm-down center drag-item" scope="row">
 					{{ $item->seq_no }}</td>
 
 
