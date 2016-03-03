@@ -39,8 +39,8 @@
 					<th>Title</th>
 					<th class="hidden-md-down">Author</th>
 					<th class="center">Book Ref.</th>
-					<th class="center hidden-sm-down">Youtube ID</th>
-					<th class="center hidden-sm-down">Hymnal.Net</th>
+					<th class="center hidden-sm-down"><small>Chords?</small></th>
+					<th class="center hidden-sm-down">Media</th>
 					<th class="center hidden-md-down">Usage</th>
 					<th class="center hidden-lg-down">CCLI No.</th>
 					<th class="center hidden-lg-down">License</th>
@@ -57,7 +57,7 @@
 					@endif
 				>
 
-					<td scope="row" class="hidden-md-down">{{ $song->id }}</td>
+					<td scope="row" class="hidden-md-down text-xs-center">{{ $song->id }}</td>
 
 					<td>{{ $song->title }} {{ $song->title_2<>'' ? '('. $song->title_2 .')' : '' }}</td>
 
@@ -65,23 +65,46 @@
 
 					<td class="center">{{ $song->book_ref }}</td>
 
-					<td class="center hidden-sm-down">
-						@if (substr($song->youtube_id,0,2)=="PL")
-							<a target="new" href="https://www.youtube.com/playlist?list={{ $song->youtube_id }}">YT Playlist</a></td>
-						@else
-							<a target="new" href="https://www.youtube.com/watch?v={{ $song->youtube_id }}">{{ $song->youtube_id }}</a>
+					<td class="center">
+						@if ( strlen($song->chords)>20 )
+							<i class="fa fa-check"></i>
 						@endif
 					</td>
 
+
 					<td class="center hidden-sm-down">
-						<a target="new" href="https://www.hymnal.net/en/hymn/h/{{ $song->hymnaldotnet_id }}">{{ $song->hymnaldotnet_id }}</a>
+	                    @if ( $song->hymnaldotnet_id > 0 )
+	                        <a target="new" title="See on hymnal.net" data-toggle="tooltip"
+	                            href="https://www.hymnal.net/en/hymn/h/{{ $song->hymnaldotnet_id }}">
+	                            <i class="fa fa-music"></i> </a> &nbsp; 
+	                    @endif
+	                    @if ( strlen($song->youtube_id)>0 )
+	                        <a target="new" title="Play on YouTube" class="red" data-toggle="tooltip"
+	                        	href="https://www.youtube.com/{{ 
+	                        		substr($song->youtube_id,0,2)=="PL" ? 'playlist?list=' : 'watch?v=' 
+	                        		}}{{ $song->youtube_id }}">
+	                             <i class="fa fa-youtube-play"></i></a>
+	                    @endif
 					</td>
+
 
 					<td class="center hidden-md-down">{{ $song->items->count() }}</td>
 
-					<td class="center hidden-lg-down">{{ $song->ccli_no }}</td>
+
+					<td class="center hidden-lg-down">
+	                    @if ( $song->ccli_no > 10000 )
+	                        <a class="btn btn-sm" type="button" target="new" 
+	                            href="https://olr.ccli.com/search/results?SearchTerm={{ $song->ccli_no }}">
+                         	{{ $song->ccli_no }}
+                        	</a>
+	                    @else
+                         	{{ $song->ccli_no }}
+	                    @endif
+					</td>
+
 
 					<td class="center hidden-lg-down">{{ $song->license }}</td>
+
 
 					<td class="hidden-xs-down nowrap center">
 						<!-- <a class="btn btn-secondary btn-sm" title="Show Plans using this song" href='/cspot/plans/{{$song->id}}'><i class="fa fa-filter"></i></a> -->
