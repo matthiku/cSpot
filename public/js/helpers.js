@@ -34,6 +34,9 @@ $(document).ready(function() {
         appendTo: "parent",
         cursor  : 'move',
         helper  : "clone",
+        handle  : '.drag-item',
+        distance: '5',
+        forceHelperSize: true,
         stop    : function (event, ui) {
             var changed=false;
             shouldBe = 0;
