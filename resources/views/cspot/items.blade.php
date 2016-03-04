@@ -73,13 +73,7 @@
 
 				<td class="drag-item" scope="row" title="drag item into the new position">
 					<span class="hidden-sm-down pull-xs-right">{{ $item->seq_no }}</span>
-					@if ($item->seq_no == (count($plan->items)-$trashedItemsCount) )
-						<i class="p-r-1 fa fa-long-arrow-up">
-					@elseif ($item->seq_no > 1)
-						<i class="p-r-1 fa fa-arrows-v">
-					@else
-						<i class="p-r-1 fa fa-long-arrow-down">
-					@endif
+					<i class="p-r-1 fa fa-bars">
 				</td>
 
 
@@ -183,25 +177,25 @@
 
 @if( Auth::user()->ownsPlan($plan->id) )
 
-	<div class="text-xs-lefts">
-		<a class="btn btn-sm btn-primary-outline" href='{{ url('cspot/plans/'.$plan->id) }}/items/create/{{isset($item) ? $item->seq_no+1 : 1}}'>
-			<i class="fa fa-plus"> </i> &nbsp; Add item {{ isset($item) ? $item->seq_no+1 : 1 }}.0
-		</a>
-	</div>
-
 	@if( $trashedItemsCount )
-		<div class="center">
+		<div class="pull-xs-right">
 			This plan contains&nbsp;<big>{{ $trashedItemsCount }}</big>&nbsp;'trashed'&nbsp;item{{$trashedItemsCount>1 ? 's' : ''}}: &nbsp;
 			<i class="fa fa-list-ul"></i>&nbsp;<a href="#" id="toggleBtn" onclick="toggleTrashed()">Show</a> &nbsp;
 			@if( Auth::user()->ownsPlan($plan->id) )
 				<a href="{{ url('cspot/plans/'.$plan->id.'/items/trashed/restore') }}" 
-					class="text-success"><i class="fa fa-undo"></i>&nbsp;Restore&nbsp;all</a> &nbsp;
+					class="text-success nowrap"><i class="fa fa-undo"></i>&nbsp;Restore&nbsp;all</a> &nbsp;
 				<a href="{{ url('cspot/plans/'.$plan->id.'/items/trashed/delete') }}" 
-					class="text-danger"><i class="fa fa-trash"></i
+					class="text-danger nowrap"><i class="fa fa-trash"></i
 						>&nbsp;Delete&nbsp;{{ $trashedItemsCount>1 ? 'all&nbsp;'.$trashedItemsCount : 'trashed' }}&nbsp;permanently</a>
 			@endif
 		</div>
 	@endif
+
+	<div class="pull-xs-left">
+		<a class="btn btn-sm btn-primary-outline" href='{{ url('cspot/plans/'.$plan->id) }}/items/create/{{isset($item) ? $item->seq_no+1 : 1}}'>
+			<i class="fa fa-plus"> </i> &nbsp; Add item {{ isset($item) ? $item->seq_no+1 : 1 }}.0
+		</a>
+	</div>
 
 @endif
 

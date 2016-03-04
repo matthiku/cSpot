@@ -5,7 +5,7 @@
     comment input field 
 -->
 
-<div class="full-width">
+<div class="full-width center">
     {!! Form::label('comment', 'Comments or notes', ['id'=>'comment-label']); !!}
     <p onclick="blink('.save-buttons')">
         @if( Auth::user()->ownsPlan($plan->id) )

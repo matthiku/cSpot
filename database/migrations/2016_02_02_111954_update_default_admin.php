@@ -14,10 +14,16 @@ class UpdateDefaultAdmin extends Migration
     {
         $email = '';
         // request the email address from the user
-        echo "\nWe need to define the first user in the database who then will be the Administrator.\n";
+        echo "\nWe define the first user in the database as the Administrator.\n";
         while ($email == '') {
-            $email = readline('Enter the email address of the administrator: ');
+            if (PHP_OS == 'WINNT') {
+                echo 'Enter the email address of the administrator: ';
+                $email = stream_get_line(STDIN, 1024, PHP_EOL);
+            } else {
+                $email = readline('Enter the email address of the administrator: ');
+            }            
         }
+        
         DB::table('users')->insert(['first_name'=>'Administrator', 'email' => $email]);
         echo "\nYou can modify these values later and should first reset the password for Administrator!\n\n";
 

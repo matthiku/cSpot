@@ -38,6 +38,13 @@
     <div class="row" id=title-bar>
 
         <div class="col-md-6">
+
+            <div class="pull-xs-right">        
+                <span class="save-buttons" style="display: none;">
+                    {!! Form::submit('Save!'); !!}
+                </span>
+            </div>
+
             @if (isset($item))
                     <h2 class="nowrap">
                         <a href="{{ url('cspot/plans/'.$plan->id.'/items/'.$item->id.'/go/previous') }}"
@@ -125,7 +132,7 @@
 
                         <h6>Musical Instructions (e.g. Key)</h6>
                         @if( Auth::user()->ownsPlan($item->plan_id) )
-                            <p>{!! Form::text('key'); !!}</p>
+                            <p class="full-width">{!! Form::text('key'); !!}</p>
                         @else
                             <p>{!! Form::text('key', $item->key, ['disabled'=>'disabled']); !!}</p>
                         @endif
@@ -194,16 +201,23 @@
             <!-- 
                 show song lyrics and/or chords 
             -->
-            <div id="col-3-lyrics" class="col-xl-5 col-lg-12 col-md-12 col-sm-12 col-xs-12 center">
-                <div class="row form-group link" id="lyrics" title="click to show chords!" data-toggle="tooltip"
-                     onclick="$('#chords-div').show();$('#lyrics').hide();">
-                    <h4>Lyrics</h4>
-                    <pre>{{ $item->song->lyrics }}</pre>
-                </div>
-                <div class="row form-group link" id="chords-div" title="click to show lyrics!" data-toggle="tooltip"
-                     onclick="$('#lyrics').show();$('#chords-div').hide();">
-                    <h4>Chords</h4>
-                    <pre id="chords">{{ $item->song->chords }}</pre>
+            <div id="col-3-lyrics" class="col-xl-8 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div id="tabs">
+                    <ul>
+                        <li><a href="#lyrics-tab">Lyrics</a></li>
+                        <li><a href="#chords-tab">Chords</a></li>
+                        <li><a href="#sheet-tab">Sheet Music</a></li>
+                    </ul>
+                        <div id="lyrics-tab">
+                            <pre>{{ $item->song->lyrics }}</pre>
+                        </div>
+                        <div id="chords-tab">
+                            <pre id="chords">{{ $item->song->chords }}</pre>
+                        </div>
+                        <div id="sheet-tab">
+                            <pre id="sheet">coming soon!</pre>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -211,8 +225,7 @@
             <!-- show song search only for authorized users -->
             @if( Auth::user()->ownsPlan($plan->id) )
                 
-                <div id="col-2-song-search" 
-                    class="col-lg-6 col-md-12 col-sm-12 col-xs-12 m-b-1"
+                <div id="col-2-song-search" class="col-lg-6 col-md-12 col-sm-12 col-xs-12 m-b-1"
                     @if ( isset($item)  &&  $item->comment) )
                         style="display: none;"
                     @endif
@@ -315,12 +328,12 @@
         <input type="hidden" name="moreItems" value="false">
         <div class="checkbox">
           <label>
-            <input checked="checked" type="checkbox" value="Y" name="moreItems">
-            Tick to add another item to this plan after saving this one
+            <input type="checkbox" value="N" name="moreItems">
+            Tick to add more items
           </label>
         </div>
         <span class="save-buttons" style="display: none;">
-            {!! Form::submit('Submit'); !!}
+            {!! Form::submit('Save!'); !!}
         </span>
         &nbsp; <a href="{{ url( 'cspot/plans/' . (isset($plan) ? $plan->id : $plan_id) )  }}/edit">{!! Form::button('Cancel - Back to Plan'); !!}</a>
     @endif

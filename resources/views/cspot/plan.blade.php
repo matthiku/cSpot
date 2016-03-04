@@ -246,10 +246,12 @@
 
 
 
+
+    <!-- 
+        Show items for existing plan 
+        ____________________________
+    -->
     @if (isset($plan))
-
-
-        <!-- Show items for existing plan -->
 
         @include('cspot.items')
 

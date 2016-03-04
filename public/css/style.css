@@ -1,8 +1,9 @@
 .drag-item {
-    cursor: handle;
+    cursor: grab;
 }
 .drag-item>i {
     color: #ccc;
+    cursor: grab;
 }
 .drag-item>i:hover {
     color: #ccc;

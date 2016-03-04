@@ -133,7 +133,7 @@ class BibleController extends Controller
 
 
 
-    protected function getBibleHubText( $url )
+    protected function getBibleHubText( $url, $book, $chapter )
     {
         // Set up cURL
         $ch = curl_init();
@@ -150,7 +150,7 @@ class BibleController extends Controller
         $p[0] = new StdClass;
         $p[0]->copyright = '';
         $p[0]->text = '';
-        $p[0]->display = 'xxzz';
+        $p[0]->display = $book.' '.$chapter;
         $p[0]->version_abbreviation = 'NIV';
         $result = new StdClass;
         $result->passages = $p;
@@ -173,11 +173,8 @@ class BibleController extends Controller
             if ($ch->getAttribute('class')=='padbot') {
                 $p[0]->copyright = $ch->ownerDocument->saveHTML($ch);
             }
-            if ($ch->getAttribute('class')=='secondarytitle') {
-                $p[0]->display = $ch->ownerDocument->saveHTML($ch);
-            }
             if ($ch->getAttribute('class')=='vheading') {
-                $p[0]->version_abbreviation = $ch->ownerDocument->saveHTML($ch);
+                $p[0]->version_abbreviation = $ch->firstChild->data;
             }
         }
 
@@ -222,9 +219,11 @@ class BibleController extends Controller
             $query = "$book+$chapter:$verseFrom-$verseTo&version=eng-$version";
 
             // restrieve the passage from the cache, if it exists, otherwise rquest it again
-            $result = Cache::get( $query, function() {
-                    $this->getWebsite($url, $query);
-                });
+            if ( Cache::has( $query ) ) {
+                $result = Cache::get( $query );
+            } else {
+                $result = $this->getWebsite($url, $query);
+            }
 
             if ($result) {
                 return response()->json( $result );
@@ -232,14 +231,16 @@ class BibleController extends Controller
         } 
 
         // needs to be correct of biblehub.com
-        if ($book=='Psalm') $book = 'psalms';
+        if ($book=='Psalm') $book = 'Psalms';
         // Try to get other versions via BLB 
         $url  = 'http://biblehub.com/'.strtolower($version).'/'.strtolower($book).'/'.$chapter.'.htm';
+
         if (Cache::has($url)) {
             $result = Cache::get($url);
         } else {
-            $result = $this->getBibleHubText( $url );
+            $result = $this->getBibleHubText( $url, $book, $chapter );
         }
+
         if ($result) {
             return response()->json( $result );
         }                
