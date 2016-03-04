@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+use Carbon\Carbon;
+use Cache;
+use Log;
 
 use Snap\BibleBooks\BibleBooks;
 
@@ -92,7 +95,7 @@ class BibleController extends Controller
 
 
 
-    protected function getWebsite($url)
+    protected function getWebsite($url, $query=null)
     {
         $token = env('BIBLES_ORG_API_TOKEN');
         if (!$token) return;
@@ -100,7 +103,7 @@ class BibleController extends Controller
         // Set up cURL
         $ch = curl_init();
         // Set the URL
-        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_URL, $url.$query);
         // don't verify SSL certificate
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         // Return the contents of the response as a string
@@ -111,11 +114,17 @@ class BibleController extends Controller
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         curl_setopt($ch, CURLOPT_USERPWD, "$token:X");
 
-        // Do the request
-        $response = curl_exec($ch);
+        // Execute the request
+        $response = json_decode( curl_exec($ch) );
         curl_close($ch);
+
+        // save passages in cache with an expiration date
+        $expiresAt = Carbon::now()->addDays( env('BIBLE_PASSAGES_EXPIRATION_DAYS', 15) );
+        Cache::put( $query, $response, $expiresAt );
+
+        Log::info('retrieving bible passage from remote and saving to cache: '.$query);
         
-        return json_decode($response);        
+        return $response;
     }
 
 
@@ -137,7 +146,7 @@ class BibleController extends Controller
     }
 
     /**
-     * Get bible text (whole chapters) via API from bibles.org
+     * Get bible text (whole passages or single verses) via API from bibles.org
      */
     public function getBibleText($version, $book, $chapter, $verseFrom, $verseTo)
     {
@@ -147,10 +156,17 @@ class BibleController extends Controller
             $version = "ESV";
         } 
 
-        $url = "https://bibles.org/v2/passages.js?q[]=$book+$chapter:$verseFrom-$verseTo&version=eng-$version";
-        // "https://bibles.org/v2/passages.js?q[]=acts+1:12-15&version=eng-esv"
+        // create the url and query string
+        $url   = "https://bibles.org/v2/passages.js?q[]=";
+        $query = "$book+$chapter:$verseFrom-$verseTo&version=eng-$version";
 
-        $result = $this->getWebsite($url);
+
+        // restrieve the passage from the cache, if it exists, otherwise rquest it again
+        $result = Cache::get( $query, function() {
+            $this->getWebsite($url, $query);
+        });
+
+
         if ($result) {
             return response()->json( $result );
         }

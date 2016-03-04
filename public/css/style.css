@@ -1,6 +1,13 @@
 .drag-item {
     cursor: handle;
 }
+.drag-item>i {
+    color: #ccc;
+}
+.drag-item>i:hover {
+    color: #ccc;
+    color: black;
+}
 .drag-item:hover {
     border: 2px solid #def;
     background-color: #abc;

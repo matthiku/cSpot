@@ -74,11 +74,11 @@
 				<td class="drag-item" scope="row" title="drag item into the new position">
 					<span class="hidden-sm-down pull-xs-right">{{ $item->seq_no }}</span>
 					@if ($item->seq_no == (count($plan->items)-$trashedItemsCount) )
-						<i class="fa fa-long-arrow-up">&nbsp;
+						<i class="p-r-1 fa fa-long-arrow-up">
 					@elseif ($item->seq_no > 1)
-						<i class="fa fa-arrows-v">&nbsp;
+						<i class="p-r-1 fa fa-arrows-v">
 					@else
-						<i class="fa fa-long-arrow-down">&nbsp;
+						<i class="p-r-1 fa fa-long-arrow-down">
 					@endif
 				</td>
 
