@@ -11,6 +11,10 @@ use Carbon\Carbon;
 use Cache;
 use Log;
 
+use DOMDocument;
+use DOMXPath;
+use StdClass;
+
 use Snap\BibleBooks\BibleBooks;
 
 
@@ -123,8 +127,67 @@ class BibleController extends Controller
         Cache::put( $query, $response, $expiresAt );
 
         Log::info('retrieving bible passage from remote and saving to cache: '.$query);
-        
+
         return $response;
+    }
+
+
+
+    protected function getBibleHubText( $url )
+    {
+        // Set up cURL
+        $ch = curl_init();
+        // Set the URL
+        $timeout = 5;
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+        $html = curl_exec($ch);
+        curl_close($ch);
+
+        // create a new object to return         
+        $p = [];
+        $p[0] = new StdClass;
+        $p[0]->copyright = '';
+        $p[0]->text = '';
+        $p[0]->display = 'xxzz';
+        $p[0]->version_abbreviation = 'NIV';
+        $result = new StdClass;
+        $result->passages = $p;
+        $search = new StdClass;
+        $search->result = $result;
+        $response = new StdClass;
+        $response->search = $search;
+        $rr = new StdClass;
+        $rr->response = $response;
+
+        # Create a DOM parser object
+        $dom = new DOMDocument;
+        libxml_use_internal_errors(true);
+        $dom->loadHTML($html);
+        $btext = $dom->getElementById('leftbox');
+        foreach ($btext->getElementsByTagName('div') as $ch) {
+            if ($ch->getAttribute('class')=='chap') {
+                $p[0]->text = $ch->ownerDocument->saveHTML($ch);
+            }
+            if ($ch->getAttribute('class')=='padbot') {
+                $p[0]->copyright = $ch->ownerDocument->saveHTML($ch);
+            }
+            if ($ch->getAttribute('class')=='secondarytitle') {
+                $p[0]->display = $ch->ownerDocument->saveHTML($ch);
+            }
+            if ($ch->getAttribute('class')=='vheading') {
+                $p[0]->version_abbreviation = $ch->ownerDocument->saveHTML($ch);
+            }
+        }
+
+        // save passages in cache with an expiration date
+        $expiresAt = Carbon::now()->addDays( env('BIBLE_PASSAGES_EXPIRATION_DAYS', 15) );
+        Cache::put( $url, $rr, $expiresAt );
+
+        Log::info('retrieving bible passage from remote and saving to cache: '.$url);
+
+        return $rr;
     }
 
 
@@ -152,26 +215,36 @@ class BibleController extends Controller
     {
         // only certain versions are accessible via the API
         $versions = array( 'NASB', 'ESV', 'MSG', 'AMP', 'CEVUK', 'KJVA');
-        if ( ! in_array($version, $versions) ) {
-            $version = "ESV";
+
+        if ( in_array($version, $versions) ) {
+            // create the url and query string
+            $url   = "https://bibles.org/v2/passages.js?q[]=";
+            $query = "$book+$chapter:$verseFrom-$verseTo&version=eng-$version";
+
+            // restrieve the passage from the cache, if it exists, otherwise rquest it again
+            $result = Cache::get( $query, function() {
+                    $this->getWebsite($url, $query);
+                });
+
+            if ($result) {
+                return response()->json( $result );
+            }                
         } 
 
-        // create the url and query string
-        $url   = "https://bibles.org/v2/passages.js?q[]=";
-        $query = "$book+$chapter:$verseFrom-$verseTo&version=eng-$version";
-
-
-        // restrieve the passage from the cache, if it exists, otherwise rquest it again
-        $result = Cache::get( $query, function() {
-            $this->getWebsite($url, $query);
-        });
-
-
+        // needs to be correct of biblehub.com
+        if ($book=='Psalm') $book = 'psalms';
+        // Try to get other versions via BLB 
+        $url  = 'http://biblehub.com/'.strtolower($version).'/'.strtolower($book).'/'.$chapter.'.htm';
+        if (Cache::has($url)) {
+            $result = Cache::get($url);
+        } else {
+            $result = $this->getBibleHubText( $url );
+        }
         if ($result) {
             return response()->json( $result );
-        }
-        return response()->json("requested failed, no bible text fetched!", 404);
+        }                
 
+        return response()->json("requested failed, no bible text fetched!", 404);
     }
 
 
