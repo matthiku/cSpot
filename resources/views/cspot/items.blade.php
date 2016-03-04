@@ -6,9 +6,10 @@
 		{{ count($plan->items)>5 ? 'table-sm' : ''}} {{ count($plan->items)>10 ? 'table-xs' : ''}}">
 		<thead class="thead-default">
 			<tr>
-				<th class="hidden-sm-down center" data-placement="right"
+				<th class="center" data-placement="right"
 						data-toggle="tooltip" title="Drag and Drop items to move them to a different position in the plan!"
-					>Order</th>
+					><span class="hidden-sm-down">Order</span>
+					</th>
 
 				<th class="hidden-xs-down center"
 						data-toggle="tooltip" title="Hymn book reference. MP='Mission Praise'"
@@ -70,14 +71,14 @@
 				>
 
 
-				<td class="hidden-sm-down drag-item" scope="row" title="drag item into the new position">
-					<span class="pull-xs-right">{{ $item->seq_no }}</span>
+				<td class="drag-item" scope="row" title="drag item into the new position">
+					<span class="hidden-sm-down pull-xs-right">{{ $item->seq_no }}</span>
 					@if ($item->seq_no == (count($plan->items)-$trashedItemsCount) )
-						<i class="fa fa-long-arrow-up">
+						<i class="fa fa-long-arrow-up">&nbsp;
 					@elseif ($item->seq_no > 1)
-						<i class="fa fa-arrows-v">
+						<i class="fa fa-arrows-v">&nbsp;
 					@else
-						<i class="fa fa-long-arrow-down">
+						<i class="fa fa-long-arrow-down">&nbsp;
 					@endif
 				</td>
 
