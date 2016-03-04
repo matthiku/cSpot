@@ -28,6 +28,7 @@
     <script src="{{ url('js/tether.min.js') }}"></script>
     <script src="{{ url('js/jquery.min.js') }}"></script>
     <script src="{{ url('js/jquery-ui.min.js') }}"></script>
+    <script src="{{ url('js/jquery.ui.touch-punch.min.js') }}"></script>
     <script src="{{ url('js/jquery.detect_swipe.js') }}"></script>
 
     <script src="{{ url('js/helpers.js') }}"></script>
