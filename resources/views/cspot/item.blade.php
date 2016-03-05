@@ -101,7 +101,9 @@
     <div class="row">
 
 
-        <!-- show only if a song is already linked to this item -->
+        <!-- 
+            show only if a song is already linked to this item 
+        -->
         @if ( isset($item->song->id) && $item->song_id<>0 )
 
 
@@ -189,12 +191,16 @@
                     <!-- show song search input field if requested -->
                     <div class="row form-group song-search">
                         To search for another song,
+
                         @include('cspot.snippets.song_search')
+
                     </div>
 
                 </div>
 
+
                 @include('cspot.snippets.comment_input')
+
 
             </div>
 
@@ -221,6 +227,11 @@
                 </div>
             </div>
 
+
+
+        <!-- 
+            no song linked to this item yet 
+        -->
         @else
             <!-- show song search only for authorized users -->
             @if( Auth::user()->ownsPlan($plan->id) )
@@ -241,7 +252,8 @@
 
 
         <!-- 
-            show bible ref data for new items or for existing items with no song linked 
+            show bible reference data for new items 
+            or for existing items with no song linked 
         -->
         @if ( !isset($item) || (isset($item) && ! $item->song_id) )
             <div id="col-1-comment" class="col-xs-12">
@@ -250,13 +262,14 @@
                     
                     <!-- allow bible verses selection for authorized users -->
                     @if( Auth::user()->ownsPlan($plan->id) )
-                    <div class="col-xs-12 full-width p-b-1">
+                    <div class="col-xs-12 full-width p-b-1 p-t-1">
 
                         @if ( isset($item) )
-                            <a href="#" onclick="$('#col-2-song-search').show();">Add Song</a>
+                            <a href="#" onclick="$(this).hide();$('#col-2-song-search').show();">Add Song</a>
+                            <br><br>
                         @endif
 
-                        <h6>Add Bible Reference(s)</h6>
+                        <h6>Add Bible Text:</h6>
 
                         <select name="from-book" id="from-book" class="pull-xs-left" 
                                 onchange="showNextSelect('from', 'chapter')">

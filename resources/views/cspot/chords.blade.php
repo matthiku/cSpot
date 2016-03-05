@@ -41,6 +41,12 @@
                 Go to
             </button>
             <div class="dropdown-menu dropdown-menu-right bg-info">
+                <a class="dropdown-item" id="go-back"
+                    href="{{ url('cspot/plans/'.$item->plan_id.'/edit') }}">
+                    <i class="fa fa-undo"></i>
+                    Back to plan overview
+                </a>
+                <div class="dropdown-divider"></div>
                 @foreach ($items as $menu_item)
                     <a class="dropdown-item nowrap 
                         @if ($item->id == $menu_item->id)
@@ -59,17 +65,15 @@
                 @if (Auth::user()->ownsPlan($item->plan_id))
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" id="go-edit"
-                        href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/edit') }}">
+                        @if ($item->song_id)
+                            href="{{ url('cspot/songs/'.$item->song_id.'/edit') }}">
+                        @else
+                            href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/edit') }}">
+                        @endif
                         <i class="fa fa-pencil"></i>
-                        Edit this item
+                        Edit the current item
                     </a>
                 @endif
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" id="go-back"
-                    href="{{ url('cspot/plans/'.$item->plan_id.'/edit') }}">
-                    <i class="fa fa-undo"></i>
-                    Back to plan overview
-                </a>
             </div>
 
         </div>
@@ -151,7 +155,11 @@
                 @endforeach
             </div>
         @else
-            <div>{{ $item->comment ? '('.$item->comment.')' : '' }}</div>
+            <div class="jumbotron">
+                <h1 class="display-3 center">
+                    <span class="text-muted">{{ $item->comment ? '('.$item->comment.')' : '' }}</span>
+                </h1>
+            </div>
         @endif
 
     </div>

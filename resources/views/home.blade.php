@@ -32,31 +32,31 @@
                     <p class="card-text">
 
                         <span class="btn btn-lg btn-info md-full">
+                            <a href="#" data-container="body" data-toggle="tooltip" data-placement="left" class="pull-xs-right" 
+                                    title="Show plans where you are leader or teacher">
+                                &nbsp; <i class="fa fa-question-circle"></i></a>
                             <a href="{{ url('cspot/plans') }}">
                                 Your Service Plans
-                                <a href="#" data-container="body" data-toggle="tooltip" data-placement="left" class="pull-xs-right" 
-                                        title="Show plans where you are leader or teacher">
-                                    &nbsp; <i class="fa fa-question-circle"></i></a>
                             </a>
                         </span>
                         &nbsp; 
                         &nbsp; 
                         <span class="btn btn-lg btn-primary md-full">
+                            <a href="#" data-container="body" data-toggle="tooltip" data-placement="left" class="pull-xs-right" 
+                                    title="Show all upcoming Service Plans">
+                                &nbsp; <i class="fa fa-question-circle bg-primary"></i></a>
                             <a href="{{ url('cspot/plans/future') }}" class="bg-primary">
                                 Upcoming Service Plans
-                                <a href="#" data-container="body" data-toggle="tooltip" data-placement="left" class="pull-xs-right" 
-                                        title="Show all upcoming Service Plans">
-                                    &nbsp; <i class="fa fa-question-circle bg-primary"></i></a>
                             </a>
                         </span>
                         &nbsp;
                         &nbsp; 
                         <span class="btn btn-lg btn-success md-full">
+                            <a href="#" data-container="body" data-toggle="tooltip" data-placement="left" class="pull-xs-right" 
+                                    title="Go directly to next Sunday's Service Plan">
+                                &nbsp; <i class="fa fa-question-circle"></i></a>
                             <a href="{{ url('cspot/plans/next') }}">
                                 Next Sunday's Plan
-                                <a href="#" data-container="body" data-toggle="tooltip" data-placement="left" class="pull-xs-right" 
-                                        title="Go directly to next Sunday's Service Plan">
-                                    &nbsp; <i class="fa fa-question-circle"></i></a>
                             </a>
                         </span>
 

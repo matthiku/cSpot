@@ -13,6 +13,7 @@ $(document).ready(function() {
             trigger: 'focus'
         });
 
+        // enable Tabs
         $('#tabs').tabs();
     });
   
@@ -110,7 +111,10 @@ $(document).ready(function() {
 });
 
 
-
+/*
+    Use Regex patterns to identify chords versus lyrics versus headings
+    and to show them in different colors
+*/
 function reDisplayChords()
 {
     // get the chords text and split it into lines
@@ -132,10 +136,20 @@ function reDisplayChords()
 }
 function identifyHeadings(str)
 {
-    var patt = /^(Verse|Chorus|bridge|coda|end)/i;
-    if ( patt.test(str) ) return ' p-l-3 bg-success';
+    // identify headers by the first word in a line, case-insensitive
+
+    var patt = /^(Chorus|bridge|coda|end)/i;
+    if ( patt.test(str) ) 
+        return ' p-l-3 bg-info';
+
+    var patt = /^(Verse)/i;
+    if ( patt.test(str) ) 
+        return ' p-l-3 bg-success';
+
     var patt = /^(Capo|Key|Intro|Other|\()/;
-    if ( patt.test(str) ) return ' text-primary';
+    if ( patt.test(str) ) 
+        return ' text-primary';
+
     return '';
 }
 function identifyChords(str)
@@ -168,6 +182,9 @@ function navigateTo(where)
     a = document.getElementById('go-'+where);
     // link doesn't exist:
     if (a==null) return;
+
+    // fade background and show spinner
+    $('#show-spinner').modal({keyboard: false})
 
     if (a.onclick==null) {
         // try to go to the location defined in href
