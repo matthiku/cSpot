@@ -41,30 +41,40 @@ $(document).ready(function() {
         distance: '5',
         forceHelperSize: true,
         stop    : function (event, ui) {
+            $('#show-spinner').show();
             var changed=false;
-            shouldBe = 0;
-            movedItemId = $(ui.item).attr('id').split('-')[2];
+            should_seq_no = 0;
+            movedItem = [];
+            movedItem.id = ui.item.data('itemId');
+            movedItem.seq_no = ui.item.attr('id').split('-')[2];
             // get all siblings of the just moved item
             siblings = $(ui.item).parent().children();
             // check each sibling's sequence
             for (var i = 1; i <= siblings.length; i++) {
-                // check for incorrect ordered items
-                // (  $(siblings[i]).attr('id') == 'tr-item-'+(1+i)+'.0' ) 
-                if (  $(siblings[-1+i]).attr('id') == 'tr-item-'+movedItemId  && movedItemId != i ) {
-                    changed = $(siblings[-1+i]);
-                    if (movedItemId > i) {
-                        shouldBe = -0.5+i;
-                    } else {
-                        shouldBe = 0.5+i
+                sib = siblings[-1+i];
+                console.log(i + ' attr:' + sib.id + ' id:' + sib.dataset.itemId + ' class:' + sib.classList);
+                if (sib.classList.contains('trashed')) {
+                    // ignore trashed items....
+                    continue;
+                }
+                // is this the moved item?
+                if ( sib.dataset.itemId == movedItem.id ) {
+                    changed = sib;
+                    console.log(sib.id+' was moved. ');
+                    break;
+                } 
+                else {
+                    should_seq_no = 0.0 + sib.id.split('-')[2];
+                    console.log(sib.id + ' unmoved ');
+                    if (changed) { 
+                        break; 
                     }
-                    //console.log($(siblings[i]).attr('id')+' should have '+shouldBe);
-                } //else {
-                    //console.log((1+i)+' OK! '+$(siblings[i]).attr('id'));
-                //}
+                }
             }
             if (changed) {
-                // console.log( 'Item '+changed.attr('id')+ ' (id # ' + changed.data('item-id') +')  should now have seq no ' + (shouldBe) );
-                window.location.href = __app_url + '/cspot/items/' + changed.data('item-id') + '/seq_no/'+ (shouldBe);
+                should_seq_no = 1 * should_seq_no;
+                console.log( 'Item '+changed.id+ ' (id # ' + changed.dataset.itemId +')  should now have seq no ' + (0.5 + should_seq_no) );
+                window.location.href = __app_url + '/cspot/items/' + changed.dataset.itemId + '/seq_no/'+ (0.5 + should_seq_no);
             } else {
                 console.log('order unchanged');
             }

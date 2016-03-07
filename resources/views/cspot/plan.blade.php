@@ -44,8 +44,11 @@
     <div class="row">
         <div class="col-md-9 col-xl-8 md-center">
 
-            @if (isset($plan))
+            @if ( isset($plan) && $plan->items()->count() )
                 <div class="pull-xs-right">
+                    <a href="{{ url('cspot/items/'.$plan->firstItem()->id.'/sheetmusic/') }}"><i class="fa fa-file-text">&nbsp;</i>Sheetmusic</a>
+                </div>
+                <div class="pull-xs-right m-r-1">
                     <a href="{{ url('cspot/items/').'/'.$plan->firstItem()->id }}"><i class="fa fa-music">&nbsp;</i>Chords</a>
                 </div>
                 <div class="pull-xs-right m-r-1">
@@ -259,7 +262,7 @@
 
         <!-- Checkbox to add default items into NEW plan -->
         <input type="hidden" name="defaultItems" value="false">
-        <div class="checkbox xs-center">
+        <div class="checkbox center">
           <label>
             <input checked="checked" type="checkbox" value="Y" name="defaultItems">
             Insert default items for this plan?
@@ -272,7 +275,11 @@
 
 
 
-    <div class="form-group">
+    <div class="form-group
+        @if (! isset($plan))
+            center
+        @endif
+        ">
         @if (Auth::user()->isEditor())
             {!! Form::label('info', 'Notes:', ['class' => 'form-control-label']); !!}
             <br/>

@@ -169,11 +169,15 @@ class ItemController extends Controller
                     'plan'         => $plan, 
                     'seq_no'       => $request->seq_no, 
                     'versionsEnum' => $versionsEnum,
+                    'moreItems'    => 'Y',
                     'beforeItem'   => $beforeItem,
                     'bibleBooks'   => $bibleBooks,
                     'bibleTexts'   => [],
                 ]);
         }
+
+        // all went well and the user sees the result anyway, so no flash message needed:
+        unFlash();
 
         // back to full plan view, but first,
         // (get plan id from the hidden input field in the form)
@@ -364,6 +368,10 @@ class ItemController extends Controller
     public function update(Request $request, $id, $seq_no=null)
     {
         $item    = Item::find($id);
+        if (!$item) {
+            flash('Error! Item with ID "' . $id . '" not found');
+            return \Redirect::back();
+        }
         $plan_id = $item->plan_id;
         $plan    = Plan::find( $plan_id );
 
@@ -399,7 +407,6 @@ class ItemController extends Controller
             $item->seq_no = $seq_no;
             $item->save();
             $newItem = moveItem( $item->id, 'static');
-            flash('item '.$item->id . ' moved into new position.');
         }
 
         // back to full plan view 
@@ -447,7 +454,6 @@ class ItemController extends Controller
         $item = moveItem($id, $direction);
         if ($item) {
             // back to full plan view 
-            flash('Item moved.');
             return \Redirect::back();
         }
         flash('Error! Item with ID "' . $id . '" not found');
@@ -464,20 +470,27 @@ class ItemController extends Controller
      */
     public function destroy($id)
     {
-        // check user rights (teachers and leaders can edit items of their own plan)
         $item    = Item::find($id);
-        $plan_id = $item->plan_id;
-        $plan    = Plan::find( $plan_id );
+        if ($item) {
+            $plan_id = $item->plan_id;
+            $plan    = Plan::find( $plan_id );
+        } 
+        else {
+            flash('Error! Item with ID "' . $id . '" not found');
+            return \Redirect::back();
+        }
+
+        // check user rights (teachers and leaders can edit items of their own plan)
         $this->checkRights($plan);
 
         // get item and delete it
         $item = deleteItem($id);
         if ($item) {
             // back to full plan view 
-            flash('Item deleted.');
+            //flash('Item deleted.');
             return \Redirect::route('cspot.plans.edit', $plan_id);
         }
-        flash('Error! Item with ID "' . $id . '" not found');
+        flash('Error! Problem trying to delete item with ID "' . $id . '"');
         return \Redirect::back();
     }
 

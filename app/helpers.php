@@ -22,6 +22,18 @@ function flash($message)
 
 
 /**
+ * Set a flash message in the session.
+ *
+ * @param  string $message
+ * @return void
+ */
+function unFlash() 
+{
+    session()->flash('message', '');
+}
+
+
+/**
  * Set a flash ERROR message in the session.
  *
  * @param  string $message
@@ -231,9 +243,12 @@ function deleteItem($id)
         } else {
             if ($item->seq_no <> $counter) {
                 $i = Item::find($item->id); # get the actual DB record
-                $item->seq_no = $counter;   # update the current selection
-                $i->seq_no = $counter;      # update the seq_no
-                $i->save();                 # save the record
+                # if found, update the current selection
+                if ($i) { 
+                    $item->seq_no = $counter; 
+                    $i->seq_no = $counter;      # update the seq_no
+                    $i->save();                 # save the record
+                }  
             }
             $counter += 1.0;        
         }

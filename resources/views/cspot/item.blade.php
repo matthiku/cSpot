@@ -37,15 +37,15 @@
 
     <div class="row" id=title-bar>
 
-        <div class="col-md-6">
+        @if (isset($item))
 
-            <div class="pull-xs-right">        
-                <span class="save-buttons" style="display: none;">
-                    {!! Form::submit('Save!'); !!}
-                </span>
-            </div>
+            <div class="col-md-6">
 
-            @if (isset($item))
+                <div class="pull-xs-right">        
+                    <span class="save-buttons" style="display: none;">
+                        {!! Form::submit('Save!'); !!}
+                    </span>
+                </div>
                     <h2 class="nowrap">
                         <a href="{{ url('cspot/plans/'.$plan->id.'/items/'.$item->id.'/go/previous') }}"
                             class="btn btn-secondary" role="button" id="go-previous-item"
@@ -81,18 +81,46 @@
                         {!! Form::button('Cancel - Back to Plan') !!}</a>
                     <a class="hidden-sm-up" href="{{ url('cspot/plans/'.$item->plan_id) }}/edit">
                         {!! Form::button('Cancel - Back') !!}</a>
-            @else
-                @if ( isset($beforeItem) )
-                    <h2>Insert Item before "{{ $beforeItem->seq_no }} {{ $beforeItem->comment }}"
-                    </h2>
-                @else
-                    <h2>Add Item No {{ $seq_no }}.0</h2>
-                @endif
-                <h5>in the Service plan (id {{ $plan->id }}) for {{ $plan->date->formatLocalized('%A, %d %B %Y') }}</h5>
-            @endif
-        </div>
+                </div>
+            </div>
 
-    </div>
+        @else
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+
+                    @if ( isset($beforeItem) )
+                        <h2>Insert Item before "{{ $beforeItem->seq_no }} {{ $beforeItem->comment }}"
+                        </h2>
+                    @else
+                        <h2>Add Item No {{ $seq_no }}.0</h2>
+                    @endif
+                    <h5>in the Service plan (id {{ $plan->id }}) for {{ $plan->date->formatLocalized('%A, %d %B %Y') }}</h5>
+                </div>
+
+                <!-- 
+                    See if user wants to add even more items to this plan 
+                -->
+                <div class="col-md-6 pull-md-right">
+                    <span class="save-buttons" style="display: none;">
+                        {!! Form::submit('Save!'); !!}
+                    </span>
+                    &nbsp; <a href="{{ url( 'cspot/plans/' . (isset($plan) ? $plan->id : $plan_id) )  }}/edit">{!! Form::button('Cancel - Back to Plan'); !!}</a>
+                    <input type="hidden" name="moreItems" value="false">
+                    <div class="checkbox">
+                      <label>
+                        <input type="checkbox" value="Y" 
+                            @if (isset($moreItems))
+                                checked="CHECKED" 
+                            @endif
+                            name="moreItems">
+                        Tick to add more items
+                      </label>
+                    </div>
+                </div>
+            </div>
+        @endif
+
 
 
     <hr>
@@ -269,11 +297,11 @@
                             <br><br>
                         @endif
 
-                        <h6>Add Bible Text:</h6>
+                        <h6>Add Bible Reference:</h6>
 
                         <select name="from-book" id="from-book" class="pull-xs-left" 
                                 onchange="showNextSelect('from', 'chapter')">
-                            <option selected="TRUE" value=" "> </option>
+                            <option selected="TRUE" value=" ">select...</option>
                             @foreach ($bibleBooks->getArrayOfBooks() as $book)
                                 <option value="{{ $book }}">{{ $book }}</option>
                             @endforeach                        
@@ -332,24 +360,6 @@
 
     </div>
 
-
-
-    @if (! isset($item))
-        <!-- 
-            See if user wants to add even more items to this plan 
-        -->
-        <input type="hidden" name="moreItems" value="false">
-        <div class="checkbox">
-          <label>
-            <input type="checkbox" value="N" name="moreItems">
-            Tick to add more items
-          </label>
-        </div>
-        <span class="save-buttons" style="display: none;">
-            {!! Form::submit('Save!'); !!}
-        </span>
-        &nbsp; <a href="{{ url( 'cspot/plans/' . (isset($plan) ? $plan->id : $plan_id) )  }}/edit">{!! Form::button('Cancel - Back to Plan'); !!}</a>
-    @endif
 
     {!! Form::close() !!}
 

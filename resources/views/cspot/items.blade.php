@@ -179,7 +179,7 @@
 
 	@if( $trashedItemsCount )
 		<div class="pull-xs-right">
-			This plan contains&nbsp;<big>{{ $trashedItemsCount }}</big>&nbsp;'trashed'&nbsp;item{{$trashedItemsCount>1 ? 's' : ''}}: &nbsp;
+			<i class="fa fa-trash"></i>&nbsp;contains&nbsp;<big>{{ $trashedItemsCount }}</big>&nbsp;item{{$trashedItemsCount>1 ? 's' : ''}}: &nbsp;
 			<i class="fa fa-list-ul"></i>&nbsp;<a href="#" id="toggleBtn" onclick="toggleTrashed()">Show</a> &nbsp;
 			@if( Auth::user()->ownsPlan($plan->id) )
 				<a href="{{ url('cspot/plans/'.$plan->id.'/items/trashed/restore') }}" 
