@@ -90,7 +90,7 @@
                 <div class="col-md-6">
 
                     @if ( isset($beforeItem) )
-                        <h2>Insert Item before "{{ $beforeItem->seq_no }} {{ $beforeItem->comment }}"
+                        <h2>Insert Item(s) before "{{ $beforeItem->comment }}"
                         </h2>
                     @else
                         <h2>Add Item No {{ $seq_no }}.0</h2>
@@ -114,7 +114,7 @@
                                 checked="CHECKED" 
                             @endif
                             name="moreItems">
-                        Tick to add more items
+                        Tick to add more items after this one
                       </label>
                     </div>
                 </div>

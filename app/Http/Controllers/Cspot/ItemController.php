@@ -376,7 +376,8 @@ class ItemController extends Controller
         $plan    = Plan::find( $plan_id );
 
         // searching for a song?
-        if ( $request->has('search') && $seq_no != null ) {
+        // (but not when changing the seq.no)
+        if ( $request->has('search') && $seq_no == null ) {
             $songs = songSearch( '%'.$request->search.'%' );
             if (!count($songs)) {
                 flash('No songs found for '.$request->search);
@@ -400,8 +401,13 @@ class ItemController extends Controller
         $this->checkRights($plan);
 
         if ($seq_no==null) {
-            // get current item and update it
-            $item->update( $request->except('_token') );
+            // get all item fields from the request
+            $fields = $request->except('_token', '_method');
+            // if a single song was selected above, add it to the array
+            if (isset($songs)) {
+                $fields['song_id'] = $songs[0]->id;
+            }
+            $item->update( $fields );
         } else {
             // only update the sequence number
             $item->seq_no = $seq_no;

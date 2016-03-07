@@ -59,6 +59,7 @@ function songSearch( $search )
              orWhere('ccli_no', 'like', $search)->
              orWhere('book_ref','like', $search)->
              orWhere('author',  'like', $search)->
+             orWhere('lyrics',  'like', $search)->
              take(10)->get();
 }
 
