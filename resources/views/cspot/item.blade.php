@@ -293,7 +293,7 @@
                     <div class="col-xs-12 full-width p-b-1 p-t-1">
 
                         @if ( isset($item) )
-                            <a href="#" onclick="$(this).hide();$('#col-2-song-search').show();">Add Song</a>
+                            <a href="#" onclick="$(this).hide();$('#col-2-song-search').show();"><i class="fa fa-music"></i>&nbsp;Add Song</a>
                             <br><br>
                         @endif
 

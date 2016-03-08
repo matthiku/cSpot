@@ -11,7 +11,6 @@
 
 @section('content')
 
-
 	@include('layouts.flashing')
 
 	@if( Auth::user()->isEditor() )
@@ -42,6 +41,7 @@
 					<th class="center hidden-sm-down"><small>Chords?</small></th>
 					<th class="center hidden-sm-down">Media</th>
 					<th class="center hidden-md-down">Usage</th>
+					<th class="center hidden-md-down">Last Use</th>
 					<th class="center hidden-lg-down">CCLI No.</th>
 					<th class="center hidden-lg-down">License</th>
 					<th class="hidden-xs-down">Action</th>
@@ -51,6 +51,7 @@
 
 			<tbody>
 	        @foreach( $songs as $song )
+
 				<tr 
 					@if ( Auth::user()->isEditor() )
 						class="link" onclick="location.href ='{{ url('cspot/songs/'.$song->id) }}/edit'"
@@ -91,6 +92,15 @@
 					<td class="center hidden-md-down">{{ $song->items->count() }}</td>
 
 
+					<td class="center hidden-md-down">
+						<?php  
+						 	$last = $song->lastPlanUsingThisSong();
+						 	if ($last) { echo $last->date->formatLocalized('%a, %d %b'); }
+						 	//echo $last->date;
+						 ?>
+					</td>
+
+
 					<td class="center hidden-lg-down">
 	                    @if ( $song->ccli_no > 10000 )
 	                        <a class="btn btn-sm" type="button" target="new" 
@@ -109,8 +119,10 @@
 					<td class="hidden-xs-down nowrap center">
 						<!-- <a class="btn btn-secondary btn-sm" title="Show Plans using this song" href='/cspot/plans/{{$song->id}}'><i class="fa fa-filter"></i></a> -->
 						 @if( Auth::user()->isEditor() )
-							<a class="btn btn-primary-outline btn-sm hidden-lg-down" title="Edit" href='{{ url('cspot/songs/'.$song->id) }}/edit'><i class="fa fa-pencil"></i></a>
-							<a class="btn btn-danger btn-sm" title="Delete!" href='{{ url('cspot/songs/'.$song->id) }}/delete'><i class="fa fa-trash"></i></a>
+							<!-- <a class="btn btn-primary-outline btn-sm hidden-lg-down" title="Edit" href='{{ url('cspot/songs/'.$song->id) }}/edit'><i class="fa fa-pencil"></i></a> -->
+							@if ($song->items->count()==0)
+								<a class="btn btn-danger btn-sm" title="Delete!" href='{{ url('cspot/songs/'.$song->id) }}/delete'><i class="fa fa-trash"></i></a>
+							@endif
 						@endif
 					</td>
 

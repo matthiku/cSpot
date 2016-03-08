@@ -3,6 +3,10 @@ var bibleBooks;
 
 $(document).ready(function() {
 
+
+    /**
+     * enabling certain UI features 
+     */
     $(function () {
         // activate the tooltips
         $('[data-toggle="tooltip"]').tooltip();
@@ -17,6 +21,22 @@ $(document).ready(function() {
         $('#tabs').tabs();
     });
   
+
+
+    /**
+     * Mark modified form fields with a new background
+     * and show the submit/save buttons
+     */
+    $("input, textarea").change(function(){
+        // change background color of those fields
+        $(this).css("background-color", "#D6D6FF");
+
+        // show submit or sabe buttons
+        $('.submit-button').show();
+    });
+
+
+
     /***
      * Get array with all bible books with all chapters and number of verses in each chapter
      */
@@ -83,7 +103,9 @@ $(document).ready(function() {
 
 
     
-    // handle keyboard events
+    /**
+     * handle keyboard events
+     */
     $(document).keydown(function( event ) {
         // key codes: 37=left arrow, 39=right, 38=up, 40=down, 34=PgDown, 33=pgUp, 
         //            36=home, 35=End, 32=space, 27=Esc, 66=e
@@ -100,8 +122,11 @@ $(document).ready(function() {
             case 69: navigateTo('edit');   break;
             default: break;
         }
-    });    
-    // handle swiping on smartphones
+    });
+
+    /**
+     * handle swiping on smartphones
+     */
     $('#app-layout').on("swipeleft",function(){
         navigateTo('next-item');
     });
@@ -110,7 +135,9 @@ $(document).ready(function() {
     });
     
 
-    // re-design the showing of lyrics interspersed with guitar chords
+    /**
+     * re-design the showing of lyrics interspersed with guitar chords
+     */
     if ( $('#chords').text() != '' ) {
         // only do this for PRE tags, not on input fields etc...
         if ($('#chords')[0].nodeName == 'PRE') {

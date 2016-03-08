@@ -47,6 +47,16 @@ class Song extends Model
 
 
 
+    /**
+     * Relationship with the files table
+     */
+    public function files() 
+    {
+        return $this->hasMany('App\Models\File');
+    }
+
+
+
 
     /**
      * Get collection of plans using this song
@@ -75,7 +85,7 @@ class Song extends Model
         // get list of plans using this song
         $plan = Plan::whereHas('items', function ($query) use ($id) {
             $query->where('song_id', $id);
-        })->orderBy('id', 'desc')->first();
+        })->orderBy('date', 'desc')->first();
 
         return $plan;
     }

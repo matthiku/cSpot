@@ -20,10 +20,15 @@
             'route'  => array('cspot.songs.update', $song->id), 
             'method' => 'put', 
             'id'     => 'inputForm',
-            'class'  => 'form-horizontal'
+            'class'  => 'form-horizontal',
+            'files'  => true,
             )) !!}
     @else
-        {!! Form::open(array('action' => 'Cspot\SongController@store', 'id' => 'inputForm')) !!}
+        {!! Form::open(array(
+            'action' => 'Cspot\SongController@store', 
+            'id' => 'inputForm',
+            'files'  => true,
+            )) !!}
     @endif
 
 
@@ -32,6 +37,7 @@
         <div class="col-md-6 col-lg-7 col-xl-8 md-center">
             @if (isset($song))
                 <h2 class="hidden-xs-down">Song Details</h2>
+                <small>Last updated: {{ $song->updated_at->formatLocalized('%a, %d %b %Y, %H:%M') }}</small>
             @else
                 <h2 class="hidden-xs-down">Add Song</h2>
             @endif
@@ -43,9 +49,9 @@
                 <div class="col-xs-4">
                     @if (isset($song))
 
-                        <big>{!! Form::submit('Save changes', ['class'=>'full-width']); !!}</big>
+                        <big class="submit-button" style="display: none;">{!! Form::submit('Save changes', ['class'=>'full-width']); !!}</big>
                         
-                        @if (Auth::user()->isAdmin())
+                        @if (Auth::user()->isAdmin() && count($plansUsingThisSong)==0 )
                             </div>
                             <div class="col-xs-4">
                             <a class="btn btn-danger" type="button" href="{{ url('cspot/songs/'.$song->id) }}/delete">
@@ -53,11 +59,11 @@
                             </a>
                         @endif
                     @else
-                        <big>{!! Form::submit('Submit', ['class'=>'fully-width']); !!}</big>
+                        <big class="submit-button" style="display: none;">{!! Form::submit('Submit', ['class'=>'fully-width']); !!}</big>
                     @endif
                 </div>
 
-                <div class="col-xs-4">
+                <div class="col-xs-4 pull-xs-right">
                     <big><a href="{{ url('cspot/songs') }}">{!! Form::button('All Songs', ['class'=>'fully-width']); !!}</a></big>
                 </div>
 
@@ -195,21 +201,71 @@
             <div class="row form-group">
                 {!! Form::label('link', 'Link(s)', ['class' => 'col-sm-4 col-md-3 col-lg-2 col-xl-4']); !!}
                 <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width">{!! Form::text('link'); !!}</div>
-
             </div>
+
+
+            <div class="row form-group">
+                {!! Form::label('file', 'Attach an image (e.g. sheet music)', ['class' => 'col-sm-4 col-md-3 col-lg-2 col-xl-4']); !!}
+                <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width">{!! Form::file('file'); !!}</div>
+            </div>
+            @if ($song->files)
+                @foreach ($song->files as $file)
+                    <img src="{{ url(config('files.uploads.webpath')).'/'.$file->token }}">
+                @endforeach
+            @endif
+
 
         </div>
 
 
+
         <div class="col-xl-6">
+
 
             {!! Form::label('lyrics', 'Lyrics'); !!}<br/>
             {!! Form::textarea('lyrics'); !!}
+            <button id="lyrics-copy-btn" class="pull-xs-right"><i class="fa fa-copy"></i>&nbsp;copy lyrics</button>
+            <!-- Add ability to copy textarea content to the clipboard -->
+            <script>
+                var copyTextareaBtn = document.querySelector('#lyrics-copy-btn');
+                copyTextareaBtn.addEventListener('click', function(event) {
+                  var copyTextarea = $('#lyrics');
+                  copyTextarea.select();
+                  try {
+                    var successful = document.execCommand('copy');
+                    var msg = successful ? 'successful' : 'unsuccessful';
+                    console.log('Copying text command was ' + msg);
+                  } catch (err) {
+                    console.log('Oops, unable to copy');
+                  }
+                  event.preventDefault();
+                });
+            </script>
             <br>
 
             {!! Form::label('chords', 'Chords'); !!}<br/>
             {!! Form::textarea('chords'); !!}
+            <button id="chords-copy-btn" class="pull-xs-right"><i class="fa fa-copy"></i>&nbsp;copy chords</button>
             <br>
+
+            <!-- Add ability to copy textarea content to the clipboard -->
+            <script>
+                var copyTextareaBtn = document.querySelector('#chords-copy-btn');
+                copyTextareaBtn.addEventListener('click', function(event) {
+                  var copyTextarea = $('#chords');
+                  copyTextarea.select();
+                  try {
+                    var successful = document.execCommand('copy');
+                    var msg = successful ? 'successful' : 'unsuccessful';
+                    console.log('Copying text command was ' + msg);
+                  } catch (err) {
+                    console.log('Oops, unable to copy');
+                  }
+                  event.preventDefault();
+                });
+            </script>
+
+
 
             @if ( isset($song) )
                 <h4>Song Usage History: <small>(used <strong>{{ count($plansUsingThisSong) }}</strong> times)</small></h4>
@@ -234,6 +290,7 @@
                     </table>
                 @endif
             @endif
+
 
 
         </div>

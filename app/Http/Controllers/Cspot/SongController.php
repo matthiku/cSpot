@@ -12,6 +12,7 @@ use App\Http\Controllers\Controller;
 
 use App\Models\Song;
 use App\Models\Plan;
+use App\Models\File;
 
 
 class SongController extends Controller
@@ -149,12 +150,44 @@ class SongController extends Controller
     {
         // get this Song
         $song = Song::find($id);
+        // handle error if song is not found!
+        if (! $song) {
+            flash('Song not found!!');
+            return redirect()->back();
+        }
+
+        // handle file uplaods
+        if ($request->hasFile('file')) {
+            if ($request->file('file')->isValid()) {
+
+                $extension = $request->file('file')->getClientOriginalExtension();
+                $token     = str_random(32).'.'.$extension;
+                $filename  = $request->file('file')->getClientOriginalName();
+
+                // move the anonymous file to the central location
+                $destinationPath = config('files.uploads.webpath');
+                $request->file('file')->move($destinationPath, $token);
+
+                $file = new File([
+                    'token'    => $token,
+                    'filename' => $filename
+                ]);
+                // add the file as a relationship to the song
+                $song->files()->save($file);
+            }
+            else {
+                flash('Uploaded file could not be validated!');
+            }
+        }
+
         // update from request
         $song->update($request->except(['_method','_token','youtube_id']));
-        // handle yt id seperately
+        
+        // handle yt id seperately in order to use the Song Model setter method
         $song->youtube_id = $request->youtube_id;
         $song->save();
 
+        // instead of flashing, maybe show the field 'updated_at' in the form?
         flash( 'Song "'.$request->title.'" updated.' );
         return redirect()->back();
     }

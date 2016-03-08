@@ -40,28 +40,44 @@
     @endif
 
 
-    <!-- page header -->
+
+    <!-- 
+        page header 
+    -->
     <div class="row">
         <div class="col-md-9 col-xl-8 md-center">
 
             @if ( isset($plan) && $plan->items()->count() )
+
                 <div class="pull-xs-right">
-                    <a href="{{ url('cspot/items/'.$plan->firstItem()->id.'/sheetmusic/') }}"><i class="fa fa-file-text">&nbsp;</i>Sheetmusic</a>
+                    <a title="Show sheetmusic (if available) for the songs on this plan"
+                        href="{{ url('cspot/items/'.$plan->firstItem()->id.'/sheetmusic/') }}">
+                        <i class="fa fa-file-text">&nbsp;</i>Sheetmusic</a>
                 </div>
                 <div class="pull-xs-right m-r-1">
-                    <a href="{{ url('cspot/items/').'/'.$plan->firstItem()->id }}"><i class="fa fa-music">&nbsp;</i>Chords</a>
+                    <a title="Show guitar chords (if available) for the songs on this plan" 
+                        href="{{ url('cspot/items/').'/'.$plan->firstItem()->id }}">
+                        <i class="fa fa-music">&nbsp;</i>Chords</a>
                 </div>
                 <div class="pull-xs-right m-r-1">
-                    <a href="{{ url('cspot/items/'.$plan->firstItem()->id.'/present/') }}"><i class="fa fa-tv">&nbsp;</i>Present</a>
+                    <a title="Start projector-enabled presentation of each song and scripture reading in this plan" 
+                        href="{{ url('cspot/items/'.$plan->firstItem()->id.'/present/') }}">
+                        <i class="fa fa-tv">&nbsp;</i>Present</a>
                 </div>
 
                 <h3 class="hidden-md-down">Plan for "{{ $plan->type->name }}" on {{ $plan->date->formatLocalized('%A, %d %B %Y') }}</h3>
                 <h3 class="hidden-lg-up">"{{ $plan->type->name }}" on {{ $plan->date->formatLocalized('%a, %d %B') }}</h3>
+
+
             @else
+
                 <h3>Add Service Plan</h3>
+
             @endif
 
         </div>
+
+
 
 
         <div class="col-md-3 col-xl-4 right md-center">
