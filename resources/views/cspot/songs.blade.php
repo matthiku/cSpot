@@ -39,6 +39,7 @@
 					<th class="hidden-md-down">Author</th>
 					<th class="center">Book Ref.</th>
 					<th class="center hidden-sm-down"><small>Chords?</small></th>
+					<th class="center hidden-sm-down"><small>Sheets?</small></th>
 					<th class="center hidden-sm-down">Media</th>
 					<th class="center hidden-md-down">Usage</th>
 					<th class="center hidden-md-down">Last Use</th>
@@ -66,8 +67,16 @@
 
 					<td class="center">{{ $song->book_ref }}</td>
 
+
 					<td class="center">
 						@if ( strlen($song->chords)>20 )
+							<i class="fa fa-check"></i>
+						@endif
+					</td>
+
+
+					<td class="center" title="Are there files (like sheet music) attached to this song?">
+						@if ( count($song->files)>0 )
 							<i class="fa fa-check"></i>
 						@endif
 					</td>
@@ -132,6 +141,8 @@
 			</tbody>
 
 		</table>
+
+		{!! $songs->links() !!}
 
 
     @else

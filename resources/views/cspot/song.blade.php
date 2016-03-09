@@ -210,7 +210,15 @@
             </div>
             @if ($song->files)
                 @foreach ($song->files as $file)
-                    <img src="{{ url(config('files.uploads.webpath')).'/'.$file->token }}">
+                    <figure class="figure" id="file-{{ $file->id }}">
+                        <a href="{{ url(config('files.uploads.webpath')).'/'.$file->token }}">
+                            <img style="max-width:250px;" class="figure-img img-fluid img-rounded img-thumbnail" 
+                                src="{{ url(config('files.uploads.webpath')).'/'.$file->token }}">
+                        </a>
+                        <figcaption class="figure-caption">
+                            <a href="#" onclick="deleteFile({{ $file->id }})"><i class="fa fa-trash red"></i> Delete this file</a>
+                        </figcaption>
+                    </figure>
                 @endforeach
             @endif
 
@@ -271,18 +279,20 @@
                 <h4>Song Usage History: <small>(used <strong>{{ count($plansUsingThisSong) }}</strong> times)</small></h4>
                 @if ( count($plansUsingThisSong) )
                     <table class="table table-striped table-normal table-hover table-sm">
-                        <thead class="thead-default">
+                        <thead class="thead-default"><tr>
                             <th>Date</th>
                             <th>Leader</th>
-                        </thead>
+                        </tr></thead>
                         <tbody>
                         @foreach ($plansUsingThisSong as $plan)
                             <tr>
-                                <td class="link" onclick="location.href='{{ url('cspot/plans/'.$plan->id) }}/edit'">
-                                    {{ $plan->date->formatLocalized('%A, %d %B %Y') }}
+                                <td class="link" title="Click to edit this plan" 
+                                    onclick="location.href='{{ url('cspot/plans/'.$plan->id) }}/edit'">
+                                        {{ $plan->date->formatLocalized('%A, %d %B %Y') }}
                                 </td>
-                                <td class="link" onclick="location.href='{{ url('cspot/plans/by_user/'.$plan->leader_id) }}/edit'">
-                                    {{ $plan->leader->first_name }}
+                                <td class="link" title="click to see all plans by this user" 
+                                    onclick="location.href='{{ url('cspot/plans/by_user/'.$plan->leader_id) }}/edit'">
+                                        {{ $plan->leader->first_name }}
                                 </td>
                             </tr>
                         @endforeach

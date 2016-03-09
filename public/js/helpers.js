@@ -1,6 +1,15 @@
 var bibleBooks;
 
 
+// make sure all AJAX calls are using the token stored in the META tag
+// (see https://laravel.com/docs/5.2/routing#csrf-x-csrf-token)
+$.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+});
+
+
 $(document).ready(function() {
 
 
@@ -33,6 +42,7 @@ $(document).ready(function() {
 
         // show submit or sabe buttons
         $('.submit-button').show();
+        blink('.submit-button');
     });
 
 
@@ -146,6 +156,24 @@ $(document).ready(function() {
     }
 
 });
+
+
+/*
+    On the Songs Detail page, allow Admins to delete an attached file (image)    
+*/
+function deleteFile(id)
+{
+    // get token from form field
+    $.ajax({
+        url:    '/cspot/files/'+id+'/delete', 
+        method: 'DELETE',
+    }).done(function() {
+        $('#file-'+id).remove();
+    }).fail(function() {
+        alert("image deletion failed!");
+    });
+}
+
 
 
 /*

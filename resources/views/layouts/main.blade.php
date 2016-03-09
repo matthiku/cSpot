@@ -10,6 +10,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
+    <meta name="csrf-token" content="{{ csrf_token() }}">    
+
     <title>c-SPOT @yield('title')</title>
 
     <!-- Bootstrap core CSS -->
@@ -62,7 +64,7 @@
                     <hr>
                     <a class="dropdown-item" href="{{ url('admin/users') }}"><i class="fa fa-btn fa-users fa-lg"></i> &nbsp; User List</a>
                     <a class="dropdown-item" href="{{ url('admin/roles') }}"><i class="fa fa-btn fa-check-square-o fa-lg"></i> &nbsp; User Roles</a>
-                  </d..iv>
+                  </div>
               </li>
               <li class="nav-item dropdown m-r-2">
                   <a href="#" class="nav-link dropdown-toggle " 

@@ -10,9 +10,14 @@ use App\Http\Requests;
 use App\Http\Requests\StoreSongRequest;
 use App\Http\Controllers\Controller;
 
+use Illuminate\Http\Response;
+
 use App\Models\Song;
 use App\Models\Plan;
 use App\Models\File;
+
+use Storage;
+use Auth;
 
 
 class SongController extends Controller
@@ -45,7 +50,7 @@ class SongController extends Controller
     public function index()
     {
         //
-        $songs = Song::orderBy('title')->get();
+        $songs = Song::orderBy('title')->simplePaginate(16);
 
         $heading = 'Manage Songs';
         return view( $this->view_all, array('songs' => $songs, 'heading' => $heading) );
@@ -193,8 +198,33 @@ class SongController extends Controller
     }
 
 
-
-
+    /**
+     * Remove a file attachment
+     *
+     * - - RESTful API request - -
+     *
+     * @param int $id
+     *
+     */
+    public function deleteFile($id)
+    {
+        // find the single resource
+        $file = File::find($id);
+        if ($file) {
+            // check authentication
+            if (! Auth::user()->isAdmin() ) {
+                return response()->json(['status' => 401, 'data' => 'Not authorized'], 401);
+            }
+            // delete the physical file
+            $destinationPath = config('files.uploads.webpath');
+            unlink(public_path().'/'.$destinationPath.'/'.$file->token);
+            // delete the DB record
+            $file->delete();
+            // return to sender
+            return response()->json(['status' => 200, 'data' => $file->token.' deleted.']);
+        }
+        return response()->json(['status' => 402, 'data' => 'Not found'], 402);
+    }
 
 
 

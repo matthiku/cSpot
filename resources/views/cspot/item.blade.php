@@ -249,7 +249,16 @@
                             <pre id="chords">{{ $item->song->chords }}</pre>
                         </div>
                         <div id="sheet-tab">
-                            <pre id="sheet">coming soon!</pre>
+                            @foreach ($item->song->files as $file)
+                                <figure class="figure" id="file-{{ $file->id }}">
+                                    <a href="{{ url(config('files.uploads.webpath')).'/'.$file->token }}">
+                                        <img class="figure-img img-fluid img-rounded" 
+                                            src="{{ url(config('files.uploads.webpath')).'/'.$file->token }}">
+                                    </a>
+                                    <figcaption class="figure-caption">...
+                                    </figcaption>
+                                </figure>
+                            @endforeach
                         </div>
                     </div>
                 </div>

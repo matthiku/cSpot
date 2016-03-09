@@ -116,6 +116,8 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     Route::resource('songs',            'Cspot\SongController');
     // specific delete route using 'get' method
     Route::get('songs/{songs}/delete',  'Cspot\SongController@destroy');    
+    // delete an attachment to a song
+    Route::delete('files/{id}/delete',     'Cspot\SongController@deleteFile');
 
 });
 

@@ -35,6 +35,10 @@
 						data-toggle="tooltip" title="Lyrics with chords for guitars"
 					><small>Chords?</small></th>
 
+				<th class="hidden-lg-down center"
+						data-toggle="tooltip" title="Sheet music attached to the song?"
+					><small>Sheets?</small></th>
+
 				<th class="center"
 						data-toggle="tooltip" title="Links to YouTube videos or sheetmusic for song items."
 					>Media</th>
@@ -81,6 +85,7 @@
 					{{ ($item->song_id) ? $item->song->book_ref : '' }}</td>
 
 
+				<!-- show seperate column for song title and comment on large devices -->
 				<td {{$onclick}} class="hidden-lg-down link" @if ($item->song_id)
 						title="{{ substr($item->song->lyrics,0,500) }}" data-toggle="tooltip" 
 						@if ($item->seq_no<10)
@@ -95,21 +100,26 @@
 					@endif
 				</td>
 
-
 				<td {{$onclick}} {{$tooltip}} class="hidden-lg-down center link">
 					{{ $item->comment }}</td>
 
 
+				<!-- show combined song-title and comment column on small devices -->
 				<td {{$onclick}} {{$tooltip}} class="hidden-xl-up link">
-					@if ($item->song_id )
+					@if ($item->song_id)
 						<i class="fa fa-music"></i>&nbsp;{{ $item->song->title }}
+						<small class="bg-info">
 					@endif
 					@if (preg_match('/[(][A-Z]{3}[)]/', $item->comment) )
 						<i class="fa fa-book"></i>&nbsp;{{ $item->comment }}
 					@else
 						{{ $item->comment }}
 					@endif
+					@if ($item->song_id)
+						</small>
+					@endif
 				</td>
+
 
 
 				<td {{$onclick}} {{$tooltip}} class="hidden-sm-down center link">
@@ -123,6 +133,15 @@
 						@endif
 					@endif
 				</td>
+
+				<td class="center" title="Are there files (like sheet music) attached to this song?">
+					@if ($item->song_id)
+						@if ( count($item->song->files)>0 )
+							<i class="fa fa-check"></i>
+						@endif
+					@endif
+				</td>
+
 
 
 				<td class="center">
@@ -152,11 +171,16 @@
 							<a class="btn btn-danger btn-sm" data-toggle="tooltip" title="Delete permanently!" 
 								href='{{ url('cspot/items/'.$item->id) }}/permDelete'><i class="fa fa-trash"></i></a>
 						@else
-							<a class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="left" title="Insert earlier item" 
+							<a class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="left" title="Insert new item before this one" 
 								href='{{ url('cspot/plans/'.$plan->id) }}/items/create/before/{{$item->id}}'><i class="fa fa-reply"></i></a>
 
-		 					<a class="hidden-sm-down btn btn-primary-outline btn-sm hidden-lg-down" data-toggle="tooltip" title="Edit" 
-								href='{{ url('cspot/plans/'.$plan->id) }}/items/{{$item->id}}/edit/'><i class="fa fa-pencil"></i></a>
+							@if ($item->song_id)
+			 					<a class="hidden-sm-down btn btn-primary-outline btn-sm hidden-lg-down" data-toggle="tooltip" title="Edit Song" 
+									href='{{ url('cspot/songs/'.$item->song->id) }}/edit/'><i class="fa fa-music"></i></a>
+							@else
+			 					<a class="hidden-sm-down btn btn-primary-outline btn-sm hidden-lg-down" data-toggle="tooltip" title="Edit Item" 
+									href='{{ url('cspot/plans/'.$plan->id) }}/items/{{$item->id}}/edit/'><i class="fa fa-pencil"></i></a>
+							@endif
 
 							<a class="btn btn-warning btn-sm" data-toggle="tooltip" title="Remove" 
 								href='{{ url('cspot/items/'.$item->id) }}/delete'><i class="fa fa-trash"></i></a>
