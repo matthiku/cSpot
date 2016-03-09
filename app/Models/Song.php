@@ -150,6 +150,33 @@ class Song extends Model
 
 
 
+    /**
+     * Take the hymnald.net link and just use the last 2 sections
+     *
+     * typical link: https://www.hymnal.net/en/hymn/h/137
+     * We only need to keep the 'c/137'
+     */
+    public function setHymnaldotnetIdAttribute( $value )
+    {
+        // this field should be in the format 'x/nnn', wherby x is either 'c', 'h', 'nt' or 'ns'
+        $link = explode('/', $value);
+        if (isset($link[6])) {
+            $value = $link[5].'/'.$link[6];
+        }
+        $this->attributes['hymnaldotnet_id'] = $value;
+    }
+
+    /**
+     * Replace the hymnaldotnet_id with a full-fledged link
+     */
+    public function getHymnaldotnetIdAttribute( $value )
+    {
+        if (strlen($value)>1  &&  strlen($value)<8)
+            // this field should be in the format 'x/nnn', wherby x is either 'c', 'h', 'nt' or 'ns'
+            return "https://www.hymnal.net/en/hymn/".$value;
+        return $value;
+    }
+
 
     /**
      * Helper method to get list of license types

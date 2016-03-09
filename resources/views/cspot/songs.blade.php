@@ -21,7 +21,9 @@
 	</span>
 	@endif
 
-    <h2 class="hidden-xs-down">{{ $heading }}</h2>
+    <h2 class="hidden-xs-down pull-xs-left">{{ $heading }}</h2>
+    
+	<center>Page {{ $songs->currentPage() }}</center>
 
 
 	@if (count($songs))

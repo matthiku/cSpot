@@ -24,7 +24,7 @@ class CreateSongsTable extends Migration
             $table->enum('license', ['PD','CCLI', 'Other', 'Unknown'])nullable();
             $table->string('sequence');
             $table->string('youtube_id');
-            $table->integer('hymnaldotnet_id');
+            $table->string('hymnaldotnet_id');
             $table->string('link');
             $table->softDeletes(); // in order to retain DB integrity, songs are only marked as deleted
             $table->timestamps();

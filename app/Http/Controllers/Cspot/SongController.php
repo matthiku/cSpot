@@ -50,10 +50,14 @@ class SongController extends Controller
     public function index()
     {
         //
-        $songs = Song::orderBy('title')->simplePaginate(16);
+        $songs = Song::orderBy('title')->simplePaginate(20);
 
         $heading = 'Manage Songs';
-        return view( $this->view_all, array('songs' => $songs, 'heading' => $heading) );
+        return view( $this->view_all, array(
+            'songs'       => $songs, 
+            'heading'     => $heading,
+            'currentPage' => $songs->currentPage(),
+        ));
     }
 
 
@@ -65,13 +69,16 @@ class SongController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
         // get list of license types first
         $l = new Song;
         $licensesEnum = $l->getLicenseEnum();
 
-        return view($this->view_one, ['licensesEnum' => $licensesEnum]);
+        return view($this->view_one, [
+            'licensesEnum' => $licensesEnum,
+            'currentPage'  => $request->currentPage,
+        ]);
     }
 
     /**
@@ -119,18 +126,31 @@ class SongController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
         // find a single resource by ID
         $output = Song::find($id);
         if ($output) {
+            // get the Pagination
+            if ($request->has('currentPage')) {
+                $currentPage = $request->currentPage;
+            } 
+            elseif ( strpos($request->server('HTTP_REFERER'), '=' ) !== FALSE ) {
+                $currentPage = explode('=', $request->server('HTTP_REFERER'))[1];
+                if (! is_numeric($currentPage)) { $currentPage = 0; }
+            }
+            else {
+                $currentPage = 0;
+            }
+
             // get list of license types first
             $l = new Song;
             $licensesEnum = $l->getLicenseEnum();
 
             return view( $this->view_one, array(
                 'song'         => $output, 
-                'licensesEnum' => $licensesEnum,
+                'licensesEnum'   => $licensesEnum,
+                'currentPage'      => $currentPage,
                 'plansUsingThisSong' => $output->plansUsingThisSong(),
             ));
         }
@@ -192,9 +212,15 @@ class SongController extends Controller
         $song->youtube_id = $request->youtube_id;
         $song->save();
 
+        // get the Pagination
+        $currentPage = 9;
+        if ($request->has('currentPage')) {
+            $currentPage = $request->currentPage;
+        } 
+
         // instead of flashing, maybe show the field 'updated_at' in the form?
         flash( 'Song "'.$request->title.'" updated.' );
-        return redirect()->back();
+        return redirect()->back()->with('currentPage', $currentPage);
     }
 
 

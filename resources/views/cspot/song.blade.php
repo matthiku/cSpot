@@ -32,6 +32,8 @@
     @endif
 
 
+    <input type="hidden" name="currentPage" value="{{ $currentPage }}">
+
     <div class="row">
 
         <div class="col-md-6 col-lg-7 col-xl-8 md-center">
@@ -64,15 +66,19 @@
                 </div>
 
                 <div class="col-xs-4 pull-xs-right">
-                    <big><a href="{{ url('cspot/songs') }}">{!! Form::button('All Songs', ['class'=>'fully-width']); !!}</a></big>
+                    <big><a href="
+                        @if (session()->has('currentPage'))
+                            {{ url('cspot/songs?page='.session('currentPage')) }}
+                        @else
+                            {{ url('cspot/songs?page='.$currentPage) }}
+                        @endif
+                        ">{!! Form::button('All Songs', ['class'=>'fully-width']); !!}</a></big>
                 </div>
 
             </div>
         </div>
 
     </div>
-
-
 
     <hr>
 
@@ -126,7 +132,7 @@
                             <i class="fa fa-question-circle"></i></a>
                     </big>
                 </div>
-                <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 c-inputs-stacked">
+                <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8">
                     @foreach ($licensesEnum as $vers)
                         <label class="c-input c-radio">
                             <input id="radio1" name="license" type="radio"
@@ -150,11 +156,11 @@
 
 
             <div class="row form-group">
-                {!! Form::label('hymnaldotnet_id', 'Hymnal.Net id', ['class' => 'col-sm-4 col-md-3 col-lg-2 col-xl-4']); !!}
-                <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8">{!! Form::number('hymnaldotnet_id'); !!}
-                    @if ( isset($song)  && $song->hymnaldotnet_id > 0 )
+                {!! Form::label('hymnaldotnet_id', 'Hymnal.Net Link', ['class' => 'col-sm-4 col-md-3 col-lg-2 col-xl-4']); !!}
+                <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width">{!! Form::text('hymnaldotnet_id'); !!}
+                    @if ( isset($song->hymnaldotnet_id) )
                         <a class="btn btn-sm" type="button" target="new" 
-                            href="https://www.hymnal.net/en/hymn/h/{{ $song->hymnaldotnet_id }}">
+                            href="{{ $song->hymnaldotnet_id }}">
                             <i class="fa fa-music" > </i> See song on Hymnal.Net
                         </a>
                     @endif
@@ -208,7 +214,7 @@
                 {!! Form::label('file', 'Attach an image (e.g. sheet music)', ['class' => 'col-sm-4 col-md-3 col-lg-2 col-xl-4']); !!}
                 <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width">{!! Form::file('file'); !!}</div>
             </div>
-            @if ($song->files)
+            @if ( isset($song) && $song->files)
                 @foreach ($song->files as $file)
                     <figure class="figure" id="file-{{ $file->id }}">
                         <a href="{{ url(config('files.uploads.webpath')).'/'.$file->token }}">
