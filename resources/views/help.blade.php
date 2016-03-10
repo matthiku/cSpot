@@ -21,10 +21,10 @@
         </h4>
       </div>
       <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
-        <p>c-SPOT was designed to help your church organize their Sunday and Midweek services as well as other events.</p>
+        <p>c-SPOT was designed to help churches organize their Sunday and Midweek services as well as other events.</p>
         <p>As an online tool, it provides event information to every person involved and allows them 
            to add or modify information accordingly.</p>
-        <p>However, the ability to contribute to the plan details is based on distinct <span class="text-warning">roles</span> given to each user, so that only authorized people
+        <p>However, the ability to contribute to the plan details is based on distinct <span class="text-warning big">roles</span> given to each user, so that only authorized people
            can make modifications or even see certain details.</p>
       </div>
     </div>
@@ -38,12 +38,12 @@
         </h4>
       </div>
       <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
-        <p>By default, c-SPOT is designed to allow for 'self-registration'. That means, once you've signed up, either by email or a service provider (see below), you can immediately look into most of the data. However, only very basic access rights are given to a self-registered user, so
+        <p>c-SPOT is designed to allow for 'self-registration'. That means, once you've signed up, either by email or a service provider (see below), you can immediately look into most of the data. However, only very basic access rights are given to a self-registered user, so
               any further rights must be assigned by a user with an "Administrator" role.</p>
         <p>To sign up, just provide your name, <span class="text-success">email address</span> and create a new password. An email containing a verification link will be sent to that email address. Be sure to click on that link - once you received the email - in order to 'release' your account!</p>
-        <p>Alternatively, and without the need for an extra password, you can allow your existing registration with one of the "big" <strong>service providers</strong> (like Google, Facebook, Twitter etc.) to be used for this verification process. Just click on the symbol of the service provider you want to use. You will be forwarded <strong>once</strong> to a special page of your service provider for confirmation.</p>
+        <p><big class="bg-info">The much better option:</big> Without the need for an extra password, you can allow your existing registration with one of the "big" <strong>service providers</strong> (like Google, Facebook, Twitter etc.) to be used for this verification process. Just click on the symbol of the service provider you want to use. You will be forwarded <strong>once</strong> to a special page of your service provider for confirmation.</p>
         <p>If you agree to use this <span  class="text-warning">"provider verification"</span>, c-SPOT will be "authorized" to access your basic account 
-                information on those accounts (usually name and email address). From then on, <strong>no further login is required anymore</strong> as long as you are logged in to those 
+                information with those providers (usually name and email address). From then on, <strong>no further login is required anymore</strong> as long as you are logged in to those 
                 providers in the same browser program.</p>
         <p>So with that, no need to remember another password!</p>
       </div>
@@ -58,7 +58,7 @@
         </h4>
       </div>
         <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
-            <p>Verified users can see and/or modify all or various parts of the information depending on their <span class="text-warning">roles</span> 
+            <p>Verified users can see and/or modify all or various parts of the information depending on their <span class="text-warning big">roles</span> 
                 they have been given by an administrator.</p>
             <p>Based on those roles, users can be assigned as 'leader' or 'teacher' of a plan and as such are able to modify, add and 
                 delete plan items on those respective plans.</p>
@@ -79,7 +79,7 @@
         </h4>
       </div>
       <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
-            <p>This is a 'hobby project' of Matthias Kuhs, intially designed to replace a paper- or email-based system
+            <p>This is a 'hobby project' of Matthias Kuhs, intially designed to replace a paper- (later email)-based system
                     used to organize with the running of our church services to provide the relevant information for musicians 
                     and leaders involved in the service.</p>
             <p>As an open source project, everyone can download the sources and modify the code according to their specific needs.</p>
