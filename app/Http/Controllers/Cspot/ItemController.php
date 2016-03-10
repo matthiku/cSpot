@@ -247,9 +247,11 @@ class ItemController extends Controller
 
 
     /**
-     * Display the specified resource.
+     * Display single items per page of a plan with options to move to the next or previous item on this plan
      *
      * @param  int  $id
+     * @param  string  $present (optional) chords (default), sheetmusic or present (for overhead presentations)
+     *
      * @return \Illuminate\Http\Response
      */
     public function show($id, $present=null)
@@ -261,16 +263,14 @@ class ItemController extends Controller
         // TDOD get list of items for this plan, each with a prober 'title'
         $items = $item->plan->items->sortBy('seq_no')->all();
 
-        if ($present) {
-            return view('cspot.present', [
-                    'item' => $item,
-                    'items' => $items,
-                    'bibleTexts' => $bibleTexts,
-                ]);
-        }
-        return view('cspot.chords', [
-                'item' => $item,
-                'items' => $items,
+        // default is to show chords
+        if ( ! $present) { 
+            $present = 'chords'; }
+
+        return view('cspot.'.$present, [
+                'item'       => $item,
+                'items'      => $items,
+                'type'       => $present,
                 'bibleTexts' => $bibleTexts,
             ]);
     }

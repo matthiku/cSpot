@@ -1,65 +1,10 @@
 
-<!-- # (C) 2016 Matthias Kuhs, Ireland -->
-
-@extends('layouts.main')
-
-@section('title', "Present Plan")
-
-@section('plan', 'active')
-
-
-
-@section('content')
-
-
-    @include('layouts.flashing')
-
-    <!-- remove main navbar -->
-    <script>
-        $('#main-navbar').detach();
-        $(document).ready(function() {
-            $('body').addClass('bg-inverse');
-            // for certain bible text sources:
-            $('.text-present>.p>.v').prepend('<br>');
-        });
-    </script>
-
-
-
-
-
-    <!-- ================================================================================ -->
-    <div id="main-content" class="bg-inverse">
-
-        @if ($item->song_id )
-            @if ($item->song->lyrics )
-                <pre class="text-present" id="lyrics">
-                    {{ $item->song->lyrics }}
-                </pre>
-            @endif
-        @endif
-
-        @if ($bibleTexts)
-            <div class="bg-inverse text-present">
-                @foreach ($bibleTexts as $btext)
-                    <h1>{{ $btext->display }} ({{ $btext->version_abbreviation }})</h1>
-                    <div class="text-present">{!! $btext->text !!}</div>
-                    <div class="small">{!! $btext->copyright !!}</div>
-                    <hr>
-                @endforeach
-            </div>
-        @endif
-
-    </div>
-    <!-- ================================================================================ -->
-
-
 
     <nav class="navbar navbar-fixed-bottom bg-primary center p-b-0 p-t-0">
 
         <ul class="nav navbar-nav pull-xs-right">
             <li>
-                <a href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/go/next/present') }}"
+                <a href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/go/next/'.$type) }}"
                     class="nav-item btn btn-warning" role="button" id="go-next-item">
                     <i class="fa fa-angle-double-right fa-lg"></i>
                 </a>
@@ -91,7 +36,7 @@
                             bg-info
                         @endif
                         "
-                        href="{{ url('cspot/items/').'/'.$menu_item->id.'/present' }}">
+                        href="{{ url('cspot/items/').'/'.$menu_item->id.'/'.$type }}">
                         <small class="hide-sm-down">{{ $menu_item->seq_no }}</small> &nbsp; 
                         @if ($menu_item->song_id && $menu_item->song->title)
                             <i class="fa fa-music">&nbsp;</i><strong>{{ $menu_item->song->title }}</strong>
@@ -117,16 +62,36 @@
             </div>
 
         </div>
+
+
+
+        <!-- 
+            Youtube button 
+        -->
+        <div class="btn-group pull-xs-right m-r-1">
+            @if ($item->song_id && $item->song->youtube_id)
+                <a href="https://www.youtube.com/watch?v={{ $item->song->youtube_id }}" 
+                    target="new" class="pull-xs-right btn btn-info">
+                <i class="red fa fa-youtube-play fa-lg"></i>&nbsp;</a>
+            @else
+                <a href="#" disabled=""
+                   class="pull-xs-right btn btn-secondary-outline">
+                <i class="fa fa-youtube-play fa-lg"></i>&nbsp;</a>
+            @endif
+        </div>
+
+
+
         <!-- 
             go to first/last slide 
         -->
-        <a href="{{ url('cspot/items/').'/'.$item->plan->firstItem()->id.'/present' }}" id="go-first-item"></a>
-        <a href="{{ url('cspot/items/').'/'.$item->plan->lastItem()->id.'/present'  }}" id="go-last-item" ></a>
+        <a href="{{ url('cspot/items/').'/'.$item->plan->firstItem()->id.'/'.$type }}" id="go-first-item"></a>
+        <a href="{{ url('cspot/items/').'/'.$item->plan->lastItem()->id.'/'.$type  }}" id="go-last-item" ></a>
 
 
         <ul class="nav navbar-nav pull-xs-left">
             <li>
-                <a href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/go/previous/present') }}"
+                <a href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/go/previous/'.$type) }}"
                     class="nav-link btn btn-warning" role="button" id="go-previous-item">
                     <i class="fa fa-angle-double-left fa-lg"></i>
                 </a> 
@@ -135,5 +100,3 @@
 
     </nav>
 
-
-@stop

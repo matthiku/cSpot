@@ -93,19 +93,19 @@ class Song extends Model
 
 
     /**
-     * Only users with a leader role are allowed to see song lyrics of non-PD songs
+     * Only users with certain roles are allowed to see song lyrics of non-PD songs
      *
-     * Leaders (and users with higher roles) are normally part of the local church
+     * Musicians, Leaders and users with higher roles are normally part of the local church
      * and therefore covered by the church's CCLI MRL license.
      */
     public function getLyricsAttribute( $value )
     {
         // return full value for all PD songs and for users >= Leaders
-        if ($this->license=='PD' || Auth::user()->isLeader() ) {
+        if ($this->license=='PD' || Auth::user()->isMusician() ) {
             return $value;
         }
 
-        // return only part of the lyrics and a note
+        // For unauthorized users, return only part of the lyrics and a note
         return substr($value, 0, 100).'...(copyrighted material)';
 
     }
@@ -120,7 +120,7 @@ class Song extends Model
     public function getChordsAttribute( $value )
     {
         // return full value for all PD songs and for users >= Leaders
-        if ($this->license=='PD' || Auth::user()->isLeader() ) {
+        if ($this->license=='PD' || Auth::user()->isMusician() ) {
             return $value;
         }
 

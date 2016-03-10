@@ -3,7 +3,7 @@
 
 @extends('layouts.main')
 
-@section('title', "Show Chords")
+@section('title', "Present Plan")
 
 @section('plan', 'active')
 
@@ -14,9 +14,7 @@
 
     @include('layouts.flashing')
 
-    <!-- 
-        remove main navbar 
-    -->
+    <!-- remove main navbar -->
     <script>
         $('#main-navbar').detach();
     </script>
@@ -25,16 +23,21 @@
 
 
 
-
     <!-- ================================================================================ -->
-    <div id="main">
-    <!-- ================================================================================ -->
+    <div id="main-content">
 
         @if ($item->song_id )
             @if ($item->key)
                 <h4 class="red">{{ $item->key }}</h4>
             @endif
-            @if ($item->song->chords )
+            @if ($type=='sheetmusic' && count($item->song->files)>0 )
+                <div class="m-b-3">
+                    @foreach ($item->song->files as $file)
+                        <img class="figure-img img-fluid img-rounded"  
+                            src="{{ url(config('files.uploads.webpath')).'/'.$file->token }}">
+                    @endforeach
+                </div>
+            @elseif ($item->song->chords )
                 <div class="m-b-3">
                     <pre class="big" id="chords">{{ $item->song->chords }}</pre>
                 </div>
@@ -62,6 +65,8 @@
 
     </div>
     <!-- ================================================================================ -->
+
+
 
     @include('cspot.snippets.present_navbar')
 

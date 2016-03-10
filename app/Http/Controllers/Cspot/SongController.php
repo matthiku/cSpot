@@ -50,7 +50,7 @@ class SongController extends Controller
     public function index()
     {
         //
-        $songs = Song::orderBy('title')->simplePaginate(20);
+        $songs = Song::orderBy('title')->paginate(20);
 
         $heading = 'Manage Songs';
         return view( $this->view_all, array(

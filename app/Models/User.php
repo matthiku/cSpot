@@ -121,6 +121,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
 
 
+
     // see https://tuts.codingo.me/laravel-social-and-email-authentication
 
     public function roles()
@@ -128,15 +129,17 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         return $this->belongsToMany('App\Models\Role')->withTimestamps();
     }
 
+
     public function hasRole($name)
     {
         foreach($this->roles as $role)
         {
-            if($role->name == $name) return true;
+            if ( strtolower($role->name) == strtolower($name) ) return true;
         }
 
         return false;
     }
+
 
     public function assignRole($role)
     {
@@ -146,6 +149,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         return $this->roles()->attach($role);
     }
 
+
     public function removeRole($role)
     {
         if ( $this->id==1 && $role->id<4 )
@@ -154,6 +158,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         }
         return $this->roles()->detach($role);
     }
+
 
 
     /**
@@ -172,6 +177,8 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         }
         return false;
     }
+
+
 
 
     /**
@@ -199,6 +206,10 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     public function isLeader()
     {
         return $this->hasRole('administrator') || $this->hasRole('editor') || $this->hasRole('author') || $this->hasRole('leader');
+    }
+    public function isMusician()
+    {
+        return $this->hasRole('administrator') || $this->hasRole('editor') || $this->hasRole('author') || $this->hasRole('leader') || $this->hasRole('musician');
     }
 
     

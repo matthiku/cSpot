@@ -23,7 +23,7 @@
 
     <h2 class="hidden-xs-down pull-xs-left">{{ $heading }}</h2>
     
-	<center>Page {{ $songs->currentPage() }}</center>
+	<center>Page {{ $songs->currentPage() }} of {{ $songs->lastPage() }}</center>
 
 
 	@if (count($songs))
@@ -39,10 +39,10 @@
 					<th class="hidden-md-down">#</th>
 					<th>Title</th>
 					<th class="hidden-md-down">Author</th>
-					<th class="center">Book Ref.</th>
+					<th class="center hidden-xs-down">Book Ref.</th>
 					<th class="center hidden-sm-down"><small>Chords?</small></th>
 					<th class="center hidden-sm-down"><small>Sheets?</small></th>
-					<th class="center hidden-sm-down">Media</th>
+					<th class="center">Media</th>
 					<th class="center hidden-md-down">Usage</th>
 					<th class="center hidden-md-down">Last Use</th>
 					<th class="center hidden-lg-down">CCLI No.</th>
@@ -67,24 +67,24 @@
 
 					<td class="hidden-md-down">{{ $song->author }}</td>
 
-					<td class="center">{{ $song->book_ref }}</td>
+					<td class="center hidden-xs-down">{{ $song->book_ref }}</td>
 
 
-					<td class="center">
+					<td class="center hidden-sm-down">
 						@if ( strlen($song->chords)>20 )
 							<i class="fa fa-check"></i>
 						@endif
 					</td>
 
 
-					<td class="center" title="Are there files (like sheet music) attached to this song?">
+					<td class="center hidden-sm-down" title="Are there files (like sheet music) attached to this song?">
 						@if ( count($song->files)>0 )
 							<i class="fa fa-check"></i>
 						@endif
 					</td>
 
 
-					<td class="center hidden-sm-down">
+					<td class="center">
 	                    @if ( $song->hymnaldotnet_id > 0 )
 	                        <a target="new" title="See on hymnal.net" data-toggle="tooltip"
 	                            href="https://www.hymnal.net/en/hymn/h/{{ $song->hymnaldotnet_id }}">
@@ -106,8 +106,7 @@
 					<td class="center hidden-md-down">
 						<?php  
 						 	$last = $song->lastPlanUsingThisSong();
-						 	if ($last) { echo $last->date->formatLocalized('%a, %d %b'); }
-						 	//echo $last->date;
+						 	if ($last) { echo $last->date->formatLocalized('%a, %d %b \'%y'); }
 						 ?>
 					</td>
 
@@ -144,8 +143,20 @@
 
 		</table>
 
-		{!! $songs->links() !!}
-
+		<center>
+			{!! $songs->links() !!}
+		</center>
+		<script>
+			// add missing classes and links into the auto-geneerated pagination buttons
+			$('.pagination').children().each(function() { $(this).addClass('page-item'); });
+			$('.page-item>a').each(function() { $(this).addClass('page-link'); });
+			var pgActive = $('.active.page-item').html();
+			$('.active.page-item').html('<a class="page-link" href="#">'+pgActive+'</a>');
+			$('.disabled.page-item').each(function() {
+				var innerHtml = $(this).html();
+				$(this).html('<a class="page-link" href="#">'+innerHtml+'</a>');
+			})
+		</script>
 
     @else
 

@@ -27,7 +27,7 @@
 						data-toggle="tooltip" title="Song Title and/or activity description."
 					>Title/Comment</th>
 
-				<th class="hidden-sm-down center"
+				<th class="hidden-xl-down center"
 						data-toggle="tooltip" title="Instructions for musicians etc."
 					>Instructions</th>
 
@@ -39,7 +39,7 @@
 						data-toggle="tooltip" title="Sheet music attached to the song?"
 					><small>Sheets?</small></th>
 
-				<th class="center"
+				<th class="hidden-xs-down center"
 						data-toggle="tooltip" title="Links to YouTube videos or sheetmusic for song items."
 					>Media</th>
 
@@ -122,7 +122,7 @@
 
 
 
-				<td {{$onclick}} {{$tooltip}} class="hidden-sm-down center link">
+				<td {{$onclick}} {{$tooltip}} class="hidden-xl-down center link">
 					{{ $item->key }}</td>
 
 
@@ -134,7 +134,7 @@
 					@endif
 				</td>
 
-				<td class="center" title="Are there files (like sheet music) attached to this song?">
+				<td class="hidden-lg-down center" title="Are there files (like sheet music) attached to this song?">
 					@if ($item->song_id)
 						@if ( count($item->song->files)>0 )
 							<i class="fa fa-check"></i>
@@ -144,7 +144,7 @@
 
 
 
-				<td class="center">
+				<td class="hidden-xs-down center">
 					<big>
 					@if ($item->song_id)
 	                    @if ( $item->song->hymnaldotnet_id > 0 )
