@@ -9,6 +9,7 @@
     </a>
 
     <figcaption class="figure-caption">
+    	{{ $file->filename }}
         <a href="#" onclick="deleteFile({{ $file->id }})"><i class="fa fa-trash red"></i> Delete this file</a>
     </figcaption>
 

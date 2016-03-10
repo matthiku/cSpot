@@ -216,7 +216,7 @@
             </div>
             @if ( isset($song) && $song->files)
                 @foreach ($song->files as $file)
-                    @include (cspot.snippets.show_files.blade.php)
+                    @include ('cspot.snippets.show_files')
                 @endforeach
             @endif
 

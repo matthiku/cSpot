@@ -21,7 +21,8 @@
             'route'  => array('cspot.items.update', $item->id), 
             'method' => 'put', 
             'id'     => 'inputForm',
-            'class'  => 'form-horizontal'
+            'class'  => 'form-horizontal',
+            'files'  => true,
             )) !!}
     @else
         {!! Form::open(array('action' => 'Cspot\ItemController@store', 'id' => 'inputForm')) !!}
@@ -36,57 +37,63 @@
     @endif
 
 
+    <!-- 
+        header area 
+    -->
     <div class="row" id=title-bar>
 
         @if (isset($item))
 
+            <!-- title text -->
             <div class="col-md-6">
 
-                <div class="pull-xs-right">        
-                    <span class="save-buttons" style="display: none;">
+                <div class="pull-xs-right">
+                    <!-- hide until changes are made   -->
+                    <span class="save-buttons submit-button" style="display: none;">
                         {!! Form::submit('Save!'); !!}
                     </span>
                 </div>
-                    <h2 class="nowrap">
-                        <a href="{{ url('cspot/plans/'.$plan->id.'/items/'.$item->id.'/go/previous') }}"
-                            class="btn btn-secondary" role="button" id="go-previous-item"
-                            title="go to previous item" data-toggle="tooltip" data-placement="right">
-                            <i class="fa fa-angle-double-left fa-lg"></i>
-                        </a> 
-                        Review Item No {{$seq_no}}
-                        <a href="{{ url('cspot/plans/'.$plan->id.'/items/'.$item->id.'/go/next') }}"
-                            class="btn btn-secondary" role="button" id="go-next-item"
-                            title="go to next item" data-toggle="tooltip" data-placement="right">
-                            <i class="fa fa-angle-double-right fa-lg"></i>
-                        </a>
-                    </h2>
-                    <h5 class="hidden-md-down">of the Service plan for {{ $plan->date->formatLocalized('%A, %d %B %Y') }}</h5>
-                    <h4 class="hidden-lg-up">in plan for {{ $plan->date->formatLocalized('%a, %d %b') }}</h4>
-                </div>
 
-                <div class="col-md-6 text-xs-right nowrap">
+                <h2 class="nowrap">
+                    <a href="{{ url('cspot/plans/'.$plan->id.'/items/'.$item->id.'/go/previous') }}"
+                        class="btn btn-secondary" role="button" id="go-previous-item"
+                        title="go to previous item" data-toggle="tooltip" data-placement="right">
+                        <i class="fa fa-angle-double-left fa-lg"></i>
+                    </a> 
+                    Review Item No {{$seq_no}}
+                    <a href="{{ url('cspot/plans/'.$plan->id.'/items/'.$item->id.'/go/next') }}"
+                        class="btn btn-secondary" role="button" id="go-next-item"
+                        title="go to next item" data-toggle="tooltip" data-placement="right">
+                        <i class="fa fa-angle-double-right fa-lg"></i>
+                    </a>
+                </h2>
+                <h5 class="hidden-md-down">of the Service plan for {{ $plan->date->formatLocalized('%A, %d %B %Y') }}</h5>
+                <h4 class="hidden-lg-up">in plan for {{ $plan->date->formatLocalized('%a, %d %b') }}</h4>
 
-                    @if( Auth::user()->ownsPlan($item->plan_id) )
-                        &nbsp;
-                        <span class="save-buttons" style="display: none;">
-                            {!! Form::submit('Save changes'); !!}
-                        </span>
-                        &nbsp; 
-                        <a class="btn btn-danger btn-sm"  item="button" href="{{ url('cspot/items/'. $item->id .'/delete') }}">
-                            <i class="fa fa-trash" > </i> 
-                            &nbsp; Delete
-                        </a>
-                    @endif
+            </div>
+
+            <!-- action buttons -->
+            <div class="col-md-6 text-xs-right nowrap">
+
+                @if( Auth::user()->ownsPlan($item->plan_id) )
+                    &nbsp;
+                    <span class="save-buttons submit-button" style="display: none;">
+                        {!! Form::submit('Save changes'); !!}
+                    </span>
                     &nbsp; 
-                    <a class="hidden-xs-down" href="{{ url('cspot/plans/'.$item->plan_id) }}/edit" id="go-back">
-                        {!! Form::button('Cancel - Back to Plan') !!}</a>
-                    <a class="hidden-sm-up" href="{{ url('cspot/plans/'.$item->plan_id) }}/edit">
-                        {!! Form::button('Cancel - Back') !!}</a>
-                </div>
+                    <a class="btn btn-danger btn-sm"  item="button" href="{{ url('cspot/items/'. $item->id .'/delete') }}">
+                        <i class="fa fa-trash" > </i> 
+                        &nbsp; Delete
+                    </a>
+                @endif
+                &nbsp; 
+                <a class="hidden-xs-down" href="{{ url('cspot/plans/'.$item->plan_id) }}/edit" id="go-back">
+                    {!! Form::button('Cancel - Back to Plan') !!}</a>
+                <a class="hidden-sm-up" href="{{ url('cspot/plans/'.$item->plan_id) }}/edit">
+                    {!! Form::button('Cancel - Back') !!}</a>
             </div>
 
         @else
-            </div>
             <div class="row">
                 <div class="col-md-6">
 
@@ -103,7 +110,7 @@
                     See if user wants to add even more items to this plan 
                 -->
                 <div class="col-md-6 pull-md-right">
-                    <span class="save-buttons" style="display: none;">
+                    <span class="save-buttons submit-button" style="display: none;">
                         {!! Form::submit('Save!'); !!}
                     </span>
                     &nbsp; <a href="{{ url( 'cspot/plans/' . (isset($plan) ? $plan->id : $plan_id) )  }}/edit">{!! Form::button('Cancel - Back to Plan'); !!}</a>
@@ -122,11 +129,15 @@
             </div>
         @endif
 
+    </div>
 
 
-    <hr>
+    <hr class="bg-info">
 
 
+    <!-- 
+        ITEM area 
+    -->
     <div class="row">
 
 
@@ -187,11 +198,15 @@
                                         target="new" class="fully-width btn btn-primary-outline btn-sm" 
                                           title="Play on YouTube" data-toggle="tooltip">
                                     <i class="red fa fa-youtube-play"></i>&nbsp;play</a>
+                                @else
+                                    <a href="#" class="fully-width btn btn-secondary-outline btn-sm disabled"
+                                          title="Missing YouTube Video" data-toggle="tooltip">
+                                    <i class="red fa fa-youtube-play"></i>&nbsp;play</a>
                                 @endif
                             </div>
                             @if ( Auth::user()->ownsPlan($item->plan_id) )
                                 <div class="col-xs-12 col-sm-4 full-btn">
-                                    <a href="#" class="fully-width btn btn-primary-outline btn-sm"
+                                    <a href="#" class="fully-width btn btn-primary-outline btn-sm" 
                                         onclick="showSongSearchInput()" 
                                         title="Select another song" data-toggle="tooltip"
                                     ><i class="fa fa-exchange"></i>&nbsp;change song</a>
@@ -272,8 +287,19 @@
             <!-- show song search only for authorized users -->
             @if( Auth::user()->ownsPlan($plan->id) )
                 
+                <div id="col-2-file-add" style="display: none;" 
+                    class="col-lg-6 col-md-12 col-sm-12 col-xs-12 m-b-1">
+                        {!! Form::label('file', 'Attach an image (e.g. sheet music)', ['class' => 'x']); !!}
+                        <br>
+                        {!! Form::file('file'); !!}
+                </div>
+                @if ( isset($item)  &&  $item->files ) 
+                    @foreach ($item->files as $file)
+                        @include (cspot.snippets.show_files)
+                    @endforeach
+                @endif
                 <div id="col-2-song-search" class="col-lg-6 col-md-12 col-sm-12 col-xs-12 m-b-1"
-                    @if ( isset($item)  &&  $item->comment) )
+                    @if ( isset($item)  &&  $item->comment) 
                         style="display: none;"
                     @endif
                     >
@@ -301,7 +327,8 @@
                     <div class="col-xs-12 full-width p-b-1 p-t-1">
 
                         @if ( isset($item) )
-                            <a href="#" onclick="$(this).hide();$('#col-2-song-search').show();"><i class="fa fa-music"></i>&nbsp;Add Song</a>
+                            <a href="#" onclick="$(this).hide();$('#col-2-song-search').show();"><i class="fa fa-music"></i>&nbsp;Add Song</a> &nbsp; &nbsp;
+                            <a href="#" onclick="$(this).hide();$('#col-2-file-add').show();"><i class="fa fa-file"></i>&nbsp;Add File(s)</a>
                             <br><br>
                         @endif
 

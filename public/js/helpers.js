@@ -36,7 +36,7 @@ $(document).ready(function() {
      * Mark modified form fields with a new background
      * and show the submit/save buttons
      */
-    $("input, textarea, input:radio").change(function(){
+    $("input, textarea, input:radio, input:file").change(function(){
         // change background color of those fields
         $(this).css("background-color", "#D6D6FF");
 

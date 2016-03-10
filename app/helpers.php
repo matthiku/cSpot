@@ -66,6 +66,23 @@ function is_image($mimeType)
 }
 
 
+function saveFile($request)
+{
+    $extension = $request->file('file')->getClientOriginalExtension();
+    $token     = str_random(32).'.'.$extension;
+    $filename  = $request->file('file')->getClientOriginalName();
+
+    // move the anonymous file to the central location
+    $destinationPath = config('files.uploads.webpath');
+    $request->file('file')->move($destinationPath, $token);
+
+    $file = new File([
+        'token'    => $token,
+        'filename' => $filename
+    ]);
+    return $file;  
+}
+
 
 
 /**

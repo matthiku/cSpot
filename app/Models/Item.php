@@ -51,5 +51,14 @@ class Item extends Model
     }
 
 
+    /**
+     * Relationship with the files table
+     */
+    public function files() 
+    {
+        return $this->hasMany('App\Models\File');
+    }
+
+
 
 }

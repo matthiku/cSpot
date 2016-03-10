@@ -19,5 +19,11 @@ class File extends Model
         return $this->belongsTo('App\Models\Song');
     }
 
+
+    public function item() 
+    {
+        return $this->belongsTo('App\Models\Item');
+    }
+
     
 }
