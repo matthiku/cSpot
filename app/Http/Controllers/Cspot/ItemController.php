@@ -409,6 +409,7 @@ class ItemController extends Controller
                 $filename  = $request->file('file')->getClientOriginalName();
                 // move the anonymous file to the central location
                 $destinationPath = config('files.uploads.webpath');
+                
                 $request->file('file')->move($destinationPath, $token);
                 // use the helper function
                 $file = saveFile($request);
