@@ -159,7 +159,7 @@ $(document).ready(function() {
 
 
 /*
-    On the Songs Detail page, allow Admins to delete an attached file (image)    
+    allow Admins to delete an attached file (image)    
 */
 function deleteFile(id)
 {
@@ -173,6 +173,21 @@ function deleteFile(id)
         alert("image deletion failed!");
     });
 }
+
+
+
+/*
+    On the Songs Detail page, 
+    show the previously hidden song search input field
+    and set the focus on it
+*/
+function showSongSearchInput()
+{
+    $('.song-search').show();
+    $('.song-details').hide();
+    $("input[name='search']").focus();
+}
+
 
 
 

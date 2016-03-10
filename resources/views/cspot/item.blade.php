@@ -31,6 +31,7 @@
     {!! Form::hidden('plan_id', isset($plan) ? $plan->id : $item->plan_id ) !!}
 
     @if ( isset($beforeItem) )
+        <!-- remember before which item this new item should be inserted -->
         {!! Form::hidden('beforeItem_id', $beforeItem->id) !!}
     @endif
 
@@ -191,7 +192,7 @@
                             @if ( Auth::user()->ownsPlan($item->plan_id) )
                                 <div class="col-xs-12 col-sm-4 full-btn">
                                     <a href="#" class="fully-width btn btn-primary-outline btn-sm"
-                                        onclick="$('.song-search').show();$('.song-details').hide();" 
+                                        onclick="showSongSearchInput()" 
                                         title="Select another song" data-toggle="tooltip"
                                     ><i class="fa fa-exchange"></i>&nbsp;change song</a>
                                 </div>
@@ -252,11 +253,9 @@
                             @foreach ($item->song->files as $file)
                                 <figure class="figure" id="file-{{ $file->id }}">
                                     <a href="{{ url(config('files.uploads.webpath')).'/'.$file->token }}">
-                                        <img class="figure-img img-fluid img-rounded" 
+                                        <img class="figure-img img-fluid img-rounded full-width" 
                                             src="{{ url(config('files.uploads.webpath')).'/'.$file->token }}">
                                     </a>
-                                    <figcaption class="figure-caption">...
-                                    </figcaption>
                                 </figure>
                             @endforeach
                         </div>
