@@ -7,6 +7,9 @@ namespace App\Models;
 use App\Models\Plan;
 use Auth;
 
+use Cmgmyr\Messenger\Traits\Messagable;
+
+
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Auth\Passwords\CanResetPassword;
@@ -17,7 +20,7 @@ use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract
 {
 
-    use Authenticatable, CanResetPassword;
+    use Authenticatable, CanResetPassword, Messagable;
 
 
     /**
@@ -42,6 +45,15 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
 
 
+
+
+    /**
+     * Allow alias 'name' to get the full name
+     */
+    public function getNameAttribute()
+    {
+        return $this->getFullName();
+    }
 
 
     /**

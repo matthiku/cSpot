@@ -33,8 +33,8 @@
 
         @if ($item->song_id )
             @if ($item->song->lyrics )
-                <pre class="text-present" id="lyrics">
-                    {{ $item->song->lyrics }}
+                <pre class="text-present" 
+                    id="lyrics">{{ $item->song->lyrics }}
                 </pre>
             @endif
         @endif

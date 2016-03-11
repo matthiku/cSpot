@@ -160,6 +160,8 @@ return [
 
         Collective\Html\HtmlServiceProvider::class,
 
+        Cmgmyr\Messenger\MessengerServiceProvider::class,
+
     ],
 
     /*
