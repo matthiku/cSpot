@@ -15,7 +15,6 @@ class UpdateFilesTable extends Migration
         Schema::table('files', function (Blueprint $table) {
             //
             $table->integer('item_id')->unsigned()->nullable();
-            $table->foreign('item_id')->references('id')->on('songs')->onDelete('restrict');
         });
     }
 

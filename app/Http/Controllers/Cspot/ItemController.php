@@ -403,16 +403,8 @@ class ItemController extends Controller
         // handle file uplaods
         if ($request->hasFile('file')) {
             if ($request->file('file')->isValid()) {
-                // get file details etc
-                $extension = $request->file('file')->getClientOriginalExtension();
-                $token     = str_random(32).'.'.$extension;
-                $filename  = $request->file('file')->getClientOriginalName();
-                // move the anonymous file to the central location
-                $destinationPath = config('files.uploads.webpath');
-                
-                $request->file('file')->move($destinationPath, $token);
                 // use the helper function
-                $file = saveFile($request);
+                $file = saveUploadedFile($request);
                 // add the file as a relationship to the song
                 $item->files()->save($file);
             }

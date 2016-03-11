@@ -295,7 +295,7 @@
                 </div>
                 @if ( isset($item)  &&  $item->files ) 
                     @foreach ($item->files as $file)
-                        @include (cspot.snippets.show_files)
+                        @include ('cspot.snippets.show_files')
                     @endforeach
                 @endif
                 <div id="col-2-song-search" class="col-lg-6 col-md-12 col-sm-12 col-xs-12 m-b-1"

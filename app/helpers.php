@@ -5,6 +5,7 @@
 use App\Models\Item;
 use App\Models\Plan;
 use App\Models\Song;
+use App\Models\File;
 
 use App\Http\Controllers\Cspot\BibleController;
 
@@ -66,7 +67,7 @@ function is_image($mimeType)
 }
 
 
-function saveFile($request)
+function saveUploadedFile($request)
 {
     $extension = $request->file('file')->getClientOriginalExtension();
     $token     = str_random(32).'.'.$extension;
