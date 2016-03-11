@@ -207,7 +207,7 @@
                             @if ( Auth::user()->ownsPlan($item->plan_id) )
                                 <div class="col-xs-12 col-sm-4 full-btn">
                                     <a href="#" class="fully-width btn btn-primary-outline btn-sm" 
-                                        onclick="showSongSearchInput()" 
+                                        onclick="showSongSearchInput(this, '.song-search')" 
                                         title="Select another song" data-toggle="tooltip"
                                     ><i class="fa fa-exchange"></i>&nbsp;change song</a>
                                 </div>
@@ -266,12 +266,7 @@
                         </div>
                         <div id="sheet-tab">
                             @foreach ($item->song->files as $file)
-                                <figure class="figure" id="file-{{ $file->id }}">
-                                    <a href="{{ url(config('files.uploads.webpath')).'/'.$file->token }}">
-                                        <img class="figure-img img-fluid img-rounded full-width" 
-                                            src="{{ url(config('files.uploads.webpath')).'/'.$file->token }}">
-                                    </a>
-                                </figure>
+                                @include ('cspot.snippets.present_files')
                             @endforeach
                         </div>
                     </div>
@@ -289,15 +284,17 @@
                 
                 <div id="col-2-file-add" style="display: none;" 
                     class="col-lg-6 col-md-12 col-sm-12 col-xs-12 m-b-1">
-                        {!! Form::label('file', 'Attach an image (e.g. sheet music)', ['class' => 'x']); !!}
+                        {!! Form::label('file', 'Add a file (e.g. for announcements)', ['class' => 'x']); !!}
                         <br>
                         {!! Form::file('file'); !!}
                 </div>
-                @if ( isset($item)  &&  $item->files ) 
-                    @foreach ($item->files as $file)
-                        @include ('cspot.snippets.show_files')
-                    @endforeach
-                @endif
+                <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 m-b-1">
+                    @if ( isset($item)  &&  $item->files ) 
+                        @foreach ($item->files as $file)
+                            @include ('cspot.snippets.show_files')
+                        @endforeach
+                    @endif
+                </div>
                 <div id="col-2-song-search" class="col-lg-6 col-md-12 col-sm-12 col-xs-12 m-b-1"
                     @if ( isset($item)  &&  $item->comment) 
                         style="display: none;"
@@ -308,7 +305,9 @@
                 </div>
             @endif
 
-            @include('cspot.snippets.comment_input')
+            <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 m-b-1">
+                @include('cspot.snippets.comment_input')
+            </div>
 
         @endif
 
@@ -327,9 +326,13 @@
                     <div class="col-xs-12 full-width p-b-1 p-t-1">
 
                         @if ( isset($item) )
-                            <a href="#" onclick="$(this).hide();$('#col-2-song-search').show();"><i class="fa fa-music"></i>&nbsp;Add Song</a> &nbsp; &nbsp;
-                            <a href="#" onclick="$(this).hide();$('#col-2-file-add').show();"><i class="fa fa-file"></i>&nbsp;Add File(s)</a>
-                            <br><br>
+                            <a href="#" onclick="showSongSearchInput(this, '#col-2-song-search');">
+                                <i class="fa fa-music"></i>&nbsp;Add Song</a> &nbsp; &nbsp;
+
+                            <a href="#" onclick="$(this).hide();$('#col-2-file-add').show();">
+                                <i class="fa fa-file"></i>&nbsp;Add File(s)</a>
+                            <br>
+                            <br>
                         @endif
 
                         <h6>Add Bible Reference:</h6>

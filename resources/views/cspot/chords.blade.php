@@ -43,6 +43,14 @@
             @endif
         @endif
 
+
+        @if ($item->files)
+            @foreach ($item->files as $file)
+                @include ('cspot.snippets.present_files')
+            @endforeach
+        @endif
+
+
         @if ($bibleTexts)
             <div class="col-xl-6">
                 @foreach ($bibleTexts as $btext)

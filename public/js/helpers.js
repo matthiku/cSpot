@@ -163,6 +163,8 @@ $(document).ready(function() {
 */
 function deleteFile(id)
 {
+    // TODO: Prompt for confirmation as this is irrevocable:
+    if (! confirm('Are you sure to finally remove this file?')) {return;}
     // get token from form field
     $.ajax({
         url:    '/cspot/files/'+id+'/delete', 
@@ -181,10 +183,10 @@ function deleteFile(id)
     show the previously hidden song search input field
     and set the focus on it
 */
-function showSongSearchInput()
+function showSongSearchInput(that, selector)
 {
-    $('.song-search').show();
-    $('.song-details').hide();
+    $(that).hide();
+    $(selector).show();
     $("input[name='search']").focus();
 }
 

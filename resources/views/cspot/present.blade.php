@@ -39,6 +39,12 @@
             @endif
         @endif
 
+        @if ($item->files)
+            @foreach ($item->files as $file)
+                @include ('cspot.snippets.present_files')
+            @endforeach
+        @endif
+
         @if ($bibleTexts)
             <div class="bg-inverse text-present">
                 @foreach ($bibleTexts as $btext)
