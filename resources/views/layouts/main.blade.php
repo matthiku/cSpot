@@ -48,6 +48,7 @@
 
 
     @include ('layouts.messages')
+    
     @include ('layouts.navbar')
 
 

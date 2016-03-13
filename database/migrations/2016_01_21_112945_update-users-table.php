@@ -14,7 +14,7 @@ class UpdateUsersTable extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             // rename name to first_name
-            $table->renameColumn('name', 'first_name');
+            $table->string('first_name');
             // add last_name field
             $table->string('last_name');
             // add last login date
@@ -32,7 +32,7 @@ class UpdateUsersTable extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             // rename first_name field back to name
-            $table->renameColumn('first_name', 'name');
+            $table->dropColumn('first_name');
             // remove last_name field
             $table->dropColumn('last_name');
         });

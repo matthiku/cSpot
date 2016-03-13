@@ -32,6 +32,14 @@ $(document).ready(function() {
   
 
 
+
+    /**
+     * Put focus on textarea when user opens the feedback modal dialog
+     */
+    $('#createMessage').on('shown.bs.modal', function () {
+        $('#feedbackMessage').focus()
+    })
+
     /**
      * Mark modified form fields with a new background
      * and show the submit/save buttons

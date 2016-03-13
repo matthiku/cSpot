@@ -56,6 +56,9 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     }
 
 
+
+
+
     /**
      * Relationship to Social table
      */
@@ -115,6 +118,22 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     {
         $this->attributes['password'] = bcrypt($password);
     }
+
+
+
+    /**
+     * With field first_name also fill the field 'name' for backwards-compatibility!
+     *
+     * @param string $name
+     */
+    public function setFirstNameAttribute($first_name)
+    {
+        $this->attributes['first_name'] = $first_name;
+        $this->attributes['name'] = $first_name;
+    }
+
+
+
 
 
 

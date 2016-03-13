@@ -64,6 +64,11 @@
                         href="{{ url('cspot/items/'.$plan->firstItem()->id.'/present/') }}">
                         <i class="fa fa-tv">&nbsp;</i>Present</a>
                 </div>
+                <div class="pull-xs-right m-r-1">
+                    <a title="YouTube playlist of all songs" 
+                        href="https://www.youtube.com/playlist?list=PL4XL7HPBoyv9Pcf0ZFWfa2GLY2VKPfZqz">
+                        <i class="fa fa-youtube">&nbsp;</i>play all</a>
+                </div>
 
                 <h4 class="hidden-md-down">Plan for "{{ $plan->type->name }}" on {{ $plan->date->formatLocalized('%A, %d %B %Y') }}</h4>
                 <h4 class="hidden-lg-up">"{{ $plan->type->name }}" on {{ $plan->date->formatLocalized('%a, %d %B') }}</h4>

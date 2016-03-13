@@ -1,6 +1,9 @@
 
 
-<!-- Modal for creating a new message -->
+<!-- 
+    Modal for creating a new message 
+-->
+
 <div class="modal fade" id="createMessage" tabindex="-1" role="dialog" aria-labelledby="createMessageLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -11,20 +14,19 @@
                 </button>
                 <h4 class="modal-title" id="createMessageLabel">Report an issue or other feedback</h4>
             </div>
-
             {!! Form::open(['route' => 'messages.store']) !!}
 
             <div class="modal-body">
                 <!-- Subject Form Input -->
                 <div class="form-group">
                     {!! Form::label('subject', 'Subject', ['class' => 'control-label']) !!}
-                    {!! Form::text('subject', null, ['class' => 'form-control']) !!}
+                    {!! Form::text('subject', 'Feedback on page '.url()->full(), ['class' => 'form-control' ]) !!}
                 </div>
 
                 <!-- Message Form Input -->
                 <div class="form-group">
                     {!! Form::label('message', 'Message', ['class' => 'control-label']) !!}
-                    {!! Form::textarea('message', null, ['class' => 'form-control']) !!}
+                    {!! Form::textarea('message', null, ['class' => 'form-control', 'id' => 'feedbackMessage']) !!}
                 </div>
 
                 <input type="hidden" name="recipient" value="0"></input>

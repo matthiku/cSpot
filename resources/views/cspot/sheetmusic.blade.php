@@ -50,6 +50,12 @@
             @foreach ($item->files as $file)
                 @include ('cspot.snippets.present_files')
             @endforeach
+            <script>
+                $('.figure-img').css({
+                    max-height: $(window).height(),
+                    max-width:  $(window).width(),
+                });
+            </script>
         @endif
         
 
