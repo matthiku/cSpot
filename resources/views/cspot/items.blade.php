@@ -41,7 +41,7 @@
 
 				<th class="hidden-xs-down center"
 						data-toggle="tooltip" title="Links to YouTube videos or sheetmusic for song items."
-					>Media</th>
+					>Play</th>
 
 				@if( Auth::user()->ownsPlan($plan->id) )
 					<th class="center">Action</th>

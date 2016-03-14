@@ -65,7 +65,7 @@
                         <i class="fa fa-tv">&nbsp;</i>Present</a>
                 </div>
                 <div class="pull-xs-right m-r-1">
-                    <a title="YouTube playlist of all songs" 
+                    <a title="YouTube playlist of all songs" target="new" 
                         href="https://www.youtube.com/playlist?list=PL4XL7HPBoyv9Pcf0ZFWfa2GLY2VKPfZqz">
                         <i class="fa fa-youtube">&nbsp;</i>play all</a>
                 </div>
