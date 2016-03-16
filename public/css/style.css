@@ -274,3 +274,12 @@ label {
         min-width: 75%;
     }
 }
+
+
+/* exlude from printing */
+
+@media only print {
+    .btn, .dont-print { display: none !important; }
+    .always-print { display: block !important; }
+    th,td { display: table-cell !important; }
+}

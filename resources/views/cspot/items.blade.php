@@ -6,12 +6,12 @@
 		{{ count($plan->items)>5 ? 'table-sm' : ''}} {{ count($plan->items)>10 ? 'table-xs' : ''}}">
 		<thead class="thead-default">
 			<tr>
-				<th class="center" data-placement="right"
+				<th class="center dont-print" data-placement="right"
 						data-toggle="tooltip" title="Drag and Drop items to move them to a different position in the plan!"
 					><span class="hidden-sm-down">Order</span>
 					</th>
 
-				<th class="hidden-xs-down center"
+				<th class="hidden-xs-down center always-print"
 						data-toggle="tooltip" title="Hymn book reference. MP='Mission Praise'"
 					>Book#</th>
 
@@ -39,12 +39,12 @@
 						data-toggle="tooltip" title="Sheet music attached to the song?"
 					><small>Sheets?</small></th>
 
-				<th class="hidden-xs-down center"
+				<th class="hidden-xs-down center dont-print"
 						data-toggle="tooltip" title="Links to YouTube videos or sheetmusic for song items."
 					>Play</th>
 
 				@if( Auth::user()->ownsPlan($plan->id) )
-					<th class="center">Action</th>
+					<th class="center dont-print">Action</th>
 				@endif
 			</tr>
 		</thead>
@@ -75,13 +75,13 @@
 				>
 
 
-				<td class="drag-item" scope="row" title="drag item into the new position">
+				<td class="drag-item dont-print" scope="row" title="drag item into the new position">
 					<span class="hidden-sm-down pull-xs-right">{{ $item->seq_no }}</span>
 					<i class="p-r-1 fa fa-bars">
 				</td>
 
 
-				<td {{$onclick}} {{$tooltip}} class="hidden-xs-down center link">
+				<td {{$onclick}} {{$tooltip}} class="hidden-xs-down center link always-print">
 					{{ ($item->song_id) ? $item->song->book_ref : '' }}</td>
 
 
@@ -144,7 +144,7 @@
 
 
 
-				<td class="hidden-xs-down center">
+				<td class="hidden-xs-down center dont-print">
 					<big>
 					@if ($item->song_id)
 	                    @if ( $item->song->hymnaldotnet_id > 0 )
@@ -163,7 +163,7 @@
 
 
 				@if( Auth::user()->ownsPlan($plan->id) )
-					<td class="center nowrap">
+					<td class="center nowrap dont-print">
 						@if ($item->deleted_at)
 							<a class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="left" title="Restore this item" 
 								href='{{ url('cspot/items/'.$item->id) }}/restore'><i class="fa fa-undo"></i></a>
