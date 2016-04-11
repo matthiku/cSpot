@@ -1,3 +1,13 @@
+.ui-datepicker-inline {
+    margin: auto;
+}
+.Highlighted a {
+   background-color : cadetblue !important;
+   background-image :none !important;
+   color: White !important;
+   font-weight:bold !important;
+}
+
 .drag-item {
     cursor: grab;
 }

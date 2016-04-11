@@ -57,9 +57,9 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     // PLANS
 
     // show only upcoming service plans
-    Route::get('plans/future', ['as'=>'future', 'uses'=>'Cspot\PlanController@future']);
+    Route::get('plans/future/{api?}', ['as'=>'future', 'uses'=>'Cspot\PlanController@future']);
     // show only next Sunday Service plan
-    Route::get('plans/next',   ['as'=>'next',   'uses'=>'Cspot\PlanController@nextSunday']);
+    Route::get('plans/next',          ['as'=>'next',   'uses'=>'Cspot\PlanController@nextSunday']);
 
     // basic CRUD resources for plans
     Route::resource('plans',                        'Cspot\PlanController');
@@ -68,6 +68,7 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     // show filtered resources (only future by default!)
     Route::get('plans/by_user/{user_id}/{all?}',    'Cspot\PlanController@by_user');    
     Route::get('plans/by_type/{type_id}/{all?}',    'Cspot\PlanController@by_type');    
+    Route::get('plans/by_date/{date}',              'Cspot\PlanController@by_date');    
     // update (append) the note for a plan
     Route::put('plans/{plan_id}/addNote', ['as'=>'addNote', 'uses'=>'Cspot\PlanController@addNote']);
 

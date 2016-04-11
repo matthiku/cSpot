@@ -74,16 +74,20 @@ class PlanController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function future()
+    public function future($api=false)
     {
-        //
-        $plans = Plan::with('type')
+        // get all future plans incl today
+        $plans = Plan::with(['type', 'leader', 'teacher'])
             ->whereDate('date', '>', Carbon::yesterday())
             ->orderBy('date')
             ->get();
 
-        $heading = 'Upcoming Service Plans';
-        return view( $this->view_all, array('plans' => $plans, 'heading' => $heading) );
+        if (!$api) {
+            $heading = 'Upcoming Service Plans';
+            return view( $this->view_all, array('plans' => $plans, 'heading' => $heading) );
+        }
+        // return the raw data in json format
+        return json_encode($plans);
     }
 
 
@@ -178,6 +182,44 @@ class PlanController extends Controller
             array('plans' => $plans, 'heading' => $heading) 
         );
     }
+
+
+
+
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  date  $date
+     * @return \Illuminate\Http\Response
+     */
+    public function by_date($date)
+    {
+        // get plan with items ordered by seq no
+        $plan = Plan::with([
+                'items' => function ($query) { $query->orderBy('seq_no'); }])
+            ->where('date', $date)->first();
+
+        if ($plan) {
+            $types = Type::get();
+            // get list of users
+            $users = User::orderBy('first_name')->get();
+
+            return view( 
+                $this->view_one, 
+                array(
+                    'plan'         => $plan, 
+                    'types'        => $types, 
+                    'users'        => $users, 
+                    'trashedItemsCount' => 0, 
+                )
+            );
+        }
+        
+        flashError('No plan for "' . $date . '" was found. Create one?');
+        return \Redirect::back();
+    }
+
 
 
 
@@ -299,7 +341,7 @@ class PlanController extends Controller
                 ) 
             );
         }
-        //
+        
         flashError('Plan with id "' . $id . '" not found');
         return \Redirect::route($this->view_idx);
     }

@@ -62,6 +62,7 @@
 
                     </p>
 
+                    <div id="inpDate" onchange="submitDate(this)"></div>
 
                 </div>
 

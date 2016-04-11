@@ -9,6 +9,13 @@ $.ajaxSetup({
         }
 });
 
+            
+/**
+ * List of future plan dates for highlighing in the calendar widget
+ */
+var SelectedDates = {};
+SelectedDates[new Date().toLocaleDateString()] = 'Today';
+
 
 $(document).ready(function() {
 
@@ -30,6 +37,44 @@ $(document).ready(function() {
         $('#tabs').tabs();
     });
   
+
+
+    $.getJSON( __app_url + '/cspot/plans/future/api',
+        function(result){
+            $.each(result, function(i, field) {
+                var hint = field.type.name+' led by '+field.leader.first_name; 
+                if ( field.type.id < 2 ) {
+                    hint +=', teacher is '+field.teacher.first_name; }
+                SelectedDates[new Date(field['date']).toLocaleDateString()] = hint;
+            });
+            // Now style the jQ date picker
+            $(function() {
+                /***
+                 * Show Date Picker calendar widget
+                 */
+                $( "#inpDate" ).datepicker({
+                    numberOfMonths: 3,
+                    changeMonth   : true,
+                    changeYear    : true,
+                    maxDate       : "+4m",
+                    dateFormat    : "yy-mm-dd",
+                    beforeShowDay : 
+                        function(date) {
+                            var dot=date.toLocaleDateString();
+                            var Highlight = SelectedDates[dot];
+                            if (Highlight) {
+                                if (Highlight==='Today') {
+                                    return [true, "", Highlight]; }
+                                return [true, "Highlighted", Highlight]; }
+                            else {
+                                return [true, '', '']; }
+                        }
+                });
+            });
+        }
+    );
+    // once it's created, we can center-align the widget
+    //$("div.ui-datepicker-inline").css('margin','auto');
 
 
 
@@ -64,6 +109,7 @@ $(document).ready(function() {
             bibleBooks = data;
         }
     });
+
 
 
 
@@ -164,6 +210,17 @@ $(document).ready(function() {
     }
 
 });
+
+
+
+/**
+ * Function to open plan selected via date picker
+ */
+function submitDate(date) 
+{
+    window.location.href = __app_url + '/cspot/plans/by_date/' + date.value;
+}
+
 
 
 /*
