@@ -4,7 +4,7 @@
     <ul class="nav navbar-nav pull-xs-right">
 
         <!-- 
-            Authentication Links 
+            RIGHT - Authentication Links 
         -->
         @if (Auth::guest())
 
@@ -58,7 +58,9 @@
 
     </ul>
 
-
+    <!--  
+        RIGHT - Login form
+    -->
     @if ( Auth::guest() )
         <form class="form-inline pull-xs-right hidden-md-down" method="POST" role="form" action="{{ url('login') }}">
             Log in using @include('auth.social', ['hideLblText' => 'true']) or: 
@@ -79,8 +81,20 @@
     @endif
 
 
-    <a class="navbar-brand" href="{{ url('.') }}"><img src="{{ url('images/xs-cspot.png') }}" height="20" width="30"></a>
+    <!-- 
+        LEFT - Home button
+     -->
+    @if ( Auth::guest() )
+        <a class="navbar-brand" href="{{ url('.') }}"><img src="{{ url('images/xs-cspot.png') }}" height="20" width="30"></a>
+    @else
+        <a class="navbar-brand" href="{{ url('home') }}"><img src="{{ url('images/xs-cspot.png') }}" height="20" width="30"></a>
+    @endif
 
+
+
+    <!-- 
+        LEFT - Main menu items
+     -->
     <ul class="nav navbar-nav">
         @if (Auth::user())
         <li class="nav-item dropdown {{ Request::is('cspot/plans*') ? 'active' : '' }}">

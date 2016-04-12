@@ -61,7 +61,7 @@
                         </span>
 
                     </p>
-
+                    <hr>
                     <div id="inpDate" onchange="submitDate(this)"></div>
 
                 </div>

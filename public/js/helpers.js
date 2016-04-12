@@ -38,7 +38,9 @@ $(document).ready(function() {
     });
   
 
-
+    /**
+     * Get list of future plans and show calendar widget
+     */
     $.getJSON( __app_url + '/cspot/plans/future/api',
         function(result){
             $.each(result, function(i, field) {
@@ -47,13 +49,18 @@ $(document).ready(function() {
                     hint +=', teacher is '+field.teacher.first_name; }
                 SelectedDates[new Date(field['date']).toLocaleDateString()] = hint;
             });
+            // get the current browser window dimension (width)
+            browserWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+            numberOfMonths = 3;
+            if (browserWidth<800) numberOfMonths = 2;
+            if (browserWidth<600) numberOfMonths = 1;
             // Now style the jQ date picker
             $(function() {
                 /***
                  * Show Date Picker calendar widget
                  */
                 $( "#inpDate" ).datepicker({
-                    numberOfMonths: 3,
+                    numberOfMonths: numberOfMonths,
                     changeMonth   : true,
                     changeYear    : true,
                     maxDate       : "+4m",
@@ -73,8 +80,6 @@ $(document).ready(function() {
             });
         }
     );
-    // once it's created, we can center-align the widget
-    //$("div.ui-datepicker-inline").css('margin','auto');
 
 
 
