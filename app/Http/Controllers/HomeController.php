@@ -26,4 +26,14 @@ class HomeController extends Controller
     {
         return view('home');
     }
+
+    /**
+     * Show the welcome screen.
+     *
+     * @return Response
+     */
+    public function welcome()
+    {
+        return view('welcome');
+    }
 }

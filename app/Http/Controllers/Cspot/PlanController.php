@@ -268,6 +268,15 @@ class PlanController extends Controller
         }
 
         flash('New Plan added with id '.$plan->id);
+
+        // redirect back to the plan editor to create another plan
+        if ($request->input('addAnother')=='Y') {
+            // send default values for another plan in 7 days
+            $newDate =  $plan->date->addDays(7);
+            $request->session()->flash('defaultValues', ['type_id' => $plan->type_id, 'date' => $newDate]);
+            return redirect()->back();
+        }
+
         return \Redirect::route('cspot.plans.edit', $plan->id);
     }
 

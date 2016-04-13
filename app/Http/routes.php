@@ -13,12 +13,8 @@
 # (C) 2016 Matthias Kuhs, Ireland
 
 Route::group(['middleware' => 'web'], function () {
-    //
 
-    Route::get('/', function () {
-        return view('welcome');
-    });
-
+    Route::get('/', 'HomeController@welcome');
     Route::get('/home', 'HomeController@index');
 
     // all authorization routes

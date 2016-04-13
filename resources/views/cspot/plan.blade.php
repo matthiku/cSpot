@@ -12,6 +12,9 @@
 @endif
 
 
+@if (session()->has('defaultValues'))
+    <?php $defaultValues = session('defaultValues') ?>
+@endif
 
 @section('content')
 
@@ -126,8 +129,6 @@
 
                     @else
                         <input class="xs-width-half" type="submit" value="Submit">
-
-                        <script type="text/javascript">document.forms.inputForm.date.focus()</script>
                     @endif
                 </big>
             </div>  
@@ -148,14 +149,14 @@
                 <div class="row form-group">
                     <!-- <label class="form-control-label plan-form-minw right hidden-sm-down">Type of Service</label>                  -->
                     <select name="type_id" class="form-control text-help plan-form-minw c-select" onchange="enableSaveButton(this)">
-                        @if (! isset($plan))
+                        @if (! isset($plan) && ! isset($defaultValues ))
                             <option selected>
                                 Select ...
                             </option>
                         @endif
                         @foreach ($types as $type)
                             <option 
-                                @if( ( ''<>old('type_id') && $type->id==old('type_id') )  ||  isset($plan) && $plan->type_id==$type->id )
+                                @if( ( ''<>old('type_id') && $type->id==old('type_id') )  ||  isset($plan) && $plan->type_id==$type->id  ||  isset($defaultValues) && $defaultValues['type_id']==$type->id )
                                     selected
                                 @endif
                                 value="{{ $type->id }}">{{ $type->name }}
@@ -173,12 +174,22 @@
         
             <div class="col-xl-3 col-lg-6">
                 <div class="row form-group">
-                    <!-- {!! Form::label('date', 'Date', ['class' => 'form-control-label plan-form-minw right hidden-sm-down' ]); !!} -->
-                    {!! Form::date( 
-                        'date', 
-                        isset($plan) ? $plan->date : \Carbon\Carbon::now(), 
-                        ['class' => 'plan-form-minw center', 'onchange' => 'enableSaveButton(this)' ] 
-                    ) !!}
+                    @if ( isset($plan) )
+                        {!! Form::date( 
+                            'date', $plan->date, 
+                            ['class'    => 'plan-form-minw center', 'onchange' => 'enableSaveButton(this)' ] ) 
+                        !!}
+                    @elseif (isset($defaultValues))
+                        {!! Form::date( 
+                            'date', $defaultValues['date'], 
+                            ['class' => 'plan-form-minw center', 'onchange' => 'enableSaveButton(this)' ] )
+                        !!}
+                    @else
+                        {!! Form::date( 
+                            'date', \Carbon\Carbon::now(), 
+                            ['class' => 'plan-form-minw center', 'onchange' => 'enableSaveButton(this)' ] )
+                        !!}
+                    @endif
                 </div>
             </div>                    
         @endif
@@ -286,10 +297,21 @@
         <!-- Checkbox to add default items into NEW plan -->
         <input type="hidden" name="defaultItems" value="false">
         <div class="checkbox center">
-          <label>
-            <input checked="checked" type="checkbox" value="Y" name="defaultItems">
-            Insert default items for this plan?
-          </label>
+            <label>
+                <input checked="checked" type="checkbox" value="Y" name="defaultItems">
+                Insert default items for this plan?
+            </label>
+        </div>                
+
+        <!-- what to do after creating this plan? Either go to this plan or add another one of this type -->
+        <input type="hidden" name="addAnother" value="false">
+        <div class="checkbox center">
+            <label>
+                <input 
+                {{ isset($defaultValues) ? 'checked="checked"' : '' }}
+                type="checkbox" value="Y" name="addAnother">
+                Add another service plan after this one?
+            </label>
         </div>                
 
     @endif
@@ -349,7 +371,7 @@
 
         @else
             &nbsp; {!! Form::submit('Save Note'); !!}
-            <script type="text/javascript">document.forms.inputForm.info.focus()</script>
+            <script>document.forms.inputForm.info.focus()</script>
         @endif
 
         @if ( Auth::user()->isAdmin()  &&  $plan->items->count()==0 ) &nbsp; 
@@ -361,6 +383,8 @@
             </a>
         @endif
 
+    @else
+        <script>document.forms.inputForm.leader_id.focus()</script>
     @endif
 
     
