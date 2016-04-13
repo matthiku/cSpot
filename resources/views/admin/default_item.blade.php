@@ -27,7 +27,13 @@
             <select name="type_id" class="c-select">
               <option selected>Select Service</option>
               @foreach ($types as $type)
-                <option value="{{ $type->id }}">{{ $type->name }}</option>
+                <option value="{{ $type->id }}"
+                    @if ($type->id == $default_item->type_id)
+                        selected="selected"
+                    @endif
+                    >
+                    {{ $type->name }}
+                </option>
               @endforeach
             </select>
         </p>

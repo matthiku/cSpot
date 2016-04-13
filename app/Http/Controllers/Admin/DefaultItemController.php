@@ -142,7 +142,7 @@ class DefaultItemController extends Controller
     {
         // was there any change?
         $output = DefaultItem::find($id);
-        if ($request->input('text') == $output->text && $request->input('seq_no') == $output->seq_no ) 
+        if ($request->input('text') == $output->text && $request->input('seq_no') == $output->seq_no && $request->input('type_id') == $output->type_id ) 
         {
             return \Redirect::route($this->view_idx)
                         ->with(['status' => 'no change']);

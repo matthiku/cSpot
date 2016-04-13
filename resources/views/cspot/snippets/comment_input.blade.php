@@ -10,7 +10,7 @@
     <p onclick="blink('.save-buttons')">
         @if( Auth::user()->ownsPlan($plan->id) )
             {!! Form::text('comment'); !!}
-        @else
+        @elseif (isset($item))
             {!! Form::text('comment', $item->comment, ['disabled'=>'disabled']); !!}
         @endif
         @if ($errors->has('comment'))
