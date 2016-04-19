@@ -226,17 +226,26 @@ $(document).ready(function() {
 */
 function toogleAllorFuturePlans()
 {
-    // get current url and each segment
-    var currUrl  = window.location.href;
-    var segments = currUrl.split('/');
-    var count    = segments.length;
-    // check for 'all' or 'future' segment
-    if (segments.indexOf('future') > -1 ) {
-        segments[segments.indexOf('future')] = 'all';
-    } else {
-        segments[segments.indexOf('all')] = 'future';
-    }
-    var newUrl = segments.join('/');
+    $('#show-spinner').modal({keyboard: false})
+    // get current url and query string
+    var currUrl = window.location.href.split('?');
+    var newUrl  = currUrl[0];
+    if (currUrl.length > 1) 
+    {
+        var queryStr = currUrl[1].split('&');
+        if (queryStr.length > 1) {
+            newUrl += '?';
+            for (var i = queryStr.length - 1; i >= 0; i--) {
+                parms = queryStr[i].split('=');
+                if (parms[0]=='show') {
+                    parms[1]=='all'  ?  parms[1]='future'  :  parms[1]='all';
+                    queryStr[i] = 'show='+parms[1];
+                }                
+                newUrl += queryStr[i];
+                if (i > 0) newUrl += '&';
+            }
+        }
+    } 
     window.location.href = newUrl;
 }
 
@@ -247,17 +256,20 @@ function reloadListOrderBy(field)
 {
     $('#show-spinner').modal({keyboard: false})
     // get current url and query string
-    var currUrl  = window.location.href.split('?');
-    var newUrl = currUrl[0];
+    var currUrl = window.location.href.split('?');
+    var newUrl  = currUrl[0];
     if (currUrl.length > 1) 
     {
         var queryStr = currUrl[1].split('&');
+        var orderbyFound = false;
         if (queryStr.length > 1) {
             newUrl += '?';
             for (var i = queryStr.length - 1; i >= 0; i--) {
                 parms = queryStr[i].split('=');
-                if (parms[0]=='orderby') 
+                if (parms[0]=='orderby') {
                     queryStr[i] = 'orderby='+field;
+                    orderbyFound = true;
+                }
                 if (parms[0]=='order') {
                     parms[1]=='desc'  ?  parms[1]='asc'  :  parms[1]='desc';
                     queryStr[i] = 'order='+parms[1];
@@ -267,11 +279,16 @@ function reloadListOrderBy(field)
             }
         }
     } 
-    else 
-    {
-        newUrl += '?orderby='+field;
+    else {
+        newUrl += '?';
+    }
+    // check if existing query string already contained a orderby param
+    if (currUrl.length > 1 && ! orderbyFound) newUrl += '&';
+    if (currUrl.length < 2 || ! orderbyFound) {
+        newUrl += 'orderby='+field;
         newUrl += '&order=asc';
     }
+
     window.location.href = newUrl;
 }
 

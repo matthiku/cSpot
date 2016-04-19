@@ -28,6 +28,8 @@
 
 	@if (count($songs))
 
+		<center><small>(Total: {{ $songs->total() }} Songs)</small></center>
+
 		<table class="table table-striped table-bordered 
 					@if(count($songs)>15)
 					 table-sm

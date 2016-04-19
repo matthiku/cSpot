@@ -25,19 +25,21 @@
 	</a>
 	@endif
 
-    <h2>{{ $heading }}</h2>
+    <h2 class="pull-xs-left">{{ $heading }}</h2>
 
-	@if( Request::is('*/by_user/*') || Request::is('*/by_type/*') )
+	<center>Page {{ $plans->currentPage() }} of {{ $plans->lastPage() }}</center>
+
+	@if( Request::has('show') )
 		<p>
 			<a href="#" onclick="toogleAllorFuturePlans()">
-				<input type="checkbox" {{Request::is('*/all*') ? '' : 'checked'}}>
+				<input type="checkbox" {{Request::get('show')=='all' ? '' : 'checked'}}>
 				show only upcoming service plans</a>
 		</p>
 	@endif
 
 
 	@if ( isset($plans) && count($plans) )
-		Total: {{ count($plans) }} Services
+		<center><small>(Total: {{ $plans->total() }} Service Plans)</small></center>
 
 		<table class="table table-striped table-bordered table-hover
 					@if(count($plans)>15)

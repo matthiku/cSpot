@@ -133,19 +133,20 @@ class PlanController extends Controller
             }
             $heading .= Type::find($filtervalue)->name.'s';
         }
+        // show all future plans
         elseif ($filterby=='future') {
             // get ALL future plans incl today
             $plans = Plan::with(['type', 'leader', 'teacher'])
                 ->whereDate('date', '>', Carbon::yesterday())
                 ->orderBy($orderBy, $order);
             $heading = 'Upcoming Service Plans';            
-            
+
             // for an API call, return the raw data in json format (without pagination!)
             if (isset($request->api)) {
                 return json_encode($plans->get());
             }
         }
-        // show only plans of the user (or all for an admin)
+        // show only plans of the current user (or all plans if it's an admin)
         else
         {
             // show all plans for Admins and only their own for non-Admins

@@ -54,8 +54,6 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
          PLANS
     */
 
-    // show only upcoming service plans with optional sorting
-    Route::get('plans/future/{api?}',                     ['as'=>'future', 'uses'=>'Cspot\PlanController@future']);
     // show next Sunday's Service plan
     Route::get('plans/next',                              ['as'=>'next',   'uses'=>'Cspot\PlanController@nextSunday']);
 
