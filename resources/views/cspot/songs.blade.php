@@ -5,7 +5,7 @@
 
 @section('title', $heading)
 
-@section('songs', 'active')
+@section('plans', 'active')
 
 
 
@@ -37,9 +37,16 @@
 			<thead class="thead-default">
 				<tr>
 					<th class="hidden-md-down">#</th>
-					<th>Title</th>
-					<th class="hidden-md-down">Author</th>
-					<th class="center hidden-xs-down">Book Ref.</th>
+
+					@include('cspot.snippets.theader', ['thfname' => 'title', 'thdisp' => 'Title', 'thsort'=>true, 'thclass'=>''])
+
+					@include('cspot.snippets.theader', ['thfname' => 'author', 'thdisp' => 'Author', 'thsort'=>true, 'thclass'=>''])
+
+					<th class="center hidden-xs-down link" onclick="reloadListOrderBy('book_ref')"
+						data-toggle="tooltip" title="Sort list by Book Reference">
+						Book Ref
+						<i class="fa fa-sort {{ Request::is('*/sorted/book_ref*') ? 'text-primary' : '' }}"> </i></th>
+						
 					<th class="center hidden-sm-down"><small>Chords?</small></th>
 					<th class="center hidden-sm-down"><small>Sheets?</small></th>
 					<th class="center">Media</th>

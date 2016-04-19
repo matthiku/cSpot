@@ -50,34 +50,38 @@ Route::group(['middleware' => 'web'], function () {
 */
 Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() {
 
-    // PLANS
+    /*
+         PLANS
+    */
 
-    // show only upcoming service plans
-    Route::get('plans/future/{api?}', ['as'=>'future', 'uses'=>'Cspot\PlanController@future']);
-    // show only next Sunday Service plan
-    Route::get('plans/next',          ['as'=>'next',   'uses'=>'Cspot\PlanController@nextSunday']);
+    // show only upcoming service plans with optional sorting
+    Route::get('plans/future/{api?}',                     ['as'=>'future', 'uses'=>'Cspot\PlanController@future']);
+    // show next Sunday's Service plan
+    Route::get('plans/next',                              ['as'=>'next',   'uses'=>'Cspot\PlanController@nextSunday']);
 
-    // basic CRUD resources for plans
-    Route::resource('plans',                        'Cspot\PlanController');
+    // basic CRUD resources for plans, but without the simple GET method
+    Route::resource('plans',                                                       'Cspot\PlanController');
+
+    // show one plan for the selected date
+    Route::get('plans/by_date/{date}',                                             'Cspot\PlanController@by_date');    
+
     // allow DELETE via the GET method
-    Route::get('plans/{plan_id}/delete',            'Cspot\PlanController@destroy');    
-    // show filtered resources (only future by default!)
-    Route::get('plans/by_user/{user_id}/{all?}',    'Cspot\PlanController@by_user');    
-    Route::get('plans/by_type/{type_id}/{all?}',    'Cspot\PlanController@by_type');    
-    Route::get('plans/by_date/{date}',              'Cspot\PlanController@by_date');    
+    Route::get('plans/delete/{plan_id}',                                           'Cspot\PlanController@destroy');    
     // update (append) the note for a plan
-    Route::put('plans/{plan_id}/addNote', ['as'=>'addNote', 'uses'=>'Cspot\PlanController@addNote']);
+    Route::put('plans/{plan_id}/addNote', ['as'=>'addNote',               'uses'=>' Cspot\PlanController@addNote']);
 
     // send an email reminder to a leader or teacher for a plan
-    Route::get('plans/{plan_id}/remind/{user_id}', ['as'=>'sendReminder', 'uses'=>'Cspot\PlanController@sendReminder']);
+    Route::get('plans/{plan_id}/remind/{user_id}', ['as'=>'sendReminder', 'uses'=>' Cspot\PlanController@sendReminder']);
     
 
-    // ITEMS
+    /*
+         ITEMS
+     */
 
     // show form of next or previous item for a plan
-    Route::get('plans/{plan_id}/items/{item_id}/go/{direction}/{chords?}',    'Cspot\ItemController@next');
+    Route::get('plans/{plan_id}/items/{item_id}/go/{direction}/{chords?}',          'Cspot\ItemController@next');
     // show form to create a new item for a plan
-    Route::get('plans/{plan_id}/items/create/before/{item_id}',                     'Cspot\ItemController@create');    
+    Route::get('plans/{plan_id}/items/create/before/{item_id}',                                 'Cspot\ItemController@create');    
     // insert new item with song_id 
     Route::get('plans/{plan_id}/items/store/seq_no/{seq_no}/song/{song_id}/{moreItems?}/{beforeItem?}',     'Cspot\ItemController@insertSong');    
     // update item with new song_id 
@@ -109,16 +113,21 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     // delete all trashed items of a plan
     Route::get('plans/{plan_id}/items/trashed/delete',  'Cspot\ItemController@deleteAllTrashed');    
 
+
+    /*
+        SONGS
+    */
+        
     // basic songs processing
-    Route::resource('songs',            'Cspot\SongController');
+    Route::resource('songs',               'Cspot\SongController');
+
     // specific delete route using 'get' method
-    Route::get('songs/{songs}/delete',  'Cspot\SongController@destroy');    
+    Route::get('songs/{songs}/delete',     'Cspot\SongController@destroy');
+
     // delete an attachment to a song
     Route::delete('files/{id}/delete',     'Cspot\SongController@deleteFile');
 
 });
-
-
 
 /*
 |--------------------------------------------------------------------------

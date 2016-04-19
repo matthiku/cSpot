@@ -13,10 +13,18 @@
 
         @else
 
+            <li class="nav-item hidden-xs-down">
+                <a class="nav-link" href="#" data-toggle="modal" data-target="#createMessage">Page Feedback</a>
+            </li>
+
+            <li class="nav-item hidden-lg-down">
+                <a class="nav-link" href="{{ url('admin/users') }}">User List</a>
+            </li>
+
             <li class="nav-item dropdown">
                 <a href="#" class="nav-link dropdown-toggle{{ Request::is('admin/*') ? ' active' : '' }}" 
                    data-toggle="dropdown" role="button" aria-expanded="false">
-                    Config <span class="caret"></span>
+                    Setup <span class="caret"></span>
                 </a>
                 <div class="dropdown-menu" role="menu">
                     <a class="dropdown-item" href="{{ url('admin/default_items') }}"><i class="fa fa-btn fa-server fa-lg"></i> &nbsp; Default Items</a>
@@ -103,7 +111,7 @@
             </a>
             <div class="dropdown-menu" role="menu">
                 <a class="dropdown-item" href="{{ url('cspot/plans/next') }}"><i class="fa fa-btn fa-bell-o fa-lg"></i> &nbsp; Next Sunday</a>
-                <a class="dropdown-item" href="{{ url('cspot/plans/future') }}"><i class="fa fa-btn fa-calendar fa-lg"></i> &nbsp; Upcoming Plans</a>
+                <a class="dropdown-item" href="{{ url('cspot/plans?filterby=future') }}"><i class="fa fa-btn fa-calendar fa-lg"></i> &nbsp; Upcoming Plans</a>
                 <hr>
                 <a class="dropdown-item" href="{{ url('cspot/plans') }}"><i class="fa fa-btn fa-calendar-check-o fa-lg"></i> &nbsp; Your Service Plans</a>
                 @if( Auth::user()->isEditor() )
@@ -114,11 +122,11 @@
                 <a class="dropdown-item" href="{{ url('cspot/songs') }}"><i class="fa fa-btn fa-music fa-lg"></i> &nbsp; Songs</a>
             </div>
         </li>
-        <li class="nav-item hidden-xs-down">
+        <li class="nav-item hidden-sm-down">
             <a class="nav-link" href="{{ url('cspot/plans/next') }}">Next Sunday</a>
         </li>
         <li class="nav-item hidden-sm-down">
-            <a class="nav-link" href="{{ url('cspot/plans/future') }}">Upcoming Plans</a>
+            <a class="nav-link" href="{{ url('cspot/plans?filterby=future') }}">Upcoming Plans</a>
         </li>
         <li class="nav-item hidden-lg-down">
             <a class="nav-link" href="{{ url('cspot/plans') }}">Your Plans</a>

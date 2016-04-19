@@ -47,10 +47,21 @@ class SongController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        //
-        $songs = Song::orderBy('title')->paginate(20);
+    public function index(Request $request )
+    { 
+        // set default values
+        $orderBy = isset($request->orderby) ? $request->orderby : 'title';
+        $order   = isset($request->order)   ? $request->order   : 'asc';
+
+        // with filtering?
+        if (isset($request->filterby) and isset($request->filtervalue)) {
+            $songs = Song::orderBy($orderBy, $order)
+                ->where($request->filterby, 'like', '%'.$request->filtervalue.'%')
+                ->paginate(20);
+        } else {
+            $songs = Song::orderBy($orderBy, $order)
+                ->paginate(20);
+        }
 
         $heading = 'Manage Songs';
         return view( $this->view_all, array(

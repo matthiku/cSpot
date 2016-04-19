@@ -46,51 +46,6 @@ class PlanController extends Controller
 
 
 
-
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        // show all plans for Admins and only their own for non-Admins
-        if (Auth::user()->isAdmin()) {
-            $plans = Plan::with('type')->get();
-        } else {
-            $plans = Plan::where('leader_id', Auth::user()->id)
-                      ->orWhere('teacher_id', Auth::user()->id)
-                      ->with('type')->get();
-        }
-        $heading = 'Your Service Plans';
-        return view( $this->view_all, array('plans' => $plans, 'heading' => $heading) );
-    }
-
-
-
-    /**
-     * Display a listing of future Service Plans
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function future($api=false)
-    {
-        // get all future plans incl today
-        $plans = Plan::with(['type', 'leader', 'teacher'])
-            ->whereDate('date', '>', Carbon::yesterday())
-            ->orderBy('date')
-            ->get();
-
-        if (!$api) {
-            $heading = 'Upcoming Service Plans';
-            return view( $this->view_all, array('plans' => $plans, 'heading' => $heading) );
-        }
-        // return the raw data in json format
-        return json_encode($plans);
-    }
-
-
     /**
      * Display the next Sunday's Service Plan
      *
@@ -118,82 +73,113 @@ class PlanController extends Controller
 
 
 
+
+
+
     /**
-     * Display a listing of Service Plans filtered by user (leader/teacher)
+     * Display a listing of Service Plans 
+     *    filtered by user (leader/teacher) or by plan type
+     *
+     * @param  filter (user|type) Show only plans for a certain user or of a certain type
+     * @param  value  user_id or type_id
+     * @param  show   (all|future) Show only future plans or all 
      *
      * @return \Illuminate\Http\Response
      */
-    public function by_user($user_id, $all=false)
+    public function index(Request $request)
     {
-        //
-        if ($all) {
-            $plans = Plan::with('type')
-                ->where('leader_id', $user_id)
-                ->orWhere('teacher_id', $user_id)
-                ->orderBy('date','DESC')
-                ->get();
-            $heading = 'All Church Service Plans for ';
-        } else {
-            $plans = Plan::with('type')
-                ->whereDate('date', '>', Carbon::yesterday())
-                ->where('leader_id', $user_id)
-                ->orWhere('teacher_id', $user_id)
-                ->whereDate('date', '>', Carbon::yesterday())
-                ->orderBy('date')
-                ->get();
-            $heading = 'Upcoming Church Service Plans for ';
+        // set default values
+        $filterby    = isset($request->filterby)    ? $request->filterby    : '';
+        $filtervalue = isset($request->filtervalue )? $request->filtervalue : '';
+        $show        = isset($request->show  )      ? $request->show        : 'future';
+        $orderBy     = isset($request->orderby)     ? $request->orderby     : 'date';
+        $order       = isset($request->order)       ? $request->order       : 'asc';
+    
+        // show only plans for certain user ids
+        if ($filterby=='user') 
+        {
+            // show all plans, past and future?
+            if ($show  =='all') {
+                $plans = Plan::with('type')
+                    ->where('leader_id', $filtervalue)
+                    ->orWhere('teacher_id', $filtervalue)
+                    ->orderBy($orderBy, $order);
+                $heading = 'All Church Service Plans for ';
+            } else {
+                $plans = Plan::with('type')
+                    ->whereDate('date', '>', Carbon::yesterday())
+                    ->where('leader_id', $filtervalue)
+                    ->orWhere('teacher_id', $filtervalue)
+                    ->whereDate('date', '>', Carbon::yesterday())
+                    ->orderBy($orderBy, $order);
+                $heading = 'Upcoming Church Service Plans for ';
+            }
+            $heading .= User::find($filtervalue)->first_name;
         }
-
-        $heading .= User::find($user_id)->first_name;
+        // show only plans of certain type
+        elseif ($filterby=='type') 
+        {
+            if ($show=='all') {
+                $plans = Plan::with('type')
+                    ->where('type_id', $filtervalue)
+                    ->orderBy($orderBy, $order);
+                $heading = 'Show All ';
+            } else {
+                $plans = Plan::with('type')
+                    ->whereDate('date', '>', Carbon::yesterday())
+                    ->where('type_id', $filtervalue)
+                    ->orderBy($orderBy, $order);
+                $heading = 'Show Upcoming ';
+            }
+            $heading .= Type::find($filtervalue)->name.'s';
+        }
+        elseif ($filterby=='future') {
+            // get ALL future plans incl today
+            $plans = Plan::with(['type', 'leader', 'teacher'])
+                ->whereDate('date', '>', Carbon::yesterday())
+                ->orderBy($orderBy, $order);
+            $heading = 'Upcoming Service Plans';            
+            
+            // for an API call, return the raw data in json format (without pagination!)
+            if (isset($request->api)) {
+                return json_encode($plans->get());
+            }
+        }
+        // show only plans of the user (or all for an admin)
+        else
+        {
+            // show all plans for Admins and only their own for non-Admins
+            if (Auth::user()->isAdmin()) {
+                $plans = Plan::with('type')
+                          ->orderBy($orderBy, $order);
+            } else {
+                $plans = Plan::where('leader_id', Auth::user()->id)
+                          ->orWhere('teacher_id', Auth::user()->id)
+                          ->with('type')
+                          ->orderBy($orderBy, $order);
+            }
+            $heading = 'Your Service Plans';
+        }
 
         return view( 
             $this->view_all, 
-            array('plans' => $plans, 'heading' => $heading) 
+            array('plans' => $plans->paginate(20), 'heading' => $heading) 
         );
     }
 
 
+
+
+
     /**
-     * Display a listing of Service Plans filtered by user (leader/teacher)
+     * Display the plan for a specific date
      *
-     * @return \Illuminate\Http\Response
-     */
-    public function by_type($type_id, $all=false)
-    {
-        //
-        if ($all) {
-            $plans = Plan::with('type')
-                ->where('type_id', $type_id)
-                ->orderBy('date','DESC')
-                ->get();
-            $heading = 'Show All ';
-        } else {
-            $plans = Plan::with('type')
-                ->whereDate('date', '>', Carbon::yesterday())
-                ->where('type_id', $type_id)
-                ->orderBy('date')
-                ->get();
-            $heading = 'Show Upcoming ';
-        }
-        $heading .= Type::find($type_id)->name.'s';
-
-        return view( 
-            $this->view_all, 
-            array('plans' => $plans, 'heading' => $heading) 
-        );
-    }
-
-
-
-
-
-    /**
-     * Display the specified resource.
+     * TODO: What happens if there is more than one event per day?
      *
      * @param  date  $date
      * @return \Illuminate\Http\Response
      */
-    public function by_date($date)
+    public function by_date(Request $request, $date)
     {
         // get plan with items ordered by seq no
         $plan = Plan::with([
@@ -215,9 +201,19 @@ class PlanController extends Controller
                 )
             );
         }
-        
-        flashError('No plan for "' . $date . '" was found. Create one?');
-        return \Redirect::back();
+
+        // No plan found for this day, let the user create a new one
+
+        // check if user is authorized to create a new plan....
+        if (! Auth::user()->isAuthor() ) {
+            flashError('No service plan for ' . Carbon::parse($date)->format('l jS \\of F Y') . ' found.');
+            return \Redirect::back();
+        }
+
+        // push plan date to session
+        $request->session()->flash('defaultValues', ['date' => $date]);
+        // call plan creation method
+        return $this->create();
     }
 
 

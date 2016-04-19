@@ -29,13 +29,9 @@
 
 	@if( Request::is('*/by_user/*') || Request::is('*/by_type/*') )
 		<p>
-			@if( Request::is('*/all') )
-				<a href="{{ url('/').'/'.Request::segment(1).'/'.Request::segment(2).'/'.Request::segment(3).'/'.Request::segment(4) }}">
-			@else
-				<a href="{{ Request::url() }}/all">
-			@endif
-			<input type="checkbox" {{Request::is('*/all') ? '' : 'checked'}}>
-			show only upcoming service plans</a>
+			<a href="#" onclick="toogleAllorFuturePlans()">
+				<input type="checkbox" {{Request::is('*/all*') ? '' : 'checked'}}>
+				show only upcoming service plans</a>
 		</p>
 	@endif
 
@@ -51,11 +47,17 @@
 			<thead class="thead-default">
 				<tr>
 					<th class="hidden-md-down center">#</th>
-					<th>Date</th>
-					<th>Service Type</th>
+
+					@include('cspot.snippets.theader', ['thfname' => 'date', 'thdisp' => 'Date', 'thsort'=>false, 'thclass'=>''])
+					
+					@include('cspot.snippets.theader', ['thfname' => 'type_id', 'thdisp' => 'Service Type', 'thsort'=>false, 'thclass'=>''])
+
 					<th class="hidden-sm-down center"># items</th>
-					<th class="hidden-xs-down center">Leader</th>
-					<th class="hidden-xs-down center">Teacher</th>
+
+					@include('cspot.snippets.theader', ['thfname' => 'leader_id', 'thdisp' => 'Leader', 'thsort'=>false, 'thclass'=>'hidden-xs-down center'])
+
+					@include('cspot.snippets.theader', ['thfname' => 'teacher_id', 'thdisp' => 'Teacher', 'thsort'=>false, 'thclass'=>'hidden-xs-down center'])
+
 					<th class="hidden-sm-up center">Leader, Teacher</th>
 					<th class="text-right hidden-md-down">Last updated on</th>
 					<th class="hidden-md-down">by</th>
@@ -66,7 +68,7 @@
 			<tbody>
 	        @foreach( $plans as $plan )
 				<tr class="link" onclick="location.href='{{ url('cspot/plans/'.$plan->id) }}/edit'"
-					data-toggle="tooltip" title="Click on a plan to view/edit it">
+					data-toggle="tooltip" title="Click on/touch a plan to view/edit it">
 
 					<td class="hidden-md-down center" scope="row">{{ $plan->id }}</td>
 
@@ -92,6 +94,21 @@
 			</tbody>
 
 		</table>
+
+		<center>
+			{!! $plans->links() !!}
+		</center>
+		<script>
+			// add missing classes and links into the auto-geneerated pagination buttons
+			$('.pagination').children().each(function() { $(this).addClass('page-item'); });
+			$('.page-item>a').each(function() { $(this).addClass('page-link'); });
+			var pgActive = $('.active.page-item').html();
+			$('.active.page-item').html('<a class="page-link" href="#">'+pgActive+'</a>');
+			$('.disabled.page-item').each(function() {
+				var innerHtml = $(this).html();
+				$(this).html('<a class="page-link" href="#">'+innerHtml+'</a>');
+			})
+		</script>
 
     @else
 

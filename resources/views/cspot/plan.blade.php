@@ -149,14 +149,14 @@
                 <div class="row form-group">
                     <!-- <label class="form-control-label plan-form-minw right hidden-sm-down">Type of Service</label>                  -->
                     <select name="type_id" class="form-control text-help plan-form-minw c-select" onchange="enableSaveButton(this)">
-                        @if (! isset($plan) && ! isset($defaultValues ))
+                        @if (! isset($plan) && ! isset($defaultValues['type_id'] ))
                             <option selected>
                                 Select ...
                             </option>
                         @endif
                         @foreach ($types as $type)
                             <option 
-                                @if( ( ''<>old('type_id') && $type->id==old('type_id') )  ||  isset($plan) && $plan->type_id==$type->id  ||  isset($defaultValues) && $defaultValues['type_id']==$type->id )
+                                @if( ( ''<>old('type_id') && $type->id==old('type_id') )  ||  isset($plan) && $plan->type_id==$type->id  ||  isset($defaultValues['type_id']) && $defaultValues['type_id']==$type->id )
                                     selected
                                 @endif
                                 value="{{ $type->id }}">{{ $type->name }}

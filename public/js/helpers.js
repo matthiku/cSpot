@@ -39,48 +39,50 @@ $(document).ready(function() {
   
 
     /**
-     * Get list of future plans and show calendar widget
+     * On 'Home' page, get list of future plans and show calendar widget
      */
-    $.getJSON( __app_url + '/cspot/plans/future/api',
-        function(result){
-            $.each(result, function(i, field) {
-                var hint = field.type.name+' led by '+field.leader.first_name; 
-                if ( field.type.id < 2 ) {
-                    hint +=', teacher is '+field.teacher.first_name; }
-                SelectedDates[new Date(field['date']).toLocaleDateString()] = hint;
-            });
-            // get the current browser window dimension (width)
-            browserWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-            numberOfMonths = 3;
-            if (browserWidth<800) numberOfMonths = 2;
-            if (browserWidth<600) numberOfMonths = 1;
-            // Now style the jQ date picker
-            $(function() {
-                /***
-                 * Show Date Picker calendar widget
-                 */
-                $( "#inpDate" ).datepicker({
-                    numberOfMonths: numberOfMonths,
-                    changeMonth   : true,
-                    changeYear    : true,
-                    maxDate       : "+4m",
-                    dateFormat    : "yy-mm-dd",
-                    beforeShowDay : 
-                        function(date) {
-                            var dot=date.toLocaleDateString();
-                            var Highlight = SelectedDates[dot];
-                            if (Highlight) {
-                                if (Highlight==='Today') {
-                                    return [true, "", Highlight]; }
-                                return [true, "Highlighted", Highlight]; }
-                            else {
-                                return [true, '', '']; }
-                        }
+    if ( window.location.href == __app_url + '/home' ) {
+        $.getJSON( __app_url + '/cspot/plans?filterby=future&api=api',
+            function(result){
+                $.each(result, function(i, field) {
+                    var hint = field.type.name+' led by '+field.leader.first_name; 
+                    if ( field.type.id < 2 ) {
+                        hint +=', teacher is '+field.teacher.first_name; }
+                    SelectedDates[new Date(field['date']).toLocaleDateString()] = hint;
                 });
-            });
-        }
-    );
-
+                // get the current browser window dimension (width)
+                browserWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+                numberOfMonths = 3;
+                if (browserWidth<800) numberOfMonths = 2;
+                if (browserWidth<600) numberOfMonths = 1;
+                // Now style the jQ date picker
+                $(function() {
+                    /***
+                     * Show Date Picker calendar widget
+                     */
+                    $( "#inpDate" ).datepicker({
+                        numberOfMonths: numberOfMonths,
+                        changeMonth   : true,
+                        changeYear    : true,
+                        maxDate       : "+4m",
+                        dateFormat    : "yy-mm-dd",
+                        beforeShowDay : 
+                            function(date) {
+                                var dot=date.toLocaleDateString();
+                                var Highlight = SelectedDates[dot];
+                                if (Highlight) {
+                                    if (Highlight==='Today') {
+                                        return [true, "", Highlight]; }
+                                    return [true, "Highlighted", Highlight]; }
+                                else {
+                                    return [true, '', '']; }
+                            }
+                    });
+                });
+            }
+        );
+        
+    }
 
 
     /**
@@ -141,7 +143,7 @@ $(document).ready(function() {
             // check each sibling's sequence
             for (var i = 1; i <= siblings.length; i++) {
                 sib = siblings[-1+i];
-                console.log(i + ' attr:' + sib.id + ' id:' + sib.dataset.itemId + ' class:' + sib.classList);
+                //console.log(i + ' attr:' + sib.id + ' id:' + sib.dataset.itemId + ' class:' + sib.classList);
                 if (sib.classList.contains('trashed')) {
                     // ignore trashed items....
                     continue;
@@ -149,12 +151,12 @@ $(document).ready(function() {
                 // is this the moved item?
                 if ( sib.dataset.itemId == movedItem.id ) {
                     changed = sib;
-                    console.log(sib.id+' was moved. ');
+                    //console.log(sib.id+' was moved. ');
                     break;
                 } 
                 else {
                     should_seq_no = 0.0 + sib.id.split('-')[2];
-                    console.log(sib.id + ' unmoved ');
+                    //console.log(sib.id + ' unmoved ');
                     if (changed) { 
                         break; 
                     }
@@ -162,10 +164,11 @@ $(document).ready(function() {
             }
             if (changed) {
                 should_seq_no = 1 * should_seq_no;
-                console.log( 'Item '+changed.id+ ' (id # ' + changed.dataset.itemId +')  should now have seq no ' + (0.5 + should_seq_no) );
+                //console.log( 'Item '+changed.id+ ' (id # ' + changed.dataset.itemId +')  should now have seq no ' + (0.5 + should_seq_no) );
                 window.location.href = __app_url + '/cspot/items/' + changed.dataset.itemId + '/seq_no/'+ (0.5 + should_seq_no);
+                return;
             } else {
-                console.log('order unchanged');
+                // console.log('order unchanged');
             }
         },
     }).disableSelection();
@@ -218,8 +221,127 @@ $(document).ready(function() {
 
 
 
+/* 
+    List filtering: Reload page with alternate filtering
+*/
+function toogleAllorFuturePlans()
+{
+    // get current url and each segment
+    var currUrl  = window.location.href;
+    var segments = currUrl.split('/');
+    var count    = segments.length;
+    // check for 'all' or 'future' segment
+    if (segments.indexOf('future') > -1 ) {
+        segments[segments.indexOf('future')] = 'all';
+    } else {
+        segments[segments.indexOf('all')] = 'future';
+    }
+    var newUrl = segments.join('/');
+    window.location.href = newUrl;
+}
+
+/* 
+    List sorting: Reload page with the 'orderBy' segment and the given field name
+*/
+function reloadListOrderBy(field)
+{
+    $('#show-spinner').modal({keyboard: false})
+    // get current url and query string
+    var currUrl  = window.location.href.split('?');
+    var newUrl = currUrl[0];
+    if (currUrl.length > 1) 
+    {
+        var queryStr = currUrl[1].split('&');
+        if (queryStr.length > 1) {
+            newUrl += '?';
+            for (var i = queryStr.length - 1; i >= 0; i--) {
+                parms = queryStr[i].split('=');
+                if (parms[0]=='orderby') 
+                    queryStr[i] = 'orderby='+field;
+                if (parms[0]=='order') {
+                    parms[1]=='desc'  ?  parms[1]='asc'  :  parms[1]='desc';
+                    queryStr[i] = 'order='+parms[1];
+                }                
+                newUrl += queryStr[i];
+                if (i > 0) newUrl += '&';
+            }
+        }
+    } 
+    else 
+    {
+        newUrl += '?orderby='+field;
+        newUrl += '&order=asc';
+    }
+    window.location.href = newUrl;
+}
+
+
+/*
+    Show input field in header to filter this column or apply the filter if already set
+*/
+function showFilterField(field)
+{
+    // clear existing filter and reload page without
+    if ($('#filter-'+field+'-clear').is(':visible')) 
+    {
+        var currUrl  = window.location.href.split('?');
+        if (currUrl.length > 1) {
+            // fade background and show spinner
+            $('#show-spinner').modal({keyboard: false})
+            // remove filter elements from URL query string
+            var queryStr = currUrl[1].split('&');
+            var newUrl = currUrl[0];
+            if (queryStr.length > 2) {
+                newUrl += '?';
+                for (var i = queryStr.length - 1; i >= 0; i--) {
+                    if (queryStr[i].substr(0,6) != 'filter' ) {
+                        newUrl += queryStr[i];
+                        if (i > 0) newUrl += '&';
+                    }
+                }
+            }
+            window.location.href = newUrl;
+            return;
+        }
+    }
+         
+    // define html code for search input field
+    var newHtml = '<input id="filter-fffff-input" style="line-height: normal;" type="text" placeholder="search fffff">'
+    newHtml    += '<i id="filter-fffff-submit" class="fa fa-check-square"> </i>';
+    // did user click on the visible search icon?
+    if ($('#filter-'+field+'-show').is(':visible')) 
+    {
+        // add new html code, replacing all placeholders with current field name
+        $('#'+field+'-search').append(newHtml.replace(/fffff/g, field));
+        $('#filter-'+field+'-input').delay(800).focus();
+        $('#filter-'+field+'-show').hide();
+    } 
+    else 
+    {
+        if ( $('#filter-'+field+'-input').val().length > 0 ) {
+            // fade background and show spinner
+            $('#show-spinner').modal({keyboard: false})
+
+            var search =  $('#filter-'+field+'-input').val();
+            var currUrl  = window.location.href.replace('#','');
+            if (currUrl.indexOf('?')>1) {
+                var newUrl = currUrl + '&filterby='+field+'&filtervalue='+search;
+            } else {
+                var newUrl = currUrl + '?filterby='+field+'&filtervalue='+search;
+            }
+            window.location.href = newUrl;
+            return;
+        }
+        $('#filter-'+field+'-input').remove();
+        $('#filter-'+field+'-submit').remove();
+        $('#filter-'+field+'-show').show();
+    }
+}
+
+
 /**
  * Function to open plan selected via date picker
+ * better name: "openPlanByDate"
  */
 function submitDate(date) 
 {
@@ -298,7 +420,11 @@ function identifyHeadings(str)
     if ( patt.test(str) ) 
         return ' p-l-3 bg-success';
 
-    var patt = /^(Capo|Key|Intro|Other|\()/;
+    var patt = /^(Capo|Key|\()/;
+    if ( patt.test(str) ) 
+        return ' big text-primary';
+
+    var patt = /^(Intro|Other|\()/;
     if ( patt.test(str) ) 
         return ' text-primary';
 
@@ -340,7 +466,8 @@ function navigateTo(where)
 
     if (a.onclick==null) {
         // try to go to the location defined in href
-        window.location.href = a.href;        
+        window.location.href = a.href;
+        return;
     }    
     // try to simulate a click on this element
     a.click();

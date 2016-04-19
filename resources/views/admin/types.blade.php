@@ -57,14 +57,14 @@
 
 					<td class="center" scope="row">{{ $type->id }}</td>
 
-					<td class="link center" onclick="location.href='{{ url('cspot/plans/by_type/'.$type->id) }}'" 
+					<td class="link center" onclick="location.href='{{ url('cspot/plans/by_type/'.$type->id) }}/future'" 
 						title="Show all upcoming Plans of this Type of Service">{{ $type->name }}</td>
 
 					<td class="link center" onclick="location.href='{{ url('cspot/plans/by_type/'.$type->id) }}/all'" 
 						title="Show all Plans of this Type of Service">{{ $type->plans->count() }}</td>
 
 					<td class="nowrap center">
-						<a class="btn btn-secondary btn-sm" title="Show upcoming Plans" href='{{ url('cspot/plans/by_type/'.$type->id ) }}'><i class="fa fa-filter"></i></a>
+						<a class="btn btn-secondary btn-sm" title="Show upcoming Plans" href='{{ url('cspot/plans?filterby=type&filtervalue='.$type->id ) }}'><i class="fa fa-filter"></i></a>
 						 @if( Auth::user()->isEditor() )
 							<a class="btn btn-primary-outline btn-sm" title="Edit" 
 								href='{{ url('admin/types/'.$type->id) }}/edit'>

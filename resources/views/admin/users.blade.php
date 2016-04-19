@@ -71,7 +71,7 @@
 						@endif
 					@endif
 					@if( $user->hasRole('teacher') || $user->hasRole('leader') )
-						<a class="btn btn-secondary btn-sm" title="Show Upcoming Plans" href="{{ url('cspot/plans/by_user/'.$user->id) }}"><i class="fa fa-filter"></i></a>					@endif
+						<a class="btn btn-secondary btn-sm" title="Show Upcoming Plans" href="{{ url('cspot/plans?filterby=user&filtervalue='.$user->id) }}/future"><i class="fa fa-filter"></i></a>					@endif
 				</td>
 			</tr>
         @endforeach
