@@ -21,7 +21,7 @@ class CreateSongsTable extends Migration
             $table->integer('ccli_no');
             $table->string('book_ref');
             $table->string('author');
-            $table->enum('license', ['PD','CCLI', 'Other', 'Unknown'])nullable();
+            $table->enum('license', ['PD','CCLI', 'Other', 'Unknown'])->nullable();
             $table->string('sequence');
             $table->string('youtube_id');
             $table->string('hymnaldotnet_id');
