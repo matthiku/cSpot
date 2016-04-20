@@ -21,14 +21,18 @@
 	</span>
 	@endif
 
-    <h2 class="hidden-xs-down pull-xs-left">{{ $heading }}</h2>
+    <h2 class="hidden-xs-down pull-xs-left">{{ $heading }}
+    </h2>
+    	@include('cspot.snippets.fullTextSearch')
+
     
-	<center>Page {{ $songs->currentPage() }} of {{ $songs->lastPage() }}</center>
+	<center>
+		Page {{ $songs->currentPage() }} of {{ $songs->lastPage() }}<br>
+		<small>showing a total of {{ $songs->total() }} songs</small>
+	</center>
 
 
 	@if (count($songs))
-
-		<center><small>(Total: {{ $songs->total() }} Songs)</small></center>
 
 		<table class="table table-striped table-bordered 
 					@if(count($songs)>15)

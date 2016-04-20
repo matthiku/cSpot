@@ -48,20 +48,38 @@ class SongController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request )
-    { 
+    {
+        $querystringArray = $request->input();
         // set default values
         $orderBy = isset($request->orderby) ? $request->orderby : 'title';
         $order   = isset($request->order)   ? $request->order   : 'asc';
 
         // with filtering?
         if (isset($request->filterby) and isset($request->filtervalue)) {
-            $songs = Song::orderBy($orderBy, $order)
-                ->where($request->filterby, 'like', '%'.$request->filtervalue.'%')
-                ->paginate(20);
-        } else {
-            $songs = Song::orderBy($orderBy, $order)
-                ->paginate(20);
+            if ($request->filterby=='fulltext') {
+                $songs = Song::orderBy($orderBy, $order)
+                    ->where(  'title',    'like', '%'.$request->filtervalue.'%')
+                    ->orWhere('title_2',  'like', '%'.$request->filtervalue.'%')
+                    ->orWhere('author',   'like', '%'.$request->filtervalue.'%')
+                    ->orWhere('book_ref', 'like', '%'.$request->filtervalue.'%')
+                    ->orWhere('lyrics',   'like', '%'.$request->filtervalue.'%');
+            } 
+            elseif ($request->filterby=='title') {
+                $songs = Song::orderBy($orderBy, $order)
+                    ->where(  'title',    'like', '%'.$request->filtervalue.'%')
+                    ->orWhere('title_2',  'like', '%'.$request->filtervalue.'%');
+            }
+            else {
+                $songs = Song::orderBy($orderBy, $order)
+                    ->where($request->filterby, 'like', '%'.$request->filtervalue.'%');
+            }
+        } 
+        else {
+            $songs = Song::orderBy($orderBy, $order);
         }
+
+        // for pagination, always append the original query string
+        $songs = $songs->paginate(20)->appends($querystringArray);
 
         $heading = 'Manage Songs';
         return view( $this->view_all, array(

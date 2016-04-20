@@ -88,6 +88,7 @@ class PlanController extends Controller
      */
     public function index(Request $request)
     {
+        $querystringArray = $request->input();
         // set default values
         $filterby    = isset($request->filterby)    ? $request->filterby    : '';
         $filtervalue = isset($request->filtervalue )? $request->filtervalue : '';
@@ -162,9 +163,12 @@ class PlanController extends Controller
             $heading = 'Your Service Plans';
         }
 
+        // for pagination, always append the original query string
+        $plans = $plans->paginate(20)->appends($querystringArray);
+
         return view( 
             $this->view_all, 
-            array('plans' => $plans->paginate(20), 'heading' => $heading) 
+            array('plans' => $plans, 'heading' => $heading) 
         );
     }
 

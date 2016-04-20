@@ -294,7 +294,7 @@ function reloadListOrderBy(field)
 
 
 /*
-    Show input field in header to filter this column or apply the filter if already set
+    Show input field in header to filter data in this column or apply the filter if already set
 */
 function showFilterField(field)
 {
