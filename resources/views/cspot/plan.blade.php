@@ -236,14 +236,6 @@
             <div class="col-sm-6">
                 <div class="row form-group nowrap">
                     <label class="form-control-label">Teacher
-                    @if ( ! isset($plan) || (isset($plan) && Auth::user()->ownsPlan($plan->id)) )
-                        <big>
-                            <a tabindex="0" href="#"
-                                data-container="body" data-toggle="tooltip"
-                                title="Select 'none' if the leader is also the teacher">
-                                <i class="fa fa-question-circle"></i></a>
-                        </big>
-                    @endif
                     <select name="teacher_id" class="form-control text-help c-select" onchange="enableSaveButton(this)"
                             {{ Auth::user()->isEditor() ? '' : ' disabled' }}>
                         @if (! isset($plan))
@@ -263,6 +255,14 @@
                             @endif
                         @endforeach
                     </select>
+                    @if ( ! isset($plan) || (isset($plan) && Auth::user()->ownsPlan($plan->id)) )
+                        <big>
+                            <a tabindex="0" href="#"
+                                data-container="body" data-toggle="tooltip"
+                                title="Select 'none' if the leader is also the teacher">
+                                <i class="fa fa-question-circle"></i></a>
+                        </big>
+                    @endif
                     @if ($errors->has('teacher_id'))
                         <br><span class="help-block">
                             <strong>{{ $errors->first('teacher_id') }}</strong>
