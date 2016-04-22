@@ -361,12 +361,6 @@
                 // define field that should always get input focus
                 document.forms.inputForm.date.focus();
                 document.forms.inputForm.date.setAttribute('class', 'main-input');
-
-                function enableSaveButton(that) {
-                    $('.form-submit').removeAttr('disabled');
-                    blink('.form-submit');
-                    $(that).parent().addClass('has-warning');
-                }
             </script>
 
         @else
@@ -390,5 +384,12 @@
     
     {!! Form::close() !!}
 
+    <script>
+        function enableSaveButton(that) {
+            $('.form-submit').removeAttr('disabled');
+            blink('.form-submit');
+            $(that).parent().addClass('has-warning');
+        }
+    </script>
     
 @stop

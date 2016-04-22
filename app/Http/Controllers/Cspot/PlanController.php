@@ -269,13 +269,17 @@ class PlanController extends Controller
         }
 
         flash('New Plan added with id '.$plan->id);
-
         // redirect back to the plan editor to create another plan
         if ($request->input('addAnother')=='Y') {
             // send default values for another plan in 7 days
             $newDate =  $plan->date->addDays(7);
             $request->session()->flash('defaultValues', ['type_id' => $plan->type_id, 'date' => $newDate]);
-            return redirect()->back();
+
+            // get list of service types
+            $types = Type::get();
+            // get list of users
+            $users = User::orderBy('first_name')->get();
+            return view( $this->view_one, array('types' => $types, 'users' => $users) );
         }
 
         return \Redirect::route('cspot.plans.edit', $plan->id);
