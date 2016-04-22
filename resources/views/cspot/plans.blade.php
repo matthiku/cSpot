@@ -87,7 +87,8 @@
 						{{ $plan->leader->first_name }}{{ $plan->teacher_id<>0 ? ', '.$plan->teacher->first_name : '' }}
 					</td>
 
-					<td class="hidden-md-down text-right">{{ $plan->updated_at->formatLocalized('%d-%m-%Y %H:%M') }}</td>
+					<td class="hidden-md-down text-right">
+						{{ isset($plan->updated_at) ? $plan->updated_at->formatLocalized('%d-%m-%Y %H:%M') : 'unknown' }}</td>
 					<td class="hidden-md-down">{{ ucfirst($plan->changer) }}</td>
 
 				</tr>

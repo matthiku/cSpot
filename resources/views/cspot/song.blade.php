@@ -39,7 +39,7 @@
         <div class="col-md-6 col-lg-7 col-xl-8 md-center">
             @if (isset($song))
                 <h2 class="hidden-xs-down">Song Details</h2>
-                <small>Last updated: {{ $song->updated_at->formatLocalized('%a, %d %b %Y, %H:%M') }}</small>
+                <small>Last updated: {{ isset($song->updated_at) ? $song->updated_at->formatLocalized('%a, %d %b %Y, %H:%M') : 'unknown' }}</small>
             @else
                 <h2 class="hidden-xs-down">Add Song</h2>
             @endif
