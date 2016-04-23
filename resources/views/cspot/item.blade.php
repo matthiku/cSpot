@@ -173,7 +173,7 @@
                     <div class="card-text song-details">
 
                         <h6>Musical Instructions (e.g. Key)</h6>
-                        @if( Auth::user()->ownsPlan($item->plan_id) !! Auth::user->isMusician() )
+                        @if( Auth::user()->ownsPlan($item->plan_id) || Auth::user()->isMusician() )
                             <p class="full-width">{!! Form::text('key'); !!}</p>
                         @else
                             <p>{!! Form::text('key', $item->key, ['disabled'=>'disabled']); !!}</p>
