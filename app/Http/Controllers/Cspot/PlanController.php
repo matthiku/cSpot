@@ -29,9 +29,7 @@ class PlanController extends Controller
      * define view names
      */
     protected $view_all = 'cspot.plans';
-    // protected $view_idx = 'cspot.plans.index';
-    // instead of showing all plans, we will always redirect back to future plans 
-    protected $view_idx = 'future';
+    protected $view_idx = 'cspot.plans.index';
     protected $view_one = 'cspot.plan';
 
 
@@ -442,7 +440,7 @@ class PlanController extends Controller
             }
             $output->delete();
             flash('Plan with id "' . $id . '" deleted.');
-            return \Redirect::route($this->view_idx);
+            return \Redirect::route($this->view_idx, ['filterby'=>'future']);
         }
         //
         flashError('Plan with ID "' . $id . '" not found');

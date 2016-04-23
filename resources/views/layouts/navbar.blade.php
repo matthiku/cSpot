@@ -14,7 +14,9 @@
         @else
 
             <li class="nav-item hidden-xs-down">
-                <a class="nav-link" href="#" data-toggle="modal" data-target="#createMessage">Page Feedback</a>
+                <a class="nav-link" href="#" data-toggle="modal" data-target="#createMessage">
+                    <i class="fa fa-envelope-o" aria-hidden="true"></i> 
+                    Page Feedback</a>
             </li>
 
             <li class="nav-item hidden-lg-down">

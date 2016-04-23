@@ -30,11 +30,11 @@
 	<center>Page {{ $plans->currentPage() }} of {{ $plans->lastPage() }}</center>
 
 	@if( Request::has('show') )
-		<p>
+		<div>
 			<a href="#" onclick="toogleAllorFuturePlans()">
 				<input type="checkbox" {{Request::get('show')=='all' ? '' : 'checked'}}>
 				show only upcoming service plans</a>
-		</p>
+		</div>
 	@endif
 
 

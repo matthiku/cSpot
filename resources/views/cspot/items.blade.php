@@ -37,7 +37,7 @@
 
 				<th class="hidden-lg-down center"
 						data-toggle="tooltip" title="Sheet music attached to the song?"
-					><small>Sheets?</small></th>
+					><small>Music?</small></th>
 
 				<th class="hidden-xs-down center dont-print"
 						data-toggle="tooltip" title="Links to YouTube videos or sheetmusic for song items."

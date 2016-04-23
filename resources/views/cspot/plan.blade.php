@@ -74,6 +74,8 @@
                         <i class="fa fa-youtube">&nbsp;</i>play all</a>
                 </div>
             </div>
+            @endif
+            @if ( isset($plan) )
 
                 <h4 class="hidden-md-down">Plan for "{{ $plan->type->name }}" on {{ $plan->date->formatLocalized('%A, %d %B %Y') }}</h4>
                 <h4 class="hidden-lg-up">"{{ $plan->type->name }}" on {{ $plan->date->formatLocalized('%a, %d %B') }}</h4>
@@ -371,7 +373,7 @@
         @if ( Auth::user()->isAdmin()  &&  $plan->items->count()==0 ) &nbsp; 
             <a class="btn btn-danger btn-sm" type="button" data-toggle="tooltip" 
                 title="You can only delete a plan that contains no items." 
-                href="{{ url('cspot/plans/'.$plan->id) }}/delete">
+                href="{{ url('cspot/plans/delete/'.$plan->id) }}">
                 <i class="fa fa-trash" > </i>
                 &nbsp; Delete an empty Plan
             </a>
