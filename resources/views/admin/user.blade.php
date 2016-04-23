@@ -28,6 +28,9 @@
         <p>{!! Form::label('last_name', 'Last Name') !!}<br>
            {!! Form::text('last_name'); !!}</p>
 
+        <p>{!! Form::label('name', 'Display Name (must be unique)') !!}<br>
+           {!! Form::text('name'); !!}</p>
+
         <p>{!! Form::label('email', 'Email Address') !!}<br>
         @if (Auth::user()->isAdmin())
             {!! Form::text('email') !!}</p>

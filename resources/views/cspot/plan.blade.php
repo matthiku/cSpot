@@ -97,9 +97,9 @@
             @if (isset($plan))
                 <div class="pull-xs-left plan-details">
                     <big>
-                        Leader:&nbsp;<strong>{{ $plan->leader->first_name }}</strong> &nbsp;
-                        @if ( strtoupper($plan->teacher->first_name)<>'NONE' )
-                            Teacher:&nbsp;<strong>{{ $plan->teacher->first_name }}</strong>
+                        Leader:&nbsp;<strong>{{ $plan->leader->name }}</strong> &nbsp;
+                        @if ( strtoupper($plan->teacher->name)<>'NONE' )
+                            Teacher:&nbsp;<strong>{{ $plan->teacher->name }}</strong>
                         @endif
                     </big>
                 </div>
@@ -215,7 +215,7 @@
                                         || ( isset($plan) && $plan->leader_id==$user->id ) )
                                             selected
                                     @endif
-                                    value="{{ $user->id }}">{{ $user->first_name }}
+                                    value="{{ $user->id }}">{{ $user->name }}
                                 </option>
                             @endif
                         @endforeach
@@ -253,7 +253,7 @@
                                         || ( isset($plan) && $plan->teacher_id==$user->id ) )
                                         selected
                                     @endif
-                                    value="{{ $user->id }}">{{ $user->first_name }}</option>
+                                    value="{{ $user->id }}">{{ $user->name }}</option>
                             @endif
                         @endforeach
                     </select>

@@ -207,6 +207,7 @@ class UserController extends Controller
         // update name and email addr
         $user->first_name = $request->input('first_name');
         $user->last_name  = $request->input('last_name');
+        $user->name  = $request->input('name');
         // only Admins can change the email address
         if (Auth::user()->isAdmin()) {
             $user->email      = $request->input('email');

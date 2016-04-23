@@ -30,6 +30,7 @@ class StoreUserRequest extends Request
     {
         return [
             // validation rules
+            'name'       => 'unique',
             'first_name' => 'required',
             'last_name'  => 'required',
             'email'      => 'unique:users',

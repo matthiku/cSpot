@@ -38,7 +38,8 @@
 			<tr>
 				<th>#</th>
 				<th>First Name</th>
-				<th class="hidden-md-down">Last Name</th>
+				<th class="hidden-lg-down">Last Name</th>
+				<th class="hidden-md-down">Display Name</th>
 				@if ( Auth::user()->isEditor() )
 					<th class="hidden-sm-down">Email</th>
 				@endif
@@ -55,7 +56,8 @@
 					>					
 				<td scope="row">{{ $user->id }}</td>
 				<td>{{ $user->first_name }}</td>
-				<td class="hidden-md-down">{{ $user->last_name }}</td>
+				<td class="hidden-lg-down">{{ $user->last_name }}</td>
+				<td class="hidden-md-down">{{ $user->first_name!=$user->name ? $user->name : '' }}</td>
 				@if ( Auth::user()->isEditor() )
 					<td class="hidden-sm-down">{{ $user->email }}</td>
 				@endif
