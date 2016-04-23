@@ -25,17 +25,20 @@
 	</a>
 	@endif
 
-    <h2 class="pull-xs-left">{{ $heading }}</h2>
+    <h2 class="pull-xs-left">
+    	{{ $heading }}
+		@if( Request::has('show') )
+			<br>
+			<small class="pull-xs-left" style="font-size: 50%">
+				<a href="#" onclick="toogleAllorFuturePlans()">
+					<input type="checkbox" {{Request::get('show')=='all' ? '' : 'checked'}}>
+					show only upcoming service plans</a>
+			</small>
+		@endif
+    </h2>
 
 	<center>Page {{ $plans->currentPage() }} of {{ $plans->lastPage() }}</center>
 
-	@if( Request::has('show') )
-		<div>
-			<a href="#" onclick="toogleAllorFuturePlans()">
-				<input type="checkbox" {{Request::get('show')=='all' ? '' : 'checked'}}>
-				show only upcoming service plans</a>
-		</div>
-	@endif
 
 
 	@if ( isset($plans) && count($plans) )

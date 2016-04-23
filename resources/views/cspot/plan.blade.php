@@ -106,7 +106,7 @@
             @endif
 
 
-            @if ( Auth::user()->isEditor() && isset($plan) ) 
+            @if ( Auth::user()->isEditor() && isset($plan) && $plan->date > \Carbon\Carbon::yesterday() ) 
                 <div class="pull-xs-right plan-details">
                     &nbsp; (<a href="#" onclick="$('.plan-details').toggle()">Edit Plan Details</a>)
                 </div>

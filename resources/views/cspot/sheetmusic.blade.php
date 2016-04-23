@@ -52,8 +52,8 @@
             @endforeach
             <script>
                 $('.figure-img').css({
-                    max-height: $(window).height(),
-                    max-width:  $(window).width(),
+                    'max-height': $(window).height()-45,
+                    'max-width':  $(window).width(),
                 });
             </script>
         @endif
