@@ -258,21 +258,26 @@ class ItemController extends Controller
     {
         $item = Item::find($id);
 
-        $bibleTexts = getBibleTexts($item->comment);
+        if ($item) {
+            $bibleTexts = getBibleTexts($item->comment);
 
-        // TDOD get list of items for this plan, each with a prober 'title'
-        $items = $item->plan->items->sortBy('seq_no')->all();
+            // TDOD get list of items for this plan, each with a prober 'title'
+            $items = $item->plan->items->sortBy('seq_no')->all();
 
-        // default is to show chords
-        if ( ! $present) { 
-            $present = 'chords'; }
+            // default is to show chords
+            if ( ! $present) { 
+                $present = 'chords'; }
 
-        return view('cspot.'.$present, [
-                'item'       => $item,
-                'items'      => $items,
-                'type'       => $present,
-                'bibleTexts' => $bibleTexts,
-            ]);
+            return view('cspot.'.$present, [
+                    'item'       => $item,
+                    'items'      => $items,
+                    'type'       => $present,
+                    'bibleTexts' => $bibleTexts,
+                ]);
+        }
+        
+        flash('Error! Item with ID "' . $id . '" not found');
+        return \Redirect::back();        
     }
 
 
