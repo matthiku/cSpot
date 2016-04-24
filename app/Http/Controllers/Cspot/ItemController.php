@@ -275,9 +275,9 @@ class ItemController extends Controller
                     'bibleTexts' => $bibleTexts,
                 ]);
         }
-        
+
         flash('Error! Item with ID "' . $id . '" not found');
-        return \Redirect::back();        
+        return \Redirect::route('home');        
     }
 
 

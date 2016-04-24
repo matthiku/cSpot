@@ -15,7 +15,7 @@
 Route::group(['middleware' => 'web'], function () {
 
     Route::get('/', 'HomeController@welcome');
-    Route::get('/home', 'HomeController@index');
+    Route::get('/home', ['as'=>'home', 'uses'=>'HomeController@index']);
 
     // all authorization routes
     Route::auth();
