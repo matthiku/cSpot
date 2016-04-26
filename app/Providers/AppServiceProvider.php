@@ -28,15 +28,8 @@ class AppServiceProvider extends ServiceProvider
         });
 
 
-        // provide a list (array) of users with Admin rights to all views (for page feedback messages)
-        $users = User::get();
-        $admins = [];
-        foreach ($users as $user) {
-            if ($user->isAdmin()) {
-                array_push($admins, $user->id);
-            }
-        }
-        view()->share('administrators', $admins);
+        // provide a list (array) of user-id's with Admin rights to all views (for page feedback messages)
+        view()->share('administrators', findAdmins('id'));
     }
 
     /**

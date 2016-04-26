@@ -6,6 +6,7 @@ use App\Models\Item;
 use App\Models\Plan;
 use App\Models\Song;
 use App\Models\File;
+use App\Models\User;
 
 use App\Http\Controllers\Cspot\BibleController;
 
@@ -44,6 +45,28 @@ function flashError($message)
 {
     session()->flash('error', $message);
 }
+
+
+
+
+/**
+ * Get list (collection) of Admin(s)
+ */
+function findAdmins( $field='all' )
+{
+    $users = User::get();
+    $admins = [];
+    foreach ($users as $user) {
+        if ($user->isAdmin()) {
+            if ($field=='all')
+                array_push($admins, $user);
+            else
+                array_push($admins, $user[$field]);
+        }
+    }
+    return $admins;
+}
+
 
 
 /**

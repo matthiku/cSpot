@@ -183,8 +183,8 @@ class MessagesController extends Controller
             return redirect('messages');
         }
 
-        if ( Auth::user()->id == $message->user_id) {
-            // TODO: get thread ID and check if this was the last remaining message in the thread!
+        if ( Auth::user()->id == $message->user_id   || Auth::user()->isAdmin() ) {
+            // get thread ID and check if this was the last remaining message in the thread!
             // then we have to delete the thread as well!!!
             $thread_id = $message->thread_id;
             $message->delete();
