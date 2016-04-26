@@ -36,10 +36,10 @@
             @endif
             @if ($item->song->chords )
                 <div class="m-b-3">
-                    <pre class="big" id="chords">{{ $item->song->chords }}</pre>
+                    <pre class="text-song big" id="chords">{{ $item->song->chords }}</pre>
                 </div>
             @else
-                <pre class="big m-b-3">{{ $item->song->lyrics }}</pre>
+                <pre class="text-song big m-b-3">{{ $item->song->lyrics }}</pre>
             @endif
         @endif
 

@@ -11,7 +11,7 @@
             </li>
         </ul>
 
-        <span class="nav navbar-nav big center">
+        <span class="nav navbar-nav center">
             <small>Item {{$item->seq_no}} -</small>
             @if ($item->song_id && $item->song->title)
                 {{ $item->song->title }}
@@ -92,11 +92,32 @@
         <ul class="nav navbar-nav pull-xs-left">
             <li>
                 <a href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/go/previous/'.$type) }}"
-                    class="nav-link btn btn-warning" role="button" id="go-previous-item">
+                    class="nav-item nav-link btn btn-warning" role="button" id="go-previous-item">
                     <i class="fa fa-angle-double-left fa-lg"></i>
                 </a> 
+
+                <a href="#" onclick="decFontSize('.text-song');" 
+                        title="decrease font size"
+                        class="nav-item nav-link btn btn-info" role="button">
+                    A <i class="fa fa-minus"></i>
+                </a>
+                <a href="#" onclick="incFontSize('.text-song');" 
+                        title="increase font size"
+                        class="nav-item nav-link btn btn-info" role="button">
+                    A <i class="fa fa-plus"></i>
+                </a>
             </li>
         </ul>
 
     </nav>
+
+    <script>
+        $(document).ready(function() {
+            // check if user has changed the default font size for the presentation
+            fontSize = localStorage.getItem('.text-song_font-size');
+            if (fontSize) {
+                $('.text-song').css('font-size', parseInt(fontSize));
+            }
+        });
+    </script>
 

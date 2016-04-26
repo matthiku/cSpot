@@ -45,10 +45,11 @@ $(document).ready(function() {
         $.getJSON( __app_url + '/cspot/plans?filterby=future&api=api',
             function(result){
                 $.each(result, function(i, field) {
-                    var hint = field.type.name+' led by '+field.leader.first_name; 
-                    if ( field.type.id < 2 ) {
-                        hint +=', teacher is '+field.teacher.first_name; }
-                    SelectedDates[new Date(field['date']).toLocaleDateString()] = hint;
+                    hint = field.type.name+' led by '+field.leader.first_name; 
+                    if ( field.teacher.first_name != "n/a" ) {
+                        hint +=', teacher is ' + field.teacher.first_name; }
+                    dt = new Date(field.date.split(' ')[0]).toLocaleDateString();
+                    SelectedDates[dt] = hint;
                 });
                 // get the current browser window dimension (width)
                 browserWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
@@ -198,13 +199,17 @@ $(document).ready(function() {
 
     /**
      * handle swiping on smartphones
-     */
+    DISABLED for now as it fails on iPhones and doesn't work well otherwise
+    Use the forward/backward buttons instead!
+
     $('#app-layout').on("swipeleft",function(){
         navigateTo('next-item');
     });
     $('#app-layout').on("swiperight",function(){
         navigateTo('previous-item'); 
     });
+
+     */
     
 
     /**
@@ -257,13 +262,12 @@ function reloadListOrderBy(field)
     $('#show-spinner').modal({keyboard: false})
     // get current url and query string
     var currUrl = window.location.href.split('?');
-    var newUrl  = currUrl[0];
+    var newUrl  = currUrl[0] + '?';
     if (currUrl.length > 1) 
     {
         var queryStr = currUrl[1].split('&');
         var orderbyFound = false;
         if (queryStr.length > 1) {
-            newUrl += '?';
             for (var i = queryStr.length - 1; i >= 0; i--) {
                 parms = queryStr[i].split('=');
                 if (parms[0]=='orderby') {
@@ -277,11 +281,12 @@ function reloadListOrderBy(field)
                 newUrl += queryStr[i];
                 if (i > 0) newUrl += '&';
             }
+        } 
+        else {
+            // retain the existing query string
+            newUrl += queryStr[0];
         }
     } 
-    else {
-        newUrl += '?';
-    }
     // check if existing query string already contained a orderby param
     if (currUrl.length > 1 && ! orderbyFound) newUrl += '&';
     if (currUrl.length < 2 || ! orderbyFound) {
@@ -400,6 +405,40 @@ function showSongSearchInput(that, selector)
 }
 
 
+
+/**
+ * Increase or decrease font size of a given element
+ */
+function incFontSize(selector) {
+    element = $(selector);
+    fontSize = parseInt($(element).css('font-size')) + 5;
+    $(element).css('font-size', fontSize);
+    localStorage.setItem(selector+'_font-size', fontSize);
+}
+function decFontSize(selector) {
+    element = $(selector);
+    fontSize = parseInt($(element).css('font-size')) - 5;
+    if (fontSize>10)
+        $(element).css('font-size', fontSize);
+    localStorage.setItem(selector+'_font-size', fontSize);
+}
+
+/**
+ * Ask user to allow fullscreen mode for presentations
+ */
+function requestFullScreen(element) {
+    // Supports most browsers and their versions.
+    var requestMethod = element.requestFullScreen || element.webkitRequestFullScreen || element.mozRequestFullScreen || element.msRequestFullscreen;
+
+    if (requestMethod) { // Native full screen.
+        requestMethod.call(element);
+    } else if (typeof window.ActiveXObject !== "undefined") { // Older IE.
+        var wscript = new ActiveXObject("WScript.Shell");
+        if (wscript !== null) {
+            wscript.SendKeys("{F11}");
+        }
+    }
+}
 
 
 /*
