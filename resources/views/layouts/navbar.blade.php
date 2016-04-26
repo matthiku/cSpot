@@ -13,6 +13,17 @@
 
         @else
 
+            <!-- show unread messages count -->
+            <?php 
+                $count = Auth::user()->newMessagesCount(); 
+            ?>
+            @if($count > 0)
+               <li class="nav-item" title="You have new mail!">
+                    <a class="nav-link mail-alert bg-danger" href="{{URL::to('messages')}}">{!! $count !!}</a>
+                </li>
+                <script>blink($('.mail-alert'))</script>
+            @endif
+
             <li class="nav-item hidden-xs-down">
                 <a class="nav-link" href="#" data-toggle="modal" data-target="#createMessage">
                     <i class="fa fa-envelope-o" aria-hidden="true"></i> 
@@ -64,6 +75,7 @@
                 </div>
                 
             </li>
+
         @endif
 
     </ul>

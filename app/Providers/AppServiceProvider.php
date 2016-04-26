@@ -6,6 +6,7 @@ namespace App\Providers;
 use Auth;
 use App\Models\Item;
 use App\Models\Plan;
+use App\Models\User;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -25,6 +26,17 @@ class AppServiceProvider extends ServiceProvider
             $plan = Plan::find($item->plan_id);
             $plan->update(['changer' => Auth::user()->first_name]);
         });
+
+
+        // provide a list (array) of users with Admin rights to all views (for page feedback messages)
+        $users = User::get();
+        $admins = [];
+        foreach ($users as $user) {
+            if ($user->isAdmin()) {
+                array_push($admins, $user->id);
+            }
+        }
+        view()->share('administrators', $admins);
     }
 
     /**

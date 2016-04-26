@@ -1,3 +1,11 @@
+.mail-alert {
+    padding: .25em .4em !important;
+    border-radius: .25rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-top: 7px;
+}
+
 .ui-datepicker-inline {
     margin: auto;
 }

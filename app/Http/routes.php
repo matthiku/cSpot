@@ -66,10 +66,10 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     // allow DELETE via the GET method
     Route::get('plans/delete/{plan_id}',                                           'Cspot\PlanController@destroy');    
     // update (append) the note for a plan
-    Route::put('plans/{plan_id}/addNote', ['as'=>'addNote',               'uses'=>' Cspot\PlanController@addNote']);
+    Route::put('plans/{plan_id}/addNote', ['as'=>'addNote',               'uses'=> 'Cspot\PlanController@addNote']);
 
     // send an email reminder to a leader or teacher for a plan
-    Route::get('plans/{plan_id}/remind/{user_id}', ['as'=>'sendReminder', 'uses'=>' Cspot\PlanController@sendReminder']);
+    Route::get('plans/{plan_id}/remind/{user_id}', ['as'=>'sendReminder', 'uses'=> 'Cspot\PlanController@sendReminder']);
     
 
     /*
@@ -133,11 +133,12 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
 |--------------------------------------------------------------------------
 */
 Route::group(['prefix' => 'messages', 'middleware' => ['web', 'auth']], function () {
-    Route::get('/',     ['as' => 'messages',        'uses' => 'MessagesController@index' ]);
-    Route::get('create',['as' => 'messages.create', 'uses' => 'MessagesController@create']);
-    Route::post('/',    ['as' => 'messages.store',  'uses' => 'MessagesController@store' ]);
-    Route::get('{id}',  ['as' => 'messages.show',   'uses' => 'MessagesController@show'  ]);
-    Route::put('{id}',  ['as' => 'messages.update', 'uses' => 'MessagesController@update']);
+    Route::get('/',       ['as' => 'messages',        'uses' => 'MessagesController@index' ]);
+    Route::get('create',  ['as' => 'messages.create', 'uses' => 'MessagesController@create']);
+    Route::post('/',      ['as' => 'messages.store',  'uses' => 'MessagesController@store' ]);
+    Route::get('{id}',    ['as' => 'messages.show',   'uses' => 'MessagesController@show'  ]);
+    Route::put('{id}',    ['as' => 'messages.update', 'uses' => 'MessagesController@update']);
+    Route::get('{id}/delete', ['as' => 'messages.delete', 'uses' => 'MessagesController@delete']);
 });
 
 

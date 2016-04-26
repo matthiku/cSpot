@@ -28,8 +28,10 @@
                     {!! Form::label('message', 'Message', ['class' => 'control-label']) !!}
                     {!! Form::textarea('message', null, ['class' => 'form-control', 'id' => 'feedbackMessage']) !!}
                 </div>
-
-                <input type="hidden" name="recipient" value="0"></input>
+                
+                @foreach ($administrators as $admin)
+                    <input type="hidden" name="recipients[]" value="{{ $admin }}"></input>
+                @endforeach
             </div>
 
 

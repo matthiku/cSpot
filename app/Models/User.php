@@ -213,12 +213,6 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
 
     /**
-     * Get the user's Roles
-     * TODO
-     * public function getRoles()
-     */
-
-    /**
      * Define various access rights levels
      * (highest to lowest)
      */
@@ -241,6 +235,10 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     public function isMusician()
     {
         return $this->hasRole('administrator') || $this->hasRole('editor') || $this->hasRole('author') || $this->hasRole('leader') || $this->hasRole('musician');
+    }
+    public function isUser()
+    {
+        return $this->hasRole('administrator') || $this->hasRole('editor') || $this->hasRole('author') || $this->hasRole('leader') || $this->hasRole('musician') || $this->hasRole('user');
     }
 
     
