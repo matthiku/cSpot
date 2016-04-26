@@ -98,7 +98,7 @@
                 <div class="pull-xs-left plan-details">
                     <big>
                         Leader:&nbsp;<strong>{{ $plan->leader->name }}</strong> &nbsp;
-                        @if ( strtoupper($plan->teacher->name)<>'NONE' )
+                        @if ( strtoupper($plan->teacher->name)<>'N/A' )
                             Teacher:&nbsp;<strong>{{ $plan->teacher->name }}</strong>
                         @endif
                     </big>
