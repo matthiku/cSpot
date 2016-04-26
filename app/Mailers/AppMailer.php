@@ -104,7 +104,7 @@ class AppMailer
         // not needed on local dev installations...
         if (env('APP_ENV')=='local') return;
 
-        $admin = User::find(1);
+        $admin = User::find(8);
         $this->to      = $admin->email;
         $this->subject = $note;
         $this->view    = 'auth.emails.admin';
@@ -123,7 +123,7 @@ class AppMailer
     public function planReminder(User $recipient, Plan $plan)
     {
         $user      = Auth::user();
-        $admin     = User::find(1);
+        $admin     = User::find(8);
         $this->cc  = $admin->email;
         $this->to  = $recipient->email;
         $this->subject = env('CHURCH_NAME').' - missing items for your Service Plan';
