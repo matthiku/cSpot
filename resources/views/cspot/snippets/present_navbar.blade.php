@@ -5,7 +5,7 @@
         <ul class="nav navbar-nav pull-xs-right">
             <li>
                 <a href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/go/next/'.$type) }}"
-                    class="nav-item btn btn-warning" role="button" id="go-next-item">
+                    class="nav-item btn btn-sm btn-warning" role="button" id="go-next-item">
                     <i class="fa fa-angle-double-right fa-lg"></i>
                 </a>
             </li>
@@ -25,7 +25,7 @@
         -->
         <div class="btn-group dropup pull-xs-right m-r-1">
 
-            <button type="button" class="btn btn-info dropdown-toggle" 
+            <button type="button" class="btn btn-sm btn-info dropdown-toggle" 
                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Go to
             </button>
@@ -71,11 +71,11 @@
         <div class="btn-group pull-xs-right m-r-1">
             @if ($item->song_id && $item->song->youtube_id)
                 <a href="https://www.youtube.com/watch?v={{ $item->song->youtube_id }}" 
-                    target="new" class="pull-xs-right btn btn-info">
+                    target="new" class="pull-xs-right btn btn-sm btn-info">
                 <i class="red fa fa-youtube-play fa-lg"></i>&nbsp;</a>
             @else
                 <a href="#" disabled=""
-                   class="pull-xs-right btn btn-secondary-outline">
+                   class="pull-xs-right btn btn-sm btn-secondary-outline">
                 <i class="fa fa-youtube-play fa-lg"></i>&nbsp;</a>
             @endif
         </div>
@@ -92,24 +92,24 @@
         <ul class="nav navbar-nav pull-xs-left">
             <li>
                 <a href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/go/previous/'.$type) }}"
-                    class="nav-item nav-link btn btn-warning" role="button" id="go-previous-item">
+                    class="nav-item btn btn-sm btn-warning" role="button" id="go-previous-item">
                     <i class="fa fa-angle-double-left fa-lg"></i>
                 </a> 
 
                 <a href="#" onclick="decFontSize('.text-song');" 
                         title="decrease font size"
-                        class="nav-item nav-link btn btn-info" role="button">
+                        class="nav-item btn btn-sm btn-info" role="button">
                     A <i class="fa fa-minus"></i>
                 </a>
                 <a href="#" onclick="incFontSize('.text-song');" 
                         title="increase font size"
-                        class="nav-item nav-link btn btn-info" role="button">
+                        class="nav-item btn btn-sm btn-info" role="button">
                     A <i class="fa fa-plus"></i>
                 </a>
                 <a href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/go/swap/'.$type) }}" 
                         title="swap between chords and sheetmusic"
-                        class="nav-item nav-link btn btn-warning" role="button">
-                    Am<i class="fa fa-exchange"></i><i class="fa fa-music"></i>
+                        class="nav-item btn btn-sm btn-warning" role="button">
+                    <i class="fa fa-file-text"></i> <i class="fa fa-refresh fa-lg"></i> <i class="fa fa-music"></i>
                 </a>
             </li>
         </ul>

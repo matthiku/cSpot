@@ -78,7 +78,7 @@
         <ul class="nav navbar-nav pull-xs-right">
             <li>
                 <a href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/go/next/present') }}"
-                    class="nav-item btn btn-warning" role="button" id="go-next-item">
+                    class="nav-item btn btn-sm btn-warning" role="button" id="go-next-item">
                     <i class="fa fa-angle-double-right fa-lg"></i>
                 </a>
             </li>
@@ -100,7 +100,7 @@
         -->
         <div class="btn-group dropup pull-xs-right m-r-1">
 
-            <button type="button" class="btn btn-info dropdown-toggle" 
+            <button type="button" class="btn btn-sm btn-info dropdown-toggle" 
                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Go to
             </button>
@@ -147,23 +147,23 @@
         <ul class="nav navbar-nav pull-xs-left">
             <li>
                 <a href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/go/previous/present') }}"
-                    class="nav-item nav-link btn btn-warning" role="button" id="go-previous-item">
+                    class="nav-item btn btn-sm btn-warning" role="button" id="go-previous-item">
                     <i class="fa fa-angle-double-left fa-lg"></i>
                 </a> 
 <!--                 <a href="#" onclick="requestFullScreen(document.body);" 
-                        class="nav-item nav-link btn btn-info" role="button">
+                        class="nav-item nav-link btn btn-sm btn-info" role="button">
                     <i class="fa fa-tv fa-lg"></i>
                     <span class="hidden-sm-down">Fullscreen</span>
                 </a>
  -->
                 <a href="#" onclick="decFontSize(['.text-present', '.bible-text-present>.p']);" 
                         title="decrease font size"
-                        class="nav-item nav-link btn btn-info" role="button">
+                        class="nav-item btn btn-sm btn-info" role="button">
                     A <i class="fa fa-minus fa-lg"></i>
                 </a>
                 <a href="#" onclick="incFontSize(['.text-present', '.bible-text-present>.p']);" 
                         title="increase font size"
-                        class="nav-item nav-link btn btn-info" role="button">
+                        class="nav-item btn btn-sm btn-info" role="button">
                     A <i class="fa fa-plus fa-lg"></i>
                 </a>
             </li>
