@@ -130,6 +130,7 @@ function songSearch( $search )
 
 /**
  * Go to next or previous item in the list of items of a plan
+ *      or swap betwee chords and sheetmusic
  */
 function nextItem($plan_id, $item_id, $direction)
 {
@@ -145,13 +146,18 @@ function nextItem($plan_id, $item_id, $direction)
         } else {
             $new_seq_no = $curItem->seq_no+1;
         }
-    } else {
+    }
+    elseif ($direction == 'previous') {
         if ($curItem->seq_no == 1.0) {
             $new_seq_no = count($items);
         } else {
             $new_seq_no = $curItem->seq_no-1;
         }
+    } 
+    elseif ($direction == 'swap') {
+        $new_seq_no = $curItem->seq_no;
     }
+
     // find the new item id
     foreach ($items as $item) {
         if ($item->seq_no == $new_seq_no) {

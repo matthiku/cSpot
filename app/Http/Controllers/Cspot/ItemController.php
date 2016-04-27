@@ -249,7 +249,7 @@ class ItemController extends Controller
     /**
      * Display single items per page of a plan with options to move to the next or previous item on this plan
      *
-     * @param  int  $id
+     * @param  int     $id      item id
      * @param  string  $present (optional) chords (default), sheetmusic or present (for overhead presentations)
      *
      * @return \Illuminate\Http\Response
@@ -286,11 +286,12 @@ class ItemController extends Controller
 
 
     /**
-     * edit the previous or NEXT item in the list of items related to a plan.
+     * show the previous or NEXT item in the list of items related to a plan
+     *  or swap between chords and sheetmusic 
      *
-     * @param  int     $id
-     * @param  int     $id
-     * @param  string  $direction
+     * @param  int     $id      plan id
+     * @param  int     $id      item id
+     * @param  string  $direction   next|previous|swap
      * @return \Illuminate\Http\Response
      */
     public function next(Request $request, $plan_id, $item_id, $direction, $chords=null)
@@ -302,6 +303,12 @@ class ItemController extends Controller
         if ($chords==null) {
             return $this->edit( $plan_id, $new_item_id );
         } 
+        if ($direction=='swap') {
+            if ($chords=='chords') 
+                $chords = 'sheetmusic';
+            else
+                $chords = 'chords';
+        }
         if ($chords=='chords') {
             return $this->show( $new_item_id );
         }

@@ -106,6 +106,11 @@
                         class="nav-item nav-link btn btn-info" role="button">
                     A <i class="fa fa-plus"></i>
                 </a>
+                <a href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/go/swap/'.$type) }}" 
+                        title="swap between chords and sheetmusic"
+                        class="nav-item nav-link btn btn-warning" role="button">
+                    Am<i class="fa fa-exchange"></i><i class="fa fa-music"></i>
+                </a>
             </li>
         </ul>
 
