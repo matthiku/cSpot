@@ -38,21 +38,30 @@
     font-family: "Times New Roman", Georgia, Serif;
 }
 pre.text-present {
-    font-size: 80px;
+    font-size: 60px;
 }
-.text-present>.p>.v {
+
+.bible-text-present {
+    color: yellow;
+    font-size: xx-large;
+    font-family: "Times New Roman", Georgia, Serif;
+}
+pre.bible-text-present {
+    font-size: 60px;
+}
+.bible-text-present>.p>.v {
     color: white;
     font-size: xx-large;
 }
-.text-present>.p>.s1, .text-present>.p>.nd {
+.bible-text-present>.p>.s1, .bible-text-present>.p>.nd {
     color: white;
     font-style: italic;
-    font-size: 80px];
+    font-size: 60px];
 }
-.text-present>.p, .text-present>.p>.wj, .text-present>.q1, .text-present>.q2 {
-    font-size: 80px;
+.bible-text-present>.p, .bible-text-present>.p>.wj, .bible-text-present>.q1, .bible-text-present>.q2 {
+    font-size: 60px;
 }
-.text-present>.p>.v::after {
+.bible-text-present>.p>.v::after {
     content: " ";
 }
 

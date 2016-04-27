@@ -408,20 +408,49 @@ function showSongSearchInput(that, selector)
 
 /**
  * Increase or decrease font size of a given element
+ *
+ * stores the value in LocalStorage for later reference
+ *
+ * param  selectorList string or array of valid CSS selectors
+ * return void
  */
-function incFontSize(selector) {
-    element = $(selector);
-    fontSize = parseInt($(element).css('font-size')) + 5;
-    $(element).css('font-size', fontSize);
-    localStorage.setItem(selector+'_font-size', fontSize);
+function incFontSize(selectorList) {
+    if ( typeof selectorList === 'string') {
+        selectorList = [selectorList];
+    }
+    selectorList.forEach( function(selector) {
+        element = $(selector);
+        if (element.length>0) {
+            fontSize = parseInt($(element).css('font-size')) + 5;
+            $(element).css('font-size', fontSize);
+            localStorage.setItem(selector+'_font-size', fontSize);
+            console.log('LocalStorage for '+selector+' was set to '+localStorage.getItem(selector+'_font-size'));
+        }
+    });
 }
-function decFontSize(selector) {
-    element = $(selector);
-    fontSize = parseInt($(element).css('font-size')) - 5;
-    if (fontSize>10)
-        $(element).css('font-size', fontSize);
-    localStorage.setItem(selector+'_font-size', fontSize);
+
+function decFontSize(selectorList) {
+    if ( typeof selectorList === 'string') {
+        selectorList = [selectorList];
+    }
+    selectorList.forEach( function(selector) {
+        element = $(selector);
+        if (element.length>0) {
+            fontSize = parseInt($(element).css('font-size')) - 5;
+            if (fontSize>12)
+                $(element).css('font-size', fontSize);
+            localStorage.setItem(selector+'_font-size', fontSize);
+            console.log('LocalStorage for '+selector+' was set to '+localStorage.getItem(selector+'_font-size'));
+        }
+    });
 }
+
+function getLocalStorValue(name) {
+    value = localStorage.getItem(name);
+    console.log('LocalStorage for '+name+' was at '+value);
+    return value;
+}
+
 
 /**
  * Ask user to allow fullscreen mode for presentations

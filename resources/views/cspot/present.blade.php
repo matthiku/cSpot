@@ -21,12 +21,16 @@
         $(document).ready(function() {
             $('body').addClass('bg-inverse');
             // for certain bible text sources:
-            $('.text-present>.p>.v').prepend('<br>');
+            $('.bible-text-present>.p>.v').prepend('<br>');
 
             // check if user has changed the default font size for the presentation
-            fontSize = localStorage.getItem('.text-present_font-size');
-            if (fontSize) {
+            fontSize = getLocalStorValue('.text-present_font-size');
+            if ($.isNumeric(fontSize)) {
                 $('.text-present').css('font-size', parseInt(fontSize));
+            }
+            fontSize = getLocalStorValue('.bible-text-present>.p_font-size');
+            if ($.isNumeric(fontSize)) {
+               $('.bible-text-present>.p').css('font-size', parseInt(fontSize));
             }
         });
 
@@ -54,10 +58,10 @@
         @endif
 
         @if ($bibleTexts)
-            <div class="bg-inverse text-present">
+            <div class="bg-inverse bible-text-present">
                 @foreach ($bibleTexts as $btext)
                     <h1>{{ $btext->display }} ({{ $btext->version_abbreviation }})</h1>
-                    <div class="text-present">{!! $btext->text !!}</div>
+                    <div class="bible-text-present">{!! $btext->text !!}</div>
                     <div class="small">{!! $btext->copyright !!}</div>
                     <hr>
                 @endforeach
@@ -146,18 +150,18 @@
                     class="nav-item nav-link btn btn-warning" role="button" id="go-previous-item">
                     <i class="fa fa-angle-double-left fa-lg"></i>
                 </a> 
-                <a href="#" onclick="requestFullScreen(document.body);" 
+<!--                 <a href="#" onclick="requestFullScreen(document.body);" 
                         class="nav-item nav-link btn btn-info" role="button">
                     <i class="fa fa-tv fa-lg"></i>
                     <span class="hidden-sm-down">Fullscreen</span>
                 </a>
-
-                <a href="#" onclick="decFontSize('.text-present');" 
+ -->
+                <a href="#" onclick="decFontSize(['.text-present', '.bible-text-present>.p']);" 
                         title="decrease font size"
                         class="nav-item nav-link btn btn-info" role="button">
                     A <i class="fa fa-minus fa-lg"></i>
                 </a>
-                <a href="#" onclick="incFontSize('.text-present');" 
+                <a href="#" onclick="incFontSize(['.text-present', '.bible-text-present>.p']);" 
                         title="increase font size"
                         class="nav-item nav-link btn btn-info" role="button">
                     A <i class="fa fa-plus fa-lg"></i>
