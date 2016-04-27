@@ -1,4 +1,20 @@
 
+<div class="modal fade help-modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>Use your keyboard to:</h4>
+            </div>
+            <div class="modal-body text-xs-center">
+                <p><kbd>Esc</kbd> go back to plan overview</p>
+                <p><kbd><i class="fa fa-arrow-right"></i></kbd> go to next plan item</p>
+                <p><kbd><i class="fa fa-arrow-left"></i></kbd> go to previous plan item</p>
+                On <strong>tablets</strong> or <strong>phones</strong>, you should use the buttons provided at the bottom of this screen!
+            </div>
+        </div>
+    </div>
+</div>
+
 
     <nav class="navbar navbar-fixed-bottom bg-primary center p-b-0 p-t-0">
 
@@ -12,7 +28,7 @@
         </ul>
 
         <span class="nav navbar-nav center">
-            <small>Item {{$item->seq_no}} -</small>
+            <small>{{$item->seq_no}} </small>
             @if ($item->song_id && $item->song->title)
                 {{ $item->song->title }}
             @else
@@ -79,6 +95,10 @@
                 <i class="fa fa-youtube-play fa-lg"></i>&nbsp;</a>
             @endif
         </div>
+
+        <a href="#" title="help and keyboard shortcuts" data-toggle="modal" data-target=".help-modal"
+            class="pull-xs-right btn btn-sm btn-success-outline m-r-1">
+        <i class="fa fa-question-circle fa-lg"></i></a>
 
 
 
