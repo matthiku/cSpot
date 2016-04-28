@@ -185,14 +185,23 @@ $(document).ready(function() {
         //event.preventDefault();
         console.log('pressed key code: '+event.keyCode);
         switch (event.keyCode) {
-            case 37: navigateTo('previous-item'); break;
-            case 36: navigateTo('first-item');   break;
-            case 39: navigateTo('next-item');   break;
-            case 32: navigateTo('next-item');  break;
-            case 35: navigateTo('last-item'); break;
-            case 27: navigateTo('back');     break;
-            case 66: navigateTo('back');    break;
-            case 69: navigateTo('edit');   break;
+            case 37: navigateTo('previous-item'); break; // left arrow
+            case 36: navigateTo('first-item');   break; // key 'home'
+            case 39: navigateTo('next-item');   break; // key right arrow
+            case 32: navigateTo('next-item');  break; // spacebar
+            case 35: navigateTo('last-item'); break; // key 'end'
+            case 66: navigateTo('back');    break; // key 'b'
+            case 69: navigateTo('edit');   break; // key 'e'
+            case 49: window.location.href='#verse1'; break; // key '1'
+            case 50: window.location.href='#verse2'; break; // key '2'
+            case 51: window.location.href='#verse3'; break; // key '3'
+            case 52: window.location.href='#verse4'; break; // key '4'
+            case 53: window.location.href='#verse5'; break; // key '5'
+            case 53: window.location.href='#verse6'; break; // key '6'
+            case 53: window.location.href='#verse6'; break; // key '6'
+            case 53: window.location.href='#verse7'; break; // key '7'
+            case 67: window.location.href='#chorus'; break; // key 'c'
+            case 27: window.location.href='#bridge'; break; // key 'b'
             default: break;
         }
     });
@@ -220,6 +229,7 @@ $(document).ready(function() {
         if ($('#chords')[0].nodeName == 'PRE') {
             reDisplayChords();
         }
+        $('.edit-show-buttons').show();
     }
 
 });
@@ -488,8 +498,11 @@ function reDisplayChords()
             $('#chords').append('<pre class="red m-b-0">'+chords[i]+'</pre>');
         }
         else {
-            hdr = identifyHeadings(chords[i]);
-            $('#chords').append('<pre class="m-b-0 '+hdr+'">'+chords[i]+'</pre>');
+            hdr = identifyHeadings(chords[i]).split('$');
+            anchor = '';
+            if (hdr.length>1 && hdr[1].length>0)
+                anchor = '<a name="'+hdr[1]+'"></a>';
+            $('#chords').append(anchor+'<pre class="m-b-0 '+hdr[0]+'">'+chords[i]+'</pre>');
         }
     }
 }
@@ -497,21 +510,39 @@ function identifyHeadings(str)
 {
     // identify headers by the first word in a line, case-insensitive
 
-    var patt = /^(Chorus|bridge|coda|end)/i;
+    patt = /^(coda|end)/i;
     if ( patt.test(str) ) 
-        return ' p-l-3 bg-info';
+        return ' p-l-3 bg-info$';
 
-    var patt = /^(Verse)/i;
-    if ( patt.test(str) ) 
-        return ' p-l-3 bg-success';
+    patt = /^(Verse)/i;
+    if ( patt.test(str) ) {
+        nm=''; n=str.split(' '); 
+        if (n.length>1) {
+            nm=n[1].substr(0,1); 
+            $('#jumplist').show();
+            $('#jump-verse'+nm).show();
+        }
+        return ' p-l-3 bg-success$verse'+nm; }
+    patt = /^(Chorus)/i;
+    if ( patt.test(str) ) {
+        $('#jumplist').show();
+        $('#jump-chorus').show();
+        return ' p-l-3 bg-info$chorus';
+    }
+    patt = /^(bridge)/i;
+    if ( patt.test(str) ) {
+        $('#jumplist').show();
+        $('#jump-bridge').show();
+        return ' p-l-3 bg-info$bridge';
+    }
 
-    var patt = /^(Capo|Key|\()/;
+    patt = /^(Capo|Key|\()/;
     if ( patt.test(str) ) 
-        return ' big text-primary';
+        return ' big text-primary$';
 
-    var patt = /^(Intro|Other|\()/;
+    patt = /^(Intro|Other|\()/;
     if ( patt.test(str) ) 
-        return ' text-primary';
+        return ' text-primary$';
 
     return '';
 }

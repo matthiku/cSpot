@@ -5,11 +5,14 @@
             <div class="modal-header">
                 <h4>Use your keyboard to:</h4>
             </div>
-            <div class="modal-body text-xs-center">
+            <div class="modal-body text-x s-center">
                 <p><kbd>Esc</kbd> go back to plan overview</p>
-                <p><kbd><i class="fa fa-arrow-right"></i></kbd> go to next plan item</p>
-                <p><kbd><i class="fa fa-arrow-left"></i></kbd> go to previous plan item</p>
-                On <strong>tablets</strong> or <strong>phones</strong>, you should use the buttons provided at the bottom of this screen!
+                <p><kbd> <i class="fa fa-arrow-right"> </i></kbd> go to next plan item</p>
+                <p><kbd> <i class="fa fa-arrow-left"> </i></kbd> go to previous plan item</p>
+                <p><kbd>1</kbd>, <kbd>2</kbd>, <kbd>3</kbd>... jump to verse 1...n</p>
+                <p><kbd>c</kbd> jump to chorus</p>
+                <p><kbd>b</kbd> jump to bridge</p>
+                On <strong>tablets</strong> or <strong>phones</strong>, you should instead use the buttons provided at the bottom of this screen!
             </div>
         </div>
     </div>
@@ -37,7 +40,7 @@
         </span>
 
         <!-- 
-            Dropdown Menu Button
+            DropUP Menu "Go to..."
         -->
         <div class="btn-group dropup pull-xs-right m-r-1">
 
@@ -117,22 +120,46 @@
                 </a> 
 
                 <a href="#" onclick="decFontSize('.text-song');" 
-                        title="decrease font size"
-                        class="nav-item btn btn-sm btn-info" role="button">
+                        title="decrease font size" style="display: none"
+                        class="nav-item btn btn-sm btn-info edit-show-buttons" role="button">
                     A <i class="fa fa-minus"></i>
                 </a>
                 <a href="#" onclick="incFontSize('.text-song');" 
-                        title="increase font size"
-                        class="nav-item btn btn-sm btn-info" role="button">
+                        title="increase font size" style="display: none"
+                        class="nav-item btn btn-sm btn-info edit-show-buttons" role="button">
                     A <i class="fa fa-plus"></i>
                 </a>
                 <a href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/go/swap/'.$type) }}" 
+                        style="display: none"
                         title="swap between chords and sheetmusic"
-                        class="nav-item btn btn-sm btn-warning" role="button">
+                        class="nav-item btn btn-sm btn-warning edit-show-buttons" role="button">
                     <i class="fa fa-file-text"></i> <i class="fa fa-refresh fa-lg"></i> <i class="fa fa-music"></i>
                 </a>
             </li>
         </ul>
+
+
+        <!-- 
+            DropUP Menu "Go to..."
+        -->
+        <div class="btn-group dropup pull-xs-left m-l-1" id="jumplist" style="display: none">
+
+            <button type="button" class="btn btn-sm btn-info dropdown-toggle" 
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Jump to
+            </button>
+            <div class="dropdown-menu dropdown-menu-right bg-faded">
+                @foreach (range(1,7) as $num)
+                    <a class="dropdown-item" href="#verse{{ $num }}" 
+                            id="jump-verse{{ $num }}" style="display: none">
+                        Verse {{ $num }}</a>
+                @endforeach
+                <a class="dropdown-item" href="#chorus" id="jump-chorus" style="display: none">Chorus</a>
+                <a class="dropdown-item" href="#bridge" id="jump-bridge" style="display: none">Bridge</a>
+            </div>
+
+        </div>
+
 
     </nav>
 
