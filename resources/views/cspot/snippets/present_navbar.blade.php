@@ -111,26 +111,29 @@
         <a href="{{ url('cspot/items/').'/'.$item->plan->firstItem()->id.'/'.$type }}" id="go-first-item"></a>
         <a href="{{ url('cspot/items/').'/'.$item->plan->lastItem()->id.'/'.$type  }}" id="go-last-item" ></a>
 
-
         <ul class="nav navbar-nav pull-xs-left">
             <li>
+                <!-- go to previous slide -->
                 <a href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/go/previous/'.$type) }}"
                     class="nav-item btn btn-sm btn-warning" role="button" id="go-previous-item">
                     <i class="fa fa-angle-double-left fa-lg"></i>
                 </a> 
 
+                <!-- decrease font size -->
                 <a href="#" onclick="decFontSize('.text-song');" 
                         title="decrease font size" style="display: none"
                         class="nav-item btn btn-sm btn-info edit-show-buttons" role="button">
                     A <i class="fa fa-minus"></i>
                 </a>
+                <!-- increase font size -->
                 <a href="#" onclick="incFontSize('.text-song');" 
                         title="increase font size" style="display: none"
                         class="nav-item btn btn-sm btn-info edit-show-buttons" role="button">
                     A <i class="fa fa-plus"></i>
                 </a>
+                <!-- swap between chords and sheetmusic -->
                 <a href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/go/swap/'.$type) }}" 
-                        style="display: none"
+                        style="display: none" id="show-chords-or-music"
                         title="swap between chords and sheetmusic"
                         class="nav-item btn btn-sm btn-warning edit-show-buttons" role="button">
                     <i class="fa fa-file-text"></i> <i class="fa fa-refresh fa-lg"></i> <i class="fa fa-music"></i>
