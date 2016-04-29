@@ -31,9 +31,9 @@
         </ul>
 
         <span class="nav navbar-nav center">
-            <small>{{$item->seq_no}} </small>
+            <small class="hidden-sm-down">{{$item->seq_no}} </small>
             @if ($item->song_id && $item->song->title)
-                {{ $item->song->title }}
+                <small class="hidden-xs-down">{{ $item->song->title }}</small>
             @else
                 {{ $item->comment }}
             @endif
@@ -46,7 +46,7 @@
 
             <button type="button" class="btn btn-sm btn-info dropdown-toggle" 
                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Go to
+                Go<span class="hidden-sm-down"> to</span>
             </button>
             <div class="dropdown-menu dropdown-menu-right bg-faded">
                 @foreach ($items as $menu_item)
@@ -54,9 +54,12 @@
                         @if ($item->id == $menu_item->id)
                             bg-info
                         @endif
+                        @if (! $menu_item->song_id)
+                            hidden-sm-down
+                        @endif
                         "
                         href="{{ url('cspot/items/').'/'.$menu_item->id.'/'.$type }}">
-                        <small class="hide-sm-down">{{ $menu_item->seq_no }}</small> &nbsp; 
+                        <small class="hidden-xs-down">{{ $menu_item->seq_no }} &nbsp;</small> 
                         @if ($menu_item->song_id && $menu_item->song->title)
                             <i class="fa fa-music">&nbsp;</i><strong>{{ $menu_item->song->title }}</strong>
                         @else
@@ -72,6 +75,10 @@
                         Edit this item
                     </a>
                 @endif
+                <a class="dropdown-item hidden-md-up" target="new" 
+                    href="https://www.youtube.com/watch?v={{ $item->song->youtube_id }}">
+                    <i class="red fa fa-youtube-play fa-lg"></i>Play on Youtube
+                </a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" id="go-back"
                     href="{{ url('cspot/plans/'.$item->plan_id) }}">
@@ -90,27 +97,35 @@
         <div class="btn-group pull-xs-right m-r-1">
             @if ($item->song_id && $item->song->youtube_id)
                 <a href="https://www.youtube.com/watch?v={{ $item->song->youtube_id }}" 
-                    target="new" class="pull-xs-right btn btn-sm btn-info">
+                    target="new" class="pull-xs-right btn btn-sm btn-info hidden-sm-down ">
                 <i class="red fa fa-youtube-play fa-lg"></i>&nbsp;</a>
             @else
-                <a href="#" disabled=""
-                   class="pull-xs-right btn btn-sm btn-secondary-outline">
+                <a href="#" disabled="" 
+                   class="pull-xs-right btn btn-sm btn-secondary-outline hidden-lg-down">
                 <i class="fa fa-youtube-play fa-lg"></i>&nbsp;</a>
             @endif
         </div>
 
-        <a href="#" title="help and keyboard shortcuts" data-toggle="modal" data-target=".help-modal"
-            class="pull-xs-right btn btn-sm btn-success-outline m-r-1">
+        <!-- 
+            help button 
+        -->
+        <a href="#" title="show keyboard shortcuts" data-toggle="modal" data-target=".help-modal"
+            class="hidden-sm-down pull-xs-right btn btn-sm btn-success-outline m-r-1">
         <i class="fa fa-question-circle fa-lg"></i></a>
 
 
 
         <!-- 
             go to first/last slide 
+            (invisible, only used for keyboard shortcuts 'Home' and 'End')
         -->
         <a href="{{ url('cspot/items/').'/'.$item->plan->firstItem()->id.'/'.$type }}" id="go-first-item"></a>
         <a href="{{ url('cspot/items/').'/'.$item->plan->lastItem()->id.'/'.$type  }}" id="go-last-item" ></a>
 
+
+        <!-- 
+            LEFT part of navbar 
+        -->
         <ul class="nav navbar-nav pull-xs-left">
             <li>
                 <!-- go to previous slide -->
@@ -122,20 +137,20 @@
                 <!-- decrease font size -->
                 <a href="#" onclick="decFontSize('.text-song');" 
                         title="decrease font size" style="display: none"
-                        class="nav-item btn btn-sm btn-info edit-show-buttons" role="button">
+                        class="hidden-sm-down nav-item btn btn-sm btn-info edit-show-buttons" role="button">
                     A <i class="fa fa-minus"></i>
                 </a>
                 <!-- increase font size -->
                 <a href="#" onclick="incFontSize('.text-song');" 
                         title="increase font size" style="display: none"
-                        class="nav-item btn btn-sm btn-info edit-show-buttons" role="button">
+                        class="hidden-sm-down nav-item btn btn-sm btn-info edit-show-buttons" role="button">
                     A <i class="fa fa-plus"></i>
                 </a>
                 <!-- swap between chords and sheetmusic -->
                 <a href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/go/swap/'.$type) }}" 
                         style="display: none" id="show-chords-or-music"
                         title="swap between chords and sheetmusic"
-                        class="nav-item btn btn-sm btn-warning edit-show-buttons" role="button">
+                        class="hidden-sm-down nav-item btn btn-sm btn-warning edit-show-buttons" role="button">
                     <i class="fa fa-file-text"></i> <i class="fa fa-refresh fa-lg"></i> <i class="fa fa-music"></i>
                 </a>
             </li>
@@ -143,15 +158,16 @@
 
 
         <!-- 
-            DropUP Menu "Go to..."
+            DropUP Menu "Show"
         -->
         <div class="btn-group dropup pull-xs-left m-l-1" id="jumplist" style="display: none">
 
             <button type="button" class="btn btn-sm btn-info dropdown-toggle" 
                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Jump to
+                Show
             </button>
-            <div class="dropdown-menu dropdown-menu-right bg-faded">
+
+            <div class="dropdown-menu dropdown-menu-left bg-faded">
                 @foreach (range(1,7) as $num)
                     <a class="dropdown-item" href="#verse{{ $num }}" 
                             id="jump-verse{{ $num }}" style="display: none">
@@ -159,6 +175,21 @@
                 @endforeach
                 <a class="dropdown-item" href="#chorus" id="jump-chorus" style="display: none">Chorus</a>
                 <a class="dropdown-item" href="#bridge" id="jump-bridge" style="display: none">Bridge</a>
+                <div class="hidden-md-up dropdown-divider"></div>                
+                <a class="dropdown-item hidden-md-up edit-show-buttons" 
+                        href="#" style="display: none"
+                        onclick="decFontSize('.text-song');" >
+                    A <i class="fa fa-minus"></i> decrease font
+                </a>
+                <a class="dropdown-item hidden-md-up edit-show-buttons" 
+                        href="#" style="display: none"
+                        onclick="incFontSize('.text-song');" >
+                    A <i class="fa fa-plus"></i> increase font
+                </a>
+                <a class="dropdown-item hidden-md-up edit-show-buttons" style="display: none"
+                        href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/go/swap/'.$type) }}">
+                    <i class="fa fa-file-text"></i> <i class="fa fa-refresh fa-lg"></i> <i class="fa fa-music"></i>
+                    sheetmusic/chords
             </div>
 
         </div>

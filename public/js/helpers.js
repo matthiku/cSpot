@@ -232,7 +232,7 @@ $(document).ready(function() {
         $('.edit-show-buttons').show();
     }
     // if sheetmusic is displayed, show button to swap between sheetmusic and chords
-    if (currUrl = window.location.href.indexOf('sheetmusic')>0) {
+    if ( window.location.href.indexOf('sheetmusic')>0 || window.location.href.indexOf('swap')>0 ) {
         $('#show-chords-or-music').show();
     }
 

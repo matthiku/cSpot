@@ -11,6 +11,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
+    <!-- Allow this to be installed an app on the device's home screen -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+
     <meta name="csrf-token" content="{{ csrf_token() }}">    
 
     <title>c-SPOT @yield('title')</title>
@@ -19,10 +23,7 @@
     <link href="{{ url('css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ url('css/font-awesome.min.css') }}" rel="stylesheet">
 
-    <!-- jQuery UI css    (not needed at the moment )   -->
     <link href="{{ url('css/jquery-ui.min.css') }}" rel="stylesheet">
-    <!-- <link href="{{ url('css/jquery-ui.structure.min.css') }}" rel="stylesheet"> -->
-    <!-- <link href="{{ url('css/jquery-ui.theme.min.css') }}" rel="stylesheet"> -->
 
     <!-- Custom styles for this template -->
     <link href="{{ url('css/style.css') }}" rel="stylesheet">
