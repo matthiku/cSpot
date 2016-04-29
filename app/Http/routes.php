@@ -163,3 +163,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['web']], function() {
     Route::get('default_items/{default_items}/delete', 'Admin\DefaultItemController@destroy');    
 
 });
+
+Route::group(['middleware' => ['web', 'auth']], function() {
+    Route::get('admin/logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
+});

@@ -44,6 +44,10 @@
                     <hr>
                     <a class="dropdown-item" href="{{ url('admin/users') }}"><i class="fa fa-btn fa-users fa-lg"></i> &nbsp; User List</a>
                     <a class="dropdown-item" href="{{ url('admin/roles') }}"><i class="fa fa-btn fa-check-square-o fa-lg"></i> &nbsp; User Roles</a>
+                    @if (Auth::user()->isAdmin())
+                    <hr>
+                    <a class="dropdown-item" href="{{ url('admin/logs')  }}"><i class="fa fa-btn fa-file-zip-o fa-lg"></i> &nbsp; Laravel Logs</a>
+                    @endif
                 </div>
             </li>
 

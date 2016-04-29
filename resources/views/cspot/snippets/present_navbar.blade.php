@@ -162,7 +162,7 @@
         <!-- 
             DropUP Menu "Show"
         -->
-        <div class="btn-group dropup pull-xs-left m-l-1" id="jumplist" style="display: none">
+        <div class="btn-group dropup pull-xs-left m-l-1" id="jumplist">
 
             <button type="button" class="btn btn-sm btn-info dropdown-toggle" 
                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -188,7 +188,7 @@
                         onclick="incFontSize('.text-song');" >
                     A <i class="fa fa-plus"></i> increase font
                 </a>
-                <a class="dropdown-item hidden-md-up edit-show-buttons" style="display: none"
+                <a class="dropdown-item hidden-md-up edit-show-buttons"
                         href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/go/swap/'.$type) }}">
                     <i class="fa fa-file-text"></i> <i class="fa fa-refresh fa-lg"></i> <i class="fa fa-music"></i>
                     sheetmusic/chords

@@ -162,6 +162,8 @@ return [
 
         Cmgmyr\Messenger\MessengerServiceProvider::class,
 
+        Rap2hpoutre\LaravelLogViewer\LaravelLogViewerServiceProvider::class,
+
     ],
 
     /*

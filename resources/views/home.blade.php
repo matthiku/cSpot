@@ -26,6 +26,11 @@
                         {{ env('CHURCH_NAME') }}
                     </h4>
 
+<?php // on mobile devices only:
+    if (preg_match('/iphone|ipod|android/',strtolower($_SERVER['HTTP_USER_AGENT'])))
+        echo "For best functionality, go into your browser's menu and add my to your homescreen!";
+?>                    
+
                     <hr>
 
 

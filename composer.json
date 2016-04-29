@@ -11,7 +11,8 @@
         "laravelcollective/html": "5.2.*",
         "doctrine/dbal": "^2.5",
         "snap/bible-books": "0.1.*@dev",
-        "cmgmyr/messenger": "~2.0"
+        "cmgmyr/messenger": "~2.0",
+        "rap2hpoutre/laravel-log-viewer": "^0.6.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

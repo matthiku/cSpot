@@ -435,7 +435,7 @@ function incFontSize(selectorList) {
     selectorList.forEach( function(selector) {
         element = $(selector);
         if (element.length>0) {
-            fontSize = parseInt($(element).css('font-size')) + 5;
+            fontSize = parseInt($(element).css('font-size')) * 1.1;
             $(element).css('font-size', fontSize);
             localStorage.setItem(selector+'_font-size', fontSize);
             console.log('LocalStorage for '+selector+' was set to '+localStorage.getItem(selector+'_font-size'));
@@ -450,7 +450,7 @@ function decFontSize(selectorList) {
     selectorList.forEach( function(selector) {
         element = $(selector);
         if (element.length>0) {
-            fontSize = parseInt($(element).css('font-size')) - 5;
+            fontSize = parseInt($(element).css('font-size')) * 0.9;
             if (fontSize>12)
                 $(element).css('font-size', fontSize);
             localStorage.setItem(selector+'_font-size', fontSize);
