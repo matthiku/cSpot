@@ -75,10 +75,12 @@
                         Edit this item
                     </a>
                 @endif
-                <a class="dropdown-item hidden-md-up" target="new" 
-                    href="https://www.youtube.com/watch?v={{ $item->song->youtube_id }}">
-                    <i class="red fa fa-youtube-play fa-lg"></i>Play on Youtube
-                </a>
+                @if ($item->song_id && $item->song->youtube_id)
+                    <a class="dropdown-item hidden-md-up" target="new" 
+                        href="https://www.youtube.com/watch?v={{ $item->song->youtube_id }}">
+                        <i class="red fa fa-youtube-play fa-lg"></i>Play on Youtube
+                    </a>
+                @endif
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" id="go-back"
                     href="{{ url('cspot/plans/'.$item->plan_id) }}">
