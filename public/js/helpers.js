@@ -229,7 +229,7 @@ $(document).ready(function() {
         if ($('#chords')[0].nodeName == 'PRE') {
             reDisplayChords();
         }
-        $('.edit-show-buttons').show();
+        $('.edit-show-buttons').css('display', 'inline');
     }
     // if sheetmusic is displayed, show button to swap between sheetmusic and chords
     if ( window.location.href.indexOf('sheetmusic')>0 || window.location.href.indexOf('swap')>0 ) {
@@ -245,7 +245,7 @@ $(document).ready(function() {
 */
 function toogleAllorFuturePlans()
 {
-    $('#show-spinner').modal({keyboard: false})
+    $('#show-spinner').modal({keyboard: false});
     // get current url and query string
     var currUrl = window.location.href.split('?');
     var newUrl  = currUrl[0];

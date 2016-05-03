@@ -24,6 +24,7 @@
         <ul class="nav navbar-nav pull-xs-right">
             <li>
                 <a href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/go/next/'.$type) }}"
+                        onclick="$('#show-spinner').modal({keyboard: false});" 
                     class="nav-item btn btn-sm btn-warning" role="button" id="go-next-item">
                     <i class="fa fa-angle-double-right fa-lg"></i>
                 </a>
@@ -58,6 +59,7 @@
                             hidden-sm-down
                         @endif
                         "
+                        onclick="$('#show-spinner').modal({keyboard: false});" 
                         href="{{ url('cspot/items/').'/'.$menu_item->id.'/'.$type }}">
                         <small class="hidden-xs-down">{{ $menu_item->seq_no }} &nbsp;</small> 
                         @if ($menu_item->song_id && $menu_item->song->title)
@@ -70,6 +72,7 @@
                 @if (Auth::user()->ownsPlan($item->plan_id))
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" id="go-edit"
+                        onclick="$('#show-spinner').modal({keyboard: false});" 
                         href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/edit') }}">
                         <i class="fa fa-pencil"></i>
                         Edit this item
@@ -83,6 +86,7 @@
                 @endif
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" id="go-back"
+                        onclick="$('#show-spinner').modal({keyboard: false});" 
                     href="{{ url('cspot/plans/'.$item->plan_id) }}">
                     <i class="fa fa-undo"></i>
                     Back to plan overview
@@ -132,6 +136,7 @@
             <li>
                 <!-- go to previous slide -->
                 <a href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/go/previous/'.$type) }}"
+                        onclick="$('#show-spinner').modal({keyboard: false});" 
                     class="nav-item btn btn-sm btn-warning" role="button" id="go-previous-item">
                     <i class="fa fa-angle-double-left fa-lg"></i>
                 </a> 
@@ -151,6 +156,7 @@
                 <!-- swap between chords and sheetmusic -->
                 <a href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/go/swap/'.$type) }}" 
                         style="display: none" id="show-chords-or-music"
+                        onclick="$('#show-spinner').modal({keyboard: false});" 
                         title="swap between chords and sheetmusic"
                         class="hidden-sm-down nav-item btn btn-sm btn-warning edit-show-buttons" role="button">
                     <i class="fa fa-file-text"></i> <i class="fa fa-refresh fa-lg"></i> <i class="fa fa-music"></i>

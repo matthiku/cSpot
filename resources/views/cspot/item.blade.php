@@ -56,12 +56,14 @@
 
                 <h2 class="nowrap">
                     <a href="{{ url('cspot/plans/'.$plan->id.'/items/'.$item->id.'/go/previous') }}"
+                        onclick="$('#show-spinner').modal({keyboard: false});" 
                         class="btn btn-secondary" role="button" id="go-previous-item"
                         title="go to previous item" data-toggle="tooltip" data-placement="right">
                         <i class="fa fa-angle-double-left fa-lg"></i>
                     </a> 
                     Review Item No {{$seq_no}}
                     <a href="{{ url('cspot/plans/'.$plan->id.'/items/'.$item->id.'/go/next') }}"
+                        onclick="$('#show-spinner').modal({keyboard: false});" 
                         class="btn btn-secondary" role="button" id="go-next-item"
                         title="go to next item" data-toggle="tooltip" data-placement="right">
                         <i class="fa fa-angle-double-right fa-lg"></i>

@@ -55,16 +55,19 @@
             <div class="dont-print">
                 <div class="pull-xs-right">
                     <a title="Show sheetmusic (if available) for the songs on this plan"
+                        onclick="$('#show-spinner').modal({keyboard: false});" 
                         href="{{ url('cspot/items/'.$plan->firstItem()->id.'/sheetmusic/') }}">
                         <i class="fa fa-file-text">&nbsp;</i>Sheetmusic</a>
                 </div>
                 <div class="pull-xs-right m-r-1">
                     <a title="Show guitar chords (if available) for the songs on this plan" 
+                        onclick="$('#show-spinner').modal({keyboard: false});" 
                         href="{{ url('cspot/items/').'/'.$plan->firstItem()->id }}">
                         <i class="fa fa-music">&nbsp;</i>Chords</a>
                 </div>
                 <div class="pull-xs-right m-r-1">
                     <a title="Start projector-enabled presentation of each song and scripture reading in this plan" 
+                        onclick="$('#show-spinner').modal({keyboard: false});" 
                         href="{{ url('cspot/items/'.$plan->firstItem()->id.'/present/') }}">
                         <i class="fa fa-tv">&nbsp;</i>Present</a>
                 </div>
@@ -367,7 +370,8 @@
 
         @else
             &nbsp; {!! Form::submit('Save Note'); !!}
-            <script>document.forms.inputForm.info.focus()</script>
+            <!-- counterproductive as it scrolls the plan on smaller devices 
+                <script>document.forms.inputForm.info.focus()</script> -->
         @endif
 
         @if ( Auth::user()->isAdmin()  &&  $plan->items->count()==0 ) &nbsp; 

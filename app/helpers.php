@@ -140,6 +140,7 @@ function nextItem($plan_id, $item_id, $direction)
     $items   = $plan->items()->orderBy('seq_no')->get();
 
     // get seq_no of desired next or previous item
+    $new_seq_no = 0;    // to prevent unnassigned exception
     if ($direction == 'next') {
         if ($curItem->seq_no == count($items)) {
             $new_seq_no = 1.0;
