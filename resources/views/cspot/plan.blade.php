@@ -336,7 +336,7 @@
                 $('#info').attr('onchange',"enableSaveButton(this)");
             </script>
         @else
-            @if ($plan->info)
+            @if (isset($plan) && $plan->info)
                 <h5>Notes for this Plan:</h5>
                 <pre>{!! $plan->info !!}</pre>
             @endif

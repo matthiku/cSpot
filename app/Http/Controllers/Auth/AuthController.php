@@ -77,7 +77,7 @@ class AuthController extends Controller
             $this->loginUsername() => 'required', 'password' => 'required',
         ]);
 
-        Log::info($request->ip().' trying to login user '.$request->input('email'));
+        Log::info($request->ip().' - trying to login user '.$request->input('email'));
 
         // If the class is using the ThrottlesLogins trait, we can automatically throttle
         // the login attempts for this application. We'll key this by the username and
@@ -124,7 +124,7 @@ class AuthController extends Controller
      */
     public function register(Request $request, AppMailer $mailer) 
     {
-        Log::info($request->ip().' trying to validate user registration');
+        Log::info($request->ip().' - trying to validate user registration');
 
         $this->validate($request, [
             'first_name' => 'required',
@@ -139,7 +139,7 @@ class AuthController extends Controller
         $role = Role::whereName('user')->first();
         $user->assignRole($role);
         
-        Log::info($request->ip().' trying to send registration email to '.$user->name);
+        Log::info($request->ip().' - trying to send registration email to '.$user->name);
         $mailer->notifyAdmin( $user, 'new user registration from IP '.$request->ip() );
 
         $mailer->sendEmailConfirmationTo($user);
@@ -158,10 +158,10 @@ class AuthController extends Controller
      * @param  string $token
      * @return mixed
      */
-    public function confirmEmail($token)
+    public function confirmEmail(Request $request, $token)
     {
 
-        Log::info('trying to confirm user from email');
+        Log::info($request->ip().' - trying to confirm user from email');
 
         // get user with that token
         $user = User::whereToken($token)->first();
@@ -174,7 +174,7 @@ class AuthController extends Controller
             flash('You are now confirmed. Please sign in.');
         }
 
-        Log::info('email confirmed for user '.$user->name);
+        Log::info($request->ip().' - email confirmed for user '.$user->name);
 
         return redirect('/login');
     }
@@ -187,9 +187,9 @@ class AuthController extends Controller
      * @param  array  $data
      * @return User
      */
-    protected function create(array $data)
+    protected function create(Request $request, array $data)
     {
-        Log::info('creating new user record for '.$data['name']);
+        Log::info($request->ip().' - creating new user record for '.$data['name']);
 
         return User::create([
             'name' => $data['name'],
@@ -203,9 +203,9 @@ class AuthController extends Controller
     /**
      * User clicked on Social Auth button, redirect them to their provider for consent
      */
-    public function getSocialRedirect( $provider )
+    public function getSocialRedirect( Request $request, $provider )
     {
-        Log::info('getSocialRedirect - User trying to register using '.$provider);
+        Log::info($request->ip().' - getSocialRedirect - User trying to register using '.$provider);
 
         $providerKey = \Config::get('services.' . $provider);
 
@@ -220,9 +220,9 @@ class AuthController extends Controller
     /**
      * Provider used the "callback URL" and now we process the returned information
      */
-    public function getSocialHandle( $provider, AppMailer $mailer )
+    public function getSocialHandle( Request $request, $provider, AppMailer $mailer )
     {
-        Log::info('getSocialHandle - User gave consent to register using '.$provider);
+        Log::info($request->ip().' - getSocialHandle - User gave consent to register using '.$provider);
 
         $user = Socialite::driver( $provider )->user();
 
@@ -288,7 +288,7 @@ class AuthController extends Controller
             }
         }
 
-        Log::info('getSocialHandle - trying to do social-sign in');
+        Log::info($request->ip().' - getSocialHandle - trying to do social-sign in');
         $mailer->notifyAdmin( $socialUser, 'User confirmed via '.$provider );
 
         $this->auth->login($socialUser, true);
