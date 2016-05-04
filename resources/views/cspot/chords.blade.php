@@ -39,11 +39,12 @@
                     <pre class="text-song big" id="chords">{{ $item->song->chords }}</pre>
                 </div>
             @else
-                <pre class="text-song big m-b-3">{{ $item->song->lyrics }}</pre>
+                <pre class="text-song big m-b-3" id="lyrics">{{ $item->song->lyrics }}</pre>
             @endif
         @endif
 
 
+        
         @if ($item->files)
             @foreach ($item->files as $file)
                 @include ('cspot.snippets.present_files')
@@ -52,7 +53,7 @@
 
 
         @if ($bibleTexts)
-            <div class="col-xl-6">
+            <div class="col-xl-6" id="bibletext">
                 @foreach ($bibleTexts as $btext)
                     <h3>{{ $btext->display }} ({{ $btext->version_abbreviation }})</h3>
                     <div class="big">{!! $btext->text !!}</div>
@@ -61,7 +62,7 @@
                 @endforeach
             </div>
         @else
-            <div class="jumbotron">
+            <div class="jumbotron" id="comment">
                 <h1 class="display-3 center">
                     <span class="text-muted">{{ $item->comment ? '('.$item->comment.')' : '' }}</span>
                 </h1>

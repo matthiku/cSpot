@@ -231,9 +231,14 @@ $(document).ready(function() {
         }
         $('.edit-show-buttons').css('display', 'inline');
     }
+    // remove dropup button and menu on info screens
+    else if ( $('#bibletext').text()!='' || $('#comment').text()!='' ) {
+        $('#jumplist').remove();
+    }
+
     // if sheetmusic is displayed, show button to swap between sheetmusic and chords
     if ( window.location.href.indexOf('sheetmusic')>0 || window.location.href.indexOf('swap')>0 ) {
-        $('#show-chords-or-music').show();
+        $('#show-chords-or-music').css('display', 'inline');
     }
 
 });
