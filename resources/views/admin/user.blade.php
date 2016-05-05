@@ -35,12 +35,24 @@
         @if (Auth::user()->isAdmin())
             {!! Form::text('email') !!}</p>
 
-            <strong>Select Roles:</strong><br />
-            @foreach ($roles as $role)
-                <input name="{{ $role->name }}" type="checkbox"
-                     {{ isset($user) && $user->hasRole($role->name) ? 'checked="checked"' : '' }}>
-                <label  for="{{ $role->name }}">{{ $role->name }}</label><br />
-            @endforeach
+            <div class="row">
+                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-5">
+                    <strong>Select Roles:</strong><br />
+                    @foreach ($roles as $role)
+                        <input name="{{ str_replace(' ','_',$role->name) }}" type="checkbox"
+                             {{ isset($user) && $user->hasRole($role->name) ? 'checked="checked"' : '' }}>
+                        <label  for="{{ str_replace(' ','_',$role->name) }}">{{ $role->name }}</label><br />
+                    @endforeach
+                </div>
+                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-5">
+                    <strong>Select Instruments:</strong><br />
+                    @foreach ($instruments as $instrument)
+                        <input name="{{ str_replace(' ','_',$instrument->name) }}" type="checkbox"
+                             {{ isset($user) && $user->hasInstrument($instrument->name) ? 'checked="checked"' : '' }}>
+                        <label  for="{{ str_replace(' ','_',$instrument->name) }}">{{ $instrument->name }}</label><br />
+                    @endforeach
+                </div>
+            </div>
         @else
             {!! Form::hidden('email') !!}
             {{ isset($user) ? $user->email : '' }}

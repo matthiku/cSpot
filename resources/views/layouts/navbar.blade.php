@@ -44,6 +44,7 @@
                     <hr>
                     <a class="dropdown-item" href="{{ url('admin/users') }}"><i class="fa fa-btn fa-users fa-lg"></i> &nbsp; User List</a>
                     <a class="dropdown-item" href="{{ url('admin/roles') }}"><i class="fa fa-btn fa-check-square-o fa-lg"></i> &nbsp; User Roles</a>
+                    <a class="dropdown-item" href="{{ url('admin/instruments') }}"><i class="fa fa-btn fa-music fa-lg"></i> &nbsp; User Instruments</a>
                     @if (Auth::user()->isAdmin())
                     <hr>
                     <a target="_new" class="dropdown-item" href="{{ url('admin/logs')  }}">

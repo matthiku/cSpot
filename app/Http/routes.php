@@ -154,11 +154,13 @@ Route::group(['prefix' => 'admin', 'middleware' => ['web']], function() {
     // admin only: CRUD for users
     Route::resource('users', 'Admin\UserController');    
     Route::resource('roles', 'Admin\RoleController');    
+    Route::resource('instruments', 'Admin\InstrumentController');    
     Route::resource('types', 'Admin\TypeController');    
     Route::resource('default_items', 'Admin\DefaultItemController');    
     // as forms cannot use DELETE method, we implement it as GET
     Route::get('users/{users}/delete', 'Admin\UserController@destroy');    
     Route::get('roles/{roles}/delete', 'Admin\RoleController@destroy');    
+    Route::get('instruments/{instrument}/delete', 'Admin\InstrumentController@destroy');    
     Route::get('types/{types}/delete', 'Admin\TypeController@destroy');    
     Route::get('default_items/{default_items}/delete', 'Admin\DefaultItemController@destroy');    
 

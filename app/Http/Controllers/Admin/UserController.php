@@ -13,6 +13,7 @@ use App\Http\Controllers\Controller;
 
 use App\Models\User;
 use App\Models\Role;
+use App\Models\Instrument;
 
 use Auth;
 
@@ -64,9 +65,11 @@ class UserController extends Controller
      */
     public function create()
     {
-        // list of possible user roles
+        // create list of possible user roles
         $roles = Role::all();
-        return view( $this->view_one, array('roles' => $roles ) );
+        // create list of instruments
+        $instruments = Instrument::all();
+        return view( $this->view_one, array('roles' => $roles, 'instruments' => $instruments ) );
     }
 
     /**
@@ -89,11 +92,23 @@ class UserController extends Controller
         // prepare success message
         $message = 'User with id "' . $user->id . '" added';
 
+        // create list of instruments
+        $instruments = Instrument::all();
+        // which instrument was assigned in the form?
+        foreach ($instruments as $instrument) {
+            if ($request->has( str_replace(' ','_',$instrument->name)) ) {
+                $user->assignInstrument($instrument);
+            } 
+            else {
+                $user->removeInstrument($instrument);
+            }
+        }
+
         // get list of possible user roles
         $roles = Role::all();
         // which role was assigned in the form?
         foreach ($roles as $role) {
-            if ($request->has($role->name)) {
+            if ($request->has( str_replace(' ','_',$role->name)) ) {
                 $user->assignRole($role);
             } else {
                 $user->removeRole($role);
@@ -139,7 +154,8 @@ class UserController extends Controller
         $heading = "Edit your profile";
         $user = User::find($id);
         $roles = Role::all();
-        return view($this->view_one, ['user' => $user, 'roles' => $roles, 'heading' => $heading]);
+        $instruments = Instrument::all();
+        return view($this->view_one, ['user' => $user, 'roles' => $roles, 'heading' => $heading, 'instruments' => $instruments]);
     }
 
 
@@ -159,7 +175,9 @@ class UserController extends Controller
         if ($output) {
             // list of possible user roles
             $roles = Role::all();
-            return view( 'admin.user', array('user' => $output, 'roles' => $roles ) );
+            // create list of instruments
+            $instruments = Instrument::all();
+            return view( 'admin.user', array('user' => $output, 'roles' => $roles, 'instruments' => $instruments ) );
         }
         //
         $message = 'User with id "' . $id . '" not found';
@@ -189,13 +207,26 @@ class UserController extends Controller
         // prepare success message
         $message = 'User with id "' . $id . '" updated';
 
+        // create list of instruments
+        $instruments = Instrument::all();
+        // which instrument was assigned in the form?
+        foreach ($instruments as $instrument) {
+            if ($request->has( str_replace(' ','_',$instrument->name)) ) {
+                $user->assignInstrument($instrument);
+            } 
+            else {
+                $user->removeInstrument($instrument);
+            }
+        }
+
         // get list of possible user roles
         $roles = Role::all();
         // which role was assigned in the form?
         foreach ($roles as $role) {
-            if ($request->has($role->name)) {
+            if ($request->has( str_replace(' ','_',$role->name) ) ) {
                 $user->assignRole($role);
-            } else {
+            } 
+            else {
                 if ($user->id<>1 || $role->name<>'administrator' ) {
                     $user->removeRole($role);
                 } else {

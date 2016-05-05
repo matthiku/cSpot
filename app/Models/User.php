@@ -46,19 +46,6 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
 
 
-
-    /**
-     * Allow alias 'name' to get the full name
-    public function getNameAttribute()
-    {
-        return $this->getFullName();
-    }
-     */
-
-
-
-
-
     /**
      * Relationship to Social table
      */
@@ -82,6 +69,45 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     {
         return $this->hasMany('App\Models\Plan', 'teacher_id');
     }
+
+
+
+
+    /**
+     * Many-to-many relationship with instruments table
+     */
+    public function instruments()
+    {
+        return $this->belongsToMany('App\Models\Instrument')->withTimestamps();
+    }
+
+    public function hasInstrument($name)
+    {
+        foreach($this->instruments as $instrument)
+        {
+            if ( strtolower($instrument->name) == strtolower($name) ) return true;
+        }
+
+        return false;
+    }
+
+    public function assignInstrument($instrument)
+    {
+        // Don't assign the same instrument again...
+        if ($this->hasInstrument($instrument->name)) { return; }
+        // link to the new instrument
+        return $this->instruments()->attach($instrument);
+    }
+
+    public function removeInstrument($instrument)
+    {
+        if ( $this->id==1 && $instrument->id<4 )
+        {
+            return false;
+        }
+        return $this->instruments()->detach($instrument);
+    }
+
 
 
 
