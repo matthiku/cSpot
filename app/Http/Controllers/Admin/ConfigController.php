@@ -43,10 +43,11 @@ class ConfigController extends Controller
         if ($request->has('church_url')) {
             $this->updateDotEnv('CHURCH_URL', $request->church_url, '"');
         }
+
         if ($request->hasFile('file')) {
             if ($request->file('file')->isValid()) {
                 // move the new logo file to the public folder with new name
-                $request->file('file')->move( public_path('\images'), env('CHURCH_LOGO_FILENAME') );
+                $request->file('file')->move( public_path('images'), env('CHURCH_LOGO_FILENAME') );
             }
         }
 

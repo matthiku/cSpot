@@ -15,7 +15,7 @@
 
     <h3>Application Customization</h3>
 
-    {!! Form::open(array('action' => 'Admin\ConfigController@update', 'id' => 'inputForm')) !!}
+    {!! Form::open( array('action' => 'Admin\ConfigController@update', 'id' => 'inputForm', 'files'  => true, ) ) !!}
 
         <p>{!! Form::label('church_name', 'Church Name') !!}<br>
            {!! Form::text('church_name', env('CHURCH_NAME')); !!}
