@@ -30,6 +30,8 @@ git commit -a -m "$DESC"
 git push
 
 # call the pull command script on the server via SSH (using PPK)
+echo
+echo "Calling pull command on the server"
 ssh root@eec.ie ./gitpull.sh plan
 
 echo

@@ -44,10 +44,20 @@ class ConfigController extends Controller
             $this->updateDotEnv('CHURCH_URL', $request->church_url, '"');
         }
 
-        if ($request->hasFile('file')) {
-            if ($request->file('file')->isValid()) {
+        if ($request->hasFile('favicon_file')) {
+            if ($request->file('favicon_file')->isValid()) {
                 // move the new logo file to the public folder with new name
-                $request->file('file')->move( public_path().'/images', env('CHURCH_LOGO_FILENAME') );
+                $request->file('favicon_file')->move( public_path().'/images', 'favicon.ico' );
+                flash('New file '.$request->file('file')->getClientOriginalName()
+                    .' saved as favicon.ico'
+                    .' size was '.$request->file('file')->getClientSize() );
+            }
+        }
+
+        if ($request->hasFile('logo_file')) {
+            if ($request->file('logo_file')->isValid()) {
+                // move the new logo file to the public folder with new name
+                $request->file('logo_file')->move( public_path().'/images', env('CHURCH_LOGO_FILENAME') );
                 flash('New file '.$request->file('file')->getClientOriginalName()
                     .' saved as '.env('CHURCH_LOGO_FILENAME')
                     .' size was '.$request->file('file')->getClientSize() );

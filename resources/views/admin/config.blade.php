@@ -25,11 +25,18 @@
            {!! Form::text('church_url', env('CHURCH_URL')); !!}
        </p>
 
+        <p>Current Favicon: 
+            <img src="{{ url('images/favicon.ico') }}">
+            <br>
+            {!! Form::label('favicon_file', 'Upload a new one:'); !!}
+            {!! Form::file('favicon_file'); !!}<br>
+            This must be a valid icon file! See <a target="_new" href="https://en.wikipedia.org/wiki/Favicon">Wikipedia article</a>
+        </p>
         <p>Current Logo: 
             <img src="{{ url('images/'.env('CHURCH_LOGO_FILENAME')) }}">
             <br>
-            {!! Form::label('file', 'Upload a new one:'); !!}
-            {!! Form::file('file'); !!}
+            {!! Form::label('logo_file', 'Upload a new one:'); !!}
+            {!! Form::file('logo_file'); !!}
         </p>
 
         <hr>
