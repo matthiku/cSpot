@@ -49,6 +49,8 @@
                     <hr>
                     <a target="_new" class="dropdown-item" href="{{ url('admin/logs')  }}">
                         <i class="fa fa-btn fa-file-zip-o fa-lg"></i> &nbsp; Laravel Logs</a>
+                    <a class="dropdown-item" href="{{ url('admin/config')  }}">
+                        <i class="fa fa-btn fa-cog fa-lg"></i> &nbsp; Customization</a>
                     @endif
                 </div>
             </li>
@@ -112,11 +114,8 @@
     <!-- 
         LEFT - Home button
      -->
-    @if ( Auth::guest() )
-        <a class="navbar-brand" href="{{ url('.') }}"><img src="{{ url('images/xs-cspot.png') }}" height="20" width="30"></a>
-    @else
-        <a class="navbar-brand" href="{{ url('home') }}"><img src="{{ url('images/xs-cspot.png') }}" height="20" width="30"></a>
-    @endif
+    <a class="navbar-brand" href="{{ Auth::guest() ? url('.') : url('home') }}">
+        <img src="{{ url('images/xs-cspot.png') }}" height="20" width="30"></a>
 
 
 
@@ -152,7 +151,17 @@
             <a class="nav-link" href="{{ url('cspot/plans') }}">Your Plans</a>
         </li>
         @endif
-        <li class="hidden-md-down center">{{ env('CHURCH_NAME') }}</li>
+
+        <!-- 
+            CENTER - Show church logo and name 
+        -->
+        <li class="hidden-md-down center">
+            <a class="nav-link" href="{{ env('CHURCH_URL') }}">
+                <img src="{{ url('images/'.env('CHURCH_LOGO_FILENAME')) }}" height="20" width="30">
+                {{ env('CHURCH_NAME') }}
+            </a>
+        </li>
+
     </ul>
 
 

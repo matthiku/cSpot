@@ -21,15 +21,13 @@
                         <span class="text-primary">P</span>lanning <span class="text-primary">O</span>nline <span class="text-primary">T</span>ool
                     </h3>
                     for
-                    <h4>
-                        <img src="{{ url('images/churchLogo.png') }}" height="30" width="40">
-                        {{ env('CHURCH_NAME') }}
-                    </h4>
+                    <a href="{{ env('CHURCH_URL') }}">
+                        <h4>
+                            <img src="{{ url('images/'.env('CHURCH_LOGO_FILENAME')) }}" height="30" width="40">
+                            {{ env('CHURCH_NAME') }}
+                        </h4>
+                    </a>
 
-<?php // on mobile devices only:
-    if (preg_match('/iphone|ipod|android/',strtolower($_SERVER['HTTP_USER_AGENT'])))
-        echo "For best functionality, go into your browser's menu and add me to your homescreen!";
-?>                    
 
                     <hr>
 

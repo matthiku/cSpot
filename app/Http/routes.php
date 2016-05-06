@@ -168,4 +168,6 @@ Route::group(['prefix' => 'admin', 'middleware' => ['web']], function() {
 
 Route::group(['middleware' => ['web', 'auth']], function() {
     Route::get('admin/logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
+    Route::get('admin/config', 'Admin\ConfigController@index');
+    Route::post('admin/config', 'Admin\ConfigController@update');
 });

@@ -32,6 +32,7 @@
            {!! Form::text('name'); !!}</p>
 
         <p>{!! Form::label('email', 'Email Address') !!}<br>
+
         @if (Auth::user()->isAdmin())
             {!! Form::text('email') !!}</p>
 
@@ -53,15 +54,13 @@
                     @endforeach
                 </div>
             </div>
+
         @else
             {!! Form::hidden('email') !!}
             {{ isset($user) ? $user->email : '' }}
             <br />
             <br />
-            <label>Your Roles:</label>
-            @foreach ($user->roles as $key => $role)
-                {{ ucfirst($role->name) }}{{ $key+1<$user->roles->count() ? ',' : '' }}
-            @endforeach
+
         @endif
 
 
@@ -77,10 +76,32 @@
         {!! Form::submit('Submit'); !!}
     @endif
 
-    <a href="#" onclick="history.back()">{!! Form::button('Cancel') !!}</a>
     {!! Form::close() !!}
 
     <script type="text/javascript">document.forms.inputForm.first_name.focus()</script>
     
+    
+    @if (! Auth::user()->isAdmin())
+        <div class="row m-t-1">
+            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-5">
+                @if ($user->roles->count())
+                    <label>Your Roles:</label>
+                    @foreach ($user->roles as $key => $role)
+                        {{ ucfirst($role->name) }}{{ $key+1<$user->roles->count() ? ',' : '' }}
+                    @endforeach
+                @endif
+            </div>
+            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-5">
+                @if ($user->instruments->count())
+                    <label>Your Instruments:</label>
+                    @foreach ($user->instruments as $instrument)
+                        {{ ucfirst($instrument->name) }}{{ $key+1<$user->instruments->count() ? ',' : '' }}
+                    @endforeach
+                @endif
+            </div>
+        </div>
+    @endif
+
+
 @stop
 
