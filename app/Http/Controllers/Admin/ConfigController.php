@@ -48,9 +48,9 @@ class ConfigController extends Controller
             if ($request->file('favicon_file')->isValid()) {
                 // move the new logo file to the public folder with new name
                 $request->file('favicon_file')->move( public_path().'/images', 'favicon.ico' );
-                flash('New file '.$request->file('file')->getClientOriginalName()
+                flash('New file '.$request->file('favicon_file')->getClientOriginalName()
                     .' saved as favicon.ico'
-                    .' size was '.$request->file('file')->getClientSize() );
+                    .' size was '.$request->file('favicon_file')->getClientSize() );
             }
         }
 
@@ -58,9 +58,9 @@ class ConfigController extends Controller
             if ($request->file('logo_file')->isValid()) {
                 // move the new logo file to the public folder with new name
                 $request->file('logo_file')->move( public_path().'/images', env('CHURCH_LOGO_FILENAME') );
-                flash('New file '.$request->file('file')->getClientOriginalName()
+                flash('New file '.$request->file('logo_file')->getClientOriginalName()
                     .' saved as '.env('CHURCH_LOGO_FILENAME')
-                    .' size was '.$request->file('file')->getClientSize() );
+                    .' size was '.$request->file('logo_file')->getClientSize() );
             }
         }
 
