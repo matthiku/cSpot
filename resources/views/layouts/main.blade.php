@@ -14,7 +14,7 @@
     <!-- Allow this to be installed an app on the device's home screen -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
-    <link rel="icon" sizes="192x192" href="{{ url('images/cspoticon.png') }}">
+    <link rel="icon" sizes="192x192" href="{{ url('images/favicon.ico') }}">
 
     <meta name="csrf-token" content="{{ csrf_token() }}">    
 

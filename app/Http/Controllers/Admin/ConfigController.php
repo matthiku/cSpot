@@ -47,7 +47,10 @@ class ConfigController extends Controller
         if ($request->hasFile('file')) {
             if ($request->file('file')->isValid()) {
                 // move the new logo file to the public folder with new name
-                $request->file('file')->move( public_path('images'), env('CHURCH_LOGO_FILENAME') );
+                $request->file('file')->move( public_path().'/images', env('CHURCH_LOGO_FILENAME') );
+                flash('New file '.$request->file('file')->getClientOriginalName()
+                    .' saved as '.env('CHURCH_LOGO_FILENAME')
+                    .' size was '.$request->file('file')->getClientSize() );
             }
         }
 
