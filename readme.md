@@ -52,6 +52,13 @@ Currently, the following user rights are assigned to roles:
 | editor | same as author plus can modify all plans and items, can modify default items, an edits songs |
 | administrator | same as editor plus management of all users and their roles |
 
+## Support of mobile devices
+Although this is a web-based application, with the frontend running in a browser, a user can run it like an app using Chrome's feater "Add to homescreen",
+which is available on all major mobile platforms. Once opened in the Chrome browser app on your mobile device, select this function in 
+Chrome's menu and a new icon will appear on your homescreen:
+![homescreen](https://github.com/matthiku/cSpot/tree/master/public/images/homescreenIcon.png)
+
+
 ## Technical Blah blah
 ### Code
 ##### Backend
@@ -87,5 +94,5 @@ Out of the box, ch-SPOT uses a mySQL database to save all the data. However, Lar
 
 - Pre-populate the songs database with popular **public domain** lyrics
 - Program the frontend as a Single Page App using AngularJS and the backend as a RESTful API
-- Enable user to programmatically select Bible references
-- Add feature to send lyrics and Bible verses to a projector
+- Enable user to programmatically select Bible references (done)
+- Add feature to send lyrics and Bible verses to a projector (done)

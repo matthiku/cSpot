@@ -24,7 +24,7 @@ echo Uploading all changes to GitHub with this description: \"$DESC\"
 git add .
 
 # execute the commit and add the comment(description) of the commit
-git commit -a -m \"$*\"
+git commit -a -m "$DESC"
 
 # push the commit (all files) to GitHub
 git push
