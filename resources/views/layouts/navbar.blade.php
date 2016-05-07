@@ -157,7 +157,7 @@
         -->
         <li class="hidden-md-down center">
             <a class="nav-link" href="{{ env('CHURCH_URL') }}">
-                <img src="{{ url('images/'.env('CHURCH_LOGO_FILENAME')) }}" height="20" width="30">
+                <img src="{{ url($logoPath.env('CHURCH_LOGO_FILENAME')) }}" height="20">
                 {{ env('CHURCH_NAME') }}
             </a>
         </li>

@@ -23,7 +23,7 @@
                     for
                     <a href="{{ env('CHURCH_URL') }}">
                         <h4>
-                            <img src="{{ url('images/'.env('CHURCH_LOGO_FILENAME')) }}" height="30" width="40">
+                            <img src="{{ url($logoPath.env('CHURCH_LOGO_FILENAME')) }}" height="30">
                             {{ env('CHURCH_NAME') }}
                         </h4>
                     </a>

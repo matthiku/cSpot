@@ -26,14 +26,14 @@
        </p>
 
         <p>Current Favicon: 
-            <img src="{{ url('images/favicon.ico') }}">
+            <img src="{{ url($logoPath.'favicon.ico') }}">
             <br>
             {!! Form::label('favicon_file', 'Upload a new one:'); !!}
             {!! Form::file('favicon_file'); !!}<br>
             This must be a valid icon file! See <a target="_new" href="https://en.wikipedia.org/wiki/Favicon">Wikipedia article</a>
         </p>
         <p>Current Logo: 
-            <img src="{{ url('images/'.env('CHURCH_LOGO_FILENAME')) }}">
+            <img src="{{ url($logoPath.env('CHURCH_LOGO_FILENAME')) }}">
             <br>
             {!! Form::label('logo_file', 'Upload a new one:'); !!}
             {!! Form::file('logo_file'); !!}

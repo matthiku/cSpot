@@ -10,7 +10,7 @@ use App\Http\Controllers\Controller;
 class ConfigController extends Controller
 {
 
-    protected function updateDotEnv($key, $value, $delim='')
+    protected function updateDotEnv($key, $newValue, $delim='')
     {
         $path = base_path('.env');
         // rewrite file content with changed data
@@ -19,7 +19,7 @@ class ConfigController extends Controller
             file_put_contents(
                 $path, str_replace(
                     $key.'='.$delim.env($key).$delim, 
-                    $key.'='.$delim.$value.$delim, 
+                    $key.'='.$delim.$newValue.$delim, 
                     file_get_contents($path)
                 )
             );
@@ -47,7 +47,10 @@ class ConfigController extends Controller
         if ($request->hasFile('favicon_file')) {
             if ($request->file('favicon_file')->isValid()) {
                 // move the new logo file to the public folder with new name
-                $request->file('favicon_file')->move( public_path().'/images', 'favicon.ico' );
+                $request->file('favicon_file')->move( public_path().'/images/custom', 'favicon.ico' );
+                // update .env to show we are using custom logos
+                $this->updateDotEnv('USE_CUSTOM_LOGOS','yes');
+
                 flash('New file '.$request->file('favicon_file')->getClientOriginalName()
                     .' saved as favicon.ico'
                     .' size was '.$request->file('favicon_file')->getClientSize() );
@@ -56,8 +59,11 @@ class ConfigController extends Controller
 
         if ($request->hasFile('logo_file')) {
             if ($request->file('logo_file')->isValid()) {
-                // move the new logo file to the public folder with new name
-                $request->file('logo_file')->move( public_path().'/images', env('CHURCH_LOGO_FILENAME') );
+                // move the new logo file to the public folder, subfolder 'custom', using the predefined name
+                $request->file('logo_file')->move( public_path().'/images/custom', env('CHURCH_LOGO_FILENAME') );
+                // update .env to show we are using custom logos
+                $this->updateDotEnv('USE_CUSTOM_LOGOS','yes');
+
                 flash('New file '.$request->file('logo_file')->getClientOriginalName()
                     .' saved as '.env('CHURCH_LOGO_FILENAME')
                     .' size was '.$request->file('logo_file')->getClientSize() );

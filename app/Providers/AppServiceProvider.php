@@ -28,6 +28,13 @@ class AppServiceProvider extends ServiceProvider
         });
 
 
+        // provide the PATH to the (custom) logos to all views
+        if ( strtolower(env('USE_CUSTOM_LOGOS')) == 'yes' ) {
+            view()->share('logoPath', 'images/custom/');
+        } else { 
+            view()->share('logoPath', 'images/'); 
+        }
+
         // provide a list (array) of user-id's with Admin rights to all views (for page feedback messages)
         view()->share('administrators', findAdmins('id'));
     }
