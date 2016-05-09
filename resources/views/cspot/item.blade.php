@@ -68,6 +68,31 @@
                         title="go to next item" data-toggle="tooltip" data-placement="right">
                         <i class="fa fa-angle-double-right fa-lg"></i>
                     </a>
+                    <span class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="goToAnotherItem" 
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Go to ...
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="goToAnotherItem">
+                            <a class="dropdown-item" 
+                                onclick="$('#show-spinner').modal({keyboard: false});" 
+                                href="{{ url('cspot/plans/'.$item->plan_id) }}/edit">Plan Overview</a>
+                            <hr>
+                            @foreach ($items as $menu_item)
+                                <a class="dropdown-item nowrap {{ $item->id==$menu_item->id ? 'bg-info' : '' }}"
+                                    onclick="$('#show-spinner').modal({keyboard: false});" 
+                                    href="{{ url('cspot/plans/'.$plan->id.'/items').'/'.$menu_item->id.'/edit' }}">
+                                    <small class="hidden-xs-down">{{ $menu_item->seq_no }} &nbsp;</small> 
+                                    @if ($menu_item->song_id && $menu_item->song->title)
+                                        <i class="fa fa-music">&nbsp;</i><strong>{{ $menu_item->song->title }}</strong>
+                                    @else
+                                        {{ $menu_item->comment }}
+                                    @endif
+                                </a>
+                            @endforeach
+                        </div>
+
+                    </span>
                 </h2>
                 <h5 class="hidden-md-down">of the Service plan for {{ $plan->date->formatLocalized('%A, %d %B %Y') }}</h5>
                 <h4 class="hidden-lg-up">in plan for {{ $plan->date->formatLocalized('%a, %d %b') }}</h4>
@@ -88,11 +113,6 @@
                         &nbsp; Delete
                     </a>
                 @endif
-                &nbsp; 
-                <a class="hidden-xs-down" href="{{ url('cspot/plans/'.$item->plan_id) }}/edit" id="go-back">
-                    {!! Form::button('Cancel - Back to Plan') !!}</a>
-                <a class="hidden-sm-up" href="{{ url('cspot/plans/'.$item->plan_id) }}/edit">
-                    {!! Form::button('Cancel - Back') !!}</a>
             </div>
 
         @else

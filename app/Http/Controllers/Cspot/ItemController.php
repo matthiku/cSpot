@@ -261,7 +261,7 @@ class ItemController extends Controller
         if ($item) {
             $bibleTexts = getBibleTexts($item->comment);
 
-            // TDOD get list of items for this plan, each with a prober 'title'
+            // get list of items for this plan, each with a prober 'title'
             $items = $item->plan->items->sortBy('seq_no')->all();
 
             // default is to show chords
@@ -352,6 +352,9 @@ class ItemController extends Controller
 
         // array of books of the bible
         $bibleBooks = new BibleBooks();
+        
+        // get list of items for this plan, each with a prober 'title'
+        $items = $item->plan->items->sortBy('seq_no')->all();
 
         $songs = []; # send empty song array
         // send the form
@@ -359,6 +362,7 @@ class ItemController extends Controller
                 'plan'         => $plan, 
                 'seq_no'       => $seq_no, 
                 'item'         => $item, 
+                'items'        => $items, 
                 'songs'        => $songs, 
                 'versionsEnum' => $versionsEnum,
                 'usageCount'   => $usageCount,
