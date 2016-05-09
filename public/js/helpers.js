@@ -190,7 +190,7 @@ $(document).ready(function() {
             case 39: navigateTo('next-item');   break; // key right arrow
             case 32: navigateTo('next-item');  break; // spacebar
             case 35: navigateTo('last-item'); break; // key 'end'
-            case 66: navigateTo('back');    break; // key 'b'
+            case 27: navigateTo('back');    break; // key 'Esc'
             case 69: navigateTo('edit');   break; // key 'e'
             case 49: window.location.href='#verse1'; break; // key '1'
             case 50: window.location.href='#verse2'; break; // key '2'
@@ -201,7 +201,9 @@ $(document).ready(function() {
             case 53: window.location.href='#verse6'; break; // key '6'
             case 53: window.location.href='#verse7'; break; // key '7'
             case 67: window.location.href='#chorus'; break; // key 'c'
-            case 27: window.location.href='#bridge'; break; // key 'b'
+            case 66: window.location.href='#bridge'; break; // key 'b'
+            case 109: $('#decr-font').click();   break; // key '-'
+            case 107: $('#incr-font').click();   break; // key '+'
             default: break;
         }
     });

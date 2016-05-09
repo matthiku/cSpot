@@ -45,9 +45,10 @@
 
         @if ($item->song_id )
             @if ($item->song->lyrics )
-                <pre class="text-present" 
+                <pre class="text-present m-b-3" 
                     id="lyrics">{{ $item->song->lyrics }}
                 </pre>
+                <br><br><br><br>
             @endif
         @endif
 
@@ -55,6 +56,7 @@
             @foreach ($item->files as $file)
                 @include ('cspot.snippets.present_files')
             @endforeach
+            <br><br><br><br>
         @endif
 
         @if ($bibleTexts)
@@ -66,6 +68,7 @@
                     <hr>
                 @endforeach
             </div>
+            <br><br><br><br><br><br>
         @endif
 
     </div>
@@ -157,12 +160,12 @@
                 </a>
  -->
                 <a href="#" onclick="decFontSize(['.text-present', '.bible-text-present>.p']);" 
-                        title="decrease font size"
+                        title="decrease font size" id="decr-font"
                         class="nav-item btn btn-sm btn-info" role="button">
                     A <i class="fa fa-minus fa-lg"></i>
                 </a>
                 <a href="#" onclick="incFontSize(['.text-present', '.bible-text-present>.p']);" 
-                        title="increase font size"
+                        title="increase font size" id="incr-font"
                         class="nav-item btn btn-sm btn-info" role="button">
                     A <i class="fa fa-plus fa-lg"></i>
                 </a>
