@@ -113,6 +113,8 @@
                         &nbsp; Delete
                     </a>
                 @endif
+                <br>
+                <small>Last updated: {{ $item->updated_at ? $item->updated_at->formatLocalized('%A, %d %B %Y') : 'n/a' }}</small>
             </div>
 
         @else

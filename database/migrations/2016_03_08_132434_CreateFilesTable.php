@@ -16,6 +16,7 @@ class CreateFilesTable extends Migration
             // individual file id
             $table->increments('id');
             $table->integer('song_id')->unsigned()->nullable();
+            $table->foreign('song_id')->references('id')->on('songs');
             $table->string('token');
             $table->string('filename');
         });

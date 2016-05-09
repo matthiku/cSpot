@@ -1,19 +1,21 @@
 #!/bin/sh
 
 
-if [ -z "$1" ]; then
-    echo
-	echo performing git add, commit and push, then call the pull script on the server
-    echo
-    echo usage: $0 [description]
-    echo 
-    echo Enter the description of this Commit:
-    read "DESC"
-    if [ -z "$DESC" ]; then
-        exit
-    fi
-else
-    DESC=$*
+echo
+echo 'This script runs "git add .", "git commit ...." and "git push", then calls the pull script on the server'
+
+# you also need to have a working a SSH connection to your server 
+# and a simple script called gitpull.sh with 2 lines:
+#    cd <path to your laravel project root folder>
+#    git pull
+
+echo
+echo usage: $0 [description]
+echo 
+echo Enter the description of this Commit:
+read "DESC"
+if [ -z "$DESC" ]; then
+    exit
 fi
 
 echo
@@ -42,7 +44,7 @@ echo
 echo ----
 echo "Calling pull command on the server"
 echo ----
-ssh root@eec.ie ./gitpull.sh plan
+ssh root@eec.ie ./gitpull.sh plan               # adapt this according to your host name
 echo ----
 
 
