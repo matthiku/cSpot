@@ -8,7 +8,7 @@ if [ -z "$1" ]; then
     echo usage: $0 [description]
     echo 
     echo Enter the description of this Commit:
-    read DESC 
+    read "DESC"
     if [ -z "$DESC" ]; then
         exit
     fi
@@ -20,6 +20,7 @@ echo
 echo Uploading all changes to GitHub with this description: \"$DESC\"
 
 
+
 # add all files to the commit
 git add .
 
@@ -29,10 +30,14 @@ git commit -a -m "$DESC"
 # push the commit (all files) to GitHub
 git push
 
+
+
 # call the pull command script on the server via SSH (using PPK)
 echo
 echo "Calling pull command on the server"
 ssh root@eec.ie ./gitpull.sh plan
+
+
 
 echo
 echo DONE!

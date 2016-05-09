@@ -78,6 +78,8 @@
 
             <script type="text/javascript">document.forms.inputForm.email.focus()</script>
 
+            <br>
+            @include('help')
 
         </div>    
     </div>

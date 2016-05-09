@@ -7,7 +7,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 
-class ConfigController extends Controller
+class CustomizeController extends Controller
 {
 
     protected function updateDotEnv($key, $newValue, $delim='')
@@ -29,7 +29,7 @@ class ConfigController extends Controller
     // show current configuration
     public function index()
     {
-        return view('admin/config');
+        return view('admin/customize');
     }
 
 

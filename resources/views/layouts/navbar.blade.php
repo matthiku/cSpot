@@ -49,7 +49,7 @@
                     <hr>
                     <a target="_new" class="dropdown-item" href="{{ url('admin/logs')  }}">
                         <i class="fa fa-btn fa-file-zip-o fa-lg"></i> &nbsp; Laravel Logs</a>
-                    <a class="dropdown-item" href="{{ url('admin/config')  }}">
+                    <a class="dropdown-item" href="{{ url('admin/customize')  }}">
                         <i class="fa fa-btn fa-cog fa-lg"></i> &nbsp; Customization</a>
                     @endif
                 </div>

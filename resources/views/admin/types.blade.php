@@ -57,10 +57,10 @@
 
 					<td class="center" scope="row">{{ $type->id }}</td>
 
-					<td class="link center" onclick="location.href='{{ url('cspot/plans/by_type/'.$type->id) }}/future'" 
+					<td class="link center" onclick="location.href='{{ url('cspot/plans?filterby=type&filtervalue='.$type->id) }}&show=future'" 
 						title="Show all upcoming Plans of this Type of Service">{{ $type->name }}</td>
 
-					<td class="link center" onclick="location.href='{{ url('cspot/plans/by_type/'.$type->id) }}/all'" 
+					<td class="link center" onclick="location.href='{{ url('cspot/plans?filterby=type&filtervalue='.$type->id) }}&show=all'" 
 						title="Show all Plans of this Type of Service">{{ $type->plans->count() }}</td>
 
 					<td class="nowrap center">
@@ -69,9 +69,11 @@
 							<a class="btn btn-primary-outline btn-sm" title="Edit" 
 								href='{{ url('admin/types/'.$type->id) }}/edit'>
 									<i class="fa fa-pencil"></i></a>
-							<a class="btn btn-danger btn-sm" title="Delete!" 
-								href='{{ url('admin/types/'.$type->id) }}/delete'>
-									<i class="fa fa-trash"></i></a>
+							@if (! $type->plans->count())
+								<a class="btn btn-danger btn-sm" title="Delete!" 
+									href='{{ url('admin/types/'.$type->id) }}/delete'>
+										<i class="fa fa-trash"></i></a>
+							@endif
 						@endif
 					</td>
 
