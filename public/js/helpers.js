@@ -9,12 +9,20 @@ $.ajaxSetup({
         }
 });
 
+
+// quick way to show the wait model
+function showSpinner() {
+    $('#show-spinner').modal({keyboard: false});
+}
             
 /**
  * List of future plan dates for highlighing in the calendar widget
  */
 var SelectedDates = {};
 SelectedDates[new Date().toLocaleDateString()] = 'Today';
+
+// lyrics sequence data
+var sequence;
 
 
 $(document).ready(function() {
@@ -187,12 +195,12 @@ $(document).ready(function() {
         switch (event.keyCode) {
             case 37: navigateTo('previous-item'); break; // left arrow
             case 36: navigateTo('first-item');   break; // key 'home'
-            case 39: navigateTo('next-item');   break; // key right arrow
-            case 32: navigateTo('next-item');  break; // spacebar
+            case 39: advancePresentation();     break; // key right arrow
+            case 32: advancePresentation();    break; // spacebar
             case 35: navigateTo('last-item'); break; // key 'end'
-            case 27: navigateTo('back');    break; // key 'Esc'
-            case 68: navigateTo('edit');   break; // key 'd'
-            case 83: jumpTo('start-lyrics'); break; // key 's'
+            case 27: navigateTo('back');     break; // key 'Esc'
+            case 68: navigateTo('edit');    break; // key 'd'
+            case 83: jumpTo('start-lyrics');break; // key 's'
             case 80: jumpTo('prechorus'); break; // key 'p'
             case 49: jumpTo('verse1'); break; // key '1'
             case 50: jumpTo('verse2'); break; // key '2'
@@ -203,9 +211,9 @@ $(document).ready(function() {
             case 53: jumpTo('verse6'); break; // key '6'
             case 53: jumpTo('verse7'); break; // key '7'
             case 67: jumpTo('chorus'); break; // key 'c'
-            case 75: jumpTo('chorus2'); break; // key 'k'
-            case 66: jumpTo('bridge'); break; // key 'b'
-            case 69: jumpTo('ending'); break; // key 'e'
+            case 75: jumpTo('chorus2');  break; // key 'k'
+            case 66: jumpTo('bridge');     break; // key 'b'
+            case 69: jumpTo('ending');       break; // key 'e'
             case 76: $('.lyrics-parts').toggle(); break; // key 'l', show all lyrics
             case 109: $('#decr-font').click();   break; // key '-'
             case 107: $('#incr-font').click();   break; // key '+'
@@ -218,8 +226,14 @@ $(document).ready(function() {
     /**
      * prepare lyrics for presentation
      */
-    if ( $('#lyrics').text() != '' ) {
+    if ( $('#present-lyrics').text() != '' ) {
         reDisplayLyrics();
+        // check if we have a predefined sequence from the DB
+        sequence=($('#sequence').text()).split(',');
+        if (sequence.length<2) {
+            createDefaultLyricSequence();
+            sequence=($('#sequence').text()).split(',');
+        }
     }
 
     /**
@@ -244,14 +258,93 @@ $(document).ready(function() {
 
 });
 
+
+/* 
+    Create Default Lyric Sequence -
+    if there is no sequence in the songs table, we can attempt to create our own based on the hints in the lyrics
+*/
+function createDefaultLyricSequence() {
+    // get all lyric parts created so far
+    var lyrList = $('.lyrics-parts');
+    // if a bridge is included or no lyric parts exists, FAIL!
+    if ( $('#bridge').length>0  ||  lyrList.length==0) return;
+
+    var chorus = false;     // to check if there is a chorus
+    if ($('#chorus').length==1) {
+        chorus = true;
+    }
+    var nr = 0;
+    // go through the list of lyric parts
+    $(lyrList).each(function(entry) {
+        id = $(this).attr('id');
+        if ( id.substr(0,5) == 'verse' ) {
+            sequence += id.substr(5,1) + ',';
+            insertSeqNavInd(id.substr(5,1), nr);
+            nr += 1;
+            if (chorus) {
+                sequence += 'c,';
+                insertSeqNavInd('c', nr);
+                nr += 1;
+            }
+        }
+    });
+    $('#sequence').text(sequence);
+}
+function insertSeqNavInd(what, nr)
+{
+    data = '<span id="lyrics-progress-' + nr + '" class="lyrics-progress-indicator"' +
+        'data-show-status="unshown" onclick="lyricsShow(' + what + ');">'+what+'</span>';
+    $('#lyrics-sequence-nav').append(data);
+}
+
+
+/*
+    On the lyrics screen, advance to the next item or sub-item (verses etc.)
+*/
+function advancePresentation()
+{
+    if ($('#present-lyrics').length > 0) {
+        $('#present-lyrics').show(); 
+        // do we have a specific sequence provided?
+        var seq = $('.lyrics-progress-indicator');
+        if (seq.length > 0) {
+            // loop through all sequence items and find the currently active one
+            found = false;
+            $(seq).each(function(entry){
+                if ( $(this).data().showStatus  == 'unshown' ) {
+                    found = true;
+                    console.log('found ' + $(this).attr('id'));
+                    $(this).data().showStatus = 'done';
+                    $('.lyrics-progress-indicator').removeClass('bg-danger');
+                    $(this).addClass('bg-danger');
+                    $(this).click();
+                    return false;
+                }
+            });
+            // all items were shown, so we can move to the next item
+            if (! found) {
+                $('#present-lyrics').hide();
+                navigateTo('next-item', true);
+                document.body.innerHTML = "<br>";
+            }
+        }
+    }
+    else {
+        navigateTo('next-item');
+    }
+}
+
+
 /*
     Using keyboard shortcuts differently on the lyrics presentation or chords pages
 */
 function jumpTo(where)
 {
     // the lyrics presentation page uses buttons to show parts and hide the rest
-    if ($('#lyrics').length > 0) 
+    if ($('#present-lyrics').length > 0) {
+        $('#present-lyrics').show(); 
         $('#btn-show-'+where).click();
+    }
     // the chords page uses anchors to jump to...
     else 
         window.location.href = '#'+where;
@@ -263,7 +356,7 @@ function jumpTo(where)
 */
 function toogleAllorFuturePlans()
 {
-    $('#show-spinner').modal({keyboard: false});
+    showSpinner();
     // get current url and query string
     var currUrl = window.location.href.split('?');
     var newUrl  = currUrl[0];
@@ -291,7 +384,7 @@ function toogleAllorFuturePlans()
 */
 function reloadListOrderBy(field)
 {
-    $('#show-spinner').modal({keyboard: false})
+    showSpinner();
     // get current url and query string
     var currUrl = window.location.href.split('?');
     var newUrl  = currUrl[0] + '?';
@@ -341,7 +434,7 @@ function showFilterField(field)
         var currUrl  = window.location.href.split('?');
         if (currUrl.length > 1) {
             // fade background and show spinner
-            $('#show-spinner').modal({keyboard: false})
+            showSpinner();
             // remove filter elements from URL query string
             var queryStr = currUrl[1].split('&');
             var newUrl = currUrl[0];
@@ -374,7 +467,7 @@ function showFilterField(field)
     {
         if ( $('#filter-'+field+'-input').val().length > 0 ) {
             // fade background and show spinner
-            $('#show-spinner').modal({keyboard: false})
+            showSpinner();
 
             var search =  $('#filter-'+field+'-input').val();
             var currUrl  = window.location.href.replace('#','');
@@ -509,9 +602,9 @@ function requestFullScreen(element) {
 function reDisplayLyrics()
 {
     // get the lyrics text and split it into lines
-    var lyrics = $('#lyrics').text().split('\n');
+    var lyrics = $('#present-lyrics').text().split('\n');
     // empty the exisint pre tag
-    $('#lyrics').text('');
+    $('#present-lyrics').text('');
     var newLyr = '';
     var newDiv = '<div id="start-lyrics" class="lyrics-parts">';
     var divNam = 'start-lyrics';
@@ -522,7 +615,7 @@ function reDisplayLyrics()
         hdr = identifyLyricsHeadings( lyrics[i].trim() );
         if (hdr.length>0) {
             console.log('Found lyrics header '+hdr);
-            $('#lyrics').append( newDiv + newLyr + '</div>' );
+            $('#present-lyrics').append( newDiv + newLyr + '</div>' );
             $('#'+divNam).hide();
             if (newLyr.length > 2)
                 $('#btn-show-'+divNam).show();
@@ -534,14 +627,22 @@ function reDisplayLyrics()
             newLyr += '<pre class="text-present m-b-0">'+lyrics[i]+'</pre>';
         }
     }
-    $('#lyrics').append( newDiv + newLyr + '</div>' );
+    $('#present-lyrics').append( newDiv + newLyr + '</div>' );
     $('#'+divNam).hide();
     $('#btn-show-'+divNam).show();
 }
+
+// called from the lyrics buttons made visible in reDisplayLyrics function
 function lyricsShow(what)
 {
+    if (what.length==1) {
+        what = identifyLyricsHeadings('['+what+']');
+    }
     $('.lyrics-parts').hide();
     $('#'+what).show();
+    // elevate the currently used button
+    $('.lyrics-show-btns').removeClass('btn-danger'); // make sure all other buttons are back to normal
+    $('#btn-show-'+what).addClass('btn-danger');   // add warning class for this button
 }
 function identifyLyricsHeadings(str)
 {
@@ -556,10 +657,14 @@ function identifyLyricsHeadings(str)
         case '[8]': return 'verse8';
         case '[9]': return 'verse9';
         case '[prechorus]': return 'prechorus';
+        case '[p]': return 'prechorus';
         case '[chorus 2]': return 'chorus2';
         case '[chorus]': return 'chorus';
+        case '[c]': return 'chorus';
         case '[bridge]': return 'bridge';
+        case '[b]': return 'bridge';
         case '[ending]': return 'ending';
+        case '[e]': return 'ending';
         default: return '';
     }
 }
@@ -651,7 +756,7 @@ function identifyChords(str)
  *
  * @string direction - part of the ID of an anchor on the calling page that executes the navigation
  */
-function navigateTo(where) 
+function navigateTo(where, silent=false) 
 {
     // prevent this if user is in an input field or similar area
     if (document.activeElement.tagName != "BODY") return;
@@ -662,7 +767,8 @@ function navigateTo(where)
     if (a==null) return;
 
     // fade background and show spinner
-    $('#show-spinner').modal({keyboard: false})
+    if (! silent)
+        showSpinner();
 
     if (a.onclick==null) {
         // try to go to the location defined in href

@@ -59,7 +59,7 @@
 
 			<?php 
 				// set variable for click-on-item action
-				$onclick = 'onclick=location.href='."'".url('cspot/plans/'.$plan->id.'/items/'.$item->id).'/edit'."' ";
+				$onclick = 'onclick=showSpinner();location.href='."'".url('cspot/plans/'.$plan->id.'/items/'.$item->id).'/edit'."' ";
 				$tooltip = "title=click/touch&nbsp;for&nbsp;details data-toggle=tooltip" ; 
 				// check if there is a song_id but no song in the database!
 				if ( $item->song_id && ! $item->song()->exists()) { 

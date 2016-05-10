@@ -49,7 +49,7 @@
 
                 <div class="pull-xs-right">
                     <!-- hide until changes are made   -->
-                    <span class="save-buttons submit-button" style="display: none;">
+                    <span class="save-buttons submit-button hidden-lg-down" style="display: none;">
                         {!! Form::submit('Save!'); !!}
                     </span>
                 </div>
@@ -71,12 +71,17 @@
                     <span class="dropdown">
                         <button class="btn btn-secondary dropdown-toggle" type="button" id="goToAnotherItem" 
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Go to ...
+                            &#9776;
                         </button>
                         <div class="dropdown-menu" aria-labelledby="goToAnotherItem">
                             <a class="dropdown-item" 
                                 onclick="$('#show-spinner').modal({keyboard: false});" 
-                                href="{{ url('cspot/plans/'.$item->plan_id) }}/edit">Plan Overview</a>
+                                href="{{ url('cspot/plans/'.$item->plan_id) }}/edit">Back to Plan Overview</a>
+                            @if( Auth::user()->ownsPlan($item->plan_id) )
+                            @endif
+                                <a class="dropdown-item nowrap bg-danger"  item="button" href="{{ url('cspot/items/'. $item->id .'/delete') }}">
+                                    <i class="fa fa-trash" > </i>&nbsp; Delete this item
+                                </a>
                             <hr>
                             @foreach ($items as $menu_item)
                                 <a class="dropdown-item nowrap {{ $item->id==$menu_item->id ? 'bg-info' : '' }}"
@@ -107,15 +112,10 @@
                     <span class="save-buttons submit-button" style="display: none;">
                         {!! Form::submit('Save changes'); !!}
                     </span>
-                    &nbsp; 
-                    <a class="btn btn-danger btn-sm"  item="button" href="{{ url('cspot/items/'. $item->id .'/delete') }}">
-                        <i class="fa fa-trash" > </i> 
-                        &nbsp; Delete
-                    </a>
                 @endif
                 @if ($item->updated_at)
                     <br>
-                    <small>Last updated:
+                    <small class="hidden-sm-down">Last updated:
                         {{ Carbon::now()->diffForHumans( $item->updated_at, true ) }} ago
                     </small>
                 @endif
@@ -141,7 +141,6 @@
                     <span class="save-buttons submit-button" style="display: none;">
                         {!! Form::submit('Save!'); !!}
                     </span>
-                    &nbsp; <a href="{{ url( 'cspot/plans/' . (isset($plan) ? $plan->id : $plan_id) )  }}/edit">{!! Form::button('Cancel - Back to Plan'); !!}</a>
                     <input type="hidden" name="moreItems" value="false">
                     <div class="checkbox">
                       <label>
@@ -243,7 +242,7 @@
                             @if (Auth::user()->isEditor() )
                                 <div class="col-xs-12 col-sm-4 full-btn">
                                     <a href="#" class="fully-width btn btn-primary-outline btn-sm" accesskey="69" id="go-edit"
-                                        onclick="location.href='{{ route('cspot.songs.edit', $item->song_id) }}'" 
+                                        onclick="showSpinner();location.href='{{ route('cspot.songs.edit', $item->song_id) }}'" 
                                           title="Edit details of this song" data-toggle="tooltip"
                                     ><i class="fa fa-edit"></i>&nbsp;edit song</a>
                                 </div>
