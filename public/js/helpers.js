@@ -191,37 +191,36 @@ $(document).ready(function() {
             case 32: navigateTo('next-item');  break; // spacebar
             case 35: navigateTo('last-item'); break; // key 'end'
             case 27: navigateTo('back');    break; // key 'Esc'
-            case 69: navigateTo('edit');   break; // key 'e'
-            case 49: window.location.href='#verse1'; break; // key '1'
-            case 50: window.location.href='#verse2'; break; // key '2'
-            case 51: window.location.href='#verse3'; break; // key '3'
-            case 52: window.location.href='#verse4'; break; // key '4'
-            case 53: window.location.href='#verse5'; break; // key '5'
-            case 53: window.location.href='#verse6'; break; // key '6'
-            case 53: window.location.href='#verse6'; break; // key '6'
-            case 53: window.location.href='#verse7'; break; // key '7'
-            case 67: window.location.href='#chorus'; break; // key 'c'
-            case 66: window.location.href='#bridge'; break; // key 'b'
+            case 68: navigateTo('edit');   break; // key 'd'
+            case 83: jumpTo('start-lyrics'); break; // key 's'
+            case 80: jumpTo('prechorus'); break; // key 'p'
+            case 49: jumpTo('verse1'); break; // key '1'
+            case 50: jumpTo('verse2'); break; // key '2'
+            case 51: jumpTo('verse3'); break; // key '3'
+            case 52: jumpTo('verse4'); break; // key '4'
+            case 53: jumpTo('verse5'); break; // key '5'
+            case 53: jumpTo('verse6'); break; // key '6'
+            case 53: jumpTo('verse6'); break; // key '6'
+            case 53: jumpTo('verse7'); break; // key '7'
+            case 67: jumpTo('chorus'); break; // key 'c'
+            case 75: jumpTo('chorus2'); break; // key 'k'
+            case 66: jumpTo('bridge'); break; // key 'b'
+            case 69: jumpTo('ending'); break; // key 'e'
+            case 76: $('.lyrics-parts').toggle(); break; // key 'l', show all lyrics
             case 109: $('#decr-font').click();   break; // key '-'
             case 107: $('#incr-font').click();   break; // key '+'
             default: break;
         }
     });
 
-    /**
-     * handle swiping on smartphones
-    DISABLED for now as it fails on iPhones and doesn't work well otherwise
-    Use the forward/backward buttons instead!
-
-    $('#app-layout').on("swipeleft",function(){
-        navigateTo('next-item');
-    });
-    $('#app-layout').on("swiperight",function(){
-        navigateTo('previous-item'); 
-    });
-
-     */
     
+
+    /**
+     * prepare lyrics for presentation
+     */
+    if ( $('#lyrics').text() != '' ) {
+        reDisplayLyrics();
+    }
 
     /**
      * re-design the showing of lyrics interspersed with guitar chords
@@ -245,6 +244,18 @@ $(document).ready(function() {
 
 });
 
+/*
+    Using keyboard shortcuts differently on the lyrics presentation or chords pages
+*/
+function jumpTo(where)
+{
+    // the lyrics presentation page uses buttons to show parts and hide the rest
+    if ($('#lyrics').length > 0) 
+        $('#btn-show-'+where).click();
+    // the chords page uses anchors to jump to...
+    else 
+        window.location.href = '#'+where;
+}
 
 
 /* 
@@ -490,6 +501,68 @@ function requestFullScreen(element) {
     }
 }
 
+
+/*
+    Show lyrics in presentation mode
+    mainly: divide lyrics into blocks (verses, chorus etc) to be able to show them individually
+*/
+function reDisplayLyrics()
+{
+    // get the lyrics text and split it into lines
+    var lyrics = $('#lyrics').text().split('\n');
+    // empty the exisint pre tag
+    $('#lyrics').text('');
+    var newLyr = '';
+    var newDiv = '<div id="start-lyrics" class="lyrics-parts">';
+    var divNam = 'start-lyrics';
+    // analyse each line and put it back into single pre tags
+    for (var i = 0; i <= lyrics.length - 1; i++) {
+        if (lyrics[i].length==0) continue;
+        // insert identifiable blocks
+        hdr = identifyLyricsHeadings( lyrics[i].trim() );
+        if (hdr.length>0) {
+            console.log('Found lyrics header '+hdr);
+            $('#lyrics').append( newDiv + newLyr + '</div>' );
+            $('#'+divNam).hide();
+            if (newLyr.length > 2)
+                $('#btn-show-'+divNam).show();
+            divNam = hdr;
+            newDiv = '</div><div id="'+hdr+'" class="lyrics-parts">';
+            newLyr = '';
+        }
+        else {
+            newLyr += '<pre class="text-present m-b-0">'+lyrics[i]+'</pre>';
+        }
+    }
+    $('#lyrics').append( newDiv + newLyr + '</div>' );
+    $('#'+divNam).hide();
+    $('#btn-show-'+divNam).show();
+}
+function lyricsShow(what)
+{
+    $('.lyrics-parts').hide();
+    $('#'+what).show();
+}
+function identifyLyricsHeadings(str)
+{
+    switch (str) {
+        case '[1]': return 'verse1';
+        case '[2]': return 'verse2';
+        case '[3]': return 'verse3';
+        case '[4]': return 'verse4';
+        case '[5]': return 'verse5';
+        case '[6]': return 'verse6';
+        case '[7]': return 'verse7';
+        case '[8]': return 'verse8';
+        case '[9]': return 'verse9';
+        case '[prechorus]': return 'prechorus';
+        case '[chorus 2]': return 'chorus2';
+        case '[chorus]': return 'chorus';
+        case '[bridge]': return 'bridge';
+        case '[ending]': return 'ending';
+        default: return '';
+    }
+}
 
 /*
     Use Regex patterns to identify chords versus lyrics versus headings
