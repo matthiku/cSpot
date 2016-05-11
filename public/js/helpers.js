@@ -332,8 +332,17 @@ function advancePresentation()
             if (! found) {
                 $('#present-lyrics').hide();
                 navigateTo('next-item');
-                //document.body.innerHTML = "<br>";
             }
+        }
+        // no sequence indicators found! Hopefully the default lyrics block was created...
+        else {
+            // first check if have been here before, then we can advance to the next item
+            if ($('#start-lyrics').data('was-shown') == 'true') {
+                navigateTo('next-item');
+            }
+            $('#start-lyrics').show();
+            $('#start-lyrics').data('was-shown', 'true');
+            $('#lyrics-title').hide();
         }
     }
     else {
