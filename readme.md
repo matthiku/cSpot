@@ -1,5 +1,5 @@
 # The Church Service Planning Online Tool.
-Create your own service planning database. Deploy for your church and allow others to participate.
+Create your own service planning database. Deploy for your church and allow others to participate. Present your songs in a slideshow fashion via a projector. Provide chords, lyrics and sheetmusic for musicians.
 
 As a free and open source project, you can download ('clone') the sources and run the tool from your own web site.
 
@@ -10,7 +10,7 @@ As a free and open source project, you can download ('clone') the sources and ru
 ### Why c-SPOT?
 c-SPOT was designed to help (small) churches plan their Sunday and Midweek services as well as other events.
 
-Many people don’t understand the complexities of making a church service happen. If you just turn up, it probably looks pretty straightforward! However, a lot goes on behind the scenes before the Sunday. This tool tries to help with that.
+Many people don’t understand the complexities of making church services happen. If you just turn up, it probably looks pretty straightforward! However, a lot goes on behind the scenes before the event. This tool tries to help with that.
 
 #### History
 In our church, this was first done by the leader of the service, when he handed out his list of songs to the musicians on a Sunday morning. As things progressed, this was no longer viable, as musicians needed more time to practice the songs and the slides for the projection needed to be prepared. So we switched to sending emails around but quite often, things were changed after the email went out and then not everyone was up-to-date. 

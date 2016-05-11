@@ -17,7 +17,6 @@
     <!-- remove main navbar -->
     <script>
         $(document).ready(function() {
-            //$('body').addClass('bg-inverse');
             // for certain bible text sources:
             $('.bible-text-present>.p>.v').prepend('<br>');
 

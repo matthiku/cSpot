@@ -185,42 +185,45 @@ $(document).ready(function() {
 
     
     /**
-     * handle keyboard events
+     * handle keyboard events, but only on item presentation views
      */
-    $(document).keydown(function( event ) {
-        // key codes: 37=left arrow, 39=right, 38=up, 40=down, 34=PgDown, 33=pgUp, 
-        //            36=home, 35=End, 32=space, 27=Esc, 66=e
-        //event.preventDefault();
-        console.log('pressed key code: '+event.keyCode);
-        switch (event.keyCode) {
-            case 37: navigateTo('previous-item'); break; // left arrow
-            case 36: navigateTo('first-item');   break; // key 'home'
-            case 39: advancePresentation();     break; // key right arrow
-            case 32: advancePresentation();    break; // spacebar
-            case 35: navigateTo('last-item'); break; // key 'end'
-            case 27: navigateTo('back');     break; // key 'Esc'
-            case 68: navigateTo('edit');    break; // key 'd'
-            case 83: jumpTo('start-lyrics');break; // key 's'
-            case 80: jumpTo('prechorus'); break; // key 'p'
-            case 49: jumpTo('verse1'); break; // key '1'
-            case 50: jumpTo('verse2'); break; // key '2'
-            case 51: jumpTo('verse3'); break; // key '3'
-            case 52: jumpTo('verse4'); break; // key '4'
-            case 53: jumpTo('verse5'); break; // key '5'
-            case 53: jumpTo('verse6'); break; // key '6'
-            case 53: jumpTo('verse6'); break; // key '6'
-            case 53: jumpTo('verse7'); break; // key '7'
-            case 67: jumpTo('chorus'); break; // key 'c'
-            case 75: jumpTo('chorus2');  break; // key 'k'
-            case 66: jumpTo('bridge');     break; // key 'b'
-            case 69: jumpTo('ending');       break; // key 'e'
-            case 76: $('.lyrics-parts').toggle(); break; // key 'l', show all lyrics
-            case 109: $('#decr-font').click();   break; // key '-'
-            case 107: $('#incr-font').click();   break; // key '+'
-            default: break;
-        }
-    });
-
+    if (window.location.href.indexOf('/items/')>0) {
+        $(document).keydown(function( event ) {
+            // key codes: 37=left arrow, 39=right, 38=up, 40=down, 34=PgDown, 33=pgUp, 
+            //            36=home, 35=End, 32=space, 27=Esc, 66=e
+            //event.preventDefault();
+            console.log('pressed key code: '+event.keyCode);
+            switch (event.keyCode) {
+                case 37: advancePresentation('back'); break; // left arrow
+                case 33: navigateTo('previous-item'); break; // left PgUp
+                case 36: navigateTo('first-item');   break; // key 'home'
+                case 39: advancePresentation();     break; // key right arrow
+                case 32: advancePresentation();    break; // spacebar
+                case 34: navigateTo('next-item'); break; // key 'PgDown'
+                case 35: navigateTo('last-item'); break; // key 'end'
+                case 27: navigateTo('back');     break; // key 'Esc'
+                case 68: navigateTo('edit');    break; // key 'd'
+                case 83: jumpTo('start-lyrics');break; // key 's'
+                case 80: jumpTo('prechorus'); break; // key 'p'
+                case 49: jumpTo('verse1'); break; // key '1'
+                case 50: jumpTo('verse2'); break; // key '2'
+                case 51: jumpTo('verse3'); break; // key '3'
+                case 52: jumpTo('verse4'); break; // key '4'
+                case 53: jumpTo('verse5'); break; // key '5'
+                case 53: jumpTo('verse6'); break; // key '6'
+                case 53: jumpTo('verse6'); break; // key '6'
+                case 53: jumpTo('verse7'); break; // key '7'
+                case 67: jumpTo('chorus'); break; // key 'c'
+                case 75: jumpTo('chorus2');  break; // key 'k'
+                case 66: jumpTo('bridge');     break; // key 'b'
+                case 69: jumpTo('ending');       break; // key 'e'
+                case 76: $('.lyrics-parts').toggle(); break; // key 'l', show all lyrics
+                case 109: $('#decr-font').click();   break; // key '-'
+                case 107: $('#incr-font').click();   break; // key '+'
+                default: break;
+            }
+        });
+    }
     
 
     /**
@@ -270,6 +273,7 @@ function createDefaultLyricSequence() {
     var lyrList = $('.lyrics-parts');
     // if a bridge is included or no lyric parts exists, FAIL!
     if ( $('#bridge').length>0  ||  lyrList.length==0) return;
+    console.log('Trying to auto-detect song structure');
     // to check if there is a chorus
     var chorus = false;     
     if ($('#chorus').length==1) {
@@ -299,6 +303,7 @@ function createDefaultLyricSequence() {
 }
 function insertSeqNavInd(what, nr)
 {
+    console.log('inserting sequence for '+ what + ' as song part # ' + nr);
     data = '<span id="lyrics-progress-' + nr + '" class="lyrics-progress-indicator"' +
         'data-show-status="unshown" onclick="lyricsShow(' + "'" + what + "'" + ');">'+what+'&nbsp;</span>';
     $('#lyrics-sequence-nav').append(data);
@@ -306,16 +311,29 @@ function insertSeqNavInd(what, nr)
 
 
 /*
-    On the lyrics screen, advance to the next item or sub-item (verses etc.)
+    On the lyrics screen, advance to the next item or sub-item (song parts)
 */
-function advancePresentation()
+function advancePresentation(direction='forward')
 {
     if ($('#present-lyrics').length > 0) {
         $('#present-lyrics').show(); 
+
         // do we have a specific sequence provided?
         var seq = $('.lyrics-progress-indicator');
-        if (seq.length > 0) {
-            // loop through all sequence items and find the currently active one
+
+        // no sequence indicators found! Hopefully the default lyrics block was created...
+        if (seq.length < 1) {
+            // first check if have been here before, then we can advance to the next item
+            if ($('#start-lyrics').data('was-shown') == 'true') {
+                navigateTo('next-item');
+            }
+            $('#start-lyrics').show();
+            $('#start-lyrics').data('was-shown', 'true');
+            $('#lyrics-title').hide();
+            return;
+        }
+        else if (direction=='forward') {
+            // loop through all sequence items and find the next that wasn't shown yet
             found = false;
             $(seq).each(function(entry){
                 if ( $(this).data().showStatus  == 'unshown' ) {
@@ -332,22 +350,28 @@ function advancePresentation()
             if (! found) {
                 $('#present-lyrics').hide();
                 navigateTo('next-item');
+                return;
             }
         }
-        // no sequence indicators found! Hopefully the default lyrics block was created...
+        // no we try to move backwards in the sequence of song parts
         else {
-            // first check if have been here before, then we can advance to the next item
-            if ($('#start-lyrics').data('was-shown') == 'true') {
-                navigateTo('next-item');
+            for (var i = seq.length - 1; i >= 0; i--) {
+                if ($(seq[i]).hasClass('bg-danger')) {
+                    console.log('currently active part is # '+i+' with text: '+$(seq[i]).text() );
+                    // we have reached the first part, going further back means previous plan item!
+                    if (i==0) { navigateTo('previous-item'); return; }
+                    $('.lyrics-progress-indicator').removeClass('bg-danger');
+                    $(seq[i-1]).addClass('bg-danger');
+                    $(seq[i-1]).click();
+                    return;
+                }
             }
-            $('#start-lyrics').show();
-            $('#start-lyrics').data('was-shown', 'true');
-            $('#lyrics-title').hide();
         }
+
     }
-    else {
-        navigateTo('next-item');
-    }
+
+    // we're not showing a song, so we simply move to the next plan item
+    else { navigateTo('next-item'); }
 }
 
 
@@ -658,11 +682,13 @@ function lyricsShow(what)
     // do nothing if the object doesn't exist...
     if ($('#'+what).length==0) { return }
 
+    console.log('showing song part called '+what);
     $('.lyrics-parts').hide();
     $('#'+what).show();
     // elevate the currently used button
-    $('.lyrics-show-btns').removeClass('btn-danger'); // make sure all other buttons are back to normal
-    $('#btn-show-'+what).addClass('btn-danger');   // add warning class for this button
+    $('.lyrics-show-btns').removeClass('btn-danger');       // make sure all other buttons are back to normal
+    $('#btn-show-'+what).removeClass('btn-info-outline');   // aremove ouline for this button
+    $('#btn-show-'+what).addClass('btn-danger');            // add warning class for this button
 }
 function identifyLyricsHeadings(str)
 {
@@ -679,6 +705,7 @@ function identifyLyricsHeadings(str)
         case '[prechorus]': return 'prechorus';
         case '[p]': return 'prechorus';
         case '[chorus 2]': return 'chorus2';
+        case '[t]': return 'chorus2';
         case '[chorus]': return 'chorus';
         case '[c]': return 'chorus';
         case '[bridge]': return 'bridge';
