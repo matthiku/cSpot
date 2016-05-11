@@ -191,7 +191,7 @@ $(document).ready(function() {
         $(document).keydown(function( event ) {
             // key codes: 37=left arrow, 39=right, 38=up, 40=down, 34=PgDown, 33=pgUp, 
             //            36=home, 35=End, 32=space, 27=Esc, 66=e
-            //event.preventDefault();
+            //
             console.log('pressed key code: '+event.keyCode);
             switch (event.keyCode) {
                 case 37: advancePresentation('back'); break; // left arrow
@@ -230,6 +230,22 @@ $(document).ready(function() {
      * prepare lyrics for presentation
      */
     if ( $('#present-lyrics').text() != '' ) {
+        // make sure the main content covers all the display area
+        $('#main-content').css('min-height', window.screen.height);
+        // intercept mouse clicks into the presentation area
+        $('#main-content').contextmenu( function() {
+            return false;
+        });
+        $('#main-content').click(function(){
+            advancePresentation();
+        });
+        $('#main-content').on('mouseup', function(){
+            if (event.which == 3) {
+                event.preventDefault();
+                advancePresentation('back');
+            }
+        });
+
         reDisplayLyrics();
         // check if we have a predefined sequence from the DB
         sequence=($('#sequence').text()).split(',');
