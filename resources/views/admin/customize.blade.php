@@ -26,6 +26,10 @@
                {!! Form::text('church_url', env('CHURCH_URL')); !!}
            </p>
 
+            <p>{!! Form::label('church_ccli', 'Church CCLI number') !!}<br>
+               {!! Form::number('church_ccli', env('CHURCH_CCLI')); !!}
+           </p>
+
             <p>Current Favicon: 
                 <img src="{{ url($logoPath.'favicon.ico') }}">
                 <br>

@@ -10,19 +10,23 @@ echo 'This script runs "git add .", "git commit ...." and "git push", then calls
 #    git pull
 
 echo
-echo usage: $0 [description]
 echo 
-echo Enter the description of this Commit:
-read "DESC"
+read -p 'Enter the description of this Commit: ' "DESC"
 if [ -z "$DESC" ]; then
     exit
 fi
 
 echo
 echo ----
-echo Uploading all changes to GitHub with this description: \"$DESC\"
+git status
 echo ----
-
+echo
+echo Uploading all changes to GitHub with this description: \"$DESC\"
+read -p 'Is that ok? (Y/n)'
+if [ "$REPLY" = "n" ]; then
+    echo 'Aborting...'
+    exit
+fi
 
 
 # add all files to the commit

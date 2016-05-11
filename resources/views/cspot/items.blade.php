@@ -182,7 +182,10 @@
 									href='{{ url('cspot/plans/'.$plan->id) }}/items/{{$item->id}}/edit/'><i class="fa fa-pencil"></i></a>
 							@endif
 
-							<a class="btn btn-warning btn-sm" data-toggle="tooltip" title="Remove" 
+							<a class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="left" title="Start presentation from here" 
+								href='{{ url('cspot/items/'.$item->id) }}/present'><i class="fa fa-tv"></i></a>
+
+							<a class="btn btn-warning btn-sm hidden-sm-down" data-toggle="tooltip" title="Remove" 
 								href='{{ url('cspot/items/'.$item->id) }}/delete'><i class="fa fa-trash"></i></a>
 						@endif
 					</td>

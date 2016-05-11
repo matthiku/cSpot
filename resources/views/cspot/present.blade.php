@@ -16,10 +16,8 @@
 
     <!-- remove main navbar -->
     <script>
-        $('#main-navbar').detach();
-
         $(document).ready(function() {
-            $('body').addClass('bg-inverse');
+            //$('body').addClass('bg-inverse');
             // for certain bible text sources:
             $('.bible-text-present>.p>.v').prepend('<br>');
 
@@ -85,56 +83,56 @@
             <li>
                 <a href="#" onclick="lyricsShow('verse1');" 
                     title="show verse 1" id="btn-show-verse1" style="display: none;" 
-                    class="nav-item btn btn-sm btn-info lyrics-show-btns" role="button">1</a>                
+                    class="nav-item btn btn-sm btn-info-outline lyrics-show-btns" role="button">1</a>                
                 <a href="#" onclick="lyricsShow('verse2');" 
                     title="show verse 2" id="btn-show-verse2" style="display: none;" 
-                    class="nav-item btn btn-sm btn-info lyrics-show-btns" role="button">2</a>                
+                    class="nav-item btn btn-sm btn-info-outline lyrics-show-btns" role="button">2</a>                
                 <a href="#" onclick="lyricsShow('verse3');" 
                     title="show verse 3" id="btn-show-verse3" style="display: none;" 
-                    class="nav-item btn btn-sm btn-info lyrics-show-btns" role="button">3</a>                
+                    class="nav-item btn btn-sm btn-info-outline lyrics-show-btns" role="button">3</a>                
                 <a href="#" onclick="lyricsShow('verse4');" 
                     title="show verse 4" id="btn-show-verse4" style="display: none;" 
-                    class="nav-item btn btn-sm btn-info lyrics-show-btns" role="button">4</a>                
+                    class="nav-item btn btn-sm btn-info-outline lyrics-show-btns" role="button">4</a>                
                 <a href="#" onclick="lyricsShow('verse5');" 
                     title="show verse 5" id="btn-show-verse5" style="display: none;" 
-                    class="nav-item btn btn-sm btn-info lyrics-show-btns" role="button">5</a>
+                    class="nav-item btn btn-sm btn-info-outline lyrics-show-btns" role="button">5</a>
                 <a href="#" onclick="lyricsShow('verse6');" 
                     title="show verse 6" id="btn-show-verse6" style="display: none;" 
-                    class="nav-item btn btn-sm btn-info lyrics-show-btns" role="button">6</a>                
+                    class="nav-item btn btn-sm btn-info-outline lyrics-show-btns" role="button">6</a>                
                 <a href="#" onclick="lyricsShow('verse7');" 
                     title="show verse 7" id="btn-show-verse7" style="display: none;" 
-                    class="nav-item btn btn-sm btn-info lyrics-show-btns" role="button">7</a>                
+                    class="nav-item btn btn-sm btn-info-outline lyrics-show-btns" role="button">7</a>                
+                <a href="#" onclick="lyricsShow('start-lyrics');" 
+                    title="show start lyrics" id="btn-show-start-lyrics" style="display: none;" 
+                    class="nav-item btn btn-sm btn-info-outline lyrics-show-btns" role="button">S</a>
+                <a href="#" onclick="lyricsShow('prechorus');" 
+                    title="show pre-chorus" id="btn-show-prechorus" style="display: none;" 
+                    class="nav-item btn btn-sm btn-info-outline lyrics-show-btns" role="button">P</a>
+                <a href="#" onclick="lyricsShow('chorus');" 
+                    title="show chorus" id="btn-show-chorus" style="display: none;" 
+                    class="nav-item btn btn-sm btn-info-outline lyrics-show-btns" role="button">Ch</a>
+                <a href="#" onclick="lyricsShow('chorus2');" 
+                    title="show chorus 2" id="btn-show-chorus2" style="display: none;" 
+                    class="nav-item btn btn-sm btn-info-outline lyrics-show-btns" role="button">Ch2</a>
+                <a href="#" onclick="lyricsShow('bridge');" 
+                    title="show bridge" id="btn-show-bridge" style="display: none;" 
+                    class="nav-item btn btn-sm btn-info-outline lyrics-show-btns" role="button">B</a>
+                <a href="#" onclick="lyricsShow('ending');" 
+                    title="show ending" id="btn-show-ending" style="display: none;" 
+                    class="nav-item btn btn-sm btn-info-outline lyrics-show-btns" role="button">E</a>
             </li>
         </ul>
         <ul class="nav navbar-nav pull-xs-right">
             <li>
-                <a href="#" onclick="lyricsShow('start-lyrics');" 
-                    title="show start lyrics" id="btn-show-start-lyrics" style="display: none;" 
-                    class="nav-item btn btn-sm btn-info lyrics-show-btns" role="button">S</a>
-                <a href="#" onclick="lyricsShow('prechorus');" 
-                    title="show pre-chorus" id="btn-show-prechorus" style="display: none;" 
-                    class="nav-item btn btn-sm btn-info lyrics-show-btns" role="button">P</a>
-                <a href="#" onclick="lyricsShow('chorus');" 
-                    title="show chorus" id="btn-show-chorus" style="display: none;" 
-                    class="nav-item btn btn-sm btn-info lyrics-show-btns" role="button">Ch</a>
-                <a href="#" onclick="lyricsShow('chorus2');" 
-                    title="show chorus 2" id="btn-show-chorus2" style="display: none;" 
-                    class="nav-item btn btn-sm btn-info lyrics-show-btns" role="button">Ch2</a>
-                <a href="#" onclick="lyricsShow('bridge');" 
-                    title="show bridge" id="btn-show-bridge" style="display: none;" 
-                    class="nav-item btn btn-sm btn-info lyrics-show-btns" role="button">B</a>
-                <a href="#" onclick="lyricsShow('ending');" 
-                    title="show ending" id="btn-show-ending" style="display: none;" 
-                    class="nav-item btn btn-sm btn-info lyrics-show-btns" role="button">E</a>
-
                 <a href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/go/next/present') }}"
                     class="nav-item btn btn-sm btn-warning" role="button" id="go-next-item">
                     <i class="fa fa-angle-double-right fa-lg"></i>
                 </a>
             </li>
         </ul>
-        <span class="navbar-brand pull-xs-right" id="lyrics-sequence-nav">
-            @if ($item->song_id )
+
+        <span class="navbar-brand pull-xs-right hidden-xs-down" id="lyrics-sequence-nav">
+            @if ($item->song_id && $item->song->sequence)
                 @foreach (explode(',', $item->song->sequence) as $key=>$seq )
                     <span id="lyrics-progress-{{ $key }}" class="lyrics-progress-indicator"
                         data-show-status="unshown"
@@ -143,29 +141,30 @@
             @endif
         </span>
 
-        <button class="navbar-toggler " type="button" data-toggle="collapse" data-target="#lyricsNavbar">
-            &#9776;
+        <button class="navbar-toggler btn btn-info active" type="button" data-toggle="collapse" data-target="#lyricsNavbar">
+            &hellip;
         </button>        
+            <span class="nav navbar-nav center hidden-sm-down">
+                <small class="hidden-md-down text-muted">Item {{$item->seq_no}} -</small>
+                @if ($item->song_id && $item->song->title)
+                    {{ $item->song->title }}
+                @else
+                    {{ $item->comment }}
+                @endif
+                <small class="text-muted">(up next: {{ getItemTitle($item) }})</small>
+            </span>
+
 
         <div class="collapse navbar-toggleable" id="lyricsNavbar">
-            <ul class="nav navbar-nav pull-xs-right">
-                <li>
-                    <a href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/go/next/present') }}"
-                        class="nav-item btn btn-sm btn-warning" role="button" id="go-next-item">
-                        <i class="fa fa-angle-double-right fa-lg"></i>
-                    </a>
-                </li>
-            </ul>
 
-            <span class="nav navbar-nav center">
-                <small>Item {{$item->seq_no}} -</small>
+            <span class="nav navbar-nav center hidden-md-up hidden-xs-down">
+                <small class="hidden-md-down text-muted">Item {{$item->seq_no}} -</small>
                 @if ($item->song_id && $item->song->title)
                     {{ $item->song->title }}
                 @else
                     {{ $item->comment }}
                 @endif
             </span>
-
 
             
             <!-- 
@@ -185,7 +184,7 @@
                             @endif
                             "
                             href="{{ url('cspot/items/').'/'.$menu_item->id.'/present' }}">
-                            <small class="hide-sm-down">{{ $menu_item->seq_no }}</small> &nbsp; 
+                            <small class="hidden-md-down">{{ $menu_item->seq_no }}</small> &nbsp; 
                             @if ($menu_item->song_id && $menu_item->song->title)
                                 <i class="fa fa-music">&nbsp;</i><strong>{{ $menu_item->song->title }}</strong>
                             @else

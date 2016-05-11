@@ -130,7 +130,7 @@ function songSearch( $search )
 
 /**
  * Go to next or previous item in the list of items of a plan
- *      or swap betwee chords and sheetmusic
+ *      or swap between chords and sheetmusic
  */
 function nextItem($plan_id, $item_id, $direction)
 {
@@ -167,7 +167,15 @@ function nextItem($plan_id, $item_id, $direction)
     }
     return $item->id;
 }
-
+function getItemTitle($item, $direction='next')
+{
+    $nextItemId = nextItem($item->plan_id, $item->id, $direction);
+    $item = Item::find($nextItemId);
+    if ($item->song_id && $item->song->title) {
+        return $item->song->title;
+    }
+    return $item->comment;
+}
 
 
 

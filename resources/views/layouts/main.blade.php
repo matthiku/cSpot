@@ -46,12 +46,21 @@
 
 
 
-<body id="app-layout">
+<body id="app-layout"
+@if (Request::is('*/present'))
+    class="bg-inverse"
+@endif
+>
 
 
     @include ('layouts.messages')
     
-    @include ('layouts.navbar')
+
+    @unless (Request::is('*/present'))
+
+        @include ('layouts.navbar')
+
+    @endunless
 
 
     <div class="container-fluid app-content">

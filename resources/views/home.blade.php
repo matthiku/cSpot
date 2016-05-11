@@ -14,6 +14,9 @@
 
 
                 <div class="card card-block text-xs-center">
+
+                    <small class="pull-xs-right">CCLI # {{ (env('CHURCH_CCLI')) ? env('CHURCH_CCLI') : '?' }}</small>
+
                     <p>Welcome, <strong>{{ Auth::user()->first_name }}</strong>, to </p>
 
                     <h3 class="card-title">

@@ -259,20 +259,17 @@ class ItemController extends Controller
         $item = Item::find($id);
 
         if ($item) {
-            $bibleTexts = getBibleTexts($item->comment);
-
-            // get list of items for this plan, each with a prober 'title'
-            $items = $item->plan->items->sortBy('seq_no')->all();
-
             // default is to show chords
-            if ( ! $present) { 
-                $present = 'chords'; }
+            if ( ! $present) { $present = 'chords'; }
 
             return view('cspot.'.$present, [
-                    'item'       => $item,
-                    'items'      => $items,
-                    'type'       => $present,
-                    'bibleTexts' => $bibleTexts,
+                    'item'       => $item,          
+                    // all items of the plan to which this item belongs
+                    'items'      => $item->plan->items->sortBy('seq_no')->all(),         
+                    // what kind of item presentation is requested
+                    'type'       => $present,       
+                    // the bible text if there was any reference in the comment field of the item
+                    'bibleTexts' => getBibleTexts($item->comment)
                 ]);
         }
 
@@ -297,7 +294,7 @@ class ItemController extends Controller
     public function next(Request $request, $plan_id, $item_id, $direction, $chords=null)
     {
         // get seq_no of next or previous item from helper function
-        $new_item_id = nextItem($plan_id, $item_id, $direction);
+        $new_item_id = nextItem( $plan_id, $item_id, $direction );
 
         // call edit with new item id 
         if ($chords==null) {

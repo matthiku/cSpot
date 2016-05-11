@@ -230,9 +230,11 @@ $(document).ready(function() {
         reDisplayLyrics();
         // check if we have a predefined sequence from the DB
         sequence=($('#sequence').text()).split(',');
+        // auto-detect sequence if it is missing
         if (sequence.length<2) {
             createDefaultLyricSequence();
             sequence=($('#sequence').text()).split(',');
+            $('#present-lyrics').show();
         }
     }
 
@@ -268,8 +270,8 @@ function createDefaultLyricSequence() {
     var lyrList = $('.lyrics-parts');
     // if a bridge is included or no lyric parts exists, FAIL!
     if ( $('#bridge').length>0  ||  lyrList.length==0) return;
-
-    var chorus = false;     // to check if there is a chorus
+    // to check if there is a chorus
+    var chorus = false;     
     if ($('#chorus').length==1) {
         chorus = true;
     }
@@ -288,12 +290,17 @@ function createDefaultLyricSequence() {
             }
         }
     });
+    // do we also have an ending?
+    if ($('#ending').length==1) {
+        sequence += 'e';
+        insertSeqNavInd('e', nr);
+    }
     $('#sequence').text(sequence);
 }
 function insertSeqNavInd(what, nr)
 {
     data = '<span id="lyrics-progress-' + nr + '" class="lyrics-progress-indicator"' +
-        'data-show-status="unshown" onclick="lyricsShow(' + what + ');">'+what+'</span>';
+        'data-show-status="unshown" onclick="lyricsShow(' + "'" + what + "'" + ');">'+what+'&nbsp;</span>';
     $('#lyrics-sequence-nav').append(data);
 }
 
@@ -324,8 +331,8 @@ function advancePresentation()
             // all items were shown, so we can move to the next item
             if (! found) {
                 $('#present-lyrics').hide();
-                navigateTo('next-item', true);
-                document.body.innerHTML = "<br>";
+                navigateTo('next-item');
+                //document.body.innerHTML = "<br>";
             }
         }
     }
@@ -615,10 +622,11 @@ function reDisplayLyrics()
         hdr = identifyLyricsHeadings( lyrics[i].trim() );
         if (hdr.length>0) {
             console.log('Found lyrics header '+hdr);
-            $('#present-lyrics').append( newDiv + newLyr + '</div>' );
-            $('#'+divNam).hide();
-            if (newLyr.length > 2)
+            if (newLyr.length > 2) {
+                $('#present-lyrics').append( newDiv + newLyr + '</div>' );
+                $('#'+divNam).hide();
                 $('#btn-show-'+divNam).show();
+            }
             divNam = hdr;
             newDiv = '</div><div id="'+hdr+'" class="lyrics-parts">';
             newLyr = '';
@@ -638,6 +646,9 @@ function lyricsShow(what)
     if (what.length==1) {
         what = identifyLyricsHeadings('['+what+']');
     }
+    // do nothing if the object doesn't exist...
+    if ($('#'+what).length==0) { return }
+
     $('.lyrics-parts').hide();
     $('#'+what).show();
     // elevate the currently used button
@@ -756,8 +767,10 @@ function identifyChords(str)
  *
  * @string direction - part of the ID of an anchor on the calling page that executes the navigation
  */
-function navigateTo(where, silent=false) 
+function navigateTo(where) 
 {
+    console.log('Trying to navigate to '+where);
+
     // prevent this if user is in an input field or similar area
     if (document.activeElement.tagName != "BODY") return;
 
@@ -766,8 +779,8 @@ function navigateTo(where, silent=false)
     // link doesn't exist:
     if (a==null) return;
 
-    // fade background and show spinner
-    if (! silent)
+    // fade background and show spinner, but not in presentation mode!
+    if ( document.baseURI.search('/present')<10 )
         showSpinner();
 
     if (a.onclick==null) {

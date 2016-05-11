@@ -58,14 +58,14 @@
                     <a href="{{ url('cspot/plans/'.$plan->id.'/items/'.$item->id.'/go/previous') }}"
                         onclick="$('#show-spinner').modal({keyboard: false});" 
                         class="btn btn-secondary" role="button" id="go-previous-item"
-                        title="go to previous item" data-toggle="tooltip" data-placement="right">
+                        title="go to previous item: '{{getItemTitle($item,'previous')}}'" data-toggle="tooltip" data-placement="right">
                         <i class="fa fa-angle-double-left fa-lg"></i>
                     </a> 
                     Review Item No {{$seq_no}}
                     <a href="{{ url('cspot/plans/'.$plan->id.'/items/'.$item->id.'/go/next') }}"
                         onclick="$('#show-spinner').modal({keyboard: false});" 
                         class="btn btn-secondary" role="button" id="go-next-item"
-                        title="go to next item" data-toggle="tooltip" data-placement="right">
+                        title="go to next item: '{{getItemTitle($item)}}'" data-toggle="tooltip" data-placement="right">
                         <i class="fa fa-angle-double-right fa-lg"></i>
                     </a>
                     <span class="dropdown">
@@ -77,11 +77,14 @@
                             <a class="dropdown-item" 
                                 onclick="$('#show-spinner').modal({keyboard: false});" 
                                 href="{{ url('cspot/plans/'.$item->plan_id) }}/edit">Back to Plan Overview</a>
+                            <a class="dropdown-item"  
+                                onclick="$('#show-spinner').modal({keyboard: false});" 
+                                href="{{ url('cspot/items/'.$item->id) }}/present"><i class="fa fa-tv"></i>Start presentation</a>
                             @if( Auth::user()->ownsPlan($item->plan_id) )
-                            @endif
-                                <a class="dropdown-item nowrap bg-danger"  item="button" href="{{ url('cspot/items/'. $item->id .'/delete') }}">
-                                    <i class="fa fa-trash" > </i>&nbsp; Delete this item
+                                <a class="dropdown-item nowrap text-danger"  item="button" href="{{ url('cspot/items/'. $item->id .'/delete') }}">
+                                    <i class="fa fa-trash" > </i>&nbsp; Delete this item!
                                 </a>
+                            @endif
                             <hr>
                             @foreach ($items as $menu_item)
                                 <a class="dropdown-item nowrap {{ $item->id==$menu_item->id ? 'bg-info' : '' }}"
@@ -181,7 +184,7 @@
                 show song details 
             -->
             <div id="col-2-song" class="col-xl-4 col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                <div class="card card-block text-xs-center p-b-1">
+                <div class="card card-block text-xs-center p-b-1" style="padding-top: 0.5rem; ">
 
                     <div class="row song-details form-group">
                         <h5 class="card-title">
@@ -286,6 +289,7 @@
                         <li><a href="#sheet-tab">Sheet Music</a></li>
                     </ul>
                         <div id="lyrics-tab">
+                            <span class="text-info">({{ $item->song->sequence ? 'Sequence: '.$item->song->sequence : 'No sequence pre-defined' }})</span>
                             <pre>{{ $item->song->lyrics }}</pre>
                         </div>
                         <div id="chords-tab">

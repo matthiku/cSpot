@@ -43,6 +43,9 @@ class CustomizeController extends Controller
         if ($request->has('church_url')) {
             $this->updateDotEnv('CHURCH_URL', $request->church_url, '"');
         }
+        if ($request->has('church_ccli')) {
+            $this->updateDotEnv('CHURCH_CCLI', $request->church_ccli);
+        }
 
         if ($request->hasFile('favicon_file')) {
             if ($request->file('favicon_file')->isValid()) {
