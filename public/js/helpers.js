@@ -239,7 +239,7 @@ $(document).ready(function() {
         $('#main-content').click(function(){
             advancePresentation();
         });
-        $('#main-content').on('mouseup', function(){
+        $('#main-content').on('mouseup', function(event){
             if (event.which == 3) {
                 event.preventDefault();
                 advancePresentation('back');
@@ -708,7 +708,7 @@ function lyricsShow(what)
 }
 function identifyLyricsHeadings(str)
 {
-    switch (str) {
+    switch (str.toLowerCase()) {
         case '[1]': return 'verse1';
         case '[2]': return 'verse2';
         case '[3]': return 'verse3';

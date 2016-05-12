@@ -76,10 +76,10 @@
                         <div class="dropdown-menu" aria-labelledby="goToAnotherItem">
                             <a class="dropdown-item" 
                                 onclick="$('#show-spinner').modal({keyboard: false});" 
-                                href="{{ url('cspot/plans/'.$item->plan_id) }}/edit">Back to Plan Overview</a>
+                                href="{{ url('cspot/plans/'.$item->plan_id) }}/edit"><i class="fa fa-list-ul"></i>&nbsp;Back to Plan Overview</a>
                             <a class="dropdown-item"  
                                 onclick="$('#show-spinner').modal({keyboard: false});" 
-                                href="{{ url('cspot/items/'.$item->id) }}/present"><i class="fa fa-tv"></i>Start presentation</a>
+                                href="{{ url('cspot/items/'.$item->id) }}/present"><i class="fa fa-tv"></i>&nbsp;Start presentation</a>
                             @if( Auth::user()->ownsPlan($item->plan_id) )
                                 <a class="dropdown-item nowrap text-danger"  item="button" href="{{ url('cspot/items/'. $item->id .'/delete') }}">
                                     <i class="fa fa-trash" > </i>&nbsp; Delete this item!
