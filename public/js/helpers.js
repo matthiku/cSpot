@@ -187,7 +187,7 @@ $(document).ready(function() {
     /**
      * handle keyboard events, but only on item presentation views
      */
-    if (window.location.href.indexOf('/items/')>0) {
+    if (window.location.href.indexOf('/items/')>10) {
         $(document).keydown(function( event ) {
             // key codes: 37=left arrow, 39=right, 38=up, 40=down, 34=PgDown, 33=pgUp, 
             //            36=home, 35=End, 32=space, 27=Esc, 66=e
@@ -229,16 +229,18 @@ $(document).ready(function() {
     /**
      * prepare lyrics for presentation
      */
-    if ( $('#present-lyrics').text() != '' ) {
+    if ( window.location.href.indexOf('/present')>10 ) {
         // make sure the main content covers all the display area
         $('#main-content').css('min-height', window.screen.height);
         // intercept mouse clicks into the presentation area
         $('#main-content').contextmenu( function() {
             return false;
         });
+        // Allow mouse click to move forward
         $('#main-content').click(function(){
             advancePresentation();
         });
+        // allow rght-mouse-click to move one slide or item back
         $('#main-content').on('mouseup', function(event){
             if (event.which == 3) {
                 event.preventDefault();
@@ -253,7 +255,6 @@ $(document).ready(function() {
         if (sequence.length<2) {
             createDefaultLyricSequence();
             sequence=($('#sequence').text()).split(',');
-            $('#present-lyrics').show();
         }
     }
 
@@ -375,13 +376,18 @@ function advancePresentation(direction='forward')
                 if ($(seq[i]).hasClass('bg-danger')) {
                     console.log('currently active part is # '+i+' with text: '+$(seq[i]).text() );
                     // we have reached the first part, going further back means previous plan item!
-                    if (i==0) { navigateTo('previous-item'); return; }
+                    if (i==0) { 
+                        navigateTo('previous-item'); 
+                        return; }
                     $('.lyrics-progress-indicator').removeClass('bg-danger');
                     $(seq[i-1]).addClass('bg-danger');
                     $(seq[i-1]).click();
                     return;
-                }
+                } 
             }
+            // all song parts have been shown, so we must be at 
+            //     the first and now have to go to the previous plan item
+            navigateTo('previous-item'); 
         }
 
     }
@@ -587,6 +593,20 @@ function showSongSearchInput(that, selector)
 
 
 
+function changeTextAlign(selectorList, how) {
+    if ( typeof selectorList === 'string') {
+        selectorList = [selectorList];
+    }
+    selectorList.forEach( function(selector) {
+        element = $(selector);
+        if (element.length>0) {
+            $(element).css('text-align', how);
+            localStorage.setItem(selector+'_text-align', how);
+            console.log('LocalStorage for '+selector+' was set to '+localStorage.getItem(selector+'_text-align'));
+        }
+    });
+}
+
 /**
  * Increase or decrease font size of a given element
  *
@@ -595,31 +615,19 @@ function showSongSearchInput(that, selector)
  * param  selectorList string or array of valid CSS selectors
  * return void
  */
-function incFontSize(selectorList) {
+function changeFontSize(selectorList, how='increase') {
     if ( typeof selectorList === 'string') {
         selectorList = [selectorList];
     }
+    var factor = 1.1;
+    if (how=='decrease')
+        factor = 0.9;
     selectorList.forEach( function(selector) {
         element = $(selector);
         if (element.length>0) {
-            fontSize = parseInt($(element).css('font-size')) * 1.1;
+            fontSize = parseInt($(element).css('font-size')) * factor;
+            if (fontSize<12 || fontSize>150) return;
             $(element).css('font-size', fontSize);
-            localStorage.setItem(selector+'_font-size', fontSize);
-            console.log('LocalStorage for '+selector+' was set to '+localStorage.getItem(selector+'_font-size'));
-        }
-    });
-}
-
-function decFontSize(selectorList) {
-    if ( typeof selectorList === 'string') {
-        selectorList = [selectorList];
-    }
-    selectorList.forEach( function(selector) {
-        element = $(selector);
-        if (element.length>0) {
-            fontSize = parseInt($(element).css('font-size')) * 0.9;
-            if (fontSize>12)
-                $(element).css('font-size', fontSize);
             localStorage.setItem(selector+'_font-size', fontSize);
             console.log('LocalStorage for '+selector+' was set to '+localStorage.getItem(selector+'_font-size'));
         }
@@ -631,6 +639,7 @@ function getLocalStorValue(name) {
     console.log('LocalStorage for '+name+' was at '+value);
     return value;
 }
+
 
 
 /**

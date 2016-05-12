@@ -12,25 +12,33 @@
 @section('content')
 
 
-    @include('layouts.flashing')
 
-    <!-- remove main navbar -->
+    <!-- get presentation configuration settings -->
     <script>
         $(document).ready(function() {
             // for certain bible text sources:
             $('.bible-text-present>.p>.v').prepend('<br>');
 
-            // check if user has changed the default font size for the presentation
+            // check if user has changed the default font size and text alignment for the presentation
+            textAlign = getLocalStorValue('.text-present_text-align');
+            $('.text-present').css('text-align', textAlign);
+            $('.bible-text-present').css('text-align', textAlign);
+            $('.bible-text-present>p').css('text-align', textAlign);
+
             fontSize = getLocalStorValue('.text-present_font-size');
             if ($.isNumeric(fontSize)) {
                 $('.text-present').css('font-size', parseInt(fontSize));
             }
-            fontSize = getLocalStorValue('.bible-text-present>.p_font-size');
-            if ($.isNumeric(fontSize)) {
-               $('.bible-text-present>.p').css('font-size', parseInt(fontSize));
-            }
-        });
+            $('.text-present').show();
 
+            fontSize = getLocalStorValue('.bible-text-present_font-size');
+            if ($.isNumeric(fontSize)) {
+               $('.bible-text-present').css('font-size', parseInt(fontSize));
+               $('.bible-text-present>p').css('font-size', parseInt(fontSize));
+               $('.bible-text-present>h1').css('font-size', parseInt(fontSize));
+            }
+            $('.bible-text-present').show();
+        });
     </script>
 
 
@@ -42,7 +50,7 @@
 
         @if ($item->song_id )
             @if ($item->song->lyrics )
-                <div class="text-present m-b-3 lyrics-parts" id="lyrics-title">
+                <div class="text-present m-b-3 lyrics-parts" id="lyrics-title" style="display: none;">
                     {{ $item->song->title }}{{ $item->song->title2 ? '('.$item->song->title2.')' : '' }}
                 </div>
                 <div class="text-present m-b-3" id="present-lyrics" style="display: none;" >
@@ -56,11 +64,10 @@
             @foreach ($item->files as $file)
                 @include ('cspot.snippets.present_files')
             @endforeach
-            <br><br><br><br>
         @endif
 
         @if ($bibleTexts)
-            <div class="bg-inverse bible-text-present">
+            <div class="bible-text-present" style="display: none;" >
                 @foreach ($bibleTexts as $btext)
                     <h1>{{ $btext->display }} ({{ $btext->version_abbreviation }})</h1>
                     <div class="bible-text-present">{!! $btext->text !!}</div>
@@ -68,7 +75,6 @@
                     <hr>
                 @endforeach
             </div>
-            <br><br><br><br><br><br>
         @endif
 
     </div>
@@ -169,7 +175,7 @@
             <!-- 
                 DropUP Menu Button
             -->
-            <div class="btn-group dropup pull-xs-right m-r-1">
+            <div class="btn-group dropup center">
 
                 <button type="button" class="btn btn-sm btn-info dropdown-toggle" 
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -221,18 +227,32 @@
                         class="nav-item btn btn-sm btn-warning" role="button" id="go-previous-item">
                         <i class="fa fa-angle-double-left fa-lg"></i>
                     </a> 
-                    <a href="#" onclick="decFontSize(['.text-present', '.bible-text-present>.p']);" 
+                    <a href="#" onclick="changeFontSize(['.text-present', '.bible-text-present', '.bible-text-present>h1', '.bible-text-present>p'], 'decrease');" 
                             title="decrease font size" id="decr-font"
                             class="nav-item btn btn-sm btn-info" role="button">
                         A <i class="fa fa-minus fa-lg"></i>
                     </a>
-                    <a href="#" onclick="incFontSize(['.text-present', '.bible-text-present>.p']);" 
+                    <a href="#" onclick="changeFontSize(['.text-present', '.bible-text-present', '.bible-text-present>h1', '.bible-text-present>p']);" 
                             title="increase font size" id="incr-font"
-                            class="nav-item btn btn-sm btn-info" role="button">
+                            class="m-l-0 nav-item btn btn-sm btn-info" role="button">
                         A <i class="fa fa-plus fa-lg"></i>
                     </a>
                 </li>
             </ul>
+            <div class="nav-item dropup pull-xs-left">
+                <button class="nav-link m-l-1 btn btn-sm btn-info dropdown-toggle" href="#" type="button" 
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Align</button>
+                <div class="dropdown-menu bg-info">
+                    <a onclick="changeTextAlign(['.text-present', '.bible-text-present>p'], 'left');" 
+                        class="dropdown-item" href="#"><i class="fa fa-align-left fa-lg"></i> Left</a>
+                    <a onclick="changeTextAlign(['.text-present', '.bible-text-present>p'], 'right');"
+                        class="dropdown-item" href="#"><i class="fa fa-align-right fa-lg"></i> Right</a>
+                    <a onclick="changeTextAlign(['.text-present', '.bible-text-present>p'], 'center');"
+                        class="dropdown-item" href="#"><i class="fa fa-align-center fa-lg"></i> Center</a>
+                    <a onclick="changeTextAlign(['.text-present', '.bible-text-present>p'], 'justify');"
+                        class="dropdown-item" href="#"><i class="fa fa-align-justify fa-lg"></i> Justify</a>
+                </div>
+            </div>
 
         </div>
     </nav>
