@@ -82,6 +82,34 @@
 
 
 
+
+    <div class="modal fade help-modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content bg-info">
+                <div class="modal-header">
+                    <h4>Use your keyboard!</h4>
+                </div>
+                <div class="modal-body text-x s-center">
+                    <p><kbd>Esc</kbd> &nbsp; go back to plan overview</p>
+                    <p><kbd> space bar </i></kbd> &nbsp; go to next slide or plan item (or left mouse click)</p>
+                    <p><kbd> <i class="fa fa-arrow-right"> </i></kbd> &nbsp; go to next slide or plan item (or left mouse click)</p>
+                    <p><kbd> <i class="fa fa-arrow-left"> </i></kbd> &nbsp; go to previous slide or plan item (or right mosue click)</p>
+                    <p><kbd>1</kbd>, <kbd>2</kbd>, <kbd>3</kbd> &nbsp; ... jump to verse 1...n</p>
+                    <p><kbd>c</kbd> &nbsp; jump to chorus</p>
+                    <p><kbd>b</kbd> &nbsp; jump to bridge</p>
+                    <p><kbd>PgDn</kbd> &nbsp; go to next item (skip remaining slides)</p>
+                    <p><kbd>PgUp</kbd> &nbsp; go to previous item (skip remaining slides)</p>
+                    <p><kbd>+</kbd> &nbsp; increase font size</p>
+                    <p><kbd>+</kbd> &nbsp; decrease font size</p>
+                    On <strong>tablets</strong> or <strong>phones</strong>, you should instead use the buttons provided at the bottom of this screen!
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
     <nav class="navbar navbar-fixed-bottom navbar-dark bg-black center p-b-0 p-t-0">
 
         <ul class="nav navbar-nav">
@@ -214,6 +242,13 @@
                 </div>
 
             </div>
+
+            <!-- help button to show modal -->
+            <a href="#" title="show keyboard shortcuts" data-toggle="modal" data-target=".help-modal"
+                class="hidden-sm-down pull-xs-right btn btn-sm btn-success-outline m-r-1">
+            <i class="fa fa-question-circle fa-lg"></i></a>
+
+
             <!-- 
                 go to first/last slide 
             -->
