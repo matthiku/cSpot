@@ -114,6 +114,7 @@
 
         <ul class="nav navbar-nav">
             <li>
+                <!-- potential buttons for lyric parts (cerses, chorusses etc) -->
                 <a href="#" onclick="lyricsShow('verse1');" 
                     title="show verse 1" id="btn-show-verse1" style="display: none;" 
                     class="nav-item btn btn-sm btn-info-outline lyrics-show-btns" role="button">1</a>                
@@ -157,6 +158,7 @@
         </ul>
         <ul class="nav navbar-nav pull-xs-right">
             <li>
+                <!-- jump to next plan item -->
                 <a href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/go/next/present') }}"
                     class="nav-item btn btn-sm btn-warning" role="button" id="go-next-item">
                     <i class="fa fa-angle-double-right fa-lg"></i>
@@ -164,6 +166,7 @@
             </li>
         </ul>
 
+        <!-- 'sequence' indicates the order in which the various lyric parts are to be shown -->
         <span class="navbar-brand pull-xs-right hidden-xs-down" id="lyrics-sequence-nav">
             @if ($item->song_id && $item->song->sequence)
                 @foreach (explode(',', $item->song->sequence) as $key=>$seq )
@@ -174,22 +177,29 @@
             @endif
         </span>
 
+        <!-- button to reveal the second navbar at the bottom -->
         <button class="navbar-toggler btn btn-info active" type="button" data-toggle="collapse" data-target="#lyricsNavbar">
             &hellip;
         </button>        
-            <span class="nav navbar-nav center hidden-sm-down">
-                <small class="hidden-md-down text-muted">Item {{$item->seq_no}} -</small>
-                @if ($item->song_id && $item->song->title)
-                    {{ $item->song->title }}
-                @else
-                    {{ $item->comment }}
-                @endif
-                <small class="text-muted">(up next: {{ getItemTitle($item) }})</small>
-            </span>
+
+        <!-- show song title or comment in first navbar on bigger screens only -->
+        <span class="nav navbar-nav center hidden-sm-down">
+            <small class="hidden-md-down text-muted">Item {{$item->seq_no}} -</small>
+            @if ($item->song_id && $item->song->title)
+                {{ $item->song->title }}
+            @else
+                {{ $item->comment }}
+            @endif
+            <small class="text-muted">(up next: {{ getItemTitle($item) }})</small>
+        </span>
 
 
+        <!-- 
+            the second navbar is hidden at first 
+        -->
         <div class="collapse navbar-toggleable" id="lyricsNavbar">
 
+            <!-- show song title or comment in secong navbar on smaller screens only -->
             <span class="nav navbar-nav center hidden-md-up hidden-xs-down">
                 <small class="hidden-md-down text-muted">Item {{$item->seq_no}} -</small>
                 @if ($item->song_id && $item->song->title)

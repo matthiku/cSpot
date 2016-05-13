@@ -21,8 +21,9 @@ echo ----
 git status
 echo ----
 echo
-echo Uploading all changes to GitHub with this description: \"$DESC\"
-read -p 'Is that ok? (Y/n)'
+echo Uploading all changes to GitHub with this description:
+echo '====> "' $DESC '" <===='
+read -p 'Continue? (Y/n)'
 if [ "$REPLY" = "n" ]; then
     echo 'Aborting...'
     exit

@@ -258,6 +258,11 @@ $(document).ready(function() {
 
         // check if we have a predefined sequence from the DB
         sequence=($('#sequence').text()).split(',');
+
+        // check if there are more lyric parts than 
+        // indicated in the sequence due to blank lines discoverd in the lyrics
+        compareLyricPartsWithSequence();
+
         // auto-detect sequence if it is missing
         if (sequence.length<2) {
             createDefaultLyricSequence();
@@ -288,11 +293,24 @@ $(document).ready(function() {
 });
 
 
+/*
+    check if there are more lyric parts than 
+        indicated in the spre-defined equence due to blank lines discoverd in the lyrics
+*/
+function compareLyricPartsWithSequence()
+{
+    // get all lyric parts created so far by function reDisplayLyrics
+    var lyrList = $('.lyrics-parts');
+    // TODO
+}
+
 /* 
     Create Default Lyric Sequence -
-    if there is no sequence in the songs table, we can attempt to create our own based on the hints in the lyrics
+        if there is no pre-defined sequence in the songs DB table, 
+        we can attempt to create our own based on the hints (headers) in the lyrics
 */
-function createDefaultLyricSequence() {
+function createDefaultLyricSequence() 
+{
     // get all lyric parts created so far
     var lyrList = $('.lyrics-parts');
 
@@ -440,6 +458,119 @@ function jumpTo(where)
     else 
         window.location.href = '#'+where;
 }
+
+
+/*
+    Show lyrics in presentation mode
+    mainly: divide lyrics into blocks (verses, chorus etc) to be able to show them individually
+*/
+function reDisplayLyrics()
+{
+    // get the lyrics text and split it into lines
+    var lyrics = $('#present-lyrics').text().split('\n');
+    // empty the existing pre tag
+    $('#present-lyrics').text('');
+    var newLyr = '';
+    var lines  = 0;
+    var newDiv = '<div id="start-lyrics" class="lyrics-parts">';
+    var divNam = 'start-lyrics';
+    var curPart= '';
+    var apdxNam= 97; // indicates sub-parts of verses or chorusses etc
+
+    // analyse each line and put it back into single pre tags
+    for (var i = 0; i <= lyrics.length - 1; i++) {
+
+        // treat empty lines as start for a new slide!
+        if (lyrics[i].length==0) {
+            if (i==0) continue; // but not a leading empty line....
+            hdr = curPart + String.fromCharCode(apdxNam++);
+        }
+        else { 
+            hdr = identifyLyricsHeadings( lyrics[i].trim() ); 
+            if (hdr.length>0) {
+                curPart = hdr; 
+                var apdxNam= 97; // reset appendix indicator (for forced lyric parts)
+            }
+        }
+
+        // check if we have a header or the actual lyrics
+        if (hdr.length>0) {
+            // insert identifiable blocks
+            insertNewLyricsSlide(newDiv, newLyr, divNam, lines);
+            divNam = hdr;
+            newLyr = '';
+            lines  = 0;
+            newDiv = '</div><div id="'+hdr+'" class="lyrics-parts">';
+        }
+        // actual lyrics - insert as PRE element
+        else {
+            lines += 1;
+            newLyr += '<pre class="text-present m-b-0">'+lyrics[i]+'</pre>';
+        }
+    }
+    // insert the last lyrics part
+    insertNewLyricsSlide(newDiv, newLyr, divNam, lines);
+}
+
+// insert new SLIDE into the presentatinon
+function insertNewLyricsSlide(newDiv, newLyr, divNam, lines)
+{
+    // only if the part is not empty..
+    if (lines == 0) { return; }
+
+    $('#present-lyrics').append( newDiv + newLyr + '</div>' );
+    $('#'+divNam).hide();
+    $('#btn-show-'+divNam).show();    
+    console.log( 'Inserted lyrics part called ' + divNam );
+}
+
+
+// called from the lyrics buttons made visible in reDisplayLyrics function
+function lyricsShow(what)
+{
+    if (what.length<3) {
+        apdx = '';
+        if (what.length>1) apdx = what.substr(1);
+        what = identifyLyricsHeadings('['+what.substr(0,1)+']')+apdx;
+    }
+    // do nothing if the object doesn't exist...
+    if ($('#'+what).length==0) { return }
+
+    console.log('showing song part called '+what);
+    $('.lyrics-parts').hide();
+    $('#'+what).show();
+    // elevate the currently used button
+    $('.lyrics-show-btns').removeClass('btn-danger');       // make sure all other buttons are back to normal
+    $('#btn-show-'+what).removeClass('btn-info-outline');   // aremove ouline for this button
+    $('#btn-show-'+what).addClass('btn-danger');            // add warning class for this button
+}
+function identifyLyricsHeadings(str)
+{
+    switch (str.toLowerCase()) {
+        case '[1]': return 'verse1';
+        case '[2]': return 'verse2';
+        case '[3]': return 'verse3';
+        case '[4]': return 'verse4';
+        case '[5]': return 'verse5';
+        case '[6]': return 'verse6';
+        case '[7]': return 'verse7';
+        case '[8]': return 'verse8';
+        case '[9]': return 'verse9';
+        case '[prechorus]': return 'prechorus';
+        case '[p]': return 'prechorus';
+        case '[chorus 2]': return 'chorus2';
+        case '[t]': return 'chorus2';
+        case '[chorus]': return 'chorus';
+        case '[c]': return 'chorus';
+        case '[bridge]': return 'bridge';
+        case '[b]': return 'bridge';
+        case '[ending]': return 'ending';
+        case '[e]': return 'ending';
+        default: return '';
+    }
+}
+
+
 
 
 /* 
@@ -688,106 +819,6 @@ function requestFullScreen(element) {
     }
 }
 
-
-/*
-    Show lyrics in presentation mode
-    mainly: divide lyrics into blocks (verses, chorus etc) to be able to show them individually
-*/
-function reDisplayLyrics()
-{
-    // get the lyrics text and split it into lines
-    var lyrics = $('#present-lyrics').text().split('\n');
-    // empty the existing pre tag
-    $('#present-lyrics').text('');
-    var newLyr = '';
-    var lines  = 0;
-    var newDiv = '<div id="start-lyrics" class="lyrics-parts">';
-    var divNam = 'start-lyrics';
-
-    // analyse each line and put it back into single pre tags
-    for (var i = 0; i <= lyrics.length - 1; i++) {
-
-        // treat empty lines as start for a new slide!
-        if (lyrics[i].length==0) {
-            if (i==0) continue; // but not a leading empty line....
-            hdr = divNam+'a';
-        }
-        else { 
-            hdr = identifyLyricsHeadings( lyrics[i].trim() ); }
-        // insert identifiable blocks
-        if (hdr.length>0) {
-            insertNewLyricsSlide(newDiv, newLyr, divNam, lines);
-            divNam = hdr;
-            newLyr = '';
-            lines  = 0;
-            newDiv = '</div><div id="'+hdr+'" class="lyrics-parts">';
-        }
-        else {
-            lines += 1;
-            newLyr += '<pre class="text-present m-b-0">'+lyrics[i]+'</pre>';
-        }
-    }
-    // insert the last lyrics part
-    insertNewLyricsSlide(newDiv, newLyr, divNam, lines);
-}
-
-// insert new SLIDE into the presentatinon
-function insertNewLyricsSlide(newDiv, newLyr, divNam, lines)
-{
-    // only if the part is not empty..
-    if (lines == 0) { return; }
-
-    $('#present-lyrics').append( newDiv + newLyr + '</div>' );
-    $('#'+divNam).hide();
-    $('#btn-show-'+divNam).show();    
-    console.log( 'Inserted lyrics part called ' + divNam );
-}
-
-
-// called from the lyrics buttons made visible in reDisplayLyrics function
-function lyricsShow(what)
-{
-    if (what.length<3) {
-        apdx = '';
-        if (what.length>1) apdx = what.substr(1);
-        what = identifyLyricsHeadings('['+what.substr(0,1)+']')+apdx;
-    }
-    // do nothing if the object doesn't exist...
-    if ($('#'+what).length==0) { return }
-
-    console.log('showing song part called '+what);
-    $('.lyrics-parts').hide();
-    $('#'+what).show();
-    // elevate the currently used button
-    $('.lyrics-show-btns').removeClass('btn-danger');       // make sure all other buttons are back to normal
-    $('#btn-show-'+what).removeClass('btn-info-outline');   // aremove ouline for this button
-    $('#btn-show-'+what).addClass('btn-danger');            // add warning class for this button
-}
-function identifyLyricsHeadings(str)
-{
-    switch (str.toLowerCase()) {
-        case '[1]': return 'verse1';
-        case '[2]': return 'verse2';
-        case '[3]': return 'verse3';
-        case '[4]': return 'verse4';
-        case '[5]': return 'verse5';
-        case '[6]': return 'verse6';
-        case '[7]': return 'verse7';
-        case '[8]': return 'verse8';
-        case '[9]': return 'verse9';
-        case '[prechorus]': return 'prechorus';
-        case '[p]': return 'prechorus';
-        case '[chorus 2]': return 'chorus2';
-        case '[t]': return 'chorus2';
-        case '[chorus]': return 'chorus';
-        case '[c]': return 'chorus';
-        case '[bridge]': return 'bridge';
-        case '[b]': return 'bridge';
-        case '[ending]': return 'ending';
-        case '[e]': return 'ending';
-        default: return '';
-    }
-}
 
 /*
     Use Regex patterns to identify chords versus lyrics versus headings
