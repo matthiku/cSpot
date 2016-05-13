@@ -56,7 +56,7 @@
     @include ('layouts.messages')
     
 
-    @unless (Request::is('*/present'))
+    @unless (Request::is('*/present') || Request::is('*/chords'))
 
         @include ('layouts.navbar')
 

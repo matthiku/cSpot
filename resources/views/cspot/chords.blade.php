@@ -14,15 +14,6 @@
 
     @include('layouts.flashing')
 
-    <!-- 
-        remove main navbar 
-    -->
-    <script>
-        $('#main-navbar').detach();
-    </script>
-
-
-
 
 
 

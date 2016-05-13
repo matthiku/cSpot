@@ -212,6 +212,26 @@
             if (fontSize) {
                 $('.text-song').css('font-size', parseInt(fontSize));
             }
+
+            // make sure the main content covers all the display area
+            $('#main').css('min-height', window.screen.height);
+
+            // intercept mouse clicks into the presentation area
+            $('body').contextmenu( function() {
+                return false;
+            });
+
+            // Allow mouse click (or finger touch) to move forward
+            $('#main').click(function(){
+                navigateTo('next-item');
+            });
+            // allow rght-mouse-click to move one slide or item back
+            $('#main').on('mouseup', function(event){
+                if (event.which == 3) {
+                    event.preventDefault();
+                    navigateTo('previous-item');
+                }
+            });
         });
     </script>
 

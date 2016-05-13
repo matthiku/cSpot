@@ -185,9 +185,11 @@ $(document).ready(function() {
 
     
     /**
-     * handle keyboard events, but only on item presentation views
+     * Configuration for Items Presentation Views (present/chords/musicsheets)
      */
     if (window.location.href.indexOf('/items/')>10) {
+
+        // handle keyboard events
         $(document).keydown(function( event ) {
             // key codes: 37=left arrow, 39=right, 38=up, 40=down, 34=PgDown, 33=pgUp, 
             //            36=home, 35=End, 32=space, 27=Esc, 66=e
@@ -230,13 +232,16 @@ $(document).ready(function() {
      * prepare lyrics for presentation
      */
     if ( window.location.href.indexOf('/present')>10 ) {
+
         // make sure the main content covers all the display area
         $('#main-content').css('min-height', window.screen.height);
+
         // intercept mouse clicks into the presentation area
         $('#main-content').contextmenu( function() {
             return false;
         });
-        // Allow mouse click to move forward
+
+        // Allow mouse click (or finger touch) to move forward
         $('#main-content').click(function(){
             advancePresentation();
         });
@@ -248,7 +253,9 @@ $(document).ready(function() {
             }
         });
 
+        // re-format the lyrics
         reDisplayLyrics();
+
         // check if we have a predefined sequence from the DB
         sequence=($('#sequence').text()).split(',');
         // auto-detect sequence if it is missing
@@ -288,36 +295,58 @@ $(document).ready(function() {
 function createDefaultLyricSequence() {
     // get all lyric parts created so far
     var lyrList = $('.lyrics-parts');
-    // if a bridge is included or no lyric parts exists, FAIL!
-    if ( $('#bridge').length>0  ||  lyrList.length==0) return;
+
+    // if a bridge is included or no lyric parts exists: FAIL!
+    if ( $('[id^=bridge]').length>0  ||  lyrList.length==0) 
+        return;
+
     console.log('Trying to auto-detect song structure');
-    // to check if there is a chorus
+
+    // check if there is a chorus
     var chorus = false;     
-    if ($('#chorus').length==1) {
+    if ( $('[id^=chorus]').length==1 )
         chorus = true;
-    }
-    var nr = 0;
-    // go through the list of lyric parts
-    $(lyrList).each(function(entry) {
-        id = $(this).attr('id');
+
+    var nr = 0;  // indicates current lyric part number
+    var insChorus=1;  // indicates verse number afer which we have to insert a chorus
+
+    // go through the list of lyric parts (as generated in function "reDisplayLyrics()")
+    $(lyrList).each(function(entry) 
+    {
+        id = $(this).attr('id');  // get name of that lyric part
+
         if ( id.substr(0,5) == 'verse' ) {
-            sequence += id.substr(5,1) + ',';
-            insertSeqNavInd(id.substr(5,1), nr);
-            nr += 1;
-            if (chorus) {
+            verseNum = id.substr(5);
+            verseNumInt = 0+id.substr(5,1);
+            if (chorus && verseNumInt-1 == insChorus) {
                 sequence += 'c,';
                 insertSeqNavInd('c', nr);
                 nr += 1;
+                insChorus = verseNumInt;
             }
+            sequence += verseNum + ',';
+            insertSeqNavInd(verseNum, nr);
+            nr += 1; // increase parts number
         }
     });
+    // insert remaining chorus, if needed
+    if (chorus) {
+        sequence += 'c,';
+        insertSeqNavInd('c', nr);
+        nr += 1;
+        insChorus = verseNum;
+    }
+
     // do we also have an ending?
-    if ($('#ending').length==1) {
+    if ($('[id^=ending]').length>0) {
         sequence += 'e';
         insertSeqNavInd('e', nr);
     }
+
+    // now write the new sequence into the proper element
     $('#sequence').text(sequence);
 }
+
 function insertSeqNavInd(what, nr)
 {
     console.log('inserting sequence for '+ what + ' as song part # ' + nr);
@@ -636,7 +665,7 @@ function changeFontSize(selectorList, how='increase') {
 
 function getLocalStorValue(name) {
     value = localStorage.getItem(name);
-    console.log('LocalStorage for '+name+' was at '+value);
+    // console.log('LocalStorage for '+name+' was at '+value);
     return value;
 }
 
@@ -668,41 +697,60 @@ function reDisplayLyrics()
 {
     // get the lyrics text and split it into lines
     var lyrics = $('#present-lyrics').text().split('\n');
-    // empty the exisint pre tag
+    // empty the existing pre tag
     $('#present-lyrics').text('');
     var newLyr = '';
+    var lines  = 0;
     var newDiv = '<div id="start-lyrics" class="lyrics-parts">';
     var divNam = 'start-lyrics';
+
     // analyse each line and put it back into single pre tags
     for (var i = 0; i <= lyrics.length - 1; i++) {
-        if (lyrics[i].length==0) continue;
+
+        // treat empty lines as start for a new slide!
+        if (lyrics[i].length==0) {
+            if (i==0) continue; // but not a leading empty line....
+            hdr = divNam+'a';
+        }
+        else { 
+            hdr = identifyLyricsHeadings( lyrics[i].trim() ); }
         // insert identifiable blocks
-        hdr = identifyLyricsHeadings( lyrics[i].trim() );
         if (hdr.length>0) {
-            console.log('Found lyrics header '+hdr);
-            if (newLyr.length > 2) {
-                $('#present-lyrics').append( newDiv + newLyr + '</div>' );
-                $('#'+divNam).hide();
-                $('#btn-show-'+divNam).show();
-            }
+            insertNewLyricsSlide(newDiv, newLyr, divNam, lines);
             divNam = hdr;
-            newDiv = '</div><div id="'+hdr+'" class="lyrics-parts">';
             newLyr = '';
+            lines  = 0;
+            newDiv = '</div><div id="'+hdr+'" class="lyrics-parts">';
         }
         else {
+            lines += 1;
             newLyr += '<pre class="text-present m-b-0">'+lyrics[i]+'</pre>';
         }
     }
+    // insert the last lyrics part
+    insertNewLyricsSlide(newDiv, newLyr, divNam, lines);
+}
+
+// insert new SLIDE into the presentatinon
+function insertNewLyricsSlide(newDiv, newLyr, divNam, lines)
+{
+    // only if the part is not empty..
+    if (lines == 0) { return; }
+
     $('#present-lyrics').append( newDiv + newLyr + '</div>' );
     $('#'+divNam).hide();
-    $('#btn-show-'+divNam).show();
+    $('#btn-show-'+divNam).show();    
+    console.log( 'Inserted lyrics part called ' + divNam );
 }
+
 
 // called from the lyrics buttons made visible in reDisplayLyrics function
 function lyricsShow(what)
 {
-    if (what.length==1) {
-        what = identifyLyricsHeadings('['+what+']');
+    if (what.length<3) {
+        apdx = '';
+        if (what.length>1) apdx = what.substr(1);
+        what = identifyLyricsHeadings('['+what.substr(0,1)+']')+apdx;
     }
     // do nothing if the object doesn't exist...
     if ($('#'+what).length==0) { return }
