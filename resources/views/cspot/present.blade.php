@@ -168,8 +168,12 @@
 
         <!-- 'sequence' indicates the order in which the various lyric parts are to be shown -->
         <span class="navbar-brand pull-xs-right hidden-xs-down" id="lyrics-sequence-nav">
-            {{-- this is currently resolved on the client side --}}
-            @if (1==2 && $item->song_id && $item->song->sequence)
+            <!-- {{-- this is currently resolved on the client side --}} -->
+            @if ($item->song_id && $item->song->sequence)
+                <a href="#" onclick="advancePresentation();" 
+                    title="show next slide" id="btn-show-next" 
+                    class="nav-item btn btn-sm btn-info" role="button">&#9755;</a>
+            @elseif (2==3)
                 @foreach (explode(',', $item->song->sequence) as $key=>$seq )
                     <span id="lyrics-progress-{{ $key }}" class="lyrics-progress-indicator"
                         data-show-status="unshown"

@@ -405,6 +405,8 @@ function insertSeqNavInd(what, nr)
 function advancePresentation(direction='forward')
 {
     if ($('#present-lyrics').length > 0) {
+
+        // make sure the main lyrics div is visible
         $('#present-lyrics').show(); 
 
         // do we have a specific sequence provided?
@@ -418,7 +420,7 @@ function advancePresentation(direction='forward')
             }
             $('#start-lyrics').show();
             $('#start-lyrics').data('was-shown', 'true');
-            $('#lyrics-title').hide();
+            $('#lyrics-title').fadeOut('fast');
             return;
         }
         else if (direction=='forward') {
@@ -437,7 +439,7 @@ function advancePresentation(direction='forward')
             });
             // all items were shown, so we can move to the next item
             if (! found) {
-                $('#present-lyrics').hide();
+                $('#present-lyrics').fadeOut();
                 navigateTo('next-item');
                 return;
             }
@@ -568,17 +570,24 @@ function headerCode(divNam) {
 // called from the lyrics buttons made visible in reDisplayLyrics function
 function lyricsShow(what)
 {
-    if (what.length<3) {
+    // from the 'what' determine the proper ID value of the desired song part
+    if (what.length<4) {
         apdx = '';
-        if (what.length>1) apdx = what.substr(1);
-        what = identifyLyricsHeadings('['+what.substr(0,1)+']')+apdx;
+        fc = what.substr(0,1);
+        if ( $.isNumeric(fc) || fc != 'c' ) {
+            apdx = what.substr(1);   
+            what = identifyLyricsHeadings('['+fc+']')+apdx;
+        } else {
+            apdx = what.substr(2);
+            what = identifyLyricsHeadings('['+what.substr(0,2)+']')+apdx;
+        }
     }
     // do nothing if the object doesn't exist...
-    if ($('#'+what).length==0) { return }
+    if ( $('#'+what).length == 0 )  { return }
 
     console.log('showing song part called '+what);
-    $('.lyrics-parts').hide();
-    $('#'+what).show();
+    
+    $('.lyrics-parts').fadeOut().promise().done( function() { $('#'+what).fadeIn() } );
     // elevate the currently used button
     $('.lyrics-show-btns').removeClass('btn-danger');       // make sure all other buttons are back to normal
     $('#btn-show-'+what).removeClass('btn-info-outline');   // aremove ouline for this button
@@ -601,7 +610,9 @@ function identifyLyricsHeadings(str)
         case '[chorus 2]': return 'chorus2';
         case '[t]': return 'chorus2';
         case '[chorus]': return 'chorus1';
+        case '[chorus1]': return 'chorus1';
         case '[c]': return 'chorus1';
+        case '[c1]': return 'chorus1';
         case '[bridge]': return 'bridge';
         case '[b]': return 'bridge';
         case '[ending]': return 'ending';
