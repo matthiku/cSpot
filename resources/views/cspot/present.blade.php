@@ -142,8 +142,8 @@
                 <a href="#" onclick="lyricsShow('prechorus');" 
                     title="show pre-chorus" id="btn-show-prechorus" style="display: none;" 
                     class="nav-item btn btn-sm btn-info-outline lyrics-show-btns" role="button">P</a>
-                <a href="#" onclick="lyricsShow('chorus');" 
-                    title="show chorus" id="btn-show-chorus" style="display: none;" 
+                <a href="#" onclick="lyricsShow('chorus1');" 
+                    title="show chorus" id="btn-show-chorus1" style="display: none;" 
                     class="nav-item btn btn-sm btn-info-outline lyrics-show-btns" role="button">Ch</a>
                 <a href="#" onclick="lyricsShow('chorus2');" 
                     title="show chorus 2" id="btn-show-chorus2" style="display: none;" 
@@ -168,7 +168,8 @@
 
         <!-- 'sequence' indicates the order in which the various lyric parts are to be shown -->
         <span class="navbar-brand pull-xs-right hidden-xs-down" id="lyrics-sequence-nav">
-            @if ($item->song_id && $item->song->sequence)
+            {{-- this is currently resolved on the client side --}}
+            @if (1==2 && $item->song_id && $item->song->sequence)
                 @foreach (explode(',', $item->song->sequence) as $key=>$seq )
                     <span id="lyrics-progress-{{ $key }}" class="lyrics-progress-indicator"
                         data-show-status="unshown"
