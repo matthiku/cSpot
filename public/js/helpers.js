@@ -291,7 +291,36 @@ $(document).ready(function() {
         $('#show-chords-or-music').css('display', 'inline');
     }
 
+    // start showing bible parts if this is a bible reference
+    if ($('.bible-text-present').length>0) {
+        reFormatBibleText();
+    }
+
 });
+
+/*
+    Divide bible texts by their paragraphs and create a sequence list accordingly
+*/
+function reFormatBibleText() 
+{
+    // get the paragraphs with bible text
+    var p = $('.bible-text-present p');
+    // empty the pre-formatted text containter
+    $('#bible-text-present-all').html('');
+    // add the paragraphs' text each into the container
+    $(p).each( function(entry) {
+        text = $(this).text();
+        clas = $(this).attr('class')
+        console.log( 'class: ' + clas + ' ==> ' + $(this).html() );
+        if (clas.substr(0,1)=='p' || clas.substr(0,1)=='q' || clas.substr(0,4)=='line') {
+            $('#bible-text-present-all').append(
+                '<pre class="bible-text-present">'+text+'</pre>'
+                );
+        }
+        //insertSeqNavInd(entry+1,entry,'bible');
+    });
+    $('#bible-text-present-all').show();
+}
 
 
 /*
@@ -388,12 +417,15 @@ function createDefaultLyricSequence()
     $('#sequence').text(sequence);
 }
 /* Insert the Sequence Navigation indicators into the navbar */
-function insertSeqNavInd(what, nr)
+function insertSeqNavInd(what, nr, where)
 {
-    console.log('inserting sequence indicator for '+ what + ' as song part # ' + nr);
+    // set default action
+    where = where || 'lyrics';
 
-    data = '<span id="lyrics-progress-' + nr + '" class="lyrics-progress-indicator"' +
-           'data-show-status="unshown" onclick="lyricsShow(' + "'" + what + "'" + ');">';
+    //console.log('inserting sequence indicator for '+ what + ' as '+where+' part # ' + nr);
+
+    data = '<span id="'+where+'-progress-' + nr + '" class="'+where+'-progress-indicator"' +
+           'data-show-status="unshown" onclick="'+where+'Show(' + "'" + what + "'" + ');">';
     data += formatSeqInd(what)+'&nbsp;</span>';
 
     $('#lyrics-sequence-nav').append( data );
@@ -403,7 +435,7 @@ function formatSeqInd(code){
     char1 = code.substr(0,1);
     char2 = code.substr(1,1);
     if ($.isNumeric(char1)) {
-        if (code.length==1) 
+        if ( code.length==1  ||  $.isNumeric(char2) ) 
             return code;
         return '<span class="text-muted">'+char1+'<sup>'+char2+'</sup></span>';
     }
@@ -491,6 +523,27 @@ function advancePresentation(direction)
 
     }
 
+    // we are showing a bible text
+    else if ($('.bible-text-present').length>0) {
+        var seq = $('.bible-progress-indicator');
+        // loop through all sequence items and find the next that wasn't shown yet
+        found = false;
+        $(seq).each(function(entry){
+            if ( $(this).data().showStatus  == 'unshown' ) {
+                found = true;
+                console.log('found ' + $(this).attr('id'));
+                $(this).data().showStatus = 'done';
+                $('.bible-progress-indicator').removeClass('bg-danger');
+                $(this).addClass('bg-danger');
+                $(this).click();
+                return false; // escape the each loop...
+            }
+        });
+        if (! found) {
+            navigateTo('next-item');
+            return;
+        }
+    }
     // we're not showing a song, so we simply move to the next plan item
     else if (direction=='forward') 
         { navigateTo('next-item'); }
@@ -594,6 +647,16 @@ function headerCode(divNam) {
         case 'verse': return divNam.substr(5);
         default: return '';
     }
+}
+
+function bibleShow(what)
+{
+    var p = $('.bible-text-present p');
+    for (var i=0; i<p.length; i++) {
+        if (Math.abs(what - i) > 4)
+            $(p[i]).hide();
+    }
+    $(p[what-1]).show();
 }
 
 // called from the lyrics buttons made visible in reDisplayLyrics function

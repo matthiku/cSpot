@@ -1,3 +1,8 @@
+.slide-background-image {
+    min-height: 100%;
+    min-width: 100%;
+}
+
 .mail-alert {
     padding: .25em .4em !important;
     border-radius: .25rem;

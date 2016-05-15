@@ -37,7 +37,7 @@
                $('.bible-text-present>p').css('font-size', parseInt(fontSize));
                $('.bible-text-present>h1').css('font-size', parseInt(fontSize));
             }
-            $('.bible-text-present').show();
+            $('.bible-text-present-all').show();
         });
     </script>
 
@@ -62,16 +62,17 @@
 
         @if ($item->files)
             @foreach ($item->files as $file)
-                @include ('cspot.snippets.present_files')
+                <img class="slide-background-image" 
+                       src="{{ url(config('files.uploads.webpath')).'/'.$file->token }}">
             @endforeach
         @endif
 
         @if ($bibleTexts)
-            <div class="bible-text-present" style="display: none;" >
+            <div class="bible-text-present" id="bible-text-present-all" style="display: none;" >
                 @foreach ($bibleTexts as $btext)
-                    <h1>{{ $btext->display }} ({{ $btext->version_abbreviation }})</h1>
-                    <div class="bible-text-present">{!! $btext->text !!}</div>
-                    <div class="small">{!! $btext->copyright !!}</div>
+                    <h1>{{ $btext->display }}</h1> <!-- ({{ $btext->version_abbreviation }}) -->
+                    <div class="bible-text-present" style="display: none;" >{!! $btext->text !!}</div>
+                    <!-- <div class="small">{!! $btext->copyright !!}</div> -->
                     <hr>
                 @endforeach
             </div>
