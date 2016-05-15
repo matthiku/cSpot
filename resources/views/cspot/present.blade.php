@@ -172,13 +172,7 @@
             @if ($item->song_id && $item->song->sequence)
                 <a href="#" onclick="advancePresentation();" 
                     title="show next slide" id="btn-show-next" 
-                    class="nav-item btn btn-sm btn-info" role="button">&#9755;</a>
-            @elseif (2==3)
-                @foreach (explode(',', $item->song->sequence) as $key=>$seq )
-                    <span id="lyrics-progress-{{ $key }}" class="lyrics-progress-indicator"
-                        data-show-status="unshown"
-                        onclick="lyricsShow('{{ $seq }}');">{{ $seq }}</span>
-                @endforeach
+                    class="nav-item btn btn-sm btn-info" role="button"><i class="fa fa-chevron-right fa-lg"></i></a>
             @endif
         </span>
 
@@ -299,8 +293,6 @@
                         class="dropdown-item" href="#"><i class="fa fa-align-right fa-lg"></i> Right</a>
                     <a onclick="changeTextAlign(['.text-present', '.bible-text-present>p'], 'center');"
                         class="dropdown-item" href="#"><i class="fa fa-align-center fa-lg"></i> Center</a>
-                    <a onclick="changeTextAlign(['.text-present', '.bible-text-present>p'], 'justify');"
-                        class="dropdown-item" href="#"><i class="fa fa-align-justify fa-lg"></i> Justify</a>
                 </div>
             </div>
 

@@ -393,17 +393,39 @@ function insertSeqNavInd(what, nr)
     console.log('inserting sequence indicator for '+ what + ' as song part # ' + nr);
 
     data = '<span id="lyrics-progress-' + nr + '" class="lyrics-progress-indicator"' +
-           'data-show-status="unshown" onclick="lyricsShow(' + "'" + what + "'" + ');">'+what+'&nbsp;</span>';
+           'data-show-status="unshown" onclick="lyricsShow(' + "'" + what + "'" + ');">';
+    data += formatSeqInd(what)+'&nbsp;</span>';
 
     $('#lyrics-sequence-nav').append( data );
 }
-
+function formatSeqInd(code){
+    code  = code.toString();
+    char1 = code.substr(0,1);
+    char2 = code.substr(1,1);
+    if ($.isNumeric(char1)) {
+        if (code.length==1) 
+            return code;
+        return '<span class="text-muted">'+char1+'<sup>'+char2+'</sup></span>';
+    }
+    char1 = char1.toUpperCase();
+    if (code.length==1) 
+        return char1;
+    if (char1 != 'C')
+        return char1+'<sup>'+char2+'</sup>';
+    if (char2==1) char2 = 'h';
+    if (code.length==2)
+        return char1+char2;
+    return '<span class="text-muted">'+char1+char2+'<sup>'+code.substr(2)+'</sup></span>';
+}
 
 /*
     On the lyrics screen, advance to the next item or sub-item (song parts)
 */
-function advancePresentation(direction='forward')
+function advancePresentation(direction)
 {
+    // set default value....
+    direction = direction || 'forward';
+
     if ($('#present-lyrics').length > 0) {
 
         // make sure the main lyrics div is visible
@@ -415,8 +437,9 @@ function advancePresentation(direction='forward')
         // no sequence indicators found! Hopefully the default lyrics block was created...
         if (seq.length < 1) {
             // first check if have been here before, then we can advance to the next item
-            if ($('#start-lyrics').data('was-shown') == 'true') {
+            if ( $('#start-lyrics').data('was-shown')=='true' ) {
                 navigateTo('next-item');
+                return;
             }
             $('#start-lyrics').show();
             $('#start-lyrics').data('was-shown', 'true');
@@ -453,6 +476,7 @@ function advancePresentation(direction='forward')
                     if (i==0) { 
                         navigateTo('previous-item'); 
                         return; }
+                    $(seq[i]).data().showStatus = 'unshown';
                     $('.lyrics-progress-indicator').removeClass('bg-danger');
                     $(seq[i-1]).addClass('bg-danger');
                     $(seq[i-1]).click();
@@ -461,13 +485,18 @@ function advancePresentation(direction='forward')
             }
             // all song parts have been shown, so we must be at 
             //     the first and now have to go to the previous plan item
-            navigateTo('previous-item'); 
+            navigateTo('previous-item');
+            return;
         }
 
     }
 
     // we're not showing a song, so we simply move to the next plan item
-    else { navigateTo('next-item'); }
+    else if (direction=='forward') 
+        { navigateTo('next-item'); }
+    else {
+        navigateTo('previous-item');
+    }
 }
 
 
@@ -826,7 +855,7 @@ function changeTextAlign(selectorList, how) {
  * param  selectorList string or array of valid CSS selectors
  * return void
  */
-function changeFontSize(selectorList, how='increase') {
+function changeFontSize(selectorList, how) {
     if ( typeof selectorList === 'string') {
         selectorList = [selectorList];
     }
