@@ -70,6 +70,8 @@
         @if ($bibleTexts)
             <div class="bible-text-present" id="bible-text-present-all" style="display: none;" >
                 @foreach ($bibleTexts as $btext)
+                    <p class="item-comment" id="item-comment" style="display: none;" >{{ $item->comment }}</p>
+                    <p class="bible-text-present-ref" style="display: none;" >{{ $btext->display }}</p>
                     <h1>{{ $btext->display }}</h1> <!-- ({{ $btext->version_abbreviation }}) -->
                     <div class="bible-text-present" style="display: none;" >{!! $btext->text !!}</div>
                     <!-- <div class="small">{!! $btext->copyright !!}</div> -->

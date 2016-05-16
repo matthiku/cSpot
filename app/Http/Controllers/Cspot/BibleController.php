@@ -132,7 +132,9 @@ class BibleController extends Controller
     }
 
 
-
+    /**
+     * For NIV, use biblehub to get whole chapters
+     */
     protected function getBibleHubText( $url, $book, $chapter )
     {
         // Set up cURL

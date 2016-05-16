@@ -303,25 +303,57 @@ $(document).ready(function() {
 */
 function reFormatBibleText() 
 {
-    // get the paragraphs with bible text
+    // get reference from item comment
+    var refList = $('#item-comment').text().split(';');
+    console.log('Ref.: ' + refList);
+    // get all the paragraphs with bible text
     var p = $('.bible-text-present p');
-    // empty the pre-formatted text containter
+    // empty the pre-formatted bible text containter
     $('#bible-text-present-all').html('');
+
     // add the paragraphs' text each into the container
     $(p).each( function(entry) {
         text = $(this).text();
         clas = $(this).attr('class')
         console.log( 'class: ' + clas + ' ==> ' + $(this).html() );
-        if (clas.substr(0,1)=='p' || clas.substr(0,1)=='q' || clas.substr(0,4)=='line') {
-            $('#bible-text-present-all').append(
-                '<pre class="bible-text-present">'+text+'</pre>'
-                );
+        // NIV texts
+        if (clas.substr(0,4)=='line') {
+            appendBibleText('pre',text)
+        }
+        // write the bible ref
+        if (clas=='bible-text-present-ref')
+            appendBibleText('h1',text)
+        // other translations via bibleapi.org
+        if ( clas.substr(0,1)=='p' || clas.substr(0,1)=='q' ) {
+            // verses are separated by 'sup' elements
+            elem = $(this).contents();
+            verse = '';
+            verno = '';
+            $(elem).each( function() {
+                eltext = $(this).text();
+                if ($.isNumeric(eltext)) {
+                    if (verse && verno != eltext) {
+                        appendBibleText('pre',verse); 
+                    }
+                    else { verno = eltext; }
+                    verse = '('+eltext+') ';
+                }
+                else {
+                    verse += eltext;
+                }
+            })
+            appendBibleText('pre',verse)
         }
         //insertSeqNavInd(entry+1,entry,'bible');
     });
     $('#bible-text-present-all').show();
 }
-
+function appendBibleText(type, text)
+{
+    $('#bible-text-present-all').append(
+        '<'+type+' class="bible-text-present">'+text+'</'+type+'>'
+        );   
+}
 
 /*
     check if there are more lyric parts than 
