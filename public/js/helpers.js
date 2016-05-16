@@ -233,6 +233,51 @@ $(document).ready(function() {
      */
     if ( window.location.href.indexOf('/present')>10 ) {
 
+        // start showing bible parts if this is a bible reference
+        if ($('.bible-text-present').length>0) {
+            reFormatBibleText();
+        }
+
+        // re-format the lyrics
+        reDisplayLyrics();
+
+        // check if user has changed the default font size and text alignment for the presentation
+        textAlign = getLocalStorValue('.text-present_text-align');
+        $('.text-present').css('text-align', textAlign);
+        $('.bible-text-present').css('text-align', textAlign);
+        $('.bible-text-present>p').css('text-align', textAlign);
+        $('.bible-text-present>h1').css('text-align', textAlign);
+
+        fontSize = getLocalStorValue('.text-present_font-size');
+        if ($.isNumeric(fontSize)) {
+            $('.text-present').css('font-size', parseInt(fontSize));
+        }
+        $('.text-present').show();
+
+        fontSize = getLocalStorValue('.bible-text-present_font-size');
+        if ($.isNumeric(fontSize)) {
+           $('.bible-text-present').css('font-size', parseInt(fontSize));
+           $('.bible-text-present>p').css('font-size', parseInt(fontSize));
+           $('.bible-text-present>h1').css('font-size', parseInt(fontSize));
+        }
+
+        // check if we have a predefined sequence from the DB
+        sequence=($('#sequence').text()).split(',');
+
+        // check if there are more lyric parts than 
+        // indicated in the sequence due to blank lines discoverd in the lyrics
+        if (sequence.length>2) 
+            compareLyricPartsWithSequence();
+
+        // auto-detect sequence if it is missing
+        if (sequence.length<2) {
+            createDefaultLyricSequence();
+            sequence=($('#sequence').text()).split(',');
+        }
+
+        // experimental
+        $('#show-linecount').text(countLines('bible-text-present-all'));
+
         // make sure the main content covers all the display area
         $('#main-content').css('min-height', window.screen.height);
 
@@ -253,22 +298,6 @@ $(document).ready(function() {
             }
         });
 
-        // re-format the lyrics
-        reDisplayLyrics();
-
-        // check if we have a predefined sequence from the DB
-        sequence=($('#sequence').text()).split(',');
-
-        // check if there are more lyric parts than 
-        // indicated in the sequence due to blank lines discoverd in the lyrics
-        if (sequence.length>2) 
-            compareLyricPartsWithSequence();
-
-        // auto-detect sequence if it is missing
-        if (sequence.length<2) {
-            createDefaultLyricSequence();
-            sequence=($('#sequence').text()).split(',');
-        }
     }
 
     /**
@@ -289,11 +318,6 @@ $(document).ready(function() {
     // if sheetmusic is displayed, show button to swap between sheetmusic and chords
     if ( window.location.href.indexOf('sheetmusic')>0 || window.location.href.indexOf('swap')>0 ) {
         $('#show-chords-or-music').css('display', 'inline');
-    }
-
-    // start showing bible parts if this is a bible reference
-    if ($('.bible-text-present').length>0) {
-        reFormatBibleText();
     }
 
 });
@@ -321,7 +345,7 @@ function reFormatBibleText()
         clas = $(this).attr('class')
         // console.log( 'class: ' + clas + ' ==> ' + $(this).html() );
 
-        // write the bible ref
+        // write the bible ref as title
         if (clas=='bible-text-present-ref') {
             $.each(refList, function(index, value) {
                 if (text.trim()=='') {return;}
@@ -334,7 +358,7 @@ function reFormatBibleText()
                 if (ref.book+ref.chapter == rfc.book+rfc.chapter ) {
                     // check if there was a vers unprinted from the previous Ref
                     if (verse != undefined && verse.length>2) { 
-                        appendBibleText('pre',verse); verse = ''; }
+                        appendBibleText('p',verse); verse = ''; }
                     // print the new Ref
                     appendBibleText('h1',value);
                     verse_from = rfc.verse_from;
@@ -354,11 +378,12 @@ function reFormatBibleText()
                     if (verse && verno != eltext) {
                         // only append text that is within the reference
                         if ( 1*verno >= 1*verse_from && 1*verno <= 1*verse_to ) {
-                            appendBibleText('pre',verse); verse = ''; }
+                            appendBibleText('p',verse); verse = ''; }
                         verno = eltext;
                     }
                     verse = '('+eltext+') '; }
                 else if (this.nodeName == '#text' ) {  // only add real text nodes
+                    if (eltext.substr(0,1)=='\n') { eltext=eltext.substr(1); }
                     verse += eltext;
                 }
             });
@@ -373,7 +398,7 @@ function reFormatBibleText()
                 eltext = $(this).text();
                 if ($(this).attr('class')=='v') {
                     if (verse && verno != eltext) {
-                        appendBibleText('pre',verse); verse = ''; }
+                        appendBibleText('p',verse); verse = ''; }
                     else { verno = eltext; }
                     verse = '('+eltext+') ';
                 }
@@ -381,14 +406,16 @@ function reFormatBibleText()
                     verse += eltext; }
             });
         }
-        if ( verse != undefined && verse.length>2 ) { verse += '\n'; }
+
+        // if the verse is incomplete, it is because we need a mew line
+        if ( verse != undefined && verse.length>2 ) { verse += '<br>'; }
 
         //insertSeqNavInd(entry+1,entry,'bible');
 
     });
     // write remaining verse if not empty or beyond scope
     if ( verse.length>2 && (1*verno <= 1*verse_to || !$.isNumeric(verno)) ) {
-        appendBibleText('pre',verse) }
+        appendBibleText('p',verse) }
 
 }
 function splitBref(text)

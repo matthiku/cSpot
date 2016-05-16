@@ -13,38 +13,6 @@
 
 
 
-    <!-- get presentation configuration settings -->
-    <script>
-        $(document).ready(function() {
-            // for certain bible text sources:
-            $('.bible-text-present>.p>.v').prepend('<br>');
-
-            // check if user has changed the default font size and text alignment for the presentation
-            textAlign = getLocalStorValue('.text-present_text-align');
-            $('.text-present').css('text-align', textAlign);
-            $('.bible-text-present').css('text-align', textAlign);
-            $('.bible-text-present>p').css('text-align', textAlign);
-
-            fontSize = getLocalStorValue('.text-present_font-size');
-            if ($.isNumeric(fontSize)) {
-                $('.text-present').css('font-size', parseInt(fontSize));
-            }
-            $('.text-present').show();
-
-            fontSize = getLocalStorValue('.bible-text-present_font-size');
-            if ($.isNumeric(fontSize)) {
-               $('.bible-text-present').css('font-size', parseInt(fontSize));
-               $('.bible-text-present>p').css('font-size', parseInt(fontSize));
-               $('.bible-text-present>h1').css('font-size', parseInt(fontSize));
-            }
-            $('.bible-text-present-all').show();
-            $('#show-linecount').text(countLines('bible-text-present-all'));
-        });
-    </script>
-
-
-
-
 
     <!-- ================================================================================ -->
     <div id="main-content" class="bg-inverse">
@@ -293,11 +261,11 @@
                 <button class="nav-link m-l-1 btn btn-sm btn-info dropdown-toggle" href="#" type="button" 
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Align</button>
                 <div class="dropdown-menu bg-info">
-                    <a onclick="changeTextAlign(['.text-present', '.bible-text-present>p'], 'left');" 
+                    <a onclick="changeTextAlign(['.text-present', '.bible-text-present'], 'left');" 
                         class="dropdown-item" href="#"><i class="fa fa-align-left fa-lg"></i> Left</a>
-                    <a onclick="changeTextAlign(['.text-present', '.bible-text-present>p'], 'right');"
+                    <a onclick="changeTextAlign(['.text-present', '.bible-text-present'], 'right');"
                         class="dropdown-item" href="#"><i class="fa fa-align-right fa-lg"></i> Right</a>
-                    <a onclick="changeTextAlign(['.text-present', '.bible-text-present>p'], 'center');"
+                    <a onclick="changeTextAlign(['.text-present', '.bible-text-present'], 'center');"
                         class="dropdown-item" href="#"><i class="fa fa-align-center fa-lg"></i> Center</a>
                 </div>
             </div>
