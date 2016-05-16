@@ -305,54 +305,128 @@ function reFormatBibleText()
 {
     // get reference from item comment
     var refList = $('#item-comment').text().split(';');
-    console.log('Ref.: ' + refList);
+    // console.log('Ref.: ' + refList);
     // get all the paragraphs with bible text
     var p = $('.bible-text-present p');
     // empty the pre-formatted bible text containter
     $('#bible-text-present-all').html('');
+    $('#bible-text-present-all').show();
+    
+    // helper vars
+    var verse_from, verse_to, verse, verno=1;
 
     // add the paragraphs' text each into the container
     $(p).each( function(entry) {
         text = $(this).text();
         clas = $(this).attr('class')
-        console.log( 'class: ' + clas + ' ==> ' + $(this).html() );
-        // NIV texts
-        if (clas.substr(0,4)=='line') {
-            appendBibleText('pre',text)
-        }
+        // console.log( 'class: ' + clas + ' ==> ' + $(this).html() );
+
         // write the bible ref
-        if (clas=='bible-text-present-ref')
-            appendBibleText('h1',text)
+        if (clas=='bible-text-present-ref') {
+            $.each(refList, function(index, value) {
+                if (text.trim()=='') {return;}
+                value = value.trim();
+                if (value=='') {return;}
+                // get access to each part of the bible ref: book, chapter, verse_form, verse-to and version
+                var ref = splitBref(text);
+                var rfc = splitBref(value);
+                // is the bible text in the html source the same as in the reference?
+                if (ref.book+ref.chapter == rfc.book+rfc.chapter ) {
+                    // check if there was a vers unprinted from the previous Ref
+                    if (verse != undefined && verse.length>2) { 
+                        appendBibleText('pre',verse); verse = ''; }
+                    // print the new Ref
+                    appendBibleText('h1',value);
+                    verse_from = rfc.verse_from;
+                    verse_to   = rfc.verse_to;
+                } //else { console.log(text + ' - BRef not identified: '+value); }
+            });            
+        }
+
+        // NIV texts
+        if (clas.substr(0,4)=='line' || clas=='reg' ) {
+            // verses are separated by 'sup' elements
+            elem = $(this).contents(); // get all elements in one array
+            // analyze each element and separate verse numbers and bible text
+            $(elem).each( function() {
+                eltext = $(this).text();
+                if ($(this).attr('class')=='reftext') {
+                    if (verse && verno != eltext) {
+                        // only append text that is within the reference
+                        if ( 1*verno >= 1*verse_from && 1*verno <= 1*verse_to ) {
+                            appendBibleText('pre',verse); verse = ''; }
+                        verno = eltext;
+                    }
+                    verse = '('+eltext+') '; }
+                else if (this.nodeName == '#text' ) {  // only add real text nodes
+                    verse += eltext;
+                }
+            });
+        }
+
         // other translations via bibleapi.org
         if ( clas.substr(0,1)=='p' || clas.substr(0,1)=='q' ) {
             // verses are separated by 'sup' elements
-            elem = $(this).contents();
-            verse = '';
-            verno = '';
+            elem = $(this).contents(); // get all elements in one array
+            // analyze each elements and separate verse numbers and bible text
             $(elem).each( function() {
                 eltext = $(this).text();
-                if ($.isNumeric(eltext)) {
+                if ($(this).attr('class')=='v') {
                     if (verse && verno != eltext) {
-                        appendBibleText('pre',verse); 
-                    }
+                        appendBibleText('pre',verse); verse = ''; }
                     else { verno = eltext; }
                     verse = '('+eltext+') ';
                 }
                 else {
-                    verse += eltext;
-                }
-            })
-            appendBibleText('pre',verse)
+                    verse += eltext; }
+            });
         }
+        if ( verse != undefined && verse.length>2 ) { verse += '\n'; }
+
         //insertSeqNavInd(entry+1,entry,'bible');
+
     });
-    $('#bible-text-present-all').show();
+    // write remaining verse if not empty or beyond scope
+    if ( verse.length>2 && (1*verno <= 1*verse_to || !$.isNumeric(verno)) ) {
+        appendBibleText('pre',verse) }
+
+}
+function splitBref(text)
+{
+    if (!text) {return;}
+    arr = new Array;
+    ref = text.split(' ');
+    nr = 0
+    if ($.isNumeric(ref[0])) { 
+        arr.book = ref[nr++] +' '+ ref[nr++]; }
+    else { 
+        arr.book = ref[nr++]; }
+    chve = ref[nr++].split(':');
+    arr.chapter = chve[0];
+    if (chve.length>1) {
+        vrs = chve[1].split('-');
+        arr.verse_from = vrs[0];
+        if (vrs.length>1) {arr.verse_to   = vrs[1];}
+    } else {
+        arr.verse_from = 0;
+        arr.verse_to = 0;
+    }
+    // problem with differing naming conventions for Psalm in NIV vs others
+    if (arr.book=='Psalms') { arr.book='Psalm' };
+    return arr;
 }
 function appendBibleText(type, text)
 {
     $('#bible-text-present-all').append(
         '<'+type+' class="bible-text-present">'+text+'</'+type+'>'
         );   
+}
+function countLines(where) {
+    var divHeight = document.getElementById(where).offsetHeight
+    var elem = document.getElementById(where);
+    var lineHeight = parseInt(elem.style.fontSize);
+    var lines = divHeight / lineHeight;
+    return parseInt(lines);
 }
 
 /*
@@ -363,7 +437,7 @@ function compareLyricPartsWithSequence()
 {
     // get the predefined sequence
     sequenceDiv= $('#sequence').text();
-    console.log('found predefined sequence: ' + sequenceDiv);
+    //console.log('found predefined sequence: ' + sequenceDiv);
     sequence = ( $('#sequence').text() ).split(',');
 
     newSequence = '';

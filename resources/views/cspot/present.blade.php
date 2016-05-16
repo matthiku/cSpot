@@ -38,6 +38,7 @@
                $('.bible-text-present>h1').css('font-size', parseInt(fontSize));
             }
             $('.bible-text-present-all').show();
+            $('#show-linecount').text(countLines('bible-text-present-all'));
         });
     </script>
 
@@ -179,6 +180,8 @@
             @endif
         </span>
 
+        <span class="navbar-brand center" id="show-linecount"></span>
+    
         <!-- button to reveal the second navbar at the bottom -->
         <button class="navbar-toggler btn btn-info active" type="button" data-toggle="collapse" data-target="#lyricsNavbar">
             &hellip;
