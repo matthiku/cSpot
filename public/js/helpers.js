@@ -236,6 +236,9 @@ $(document).ready(function() {
         // start showing bible parts if this is a bible reference
         if ($('.bible-text-present').length>0) {
             reFormatBibleText();
+
+            // experimental
+            $('#show-linecount').text(countLines('bible-text-present-all'));
         }
 
         // re-format the lyrics
@@ -275,9 +278,6 @@ $(document).ready(function() {
             sequence=($('#sequence').text()).split(',');
         }
 
-        // experimental
-        $('#show-linecount').text(countLines('bible-text-present-all'));
-
         // make sure the main content covers all the display area
         $('#main-content').css('min-height', window.screen.height);
 
@@ -288,14 +288,15 @@ $(document).ready(function() {
 
         // Allow mouse click (or finger touch) to move forward
         $('#main-content').click(function(){
-            advancePresentation();
+            //advancePresentation();
         });
         // allow rght-mouse-click to move one slide or item back
         $('#main-content').on('mouseup', function(event){
+            event.preventDefault();
+            if (event.which == 1) {
+                advancePresentation(); }
             if (event.which == 3) {
-                event.preventDefault();
-                advancePresentation('back');
-            }
+                advancePresentation('back'); }
         });
 
     }
@@ -621,9 +622,12 @@ function advancePresentation(direction)
                     $(this).data().showStatus = 'done';
                     $('.lyrics-progress-indicator').removeClass('bg-danger');
                     $(this).addClass('bg-danger');
-                    $(this).click();
+                    todo = $(this).attr('onclick');
+                    eval( todo );
+                    // $(this).click();
                     return false;
                 }
+                if (found) {return false;}
             });
             // all items were shown, so we can move to the next item
             if (! found) {
@@ -644,7 +648,9 @@ function advancePresentation(direction)
                     $(seq[i]).data().showStatus = 'unshown';
                     $('.lyrics-progress-indicator').removeClass('bg-danger');
                     $(seq[i-1]).addClass('bg-danger');
-                    $(seq[i-1]).click();
+                    todo = $(this).attr('onclick');
+                    eval( todo );
+                    //$(seq[i-1]).click();
                     return;
                 } 
             }
