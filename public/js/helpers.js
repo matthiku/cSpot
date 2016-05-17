@@ -24,6 +24,10 @@ SelectedDates[new Date().toLocaleDateString()] = 'Today';
 // lyrics sequence data
 var sequence;
 
+// show blank lines between presentation items?
+var showBlankBetweenItems;
+var screenBlank = true;
+
 
 $(document).ready(function() {
 
@@ -229,20 +233,17 @@ $(document).ready(function() {
     
 
     /**
-     * prepare lyrics for presentation
+     * prepare lyrics or bible texts for presentation
      */
     if ( window.location.href.indexOf('/present')>10 ) {
 
         // start showing bible parts if this is a bible reference
         if ($('.bible-text-present').length>0) {
-            reFormatBibleText();
-
-            // experimental
-            $('#show-linecount').text(countLines('bible-text-present-all'));
-        }
+            reFormatBibleText(); }
 
         // re-format the lyrics
-        reDisplayLyrics();
+        if ($('#present-lyrics').length > 0) {
+            reDisplayLyrics(); }
 
         // check if user has changed the default font size and text alignment for the presentation
         textAlign = getLocalStorValue('.text-present_text-align');
@@ -264,6 +265,8 @@ $(document).ready(function() {
            $('.bible-text-present>h1').css('font-size', parseInt(fontSize));
         }
 
+        showBlankBetweenItems = getLocalStorValue('configBlankSlides');
+
         // check if we have a predefined sequence from the DB
         sequence=($('#sequence').text()).split(',');
 
@@ -278,18 +281,15 @@ $(document).ready(function() {
             sequence=($('#sequence').text()).split(',');
         }
 
-        // make sure the main content covers all the display area
-        $('#main-content').css('min-height', window.screen.height);
+        // make sure the main content covers all the display area, but that no scrollbar appears
+        $('#main-content').css('max-height', window.innerHeight - $('.navbar-fixed-bottom').height());
+        $('#main-content').css('min-height', window.innerHeight - $('.navbar-fixed-bottom').height() - 10);
 
         // intercept mouse clicks into the presentation area
         $('#main-content').contextmenu( function() {
             return false;
         });
 
-        // Allow mouse click (or finger touch) to move forward
-        $('#main-content').click(function(){
-            //advancePresentation();
-        });
         // allow rght-mouse-click to move one slide or item back
         $('#main-content').on('mouseup', function(event){
             event.preventDefault();
@@ -299,6 +299,12 @@ $(document).ready(function() {
                 advancePresentation('back'); }
         });
 
+        // center and maximise images
+        if ( $('.slide-background-image') ) {
+            $('#main-content').css('text-align', 'center');
+            $('.slide-background-image').height( window.innerHeight - $('.navbar-fixed-bottom').height());
+            $('.slide-background-image').fadeIn();
+        }
     }
 
     /**
@@ -324,27 +330,38 @@ $(document).ready(function() {
 });
 
 /*
-    Divide bible texts by their paragraphs and create a sequence list accordingly
+    Re-Formatting of Bible Texts
+
+    Bible texts are delivered from the backend in the format in which either 
+        bibleApi.org or biblehub.com delivers them.
+    Both formats contain HTML code. This code must be removed and replaced
+        in order to display all bible versions in a similar, controllable fashion.
+    Both formats have in common that they deliver the text in <p> elements albeit
+        with differing class names. They will be used to distringuish the formats.
+    The <p> elements also contain child elements for verse numbers and footnotes etc
+        which have to be removed (with only the verse numbers being retained)
 */
 function reFormatBibleText() 
 {
-    // get reference from item comment
+    // get bible reference text from item comment
     var refList = $('#item-comment').text().split(';');
-    // console.log('Ref.: ' + refList);
-    // get all the paragraphs with bible text
+
+    // get all the paragraphs (<p> elements) with bible text
     var p = $('.bible-text-present p');
-    // empty the pre-formatted bible text containter
+
+    // empty the pre-formatted bible text containter and make it visible
     $('#bible-text-present-all').html('');
-    $('#bible-text-present-all').show();
+    $('#bible-text-present-all').show(); 
+    // (the container initially was hidden by the backend. That way we avoid flickering!)
     
     // helper vars
-    var verse_from, verse_to, verse, verno=1;
+    var verse_from=0, verse_to=199, verse, verno=1;
 
-    // add the paragraphs' text each into the container
+    // Now analyze each paragraph, reformat the bible text and add it back into the container
     $(p).each( function(entry) {
         text = $(this).text();
         clas = $(this).attr('class')
-        // console.log( 'class: ' + clas + ' ==> ' + $(this).html() );
+        console.log( 'class: ' + clas + ' ==> ' + $(this).html() );
 
         // write the bible ref as title
         if (clas=='bible-text-present-ref') {
@@ -359,30 +376,31 @@ function reFormatBibleText()
                 if (ref.book+ref.chapter == rfc.book+rfc.chapter ) {
                     // check if there was a vers unprinted from the previous Ref
                     if (verse != undefined && verse.length>2) { 
-                        appendBibleText('p',verse); verse = ''; }
+                        appendBibleText('p',verse,verno); verse = ''; }
                     // print the new Ref
-                    appendBibleText('h1',value);
+                    appendBibleText('h1',value,verno);
                     verse_from = rfc.verse_from;
                     verse_to   = rfc.verse_to;
-                } //else { console.log(text + ' - BRef not identified: '+value); }
-            });            
+                }
+            });
         }
 
-        // NIV texts
-        if (clas.substr(0,4)=='line' || clas=='reg' ) {
-            // verses are separated by 'sup' elements
-            elem = $(this).contents(); // get all elements in one array
+        // Identify and disect NIV texts
+        if (clas.substr(0,4)=='line' || clas.substr(0,4)=='pcon' || clas=='reg' ) {
+            // get all elements in one array
+            elem = $(this).contents();
             // analyze each element and separate verse numbers and bible text
             $(elem).each( function() {
                 eltext = $(this).text();
+                // if (eltext=='13') {debugger;}
                 if ($(this).attr('class')=='reftext') {
                     if (verse && verno != eltext) {
                         // only append text that is within the reference
                         if ( 1*verno >= 1*verse_from && 1*verno <= 1*verse_to ) {
-                            appendBibleText('p',verse); verse = ''; }
+                            appendBibleText('p',verse,verno); verse = ''; }
                         verno = eltext;
                     }
-                    verse = '('+eltext+') '; }
+                    verse = '('+eltext+') '; } // add verse indicator at the front
                 else if (this.nodeName == '#text' ) {  // only add real text nodes
                     if (eltext.substr(0,1)=='\n') { eltext=eltext.substr(1); }
                     verse += eltext;
@@ -390,17 +408,17 @@ function reFormatBibleText()
             });
         }
 
-        // other translations via bibleapi.org
-        if ( clas.substr(0,1)=='p' || clas.substr(0,1)=='q' ) {
-            // verses are separated by 'sup' elements
-            elem = $(this).contents(); // get all elements in one array
+        // find other translations and re-format the text
+        else if ( clas.substr(0,1)=='p' || clas.substr(0,1)=='q' ) {
+            // get all elements in one array
+            elem = $(this).contents();
             // analyze each elements and separate verse numbers and bible text
             $(elem).each( function() {
                 eltext = $(this).text();
                 if ($(this).attr('class')=='v') {
                     if (verse && verno != eltext) {
-                        appendBibleText('p',verse); verse = ''; }
-                    else { verno = eltext; }
+                        appendBibleText('p',verse,verno); }
+                    verno = eltext; 
                     verse = '('+eltext+') ';
                 }
                 else {
@@ -411,12 +429,14 @@ function reFormatBibleText()
         // if the verse is incomplete, it is because we need a mew line
         if ( verse != undefined && verse.length>2 ) { verse += '<br>'; }
 
-        //insertSeqNavInd(entry+1,entry,'bible');
 
     });
     // write remaining verse if not empty or beyond scope
     if ( verse.length>2 && (1*verno <= 1*verse_to || !$.isNumeric(verno)) ) {
-        appendBibleText('p',verse) }
+        appendBibleText('p',verse,verno) }
+
+    // all is set and we can show the first verse
+    advancePresentation();
 
 }
 function splitBref(text)
@@ -437,16 +457,24 @@ function splitBref(text)
         if (vrs.length>1) {arr.verse_to   = vrs[1];}
     } else {
         arr.verse_from = 0;
-        arr.verse_to = 0;
+        arr.verse_to = 199;
     }
     // problem with differing naming conventions for Psalm in NIV vs others
     if (arr.book=='Psalms') { arr.book='Psalm' };
     return arr;
 }
-function appendBibleText(type, text)
+function appendBibleText(type, text,verno)
 {
+    style = '';
+    parts = '" ';
+    id    = ' id="'+verno+'">';
+    if (type=='p') {
+        insertSeqNavInd(verno,verno,'bible'); 
+        style=' style="display: none"';
+        parts='-parts" ';
+    }
     $('#bible-text-present-all').append(
-        '<'+type+' class="bible-text-present">'+text+'</'+type+'>'
+        '<'+type+style+' class="bible-text-present'+parts+id+text+'</'+type+'>'
         );   
 }
 function countLines(where) {
@@ -631,7 +659,7 @@ function advancePresentation(direction)
             });
             // all items were shown, so we can move to the next item
             if (! found) {
-                $('#present-lyrics').fadeOut();
+                //$('#present-lyrics').fadeOut();
                 navigateTo('next-item');
                 return;
             }
@@ -667,20 +695,43 @@ function advancePresentation(direction)
         var seq = $('.bible-progress-indicator');
         // loop through all sequence items and find the next that wasn't shown yet
         found = false;
-        $(seq).each(function(entry){
-            if ( $(this).data().showStatus  == 'unshown' ) {
-                found = true;
-                console.log('found ' + $(this).attr('id'));
-                $(this).data().showStatus = 'done';
-                $('.bible-progress-indicator').removeClass('bg-danger');
-                $(this).addClass('bg-danger');
-                $(this).click();
-                return false; // escape the each loop...
+        if (direction=='forward') {
+            $(seq).each(function(entry){
+                if ( $(this).data().showStatus  == 'unshown' ) {
+                    found = true;
+                    console.log('found ' + $(this).attr('id'));
+                    $(this).data().showStatus = 'done';
+                    $('.bible-progress-indicator').removeClass('bg-danger');
+                    $(this).addClass('bg-danger');
+                    $(this).click();
+                    return false; // escape the each loop...
+                }
+            });
+            if (! found) {
+                //$('.bible-text-present').fadeOut();
+                navigateTo('next-item');
+                return;
             }
-        });
-        if (! found) {
-            navigateTo('next-item');
-            return;
+        } 
+        else {
+            found=false;
+            for (var i = seq.length - 1; i >= 0; i--) {
+                if ( $(seq[i]).data().showStatus == 'done') {
+                    console.log('found ' + $(seq[i]).attr('id'));
+                    if (i<=1) {break;} // we can't move any further back....
+                    found=true;
+                    $(seq[i-1]).data().showStatus = 'unshown';
+                    $('.bible-progress-indicator').removeClass('bg-danger');
+                    $(seq[i-1]).addClass('bg-danger');
+                    $(seq[i-1]).click();
+                    break; // escape the for loop...
+                }
+            }
+            if (! found) {
+                //$('.bible-text-present').fadeOut();
+                navigateTo('previous-item');
+                return;
+            }
         }
     }
     // we're not showing a song, so we simply move to the next plan item
@@ -757,7 +808,7 @@ function reDisplayLyrics()
         // actual lyrics - insert as PRE element
         else {
             lines += 1;
-            newLyr += '<pre class="text-present m-b-0">'+lyricsLine+'</pre>';
+            newLyr += '<p class="text-present m-b-0">'+lyricsLine+'</p>';
         }
     }
     // insert the last lyrics part
@@ -790,12 +841,14 @@ function headerCode(divNam) {
 
 function bibleShow(what)
 {
-    var p = $('.bible-text-present p');
+    var p = $('.bible-text-present-parts');
     for (var i=0; i<p.length; i++) {
-        if (Math.abs(what - i) > 4)
+        if ($(p[i]).attr('id') == what) {
+            $(p[i]).show();
+        } else {
             $(p[i]).hide();
+        }
     }
-    $(p[what-1]).show();
 }
 
 // called from the lyrics buttons made visible in reDisplayLyrics function
@@ -1034,6 +1087,11 @@ function showSongSearchInput(that, selector)
 }
 
 
+function configBlankSlides() {
+    var sett = ! $('#configBlankSlides').prop( "checked" );
+    console.log('User changed setting for "Show empty slides between items" to ' + sett );
+    localStorage.setItem('configBlankSlides', sett);
+}
 
 function changeTextAlign(selectorList, how) {
     if ( typeof selectorList === 'string') {
@@ -1204,6 +1262,15 @@ function navigateTo(where)
     // fade background and show spinner, but not in presentation mode!
     if ( document.baseURI.search('/present')<10 )
         showSpinner();
+
+    // make content disappear slowly...
+    $('#main-content').fadeOut();
+
+    // in presentation Mode, do we want a blank slide between items?
+    if (showBlankBetweenItems && screenBlank ) {
+        screenBlank = false;
+        return;
+    }
 
     if (a.onclick==null) {
         // try to go to the location defined in href

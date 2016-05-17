@@ -31,7 +31,7 @@
 
         @if ($item->files)
             @foreach ($item->files as $file)
-                <img class="slide-background-image" 
+                <img class="slide-background-image"  style="display: none;" 
                        src="{{ url(config('files.uploads.webpath')).'/'.$file->token }}">
             @endforeach
         @endif
@@ -257,6 +257,7 @@
                     </a>
                 </li>
             </ul>
+
             <div class="nav-item dropup pull-xs-left">
                 <button class="nav-link m-l-1 btn btn-sm btn-info dropdown-toggle" href="#" type="button" 
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Align</button>
@@ -269,6 +270,15 @@
                         class="dropdown-item" href="#"><i class="fa fa-align-center fa-lg"></i> Center</a>
                 </div>
             </div>
+
+            <form class="form-inline nav-item m-l-1 pull-xs-left label label-info">
+                <div class="checkbox" style="line-height: 2" onmouseup="configBlankSlides()">
+                    <label class="checkbox-inline c-input c-checkbox" title="Show empty slides between items?">
+                        <input type="checkbox" id="configBlankSlides">
+                            <span class="c-indicator"></span>&nbsp;blank slides between items?
+                    </label>
+                </div>
+            </form>
 
         </div>
     </nav>
