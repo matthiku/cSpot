@@ -129,12 +129,11 @@
                 <div class="col-md-6">
 
                     @if ( isset($beforeItem) )
-                        <h2>Insert Item(s) before "{{ $beforeItem->comment }}"
-                        </h2>
+                        <h2>Insert Item</h2>
                     @else
                         <h2>Add Item No {{ $seq_no }}.0</h2>
                     @endif
-                    <h5>in the Service plan (id {{ $plan->id }}) for {{ $plan->date->formatLocalized('%A, %d %B %Y') }}</h5>
+                    <h5>into the Service plan for {{ $plan->date->formatLocalized('%A, %d %B %Y') }}</h5>
                 </div>
 
                 <!-- 
@@ -366,7 +365,7 @@
                             <br>
                         @endif
 
-                        <h6>Add Bible Reference:</h6>
+                        <h6><i class="fa fa-book">&nbsp;</i>Add Bible Reference:</h6>
 
                         <select name="from-book" id="from-book" class="pull-xs-left" 
                                 onchange="showNextSelect('from', 'chapter')">

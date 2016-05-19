@@ -1333,7 +1333,6 @@ function showNextSelect(fromOrTo, what) {
         }
     };
 }
-
 function populateComment() {
     // ignore if nothing was selected
     if ($('#from-book').val()==null || $('#from-book').val()==' ') { 
@@ -1369,7 +1368,6 @@ function populateComment() {
     $('#comment-label').text('Bible Reading');
     blink('.save-buttons');
 }
-
 function emptyRefSelect(fromOrTo, what) {
     // get the <select> element 
     var x = document.getElementById(fromOrTo+'-'+what);
@@ -1379,10 +1377,8 @@ function emptyRefSelect(fromOrTo, what) {
         x.remove(i);
     }
 }
-
 function showScriptureText(version,book,chapter,fromVerse,toVerse) 
 {
-
     book = book.replace(' ', '+');
 
     $.get(__app_url+'/bible/passage/'+version+'/'+book+'/'+chapter+'/'+fromVerse+'/'+toVerse , 
@@ -1413,10 +1409,48 @@ function showScriptureText(version,book,chapter,fromVerse,toVerse)
             }
         }
     );
-
 }
 
 
+
+/**
+ * On the Team page, show the role select element once the user was selcted
+ * 
+ * param 'who' refers to the element from which this method was called
+ */
+function showRoleSelect(who)
+{
+
+    // grab the div around the radio buttons 
+    var roleSelectBox = $('#select-role-box');
+    // create a radio item
+    var radio1 = '<label class="c-input c-radio role-selector-items"><input id="';
+    var radio2 = '" name="role_id" type="radio"><span class="c-indicator"></span>';
+    var radio3 = '</label>';
+    
+    // make sure we have a proper JSON object with all users and all their roles
+    // ('userRolesArray' was created in a javascript snippet in the team.blade.php file)
+    if (typeof(userRolesArray)=='object') {
+        var user = userRolesArray[who.value];
+        var roles = user.roles;
+        // add each role as a radio button and label
+        for (var i=0; i<roles.length; i++) {
+            var radio = radio1 + 'role_id-'+roles[i].role_id;
+            radio += '" value="' + roles[i].role_id;
+            radio += radio2 + roles[i].name + radio3;
+            roleSelectBox.append(radio);
+        }
+    }
+    // select the first item, so that the user MUST make a choice
+    $('.role-selector-items').first().click()
+
+    // make the role selection elements (radio buttons) visible
+    $('#select-team-role').fadeIn();
+
+    // now show the comment input and submit button
+    $('#comment-input').fadeIn();
+    $('#submit-button').fadeIn();
+}
 
 
 

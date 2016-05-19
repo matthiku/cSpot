@@ -62,6 +62,12 @@ class Plan extends Model
     }
 
 
+    public function teams()
+    {
+        return $this->hasMany('App\Models\Team');
+    }
+
+
     public function firstItem() 
     {
         $items = $items = $this->items;

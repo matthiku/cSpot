@@ -175,17 +175,17 @@
 								href='{{ url('cspot/plans/'.$plan->id) }}/items/create/before/{{$item->id}}'><i class="fa fa-reply"></i></a>
 
 							@if ($item->song_id)
-			 					<a class="hidden-sm-down btn btn-primary-outline btn-sm hidden-lg-down" data-toggle="tooltip" title="Edit Song" 
+			 					<a class="hidden-sm-down btn btn-primary-outline btn-sm hidden-md-down" data-toggle="tooltip" title="Edit Song" 
 									href='{{ url('cspot/songs/'.$item->song->id) }}/edit/'><i class="fa fa-music"></i></a>
 							@else
-			 					<a class="hidden-sm-down btn btn-primary-outline btn-sm hidden-lg-down" data-toggle="tooltip" title="Edit Item" 
+			 					<a class="hidden-sm-down btn btn-primary-outline btn-sm hidden-md-down" data-toggle="tooltip" title="Edit Item" 
 									href='{{ url('cspot/plans/'.$plan->id) }}/items/{{$item->id}}/edit/'><i class="fa fa-pencil"></i></a>
 							@endif
 
 							<a class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="left" title="Start presentation from here" 
 								href='{{ url('cspot/items/'.$item->id) }}/present'><i class="fa fa-tv"></i></a>
 
-							<a class="btn btn-warning btn-sm hidden-sm-down" data-toggle="tooltip" title="Remove" 
+							<a class="btn btn-warning btn-sm hidden-md-down" data-toggle="tooltip" title="Remove" 
 								href='{{ url('cspot/items/'.$item->id) }}/delete'><i class="fa fa-trash"></i></a>
 						@endif
 					</td>

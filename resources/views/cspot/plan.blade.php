@@ -5,11 +5,7 @@
 
 @section('title', "Create or Update a Service Plan")
 
-@if (isset($plan))
-    @section('plans', 'active')
-@else
-    @section('create', 'active')
-@endif
+@section('plans', 'active')
 
 
 @if (session()->has('defaultValues'))
@@ -100,10 +96,13 @@
             @if (isset($plan))
                 <div class="pull-xs-left plan-details">
                     <big>
-                        Leader:&nbsp;<strong>{{ $plan->leader->name }}</strong> &nbsp;
+                        L.:&nbsp;<strong>{{ $plan->leader->name }}</strong> &nbsp;
                         @if ( strtoupper($plan->teacher->name)<>'N/A' )
-                            Teacher:&nbsp;<strong>{{ $plan->teacher->name }}</strong>
+                            T.:&nbsp;<strong>{{ $plan->teacher->name }}</strong>
                         @endif
+                        <a href="{{ url('cspot/plans/'.$plan->id.'/team') }}" class="m-l-2" 
+                            title="Worship leader and musicians etc"><i class="fa fa-music"></i>&nbsp;Team
+                        </a> 
                     </big>
                 </div>
             @endif

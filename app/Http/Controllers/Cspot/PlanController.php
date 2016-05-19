@@ -11,6 +11,7 @@ use App\Http\Requests\StorePlanRequest;
 use App\Http\Controllers\Controller;
 
 use App\Models\Plan;
+use App\Models\Team;
 use App\Models\Item;
 use App\Models\Type;
 use App\Models\User;
@@ -68,8 +69,6 @@ class PlanController extends Controller
         flash('No upcoming Sunday Service plan found!');
         return redirect()->back();
     }
-
-
 
 
 
