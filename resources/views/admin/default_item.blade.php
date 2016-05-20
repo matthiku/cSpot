@@ -28,7 +28,7 @@
               <option selected>Select Service</option>
               @foreach ($types as $type)
                 <option value="{{ $type->id }}"
-                    @if ($type->id == $default_item->type_id)
+                    @if (isset($default_item) && $type->id == $default_item->type_id)
                         selected="selected"
                     @endif
                     >

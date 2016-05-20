@@ -296,7 +296,11 @@
                         </div>
                         <div id="sheet-tab">
                             @foreach ($item->song->files as $file)
-                                @include ('cspot.snippets.present_files')
+                                @if ($item->song->license=='PD' || Auth::user()->isMusician() ) {
+                                    @include ('cspot.snippets.present_files')
+                                @else
+                                    <span>(copyrighted material)</span>
+                                @endif
                             @endforeach
                         </div>
                     </div>
