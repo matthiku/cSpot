@@ -77,7 +77,7 @@ class TeamController extends Controller
             }
             $team->requested = True;
             $team->save();
-            $status = 'Email with membership request was sent to user (SIMULATED ONLYL!)';
+            $status = 'Email with membership request was sent to user (ATM SIMULATED ONLYL!)';
             return \Redirect::route('team.index', ['plan_id'=>$plan_id])
                             ->with(['status' => $status]);
         }

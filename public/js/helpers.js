@@ -281,6 +281,9 @@ $(document).ready(function() {
             sequence=($('#sequence').text()).split(',');
         }
 
+        // make sure the sequence indicator isn't getting too wide! 
+        checkSequenceIndicatorLength();
+
         // make sure the main content covers all the display area, but that no scrollbar appears
         $('#main-content').css('max-height', window.innerHeight - $('.navbar-fixed-bottom').height());
         $('#main-content').css('min-height', window.innerHeight - $('.navbar-fixed-bottom').height() - 10);
@@ -485,6 +488,63 @@ function countLines(where) {
     return parseInt(lines);
 }
 
+
+/*
+    the Sequence indicators at the bottom right could 
+    get too long, so we need to hide some parts
+*/
+function checkSequenceIndicatorLength()
+{
+    // max items shown before or after the current item
+    var limit = 4;
+
+    var what = '.lyrics';
+
+    // get the list of sequence indicators
+    var seq = $(what+'-progress-indicator');
+    if (seq.length > 0  &&  seq.length < 9) {return;}
+    // no lyrics found so we might have bible texts
+    if (seq.length == 0) {
+        what = '.bible';
+        var seq = $(what+'-progress-indicator');
+        if (seq.length < 9) {return;}
+    }
+
+    // lets find the currently active sequence and then hide much earlier and much later parts
+    var active_id = getProgressIDnumber(what+'-progress-indicator.bg-danger');
+
+    // html elements to be inserted where more indicators are hidden
+    var moreIndFW = '<span class="more-indicator"><i class="fa fa-angle-double-right"></i></span>';
+    var moreIndBW = '<span class="more-indicator"><i class="fa fa-angle-double-left"></i> </span>';
+    // first remove all old 'more' indicators
+    $('.more-indicator').remove();
+
+    // walk through the list of indicators and hide those 
+    // that are too far away from the currently active one 
+    $(seq).each(function(entry){
+        // get this element's ID number
+        var thisID = 1*getProgressIDnumber(this);
+        if ( thisID+limit < active_id  ||  thisID-limit > active_id ) {
+            $(this).hide();
+        } else { 
+            $(this).show(); 
+            if (thisID+limit == active_id) {
+                $(this).prepend(moreIndBW);}
+            if (thisID-limit == active_id) {
+                $(this).append(moreIndFW); }
+        }
+    });
+}
+// find the sequence number in the element ID attribute
+function getProgressIDnumber(fromWhat)
+{
+    var current = $(fromWhat);
+    if (current.length==0) {return 0;}
+    var curr_id = $(fromWhat).attr('id').split('-');
+    if (curr_id.length<3) {return;}
+    return parseInt( curr_id[2] );
+}
+
 /*
     check if there are more lyric parts than 
         indicated in the spre-defined equence due to blank lines discoverd in the lyrics
@@ -499,7 +559,7 @@ function compareLyricPartsWithSequence()
     newSequence = '';
     nr = 0;
     // walk through the pre-defined sequence
-    for (var i = 0; i < sequence.length; i++) {
+    for (var i in sequence) {
         // what kind of lyric parts do we have (verse or chorus etc)
         type = identifyLyricsHeadings('['+sequence[i]+']');
         console.log('looking for part of type ' + type);
@@ -534,39 +594,48 @@ function createDefaultLyricSequence()
 
     console.log('Trying to auto-detect song structure');
 
-    // check if there is a chorus
-    var chorus = false;     
-    if ( $('[id^=chorus1]').length==1 )
-        chorus = true;
-
-    var nr = 0;  // indicates current lyric part number
-    var insChorus=1;  // indicates verse number afer which we have to insert a chorus
+    var chorus = false;   // we still need to find out if a chorus exists
+    var nr = 0;          // indicates current lyric part number
+    var verseNumInt = 0 // 
+    var insChorus = 1; // indicates verse number afer which we have to insert a chorus
+    var chorusSeq=[]; // contains CSV list of chorus parts
 
     // go through the list of lyric parts (as generated in function "reDisplayLyrics()")
     $(lyrList).each(function(entry) 
     {
         id = $(this).attr('id');  // get name of that lyric part
-
-        if ( id.substr(0,5) == 'verse' ) {
+        var pname = id.substr(0,5);
+        if ( pname == 'verse' ) {
             verseNum = id.substr(5);
-            verseNumInt = 0+id.substr(5,1);
-            if (chorus && verseNumInt-1 == insChorus) {
-                sequence += 'c,';
-                insertSeqNavInd('c', nr);
-                nr += 1;
+            verseNumInt = 1*id.substr(5,1);
+            if (chorus && verseNumInt > insChorus) {
+                for (var i in chorusSeq) {
+                    sequence += chorusSeq[i] + ',';
+                    insertSeqNavInd(chorusSeq[i], nr++);
+                }
                 insChorus = verseNumInt;
             }
             sequence += verseNum + ',';
-            insertSeqNavInd(verseNum, nr);
-            nr += 1; // increase parts number
+            insertSeqNavInd(verseNum, nr++);
+        }
+        // some lyrics don't conaint any headers so we show the first part under 'start-lyrics'
+        if (pname == 'start') {
+            sequence += 's,';
+            insertSeqNavInd('s', nr++);
+        }
+        // collect all chorus parts until we insert them before the next verse or at the end
+        if (pname == 'choru') {
+            chorus = true;
+            chPart = 'c1'+id.substr(7);
+            chorusSeq.push( chPart );  
         }
     });
     // insert remaining chorus, if needed
-    if (chorus) {
-        sequence += 'c,';
-        insertSeqNavInd('c', nr);
-        nr += 1;
-        insChorus = verseNum;
+    if (chorus && verseNumInt >= 1) {
+        for (var i in chorusSeq) {
+            sequence += chorusSeq[i] + ',';
+            insertSeqNavInd(chorusSeq[i], nr++);
+        }
     }
 
     // do we also have an ending?
@@ -620,6 +689,9 @@ function advancePresentation(direction)
     // set default value....
     direction = direction || 'forward';
 
+    // make sure the list of indicators doesn't get too long
+    checkSequenceIndicatorLength();
+
     if ($('#present-lyrics').length > 0) {
 
         // make sure the main lyrics div is visible
@@ -640,7 +712,8 @@ function advancePresentation(direction)
             $('#lyrics-title').fadeOut('fast');
             return;
         }
-        else if (direction=='forward') {
+
+        if (direction=='forward') {
             // loop through all sequence items and find the next that wasn't shown yet
             found = false;
             $(seq).each(function(entry){
@@ -664,7 +737,7 @@ function advancePresentation(direction)
                 return;
             }
         }
-        // no we try to move backwards in the sequence of song parts
+        // no, we try to move backwards in the sequence of song parts
         else {
             for (var i = seq.length - 1; i >= 0; i--) {
                 if ($(seq[i]).hasClass('bg-danger')) {
@@ -703,7 +776,8 @@ function advancePresentation(direction)
                     $(this).data().showStatus = 'done';
                     $('.bible-progress-indicator').removeClass('bg-danger');
                     $(this).addClass('bg-danger');
-                    $(this).click();
+                    todo = $(this).attr('onclick');
+                    eval( todo );
                     return false; // escape the each loop...
                 }
             });
@@ -718,12 +792,13 @@ function advancePresentation(direction)
             for (var i = seq.length - 1; i >= 0; i--) {
                 if ( $(seq[i]).data().showStatus == 'done') {
                     console.log('found ' + $(seq[i]).attr('id'));
-                    if (i<=1) {break;} // we can't move any further back....
+                    if (i<1) {break;} // we can't move any further back....
                     found=true;
-                    $(seq[i-1]).data().showStatus = 'unshown';
+                    $(seq[i]).data().showStatus = 'unshown';  // make this part 'unshown'
                     $('.bible-progress-indicator').removeClass('bg-danger');
                     $(seq[i-1]).addClass('bg-danger');
-                    $(seq[i-1]).click();
+                    todo = $(seq[i-1]).attr('onclick');
+                    eval( todo );
                     break; // escape the for loop...
                 }
             }
@@ -761,7 +836,10 @@ function jumpTo(where)
 
 /*
     Show lyrics in presentation mode
+
     mainly: divide lyrics into blocks (verses, chorus etc) to be able to show them individually
+
+    NOTE: headers must be in a single line and text enclosed om square brackets! E.g.: "[Verse 1]"
 */
 function reDisplayLyrics()
 {
@@ -786,13 +864,26 @@ function reDisplayLyrics()
         // treat empty lines as start for a new slide!
         if (lyrics[i].length==0) {
             if (i==0) continue; // but not a leading empty line....
-            hdr = curPart + String.fromCharCode(apdxNam++);
+            // we have no headings in this lyris, so we invent one....
+            if (curPart == '') { 
+                hdr = curPart = 'verse1';
+                insertNewLyricsSlide(newDiv, newLyr, divNam, lines);
+                divNam = hdr;
+                newLyr = '';
+                lines  = 0;
+                newDiv = '</div><div id="'+hdr+'" class="lyrics-parts" ';
+            } else {
+                // an empty line within a song part is treated as a sub-header
+                // ==> 'verse1' will become 'verse1a'
+                hdr = curPart + String.fromCharCode(apdxNam++);
+            }
         }
+        // or we already have a pre-defined header line for this song part
         else { 
             hdr = identifyLyricsHeadings( lyricsLine ); 
             if (hdr.length>0) { 
                 curPart = hdr; 
-                var apdxNam= 97; // reset appendix indicator (for forced lyric parts)
+                var apdxNam= 97; // = 'a': reset appendix indicator (for forced lyric parts)
             }
         }
 
@@ -823,8 +914,11 @@ function insertNewLyricsSlide(newDiv, newLyr, divNam, lines)
 
     newDiv += ' data-header-code="'+headerCode(divNam)+'">';
 
+    // insert the lyrics back into the HTML doc
     $('#present-lyrics').append( newDiv + newLyr + '</div>' );
+    // make sure this part is still hidden
     $('#'+divNam).hide();
+    // make the hidden select button for this part visible
     $('#btn-show-'+divNam).show();    
     console.log( 'Inserted lyrics part called ' + divNam );
 }
@@ -854,28 +948,63 @@ function bibleShow(what)
 // called from the lyrics buttons made visible in reDisplayLyrics function
 function lyricsShow(what)
 {
-    // from the 'what' determine the proper ID value of the desired song part
+    // from the short version of a 'what', determine the proper ID value of the desired song part
     if (what.length<4) {
-        apdx = '';
-        fc = what.substr(0,1);
-        if ( $.isNumeric(fc) || fc != 'c' ) {
-            apdx = what.substr(1);   
-            what = identifyLyricsHeadings('['+fc+']')+apdx;
-        } else {
-            apdx = what.substr(2);
-            what = identifyLyricsHeadings('['+what.substr(0,2)+']')+apdx;
-        }
+        what = decompPartCode(what);
+    } else {
+        // As the user choose a song part directly, we need to correct the automatic advancement!
+
+        // first get the list of all progress indicators
+        var seq = $('.lyrics-progress-indicator');
+        var gefunden = false;
+        // check each to see where we want to be
+        $(seq).each(function(entry){
+            if (! gefunden) {
+                // try to recompile the action for this button into the name of the song part
+                // e.g. if the action is onclick="showLyrics('1')" then the song part is 'verse1' etc
+                indic = ( $(this).attr('onclick') ).split("'");
+                if (indic.length>1) {indic=indic[1]} else {return false;}
+                gesucht = decompPartCode(indic); // 'gesucht' is the song part for the current sequence indicator
+                if (gesucht==indic) {return false;}
+            }
+            // now we can see if the song part the parent function whats to show is the same
+            // as the current part (gesucht) in the sequence indicator list
+            if (what == gesucht && ! gefunden) {
+                // now we need to mark all following song parts as 'unshown'
+                gefunden = true;
+                $(this).addClass('bg-danger');
+            }
+            // mark the rest as unshown
+            else if ( gefunden ) {
+                $(this).data().showStatus = 'unshown';
+                $(this).removeClass('bg-danger');
+            }
+        });
     }
     // do nothing if the object doesn't exist...
     if ( $('#'+what).length == 0 )  { return }
 
     console.log('showing song part called '+what);
     
+    // first, fade out the currently shown text, then fade in the new text
     $('.lyrics-parts').fadeOut().promise().done( function() { $('#'+what).fadeIn() } );
+
     // elevate the currently used button
     $('.lyrics-show-btns').removeClass('btn-danger');       // make sure all other buttons are back to normal
     $('#btn-show-'+what).removeClass('btn-info-outline');   // aremove ouline for this button
     $('#btn-show-'+what).addClass('btn-danger');            // add warning class for this button
+}
+function decompPartCode(what) {
+    apdx = '';
+    fc = what.substr(0,1);
+    if ( $.isNumeric(fc) || fc != 'c' ) {
+        apdx = what.substr(1);   
+        what = identifyLyricsHeadings('['+fc+']')+apdx;
+    } else {
+        apdx = what.substr(2);
+        what = identifyLyricsHeadings('['+what.substr(0,2)+']')+apdx;
+    }
+    return what;
 }
 function identifyLyricsHeadings(str)
 {
@@ -891,11 +1020,13 @@ function identifyLyricsHeadings(str)
         case '[9]': return 'verse9';
         case '[prechorus]': return 'prechorus';
         case '[p]': return 'prechorus';
+        case '[s]': return 'start-lyrics';
         case '[chorus 2]': return 'chorus2';
         case '[t]': return 'chorus2';
         case '[chorus]': return 'chorus1';
         case '[chorus1]': return 'chorus1';
         case '[c]': return 'chorus1';
+        case '[ch]': return 'chorus1';
         case '[c1]': return 'chorus1';
         case '[bridge]': return 'bridge';
         case '[b]': return 'bridge';

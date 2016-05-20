@@ -87,6 +87,9 @@
         <ul class="nav navbar-nav">
             <li>
                 <!-- potential buttons for lyric parts (cerses, chorusses etc) -->
+                <a href="#" onclick="lyricsShow('start-lyrics');" 
+                    title="show start lyrics" id="btn-show-start-lyrics" style="display: none;" 
+                    class="nav-item btn btn-sm btn-info-outline lyrics-show-btns" role="button">S</a>
                 <a href="#" onclick="lyricsShow('verse1');" 
                     title="show verse 1" id="btn-show-verse1" style="display: none;" 
                     class="nav-item btn btn-sm btn-info-outline lyrics-show-btns" role="button">1</a>                
@@ -108,9 +111,6 @@
                 <a href="#" onclick="lyricsShow('verse7');" 
                     title="show verse 7" id="btn-show-verse7" style="display: none;" 
                     class="nav-item btn btn-sm btn-info-outline lyrics-show-btns" role="button">7</a>                
-                <a href="#" onclick="lyricsShow('start-lyrics');" 
-                    title="show start lyrics" id="btn-show-start-lyrics" style="display: none;" 
-                    class="nav-item btn btn-sm btn-info-outline lyrics-show-btns" role="button">S</a>
                 <a href="#" onclick="lyricsShow('prechorus');" 
                     title="show pre-chorus" id="btn-show-prechorus" style="display: none;" 
                     class="nav-item btn btn-sm btn-info-outline lyrics-show-btns" role="button">P</a>
