@@ -204,7 +204,7 @@
                             @if ($menu_item->song_id && $menu_item->song->title)
                                 <i class="fa fa-music">&nbsp;</i><strong>{{ $menu_item->song->title }}</strong>
                             @else
-                                {{ $menu_item->comment }}
+                                {{ substr($menu_item->comment,35) }}
                             @endif
                         </a>
                     @endforeach
