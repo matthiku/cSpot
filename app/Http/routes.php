@@ -78,6 +78,9 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     // Manage team for a service plan
     Route::get( 'plans/{plan_id}/team', ['as' => 'team.index', 'uses' => 'Cspot\TeamController@index']);
     Route::post('plans/{plan_id}/team', ['as' => 'team.store', 'uses' => 'Cspot\TeamController@store']);
+    Route::get( 'plans/{plan_id}/team/addAllMusicians',                  'Cspot\TeamController@addAllMusicians');
+    Route::get( 'plans/{plan_id}/team/{team_id}/edit',                   'Cspot\TeamController@edit');
+    Route::post('plans/{plan_id}/team/{team_id}/update',                 'Cspot\TeamController@update');
     Route::get( 'plans/{plan_id}/team/{team_id}/delete',                 'Cspot\TeamController@destroy');
     Route::get( 'plans/{plan_id}/team/{team_id}/sendrequest',            'Cspot\TeamController@sendrequest');
     Route::get( 'plans/{plan_id}/team/{team_id}/confirm',                'Cspot\TeamController@confirm');

@@ -447,3 +447,34 @@ function getBibleTexts($refString)
     }
     return $bibleTexts;
 }
+
+
+
+/**
+ * getUsersRolesAndInstruments
+ *
+ * Create an array of all users, their roles and instruments 
+ *
+ * @return arary
+ */
+function getUsersRolesAndInstruments() 
+{
+
+    // produce array with users and all their roles
+    $rou = User::with('roles', 'instruments')->get();
+    $userRoles = [];
+    foreach ($rou as $user) {
+        $roles = [];
+        $instruments = [];
+        foreach ($user->roles as $value) {
+            if ($value->id > 3) { // no administrative roles needed
+                array_push($roles, ['role_id'=>$value->id, 'name'=>$value->name] ); }
+        }
+        // provide data about user's music instruments
+        foreach ($user->instruments as $value) {
+            array_push($instruments, ['instrument_id'=>$value->id, 'name'=>$value->name] ); 
+        }
+        $userRoles[$user->id] = ['name'=>$user->name, 'roles'=>$roles, 'instruments'=>$instruments];       
+    }
+    return $userRoles;
+}

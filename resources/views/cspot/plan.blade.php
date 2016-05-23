@@ -101,7 +101,7 @@
                             T.:&nbsp;<strong>{{ $plan->teacher->name }}</strong>
                         @endif
                         <a href="{{ url('cspot/plans/'.$plan->id.'/team') }}" class="m-l-2" 
-                            title="Worship leader and musicians etc"><i class="fa fa-music"></i>&nbsp;Team
+                            title="Worship leader and musicians etc"><i class="fa fa-users"></i>&nbsp;Team
                         </a> 
                     </big>
                 </div>

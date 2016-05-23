@@ -22,6 +22,7 @@ class TeamController extends Controller
 {
 
 
+
     /**
      * Show form to manage team for a plan
      *
@@ -34,25 +35,13 @@ class TeamController extends Controller
         // get list of users
         $users = User::where('name', '<>', 'n/a')->orderBy('first_name')->get();
 
-        // produce array with users and all their roles
-        $rou = User::with('roles')->get();
-        $userRoles = [];
-        foreach ($rou as $user) {
-            $roles = [];
-            foreach ($user->roles as $value) {
-                if ($value->id > 3) { // no administrative roles needed
-                    array_push($roles, ['role_id'=>$value->id, 'name'=>$value->name] ); }
-            }
-            $userRoles[$user->id] = ['name'=>$user->name, 'roles'=>$roles];       
-        }
-
 
         // return view
         if ($plan) {
-            return view('cspot.team', [
+            return view('cspot.teams', [
                 'plan'      =>$plan, 
                 'users'     =>$users, 
-                'userRoles' =>json_encode($userRoles)
+                'userRoles' =>json_encode( getUsersRolesAndInstruments() ),
             ]);
         }
     }
@@ -67,6 +56,11 @@ class TeamController extends Controller
      */
     public function sendrequest($plan_id, $id)
     {
+        // check access rights
+        if (! Auth::user()->ownsPlan($plan_id) ) {
+            return redirect('home')->with('error', 'You are unauthorized for this request.');
+        }
+
         // get the resource handle
         $team = Team::find($id);
         if ($team) {
@@ -100,7 +94,7 @@ class TeamController extends Controller
         if ($team) {
             $team->confirmed = ! $team->confirmed;
             $team->save();
-            if ($team->requested) {
+            if ($team->confirmed) {
                 $status = 'You confirmed your membership for this plan.'; 
             }
             else {
@@ -129,6 +123,11 @@ class TeamController extends Controller
         // get current plan
         $plan = Plan::with('teams')->find($plan_id);
 
+        // check access rights
+        if (! Auth::user()->ownsPlan($plan_id) ) {
+            return redirect('home')->with('error', 'You are unauthorized for this request.');
+        }
+
         // see if this was a submit with a new team member request
         if ($request->has('user_id') && $request->has('role_id') ) {
             // now we need to add this to the DB
@@ -150,18 +149,73 @@ class TeamController extends Controller
 
 
 
+    /**
+     * Edit a single team member of a plan
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($plan_id, $id)
+    {
+        // get current plan
+        $plan = Plan::with('teams')->find($plan_id);
+        // check access rights
+        if (! Auth::user()->ownsPlan($plan_id) ) {
+            return redirect('home')->with('error', 'You are unauthorized for this request.');
+        }
+
+        // get list of users
+        $users = User::where('name', '<>', 'n/a')->orderBy('first_name')->get();
+        // get the resource handle
+        $team = Team::find($id);
+        if ($team) {
+            return view('cspot.team', [
+                'team'      =>$team, 
+                'plan'      =>$plan, 
+                'users'     =>$users, 
+                'userRoles' =>json_encode( getUsersRolesAndInstruments() ),
+            ]);
+        }
+        $error = 'Wrong team member id!';
+        return \Redirect::back()
+                        ->with(['error' => $error]);
+    }
+
+
+
+
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  int  $plan_id 
+     * @param  int  $id         team member id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $plan_id, $id)
     {
-        //
-        return 'UPDATE not implemented yet...';
+        // check access rights
+        if (! Auth::user()->ownsPlan($plan_id) ) {
+            return redirect('home')->with('error', 'You are unauthorized for this request.');
+        }
+
+        // get current team member
+        $team = Team::find($id);
+
+        // see if this was a submit with a new team member request
+        if ( $team && $request->has('role_id') ) {
+            // now we need to update the team member data
+            $team->role_id = $request->role_id;
+            $team->comment = $request->comment;
+            $team->save();
+
+            $status = 'Team Member data updated.';
+            return \Redirect::route('team.index', ['plan_id'=>$plan_id])
+                            ->with(['status' => $status]);
+        }
+        $error = 'Wrong team member id!';
+        return \Redirect::back()
+                        ->with(['error' => $error]);
     }
 
 
@@ -176,6 +230,11 @@ class TeamController extends Controller
      */
     public function destroy($plan_id, $id)
     {
+        // check access rights
+        if (! Auth::user()->ownsPlan($plan_id) ) {
+            return redirect('home')->with('error', 'You are unauthorized for this request.');
+        }
+
         // get the resource handle
         $team = Team::find($id);
         if ($team) {

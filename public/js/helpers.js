@@ -1549,8 +1549,17 @@ function showScriptureText(version,book,chapter,fromVerse,toVerse)
  * 
  * param 'who' refers to the element from which this method was called
  */
-function showRoleSelect(who)
+function showRoleSelect(who, role_id)
 {
+    // default value for role_id
+    role_id = role_id || undefined;
+
+    // make the role selection elements (radio buttons) visible
+    $('#select-team-role').fadeIn();
+
+    // now show the comment input and submit button
+    $('#comment-input').fadeIn();
+    $('#submit-button').fadeIn();
 
     // grab the div around the radio buttons 
     var roleSelectBox = $('#select-role-box');
@@ -1564,23 +1573,36 @@ function showRoleSelect(who)
     if (typeof(userRolesArray)=='object') {
         var user = userRolesArray[who.value];
         var roles = user.roles;
+        // first empty the select box
+        $('#select-role-box').html('');
         // add each role as a radio button and label
-        for (var i=0; i<roles.length; i++) {
-            var radio = radio1 + 'role_id-'+roles[i].role_id;
-            radio += '" value="' + roles[i].role_id;
+        for (var i in roles) {
+            var radio = radio1 + 'role_id-'+roles[i].role_id+'" ';
+            if (roles[i].role_id == role_id) {
+                radio += 'checked ';
+            }
+            radio += 'value="' + roles[i].role_id;
             radio += radio2 + roles[i].name + radio3;
             roleSelectBox.append(radio);
         }
+        var instruments = user.instruments;
+        if (instruments.length > 0) { 
+            $('#show-instruments').html('(plays: '); }
+        else {
+            $('#show-instruments').html(); }
+        for (var i in instruments) {
+            var text = instruments[i].name;
+            if (i < instruments.length-1) {
+                text += ', '; } 
+            else {
+                text += ')'; }
+            $('#show-instruments').append(text);
+        }
     }
-    // select the first item, so that the user MUST make a choice
-    $('.role-selector-items').first().click()
-
-    // make the role selection elements (radio buttons) visible
-    $('#select-team-role').fadeIn();
-
-    // now show the comment input and submit button
-    $('#comment-input').fadeIn();
-    $('#submit-button').fadeIn();
+    if (role_id==undefined) {
+        // select the first item, so that the user MUST make a choice
+        $('.role-selector-items').first().click();
+    }
 }
 
 
