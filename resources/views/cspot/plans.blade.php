@@ -57,7 +57,13 @@
 					
 					@include('cspot.snippets.theader', ['thfname' => 'type_id', 'thdisp' => 'Service Type', 'thsort'=>false, 'thclass'=>''])
 
-					<th class="hidden-sm-down center"># items</th>
+					<th class="center" title="Check when you are available for that particular plan"
+						data-toggle="tooltip" title="Check when you are available for that particular plan">
+						<small>Available?</small></th>
+
+					<th class="hidden-md-down center"># staff</th>
+
+					<th class="hidden-lg-down center"># items</th>
 
 					@include('cspot.snippets.theader', ['thfname' => 'leader_id', 'thdisp' => 'Leader', 'thsort'=>false, 'thclass'=>'hidden-xs-down center'])
 
@@ -71,19 +77,39 @@
 
 
 			<tbody>
+
 	        @foreach( $plans as $plan )
-				<tr class="link" onclick="location.href='{{ url('cspot/plans/'.$plan->id) }}/edit'"
-					data-toggle="tooltip" title="Click on/touch a plan to view/edit it">
 
-					<td class="hidden-md-down center" scope="row">{{ $plan->id }}</td>
+				<tr><?php $editPlansHtml ="onclick=\"location.href='" . url('cspot/plans/'.$plan->id) . "/edit'";
+						  $editPlansHtml.='" data-toggle="tooltip" title="Click a plan to view/edit it"'; ?>
 
-					<td class="hidden-md-down">{{ $plan->date->formatLocalized('%A, %d %B %Y') }}</td>
-					<td class="hidden-sm-down hidden-lg-up">{{ $plan->date->formatLocalized('%a, %d %B %Y') }}</td>
-					<td class="hidden-md-up">{{ $plan->date->formatLocalized('%a, %d %b') }}</td>
+					<td {!! $editPlansHtml !!} class="link hidden-md-down center" scope="row">{{ $plan->id }}</td>
 
-					<td>{{ $plan->type->name }}</td>
+					<td {!! $editPlansHtml !!} class="link hidden-md-down">{{ $plan->date->formatLocalized('%A, %d %B %Y') }}</td>
+					<td {!! $editPlansHtml !!} class="link hidden-sm-down hidden-lg-up">{{ $plan->date->formatLocalized('%a, %d %B %Y') }}</td>
+					<td {!! $editPlansHtml !!} class="link hidden-md-up">{{ $plan->date->formatLocalized('%a, %d %b') }}</td>
 
-					<td class="hidden-sm-down center">{{ $plan->items->count() }}</td>
+					<td {!! $editPlansHtml !!} class="link">{{ $plan->type->name }}</td>
+
+					<td class="center">
+						<a class="hidden-lg-up pull-xs-right" title="show team for this plan" href="{{ url('cspot/plans/'.$plan->id) }}/team">staff</a>
+						<label class="c-input c-checkbox">
+							<input type="checkbox" {{ isset($userIsPlanMember[$plan->id]) ? 'checked' : '' }}
+								onclick="userAvailableForPlan(this, {{ $plan->id }}, {{ Auth::user()->id }})">
+							<span class="c-indicator"></span>
+						</label>
+						<span class="text-muted" id="user-available-for-plan-id-{{ $plan->id }}">
+							{{ isset($userIsPlanMember[$plan->id]) ? 'yes' : 'no' }}
+						</span>
+					</td>
+
+					<td class="hidden-md-down center">
+						<a class="pull-xs-right" title="show team for this plan" href="{{ url('cspot/plans/'.$plan->id) }}/team"><small>(show)</small></a>
+						{{ $plan->teams->count() ? $plan->teams->count() : '' }}
+					</td>
+
+					<td class="hidden-lg-down center">{{ $plan->items->count() }}</td>
+
 					<td class="hidden-xs-down center">{{ $plan->leader->name }}</td>
 					<td class="hidden-xs-down center">{{ $plan->teacher->name }}</td>
 					<td class="hidden-sm-up center">
@@ -95,15 +121,18 @@
 					<td class="hidden-md-down">{{ ucfirst($plan->changer) }}</td>
 
 				</tr>
+
 	        @endforeach
 
 			</tbody>
+
 
 		</table>
 
 		<center>
 			{!! $plans->links() !!}
 		</center>
+
 		<script>
 			// add missing classes and links into the auto-geneerated pagination buttons
 			$('.pagination').children().each(function() { $(this).addClass('page-item'); });

@@ -32,7 +32,7 @@ class CreatePlanTeamTable extends Migration
 
             // user registration
             $table->boolean('requested');
-            // user availability
+            // user confirmation
             $table->boolean('confirmed');
             
             $table->timestamps();

@@ -39,6 +39,9 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('bible/text/{version}/{book}/{chapter}/','Cspot\BibleController@getChapter'); // get bible text
     Route::get('bible/passage/{version}/{book}/{chapter}/{verseFrom}/{verseTo}/','Cspot\BibleController@getBibleText'); // get bible passage
 
+    // user confirms his partizipation with TOKEN (no login needed!)
+    Route::get( 'cspot/plans/{plan_id}/team/{team_id}/confirm/{token}',                'Cspot\TeamController@confirm');
+
 });
 
 
@@ -78,11 +81,19 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     // Manage team for a service plan
     Route::get( 'plans/{plan_id}/team', ['as' => 'team.index', 'uses' => 'Cspot\TeamController@index']);
     Route::post('plans/{plan_id}/team', ['as' => 'team.store', 'uses' => 'Cspot\TeamController@store']);
+    // user announces his availability for a certain plan
+    Route::get('plans/{plan_id}/team/available/{bool}',                  'Cspot\TeamController@available');
+    // shortcut to add all musicians to a plan
     Route::get( 'plans/{plan_id}/team/addAllMusicians',                  'Cspot\TeamController@addAllMusicians');
+    // show the form to edit an existing team member
     Route::get( 'plans/{plan_id}/team/{team_id}/edit',                   'Cspot\TeamController@edit');
+    // update an existing team member
     Route::post('plans/{plan_id}/team/{team_id}/update',                 'Cspot\TeamController@update');
+    // delete an existing team member
     Route::get( 'plans/{plan_id}/team/{team_id}/delete',                 'Cspot\TeamController@destroy');
+    // send email to user to request his partizipation
     Route::get( 'plans/{plan_id}/team/{team_id}/sendrequest',            'Cspot\TeamController@sendrequest');
+    // user confirms his partizipation
     Route::get( 'plans/{plan_id}/team/{team_id}/confirm',                'Cspot\TeamController@confirm');
 
 

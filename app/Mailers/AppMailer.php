@@ -4,6 +4,7 @@ namespace App\Mailers;
 
 use App\Models\User;
 use App\Models\Plan;
+use App\Models\Team;
 
 use Illuminate\Contracts\Mail\Mailer;
 use Auth;
@@ -135,6 +136,27 @@ class AppMailer
 
 
     /**
+     * Get confirmation for plan membership
+     *
+     * @param  
+     * @return void
+     */
+    public function getPlanMemberConfirmation(User $recipient, Plan $plan, Team $team)
+    {
+        $user      = Auth::user();
+        $this->cc  = findAdmins('email');
+        $this->to  = $recipient->email;
+        $this->subject = env('CHURCH_NAME').' - please confirm your role on this Service plan';
+        $this->view    = 'cspot.emails.staffConfirm';
+        $this->data    = compact( 'user', 'recipient', 'plan', 'team' );
+
+        $this->deliver();
+    }
+
+
+
+
+    /**
      * Deliver the email.
      *
      * @return void
@@ -147,6 +169,7 @@ class AppMailer
             function ($message) {
                  $message->from(   $this->from, 'c-SPOT Administrator' )
                          ->to(     $this->to )
+                         ->cc(     $this->cc )
                          ->subject($this->subject );
             }
         );

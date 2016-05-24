@@ -11,8 +11,8 @@
 
     <p>{{$recipient->first_name}} wants to remind you to enter the missing items (songs) into the plan for<br>
 
-    <h3>{{ $plan->type->name }} 
-    on {{ $plan->date->formatLocalized('%A, %d %B %Y') }}</h3>
+    <h3><a href="{{ url('cspot/plans/'.$plan->id) }}">{{ $plan->type->name }} 
+        on {{ $plan->date->formatLocalized('%A, %d %B %Y') }}</a></h3>
 
     <p>Best Regards,<br>    
     Your c-SPOT Admin

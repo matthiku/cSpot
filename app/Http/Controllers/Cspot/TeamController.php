@@ -54,7 +54,7 @@ class TeamController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function sendrequest($plan_id, $id)
+    public function sendrequest($plan_id, $id, AppMailer $mailer)
     {
         // check access rights
         if (! Auth::user()->ownsPlan($plan_id) ) {
@@ -70,8 +70,14 @@ class TeamController extends Controller
                                 ->with(['error' => $error]);
             }
             $team->requested = True;
+            $team->remember_token = str_random(32);
             $team->save();
-            $status = 'Email with membership request was sent to user (ATM SIMULATED ONLYL!)';
+
+            $recipient = User::find($team->user_id);
+            $plan = Plan::find($team->plan_id);
+            $mailer->getPlanMemberConfirmation( $recipient, $plan, $team );
+
+            $status = 'Email with membership request was sent to user.';
             return \Redirect::route('team.index', ['plan_id'=>$plan_id])
                             ->with(['status' => $status]);
         }
@@ -87,19 +93,31 @@ class TeamController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function confirm($plan_id, $id)
+    public function confirm($plan_id, $id, $token=null)
     {
         // get the resource handle
         $team = Team::find($id);
+
+        // check access rights - only the actual user can confirm or reject the assignment
+        if ( ! $token == $team->remember_token   &&  ! $team->user_id == Auth::user()->id ) {
+            return redirect('home')->with('error', 'You are unauthorized for this request.');
+        }
+        // write the confirmation or rejection into the DB
         if ($team) {
+            // if this request came via the direct link, it's always a confirmation
+            if (!$token==null) {$team->confirmed=False;}
+            // now reverse the setting
             $team->confirmed = ! $team->confirmed;
-            $team->save();
             if ($team->confirmed) {
-                $status = 'You confirmed your membership for this plan.'; 
+                $team->available = True;
+                $status = 'Thank you! Your partizipation is confirmed for this plan.'; 
             }
             else {
-                $status = 'You declined your membership for this plan.'; 
+                // we also have to reset the availability
+                $team->available = False;
+                $status = 'Thank you! Your status was changed accordingly.'; 
             }
+            $team->save();
             return \Redirect::route('team.index', ['plan_id'=>$plan_id])
                             ->with(['status' => $status]);
         }
@@ -108,6 +126,52 @@ class TeamController extends Controller
                         ->with(['error' => $error]);
     }
 
+
+
+
+    /**
+     * A user announced his availability for a certain plan
+     * 
+     * @param plan_id   integer 
+     * @param available boolean 
+     *
+     * (This is an API type call)
+     */
+    public function available($plan_id, $available)
+    {
+        $bool = $available=='true' ? True : False;
+
+        // get current plan
+        $plan = Plan::with('teams')->find($plan_id);
+
+        if ($plan->count()) {        
+            $user_id = Auth::user()->id;
+
+            // check if this user is already part of this plan
+            $team = Team::where('plan_id', $plan_id)->where('user_id', $user_id)->first();
+            if ($team) {
+                // if the user has already be assigned a role, we only change their availability
+                if ( $team->role_id || $team->confirmed || $bool) {
+                    $team->update(['available' => $bool]);
+                } else {
+                    // if the user wasn't assigned a role yet, we can delete the record altogether.
+                    $team->delete();
+                }
+            }
+            else {
+                // create a new team member record for this plan
+                $team = new Team([
+                    'user_id'   => $user_id, 
+                    'available' => $bool,
+                ]);
+                $plan->teams()->save($team);
+            }
+
+            return response()->json("User's availability changed to ".$available, 200);
+        }
+
+        return response()->json("requested failed, no changes made!", 404);        
+    }
 
 
 

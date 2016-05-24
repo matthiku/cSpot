@@ -13,8 +13,12 @@ class UpdatePlanTeamTable extends Migration
     public function up()
     {
         Schema::table('plan_team', function (Blueprint $table) {
+            // user availability
+            $table->boolean('available');
             // add comment field
             $table->text('comment');
+            // add token field for direct confirmation (no login required)
+            $table->rememberToken();
         });
     }
 
@@ -26,8 +30,9 @@ class UpdatePlanTeamTable extends Migration
     public function down()
     {
         Schema::table('plan_team', function (Blueprint $table) {
-            // remove the field again
+            // remove the fields again
             $table->dropColumn('comment');
+            $table->dropColumn('available');
         });
     }
 }

@@ -7,6 +7,7 @@ use App\Models\Plan;
 use App\Models\Song;
 use App\Models\File;
 use App\Models\User;
+use App\Models\Team;
 
 use App\Http\Controllers\Cspot\BibleController;
 
@@ -478,3 +479,21 @@ function getUsersRolesAndInstruments()
     }
     return $userRoles;
 }
+
+
+/**
+ * get list of future plans where the current user is listed as member
+ */
+function listOfPlansForUser()
+{
+    $list = [];
+    $team = Team::where('user_id', Auth::user()->id)->get();
+    foreach ($team as $key => $value) {
+        if ($team[$key]->available) {
+            $list[$team[$key]->plan_id] = True;
+        }
+    }
+    return $list;
+}
+
+

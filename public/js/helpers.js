@@ -1544,13 +1544,14 @@ function showScriptureText(version,book,chapter,fromVerse,toVerse)
 
 
 
+
 /**
  * On the Team page, show the role select element once the user was selcted
  * 
  * param 'who' refers to the element from which this method was called
  */
 function showRoleSelect(who, role_id)
-{
+{    
     // default value for role_id
     role_id = role_id || undefined;
 
@@ -1602,6 +1603,37 @@ function showRoleSelect(who, role_id)
     if (role_id==undefined) {
         // select the first item, so that the user MUST make a choice
         $('.role-selector-items').first().click();
+    }
+}
+
+/**
+ * Record a user's availability for a certain plan
+ */
+function userAvailableForPlan(that, plan_id) {
+    // make sure the tooltip is hidden now
+    $(that).parent().parent().tooltip('hide')
+    $('#user-available-for-plan-id-'+plan_id).text( "wait..." );
+
+    var teamPage = false;
+    // was this function called from within the Team page?
+    if (that.checked == undefined) {
+        showSpinner();
+        teamPage = true;
+        // inverse the current available status
+        that.checked = ! $(that).data().available;
+    }
+
+    if ( $.isNumeric(plan_id) ) {
+        console.log('User wants his availability changed to '+that.checked);
+        // make AJAX call to 'plans/{plan_id}/team/{user_id}/available/'+that.checked
+        $.get( __app_url+'/cspot/plans/'+plan_id+'/team/available/'+that.checked)
+        .done(function() {
+            $('#user-available-for-plan-id-'+plan_id).text( that.checked ? 'yes' : 'no');
+            if (teamPage) { location.reload(); }
+        })
+        .fail(function() {
+            $('#user-available-for-plan-id-'+plan_id).text( "error" );
+        })        
     }
 }
 

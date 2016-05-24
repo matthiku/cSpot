@@ -28,7 +28,14 @@ class Team extends Model
      *   team members of a plan are being requested 
      *   by the leader and confirmed by the member
      */
-    protected $fillable = ['requested', 'confirmed', 'user_id', 'role_id', 'comment'];
+    protected $fillable = [
+        'available',
+        'requested',
+        'confirmed',
+        'user_id',
+        'role_id',
+        'comment',
+    ];
 
 
 

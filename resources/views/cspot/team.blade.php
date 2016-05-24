@@ -42,7 +42,15 @@
 
         <div id="select-team-role">
             <label class="form-control-label">Role:
-                <div class="c-inputs-stacked m-l-1" id="select-role-box"></div>
+                <div class="c-inputs-stacked m-l-1" id="select-role-box">
+                    @foreach ($team->user->roles as $role)
+                        <label class="c-input c-radio role-selector-items">
+                            <input type="radio" id="role_id-{{ $role->id }}" value="{{ $role->id }}" name="role_id"
+                                {{ $team->role_id == $role->id ? 'checked' : '' }}>
+                            <span class="c-indicator"></span>{{ $role->name }}
+                        </label>
+                    @endforeach
+                </div>
             </label>
         </div>
 

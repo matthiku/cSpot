@@ -92,6 +92,8 @@ class PlanController extends Controller
         $show        = isset($request->show  )      ? $request->show        : 'future';
         $orderBy     = isset($request->orderby)     ? $request->orderby     : 'date';
         $order       = isset($request->order)       ? $request->order       : 'asc';
+
+        $userIsPlanMember = [];
     
         // show only plans for certain user ids
         if ($filterby=='user') 
@@ -137,12 +139,14 @@ class PlanController extends Controller
             $plans = Plan::with(['type', 'leader', 'teacher'])
                 ->whereDate('date', '>', Carbon::yesterday())
                 ->orderBy($orderBy, $order);
-            $heading = 'Upcoming Service Plans';            
 
             // for an API call, return the raw data in json format (without pagination!)
             if (isset($request->api)) {
                 return json_encode($plans->get());
             }
+            $heading = 'Upcoming Service Plans';
+            // get list of plans of which the current user is member
+            $userIsPlanMember = listOfPlansForUser();
         }
         // show only plans of the current user (or all plans if it's an admin)
         else
@@ -165,7 +169,7 @@ class PlanController extends Controller
 
         return view( 
             $this->view_all, 
-            array('plans' => $plans, 'heading' => $heading) 
+            array('plans' => $plans, 'heading' => $heading, 'userIsPlanMember' => $userIsPlanMember) 
         );
     }
 
