@@ -504,6 +504,10 @@ function checkSequenceIndicatorLength()
 {
     // max items shown before or after the current item
     var limit = 4;
+    if (window.innerWidth < 800) {
+        limit = 3; }
+    if (window.innerWidth > 1250) {
+        limit = 5; }
 
     var what = '.lyrics';
 
@@ -531,11 +535,11 @@ function checkSequenceIndicatorLength()
     $(seq).each(function(entry){
         // get this element's ID number
         var thisID = 1*getProgressIDnumber(this);
-        if ( thisID+limit < active_id  ||  thisID-limit > active_id ) {
+        if ( thisID+limit-2 < active_id  ||  thisID-limit > active_id ) {
             $(this).hide();
         } else { 
             $(this).show(); 
-            if (thisID+limit == active_id) {
+            if (thisID+limit-2 == active_id) {
                 $(this).prepend(moreIndBW);}
             if (thisID-limit == active_id) {
                 $(this).append(moreIndFW); }
@@ -987,6 +991,8 @@ function navigateTo(where)
 function bibleShow(what)
 {
     var p = $('.bible-text-present-parts');
+    var q = $('.bible-progress-indicator');
+    // loop through all bible verses until number 'what' is found...
     for (var i=0; i<p.length; i++) {
         if ($(p[i]).attr('id') == what) {
             $(p[i]).show();

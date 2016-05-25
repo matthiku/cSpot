@@ -82,7 +82,7 @@
 
 
 
-    <nav class="navbar navbar-fixed-bottom navbar-dark bg-black center p-b-0 p-t-0">
+    <nav class="navbar navbar-fixed-bottom navbar-dark bg-black center" style="padding: 0;">
 
         <ul class="nav navbar-nav">
             <li>
@@ -148,7 +148,7 @@
             @endif
         </span>
 
-        <span class="navbar-brand center" id="show-linecount"></span>
+        <!-- <span class="navbar-brand center" id="show-linecount"></span> -->
     
         <!-- button to reveal the second navbar at the bottom -->
         <button class="navbar-toggler btn btn-info active" type="button" data-toggle="collapse" data-target="#lyricsNavbar">
