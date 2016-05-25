@@ -30,8 +30,8 @@
         @endif
 
         @if ($item->files)
-            @foreach ($item->files as $file)
-                <img class="slide-background-image m-b-2"  style="display: none;" 
+            @foreach ($item->files as $key => $file)
+                <img class="slide-background-image m-b-2" data-slides-id="{{ $key+1 }}"  style="display: none;" 
                        src="{{ url(config('files.uploads.webpath')).'/'.$file->token }}">
             @endforeach
         @endif

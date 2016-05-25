@@ -29,310 +29,27 @@ var showBlankBetweenItems;
 var screenBlank = true;
 
 
-$(document).ready(function() {
 
-
-    /**
-     * enabling certain UI features 
-     */
-    $(function () {
-        // activate the tooltips
-        $('[data-toggle="tooltip"]').tooltip();
-
-        // activate popvers
-        $('[data-toggle="popover"]').popover();
-        $('.popover-dismiss').popover({
-            trigger: 'focus'
-        });
-
-        // enable Tabs
-        $('#tabs').tabs();
+/**
+ * show multiple images as subsequent slides
+ */
+function prepareImages() 
+{
+    // make sure the images have the correct size, filling either width or height
+    $('#main-content').css('text-align', 'center');
+    $('.slide-background-image').height( window.innerHeight - $('.navbar-fixed-bottom').height());
+    $('.slide-background-image').css('max-width', window.innerWidth);
+    $('.app-content').css('padding', 0);
+    var bgImages = $('.slide-background-image');
+    $.each(bgImages, function(entry) {
+        insertSeqNavInd(1*entry+1,entry,'slides');
     });
-  
-
-    /**
-     * On 'Home' page, get list of future plans and show calendar widget
-     */
-    if ( window.location.href == __app_url + '/home' ) {
-        $.getJSON( __app_url + '/cspot/plans?filterby=future&api=api',
-            function(result){
-                $.each(result, function(i, field) {
-                    hint = field.type.name+' led by '+field.leader.first_name; 
-                    if ( field.teacher.first_name != "n/a" ) {
-                        hint +=', teacher is ' + field.teacher.first_name; }
-                    dt = new Date(field.date.split(' ')[0]).toLocaleDateString();
-                    SelectedDates[dt] = hint;
-                });
-                // get the current browser window dimension (width)
-                browserWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-                numberOfMonths = 3;
-                if (browserWidth<800) numberOfMonths = 2;
-                if (browserWidth<600) numberOfMonths = 1;
-                // Now style the jQ date picker
-                $(function() {
-                    /***
-                     * Show Date Picker calendar widget
-                     */
-                    $( "#inpDate" ).datepicker({
-                        numberOfMonths: numberOfMonths,
-                        changeMonth   : true,
-                        changeYear    : true,
-                        maxDate       : "+4m",
-                        dateFormat    : "yy-mm-dd",
-                        beforeShowDay : 
-                            function(date) {
-                                var dot=date.toLocaleDateString();
-                                var Highlight = SelectedDates[dot];
-                                if (Highlight) {
-                                    if (Highlight==='Today') {
-                                        return [true, "", Highlight]; }
-                                    return [true, "Highlighted", Highlight]; }
-                                else {
-                                    return [true, '', '']; }
-                            }
-                    });
-                });
-            }
-        );
-        
-    }
+    // activate the first image
+    todo = $('#slides-progress-0').attr('onclick');
+    eval(todo);
+}
 
 
-    /**
-     * Put focus on textarea when user opens the feedback modal dialog
-     */
-    $('#createMessage').on('shown.bs.modal', function () {
-        $('#feedbackMessage').focus()
-    })
-
-    /**
-     * Mark modified form fields with a new background
-     * and show the submit/save buttons
-     */
-    $("input, textarea, input:radio, input:file").change(function(){
-        // change background color of those fields
-        $(this).css("background-color", "#D6D6FF");
-
-        // show submit or sabe buttons
-        $('.submit-button').show();
-        blink('.submit-button');
-    });
-
-
-
-    /***
-     * Get array with all bible books with all chapters and number of verses in each chapter
-     */
-    $.get(__app_url+'/bible/books/all/verses', function(data, status) {
-
-        if ( status == 'success') {
-            bibleBooks = data;
-        }
-    });
-
-
-
-
-    /**
-     * items on Plan page can be moved into new positions
-     */
-    $("#tbody-items").sortable({
-        items   : "> tr",
-        appendTo: "parent",
-        cursor  : 'move',
-        helper  : "clone",
-        handle  : '.drag-item',
-        distance: '5',
-        forceHelperSize: true,
-        stop    : function (event, ui) {
-            $('#show-spinner').show();
-            var changed=false;
-            should_seq_no = 0;
-            movedItem = [];
-            movedItem.id = ui.item.data('itemId');
-            movedItem.seq_no = ui.item.attr('id').split('-')[2];
-            // get all siblings of the just moved item
-            siblings = $(ui.item).parent().children();
-            // check each sibling's sequence
-            for (var i = 1; i <= siblings.length; i++) {
-                sib = siblings[-1+i];
-                //console.log(i + ' attr:' + sib.id + ' id:' + sib.dataset.itemId + ' class:' + sib.classList);
-                if (sib.classList.contains('trashed')) {
-                    // ignore trashed items....
-                    continue;
-                }
-                // is this the moved item?
-                if ( sib.dataset.itemId == movedItem.id ) {
-                    changed = sib;
-                    //console.log(sib.id+' was moved. ');
-                    break;
-                } 
-                else {
-                    should_seq_no = 0.0 + sib.id.split('-')[2];
-                    //console.log(sib.id + ' unmoved ');
-                    if (changed) { 
-                        break; 
-                    }
-                }
-            }
-            if (changed) {
-                should_seq_no = 1 * should_seq_no;
-                //console.log( 'Item '+changed.id+ ' (id # ' + changed.dataset.itemId +')  should now have seq no ' + (0.5 + should_seq_no) );
-                window.location.href = __app_url + '/cspot/items/' + changed.dataset.itemId + '/seq_no/'+ (0.5 + should_seq_no);
-                return;
-            } else {
-                // console.log('order unchanged');
-            }
-        },
-    }).disableSelection();
-
-
-    
-    /**
-     * Configuration for Items Presentation Views (present/chords/musicsheets)
-     */
-    if (window.location.href.indexOf('/items/')>10) {
-
-        // handle keyboard events
-        $(document).keydown(function( event ) {
-            // key codes: 37=left arrow, 39=right, 38=up, 40=down, 34=PgDown, 33=pgUp, 
-            //            36=home, 35=End, 32=space, 27=Esc, 66=e
-            //
-            console.log('pressed key code: '+event.keyCode);
-            switch (event.keyCode) {
-                case 37: advancePresentation('back'); break; // left arrow
-                case 33: navigateTo('previous-item'); break; // left PgUp
-                case 36: navigateTo('first-item');   break; // key 'home'
-                case 39: advancePresentation();     break; // key right arrow
-                case 32: advancePresentation();    break; // spacebar
-                case 34: navigateTo('next-item'); break; // key 'PgDown'
-                case 35: navigateTo('last-item'); break; // key 'end'
-                case 27: navigateTo('back');     break; // key 'Esc'
-                case 68: navigateTo('edit');    break; // key 'd'
-                case 83: jumpTo('start-lyrics');break; // key 's'
-                case 80: jumpTo('prechorus'); break; // key 'p'
-                case 49: jumpTo('verse1'); break; // key '1'
-                case 50: jumpTo('verse2'); break; // key '2'
-                case 51: jumpTo('verse3'); break; // key '3'
-                case 52: jumpTo('verse4'); break; // key '4'
-                case 53: jumpTo('verse5'); break; // key '5'
-                case 53: jumpTo('verse6'); break; // key '6'
-                case 53: jumpTo('verse6'); break; // key '6'
-                case 53: jumpTo('verse7'); break; // key '7'
-                case 67: jumpTo('chorus1'); break; // key 'c'
-                case 75: jumpTo('chorus2');  break; // key 'k'
-                case 66: jumpTo('bridge');     break; // key 'b'
-                case 69: jumpTo('ending');       break; // key 'e'
-                case 76: $('.lyrics-parts').toggle(); break; // key 'l', show all lyrics
-                case 109: $('#decr-font').click();   break; // key '-'
-                case 107: $('#incr-font').click();   break; // key '+'
-                default: break;
-            }
-        });
-    }
-    
-
-    /**
-     * prepare lyrics or bible texts for presentation
-     */
-    if ( window.location.href.indexOf('/present')>10 ) {
-
-        // start showing bible parts if this is a bible reference
-        if ($('.bible-text-present').length>0) {
-            reFormatBibleText(); }
-
-        // re-format the lyrics
-        if ($('#present-lyrics').length > 0) {
-            reDisplayLyrics(); }
-
-        // check if user has changed the default font size and text alignment for the presentation
-        textAlign = getLocalStorValue('.text-present_text-align');
-        $('.text-present').css('text-align', textAlign);
-        $('.bible-text-present').css('text-align', textAlign);
-        $('.bible-text-present>p').css('text-align', textAlign);
-        $('.bible-text-present>h1').css('text-align', textAlign);
-
-        fontSize = getLocalStorValue('.text-present_font-size');
-        if ($.isNumeric(fontSize)) {
-            $('.text-present').css('font-size', parseInt(fontSize));
-        }
-        $('.text-present').show();
-
-        fontSize = getLocalStorValue('.bible-text-present_font-size');
-        if ($.isNumeric(fontSize)) {
-           $('.bible-text-present').css('font-size', parseInt(fontSize));
-           $('.bible-text-present>p').css('font-size', parseInt(fontSize));
-           $('.bible-text-present>h1').css('font-size', parseInt(fontSize));
-        }
-
-        showBlankBetweenItems = getLocalStorValue('configBlankSlides');
-
-        // check if we have a predefined sequence from the DB
-        sequence=($('#sequence').text()).split(',');
-
-        // check if there are more lyric parts than 
-        // indicated in the sequence due to blank lines discoverd in the lyrics
-        if (sequence.length>2) 
-            compareLyricPartsWithSequence();
-
-        // auto-detect sequence if it is missing
-        if (sequence.length<2) {
-            createDefaultLyricSequence();
-            sequence=($('#sequence').text()).split(',');
-        }
-
-        // make sure the sequence indicator isn't getting too wide! 
-        checkSequenceIndicatorLength();
-
-        // make sure the main content covers all the display area, but that no scrollbar appears
-        $('#main-content').css('max-height', window.innerHeight - $('.navbar-fixed-bottom').height());
-        $('#main-content').css('min-height', window.innerHeight - $('.navbar-fixed-bottom').height() - 10);
-
-        // intercept mouse clicks into the presentation area
-        $('#main-content').contextmenu( function() {
-            return false;
-        });
-
-        // allow rght-mouse-click to move one slide or item back
-        $('#main-content').on('mouseup', function(event){
-            event.preventDefault();
-            if (event.which == 1) {
-                advancePresentation(); }
-            if (event.which == 3) {
-                advancePresentation('back'); }
-        });
-
-        // center and maximise images
-        if ( $('.slide-background-image') ) {
-            $('#main-content').css('text-align', 'center');
-            $('.slide-background-image').height( window.innerHeight - $('.navbar-fixed-bottom').height());
-            $('.slide-background-image').css('max-width', window.innerWidth);
-            $('.app-content').css('padding', 0);
-            $('.slide-background-image').fadeIn();
-        }
-    }
-
-    /**
-     * re-design the showing of lyrics interspersed with guitar chords
-     */
-    if ( $('#chords').text() != '' ) {
-        // only do this for PRE tags, not on input fields etc...
-        if ($('#chords')[0].nodeName == 'PRE') {
-            reDisplayChords();
-        }
-        $('.edit-show-buttons').css('display', 'inline');
-    }
-    // remove dropup button and menu on info screens
-    else if ( $('#bibletext').text()!='' || $('#comment').text()!='' ) {
-        $('#jumplist').remove();
-    }
-
-    // if sheetmusic is displayed, show button to swap between sheetmusic and chords
-    if ( window.location.href.indexOf('sheetmusic')>0 || window.location.href.indexOf('swap')>0 ) {
-        $('#show-chords-or-music').css('display', 'inline');
-    }
-
-});
 
 /*
     Re-Formatting of Bible Texts
@@ -666,7 +383,7 @@ function insertSeqNavInd(what, nr, where)
 
     //console.log('inserting sequence indicator for '+ what + ' as '+where+' part # ' + nr);
 
-    data = '<span id="'+where+'-progress-' + nr + '" class="'+where+'-progress-indicator"' +
+    data = '<span id="'+where+'-progress-' + nr + '" class="'+where+'-progress-indicator" ' +
            'data-show-status="unshown" onclick="'+where+'Show(' + "'" + what + "'" + ');">';
     data += formatSeqInd(what)+'&nbsp;</span>';
 
@@ -760,7 +477,7 @@ function advancePresentation(direction)
                     $(seq[i]).data().showStatus = 'unshown';
                     $('.lyrics-progress-indicator').removeClass('bg-danger');
                     $(seq[i-1]).addClass('bg-danger');
-                    todo = $(this).attr('onclick');
+                    todo = $(seq[i-1]).attr('onclick');
                     eval( todo );
                     //$(seq[i-1]).click();
                     return;
@@ -815,6 +532,51 @@ function advancePresentation(direction)
             }
             if (! found) {
                 //$('.bible-text-present').fadeOut();
+                navigateTo('previous-item');
+                return;
+            }
+        }
+    }
+
+    // we are showing images
+    else if ($('.slide-background-image').length>0) {
+        var seq = $('.slides-progress-indicator');
+        // loop through all sequence items and find the next that wasn't shown yet
+        found = false;
+        if (direction=='forward') {
+            $(seq).each(function(entry){
+                if ( $(this).data().showStatus  == 'unshown' ) {
+                    found = true;
+                    console.log('found ' + $(this).attr('id'));
+                    $(this).data().showStatus = 'done';
+                    $('.slides-progress-indicator').removeClass('bg-danger');
+                    $(this).addClass('bg-danger');
+                    todo = $(this).attr('onclick');
+                    eval( todo );
+                    return false; // escape the each loop...
+                }
+            });
+            if (! found) {
+                navigateTo('next-item');
+                return;
+            }
+        } 
+        else {
+            found=false;
+            for (var i = seq.length - 1; i >= 0; i--) {
+                if ( $(seq[i]).data().showStatus == 'done') {
+                    console.log('found ' + $(seq[i]).attr('id'));
+                    if (i<1) {break;} // we can't move any further back....
+                    found=true;
+                    $(seq[i]).data().showStatus = 'unshown';  // make this part 'unshown'
+                    $('.slides-progress-indicator').removeClass('bg-danger');
+                    $(seq[i-1]).addClass('bg-danger');
+                    todo = $(seq[i-1]).attr('onclick');
+                    eval( todo );
+                    break; // escape the for loop...
+                }
+            }
+            if (! found) {
                 navigateTo('previous-item');
                 return;
             }
@@ -988,16 +750,59 @@ function navigateTo(where)
 
 
 
+function slidesShow(what)
+{
+    var parts = $('.slide-background-image');
+    var indic = $('.slides-progress-indicator');
+    var found = false;
+    // loop through all bible verses until number 'what' is found...
+    for (var i=0; i<parts.length; i++) 
+    {
+        if ($(parts[i]).data().slidesId == what)             
+        {
+            found = true;
+            $(parts[i]).show();
+            $(indic[i]).addClass('bg-danger');
+            $(indic[i]).data().showStatus = 'done';
+        } 
+        else if ( found ) {
+            $(indic[i]).data().showStatus = 'unshown';
+            $(indic[i]).removeClass('bg-danger');
+            $(parts[i]).hide();
+        }
+        else 
+        {
+            $(parts[i]).hide();
+            $(indic[i]).removeClass('bg-danger');
+            $(indic[i]).data().showStatus = 'done';
+        }
+    }
+}
+
 function bibleShow(what)
 {
-    var p = $('.bible-text-present-parts');
-    var q = $('.bible-progress-indicator');
+    var parts = $('.bible-text-present-parts');
+    var indic = $('.bible-progress-indicator');
+    var found = false;
     // loop through all bible verses until number 'what' is found...
-    for (var i=0; i<p.length; i++) {
-        if ($(p[i]).attr('id') == what) {
-            $(p[i]).show();
-        } else {
-            $(p[i]).hide();
+    for (var i=0; i<parts.length; i++) 
+    {
+        if ($(parts[i]).attr('id') == what)             
+        {
+            found = true;
+            $(parts[i]).show();
+            $(indic[i]).addClass('bg-danger');
+            $(indic[i]).data().showStatus = 'done';
+        } 
+        else if ( found ) {
+            $(indic[i]).data().showStatus = 'unshown';
+            $(parts[i]).hide();
+        }
+        else 
+        {
+            $(parts[i]).hide();
+            $(indic[i]).removeClass('bg-danger');
+            $(indic[i]).data().showStatus = 'done';
         }
     }
 }
@@ -1696,3 +1501,304 @@ function blink(selector){
     });
 }
 
+
+$(document).ready(function() {
+
+
+    /**
+     * enabling certain UI features 
+     */
+    $(function () {
+        // activate the tooltips
+        $('[data-toggle="tooltip"]').tooltip();
+
+        // activate popvers
+        $('[data-toggle="popover"]').popover();
+        $('.popover-dismiss').popover({
+            trigger: 'focus'
+        });
+
+        // enable Tabs
+        $('#tabs').tabs();
+    });
+  
+
+    /**
+     * On 'Home' page, get list of future plans and show calendar widget
+     */
+    if ( window.location.href == __app_url + '/home' ) {
+        $.getJSON( __app_url + '/cspot/plans?filterby=future&api=api',
+            function(result){
+                $.each(result, function(i, field) {
+                    hint = field.type.name+' led by '+field.leader.first_name; 
+                    if ( field.teacher.first_name != "n/a" ) {
+                        hint +=', teacher is ' + field.teacher.first_name; }
+                    dt = new Date(field.date.split(' ')[0]).toLocaleDateString();
+                    SelectedDates[dt] = hint;
+                });
+                // get the current browser window dimension (width)
+                browserWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+                numberOfMonths = 3;
+                if (browserWidth<800) numberOfMonths = 2;
+                if (browserWidth<600) numberOfMonths = 1;
+                // Now style the jQ date picker
+                $(function() {
+                    /***
+                     * Show Date Picker calendar widget
+                     */
+                    $( "#inpDate" ).datepicker({
+                        numberOfMonths: numberOfMonths,
+                        changeMonth   : true,
+                        changeYear    : true,
+                        maxDate       : "+4m",
+                        dateFormat    : "yy-mm-dd",
+                        beforeShowDay : 
+                            function(date) {
+                                var dot=date.toLocaleDateString();
+                                var Highlight = SelectedDates[dot];
+                                if (Highlight) {
+                                    if (Highlight==='Today') {
+                                        return [true, "", Highlight]; }
+                                    return [true, "Highlighted", Highlight]; }
+                                else {
+                                    return [true, '', '']; }
+                            }
+                    });
+                });
+            }
+        );
+        
+    }
+
+
+    /**
+     * Put focus on textarea when user opens the feedback modal dialog
+     */
+    $('#createMessage').on('shown.bs.modal', function () {
+        $('#feedbackMessage').focus()
+    })
+
+    /**
+     * Mark modified form fields with a new background
+     * and show the submit/save buttons
+     */
+    $("input, textarea, input:radio, input:file").change(function(){
+        // change background color of those fields
+        $(this).css("background-color", "#D6D6FF");
+
+        // show submit or sabe buttons
+        $('.submit-button').show();
+        blink('.submit-button');
+    });
+
+
+
+    /***
+     * Get array with all bible books with all chapters and number of verses in each chapter
+     */
+    $.get(__app_url+'/bible/books/all/verses', function(data, status) {
+
+        if ( status == 'success') {
+            bibleBooks = data;
+        }
+    });
+
+
+
+
+    /**
+     * items on Plan page can be moved into new positions
+     */
+    $("#tbody-items").sortable({
+        items   : "> tr",
+        appendTo: "parent",
+        cursor  : 'move',
+        helper  : "clone",
+        handle  : '.drag-item',
+        distance: '5',
+        forceHelperSize: true,
+        stop    : function (event, ui) {
+            $('#show-spinner').show();
+            var changed=false;
+            should_seq_no = 0;
+            movedItem = [];
+            movedItem.id = ui.item.data('itemId');
+            movedItem.seq_no = ui.item.attr('id').split('-')[2];
+            // get all siblings of the just moved item
+            siblings = $(ui.item).parent().children();
+            // check each sibling's sequence
+            for (var i = 1; i <= siblings.length; i++) {
+                sib = siblings[-1+i];
+                //console.log(i + ' attr:' + sib.id + ' id:' + sib.dataset.itemId + ' class:' + sib.classList);
+                if (sib.classList.contains('trashed')) {
+                    // ignore trashed items....
+                    continue;
+                }
+                // is this the moved item?
+                if ( sib.dataset.itemId == movedItem.id ) {
+                    changed = sib;
+                    //console.log(sib.id+' was moved. ');
+                    break;
+                } 
+                else {
+                    should_seq_no = 0.0 + sib.id.split('-')[2];
+                    //console.log(sib.id + ' unmoved ');
+                    if (changed) { 
+                        break; 
+                    }
+                }
+            }
+            if (changed) {
+                should_seq_no = 1 * should_seq_no;
+                //console.log( 'Item '+changed.id+ ' (id # ' + changed.dataset.itemId +')  should now have seq no ' + (0.5 + should_seq_no) );
+                window.location.href = __app_url + '/cspot/items/' + changed.dataset.itemId + '/seq_no/'+ (0.5 + should_seq_no);
+                return;
+            } else {
+                // console.log('order unchanged');
+            }
+        },
+    }).disableSelection();
+
+
+    
+    /**
+     * Configuration for Items Presentation Views (present/chords/musicsheets)
+     */
+    if (window.location.href.indexOf('/items/')>10) {
+
+        // handle keyboard events
+        $(document).keydown(function( event ) {
+            // key codes: 37=left arrow, 39=right, 38=up, 40=down, 34=PgDown, 33=pgUp, 
+            //            36=home, 35=End, 32=space, 27=Esc, 66=e
+            //
+            console.log('pressed key code: '+event.keyCode);
+            switch (event.keyCode) {
+                case 37: advancePresentation('back'); break; // left arrow
+                case 33: navigateTo('previous-item'); break; // left PgUp
+                case 36: navigateTo('first-item');   break; // key 'home'
+                case 39: advancePresentation();     break; // key right arrow
+                case 32: advancePresentation();    break; // spacebar
+                case 34: navigateTo('next-item'); break; // key 'PgDown'
+                case 35: navigateTo('last-item'); break; // key 'end'
+                case 27: navigateTo('back');     break; // key 'Esc'
+                case 68: navigateTo('edit');    break; // key 'd'
+                case 83: jumpTo('start-lyrics');break; // key 's'
+                case 80: jumpTo('prechorus'); break; // key 'p'
+                case 49: jumpTo('verse1'); break; // key '1'
+                case 50: jumpTo('verse2'); break; // key '2'
+                case 51: jumpTo('verse3'); break; // key '3'
+                case 52: jumpTo('verse4'); break; // key '4'
+                case 53: jumpTo('verse5'); break; // key '5'
+                case 53: jumpTo('verse6'); break; // key '6'
+                case 53: jumpTo('verse6'); break; // key '6'
+                case 53: jumpTo('verse7'); break; // key '7'
+                case 67: jumpTo('chorus1'); break; // key 'c'
+                case 75: jumpTo('chorus2');  break; // key 'k'
+                case 66: jumpTo('bridge');     break; // key 'b'
+                case 69: jumpTo('ending');       break; // key 'e'
+                case 76: $('.lyrics-parts').toggle(); break; // key 'l', show all lyrics
+                case 109: $('#decr-font').click();   break; // key '-'
+                case 107: $('#incr-font').click();   break; // key '+'
+                default: break;
+            }
+        });
+    }
+    
+
+    /**
+     * prepare lyrics or bible texts for presentation
+     */
+    if ( window.location.href.indexOf('/present')>10 ) {
+
+        // start showing bible parts if this is a bible reference
+        if ($('.bible-text-present').length>0) {
+            reFormatBibleText(); }
+
+        // re-format the lyrics
+        if ($('#present-lyrics').length > 0) {
+            reDisplayLyrics(); }
+
+        // check if user has changed the default font size and text alignment for the presentation
+        textAlign = getLocalStorValue('.text-present_text-align');
+        $('.text-present').css('text-align', textAlign);
+        $('.bible-text-present').css('text-align', textAlign);
+        $('.bible-text-present>p').css('text-align', textAlign);
+        $('.bible-text-present>h1').css('text-align', textAlign);
+
+        fontSize = getLocalStorValue('.text-present_font-size');
+        if ($.isNumeric(fontSize)) {
+            $('.text-present').css('font-size', parseInt(fontSize));
+        }
+        $('.text-present').show();
+
+        fontSize = getLocalStorValue('.bible-text-present_font-size');
+        if ($.isNumeric(fontSize)) {
+           $('.bible-text-present').css('font-size', parseInt(fontSize));
+           $('.bible-text-present>p').css('font-size', parseInt(fontSize));
+           $('.bible-text-present>h1').css('font-size', parseInt(fontSize));
+        }
+
+        showBlankBetweenItems = getLocalStorValue('configBlankSlides');
+
+        // check if we have a predefined sequence from the DB
+        sequence=($('#sequence').text()).split(',');
+
+        // check if there are more lyric parts than 
+        // indicated in the sequence due to blank lines discoverd in the lyrics
+        if (sequence.length>2) 
+            compareLyricPartsWithSequence();
+
+        // auto-detect sequence if it is missing
+        if (sequence.length<2) {
+            createDefaultLyricSequence();
+            sequence=($('#sequence').text()).split(',');
+        }
+
+        // make sure the sequence indicator isn't getting too wide! 
+        checkSequenceIndicatorLength();
+
+        // make sure the main content covers all the display area, but that no scrollbar appears
+        $('#main-content').css('max-height', window.innerHeight - $('.navbar-fixed-bottom').height());
+        $('#main-content').css('min-height', window.innerHeight - $('.navbar-fixed-bottom').height() - 10);
+
+        // intercept mouse clicks into the presentation area
+        $('#main-content').contextmenu( function() {
+            return false;
+        });
+
+        // allow rght-mouse-click to move one slide or item back
+        $('#main-content').on('mouseup', function(event){
+            event.preventDefault();
+            if (event.which == 1) {
+                advancePresentation(); }
+            if (event.which == 3) {
+                advancePresentation('back'); }
+        });
+
+        // center and maximise images
+        if ( $('.slide-background-image') ) {
+            prepareImages();
+        }
+    }
+
+    /**
+     * re-design the showing of lyrics interspersed with guitar chords
+     */
+    if ( $('#chords').text() != '' ) {
+        // only do this for PRE tags, not on input fields etc...
+        if ($('#chords')[0].nodeName == 'PRE') {
+            reDisplayChords();
+        }
+        $('.edit-show-buttons').css('display', 'inline');
+    }
+    // remove dropup button and menu on info screens
+    else if ( $('#bibletext').text()!='' || $('#comment').text()!='' ) {
+        $('#jumplist').remove();
+    }
+
+    // if sheetmusic is displayed, show button to swap between sheetmusic and chords
+    if ( window.location.href.indexOf('sheetmusic')>0 || window.location.href.indexOf('swap')>0 ) {
+        $('#show-chords-or-music').css('display', 'inline');
+    }
+
+});
