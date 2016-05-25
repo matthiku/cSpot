@@ -247,7 +247,7 @@ class ItemController extends Controller
 
 
     /**
-     * Display single items per page of a plan with options to move to the next or previous item on this plan
+     * Display single items of a plan with options to move to the next or previous item on this plan
      *
      * @param  int     $id      item id
      * @param  string  $present (optional) chords (default), sheetmusic or present (for overhead presentations)

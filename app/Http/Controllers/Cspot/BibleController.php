@@ -212,11 +212,12 @@ class BibleController extends Controller
      */
     public function getBibleText($version, $book, $chapter, $verseFrom, $verseTo)
     {
-        // only certain versions are accessible via the API
         $versions = array( 'NASB', 'ESV', 'MSG', 'AMP', 'CEVUK', 'KJVA');
 
+        // only certain versions are accessible via the API
         if ( in_array($version, $versions) ) {
             // create the url and query string
+            $book = str_replace(' ', '+', $book);
             $url   = "https://bibles.org/v2/passages.js?q[]=";
             $query = "$book+$chapter:$verseFrom-$verseTo&version=eng-$version";
 
@@ -234,6 +235,8 @@ class BibleController extends Controller
 
         // needs to be correct of biblehub.com
         if ($book=='Psalm') $book = 'Psalms';
+        $book = str_replace(' ', '_', $book);
+
         // Try to get other versions via BLB 
         $url  = 'http://biblehub.com/'.strtolower($version).'/'.strtolower($book).'/'.$chapter.'.htm';
 
@@ -247,7 +250,7 @@ class BibleController extends Controller
             return response()->json( $result );
         }                
 
-        return response()->json("requested failed, no bible text fetched!", 404);
+        return response()->json("request failed, no bible text fetched!", 404);
     }
 
 

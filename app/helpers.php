@@ -418,7 +418,7 @@ function getBibleTexts($refString)
 
             // book name can be preceeded by a 1,2 or 3
             if ($bref[$num]==1 || $bref[$num]==2 || $bref[$num]==3) {
-                $book    = $bref[$num] . '+' . $bref[1+$num];
+                $book    = $bref[$num] . ' ' . $bref[1+$num];
                 $num++;
             } else {
                 $book    = $bref[$num];

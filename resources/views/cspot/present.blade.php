@@ -31,7 +31,7 @@
 
         @if ($item->files)
             @foreach ($item->files as $file)
-                <img class="slide-background-image"  style="display: none;" 
+                <img class="slide-background-image m-b-2"  style="display: none;" 
                        src="{{ url(config('files.uploads.webpath')).'/'.$file->token }}">
             @endforeach
         @endif
@@ -73,7 +73,7 @@
                     <p><kbd>PgUp</kbd> &nbsp; go to previous item (skip remaining slides)</p>
                     <p><kbd>+</kbd> &nbsp; increase font size</p>
                     <p><kbd>+</kbd> &nbsp; decrease font size</p>
-                    On <strong>tablets</strong> or <strong>phones</strong>, you should instead use the buttons provided at the bottom of this screen!
+                    On <strong class="bg-warning">tablets</strong> or <strong class="bg-warning">phones</strong>, you should instead use the buttons provided at the bottom of this screen!
                 </div>
             </div>
         </div>
@@ -158,12 +158,14 @@
         <!-- show song title or comment in first navbar on bigger screens only -->
         <span class="nav navbar-nav center hidden-sm-down">
             <small class="hidden-md-down text-muted">Item {{$item->seq_no}} -</small>
-            @if ($item->song_id && $item->song->title)
-                {{ $item->song->title }}
-            @else
-                {{ $item->comment }}
-            @endif
-            <small class="text-muted">(up next: {{ getItemTitle($item) }})</small>
+            <span class="hidden-md-down">
+                {{ ($item->song_id && $item->song->title) ? $item->song->title : $item->comment }}
+            </span>
+            <span class="hidden-lg-up">
+                {{ substr(($item->song_id && $item->song->title) ? $item->song->title : $item->comment, 0, 20) }}
+            </span>
+            <small class="hidden-lg-up hidden-xs-down text-muted">(next: {{ substr(getItemTitle($item),0,15) }})</small>
+            <small class="hidden-md-down text-muted">(up next: {{ getItemTitle($item) }})</small>
         </span>
 
 
@@ -204,7 +206,7 @@
                             @if ($menu_item->song_id && $menu_item->song->title)
                                 <i class="fa fa-music">&nbsp;</i><strong>{{ $menu_item->song->title }}</strong>
                             @else
-                                {{ substr($menu_item->comment,35) }}
+                                {{ substr($menu_item->comment, 0, 45) }}
                             @endif
                         </a>
                     @endforeach

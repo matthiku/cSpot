@@ -306,6 +306,8 @@ $(document).ready(function() {
         if ( $('.slide-background-image') ) {
             $('#main-content').css('text-align', 'center');
             $('.slide-background-image').height( window.innerHeight - $('.navbar-fixed-bottom').height());
+            $('.slide-background-image').css('max-width', window.innerWidth);
+            $('.app-content').css('padding', 0);
             $('.slide-background-image').fadeIn();
         }
     }
@@ -389,7 +391,8 @@ function reFormatBibleText()
         }
 
         // Identify and disect NIV texts
-        if (clas.substr(0,4)=='line' || clas.substr(0,4)=='pcon' || clas=='reg' ) {
+        var cl4=clas.substr(0,4);
+        if (cl4=='line' || cl4=='pcon' || cl4=='reg' ) {
             // get all elements in one array
             elem = $(this).contents();
             // analyze each element and separate verse numbers and bible text
@@ -404,7 +407,7 @@ function reFormatBibleText()
                         verno = eltext;
                     }
                     verse = '('+eltext+') '; } // add verse indicator at the front
-                else if (this.nodeName == '#text' ) {  // only add real text nodes
+                else if ( this.nodeName == '#text' || $(this).attr('class')=='name' ) {  // only add real text nodes
                     if (eltext.substr(0,1)=='\n') { eltext=eltext.substr(1); }
                     verse += eltext;
                 }
@@ -435,7 +438,7 @@ function reFormatBibleText()
 
     });
     // write remaining verse if not empty or beyond scope
-    if ( verse.length>2 && (1*verno <= 1*verse_to || !$.isNumeric(verno)) ) {
+    if ( ! verse == undefined && verse.length>2 && (1*verno <= 1*verse_to || !$.isNumeric(verno)) ) {
         appendBibleText('p',verse,verno) }
 
     // all is set and we can show the first verse
@@ -445,11 +448,15 @@ function reFormatBibleText()
 function splitBref(text)
 {
     if (!text) {return;}
+
     arr = new Array;
     ref = text.split(' ');
     nr = 0
+    // check if book name starts with a number
     if ($.isNumeric(ref[0])) { 
         arr.book = ref[nr++] +' '+ ref[nr++]; }
+    else if (text.substr(1,1)=='_') {
+        arr.book = ref[nr++].replace('_',' '); }
     else { 
         arr.book = ref[nr++]; }
     chve = ref[nr++].split(':');
@@ -933,6 +940,50 @@ function headerCode(divNam) {
     }
 }
 
+
+
+/** 
+ * Navigate to next slide or item
+ *
+ * @string direction - part of the ID of an anchor on the calling page that executes the navigation
+ */
+function navigateTo(where) 
+{
+    console.log('Trying to navigate to '+where);
+
+    // prevent this if user is in an input field or similar area
+    if (document.activeElement.tagName != "BODY") return;
+
+    // get the element that contains the proper link
+    a = document.getElementById('go-'+where);
+    // link doesn't exist:
+    if (a==null) return;
+
+    // fade background and show spinner, but not in presentation mode!
+    if ( document.baseURI.search('/present')<10 )
+        showSpinner();
+
+    // make content disappear slowly...
+    $('#main-content').fadeOut();
+
+    // in presentation Mode, do we want a blank slide between items?
+    if (showBlankBetweenItems && screenBlank ) {
+        screenBlank = false;
+        return;
+    }
+
+    if (a.onclick==null) {
+        // try to go to the location defined in href
+        window.location.href = a.href;
+        return;
+    }    
+    // try to simulate a click on this element
+    a.click();
+}
+
+
+
+
 function bibleShow(what)
 {
     var p = $('.bible-text-present-parts');
@@ -959,6 +1010,10 @@ function lyricsShow(what)
         var gefunden = false;
         // check each to see where we want to be
         $(seq).each(function(entry){
+            // always remove the previous seq indicator
+            $(this).removeClass('bg-danger');
+
+            // as long as we haven't found the item clicked...
             if (! gefunden) {
                 // try to recompile the action for this button into the name of the song part
                 // e.g. if the action is onclick="showLyrics('1')" then the song part is 'verse1' etc
@@ -973,11 +1028,13 @@ function lyricsShow(what)
                 // now we need to mark all following song parts as 'unshown'
                 gefunden = true;
                 $(this).addClass('bg-danger');
+                $(this).data().showStatus = 'done';
             }
             // mark the rest as unshown
             else if ( gefunden ) {
                 $(this).data().showStatus = 'unshown';
-                $(this).removeClass('bg-danger');
+            } else {
+                $(this).data().showStatus = 'done';
             }
         });
     }
@@ -1028,6 +1085,7 @@ function identifyLyricsHeadings(str)
         case '[c]': return 'chorus1';
         case '[ch]': return 'chorus1';
         case '[c1]': return 'chorus1';
+        case '[c2]': return 'chorus2';
         case '[bridge]': return 'bridge';
         case '[b]': return 'bridge';
         case '[ending]': return 'ending';
@@ -1370,46 +1428,6 @@ function identifyChords(str)
     if ( patt.test(str) ) return true;
 
     return false;
-}
-
-
-/** 
- * Navigate to next item
- *
- * @string direction - part of the ID of an anchor on the calling page that executes the navigation
- */
-function navigateTo(where) 
-{
-    console.log('Trying to navigate to '+where);
-
-    // prevent this if user is in an input field or similar area
-    if (document.activeElement.tagName != "BODY") return;
-
-    // get the element that contains the proper link
-    a = document.getElementById('go-'+where);
-    // link doesn't exist:
-    if (a==null) return;
-
-    // fade background and show spinner, but not in presentation mode!
-    if ( document.baseURI.search('/present')<10 )
-        showSpinner();
-
-    // make content disappear slowly...
-    $('#main-content').fadeOut();
-
-    // in presentation Mode, do we want a blank slide between items?
-    if (showBlankBetweenItems && screenBlank ) {
-        screenBlank = false;
-        return;
-    }
-
-    if (a.onclick==null) {
-        // try to go to the location defined in href
-        window.location.href = a.href;
-        return;
-    }    
-    // try to simulate a click on this element
-    a.click();
 }
 
 

@@ -1,3 +1,4 @@
+
 .slide-background-image {
     min-height: 100%;
 }
@@ -209,6 +210,10 @@ label {
 
 /* Large devices */
 @media (max-width: 62em) {
+    
+    .lyrics-show-btns {
+        margin-left: 0 !important;
+    }
 
     .table-xs td {
         padding: 0.1em;
