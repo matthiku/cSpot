@@ -46,7 +46,9 @@
                 <th>Role</th>
                 <th class="hidden-sm-down">Comment/Instruments</th>
                 <th>Available?</th>
+                @if( $userIsAuthorized )
                 <th>Requested?</th>
+                @endif
                 <th>Confirmed?</th>
                 
                 @if( $userIsAuthorized )
@@ -73,7 +75,7 @@
                 <!-- row COMMENT -->
                 <td 
                     @if( $userIsAuthorized )
-                        class="link" onclick="location.href='{{ url('cspot/plans/'.$team->plan_id.'/team/'.$team->id) }}/edit'"
+                        class="link hidden-sm-down" onclick="location.href='{{ url('cspot/plans/'.$team->plan_id.'/team/'.$team->id) }}/edit'"
                     @endif
                     class="hidden-sm-down">{{ $team->comment }}
                     @if ($team->user->instruments->count())
@@ -97,17 +99,17 @@
                 </td>
 
                 <!-- row REQUESTED? -->
+                @if( $userIsAuthorized )
                 <td>
-                    @if( $userIsAuthorized )
                         <a class="btn btn-secondary btn-sm pull-sm-right" title="Send request to user" 
                             href='{{ url('cspot/plans/'.$team->plan_id.'/team/'.$team->id) }}/sendrequest'><i class="fa fa-envelope-o"></i></a>
-                    @endif
                     <i class="fa fa-{{ ($team->requested) ? 'check-square' : 'minus-square-o' }}"> </i> 
                 </td>
+                @endif
 
                 <!-- row CONFIRMED? -->
                 <td>
-                    @if ( Auth::user()->id == $team->user_id && $team->requested )
+                    @if ( Auth::user()->id == $team->user_id )
                         <a class="btn btn-secondary btn-sm pull-sm-right" title="Confirm/Decline" 
                             href='{{ url('cspot/plans/'.$team->plan_id.'/team/'.$team->id) }}/confirm'>
                             {{ ($team->confirmed) ? 'Decline' : 'Confirm' }}:

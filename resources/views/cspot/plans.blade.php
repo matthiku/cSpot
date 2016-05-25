@@ -65,11 +65,11 @@
 
 					<th class="hidden-lg-down center"># items</th>
 
-					@include('cspot.snippets.theader', ['thfname' => 'leader_id', 'thdisp' => 'Leader', 'thsort'=>false, 'thclass'=>'hidden-xs-down center'])
+					@include('cspot.snippets.theader', ['thfname' => 'leader_id', 'thdisp' => 'Leader', 'thsort'=>false, 'thclass'=>'hidden-sm-down center'])
 
-					@include('cspot.snippets.theader', ['thfname' => 'teacher_id', 'thdisp' => 'Teacher', 'thsort'=>false, 'thclass'=>'hidden-xs-down center'])
+					@include('cspot.snippets.theader', ['thfname' => 'teacher_id', 'thdisp' => 'Teacher', 'thsort'=>false, 'thclass'=>'hidden-sm-down center'])
 
-					<th class="hidden-sm-up center">Leader, Teacher</th>
+					<th class="hidden-md-up center">Leader, Teacher</th>
 					<th class="text-right hidden-md-down">Last updated on</th>
 					<th class="hidden-md-down">by</th>
 				</tr>
@@ -98,7 +98,7 @@
 								onclick="userAvailableForPlan(this, {{ $plan->id }}, {{ Auth::user()->id }})">
 							<span class="c-indicator"></span>
 						</label>
-						<span class="text-muted" id="user-available-for-plan-id-{{ $plan->id }}">
+						<span class="hidden-sm-down text-muted" id="user-available-for-plan-id-{{ $plan->id }}">
 							{{ isset($userIsPlanMember[$plan->id]) ? 'yes' : 'no' }}
 						</span>
 					</td>
@@ -110,9 +110,9 @@
 
 					<td class="hidden-lg-down center">{{ $plan->items->count() }}</td>
 
-					<td class="hidden-xs-down center">{{ $plan->leader->name }}</td>
-					<td class="hidden-xs-down center">{{ $plan->teacher->name }}</td>
-					<td class="hidden-sm-up center">
+					<td class="hidden-sm-down center">{{ $plan->leader->name }}</td>
+					<td class="hidden-sm-down center">{{ $plan->teacher->name }}</td>
+					<td class="hidden-md-up center">
 						{{ $plan->leader->name }}{{ $plan->teacher_id<>0 ? ', '.$plan->teacher->name : '' }}
 					</td>
 
