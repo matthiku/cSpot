@@ -27,6 +27,7 @@ var sequence;
 // show blank lines between presentation items?
 var showBlankBetweenItems;
 var screenBlank = true;
+var howManyVersesPerSlide;
 
 
 
@@ -155,7 +156,7 @@ function reFormatBibleText()
 
     });
     // write remaining verse if not empty or beyond scope
-    if ( ! verse == undefined && verse.length>2 && (1*verno <= 1*verse_to || !$.isNumeric(verno)) ) {
+    if ( verse != undefined  &&  verse.length > 2  &&  (1*verno <= 1*verse_to || !$.isNumeric(verno)) ) {
         appendBibleText('p',verse,verno) }
 
     // all is set and we can show the first verse
@@ -715,7 +716,7 @@ function headerCode(divNam) {
  */
 function navigateTo(where) 
 {
-    console.log('Trying to navigate to '+where);
+    console.log('Navigating to '+where);
 
     // prevent this if user is in an input field or similar area
     if (document.activeElement.tagName != "BODY") return;
@@ -729,14 +730,26 @@ function navigateTo(where)
     if ( document.baseURI.search('/present')<10 )
         showSpinner();
 
-    // make content disappear slowly...
-    $('#main-content').fadeOut();
-
     // in presentation Mode, do we want a blank slide between items?
     if (showBlankBetweenItems && screenBlank ) {
         screenBlank = false;
-        return;
+        // check if there is an empty slide/item (an item without lyrics, bibletext or images)
+        var reg = /^[\s]+$/; // regex for a string containing only white space.
+        var main  = $('#main-content').text();
+        // if the slide contains anything but spaces, we were still presenting something
+        // and we now show an empty (blank) slide
+        if (! reg.test(main)) {
+            $('#main-content').html('<div>.</div>');
+            console.log('inserting empty slide...');
+            return;
+        }
+        console.log('slide was already empty, proceeding to next item...');
+        // otherwise, if the slide/item was empty anyway, we proceed to the next item
     }
+
+    // make content disappear slowly...
+    $('#main-content').fadeOut();
+    $('#bottom-fixed-navbar>ul').fadeOut();
 
     if (a.onclick==null) {
         // try to go to the location defined in href
@@ -783,20 +796,25 @@ function bibleShow(what)
 {
     var parts = $('.bible-text-present-parts');
     var indic = $('.bible-progress-indicator');
-    var found = false;
+    var found = -1;
+    var vps   = parseInt(howManyVersesPerSlide);
     // loop through all bible verses until number 'what' is found...
     for (var i=0; i<parts.length; i++) 
     {
         if ($(parts[i]).attr('id') == what)             
         {
-            found = true;
+            found = i;
             $(parts[i]).show();
+            $(parts[i+vps-1]).show();
             $(indic[i]).addClass('bg-danger');
             $(indic[i]).data().showStatus = 'done';
+            i+=vps-2;
         } 
-        else if ( found ) {
+        else if ( found>=0 ) {
             $(indic[i]).data().showStatus = 'unshown';
-            $(parts[i]).hide();
+            //if (found+vps < i) {
+                $(parts[i]).hide();
+            //}
         }
         else 
         {
@@ -1086,11 +1104,18 @@ function showSongSearchInput(that, selector)
     $("input[name='search']").focus();
 }
 
-
+/**
+ * called from the configuratino button on the navbar
+ */
 function configBlankSlides() {
     var sett = ! $('#configBlankSlides').prop( "checked" );
     console.log('User changed setting for "Show empty slides between items" to ' + sett );
     localStorage.setItem('configBlankSlides', sett);
+}
+function changeConfigShowVersCount() {
+    var sett = $('#configShowVersCount').val();
+    console.log('User changed setting for "Show how many bible verses per slide" to ' + sett );
+    localStorage.setItem('configShowVersCount', sett);
 }
 
 function changeTextAlign(selectorList, how) {
@@ -1706,7 +1731,7 @@ $(document).ready(function() {
     
 
     /**
-     * prepare lyrics or bible texts for presentation
+     * prepare lyrics or bible texts or image slides for presentation
      */
     if ( window.location.href.indexOf('/present')>10 ) {
 
@@ -1717,6 +1742,29 @@ $(document).ready(function() {
         // re-format the lyrics
         if ($('#present-lyrics').length > 0) {
             reDisplayLyrics(); }
+
+        // center and maximise images
+        if ( $('.slide-background-image') ) {
+            prepareImages();
+        }
+
+        /**
+         * Check some user-defined settings in the Local Storage of the browser
+         */
+
+        // check if user wants a blank slide between items
+        showBlankBetweenItems = getLocalStorValue('configBlankSlides');
+        // if the value in LocalStorage was set to 'true', then we activate the checkbox:
+        if (showBlankBetweenItems=='true') {
+            $('#configBlankSlides').prop( "checked", true );
+        }
+
+        // how many bible verses per slide?
+        howManyVersesPerSlide = getLocalStorValue('configShowVersCount');
+        // if the value in LocalStorage was set to 'true', then we activate the checkbox:
+        if (howManyVersesPerSlide>0 && howManyVersesPerSlide<6) {
+            $('#configShowVersCount').val( howManyVersesPerSlide );
+        }
 
         // check if user has changed the default font size and text alignment for the presentation
         textAlign = getLocalStorValue('.text-present_text-align');
@@ -1738,8 +1786,6 @@ $(document).ready(function() {
            $('.bible-text-present>h1').css('font-size', parseInt(fontSize));
         }
 
-        showBlankBetweenItems = getLocalStorValue('configBlankSlides');
-
         // check if we have a predefined sequence from the DB
         sequence=($('#sequence').text()).split(',');
 
@@ -1754,7 +1800,7 @@ $(document).ready(function() {
             sequence=($('#sequence').text()).split(',');
         }
 
-        // make sure the sequence indicator isn't getting too wide! 
+        // make sure the sequence indicator isn't getting too big! 
         checkSequenceIndicatorLength();
 
         // make sure the main content covers all the display area, but that no scrollbar appears
@@ -1774,11 +1820,6 @@ $(document).ready(function() {
             if (event.which == 3) {
                 advancePresentation('back'); }
         });
-
-        // center and maximise images
-        if ( $('.slide-background-image') ) {
-            prepareImages();
-        }
     }
 
     /**

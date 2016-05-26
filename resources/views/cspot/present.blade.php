@@ -82,7 +82,7 @@
 
 
 
-    <nav class="navbar navbar-fixed-bottom navbar-dark bg-black center" style="padding: 0;">
+    <nav class="navbar navbar-fixed-bottom navbar-dark bg-black center" id="bottom-fixed-navbar" style="padding: 0;">
 
         <ul class="nav navbar-nav">
             <li>
@@ -149,11 +149,6 @@
         </span>
 
         <!-- <span class="navbar-brand center" id="show-linecount"></span> -->
-    
-        <!-- button to reveal the second navbar at the bottom -->
-        <button class="navbar-toggler btn btn-info active" type="button" data-toggle="collapse" data-target="#lyricsNavbar">
-            &hellip;
-        </button>        
 
         <!-- show song title or comment in first navbar on bigger screens only -->
         <span class="nav navbar-nav center hidden-sm-down">
@@ -167,6 +162,11 @@
             <small class="hidden-lg-up hidden-xs-down text-muted">(next: {{ substr(getItemTitle($item),0,15) }})</small>
             <small class="hidden-md-down text-muted">(up next: {{ getItemTitle($item) }})</small>
         </span>
+    
+        <!-- button to reveal the second navbar at the bottom -->
+        <button class="navbar-toggler btn btn-info active" type="button" data-toggle="collapse" data-target="#lyricsNavbar">
+            &hellip;
+        </button>        
 
 
         <!-- 
@@ -278,6 +278,20 @@
                     <label class="checkbox-inline c-input c-checkbox" title="Show empty slides between items?">
                         <input type="checkbox" id="configBlankSlides">
                             <span class="c-indicator"></span>&nbsp;blank slides between items?
+                    </label>
+                </div>
+            </form>
+            <form class="form-inline nav-item m-l-1 pull-xs-left label label-info">
+                <div class="checkbox" style="line-height: 2" onchange="changeConfigShowVersCount()">
+                    <label class="c-input" title="How many bible verses should be shown per slide?">
+                        <select class="" id="configShowVersCount">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                            Number of verses per slide?
                     </label>
                 </div>
             </form>
