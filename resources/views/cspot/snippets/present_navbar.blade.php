@@ -136,13 +136,13 @@ $modalContent = '
             </a> 
 
             <!-- decrease font size -->
-            <a href="#" onclick="decFontSize('.text-song');" id="decr-font"
+            <a href="#" onclick="changeFontSize('.text-song', 'decrease');" id="decr-font"
                     title="decrease font size" style="display: none" 
                     class="hidden-sm-down nav-item btn btn-sm btn-info edit-show-buttons" role="button">
                 A <i class="fa fa-minus"></i>
             </a>
             <!-- increase font size -->
-            <a href="#" onclick="incFontSize('.text-song');" id="incr-font"
+            <a href="#" onclick="changeFontSize('.text-song');" id="incr-font"
                     title="increase font size" style="display: none" 
                     class="hidden-sm-down nav-item btn btn-sm btn-info edit-show-buttons" role="button">
                 A <i class="fa fa-plus"></i>

@@ -1199,7 +1199,7 @@ function changeFontSize(selectorList, how) {
     selectorList.forEach( function(selector) {
         element = $(selector);
         if (element.length>0) {
-            fontSize = parseInt($(element).css('font-size')) * factor;
+            fontSize = parseFloat($(element).css('font-size')) * factor;
             if (fontSize<8 || fontSize>150) return;
             $(element).css('font-size', fontSize);
             localStorage.setItem(selector+'_font-size', fontSize);
