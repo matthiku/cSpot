@@ -1303,10 +1303,10 @@ function identifyHeadings(str)
 function identifyChords(str)
 {
     
-    var patt = /[klopqrtvwxyz1345689]/g;
+    var patt = /[klopqrtvwxyz1368]/g;
     if ( patt.test(str) ) return false;
     
-    var patt = /\b[CDEFGAB](?:#{1,2}|b{1,2})?(?:maj7?|min7?|sus2?|m?)\b/g;
+    var patt = /\b[CDEFGAB](?:#{1,2}|b{1,2})?(?:maj7?|min7?|sus2?|sus4?|m?)\b/g;
     if ( patt.test(str) ) return true;
     
     var patt = /\b[CDEFGB]\b/g;

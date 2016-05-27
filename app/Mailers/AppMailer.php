@@ -103,7 +103,7 @@ class AppMailer
     public function notifyAdmin(User $user, $note)
     {
         // not needed on local dev installations...
-        //if (env('APP_ENV')=='local') return;
+        if (env('APP_ENV')=='local') return;
 
         $this->to      = findAdmins('email');
         $this->cc      = 'church.ennis@gmail.com';
