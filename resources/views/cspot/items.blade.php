@@ -1,3 +1,4 @@
+@include( 'cspot/snippets/modal', ['modalContent' => '$modalContent', 'modalTitle' => '$modalTitle' ] )
 
 <!-- # (C) 2016 Matthias Kuhs, Ireland -->
 
@@ -153,8 +154,8 @@
 	                            <i class="fa fa-music"></i> </a> &nbsp; 
 	                    @endif
 	                    @if ( strlen($item->song->youtube_id)>0 )
-	                        <a target="new" title="Play on YouTube" class="red" data-toggle="tooltip"
-	                        	href="https://www.youtube.com/watch?v={{ $item->song->youtube_id }}">
+	                        <a href="#" title="Play on YouTube" class="red" data-toggle="tooltip"
+	                        	onclick="showYTvideoInModal('{{ $item->song->youtube_id }}')">
 	                             <i class="fa fa-youtube-play"></i></a>
 	                    @endif
 					@endif

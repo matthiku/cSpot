@@ -53,33 +53,24 @@
     <!-- ================================================================================ -->
 
 
+    <?php 
+    $modalTitle = 'Use your keyboard!';
+    $modalContent = '
+        <p><kbd>Esc</kbd> &nbsp; go back to plan overview</p>
+        <p><kbd> space bar </i></kbd> &nbsp; go to next slide or plan item (or left mouse click)</p>
+        <p><kbd> <i class="fa fa-arrow-right"> </i></kbd> &nbsp; go to next slide or plan item (or left mouse click)</p>
+        <p><kbd> <i class="fa fa-arrow-left"> </i></kbd> &nbsp; go to previous slide or plan item (or right mosue click)</p>
+        <p><kbd>1</kbd>, <kbd>2</kbd>, <kbd>3</kbd> &nbsp; ... jump to verse 1...n</p>
+        <p><kbd>c</kbd> &nbsp; jump to chorus</p>
+        <p><kbd>b</kbd> &nbsp; jump to bridge</p>
+        <p><kbd>PgDn</kbd> &nbsp; go to next item (skip remaining slides)</p>
+        <p><kbd>PgUp</kbd> &nbsp; go to previous item (skip remaining slides)</p>
+        <p><kbd>+</kbd> &nbsp; increase font size</p>
+        <p><kbd>+</kbd> &nbsp; decrease font size</p>
+        On <strong class="bg-warning">tablets</strong> or <strong class="bg-warning">phones</strong>, you should instead use the buttons provided at the bottom of this screen!'; 
+    ?>
 
-
-    <div class="modal fade help-modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-md">
-            <div class="modal-content bg-info">
-                <div class="modal-header">
-                    <h4>Use your keyboard!</h4>
-                </div>
-                <div class="modal-body text-x s-center">
-                    <p><kbd>Esc</kbd> &nbsp; go back to plan overview</p>
-                    <p><kbd> space bar </i></kbd> &nbsp; go to next slide or plan item (or left mouse click)</p>
-                    <p><kbd> <i class="fa fa-arrow-right"> </i></kbd> &nbsp; go to next slide or plan item (or left mouse click)</p>
-                    <p><kbd> <i class="fa fa-arrow-left"> </i></kbd> &nbsp; go to previous slide or plan item (or right mosue click)</p>
-                    <p><kbd>1</kbd>, <kbd>2</kbd>, <kbd>3</kbd> &nbsp; ... jump to verse 1...n</p>
-                    <p><kbd>c</kbd> &nbsp; jump to chorus</p>
-                    <p><kbd>b</kbd> &nbsp; jump to bridge</p>
-                    <p><kbd>PgDn</kbd> &nbsp; go to next item (skip remaining slides)</p>
-                    <p><kbd>PgUp</kbd> &nbsp; go to previous item (skip remaining slides)</p>
-                    <p><kbd>+</kbd> &nbsp; increase font size</p>
-                    <p><kbd>+</kbd> &nbsp; decrease font size</p>
-                    On <strong class="bg-warning">tablets</strong> or <strong class="bg-warning">phones</strong>, you should instead use the buttons provided at the bottom of this screen!
-                </div>
-            </div>
-        </div>
-    </div>
-
-
+    @include( 'cspot/snippets/modal', ['modalContent' => $modalContent, 'modalTitle' => $modalTitle ] )
 
 
     <nav class="navbar navbar-fixed-bottom navbar-dark bg-black center" id="bottom-fixed-navbar" style="padding: 0;">

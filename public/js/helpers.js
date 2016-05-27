@@ -998,69 +998,6 @@ function reloadListOrderBy(field)
 }
 
 
-/*
-    Show input field in header to filter data in this column or apply the filter if already set
-*/
-function showFilterField(field)
-{
-    // clear existing filter and reload page without
-    if ($('#filter-'+field+'-clear').is(':visible')) 
-    {
-        var currUrl  = window.location.href.split('?');
-        if (currUrl.length > 1) {
-            // fade background and show spinner
-            showSpinner();
-            // remove filter elements from URL query string
-            var queryStr = currUrl[1].split('&');
-            var newUrl = currUrl[0];
-            if (queryStr.length > 2) {
-                newUrl += '?';
-                for (var i = queryStr.length - 1; i >= 0; i--) {
-                    if (queryStr[i].substr(0,6) != 'filter' ) {
-                        newUrl += queryStr[i];
-                        if (i > 0) newUrl += '&';
-                    }
-                }
-            }
-            window.location.href = newUrl;
-            return;
-        }
-    }
-         
-    // define html code for search input field
-    var newHtml = '<input id="filter-fffff-input" style="line-height: normal;" type="text" placeholder="search fffff">'
-    newHtml    += '<i id="filter-fffff-submit" class="fa fa-check-square"> </i>';
-    // did user click on the visible search icon?
-    if ($('#filter-'+field+'-show').is(':visible')) 
-    {
-        // add new html code, replacing all placeholders with current field name
-        $('#'+field+'-search').append(newHtml.replace(/fffff/g, field));
-        $('#filter-'+field+'-input').delay(800).focus();
-        $('#filter-'+field+'-show').hide();
-    } 
-    else 
-    {
-        if ( $('#filter-'+field+'-input').val().length > 0 ) {
-            // fade background and show spinner
-            showSpinner();
-
-            var search =  $('#filter-'+field+'-input').val();
-            var currUrl  = window.location.href.replace('#','');
-            if (currUrl.indexOf('?')>1) {
-                var newUrl = currUrl + '&filterby='+field+'&filtervalue='+search;
-            } else {
-                var newUrl = currUrl + '?filterby='+field+'&filtervalue='+search;
-            }
-            window.location.href = newUrl;
-            return;
-        }
-        $('#filter-'+field+'-input').remove();
-        $('#filter-'+field+'-submit').remove();
-        $('#filter-'+field+'-show').show();
-    }
-}
-
-
 /**
  * Function to open plan selected via date picker
  * better name: "openPlanByDate"
@@ -1088,6 +1025,118 @@ function deleteFile(id)
     }).fail(function() {
         alert("image deletion failed!");
     });
+}
+
+
+/**
+    Open modal popup to show linked YT video
+*/
+function showYTvideoInModal(ytid)
+{
+    //https://www.youtube.com/"+ ytid.substr(0,2)=="PL" ? 'playlist?list=' : 'watch?v=' + ytid }}";
+    $('#snippet-modal-title').text('Listen to YT song');
+    $('#snippet-modal-content')
+        .html('<iframe width="560" height="315" src="https://www.youtube.com/embed/'+ytid+'" frameborder="0" allowfullscreen></iframe>');
+    $('.help-modal').modal();
+}
+
+
+/**
+    When user presses enter in the Songs List view, check 
+    which filter field is open and trigger its function
+ */
+function findOpenFilterField() 
+{
+    // check which search fields open
+    var searchFields = $("[id^=filter-]");
+    $.each(searchFields, function(entry) {
+        if ( $(searchFields[entry]).is(':visible') ){
+            var id = $(searchFields[entry]).attr('id').split('-');
+            if (id[2] == 'input') {  // only look at input elements!
+                var action = $('#'+id[1]+'-search').attr('onclick');
+                eval(action);
+                return;
+            }
+        }
+    });
+}
+
+/*
+    Show input field in header to filter data in this column or apply the filter if already set
+*/
+function showFilterField(field)
+{
+    // Is this field already visible?
+    if ($('#filter-'+field+'-clear').is(':visible')) 
+    {
+        // check if there is a query string in the URL
+        var currUrl  = window.location.href.split('?');
+        // then clear existing filter and reload page without a filter
+        if (currUrl.length > 1) {
+            // fade background and show spinner
+            showSpinner();
+            // remove filter elements from URL query string
+            var queryStr = currUrl[1].split('&');
+            var newUrl = currUrl[0];
+            if (queryStr.length > 2) {
+                newUrl += '?';
+                for (var i = queryStr.length - 1; i >= 0; i--) {
+                    if (queryStr[i].substr(0,6) != 'filter' ) {
+                        newUrl += queryStr[i];
+                        if (i > 0) newUrl += '&';
+                    }
+                }
+            }
+            window.location.href = newUrl;
+            return;
+        }
+    }
+
+    // check if there are other search fields open
+    var searchFields = $("[id^=filter-]");
+    $.each(searchFields, function(entry) {
+        if ( $(searchFields[entry]).is(':visible') ){
+            var fld = $(searchFields[entry]).attr('id').split('-')[1];
+            if (fld != field) {
+                $('#filter-'+fld+'-input').remove();
+                $('#filter-'+fld+'-submit').remove();
+                $('#filter-'+fld+'-show').show();
+            }
+        }
+    });
+         
+    // define html code for search input field
+    var newHtml = '<input id="filter-fffff-input" style="line-height: normal;" type="text" placeholder="search fffff">'
+    newHtml    += '<i id="filter-fffff-submit" class="fa fa-check-square"> </i>';
+    // did user click on the visible search icon?
+    if ($('#filter-'+field+'-show').is(':visible')) 
+    {
+        // add new html code, replacing all placeholders with current field name
+        $('#'+field+'-search').append(newHtml.replace(/fffff/g, field));
+        $('#filter-'+field+'-input').delay(800).focus();
+        $('#filter-'+field+'-show').hide();
+    } 
+    else 
+    {
+        // Did user enter search data?
+        if ( $('#filter-'+field+'-input').val().length > 0 ) {
+            // fade background and show spinner
+            showSpinner();
+
+            var search =  $('#filter-'+field+'-input').val();
+            var currUrl  = window.location.href.replace('#','');
+            if (currUrl.indexOf('?')>1) {
+                var newUrl = currUrl + '&filterby='+field+'&filtervalue='+search;
+            } else {
+                var newUrl = currUrl + '?filterby='+field+'&filtervalue='+search;
+            }
+            window.location.href = newUrl;
+            return;
+        }
+        $('#filter-'+field+'-input').remove();
+        $('#filter-'+field+'-submit').remove();
+        $('#filter-'+field+'-show').show();
+    }
 }
 
 
@@ -1685,6 +1734,21 @@ $(document).ready(function() {
     }).disableSelection();
 
 
+    
+    /**
+     * On the Songs List page, allow some key codes
+     */
+    if (window.location.href.indexOf('cspot/songs')>10) {
+
+        $(document).keydown(function( event ) {
+            console.log('pressed key code: '+event.keyCode);
+            switch (event.keyCode) {
+                case 13: findOpenFilterField(); break; // Enter key
+                default: break;
+            }            
+        });
+
+    }
     
     /**
      * Configuration for Items Presentation Views (present/chords/musicsheets)

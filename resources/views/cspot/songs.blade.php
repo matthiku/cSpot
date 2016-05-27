@@ -8,6 +8,9 @@
 @section('plans', 'active')
 
 
+@include( 'cspot/snippets/modal', ['modalContent' => '$modalContent', 'modalTitle' => '$modalTitle' ] )
+
+
 
 @section('content')
 
@@ -34,11 +37,7 @@
 
 	@if (count($songs))
 
-		<table class="table table-striped table-bordered 
-					@if(count($songs)>15)
-					 table-sm
-					@endif
-					 ">
+		<table class="table table-striped table-bordered {{ count($songs)>15 ? 'table-sm' : '' }}">
 
 			<thead class="thead-default">
 				<tr>
@@ -68,19 +67,18 @@
 			<tbody>
 	        @foreach( $songs as $song )
 
-				<tr 
-					@if ( Auth::user()->isEditor() )
-						class="link" onclick="location.href ='{{ url('cspot/songs/'.$song->id) }}/edit'"
-					@endif
-				>
+	        	<?php $editLink = Auth::user()->isEditor() ? 'onclick=\'location.href="'.url('cspot/songs/'.$song->id).'/edit"\'' : ''; ?>
 
-					<td scope="row" class="hidden-md-down text-xs-center">{{ $song->id }}</td>
+				<tr>
+					<td {!! $editLink !!} scope="row" class="link hidden-md-down text-xs-center">{{ $song->id }}</td>
 
-					<td>{{ $song->title }} {{ $song->title_2<>'' ? '('. $song->title_2 .')' : '' }}</td>
+					<td {!! $editLink !!} class="link" title="{{ $song->lyrics }}">
+						{{ $song->title }} {{ $song->title_2<>'' ? '('. $song->title_2 .')' : '' }}
+					</td>
 
-					<td class="hidden-md-down">{{ $song->author }}</td>
+					<td {!! $editLink !!} class="link hidden-md-down">{{ $song->author }}</td>
 
-					<td class="center hidden-xs-down">{{ $song->book_ref }}</td>
+					<td {!! $editLink !!} class="link center hidden-xs-down">{{ $song->book_ref }}</td>
 
 
 					<td class="center hidden-sm-down">
@@ -104,11 +102,9 @@
 	                            <i class="fa fa-music"></i> </a> &nbsp; 
 	                    @endif
 	                    @if ( strlen($song->youtube_id)>0 )
-	                        <a target="new" title="Play on YouTube" class="red" data-toggle="tooltip"
-	                        	href="https://www.youtube.com/{{ 
-	                        		substr($song->youtube_id,0,2)=="PL" ? 'playlist?list=' : 'watch?v=' 
-	                        		}}{{ $song->youtube_id }}">
-	                             <i class="fa fa-youtube-play"></i></a>
+						<!-- <a href="#" class="pull-xs-right" title="Show Lyrics" onclick=""><small>lyrics</small></a> -->
+	                        <a href="#" title="Show YouTube video of this song" class="red" data-toggle="tooltip"
+	                        	onclick="showYTvideoInModal('{{ $song->youtube_id }}')"><i class="fa fa-youtube-play"></i></a>
 	                    @endif
 					</td>
 
@@ -116,11 +112,12 @@
 					<td class="center hidden-md-down">{{ $song->items->count() }}</td>
 
 
-					<td class="center hidden-md-down">
-						<?php  
-						 	$last = $song->lastPlanUsingThisSong();
-						 	if ($last) { echo $last->date->formatLocalized('%a, %d %b \'%y'); }
-						 ?>
+					<?php $last = $song->lastPlanUsingThisSong(); ?>
+					<td class="link center hidden-md-down">
+						@if ($last) 
+							<a href="{{ url('cspot/plans/'.$last->id) }}" title="open this plan">
+							{{ $last->date->formatLocalized('%a, %d %b \'%y') }}</a>
+						@endif
 					</td>
 
 
@@ -140,12 +137,14 @@
 
 
 					<td class="hidden-xs-down nowrap center">
-						<!-- <a class="btn btn-secondary btn-sm" title="Show Plans using this song" href='/cspot/plans/{{$song->id}}'><i class="fa fa-filter"></i></a> -->
-						 @if( Auth::user()->isEditor() )
-							<!-- <a class="btn btn-primary-outline btn-sm hidden-lg-down" title="Edit" href='{{ url('cspot/songs/'.$song->id) }}/edit'><i class="fa fa-pencil"></i></a> -->
-							@if ($song->items->count()==0)
-								<a class="btn btn-danger btn-sm" title="Delete!" href='{{ url('cspot/songs/'.$song->id) }}/delete'><i class="fa fa-trash"></i></a>
-							@endif
+						@if ($plan_id>0)
+							<a class="btn btn-secondary btn-sm" title="Add this song to selected Service plan" 
+								href='/cspot/plans/{{$plan_id}}/addsong/{{$song->id}}'><i class="fa fa-plus"></i></a>
+						@endif
+
+						 @if( Auth::user()->isEditor() && $song->items->count()==0)
+							<a class="btn btn-danger btn-sm" title="Delete!" 
+								href='{{ url('cspot/songs/'.$song->id) }}/delete'><i class="fa fa-trash"></i></a>
 						@endif
 					</td>
 
@@ -160,7 +159,7 @@
 			{!! $songs->links() !!}
 		</center>
 		<script>
-			// add missing classes and links into the auto-geneerated pagination buttons
+			// add missing classes and links into the auto-gene rated pagination buttons
 			$('.pagination').children().each(function() { $(this).addClass('page-item'); });
 			$('.page-item>a').each(function() { $(this).addClass('page-link'); });
 			var pgActive = $('.active.page-item').html();

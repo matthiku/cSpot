@@ -101,6 +101,8 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
          ITEMS
      */
 
+    // add song directly from the song list to a plan
+    Route::get('plans/{plan_id}/addsong/{song_id}',                          'Cspot\ItemController@addSong');
     // show form of next or previous item for a plan
     Route::get('plans/{plan_id}/items/{item_id}/go/{direction}/{chords?}',          'Cspot\ItemController@next');
     // show form to create a new item for a plan

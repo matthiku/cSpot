@@ -296,6 +296,12 @@
 
         @include('cspot.items')
 
+        @if (Auth::user()->ownsPlan($plan->id) )
+            <a href="{{ url('cspot/songs?plan_id='.$plan->id) }}" 
+                title="Search for a song via the full song listing" 
+                class="btn btn-sm btn-info pull-xs-right">Search and add song</a>
+        @endif
+
     @else
 
         <!-- Checkbox to add default items into NEW plan -->
@@ -369,8 +375,6 @@
 
         @else
             &nbsp; {!! Form::submit('Save Note'); !!}
-            <!-- counterproductive as it scrolls the plan on smaller devices 
-                <script>document.forms.inputForm.info.focus()</script> -->
         @endif
 
         @if ( Auth::user()->isAdmin()  &&  $plan->items->count()==0 ) &nbsp; 

@@ -78,13 +78,21 @@ class SongController extends Controller
             $songs = Song::orderBy($orderBy, $order);
         }
 
+        $heading = 'Manage Songs';
+        // URL contains ...?plan_id=xxx (needed in order to add a song to that plan)
+        $plan_id = 0;
+        if ($request->has('plan_id')) {
+            $plan_id = $request->plan_id;
+            $heading = 'Select A Song For Your Plan';
+        }
+
         // for pagination, always append the original query string
         $songs = $songs->paginate(20)->appends($querystringArray);
 
-        $heading = 'Manage Songs';
         return view( $this->view_all, array(
             'songs'       => $songs, 
             'heading'     => $heading,
+            'plan_id'     => $plan_id,
             'currentPage' => $songs->currentPage(),
         ));
     }

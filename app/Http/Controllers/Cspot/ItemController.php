@@ -187,6 +187,43 @@ class ItemController extends Controller
 
 
 
+
+
+
+    /**
+     * Add a song as a new item into a plan (at the end)
+     * 
+     * this is called from the Songs List View
+     */
+    public function addSong($plan_id, $song_id )
+    {
+        // check user rights (teachers and leaders can edit items of their own plan)
+        $plan = Plan::find( $plan_id );
+        $this->checkRights($plan);
+
+        if ($plan) {
+            // get all current items of this plan
+            $items = $plan->items;
+
+            // find item with the highest seq.no
+            $seq_no = 50; // (temporary solution)               
+
+            // create a new items object add it to this plan
+            $item = new Item([
+                'seq_no' => $seq_no, 
+                'song_id' => $song_id,
+            ]);
+            $newItem = $plan->items()->save($item);
+
+            return \Redirect::route( 'cspot.plans.edit', $plan_id );
+        }
+
+        flash('Error! Plan with ID "' . $plan_id . '" not found');
+        return \Redirect::route('home');        
+    }
+
+
+
     /**
      * Directly insert a song as a new item into a plan
      */
