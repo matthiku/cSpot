@@ -106,7 +106,7 @@ class AppMailer
         //if (env('APP_ENV')=='local') return;
 
         $this->to      = findAdmins('email');
-        $this->cc      = '';
+        $this->cc      = 'church.ennis@gmail.com';
         $this->subject = $note;
         $this->view    = 'auth.emails.admin';
         $this->data    = compact( 'user', 'note' );
