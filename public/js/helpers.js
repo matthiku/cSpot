@@ -1200,7 +1200,7 @@ function changeFontSize(selectorList, how) {
         element = $(selector);
         if (element.length>0) {
             fontSize = parseInt($(element).css('font-size')) * factor;
-            if (fontSize<12 || fontSize>150) return;
+            if (fontSize<8 || fontSize>150) return;
             $(element).css('font-size', fontSize);
             localStorage.setItem(selector+'_font-size', fontSize);
             console.log('LocalStorage for '+selector+' was set to '+localStorage.getItem(selector+'_font-size'));
