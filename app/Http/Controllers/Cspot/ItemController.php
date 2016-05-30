@@ -37,10 +37,10 @@ class ItemController extends Controller
         if ( auth()->user()->isEditor() // editor and higher can always
           || auth()->user()->id == $plan->teacher_id 
           || auth()->user()->id == $plan->leader_id  ) 
-             return;
+             return true;
 
         flash('Only the leader or teacher or editors can modify this plan.');
-        return redirect()->back();
+        return false;
     }
 
 
@@ -75,7 +75,9 @@ class ItemController extends Controller
         $plan = Plan::find( $plan_id );
 
         // check user rights (teachers and leaders can edit items of their own plan)
-        $this->checkRights($plan);
+        if (! $this->checkRights($plan)) {
+            return redirect()->back();
+        }
 
         // get array of possible bible versions
         $versionsEnum = json_decode(env('BIBLE_VERSIONS'));
@@ -142,7 +144,9 @@ class ItemController extends Controller
         }
 
         // check user rights (teachers and leaders can edit items of their own plan)
-        $this->checkRights($plan);
+        if (! $this->checkRights($plan)) {
+            return redirect()->back();
+        }
 
         $beforeItem = null;
         if (isset($request->beforeItem_id)) {
@@ -199,7 +203,9 @@ class ItemController extends Controller
     {
         // check user rights (teachers and leaders can edit items of their own plan)
         $plan = Plan::find( $plan_id );
-        $this->checkRights($plan);
+        if (! $this->checkRights($plan)) {
+            return redirect()->back();
+        }
 
         if ($plan) {
             // get all current items of this plan
@@ -231,7 +237,9 @@ class ItemController extends Controller
     {
         // check user rights (teachers and leaders can edit items of their own plan)
         $plan = Plan::find( $plan_id );
-        $this->checkRights($plan);
+        if (! $this->checkRights($plan)) {
+            return redirect()->back();
+        }
 
         $beforeItem = [];
         // find the seq_no ot the item before which I want to insert this new item
@@ -448,7 +456,9 @@ class ItemController extends Controller
         }
 
         // check user rights (teachers and leaders can edit items of their own plan)
-        $this->checkRights($plan);
+        if (! $this->checkRights($plan)) {
+            return redirect()->back();
+        }
 
         // handle file uplaods
         if ($request->hasFile('file')) {
@@ -491,7 +501,9 @@ class ItemController extends Controller
     {
         // check user rights (teachers and leaders can edit items of their own plan)
         $plan = Plan::find( $plan_id );
-        $this->checkRights($plan);
+        if (! $this->checkRights($plan)) {
+            return redirect()->back();
+        }
 
         $item = Item::find($item_id);
         $item->update([
@@ -550,7 +562,9 @@ class ItemController extends Controller
         }
 
         // check user rights (teachers and leaders can edit items of their own plan)
-        $this->checkRights($plan);
+        if (! $this->checkRights($plan)) {
+            return redirect()->back();
+        }
 
         // get item and delete it
         $item = deleteItem($id);
@@ -579,7 +593,9 @@ class ItemController extends Controller
         $item    = Item::onlyTrashed()->find($id);
         $plan_id = $item->plan_id;
         $plan    = Plan::find( $plan_id );
-        $this->checkRights($plan);
+        if (! $this->checkRights($plan)) {
+            return redirect()->back();
+        }
 
         // get item and restore it
         $item = restoreItem($id);
