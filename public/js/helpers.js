@@ -68,6 +68,7 @@ function reFormatBibleText()
 {
     // get bible reference text from item comment
     var refList = $('#item-comment').text().split(';');
+    var refNo = 0;
 
     // get all the paragraphs (<p> elements) with bible text
     var p = $('.bible-text-present p');
@@ -84,7 +85,7 @@ function reFormatBibleText()
     $(p).each( function(entry) {
         text = $(this).text();
         clas = $(this).attr('class')
-        console.log( 'class: ' + clas + ' ==> ' + $(this).html() );
+        console.log( 'CLASS: ' + clas + ' CONTENT: ' + $(this).html() );
 
         // write the bible ref as title
         if (clas=='bible-text-present-ref') {
@@ -101,7 +102,10 @@ function reFormatBibleText()
                     if (verse != undefined && verse.length>2) { 
                         appendBibleText('p',verse,verno); verse = ''; }
                     // print the new Ref
-                    appendBibleText('h1',value,verno);
+                    if (refNo == index) {
+                        appendBibleText('h1',value,'bible-text-ref-header');
+                        refNo += 1;
+                    }
                     verse_from = rfc.verse_from;
                     verse_to   = rfc.verse_to;
                 }
@@ -110,6 +114,7 @@ function reFormatBibleText()
 
         // Identify and disect NIV texts
         var cl4=clas.substr(0,4);
+        var cl1=clas.substr(0,1);
         if (cl4=='line' || cl4=='pcon' || cl4=='reg' ) {
             // get all elements in one array
             elem = $(this).contents();
@@ -133,7 +138,7 @@ function reFormatBibleText()
         }
 
         // find other translations and re-format the text
-        else if ( clas.substr(0,1)=='p' || clas.substr(0,1)=='q' ) {
+        else if ( cl1=='p' || cl1=='q' || cl1=='m' ) {
             // get all elements in one array
             elem = $(this).contents();
             // analyze each elements and separate verse numbers and bible text
@@ -163,6 +168,9 @@ function reFormatBibleText()
     advancePresentation();
 
 }
+/*
+    Split a bible reference into an array of book, chapter, verse_from, verse_to
+*/
 function splitBref(text)
 {
     if (!text) {return;}
@@ -177,34 +185,98 @@ function splitBref(text)
         arr.book = ref[nr++].replace('_',' '); }
     else { 
         arr.book = ref[nr++]; }
+    // detect chapter and verse
     chve = ref[nr++].split(':');
     arr.chapter = chve[0];
+    // is there a verse reference?
     if (chve.length>1) {
+        // detect verse_from and verse_to
         vrs = chve[1].split('-');
         arr.verse_from = vrs[0];
-        if (vrs.length>1) {arr.verse_to   = vrs[1];}
-    } else {
+        // analyze verse_to
+        if (vrs.length>1) {
+            // there could be another reference being attached...
+            vto = vrs[1].split(/[,;]/);
+            arr.verse_to = vto[0];
+        }
+    } 
+    // no verse references detected, use generic values
+    else {
         arr.verse_from = 0;
         arr.verse_to = 199;
     }
+
+    // name of the bible version
+    arr.version = ref[nr];
+
     // problem with differing naming conventions for Psalm in NIV vs others
     if (arr.book=='Psalms') { arr.book='Psalm' };
     return arr;
 }
-function appendBibleText(type, text,verno)
+/*
+    Append the reformatted bible text to the presentation and add a reference
+    into the Sequence Indicator list in the Navbar (bottom right)
+*/
+function appendBibleText(type, text, verno)
 {
     style = '';
     parts = '" ';
     id    = ' id="'+verno+'">';
+
+    // actual bible text is inserted as <p> element, and hidden at first
     if (type=='p') {
-        insertSeqNavInd(verno,verno,'bible'); 
+        insertSeqNavInd( verno, verno, 'bible' ); 
         style=' style="display: none"';
         parts='-parts" ';
     }
+    // if the text is a bible reference, will be treated as H1 element
+    if (type=='h1') {
+        // if there are multiple bible references in one item, we only 
+        // want to have on H1 element, so we attach the next bible ref to the existing H1
+        hText = $('#bible-text-ref-header').text();
+        if (hText != '') {
+            formatBibleRefHeader(hText, text);
+            return;
+        }
+    }
+    // append the constructed element now to the existing element
     $('#bible-text-present-all').append(
         '<'+type+style+' class="bible-text-present'+parts+id+text+'</'+type+'>'
         );   
 }
+/* 
+    If an item contains more than one bible reference, we must format
+    the header in an appropriate way to show the various references appropriately
+*/
+function formatBibleRefHeader( exisText, newText) {
+    // split the references into a bRef array
+    rfc = splitBref(exisText); // existing header
+    bRef = splitBref(newText); // next header
+
+    if (rfc.version==bRef.version) {
+        et = exisText.split(' ');
+        exisRef = et[0]+' '+et[1];
+        // are we still in the same book with the new text?
+        if (rfc.book==bRef.book) {
+            // same chapter
+            if (rfc.chapter==bRef.chapter) {
+                $('#bible-text-ref-header').text(exisRef+','+bRef.verse_from+'-'+bRef.verse_to+' '+bRef.version);
+            }
+            // different chapter
+            else {
+                $('#bible-text-ref-header').text(exisRef+';'+bRef.chapter+':'+bRef.verse_from+'-'+bRef.verse_to+' '+bRef.version);
+            }
+            return;
+        }
+        // different book
+        else {
+            $('#bible-text-ref-header').text(exisRef+';'+bRef.book+' '+bRef.chapter+':'+bRef.verse_from+'-'+bRef.verse_to+' '+bRef.version);
+        }
+    }
+    $('#bible-text-ref-header').append('; ' + newText);   
+}
+
+
 function countLines(where) {
     var divHeight = document.getElementById(where).offsetHeight
     var elem = document.getElementById(where);
@@ -376,13 +448,15 @@ function createDefaultLyricSequence()
     // now write the new sequence into the proper element
     $('#sequence').text(sequence);
 }
-/* Insert the Sequence Navigation indicators into the navbar */
+/* 
+    Insert the Sequence Navigation indicators into the navbar 
+*/
 function insertSeqNavInd(what, nr, where)
 {
     // set default action
     where = where || 'lyrics';
 
-    //console.log('inserting sequence indicator for '+ what + ' as '+where+' part # ' + nr);
+    console.log('inserting sequence NavBar indicator for '+ what + ' as '+where+' part # ' + nr);
 
     data = '<span id="'+where+'-progress-' + nr + '" class="'+where+'-progress-indicator" ' +
            'data-show-status="unshown" onclick="'+where+'Show(' + "'" + what + "'" + ');">';
@@ -390,6 +464,9 @@ function insertSeqNavInd(what, nr, where)
 
     $('#lyrics-sequence-nav').append( data );
 }
+/*
+    special formatting for sequence indicators of lyric parts
+*/
 function formatSeqInd(code){
     code  = code.toString();
     char1 = code.substr(0,1);
@@ -797,7 +874,6 @@ function bibleShow(what)
     var parts = $('.bible-text-present-parts');
     var indic = $('.bible-progress-indicator');
     var found = -1;
-    var vps   = parseInt(howManyVersesPerSlide);
     // loop through all bible verses until number 'what' is found...
     for (var i=0; i<parts.length; i++) 
     {
@@ -805,16 +881,12 @@ function bibleShow(what)
         {
             found = i;
             $(parts[i]).show();
-            $(parts[i+vps-1]).show();
             $(indic[i]).addClass('bg-danger');
             $(indic[i]).data().showStatus = 'done';
-            i+=vps-2;
         } 
         else if ( found>=0 ) {
             $(indic[i]).data().showStatus = 'unshown';
-            //if (found+vps < i) {
-                $(parts[i]).hide();
-            //}
+            $(parts[i]).hide();
         }
         else 
         {

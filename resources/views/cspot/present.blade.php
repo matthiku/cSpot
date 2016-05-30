@@ -41,9 +41,9 @@
                 @foreach ($bibleTexts as $btext)
                     <p class="item-comment" id="item-comment" style="display: none;" >{{ $item->comment }}</p>
                     <p class="bible-text-present-ref" style="display: none;" >{{ $btext->display }}</p>
-                    <h1>{{ $btext->display }}</h1> <!-- ({{ $btext->version_abbreviation }}) -->
+                    <h1>{{ $btext->display }}</h1> 
                     <div class="bible-text-present" style="display: none;" >{!! $btext->text !!}</div>
-                    <!-- <div class="small">{!! $btext->copyright !!}</div> -->
+                    <!-- {!! $btext->copyright !!} -->
                     <hr>
                 @endforeach
             </div>

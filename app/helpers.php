@@ -11,6 +11,12 @@ use App\Models\Team;
 
 use App\Http\Controllers\Cspot\BibleController;
 
+use Carbon\Carbon;
+
+use Cmgmyr\Messenger\Models\Message;
+use Cmgmyr\Messenger\Models\Participant;
+use Cmgmyr\Messenger\Models\Thread;
+
 
 /**
  * Set a flash message in the session.
@@ -497,3 +503,50 @@ function listOfPlansForUser()
 }
 
 
+
+/**
+ * send message via internal messenger
+ */
+function sendInternalMessage($subject, $message, $recipient)
+{
+
+    $thread = Thread::create(
+        [
+            'subject' => $subject,
+        ]
+    );
+
+    // Message
+    Message::create(
+        [
+            'thread_id' => $thread->id,
+            'user_id'   => Auth::user()->id,
+            'body'      => $message,
+        ]
+    );
+
+    // Sender
+    Participant::create(
+        [
+            'thread_id' => $thread->id,
+            'user_id'   => Auth::user()->id,
+            'last_read' => new Carbon,
+        ]
+    );
+
+    // Add Recipients
+    $thread->addParticipants([$recipient]);
+
+    return $thread->id;
+
+}
+/**
+ * Delete the internal message if the associated task was completed
+ */
+function deleteConfirmRequestThread($id)
+{
+    $thread = Thread::find($id);
+    if ($thread) {
+        $thread->delete();
+    }
+}

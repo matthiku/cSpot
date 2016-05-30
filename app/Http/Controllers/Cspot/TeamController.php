@@ -71,11 +71,19 @@ class TeamController extends Controller
             }
             $team->requested = True;
             $team->remember_token = str_random(32);
+
+            // send internal message to user
+            $message = 'Please open <a href="' . url('cspot/plans/'.$plan_id) . '/team"> this plan </a> and confirm if you accept the given role.';
+            $thread_id = sendInternalMessage('You have been assigned a role in a Service plan', $message, $team->user_id);
+
+            $team->thread_id = $thread_id;
             $team->save();
 
+            // also send an email to the user
             $recipient = User::find($team->user_id);
             $plan = Plan::find($team->plan_id);
             $mailer->getPlanMemberConfirmation( $recipient, $plan, $team );
+
 
             $status = 'Email with membership request was sent to user.';
             return \Redirect::route('team.index', ['plan_id'=>$plan_id])
@@ -117,6 +125,9 @@ class TeamController extends Controller
                 $team->available = False;
                 $status = 'Thank you! Your status was changed accordingly.'; 
             }
+            // delete the confirmation request message thread, if there was any
+            deleteConfirmRequestThread($team->thread_id);
+            $team->thread_id = 0;
             $team->save();
             return \Redirect::route('team.index', ['plan_id'=>$plan_id])
                             ->with(['status' => $status]);
