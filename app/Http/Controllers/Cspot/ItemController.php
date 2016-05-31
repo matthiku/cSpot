@@ -15,6 +15,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Song;
 use App\Models\Plan;
 use App\Models\Item;
+use App\Models\File;
 
 use DB;
 use Auth;
@@ -650,6 +651,18 @@ class ItemController extends Controller
 
         flash('All trashed items restored. Please review the sequence!');
         return \Redirect::back();
+    }
+
+
+
+
+    /**
+     * IMAGES HANDLING
+     */
+    public function indexFiles()
+    {
+        $files = File::get();
+        return view('admin.files', ['files'=>$files, 'heading'=>'List All Files and Images']);
     }
 
 

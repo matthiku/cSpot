@@ -37,10 +37,11 @@
             <li class="nav-item dropdown">
                 <a href="#" class="nav-link dropdown-toggle{{ Request::is('admin/*') ? ' active' : '' }}" 
                    data-toggle="dropdown" role="button" aria-expanded="false">
-                    Setup <span class="caret"></span>
+                    <i class="fa fa-cogs"></i> <span class="caret"></span>
                 </a>
                 <div class="dropdown-menu" role="menu">
                     <a class="dropdown-item" href="{{ url('admin/default_items') }}"><i class="fa fa-btn fa-server fa-lg"></i> &nbsp; Default Items</a>
+                    <a class="dropdown-item" href="{{ url('cspot/files') }}"><i class="fa fa-btn fa-clone fa-lg"></i> &nbsp; Files/Images</a>
                     <hr>
                     <a class="dropdown-item" href="{{ url('admin/users') }}"><i class="fa fa-btn fa-users fa-lg"></i> &nbsp; User List</a>
                     <a class="dropdown-item" href="{{ url('admin/roles') }}"><i class="fa fa-btn fa-check-square-o fa-lg"></i> &nbsp; User Roles</a>

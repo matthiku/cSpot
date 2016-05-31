@@ -17,6 +17,8 @@ use Cmgmyr\Messenger\Models\Message;
 use Cmgmyr\Messenger\Models\Participant;
 use Cmgmyr\Messenger\Models\Thread;
 
+use Intervention\Image\ImageManager;
+
 
 /**
  * Set a flash message in the session.
@@ -106,6 +108,26 @@ function saveUploadedFile($request)
     // move the anonymous file to the central location
     $destinationPath = config('files.uploads.webpath');
     $request->file('file')->move($destinationPath, $token);
+
+    // create a thumbnail copy of this file
+    $img = Image::make($destinationPath.'/'.$token)
+        ->resize(300, null,         // max width
+            function ($constraint) {
+                $constraint->aspectRatio();
+                $constraint->upsize();
+            })
+        ->resize(null, 200,         // max height
+            function ($constraint) {
+                $constraint->aspectRatio();
+                $constraint->upsize();
+            });
+    $img->save($destinationPath.'/'.'thumb-'.$token, 80);
+    $img = $img->resize(150, null, 
+            function ($constraint) {
+                $constraint->aspectRatio();
+                $constraint->upsize();
+            });
+    $img->save($destinationPath.'/'.'mini-'.$token);
 
     $file = new File([
         'token'    => $token,

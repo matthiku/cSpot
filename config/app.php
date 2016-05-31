@@ -164,6 +164,9 @@ return [
 
         Rap2hpoutre\LaravelLogViewer\LaravelLogViewerServiceProvider::class,
 
+        // Image processing - http://image.intervention.io/
+        Intervention\Image\ImageServiceProvider::class,
+
     ],
 
     /*
@@ -217,6 +220,7 @@ return [
 
         'Input'     => Illuminate\Support\Facades\Input::class,
 
+        'Image'     => Intervention\Image\Facades\Image::class,
 
     ],
 

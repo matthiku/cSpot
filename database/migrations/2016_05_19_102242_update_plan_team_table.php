@@ -19,6 +19,8 @@ class UpdatePlanTeamTable extends Migration
             $table->text('comment');
             // add token field for direct confirmation (no login required)
             $table->rememberToken();
+            // thread id for confirmation request
+            $table->integer('thread_id');
         });
     }
 
@@ -33,6 +35,7 @@ class UpdatePlanTeamTable extends Migration
             // remove the fields again
             $table->dropColumn('comment');
             $table->dropColumn('available');
+            $table->dropColumn('thread_id');
         });
     }
 }

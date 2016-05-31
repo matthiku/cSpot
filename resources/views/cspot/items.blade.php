@@ -34,11 +34,15 @@
 
 				<th class="hidden-lg-down center"
 						data-toggle="tooltip" title="Lyrics with chords for guitars"
-					><small>Chords?</small></th>
+					><small><i class="fa fa-file-code-o"></i></small></th>
 
 				<th class="hidden-lg-down center"
 						data-toggle="tooltip" title="Sheet music attached to the song?"
-					><small>Music?</small></th>
+					><small><i class="fa fa-music"></i></small></th>
+
+				<th class="hidden-lg-down center"
+						data-toggle="tooltip" title="Image/File attached to the item?"
+					><small><i class="fa fa-file-picture-o"></i></small></th>
 
 				<th class="hidden-xs-down center dont-print"
 						data-toggle="tooltip" title="Links to YouTube videos or sheetmusic for song items."
@@ -140,6 +144,12 @@
 						@if ( count($item->song->files)>0 )
 							<i class="fa fa-check"></i>
 						@endif
+					@endif
+				</td>
+
+				<td {{$onclick}} class="hidden-lg-down center" title="Are there files/images (like announcements) attached to the item?">
+					@if ( count($item->files)>0 )
+						<i class="fa fa-check"></i>
 					@endif
 				</td>
 

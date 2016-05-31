@@ -101,6 +101,8 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
          ITEMS
      */
 
+    // update a specific item (this is usually called from a form)
+    Route::put('items/{item_id}',  ['as'=>'cspot.items.update', 'uses'=>'Cspot\ItemController@update']);    
     // add song directly from the song list to a plan
     Route::get('plans/{plan_id}/addsong/{song_id}',                          'Cspot\ItemController@addSong');
     // show form of next or previous item for a plan
@@ -114,7 +116,7 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     // show form to create a new item for a plan
     Route::get('plans/{plan_id}/items/create/{seq_no}',                     'Cspot\ItemController@create');    
     // show form to update a new item for a plan
-    Route::get('plans/{plan_id}/items/{item_id}/edit',      'Cspot\ItemController@edit');    
+    Route::get('plans/{plan_id}/items/{item_id}/edit',              'Cspot\ItemController@edit');    
     // MOVE the specified resource up or down in the list of items related to a plan
     Route::get('items/{item_id}/move/{direction}',          'Cspot\ItemController@move');
     // change the seq no of an item
@@ -134,6 +136,10 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     // presentation view of a plan
     Route::get('items/{item_id}/{present?}',                'Cspot\ItemController@show');
 
+    /**
+     * FILES
+     */
+    Route::get('files/', 'Cspot\ItemController@indexFiles');
 
     /*
         SONGS
