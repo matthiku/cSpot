@@ -103,6 +103,7 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
 
     // update a specific item (this is usually called from a form)
     Route::put('items/{item_id}',  ['as'=>'cspot.items.update', 'uses'=>'Cspot\ItemController@update']);    
+    Route::post('items',           ['as'=>'cspot.items.store',  'uses'=>'Cspot\ItemController@store']);    
     // add song directly from the song list to a plan
     Route::get('plans/{plan_id}/addsong/{song_id}',                          'Cspot\ItemController@addSong');
     // show form of next or previous item for a plan
