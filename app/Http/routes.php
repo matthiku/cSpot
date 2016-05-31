@@ -114,29 +114,25 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     // show form to create a new item for a plan
     Route::get('plans/{plan_id}/items/create/{seq_no}',                     'Cspot\ItemController@create');    
     // show form to update a new item for a plan
-    Route::get('plans/{plan_id}/items/{item_id}/edit',                  'Cspot\ItemController@edit');    
-    // delete an item
-    Route::get('items/{items}/delete',                                  'Cspot\ItemController@delete');
-    // presentation view of a plan
-    Route::get('items/{items}/{present?}',                          'Cspot\ItemController@show');
-
-    // generic item resource routes
-    Route::resource('items', 'Cspot\ItemController');
-
+    Route::get('plans/{plan_id}/items/{item_id}/edit',      'Cspot\ItemController@edit');    
     // MOVE the specified resource up or down in the list of items related to a plan
-    Route::get('items/{items}/move/{direction}',        'Cspot\ItemController@move');
+    Route::get('items/{item_id}/move/{direction}',          'Cspot\ItemController@move');
     // change the seq no of an item
-    Route::get('items/{items}/seq_no/{seq_no}',         'Cspot\ItemController@update');
+    Route::get('items/{item_id}/seq_no/{seq_no}',           'Cspot\ItemController@update');
+
     // specific (soft) delete route using 'get' method
-    Route::get('items/{items}/delete',                  'Cspot\ItemController@destroy');    
+    Route::get('items/{item_id}/delete',                    'Cspot\ItemController@trash');    
     // permanently delete an item
-    Route::get('items/{items}/permDelete',              'Cspot\ItemController@permDelete');    
+    Route::get('items/{item_id}/permDelete',                'Cspot\ItemController@permDelete');    
     // restor a soft-delted item
-    Route::get('items/{items}/restore',                 'Cspot\ItemController@restore');    
+    Route::get('items/{item_id}/restore',                   'Cspot\ItemController@restore');    
     // delete all trashed items of a plan
-    Route::get('plans/{plan_id}/items/trashed/restore', 'Cspot\ItemController@restoreAllTrashed');    
+    Route::get('plans/{plan_id}/items/trashed/restore',     'Cspot\ItemController@restoreAllTrashed');    
     // delete all trashed items of a plan
-    Route::get('plans/{plan_id}/items/trashed/delete',  'Cspot\ItemController@deleteAllTrashed');    
+    Route::get('plans/{plan_id}/items/trashed/delete',      'Cspot\ItemController@deleteAllTrashed');    
+
+    // presentation view of a plan
+    Route::get('items/{item_id}/{present?}',                'Cspot\ItemController@show');
 
 
     /*

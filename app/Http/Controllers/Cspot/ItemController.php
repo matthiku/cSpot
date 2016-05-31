@@ -48,23 +48,6 @@ class ItemController extends Controller
 
 
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-        flash('Sorry, this is not (yet) implemented.');
-        return redirect()->back();
-    }
-
-
-
-
-
-
-    /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
@@ -224,7 +207,7 @@ class ItemController extends Controller
             return \Redirect::route( 'cspot.plans.edit', $plan_id );
         }
 
-        flash('Error! Plan with ID "' . $plan_id . '" not found');
+        flash('Error! Plan with ID "' . $plan_id . '" not found! (F:addSong)');
         return \Redirect::route('home');        
     }
 
@@ -318,7 +301,7 @@ class ItemController extends Controller
                 ]);
         }
 
-        flash('Error! Item with ID "' . $id . '" not found');
+        flash('Error! Item with ID "' . $id . '" was not found! (F:show)');
         return \Redirect::route('home');        
     }
 
@@ -373,6 +356,10 @@ class ItemController extends Controller
         $plan = Plan::find( $plan_id );
 
         $item = Item::find($id);
+        if (!$item) { 
+            flash('Error! Item with ID "' . $id . '" not found! (F:edit)');
+            return redirect()->back();
+        }
         $seq_no = $item->seq_no;
 
         $versionsEnum = json_decode(env('BIBLE_VERSIONS'));
@@ -427,7 +414,7 @@ class ItemController extends Controller
     {
         $item    = Item::find($id);
         if (!$item) {
-            flash('Error! Item with ID "' . $id . '" not found');
+            flash('Error! Item with ID "' . $id . '" not found! (F:update)');
             return \Redirect::back();
         }
         $plan_id = $item->plan_id;
@@ -549,7 +536,7 @@ class ItemController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function trash($id)
     {
         $item    = Item::find($id);
         if ($item) {
@@ -557,7 +544,7 @@ class ItemController extends Controller
             $plan    = Plan::find( $plan_id );
         } 
         else {
-            flash('Error! Item with ID "' . $id . '" not found');
+            flash('Error! Item with ID "' . $id . '" not found! (F:trash)' );
             return \Redirect::back();
         }
 
@@ -604,7 +591,7 @@ class ItemController extends Controller
             flash('Item restored.');
             return \Redirect::back();
         }
-        flash('Error! Item with ID "' . $id . '" not found');
+        flash('Error! Item with ID "' . $id . '" not found! (F:restore)');
         return \Redirect::back();
     }
 
@@ -616,9 +603,11 @@ class ItemController extends Controller
      */
     public function permDelete( $id )
     {
-        // this item should be restored
         $item    = Item::onlyTrashed()->find($id);
-        if (!$item) return false ;
+        if (!$item) {
+            flash('Error! Item with ID "' . $id . '" not found! (F:permDelete)');
+            return redirect()->back();
+        }
 
         $item->forceDelete();
 
