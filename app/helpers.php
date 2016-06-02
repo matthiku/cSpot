@@ -136,7 +136,7 @@ function saveUploadedFile($request)
 function createThumbs($fPath, $fName) {
     // check if file has a valid extension for processing by Intervention/ImageManager
     $ext = pathinfo($fName, PATHINFO_EXTENSION);
-    if (! in_array(strtolower($ext), ['jpg','gif','png'])) {
+    if (! in_array(strtolower($ext), ['jpg','gif','png','jpeg'])) {
         return;
     }
     // resize for thumbnail
@@ -196,6 +196,7 @@ function createThumbsForAll()
         Log::info("Creating thumbs for $imgfile:\n");
         createThumbs('.', $imgfile);
     }
+    // make sure user 'www-data' has access rights to all files
 
 }
 
