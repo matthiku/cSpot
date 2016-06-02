@@ -6,10 +6,10 @@
     <!-- show thumbnail, but link to full image -->
     <a href="{{ url(config('files.uploads.webpath')).'/'.$file->token }}">
         <img style="max-width:250px;" class="figure-img img-fluid img-rounded img-thumbnail" 
-            @if (  file_exists( config('files.uploads.webpath').'/thumb-'.$file->token ) )
-                src="{{ url(config('files.uploads.webpath')).'/thumb-'.$file->token }}">
+            @if ( $isMobileUser )
+                src="{{ url(config('files.uploads.webpath')).'/mini-'.$file->token }}">
             @else
-                src="{{ url(config('files.uploads.webpath')).'/'.$file->token }}">
+                src="{{ url(config('files.uploads.webpath')).'/thumb-'.$file->token }}">
             @endif
     </a>
 
