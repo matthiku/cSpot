@@ -197,7 +197,10 @@ function createThumbsForAll()
         createThumbs('.', $imgfile);
     }
     // make sure user 'www-data' has access rights to all files
-
+    $files = glob('*.*');
+    foreach ($files as $key => $value) {
+        chmod($value, 0777);
+    }
 }
 
 
