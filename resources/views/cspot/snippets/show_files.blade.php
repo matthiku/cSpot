@@ -14,8 +14,8 @@
     </a>
 
     <figcaption class="figure-caption">
+        <a class="pull-md-right" href="#" onclick="deleteFile({{ $file->id }})"><i class="fa fa-trash red"></i> Delete this file</a>
     	{{ $file->filename }}
-        <a href="#" onclick="deleteFile({{ $file->id }})"><i class="fa fa-trash red"></i> Delete this file</a>
     </figcaption>
 
 </figure>

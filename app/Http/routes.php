@@ -194,6 +194,13 @@ Route::group(['prefix' => 'admin', 'middleware' => ['web']], function() {
     Route::get('types/{types}/delete', 'Admin\TypeController@destroy');    
     Route::get('default_items/{default_items}/delete', 'Admin\DefaultItemController@destroy');    
 
+    // run a specific job
+    Route::get('runjob/thumbs', function() {
+        dispatch(new App\Jobs\CreateThumbs);
+        flash( 'Done!');
+        return redirect()->back();
+    });
+
 });
 
 Route::group(['middleware' => ['web', 'auth']], function() {

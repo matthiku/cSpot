@@ -98,7 +98,10 @@ function is_image($mimeType)
     return starts_with($mimeType, 'image/');
 }
 
-
+/**
+ * Save uploaded files to the designated folder
+ * and create thumbnail and mini version as well
+ */
 function saveUploadedFile($request)
 {
     $extension = $request->file('file')->getClientOriginalExtension();
@@ -109,8 +112,35 @@ function saveUploadedFile($request)
     $destinationPath = config('files.uploads.webpath');
     $request->file('file')->move($destinationPath, $token);
 
-    // create a thumbnail copy of this file
-    $img = Image::make($destinationPath.'/'.$token)
+    // create a thumbnail copy of a file
+    if (in_array(strtolower($extension), ['jpg','gif','png'])) {
+        createThumbs($destinationPath, $token);
+    }
+
+    // create and return the new FILE object
+    $file = new File([
+        'token'    => $token,
+        'filename' => $filename
+    ]);
+    return $file;  
+}
+/**
+  * create a thumbnail copy of a file
+  *
+  * @param  string  $fPath  file path
+  * @param  string  $fName  file name
+  *
+  * Save small copy of image as thumb_<file name> (max 300 width and max 200 height)
+  * Save mini  copy of image as thumb_<file name> (max 150 width)
+  */
+function createThumbs($fPath, $fName) {
+    // check if file has a valid extension for processing by Intervention/ImageManager
+    $ext = pathinfo($fName, PATHINFO_EXTENSION);
+    if (! in_array(strtolower($ext), ['jpg','gif','png'])) {
+        return;
+    }
+    // resize for thumbnail
+    $img = Image::make($fPath.'/'.$fName)
         ->resize(300, null,         // max width
             function ($constraint) {
                 $constraint->aspectRatio();
@@ -121,19 +151,52 @@ function saveUploadedFile($request)
                 $constraint->aspectRatio();
                 $constraint->upsize();
             });
-    $img->save($destinationPath.'/'.'thumb-'.$token, 80);
+    $img->save($fPath.'/'.'thumb-'.$fName, 80);
+    // resize for mini thumbnail
     $img = $img->resize(150, null, 
             function ($constraint) {
                 $constraint->aspectRatio();
                 $constraint->upsize();
             });
-    $img->save($destinationPath.'/'.'mini-'.$token);
+    $img->save($fPath.'/'.'mini-'.$fName);
 
-    $file = new File([
-        'token'    => $token,
-        'filename' => $filename
-    ]);
-    return $file;  
+}
+function deleteThumbs($fPath, $fName) {
+    if (file_exists($fPath.'/'.'thumb-'.$fName)) {
+        unlink($fPath.'/'.'thumb-'.$fName);
+    }
+    if (file_exists($fPath.'/'.'mini-'.$fName)) {
+        unlink($fPath.'/'.'mini-'.$fName);
+    }
+}
+
+/**
+ * temporary job...
+ */
+function createThumbsForAll()
+{
+    $dir = config('files.uploads.webpath');
+    chdir('public/'.$dir);
+    // create list of current files in images folder
+    // (exclude thumb_... or mini_...)
+    $files = glob('*.*');
+
+    // loop through each file
+    foreach ($files as $key => $imgfile) {
+        // is it already minified?
+        $prefix = explode('-', $imgfile);
+        if ( $prefix[0]=='mini' || $prefix[0]=='thumb' ) {
+            continue;
+        }
+        // check if thumb_... or mini_... already exists for this file
+        if (file_exists('thumb-'.$imgfile) && file_exists('mini-'.$imgfile) ) {
+            continue;
+        }
+        // create thumb and mini copy of this file
+        Log::info("Creating thumbs for $imgfile:\n");
+        createThumbs('.', $imgfile);
+    }
+
 }
 
 

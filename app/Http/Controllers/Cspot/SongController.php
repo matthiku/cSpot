@@ -270,6 +270,9 @@ class SongController extends Controller
             // delete the physical file
             $destinationPath = config('files.uploads.webpath');
             unlink(public_path().'/'.$destinationPath.'/'.$file->token);
+            // also delete possible thumbnail files
+            deleteThumbs(public_path().'/'.$destinationPath, $file->token);
+            
             // delete the database record
             $file->delete();
             // return to sender
