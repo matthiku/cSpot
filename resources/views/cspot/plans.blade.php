@@ -133,18 +133,6 @@
 			{!! $plans->links() !!}
 		</center>
 
-		<script>
-			// add missing classes and links into the auto-geneerated pagination buttons
-			$('.pagination').children().each(function() { $(this).addClass('page-item'); });
-			$('.page-item>a').each(function() { $(this).addClass('page-link'); });
-			var pgActive = $('.active.page-item').html();
-			$('.active.page-item').html('<a class="page-link" href="#">'+pgActive+'</a>');
-			$('.disabled.page-item').each(function() {
-				var innerHtml = $(this).html();
-				$(this).html('<a class="page-link" href="#">'+innerHtml+'</a>');
-			})
-		</script>
-
     @else
 
     	<p>No plans found!</p>

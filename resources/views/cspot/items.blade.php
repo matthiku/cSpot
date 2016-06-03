@@ -41,7 +41,7 @@
 					><small><i class="fa fa-music"></i></small></th>
 
 				<th class="hidden-lg-down center"
-						data-toggle="tooltip" title="Image/File attached to the item?"
+						data-toggle="tooltip" title="Are there files (like announcements) attached to this item?"
 					><small><i class="fa fa-file-picture-o"></i></small></th>
 
 				<th class="hidden-xs-down center dont-print"
@@ -147,7 +147,12 @@
 					@endif
 				</td>
 
-				<td {{$onclick}} class="hidden-lg-down center" title="Are there files/images (like announcements) attached to the item?">
+				<td {{$onclick}} class="hidden-lg-down center link"
+					@if ( count($item->files)>0 )
+						title="{{ $item->files[0]->filename }}" data-toggle="tooltip" data-placement="left"
+						data-template='<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><pre class="tooltip-inner"></pre><img src="{{ url(config('files.uploads.webpath')).'/thumb-'.$item->files[0]->token }}"></div>'
+					@endif
+					>
 					@if ( count($item->files)>0 )
 						<i class="fa fa-check"></i>
 					@endif

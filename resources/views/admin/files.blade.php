@@ -35,6 +35,7 @@
 		
 
 		<div class="row">
+
 	        @foreach( $files as $key => $file )
     			<div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
                     <div class="card">
@@ -69,7 +70,10 @@
 					<div class="clearfix hidden-md-up"></div>
 				@endif
 	        @endforeach
-		</div>
+
+		</div><!-- row -->
+        
+        <center>{!! $files->links() !!}</center>
 
 
     @else

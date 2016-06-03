@@ -329,8 +329,22 @@ function insertItem( $request )
         $newItem->song_id = $request->song_id;
     }
     // saving the new Item via the relationship to the Plan
-    $plan->items()->save( $newItem );
+    $item = $plan->items()->save( $newItem );
     $plan->new_seq_no = $new_seq_no;
+
+
+    // handle file uplaods
+    if ($request->hasFile('file')) {
+        if ($request->file('file')->isValid()) {
+            // use the helper function
+            $file = saveUploadedFile($request);
+            // add the file as a relationship to the song
+            $item->files()->save($file);
+        }
+        else {
+            flash('Uploaded file could not be validated!');
+        }
+    } 
 
     Log::info('INSERTITEM-newSeqNo new:'.$new_seq_no);
 

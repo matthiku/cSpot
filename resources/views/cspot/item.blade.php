@@ -25,7 +25,13 @@
             'files'  => true,
             )) !!}
     @else
-        {!! Form::open(array('action' => 'Cspot\ItemController@store', 'id' => 'inputForm')) !!}
+        {!! Form::open(
+            array(
+                'action' => 'Cspot\ItemController@store',
+                'id' => 'inputForm',
+                'files'  => true,
+            )
+        ) !!}
     @endif
 
     {!! Form::hidden('seq_no', $seq_no) !!}
@@ -367,9 +373,12 @@
                                 <i class="fa fa-file"></i>&nbsp;Add new file</a> &nbsp; &nbsp;
                             <a href="{{ url('cspot/files').'?item_id='.$item->id }}" style="white-space: nowrap">
                                 <i class="fa fa-file-picture-o"></i>&nbsp;Add&nbsp;existing&nbsp;file</a>
-                            <br>
-                            <br>
+                        @else
+                            <a href="#" onclick="$(this).hide();$('#col-2-file-add').show();">
+                                <i class="fa fa-file"></i>&nbsp;Add new file</a> &nbsp; &nbsp;
                         @endif
+                        <br>
+                        <br>
 
                         <h6><i class="fa fa-book">&nbsp;</i>Add Bible Reference:</h6>
 

@@ -132,6 +132,13 @@ class ItemController extends Controller
             return redirect()->back();
         }
 
+        // check if the new item contains at least one ofthe following:
+        //       Song, Bible reference or Comment
+        if ($request->comment=='' && $request->version=='') {
+            flash('item was empty! Please add a comment, select a bible verse or add a song.');
+            return redirect()->back();
+        }        
+
         $beforeItem = null;
         if (isset($request->beforeItem_id)) {
             $beforeItem = Item::find($request->beforeItem_id);
@@ -663,7 +670,9 @@ class ItemController extends Controller
      */
     public function indexFiles(Request $request)
     {
-        $files = File::get();
+        $files = File::paginate(20);
+
+        $querystringArray = $request->input();
 
         $heading = 'List All Files and Images';
         // URL contains ...?item_id=xxx (needed in order to add an existing file to an item)
@@ -672,6 +681,9 @@ class ItemController extends Controller
             $item_id = $request->item_id;
             $heading = 'Select a file for the Plan Item';
         }
+
+        // for pagination, always append the original query string
+        $files = $files->appends($querystringArray);
 
         return view('admin.files', ['files'=>$files, 'item_id'=>$item_id, 'heading'=>$heading]);
     }
