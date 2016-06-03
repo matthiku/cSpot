@@ -364,15 +364,16 @@
                                 <i class="fa fa-music"></i>&nbsp;Add Song</a> &nbsp; &nbsp;
 
                             <a href="#" onclick="$(this).hide();$('#col-2-file-add').show();">
-                                <i class="fa fa-file"></i>&nbsp;Add File(s)</a>
+                                <i class="fa fa-file"></i>&nbsp;Add new file</a> &nbsp; &nbsp;
+                            <a href="{{ url('cspot/files').'?item_id='.$item->id }}" style="white-space: nowrap">
+                                <i class="fa fa-file-picture-o"></i>&nbsp;Add&nbsp;existing&nbsp;file</a>
                             <br>
                             <br>
                         @endif
 
                         <h6><i class="fa fa-book">&nbsp;</i>Add Bible Reference:</h6>
 
-                        <select name="from-book" id="from-book" class="pull-xs-left" 
-                                onchange="showNextSelect('from', 'chapter')">
+                        <select name="from-book" id="from-book" class="pull-xs-left" onchange="showNextSelect('from', 'chapter')">
                             <option selected="TRUE" value=" ">select...</option>
                             @foreach ($bibleBooks->getArrayOfBooks() as $book)
                                 <option value="{{ $book }}">{{ $book }}</option>

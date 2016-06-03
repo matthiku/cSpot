@@ -25,5 +25,10 @@ class File extends Model
         return $this->belongsTo('App\Models\Item');
     }
 
+    public function items() 
+    {
+        return $this->belongsToMany('App\Models\Item');
+    }
+
     
 }

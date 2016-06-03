@@ -117,7 +117,7 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     // show form to create a new item for a plan
     Route::get('plans/{plan_id}/items/create/{seq_no}',                     'Cspot\ItemController@create');    
     // show form to update a new item for a plan
-    Route::get('plans/{plan_id}/items/{item_id}/edit',              'Cspot\ItemController@edit');    
+    Route::get('plans/{plan_id}/items/{item_id}/edit', ['as'=>'cspot.items.edit', 'uses'=>'Cspot\ItemController@edit']);    
     // MOVE the specified resource up or down in the list of items related to a plan
     Route::get('items/{item_id}/move/{direction}',          'Cspot\ItemController@move');
     // change the seq no of an item
@@ -127,7 +127,7 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     Route::get('items/{item_id}/delete',                    'Cspot\ItemController@trash');    
     // permanently delete an item
     Route::get('items/{item_id}/permDelete',                'Cspot\ItemController@permDelete');    
-    // restor a soft-delted item
+    // restore a soft-deleted item
     Route::get('items/{item_id}/restore',                   'Cspot\ItemController@restore');    
     // delete all trashed items of a plan
     Route::get('plans/{plan_id}/items/trashed/restore',     'Cspot\ItemController@restoreAllTrashed');    
@@ -137,10 +137,15 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     // presentation view of a plan
     Route::get('items/{item_id}/{present?}',                'Cspot\ItemController@show');
 
+
     /**
      * FILES
      */
+    // list all current files
     Route::get('files/', 'Cspot\ItemController@indexFiles');
+    // add a file to a plan item
+    Route::get('items/{item_id}/addfile/{file_id}',         'Cspot\ItemController@addfile');    
+
 
     /*
         SONGS

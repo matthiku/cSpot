@@ -39,9 +39,14 @@
     			<div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
                     <div class="card">
                         <div class="card-block">
-                            <a href="#" onclick="deleteFile({{ $file->id }})" title="delete this file" 
-                                class="btn btn-sm btn-danger pull-xs-right">
-                                <i class="fa fa-trash"></i></a>
+                            @if ( ! $item_id==0 )
+                                <a href="{{ url('cspot/items').'/'.$item_id.'/addfile/'.$file->id }}" class="btn btn-sm btn-primary">
+                                    select</a>
+                            @else
+                                <a href="#" onclick="deleteFile({{ $file->id }})" title="delete this file" 
+                                    class="btn btn-sm btn-danger pull-xs-right">
+                                    <i class="fa fa-trash"></i></a>
+                            @endif
                             <small class="card-title">{{ $file->filename }}</small>
                         </div>
                         <a href="{{ url(config('files.uploads.webpath')).'/'.$file->token }}">

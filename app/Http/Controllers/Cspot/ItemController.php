@@ -658,11 +658,37 @@ class ItemController extends Controller
 
     /**
      * IMAGES HANDLING
+     *
+     * TODO: add pagination!
      */
-    public function indexFiles()
+    public function indexFiles(Request $request)
     {
         $files = File::get();
-        return view('admin.files', ['files'=>$files, 'heading'=>'List All Files and Images']);
+
+        $heading = 'List All Files and Images';
+        // URL contains ...?item_id=xxx (needed in order to add an existing file to an item)
+        $item_id = 0;
+        if ($request->has('item_id')) {
+            $item_id = $request->item_id;
+            $heading = 'Select a file for the Plan Item';
+        }
+
+        return view('admin.files', ['files'=>$files, 'item_id'=>$item_id, 'heading'=>$heading]);
+    }
+
+    /**
+     * Add existing file to a plan item
+     */
+    public function addFile($item_id, $file_id)
+    {
+        $item = Item::find($item_id);
+        if ($item) {
+            $file = File::find($file_id);
+            $item->files()->save($file);
+            return \Redirect::route( 'cspot.items.edit', [$item->plan_id, $item->id] );
+        }
+        flash('Error! Item with ID "' . $id . '" not found');
+        return \Redirect::back();
     }
 
 
