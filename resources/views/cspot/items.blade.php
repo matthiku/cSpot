@@ -139,7 +139,12 @@
 					@endif
 				</td>
 
-				<td class="hidden-lg-down center" title="Are there files (like sheet music) attached to this song?">
+				<td class="hidden-lg-down center" 
+					@if ( $item->song_id && count($item->song->files)>0 )
+						title="{{ $item->song->files[0]->filename }}" data-toggle="tooltip" data-placement="left"
+						data-template='<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><pre class="tooltip-inner"></pre><img src="{{ url(config('files.uploads.webpath')).'/thumb-'.$item->song->files[0]->token }}"></div>'
+					@endif
+					>
 					@if ($item->song_id)
 						@if ( count($item->song->files)>0 )
 							<i class="fa fa-check"></i>
