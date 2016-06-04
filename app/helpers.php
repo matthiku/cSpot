@@ -105,10 +105,10 @@ function is_image($mimeType)
 function saveUploadedFile($request)
 {
     $extension = $request->file('file')->getClientOriginalExtension();
-    $token     = str_random(32).'.'.$extension;
+    $token     = str_random(32).'.'.$extension; // new, random, physical file name
     $filename  = $request->file('file')->getClientOriginalName();
 
-    // move the anonymous file to the central location
+    // move the anonymous file to the central location using the random name
     $destinationPath = config('files.uploads.webpath');
     $request->file('file')->move($destinationPath, $token);
 
@@ -132,6 +132,9 @@ function saveUploadedFile($request)
   *
   * Save small copy of image as thumb_<file name> (max 300 width and max 200 height)
   * Save mini  copy of image as thumb_<file name> (max 150 width)
+  *
+  * thumbnail should be 300*200, with valid aspect ratio, bottom cropped if needed to retain 300x200!
+  * mini version is just 50% of that
   */
 function createThumbs($fPath, $fName) {
     // check if file has a valid extension for processing by Intervention/ImageManager
@@ -141,22 +144,16 @@ function createThumbs($fPath, $fName) {
     }
     // resize for thumbnail
     $img = Image::make($fPath.'/'.$fName)
-        ->resize(300, null,         // max width
+        ->resize(250, null,         // max width
             function ($constraint) {
                 $constraint->aspectRatio();
-                $constraint->upsize();
             })
-        ->resize(null, 200,         // max height
-            function ($constraint) {
-                $constraint->aspectRatio();
-                $constraint->upsize();
-            });
+        ->crop(250, 125, 0, 0 );
     $img->save($fPath.'/'.'thumb-'.$fName, 80);
     // resize for mini thumbnail
-    $img = $img->resize(150, null, 
+    $img = $img->resize(125, null, 
             function ($constraint) {
                 $constraint->aspectRatio();
-                $constraint->upsize();
             });
     $img->save($fPath.'/'.'mini-'.$fName);
 
@@ -175,8 +172,7 @@ function deleteThumbs($fPath, $fName) {
  */
 function createThumbsForAll()
 {
-    $dir = config('files.uploads.webpath');
-    chdir('public/'.$dir);
+    chdir( config('files.uploads.webpath') );
     // create list of current files in images folder
     // (exclude thumb_... or mini_...)
     $files = glob('*.*');

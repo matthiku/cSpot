@@ -142,7 +142,7 @@
 				<td class="hidden-lg-down center" 
 					@if ( $item->song_id && count($item->song->files)>0 )
 						title="{{ $item->song->files[0]->filename }}" data-toggle="tooltip" data-placement="left"
-						data-template='<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><pre class="tooltip-inner"></pre><img src="{{ url(config('files.uploads.webpath')).'/thumb-'.$item->song->files[0]->token }}"></div>'
+						data-template='<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><pre class="tooltip-inner tooltip-wide"></pre><img src="{{ url(config('files.uploads.webpath')).'/thumb-'.$item->song->files[0]->token }}"></div>'
 					@endif
 					>
 					@if ($item->song_id)
@@ -155,7 +155,7 @@
 				<td {{$onclick}} class="hidden-lg-down center link"
 					@if ( count($item->files)>0 )
 						title="{{ $item->files[0]->filename }}" data-toggle="tooltip" data-placement="left"
-						data-template='<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><pre class="tooltip-inner"></pre><img src="{{ url(config('files.uploads.webpath')).'/thumb-'.$item->files[0]->token }}"></div>'
+						data-template='<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><pre class="tooltip-inner tooltip-wide"></pre><img src="{{ url(config('files.uploads.webpath')).'/thumb-'.$item->files[0]->token }}"></div>'
 					@endif
 					>
 					@if ( count($item->files)>0 )
