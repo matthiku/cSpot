@@ -105,8 +105,16 @@
 					@endif
 				</td>
 
-				<td {{$onclick}} {{$tooltip}} class="hidden-lg-down center link">
-					{{ $item->comment }}</td>
+				<td {{substr($item->comment, 0,4 )!='http' ? $onclick.' '.$tooltip : '' }} class="hidden-lg-down center link">
+					@if ( substr($item->comment, 0,4 )=='http' )
+						<a href="{{ $item->comment }}" target="new">
+							{{ $item->comment }}
+							<i class="fa fa-globe"></i>
+						</a>
+					@else
+						{{ $item->comment }}
+					@endif
+				</td>
 
 
 				<!-- show combined song-title and comment column on small devices -->

@@ -113,7 +113,7 @@ function saveUploadedFile($request)
     $request->file('file')->move($destinationPath, $token);
 
     // create a thumbnail copy of a file
-    if (in_array(strtolower($extension), ['jpg','gif','png'])) {
+    if (in_array(strtolower($extension), ['jpg','gif','png', 'jpeg'])) {
         createThumbs($destinationPath, $token);
     }
 

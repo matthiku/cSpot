@@ -134,7 +134,7 @@ class ItemController extends Controller
 
         // check if the new item contains at least one ofthe following:
         //       Song, Bible reference or Comment
-        if ($request->comment=='' && $request->version=='') {
+        if ($request->comment=='' && $request->version=='' && !isset($request->song_id) ) {
             flash('item was empty! Please add a comment, select a bible verse or add a song.');
             return redirect()->back();
         }        
@@ -666,11 +666,10 @@ class ItemController extends Controller
     /**
      * IMAGES HANDLING
      *
-     * TODO: add pagination!
      */
     public function indexFiles(Request $request)
     {
-        $files = File::paginate(20);
+        $files = File::paginate(18);
 
         $querystringArray = $request->input();
 
