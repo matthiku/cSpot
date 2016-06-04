@@ -172,7 +172,7 @@ function deleteThumbs($fPath, $fName) {
  */
 function createThumbsForAll()
 {
-    chdir( config('files.uploads.webpath') );
+    chdir( 'public/'.config('files.uploads.webpath') );
     // create list of current files in images folder
     // (exclude thumb_... or mini_...)
     $files = glob('*.*');
