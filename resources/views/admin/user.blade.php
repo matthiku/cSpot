@@ -65,6 +65,12 @@
 
 
     @if (isset($user))
+
+        {!! Form::hidden('notify_by_email', '0') !!}
+        {!! Form::checkbox('notify_by_email', '1') !!}
+        {!! Form::label('notify_by_email', 'Send me email notifications of new internal messages') !!}
+
+
         <p>{!! Form::submit('Update'); !!}</p>
         @if (Auth::user()->isAdmin())
             <hr>

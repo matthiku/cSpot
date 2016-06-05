@@ -49,7 +49,7 @@
 					>Play</th>
 
 				@if( Auth::user()->ownsPlan($plan->id) )
-					<th class="center dont-print">Action</th>
+					<th class="center dont-print action-col">Action</th>
 				@endif
 			</tr>
 		</thead>
@@ -150,11 +150,22 @@
 				<td class="hidden-lg-down center" 
 					@if ( $item->song_id && count($item->song->files)>0 )
 						title="{{ $item->song->files[0]->filename }}" data-toggle="tooltip" data-placement="left"
-						data-template='<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><pre class="tooltip-inner tooltip-wide"></pre><img src="{{ url(config('files.uploads.webpath')).'/thumb-'.$item->song->files[0]->token }}"></div>'
+						data-template='
+							<div class="tooltip" role="tooltip">
+								<div class="tooltip-arrow"></div>
+								<pre class="tooltip-inner tooltip-wide"></pre>
+								<img src="{{ url(config('files.uploads.webpath')).'/thumb-'.$item->song->files[0]->token }}">
+								@if ( count($item->song->files)>1 )
+									<img src="{{ url(config('files.uploads.webpath')).'/thumb-'.$item->song->files[1]->token }}">
+								@endif
+							</div>'
 					@endif
 					>
 					@if ($item->song_id)
-						@if ( count($item->song->files)>0 )
+						@if ( count($item->song->files)>1 )
+							{{ count($item->song->files) }}
+						@endif
+						@if ( count($item->song->files)==1 )
 							<i class="fa fa-check"></i>
 						@endif
 					@endif
@@ -163,17 +174,28 @@
 				<td {{$onclick}} class="hidden-lg-down center link"
 					@if ( count($item->files)>0 )
 						title="{{ $item->files[0]->filename }}" data-toggle="tooltip" data-placement="left"
-						data-template='<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><pre class="tooltip-inner tooltip-wide"></pre><img src="{{ url(config('files.uploads.webpath')).'/thumb-'.$item->files[0]->token }}"></div>'
+						data-template='
+							<div class="tooltip" role="tooltip">
+								<div class="tooltip-arrow"></div>
+								<pre class="tooltip-inner tooltip-wide"></pre>
+								<img src="{{ url(config('files.uploads.webpath')).'/thumb-'.$item->files[0]->token }}">
+								@if ( count($item->files)>1 )
+									<img src="{{ url(config('files.uploads.webpath')).'/thumb-'.$item->files[1]->token }}">
+								@endif
+							</div>'
 					@endif
 					>
-					@if ( count($item->files)>0 )
+					@if ( count($item->files)>1 )
+						{{ count($item->files) }}
+					@endif
+					@if ( count($item->files)==1 )
 						<i class="fa fa-check"></i>
 					@endif
 				</td>
 
 
 
-				<td class="hidden-xs-down center dont-print">
+				<td class="hidden-xs-down dont-print">
 					<big>
 					@if ($item->song_id)
 	                    @if ( $item->song->hymnaldotnet_id > 0 )
@@ -182,9 +204,12 @@
 	                            <i class="fa fa-music"></i> </a> &nbsp; 
 	                    @endif
 	                    @if ( strlen($item->song->youtube_id)>0 )
-	                        <a href="#" title="Play on YouTube" class="red" data-toggle="tooltip"
-	                        	onclick="showYTvideoInModal('{{ $item->song->youtube_id }}')">
-	                             <i class="fa fa-youtube-play"></i></a>
+	                        <a href="#" title="Play here" class="red" data-toggle="tooltip"
+	                        	onclick="showYTvideoInModal('{{ $item->song->youtube_id }}', '{{ $item->song->title }}')">
+	                            <i class="fa fa-youtube-play"></i></a>
+                            <a title="Play in new tab" data-toggle="tooltip" target="new" class="pull-xs-right"
+                            	href="https://www.youtube.com/watch?v={{ $item->song->youtube_id }}">
+                            	<i class="fa fa-external-link"></i></a>
 	                    @endif
 					@endif
 					</big>
@@ -192,29 +217,41 @@
 
 
 				@if( Auth::user()->ownsPlan($plan->id) )
-					<td class="center nowrap dont-print">
+					<td class="center nowrap dont-print action-col">
 						@if ($item->deleted_at)
-							<a class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="left" title="Restore this item" 
-								href='{{ url('cspot/items/'.$item->id) }}/restore'><i class="fa fa-undo"></i></a>
+							<a class="btn btn-secondary btn-sm" data-toggle="tooltip" 
+								data-placement="left" title="Restore this item" 
+								href='{{ url('cspot/items/'.$item->id) }}/restore'>
+								<i class="fa fa-undo"></i></a>
 
-							<a class="btn btn-danger btn-sm" data-toggle="tooltip" title="Delete permanently!" 
-								href='{{ url('cspot/items/'.$item->id) }}/permDelete'><i class="fa fa-trash"></i></a>
+							<a class="btn btn-danger btn-sm" data-toggle="tooltip" 
+								title="Delete permanently!" 
+								href='{{ url('cspot/items/'.$item->id) }}/permDelete'>
+								<i class="fa fa-trash"></i></a>
 						@else
-							<a class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="left" title="Insert new item before this one" 
-								href='{{ url('cspot/plans/'.$plan->id) }}/items/create/before/{{$item->id}}'><i class="fa fa-reply"></i></a>
+							<a class="btn btn-secondary btn-sm" data-toggle="tooltip"
+								data-placement="left" title="Insert a new item before this one" 
+								href='{{ url('cspot/plans/'.$plan->id) }}/items/create/before/{{$item->id}}'>
+								<i class="fa fa-reply"></i></a>
 
 							@if ($item->song_id)
-			 					<a class="hidden-sm-down btn btn-primary-outline btn-sm hidden-md-down" data-toggle="tooltip" title="Edit Song" 
-									href='{{ url('cspot/songs/'.$item->song->id) }}/edit/'><i class="fa fa-music"></i></a>
+			 					<a class="hidden-sm-down btn btn-primary-outline btn-sm hidden-md-down" 
+			 						data-toggle="tooltip" title="Edit Song" 
+									href='{{ url('cspot/songs/'.$item->song->id) }}/edit/'>
+									<i class="fa fa-music"></i></a>
 							@else
-			 					<a class="hidden-sm-down btn btn-primary-outline btn-sm hidden-md-down" data-toggle="tooltip" title="Edit Item" 
-									href='{{ url('cspot/plans/'.$plan->id) }}/items/{{$item->id}}/edit/'><i class="fa fa-pencil"></i></a>
+			 					<a class="hidden-sm-down btn btn-primary-outline btn-sm hidden-md-down" 
+			 						data-toggle="tooltip" title="Edit Item" 
+									href='{{ url('cspot/plans/'.$plan->id) }}/items/{{$item->id}}/edit/'>
+									<i class="fa fa-pencil"></i></a>
 							@endif
 
-							<a class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="left" title="Start presentation from here" 
+							<a class="btn btn-secondary btn-sm" data-toggle="tooltip" 
+								data-placement="left" title="Start presentation from here" 
 								href='{{ url('cspot/items/'.$item->id) }}/present'><i class="fa fa-tv"></i></a>
 
-							<a class="btn btn-warning btn-sm hidden-md-down" data-toggle="tooltip" title="Remove" 
+							<a class="btn btn-warning btn-sm hidden-md-down pull-xs-right" 
+								data-toggle="tooltip" title="Remove" 
 								href='{{ url('cspot/items/'.$item->id) }}/delete'><i class="fa fa-trash"></i></a>
 						@endif
 					</td>

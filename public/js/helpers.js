@@ -1103,10 +1103,10 @@ function deleteFile(id)
 /**
     Open modal popup to show linked YT video
 */
-function showYTvideoInModal(ytid)
+function showYTvideoInModal(ytid, title)
 {
     //https://www.youtube.com/"+ ytid.substr(0,2)=="PL" ? 'playlist?list=' : 'watch?v=' + ytid }}";
-    $('#snippet-modal-title').text('Listen to YT song');
+    $('#snippet-modal-title').text(title);
     $('#snippet-modal-content')
         .html('<iframe width="560" height="315" src="https://www.youtube.com/embed/'+ytid+'" frameborder="0" allowfullscreen></iframe>');
     $('.help-modal').modal();

@@ -1,6 +1,8 @@
 
 <!-- # (C) 2016 Matthias Kuhs, Ireland -->
 
+<?php Use Carbon\Carbon; ?>
+
 @extends('layouts.main')
 
 @section('title', "Create or Update a Service Plan")
@@ -112,6 +114,9 @@
                 <div class="pull-xs-right plan-details">
                     &nbsp; (<a href="#" onclick="$('.plan-details').toggle()">Edit Plan Details</a>)
                 </div>
+                <div class="pull-xs-right plan-details small" style="display: none;">
+                    (last changed by {{ $plan->changer }} {{ Carbon::now()->diffForHumans( $plan->updated_at, true ) }} ago)
+                </div>
             @endif
 
 
@@ -151,8 +156,8 @@
         @if (Auth::user()->isEditor())
             <div class="col-xl-4 col-lg-6">
                 <div class="row form-group">
-                    <!-- <label class="form-control-label plan-form-minw right hidden-sm-down">Type of Service</label>                  -->
-                    <select name="type_id" class="form-control text-help plan-form-minw c-select" onchange="enableSaveButton(this)">
+                    <select name="type_id" class="form-control text-help plan-form-minw c-select" 
+                        onchange="enableSaveButton(this)">
                         @if (! isset($plan) && ! isset($defaultValues['type_id'] ))
                             <option selected>
                                 Select ...
@@ -330,7 +335,7 @@
 
 
 
-    <div class="form-group
+    <div style="clear:both" class="form-group
         @if (! isset($plan))
             center
         @endif

@@ -144,7 +144,7 @@ class MessagesController extends Controller
         $thread->activateAllParticipants();
 
         // Message
-        Message::create(
+        $what = Message::create(
             [
                 'thread_id' => $thread->id,
                 'user_id'   => Auth::id(),

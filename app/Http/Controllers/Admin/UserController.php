@@ -239,14 +239,22 @@ class UserController extends Controller
         $user->first_name = $request->input('first_name');
         $user->last_name  = $request->input('last_name');
         $user->name  = $request->input('name');
+
+        $user->notify_by_email = $request->notify_by_email;
+
         // only Admins can change the email address
         if (Auth::user()->isAdmin()) {
             $user->email      = $request->input('email');
         }
         $user->save();
 
-        return \Redirect::route($this->view_all_idx)
+        // send admins back to all users view
+        if (Auth::user()->isAdmin()) {
+            return \Redirect::route($this->view_all_idx)
                         ->with(['status' => $message]);
+        }
+        // send 'normal' users back to profile view
+        return redirect()->route('admin.users.show', [$user->id]);
     }
 
 
