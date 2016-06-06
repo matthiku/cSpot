@@ -155,8 +155,6 @@ class AppMailer
     }
 
 
-
-
     /**
      * Deliver the email.
      *

@@ -88,10 +88,11 @@
     
     
     @if (! Auth::user()->isAdmin())
+        <hr>
         <div class="row m-t-1">
             <div class="col-xl-2 col-lg-3 col-md-4 col-sm-5">
                 @if ($user->roles->count())
-                    <label>Your Roles:</label>
+                    <label>Your Roles:</label><br>
                     @foreach ($user->roles as $key => $role)
                         {{ ucfirst($role->name) }}{{ $key+1<$user->roles->count() ? ',' : '' }}
                     @endforeach
@@ -99,7 +100,7 @@
             </div>
             <div class="col-xl-2 col-lg-3 col-md-4 col-sm-5">
                 @if ($user->instruments->count())
-                    <label>Your Instruments:</label>
+                    <label>Your Instruments:</label><br>
                     @foreach ($user->instruments as $instrument)
                         {{ ucfirst($instrument->name) }}{{ $key+1<$user->instruments->count() ? ',' : '' }}
                     @endforeach

@@ -195,7 +195,7 @@
 
 
 
-				<td class="hidden-xs-down dont-print">
+				<td class="center hidden-xs-down dont-print">
 					<big>
 					@if ($item->song_id)
 	                    @if ( $item->song->hymnaldotnet_id > 0 )
@@ -229,6 +229,10 @@
 								href='{{ url('cspot/items/'.$item->id) }}/permDelete'>
 								<i class="fa fa-trash"></i></a>
 						@else
+							<a class="btn btn-warning btn-sm hidden-md-down pull-xs-right" 
+								data-toggle="tooltip" title="Remove" 
+								href='{{ url('cspot/items/'.$item->id) }}/delete'><i class="fa fa-trash"></i></a>
+
 							<a class="btn btn-secondary btn-sm" data-toggle="tooltip"
 								data-placement="left" title="Insert a new item before this one" 
 								href='{{ url('cspot/plans/'.$plan->id) }}/items/create/before/{{$item->id}}'>
@@ -249,10 +253,6 @@
 							<a class="btn btn-secondary btn-sm" data-toggle="tooltip" 
 								data-placement="left" title="Start presentation from here" 
 								href='{{ url('cspot/items/'.$item->id) }}/present'><i class="fa fa-tv"></i></a>
-
-							<a class="btn btn-warning btn-sm hidden-md-down pull-xs-right" 
-								data-toggle="tooltip" title="Remove" 
-								href='{{ url('cspot/items/'.$item->id) }}/delete'><i class="fa fa-trash"></i></a>
 						@endif
 					</td>
 				@endif

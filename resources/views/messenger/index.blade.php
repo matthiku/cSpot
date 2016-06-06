@@ -25,7 +25,7 @@
 
     @else
         <p>Sorry, no threads.</p>
-        <a href="{{ url('cpsot/messages/create') }}"><i class="fa fa-envelope-o" aria-hidden="true"></i> Create a new message.</a>
+        <a href="{{ url('messages/create') }}"><i class="fa fa-envelope-o" aria-hidden="true"></i> Create a new message.</a>
     @endif
 
 @stop

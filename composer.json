@@ -13,7 +13,8 @@
         "snap/bible-books": "0.1.*@dev",
         "cmgmyr/messenger": "~2.0",
         "rap2hpoutre/laravel-log-viewer": "^0.6.0",
-        "intervention/image": "^2.3"
+        "intervention/image": "^2.3",
+        "guzzlehttp/guzzle": "~5.3|~6.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

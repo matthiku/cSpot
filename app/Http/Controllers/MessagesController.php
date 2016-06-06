@@ -23,6 +23,9 @@ use Illuminate\Support\Facades\Session;
 
 class MessagesController extends Controller
 {
+
+
+
     /**
      * Show all of the message threads to the user.
      *
@@ -43,6 +46,9 @@ class MessagesController extends Controller
 
         return view('messenger.index', compact('threads', 'currentUserId'));
     }
+
+
+    
 
     /**
      * Shows a message thread.
@@ -100,7 +106,7 @@ class MessagesController extends Controller
         );
 
         // Message
-        Message::create(
+        $message = Message::create(
             [
                 'thread_id' => $thread->id,
                 'user_id'   => Auth::user()->id,
@@ -121,6 +127,10 @@ class MessagesController extends Controller
         if (Input::has('recipients')) {
             $thread->addParticipants($input['recipients']);
         }
+
+        // email notification via helper method
+        sendEmailNotification($message);
+
 
         return redirect('messages');
     }
@@ -144,7 +154,7 @@ class MessagesController extends Controller
         $thread->activateAllParticipants();
 
         // Message
-        $what = Message::create(
+        $message = Message::create(
             [
                 'thread_id' => $thread->id,
                 'user_id'   => Auth::id(),
@@ -166,6 +176,9 @@ class MessagesController extends Controller
         if (Input::has('recipients')) {
             $thread->addParticipants(Input::get('recipients'));
         }
+
+        // email notification via helper method
+        sendEmailNotification($message);
 
         return redirect('messages/' . $id);
     }

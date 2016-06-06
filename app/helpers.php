@@ -20,6 +20,7 @@ use Cmgmyr\Messenger\Models\Thread;
 use Intervention\Image\ImageManager;
 
 
+
 /**
  * Set a flash message in the session.
  *
@@ -616,7 +617,7 @@ function sendInternalMessage($subject, $message, $recipient_id)
     );
 
     // Message
-    Message::create(
+    $message = Message::create(
         [
             'thread_id' => $thread->id,
             'user_id'   => Auth::user()->id,
@@ -636,6 +637,8 @@ function sendInternalMessage($subject, $message, $recipient_id)
     // Add Recipients
     $thread->addParticipants([$recipient_id]);
 
+    sendEmailNotification($message);
+
     return $thread->id;
 
 }
@@ -649,3 +652,33 @@ function deleteConfirmRequestThread($id)
         $thread->delete();
     }
 }
+
+/**
+ * Send Email notification of new internal messages
+ *
+ * @param Message $message 
+ */
+function sendEmailNotification(Message $message)
+{
+    $subject = 'c-SPOT internal message notification';
+    $thread = Thread::find($message->thread_id);
+    $thread_subject = $thread->subject;
+    $message_body = $message->body;
+
+    foreach ($thread->participants as $key => $recipient) {
+        $user = $recipient->user;
+        # check if user actually wants to be notified
+        if ($user->notify_by_email) {
+            Mail::send('cspot.emails.notification', 
+                ['user'=>$user, 'subject'=>$subject, 'messi'=>$message],
+                function ($msg) use ($user, $subject) {
+                    $msg->from(findAdmins()[0]->email, 'c-SPOT Admin');
+                    $msg->to($user->email, $user->getFullName());
+                    $msg->subject($subject);
+                }
+            );
+        }
+    }    
+}
+
+
