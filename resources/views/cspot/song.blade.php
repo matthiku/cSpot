@@ -228,7 +228,13 @@
         <div class="col-xl-6">
 
 
-            {!! Form::label('lyrics', 'Lyrics'); !!}<br/>
+            {!! Form::label('lyrics', 'Lyrics:'); !!}
+            <big><a tabindex="0" href="#"
+                    data-container="body" data-toggle="tooltip"
+                    title="Song parts indicators must be enclosed with [], like [1] for verse 1 or [chorus] for a chorus. 
+                           Blank lines force a new slide when the song is presented.">
+                    <i class="fa fa-question-circle m-l-2"></i></a></big>
+            <br/>
             {!! Form::textarea('lyrics'); !!}
             <button id="lyrics-copy-btn" class="pull-xs-right"><i class="fa fa-copy"></i>&nbsp;copy lyrics</button>
             <!-- Add ability to copy textarea content to the clipboard -->
@@ -249,7 +255,13 @@
             </script>
             <br>
 
-            {!! Form::label('chords', 'Chords'); !!}<br/>
+            {!! Form::label('chords', 'Chords:'); !!}
+            <big><a tabindex="0" href="#"
+                    data-container="body" data-toggle="tooltip"
+                    title='Song parts indicators must be on separate lines and end with a colon (:). 
+                           Blank lines will be ignored. Put instructions on separate lines and enclose them with brackets, like "(repeat chorus!)"'>
+                    <i class="fa fa-question-circle m-l-2"></i></a></big>
+            <br/>
             {!! Form::textarea('chords'); !!}
             <button id="chords-copy-btn" class="pull-xs-right"><i class="fa fa-copy"></i>&nbsp;copy chords</button>
             <br>

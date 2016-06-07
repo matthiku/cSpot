@@ -48,7 +48,10 @@
 
         @if ($item->files)
             @foreach ($item->files as $file)
-                @include ('cspot.snippets.present_files')
+                <figure class="figure">
+                    <img class="figure-img img-fluid img-rounded full-width" 
+                           src="{{ url(config('files.uploads.webpath')).'/'.$file->token }}">
+                </figure>
             @endforeach
             <script>
                 $('.figure-img').css({

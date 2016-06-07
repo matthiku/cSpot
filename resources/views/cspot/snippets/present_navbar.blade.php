@@ -50,7 +50,7 @@ $modalContent = '
                         bg-info
                     @endif
                     @if (! $menu_item->song_id)
-                        hidden-sm-down
+                        hidden-md-down
                     @endif
                     "
                     onclick="$('#show-spinner').modal({keyboard: false});" 

@@ -285,7 +285,8 @@
 	@endif
 
 	<div class="pull-xs-left">
-		<a class="btn btn-sm btn-primary-outline" href='{{ url('cspot/plans/'.$plan->id) }}/items/create/{{isset($item) ? $item->seq_no+1 : 1}}'>
+		<a class="btn btn-sm btn-primary-outline"  onclick="showSpinner()"
+			href='{{ url('cspot/plans/'.$plan->id) }}/items/create/{{isset($item) ? $item->seq_no+1 : 1}}'>
 			<i class="fa fa-plus"> </i> &nbsp; Add item {{ isset($item) ? $item->seq_no+1 : 1 }}.0
 		</a>
 	</div>

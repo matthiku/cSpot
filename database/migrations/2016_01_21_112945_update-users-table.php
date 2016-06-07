@@ -19,6 +19,8 @@ class UpdateUsersTable extends Migration
             $table->string('last_name');
             // add last login date
             $table->timestamp('last_login');
+            // user to be notified on internal messages
+            $table->boolean('notify_by_email')->default(true);
         });
         DB::table('users')->insert(['id'=>0, 'first_name'=>'none', 'last_name'=>'none']);
     }
@@ -35,6 +37,8 @@ class UpdateUsersTable extends Migration
             $table->dropColumn('first_name');
             // remove last_name field
             $table->dropColumn('last_name');
+            
+            $table->dropColumn('notify_by_email');
         });
     }
 }

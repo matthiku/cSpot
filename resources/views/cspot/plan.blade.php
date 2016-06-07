@@ -302,7 +302,7 @@
         @include('cspot.items')
 
         @if (Auth::user()->ownsPlan($plan->id) )
-            <a href="{{ url('cspot/songs?plan_id='.$plan->id) }}" 
+            <a href="{{ url('cspot/songs?plan_id='.$plan->id) }}"  onclick="showSpinner()"
                 title="Search for a song via the full song listing" 
                 class="btn btn-sm btn-info pull-xs-right">Search and add song</a>
         @endif
@@ -341,7 +341,7 @@
         @endif
         ">
         @if (Auth::user()->isEditor())
-            {!! Form::label('info', 'Notes:', ['class' => 'form-control-label']); !!}
+            {!! Form::label('info', 'Notes:', ['class' => 'form-control-label', 'onclick'=>'showSpinner()']); !!}
             <br/>
             {!! Form::textarea('info') !!}
             <script>
@@ -363,7 +363,7 @@
     @if (isset($plan))
 
         @if (Auth::user()->isEditor()) &nbsp; 
-            <span class="has-warning">
+            <span class="has-warning" onclick="showSpinner()">
             {!! Form::submit('Save changes', [
                 'data-toggle' => 'tooltip', 
                 'class'       => 'form-submit text-help',
@@ -383,7 +383,7 @@
         @endif
 
         @if ( Auth::user()->isAdmin()  &&  $plan->items->count()==0 ) &nbsp; 
-            <a class="btn btn-danger btn-sm" type="button" data-toggle="tooltip" 
+            <a class="btn btn-danger btn-sm" type="button" data-toggle="tooltip"  onclick="showSpinner()"
                 title="You can only delete a plan that contains no items." 
                 href="{{ url('cspot/plans/delete/'.$plan->id) }}">
                 <i class="fa fa-trash" > </i>

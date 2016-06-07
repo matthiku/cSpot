@@ -731,10 +731,14 @@ function reDisplayLyrics()
         }
         // or we already have a pre-defined header line for this song part
         else { 
-            hdr = identifyLyricsHeadings( lyricsLine ); 
+            // find verse indicator (can be first word in the lyrics line, like: "[1] {first line of lyrics}")
+            hdr = identifyLyricsHeadings( lyricsLine.split(' ')[0] ); 
             if (hdr.length>0) { 
+                // verse indicator was found!
                 curPart = hdr; 
                 var apdxNam= 97; // = 'a': reset appendix indicator (for forced lyric parts)
+                // use 2nd part of initial lyricsline as actualy lyrics
+                lyricsLine = lyricsLine.split('] ')[1]; // this will be 'undefined' if line was just the indicator!
             }
         }
 
@@ -747,8 +751,8 @@ function reDisplayLyrics()
             lines  = 0;
             newDiv = '</div><div id="'+hdr+'" class="lyrics-parts" ';
         }
-        // actual lyrics - insert as PRE element
-        else {
+        // actual lyrics - insert as P element
+        if (lyricsLine != undefined) {
             lines += 1;
             newLyr += '<p class="text-present m-b-0">'+lyricsLine+'</p>';
         }
@@ -1746,9 +1750,12 @@ $(document).ready(function() {
      * Mark modified form fields with a new background
      * and show the submit/save buttons
      */
-    $("input, textarea, input:radio, input:file").change(function(){
+    $("input, textarea, input:radio, input:file").click(function() {
         // change background color of those fields
         $(this).css("background-color", "#D6D6FF");
+
+        // do this only once ...
+        if ($('.submit-button').is(':visible')) return;
 
         // show submit or sabe buttons
         $('.submit-button').show();
@@ -1760,20 +1767,22 @@ $(document).ready(function() {
     /***
      * Get array with all bible books with all chapters and number of verses in each chapter
      */
-    $.get(__app_url+'/bible/books/all/verses', function(data, status) {
+    if (window.location.href.indexOf('/cspot/')>10) {
+        $.get(__app_url+'/bible/books/all/verses', function(data, status) {
 
-        if ( status == 'success') {
-            bibleBooks = data;
-        }
-    });
-
+            if ( status == 'success') {
+                bibleBooks = data;
+            }
+        });
+    }
 
 
 
     /**
      * items on Plan page can be moved into new positions
      */
-    $("#tbody-items").sortable({
+    if ($("#tbody-items").length) {
+        $("#tbody-items").sortable({
         items   : "> tr",
         appendTo: "parent",
         cursor  : 'move',
@@ -1821,8 +1830,8 @@ $(document).ready(function() {
                 // console.log('order unchanged');
             }
         },
-    }).disableSelection();
-
+        }).disableSelection();
+    }
 
     
     /**
@@ -1840,6 +1849,25 @@ $(document).ready(function() {
 
     }
     
+    /*
+        On presentation views, allow mouse-click to advance to next or prev. item
+    */
+    if ($('#main-content').length) {
+        // intercept mouse clicks into the presentation area
+        $('#main-content').contextmenu( function() {
+            return false;
+        });
+
+        // allow rght-mouse-click to move one slide or item back
+        $('#main-content').on('mouseup', function(event){
+            event.preventDefault();
+            if (event.which == 1) {
+                advancePresentation(); }
+            if (event.which == 3) {
+                advancePresentation('back'); }
+        });        
+    }
+
     /**
      * Configuration for Items Presentation Views (present/chords/musicsheets)
      */
@@ -1890,15 +1918,15 @@ $(document).ready(function() {
     if ( window.location.href.indexOf('/present')>10 ) {
 
         // start showing bible parts if this is a bible reference
-        if ($('.bible-text-present').length>0) {
+        if ($('.bible-text-present').length) {
             reFormatBibleText(); }
 
         // re-format the lyrics
-        if ($('#present-lyrics').length > 0) {
+        if ($('#present-lyrics').length) {
             reDisplayLyrics(); }
 
         // center and maximise images
-        if ( $('.slide-background-image') ) {
+        if ( $('.slide-background-image').length ) {
             prepareImages();
         }
 
@@ -1945,7 +1973,7 @@ $(document).ready(function() {
 
         // check if there are more lyric parts than 
         // indicated in the sequence due to blank lines discoverd in the lyrics
-        if (sequence.length>2) 
+        if (sequence.length>1) 
             compareLyricPartsWithSequence();
 
         // auto-detect sequence if it is missing
@@ -1961,19 +1989,6 @@ $(document).ready(function() {
         $('#main-content').css('max-height', window.innerHeight - $('.navbar-fixed-bottom').height());
         $('#main-content').css('min-height', window.innerHeight - $('.navbar-fixed-bottom').height() - 10);
 
-        // intercept mouse clicks into the presentation area
-        $('#main-content').contextmenu( function() {
-            return false;
-        });
-
-        // allow rght-mouse-click to move one slide or item back
-        $('#main-content').on('mouseup', function(event){
-            event.preventDefault();
-            if (event.which == 1) {
-                advancePresentation(); }
-            if (event.which == 3) {
-                advancePresentation('back'); }
-        });
     }
 
     /**

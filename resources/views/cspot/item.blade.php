@@ -55,21 +55,21 @@
 
                 <div class="pull-xs-right">
                     <!-- hide until changes are made   -->
-                    <span class="save-buttons submit-button hidden-lg-down" style="display: none;">
+                    <span class="save-buttons submit-button hidden-lg-down" onclick="showSpinner()" style="display: none;">
                         {!! Form::submit('Save!'); !!}
                     </span>
                 </div>
 
                 <h2 class="nowrap">
                     <a href="{{ url('cspot/plans/'.$plan->id.'/items/'.$item->id.'/go/previous') }}"
-                        onclick="$('#show-spinner').modal({keyboard: false});" 
+                        onclick="showSpinner()" 
                         class="btn btn-secondary" role="button" id="go-previous-item"
                         title="go to previous item: '{{getItemTitle($item,'previous')}}'" data-toggle="tooltip" data-placement="right">
                         <i class="fa fa-angle-double-left fa-lg"></i>
                     </a> 
                     Review Item No {{$seq_no}}
                     <a href="{{ url('cspot/plans/'.$plan->id.'/items/'.$item->id.'/go/next') }}"
-                        onclick="$('#show-spinner').modal({keyboard: false});" 
+                        onclick="showSpinner()" 
                         class="btn btn-secondary" role="button" id="go-next-item"
                         title="go to next item: '{{getItemTitle($item)}}'" data-toggle="tooltip" data-placement="right">
                         <i class="fa fa-angle-double-right fa-lg"></i>
@@ -81,10 +81,10 @@
                         </button>
                         <div class="dropdown-menu" aria-labelledby="goToAnotherItem">
                             <a class="dropdown-item" 
-                                onclick="$('#show-spinner').modal({keyboard: false});" 
+                                onclick="showSpinner()" 
                                 href="{{ url('cspot/plans/'.$item->plan_id) }}/edit"><i class="fa fa-list-ul"></i>&nbsp;Back to Plan Overview</a>
                             <a class="dropdown-item"  
-                                onclick="$('#show-spinner').modal({keyboard: false});" 
+                                onclick="showSpinner()" 
                                 href="{{ url('cspot/items/'.$item->id) }}/present"><i class="fa fa-tv"></i>&nbsp;Start presentation</a>
                             @if( Auth::user()->ownsPlan($item->plan_id) )
                                 <a class="dropdown-item nowrap text-danger"  item="button" href="{{ url('cspot/items/'. $item->id .'/delete') }}">
@@ -94,7 +94,7 @@
                             <hr>
                             @foreach ($items as $menu_item)
                                 <a class="dropdown-item nowrap {{ $item->id==$menu_item->id ? 'bg-info' : '' }}"
-                                    onclick="$('#show-spinner').modal({keyboard: false});" 
+                                    onclick="showSpinner()" 
                                     href="{{ url('cspot/plans/'.$plan->id.'/items').'/'.$menu_item->id.'/edit' }}">
                                     <small class="hidden-xs-down">{{ $menu_item->seq_no }} &nbsp;</small> 
                                     @if ($menu_item->song_id && $menu_item->song->title)
@@ -118,7 +118,7 @@
 
                 @if( Auth::user()->ownsPlan($item->plan_id) )
                     &nbsp;
-                    <span class="save-buttons submit-button" style="display: none;">
+                    <span class="save-buttons submit-button" onclick="showSpinner()" style="display: none;">
                         {!! Form::submit('Save changes'); !!}
                     </span>
                 @endif
@@ -146,7 +146,7 @@
                     See if user wants to add even more items to this plan 
                 -->
                 <div class="col-md-6 pull-md-right">
-                    <span class="save-buttons submit-button" style="display: none;">
+                    <span class="save-buttons submit-button" onclick="showSpinner()" style="display: none;">
                         {!! Form::submit('Save!'); !!}
                     </span>
                     <input type="hidden" name="moreItems" value="false">
