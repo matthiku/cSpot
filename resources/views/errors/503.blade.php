@@ -41,8 +41,7 @@
         <div class="container">
             <div class="content">
                 <div class="title">This was only a testing and demonstration and has been closed now.
-                <br>
-                Users of the EEC should have received an email with the address for our new planning system.</div>
+                </div>
             </div>
         </div>
     </body>
