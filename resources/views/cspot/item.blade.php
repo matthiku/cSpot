@@ -55,9 +55,11 @@
 
                 <div class="pull-xs-right">
                     <!-- hide until changes are made   -->
+                    @if( Auth::user()->ownsPlan($item->plan_id) )
                     <span class="save-buttons submit-button hidden-lg-down" onclick="showSpinner()" style="display: none;">
                         {!! Form::submit('Save!'); !!}
                     </span>
+                    @endif
                 </div>
 
                 <h2 class="nowrap">
@@ -108,8 +110,16 @@
 
                     </span>
                 </h2>
-                <h5 class="hidden-md-down">of the Service plan for {{ $plan->date->formatLocalized('%A, %d %B %Y') }}</h5>
-                <h4 class="hidden-lg-up">in plan for {{ $plan->date->formatLocalized('%a, %d %b') }}</h4>
+                <h5 class="hidden-md-down">
+                    of the 
+                    <a href="{{ url('cspot/plans/'.$plan->id)}}/edit">
+                        Service plan for {{ $plan->date->formatLocalized('%A, %d %B %Y') }}</a>
+                </h5>
+                <h4 class="hidden-lg-up">
+                    in
+                    <a href="{{ url('cspot/plans/'.$plan->id)}}/edit">
+                        plan for {{ $plan->date->formatLocalized('%a, %d %b') }}</a>
+                </h4>
 
             </div>
 
@@ -323,7 +333,7 @@
             @if( Auth::user()->ownsPlan($plan->id) )
                 
                 <div id="col-2-file-add" style="display: none;" 
-                    class="col-lg-6 col-md-12 col-sm-12 col-xs-12 m-b-1">
+                    class="col-lg-6 col-md-12 col-sm-12 col-xs-12 m-b-1 dropzone">
                         {!! Form::label('file', 'Add a file (e.g. for announcements)', ['class' => 'x']); !!}
                         <br>
                         {!! Form::file('file'); !!}

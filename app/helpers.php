@@ -607,7 +607,7 @@ function listOfPlansForUser()
 /**
  * send message via internal messenger
  */
-function sendInternalMessage($subject, $message, $recipient_id)
+function sendInternalMessage($subject, $message, $recipient_id, $email=true)
 {
 
     $thread = Thread::create(
@@ -637,7 +637,8 @@ function sendInternalMessage($subject, $message, $recipient_id)
     // Add Recipients
     $thread->addParticipants([$recipient_id]);
 
-    sendEmailNotification($message);
+    if ($email)
+        sendEmailNotification($message);
 
     return $thread->id;
 

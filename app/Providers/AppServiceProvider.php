@@ -8,6 +8,9 @@ use App\Models\Item;
 use App\Models\Plan;
 use App\Models\User;
 
+use Cmgmyr\Messenger\Models\Message;
+use Cmgmyr\Messenger\Models\Thread;
+
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,13 +22,27 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+
+
+        // when a user changes an item ....
         Item::updated( function ($item) {
-            // when a user changes an item, we 
-            // update the 'changer' field on the parent model (plan)
+            // .... update the 'changer' field on the parent model (plan)
             $plan = Plan::find($item->plan_id);
             $plan->update(['changer' => Auth::user()->first_name]);
         });
+
+
+
+        /* runs when a new internal message was generated....
+        Message::created( function ($msg) {
+            $thread = Thread::find($msg->thread_id);
+            $thread->subject;
+            $msg->body;
+            $msg->user_id; // sender
+            //dd($msg);
+        });*/
+
+
 
 
         // provide the PATH to the (custom) logos to all views

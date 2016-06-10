@@ -1,24 +1,30 @@
-# The Church Service Planning Online Tool.
-Create your own service planning database. Deploy for your church and allow others to participate. Present your songs in a slideshow fashion via a projector. Provide chords, lyrics and sheetmusic for musicians.
+# The Church Service Planning Online Tool
+- Create Order of Services with all relevant data
+- Customize for your church and allow others to participate
+- Manage your team (staff) with their roles
+- Present your songs in a slideshow fashion via a projector 
+- Control the slide show from **any device** using a Chromecast device attached to your projector
+- Provide chords, lyrics and sheetmusic for musicians an all kinds of devices
+- Send email and/or internal messages between users
 
-As a free and open source project, you can download ('clone') the sources and run the tool from your own web site.
+As a free and open source project, you can download ('clone') the sources, modify (customize) them and run the tool from your own web site.
 
 **Developers**, please feel free to contribute and make pull requests! **Testers**, please send your bug reports and enhancement suggestions!
 
-[Installation instructions](#installation)
+Check the [Installation instructions](#installation)
 
 ### Why c-SPOT?
 c-SPOT was designed to help (small) churches plan their Sunday and Midweek services as well as other events.
 
-Many people don’t understand the complexities of making church services happen. If you just turn up, it probably looks pretty straightforward! However, a lot goes on behind the scenes before the event. This tool tries to help with that.
+Many people don’t understand the complexities of making church services happen. If you just turn up, it probably looks pretty straightforward. However, a lot goes on behind the scenes before the event! This tool tries to help with that.
 
 #### History
-In our church, this was first done by the leader of the service, when he handed out his list of songs to the musicians on a Sunday morning. As things progressed, this was no longer viable, as musicians needed more time to practice the songs and the slides for the projection needed to be prepared. So we switched to sending emails around but quite often, things were changed after the email went out and then not everyone was up-to-date. 
+In our church, this was first done by the leader of the service, when he handed out his paper-based list of songs to the musicians on a Sunday morning. As things progressed, this was no longer viable, as musicians needed more time to practice the songs and the slides for the projection needed to be prepared. So we switched to sending emails around - but quite often, things were changed after the email went out and then not everyone was up-to-date. 
 
-That's when the development of the predecessor of c-SPOT was started. It was my first trial of a project in PHP, mySQL, HTML and Javascript and therefore, while user-friendly, not very developer-friendly... Also, it was never designed to be used on mobile devices. After recently learning a lot about Laravel and Bootstrap, I finally decided to re-write this tool from scratch, with a popular PHP framwork and the mobile-first approach. Due to time constraints, however, it is (for now) without SPA, the "[single page application](https://en.wikipedia.org/wiki/Single-page_application)" design!
+That's when the development of the predecessor of c-SPOT was started. It was my first trial of a project in PHP, mySQL, HTML and Javascript and therefore, while user-friendly, not very developer-friendly... Also, it was never designed to be used on mobile devices. After recently learning a lot about Laravel and Bootstrap, I finally decided to re-write this tool from scratch, with a popular PHP framwork and the mobile-first approach. Due to time constraints, however, it has not a "[single page application (SPA)](https://en.wikipedia.org/wiki/Single-page_application)" design!
 
 #### New Design
-Out came an online tool, designed for mobile devices and desktop devices, fully responsive to all sizes of screens with the ability to still access and/or modify all the relevant data. Tables are adaptive so that more and more columns with less important information are hidden or their content displayed in a more compact way the smaller a device gets!
+Out came an online tool, designed for mobile devices and desktop devices, fully responsive to all sizes of screens with the ability to still access and/or modify all the relevant data. Tables are adaptive so that more and more columns with less important information are hidden or their content displayed in a more compact way the smaller a device gets.
 
 ### Users
 c-SPOT provides event information and worship song lists to worship leaders, musicians and every other person involved in the service and allows them to add or modify information accordingly.
@@ -86,7 +92,7 @@ Out of the box, c-SPOT uses a mySQL database to save all the data. However, Lara
 4. Create a new (empty) database on your mySQL server with the aforementioned parameters (db name, user name and password etc.).
 5. Run `php artisan migrate` to initialize your c-SPOT database.
 
-#### Recommended
+#### Optional Steps
 1. In order for the **social logins** to work, you need to register your own c-SPOT app with some 'service providers' like Google or Faceook and enter the relevant details also into your private .env file.
 2. Add your songs to the songs list
 

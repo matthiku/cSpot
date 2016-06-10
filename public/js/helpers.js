@@ -1750,6 +1750,12 @@ $(document).ready(function() {
      * Mark modified form fields with a new background
      * and show the submit/save buttons
      */
+    $("#file").on('mouseover', function() {
+        // do this only once ...
+        if ($('.submit-button').is(':visible')) return;
+        $('.submit-button').show();
+        blink('.submit-button');
+    });
     $("input, textarea, input:radio, input:file").click(function() {
         // change background color of those fields
         $(this).css("background-color", "#D6D6FF");

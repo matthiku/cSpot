@@ -74,7 +74,7 @@ class TeamController extends Controller
 
             // send internal message to user
             $message = 'Please open <a href="' . url('cspot/plans/'.$plan_id) . '/team"> this plan </a> and confirm if you accept the given role.';
-            $thread_id = sendInternalMessage('You have been assigned a role in a Service plan', $message, $team->user_id);
+            $thread_id = sendInternalMessage('You have been assigned a role in a Service plan', $message, $team->user_id, false);
 
             $team->thread_id = $thread_id;
             $team->save();

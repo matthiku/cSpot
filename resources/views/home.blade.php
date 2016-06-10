@@ -15,8 +15,6 @@
 
                 <div class="card card-block text-xs-center">
 
-                    <small class="pull-xs-right">CCLI # {{ (env('CHURCH_CCLI')) ? env('CHURCH_CCLI') : '?' }}</small>
-
                     <p>Welcome, <strong>{{ Auth::user()->first_name }}</strong>, to </p>
 
                     <h3 class="card-title">
@@ -24,6 +22,7 @@
                         <span class="text-primary">P</span>lanning <span class="text-primary">O</span>nline <span class="text-primary">T</span>ool
                     </h3>
                     for
+                    <small class="pull-xs-right">CCLI # {{ (env('CHURCH_CCLI')) ? env('CHURCH_CCLI') : '?' }}</small>
                     <a href="{{ env('CHURCH_URL') }}">
                         <h4>
                             <img src="{{ url($logoPath.env('CHURCH_LOGO_FILENAME')) }}" height="30">

@@ -26,7 +26,6 @@ class NewMessagesListener
      */
     public function handle(NewMessageGenerated $event)
     {
-        //
-        dd($event);
+        // not implemented ...
     }
 }
