@@ -102,6 +102,7 @@
                 @if( $userIsAuthorized )
                 <td>
                         <a class="btn btn-secondary btn-sm pull-sm-right" title="Send request to user" 
+                            onclick="$('#show-spinner').modal({keyboard: false});" 
                             href='{{ url('cspot/plans/'.$team->plan_id.'/team/'.$team->id) }}/sendrequest'><i class="fa fa-envelope-o"></i></a>
                     <i class="fa fa-{{ ($team->requested) ? 'check-square' : 'minus-square-o' }}"> </i> 
                 </td>
@@ -111,6 +112,7 @@
                 <td>
                     @if ( Auth::user()->id == $team->user_id )
                         <a class="btn btn-secondary btn-sm pull-sm-right" title="Confirm/Decline" 
+                            onclick="$('#show-spinner').modal({keyboard: false});" 
                             href='{{ url('cspot/plans/'.$team->plan_id.'/team/'.$team->id) }}/confirm'>
                             {{ ($team->confirmed) ? 'Decline' : 'Confirm' }}:
                             <i class="fa fa-square-o"></i></a>
@@ -123,8 +125,10 @@
                 @if( $userIsAuthorized )
                 <td class="nowrap">
                         <a class="btn btn-primary-outline btn-sm" title="Edit" 
+                            onclick="$('#show-spinner').modal({keyboard: false});" 
                             href='{{ url('cspot/plans/'.$team->plan_id.'/team/'.$team->id) }}/edit'><i class="fa fa-pencil"></i></a>
                         <a class="btn btn-danger btn-sm" title="Delete!" 
+                            onclick="$('#show-spinner').modal({keyboard: false});" 
                             href='{{ url('cspot/plans/'.$team->plan_id.'/team/'.$team->id) }}/delete'><i class="fa fa-trash"></i></a>
                 </td>
                 @endif

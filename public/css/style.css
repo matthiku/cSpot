@@ -109,6 +109,11 @@ pre.bible-text-present {
     font-size: 200%;
 }
 
+.tooltip-medium {
+    min-width: 350px;
+    font-family: sans-serif;
+}
+
 .tooltip-wide {
     min-width: 420px;
 }

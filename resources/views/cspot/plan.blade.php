@@ -105,16 +105,17 @@
                         <?php
                             $teamList = ''; // create the list of team members and their roles for this plan
                             foreach ( $plan->teams as $key => $team ) {
-                                $teamList .= $team->user->name . ' (';
+                                $teamList .= $team->user->name . ' as ';
                                 $teamList .= $team->role ? ucfirst($team->role->name) : '(tbd)';
-                                $teamList .= ')';
+                                $teamList .= $team->confirmed ? ' (confirmed)' : ' (unconfirmed)';
                                 if ($key+1 < $plan->teams->count())
                                     $teamList .= ",\n";
                             }
                         ?>
                         <a href="{{ url('cspot/plans/'.$plan->id.'/team') }}" class="m-l-2" 
-                            data-template='<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><pre class="tooltip-inner"></pre></div>'
-                            data-placement="right" data-toggle="tooltip" title="{{ $teamList }}">
+                            onclick="$('#show-spinner').modal({keyboard: false});" 
+                            data-template='<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><pre class="tooltip-inner tooltip-medium"></pre></div>'
+                            data-placement="bottom" data-toggle="tooltip" title="{{ $teamList }}">
                             <i class="fa fa-users"></i>&nbsp;Team
                         </a> 
                     </big>

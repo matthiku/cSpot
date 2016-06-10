@@ -647,8 +647,12 @@ function checkIfLeaderOrTeacherWasChanged($request, $plan)
             ['plan_id', $plan->id], 
             ['role_id', env('LEADER_ID', 4)]  // default is 4 if not set in .env
         ]);
-        // update the team record
-        $leader->update(['user_id' => $request->leader_id ]);
+        if ($leader->count()) {               // update the team record
+            $leader->update(['user_id' => $request->leader_id ]); }
+        else {                                // create a new team member...
+            $plan->leader_id = $request->leader_id;
+            addDefaultRolesToPlan($plan);
+        }
     }
 
     // check if TEACHER was changed
@@ -667,8 +671,12 @@ function checkIfLeaderOrTeacherWasChanged($request, $plan)
             ['plan_id', $plan->id], 
             ['role_id', env('TEACHER_ID', 5)]  // default is 4 if not set in .env
         ]);
-        // update the team record
-        $teacher->update(['user_id' => $request->teacher_id ]);
+        if ($teacher->count()) {               // update the team record
+            $teacher->update(['user_id' => $request->teacher_id ]); }
+        else {                                // create a new team member...
+            $plan->teacher_id = $request->teacher_id;
+            addDefaultRolesToPlan($plan);
+        }
     }
 }
 

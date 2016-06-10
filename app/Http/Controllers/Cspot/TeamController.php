@@ -30,8 +30,10 @@ class TeamController extends Controller
      */
     public function index(Request $request, $plan_id)
     {
-        // get current plan
-        $plan = Plan::with('teams')->find($plan_id);
+        // get current plan with team members ordered by roles
+        $plan = Plan::with([
+                'teams' => function ($query) { $query->orderBy('role_id'); }])
+            ->find($plan_id);
         // get list of users
         $users = User::where('name', '<>', 'n/a')->orderBy('first_name')->get();
 
