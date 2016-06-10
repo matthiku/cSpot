@@ -91,7 +91,7 @@
                         <a class="btn btn-secondary btn-sm pull-sm-right" data-available="{{ $team->available ? 'true' : 'false' }}"
                            title="Click if you are {{ $team->available ? 'NOT' : '' }} available for this Service" 
                             href="#" onclick='userAvailableForPlan(this, {{ $team->plan_id }})'>
-                            {{ ($team->available) ? '(I\'m unavailable)' : '(I\'m available)' }}
+                            {!! ($team->available) ? '<i class="fa fa-frown-o"></i> I\'m unavailable' : '<i class="fa fa-smile-o"></i> I\'m available' !!}
                             <i class="fa fa-square-o"></i></a>
                     @endif
                     <i class="fa fa-{{ ($team->available) ? 'check-square' : 'minus-square-o' }} fa-big"> </i>

@@ -57,6 +57,7 @@
                 $('.figure-img').css({
                     'max-height': $(window).height()-45,
                     'max-width':  $(window).width(),
+                    'display' : 'inline',
                 });
             </script>
         @endif
