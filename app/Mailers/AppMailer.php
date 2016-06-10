@@ -126,7 +126,7 @@ class AppMailer
         $user      = Auth::user();
         $this->cc  = findAdmins('email');
         $this->to  = $recipient->email;
-        $this->subject = env('CHURCH_NAME').' - missing items for your Service Plan';
+        $this->subject = env('CHURCH_NAME', 'c-SPOT-App').' - missing items for your Service Plan';
         $this->view    = 'cspot.emails.reminder';
         $this->data    = compact( 'user', 'recipient', 'plan' );
 
@@ -147,7 +147,7 @@ class AppMailer
         $user      = Auth::user();
         $this->cc  = findAdmins('email');
         $this->to  = $recipient->email;
-        $this->subject = env('CHURCH_NAME').' - please confirm your role on this Service plan';
+        $this->subject = env('CHURCH_NAME', 'c-SPOT-App').' - please confirm your role on this Service plan';
         $this->view    = 'cspot.emails.staffConfirm';
         $this->data    = compact( 'user', 'recipient', 'plan', 'team' );
 

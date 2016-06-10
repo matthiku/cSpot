@@ -102,8 +102,20 @@
                         @if ( strtoupper($plan->teacher->name)<>'N/A' )
                             T.:&nbsp;<strong>{{ $plan->teacher->name }}</strong>
                         @endif
+                        <?php
+                            $teamList = ''; // create the list of team members and their roles for this plan
+                            foreach ( $plan->teams as $key => $team ) {
+                                $teamList .= $team->user->name . ' (';
+                                $teamList .= $team->role ? ucfirst($team->role->name) : '(tbd)';
+                                $teamList .= ')';
+                                if ($key+1 < $plan->teams->count())
+                                    $teamList .= ",\n";
+                            }
+                        ?>
                         <a href="{{ url('cspot/plans/'.$plan->id.'/team') }}" class="m-l-2" 
-                            title="Worship leader and musicians etc"><i class="fa fa-users"></i>&nbsp;Team
+                            data-template='<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><pre class="tooltip-inner"></pre></div>'
+                            data-placement="right" data-toggle="tooltip" title="{{ $teamList }}">
+                            <i class="fa fa-users"></i>&nbsp;Team
                         </a> 
                     </big>
                 </div>
@@ -366,7 +378,7 @@
             <span class="has-warning" onclick="showSpinner()">
             {!! Form::submit('Save changes', [
                 'data-toggle' => 'tooltip', 
-                'class'       => 'form-submit text-help',
+                'class'       => 'form-submit text-help submit-button',
                 'style'       => 'display: none',
                 'disabled'    => 'disabled',
                 'title'       => 'Click to save changes to notes, service type, date, leader or teacher',

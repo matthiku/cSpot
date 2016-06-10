@@ -259,6 +259,8 @@ class PlanController extends Controller
         $plan->state = 1;
         $plan->save();
 
+        addDefaultRolesToPlan($plan);
+
         // insert default items if requested
         if ($request->input('defaultItems')=='Y') {
             $dItems = DefaultItem::where('type_id', $plan->type_id)->get();
@@ -373,24 +375,10 @@ class PlanController extends Controller
         // update this Plan
         $plan = Plan::find($id);
         $plan->changer = Auth::user()->first_name;
-        if ( $plan->leader_id != $request->leader_id ) {
-            // users must be notified of this change accordingly 
-            $new_leader = User::find($request->leader_id);
-            sendInternalMessage(
-                'Leader changed for '.Carbon::parse($plan->date)->format('l, jS \\of F Y'), 
-                Auth::user()->name . ' changed the leader for this '.
-                    $plan->type->name.' from '.$plan->leader->name.' to '.$new_leader->name, 
-                $new_leader->id);
-        }
-        if ( $plan->teacher_id != $request->teacher_id ) {
-            // users must be notified of this change accordingly 
-            $new_teacher = User::find($request->teacher_id);
-            sendInternalMessage(
-                'Teacher changed for '.Carbon::parse($plan->date)->format('l, jS \\of F Y'), 
-                Auth::user()->name . ' changed the teacher for this '.
-                    $plan->type->name.' from '.$plan->teacher->name.' to '.$new_teacher->name, 
-                $new_teacher->id);
-        }
+
+        // check if leader or teacher was changed
+        checkIfLeaderOrTeacherWasChanged( $request, $plan );
+
         //$plan->save();
         $plan->update( $request->except(['_method','_token']) );
 
@@ -452,14 +440,17 @@ class PlanController extends Controller
     public function destroy($id)
     {
         // find a single resource by ID
-        $output = Plan::find($id);
-        if ($output) {
-            $items = $output->items()->withTrashed()->get();
+        $plan = Plan::find($id);
+        if ($plan) {
+            $items = $plan->items()->withTrashed()->get();
             if ( count($items) ) {
                 flashError('Plan with ID "' . $id . '" still contains items (incl. binned items) and cannot be deleted. Please review this plan now.');
                 return $this->edit($id);
             }
-            $output->delete();
+            // delete team members for this plan (if any)
+            $plan->teams()->delete();
+            // delete the plan
+            $plan->delete();
             flash('Plan with id "' . $id . '" deleted.');
             return \Redirect::route($this->view_idx, ['filterby'=>'future']);
         }
