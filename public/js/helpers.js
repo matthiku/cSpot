@@ -1352,8 +1352,15 @@ function identifyHeadings(str)
             $('#jumplist').show();
             $('#jump-verse'+nm).show();
         }
-        return ' p-l-3 bg-success$verse'+nm; }
+        return ' p-l-3 bg-success$verse'+nm; 
+    }
     patt = /^(Chorus)/i;
+    if ( patt.test(str) ) {
+        $('#jumplist').show();
+        $('#jump-chorus').show();
+        return ' p-l-3 bg-info$chorus';
+    }
+    patt = /^(Pre-Chorus)/i;
     if ( patt.test(str) ) {
         $('#jumplist').show();
         $('#jump-chorus').show();
