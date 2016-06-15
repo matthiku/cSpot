@@ -1627,7 +1627,7 @@ function userAvailableForPlan(that, plan_id) {
 
 var timeoutID;
 function delayedCloseFlashingModals(selector) {
-    timeoutID = window.setTimeout( closeMyModal, 2000, selector);
+    timeoutID = window.setTimeout( closeMyModal, 3000, selector);
 }
 function closeMyModal(selector) {
     $(selector).modal('hide');

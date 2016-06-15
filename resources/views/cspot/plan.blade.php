@@ -60,7 +60,7 @@
                 <div class="pull-xs-right m-r-1">
                     <a title="Show guitar chords (if available) for the songs on this plan" 
                         onclick="$('#show-spinner').modal({keyboard: false});" 
-                        href="{{ url('cspot/items/').'/'.$plan->firstItem()->id }}">
+                        href="{{ url('cspot/items/').'/'.$plan->firstItem()->id }}/chords">
                         <i class="fa fa-music">&nbsp;</i>Chords</a>
                 </div>
                 <div class="pull-xs-right m-r-1">
@@ -124,7 +124,7 @@
 
 
             @if ( Auth::user()->isEditor() && isset($plan) && $plan->date > \Carbon\Carbon::yesterday() ) 
-                <div class="pull-xs-right plan-details">
+                <div class="pull-xs-right plan-details small">
                     &nbsp; (<a href="#" onclick="$('.plan-details').toggle()">Edit Plan Details</a>)
                 </div>
                 <div class="pull-xs-right plan-details small" style="display: none;">
