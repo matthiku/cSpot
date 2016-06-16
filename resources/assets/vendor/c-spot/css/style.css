@@ -1,0 +1,351 @@
+.dropdown-menu {
+    min-width: 360px;
+}
+
+.action-col {
+    max-width: 8.5em;
+}
+
+.slide-background-image {
+    min-height: 100%;
+}
+
+.mail-alert {
+    padding: .25em .4em !important;
+    border-radius: .25rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-top: 7px;
+    margin-right: .25rem;
+}
+
+.ui-widget {
+    font-size: inherit;
+}
+.ui-widget-header {
+    color: darkblue;
+}
+.ui-datepicker-inline {
+    margin: auto;
+}
+.ui-datepicker-sunday>a {
+    color: red !important;
+}
+/* in datepicker, highlight dates with an existing future plan */
+.ui-highlighted a {
+   background-color : cadetblue !important;
+   background-image :none !important;
+   color: White !important;
+   font-weight:bold !important;
+}
+
+.drag-item {
+    cursor: grab;
+}
+.drag-item>i {
+    color: #ccc;
+    cursor: grab;
+}
+.drag-item>i:hover {
+    color: #ccc;
+    color: black;
+}
+.drag-item:hover {
+    border: 2px solid #def;
+    background-color: #abc;
+}
+
+.text-present {
+    color: yellow;
+    font-size: xx-large;
+    font-family: "Times New Roman", Georgia, Serif;
+}
+pre.text-present {
+    font-size: 60px;
+}
+
+.bible-text-present {
+    color: yellow;
+    font-size: xx-large;
+    font-family: "Times New Roman", Georgia, Serif;
+}
+pre.bible-text-present {
+    font-size: 60px;
+}
+.bible-text-present>.p>.v {
+    color: white;
+    font-size: xx-large;
+}
+.bible-text-present>.p>.s1, .bible-text-present>.p>.nd {
+    color: white;
+    font-style: italic;
+    font-size: 60px];
+}
+.bible-text-present>.p, .bible-text-present>.p>.wj, .bible-text-present>.q1, .bible-text-present>.q2 {
+    font-size: 60px;
+}
+.bible-text-present>.p>.v::after {
+    content: " ";
+}
+
+.underscore {
+    padding-bottom: 2px;
+    border-bottom: 1px solid #ccc;
+}
+
+.table-normal {
+    width: initial;
+}
+
+.narrow {
+    margin: 0;
+    padding: 0;
+    line-height: 1;
+}
+
+.bg-grey {
+    background-color: #eee;
+}
+
+.bg-black {
+    background-color: black;
+}
+
+.big {
+    font-size: 140%;
+}
+
+.xl-big {
+    font-size: 200%;
+}
+
+.tooltip-medium {
+    min-width: 350px;
+    font-family: sans-serif;
+}
+
+.tooltip-wide {
+    min-width: 420px;
+}
+
+.trashed {
+    display: none;
+    background-color: #ccc !important;
+}
+
+.red {
+    color: red;
+}
+
+.card {
+    background-color: #eee;
+}
+.app-content {
+    padding: 0 1em;
+}
+
+.tek-nav {
+    margin-bottom: 15px;
+}
+
+.image {
+    width: 100%;
+    border: 1px #ccc solid ;
+    border-radius: 10px;
+    padding: 10px;
+    max-height: 18em;
+}
+
+.offer {
+    height: 35em;
+}
+
+.desc {
+    height: 8em;
+    overflow: hidden;
+}
+
+.c-select {
+    padding-top: 0.1em;
+    padding-bottom: 0.1em;
+    width: inherit;
+}
+
+.plan-form-minw {
+    min-width: 220px;
+}
+
+.table td ,
+.table thead th {
+    vertical-align: middle;
+}
+
+.table-bordered td {
+    border-width: 2px;
+}
+
+.padding-sm {
+    padding: 2px !important;
+}
+.margin-sm {
+    padding: 2px !important;
+}
+
+.search-input, .search-btn {
+    width: 100%;
+}
+
+.center {
+    text-align: center;
+}
+
+.right {
+    text-align: right;
+}
+
+.full-width input {
+    width: 100%;
+    max-width: 30em;
+}
+.fully-width {
+    width: 100%;
+}
+.full-btn {
+    padding-left: 1px;
+    padding-right: 1px;    
+}
+
+.link {
+    cursor: pointer;
+}
+.link:hover {
+    color: blue;
+}
+
+.text-right {
+    text-align: right;
+}
+
+label {
+    font-weight: 700;    
+}
+
+
+/* Large devices */
+@media (max-width: 62em) {
+    
+    .lyrics-show-btns {
+        margin-left: 0 !important;
+    }
+
+    .table-xs td {
+        padding: 0.1em;
+    }
+
+}
+
+
+@media (min-width: 62em) {
+
+    .nowrap {
+        white-space: normal;
+    }
+    
+    .btn-select {
+        margin-bottom: 2px;
+        min-width: 50%;
+    }
+}
+
+
+/*Extra SMALL devices*/
+@media (max-width: 34em) {
+
+    h1,h2,h3,h4,h5 {
+        font-size: 100%;
+        font-weight: bold;
+    }
+
+    textarea {
+        width: 100%;
+    }
+
+    
+    .btn-select {
+        margin-bottom: 2px;
+        min-width: 100%;
+    }
+
+    .m-r-2 {
+        margin-right: 5px !important;
+    }
+
+    .nowrap {
+        white-space: normal;
+    }
+    .sm-full {
+        /* fill the whole width on small devices */
+        width: 100%;
+    }
+    .xs-center {
+        text-align: center;
+    }
+
+    .xs-widht-half {
+        min-width: 50%;
+    }
+}
+
+/* Extra SMALL devices */
+@media (max-width: 48em) {
+
+    .md-full {
+        /* fill the whole width on small devices */
+        width: 100%;
+    }
+    .md-center {
+        text-align: center;
+    }
+}
+
+/* medium sized devices */
+@media (max-width: 48em) and (min-width: 34em) {
+
+    h1,h2,h3,h4,h5 {
+        font-size: 140%;
+    }
+    
+    .btn-select {
+        margin-bottom: 2px;
+        min-width: 75%;
+    }
+}
+
+/* Small devices (landscape phones, 34em and up) */
+@media (min-width: 34em) {
+
+    .nowrap {
+        white-space: nowrap;
+    }
+
+    textarea {
+        width: 34em;
+    }
+}
+
+@media (min-width: 34em) and (max-width: 85em) {
+   
+    .btn-select {
+        margin-bottom: 2px;
+        min-width: 75%;
+    }
+}
+
+
+/* exlude from printing */
+
+@media only print {
+    .btn, .dont-print { display: none !important; }
+    .always-print { display: block !important; }
+    th,td { display: table-cell !important; }
+}

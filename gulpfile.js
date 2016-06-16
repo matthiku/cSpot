@@ -11,6 +11,71 @@ var elixir = require('laravel-elixir');
  |
  */
 
+
+// no need to create Source Map files
+elixir.config.sourcemaps = false;
+
+
+
+// generic path to the bower-installed packages
+var bower_path = 'resources/assets/vendor';
+
+// paths to individual packages
+var path = {
+    'bootstrap'     : bower_path + '/bootstrap',
+    'font_awesome'  : bower_path + '/font-awesome',
+    'jquery'        : bower_path + '/jquery',
+    'tether'        : bower_path + '/tether',
+    'jquery_ui'     : bower_path + '/jquery-ui',
+    'c_spot'        : bower_path + '/c-spot',
+};
+
+/* 
+    Themes for jQuery-UI
+    other good ones: base, pepper-grinder, smoothness, redmond, overcast, sunny, flick, cuppertino, ui-lightness
+    see: http://jqueryui.com/themeroller/
+*/
+var ui_theme = 'sunny'; 
+
+
 elixir(function(mix) {
-    mix.sass('app.scss');
+
+
+    /* mix styles */
+    mix.styles([
+        path.bootstrap      + '/dist/css/bootstrap.css',
+        path.font_awesome   + '/css/font-awesome.css',
+        path.jquery_ui      + '/themes/base/core.css',
+        path.jquery_ui      + '/themes/base/datepicker.css',
+        path.jquery_ui      + '/themes/base/tabs.css',
+        path.jquery_ui      + '/themes/'+ui_theme+'/theme.css',
+        path.c_spot         + '/css/style.css',
+        path.c_spot         + '/css/signin.css',
+    ], 'public/css/c-spot.css', './');
+
+
+    /* mix JS */
+    mix.scripts([
+        path.tether         + '/dist/js/tether.js',
+        path.jquery         + '/dist/jquery.js',
+        path.jquery_ui      + '/jquery-ui.js',
+        path.bootstrap      + '/dist/js/bootstrap.js',
+        path.c_spot         + '/js/helpers.js',
+    ], 'public/js/c-spot.js', './');
+
+
+    /* 
+        copy static files 
+    */
+    // FONTS
+    mix.copy([
+        path.font_awesome   + '/fonts',
+    ], 'public/fonts');
+
+    // IMAGES
+    mix.copy([
+        path.jquery_ui      + '/themes/'+ui_theme+'/images',
+    ], 'public/css/images');
+
+
 });
