@@ -20,23 +20,11 @@
 
     <title>c-SPOT @yield('title')</title>
 
-    <!-- Bootstrap core CSS -->
-    <link href="{{ url('css/bootstrap.min.css') }}" rel="stylesheet">
-    <link href="{{ url('css/font-awesome.min.css') }}" rel="stylesheet">
+    <!-- composed CSS -->
+    <link href="{{ url('css/c-spot.css') }}" rel="stylesheet">
+    <!-- composed JavaScript -->
+    <script src="{{ url('js/c-spot.js') }}"></script>
 
-    <link href="{{ url('css/jquery-ui.min.css') }}" rel="stylesheet">
-
-    <!-- Custom styles for this template -->
-    <link href="{{ url('css/style.css') }}" rel="stylesheet">
-    <link href="{{ url('css/signin.css') }}" rel="stylesheet">
-
-    <script src="{{ url('js/tether.min.js') }}"></script>
-    <script src="{{ url('js/jquery.min.js') }}"></script>
-    <script src="{{ url('js/jquery-ui.min.js') }}"></script>
-    <script src="{{ url('js/jquery.ui.touch-punch.min.js') }}"></script>
-    <script src="{{ url('js/jquery.detect_swipe.js') }}"></script>
-
-    <script src="{{ url('js/helpers.js') }}"></script>
     <script>
         var __app_url = "{{ url('/') }}";
     </script>
@@ -47,10 +35,10 @@
 
 
 <body id="app-layout"
-@if (Request::is('*/present'))
-    class="bg-inverse"
-@endif
->
+    @if (Request::is('*/present'))
+        class="bg-inverse"
+    @endif
+    >
 
 
     @include ('layouts.messages')
@@ -73,10 +61,6 @@
 
 
 
-
-    <!-- JavaScripts -->
-    <script src="{{ url('js/bootstrap.min.js') }}"></script>
-
-  </body>
+    </body>
 
 </html>

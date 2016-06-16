@@ -156,13 +156,14 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        /*
+         * Additional Service Providers...
+         */
         Laravel\Socialite\SocialiteServiceProvider::class,
-
         Collective\Html\HtmlServiceProvider::class,
-
         Cmgmyr\Messenger\MessengerServiceProvider::class,
-
         Rap2hpoutre\LaravelLogViewer\LaravelLogViewerServiceProvider::class,
+        Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
 
         // Image processing - http://image.intervention.io/
         Intervention\Image\ImageServiceProvider::class,

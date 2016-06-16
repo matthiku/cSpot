@@ -14,7 +14,8 @@
         "cmgmyr/messenger": "~2.0",
         "rap2hpoutre/laravel-log-viewer": "^0.6.0",
         "intervention/image": "^2.3",
-        "guzzlehttp/guzzle": "~5.3|~6.0"
+        "guzzlehttp/guzzle": "~5.3|~6.0",
+        "barryvdh/laravel-ide-helper": "^2.2"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
@@ -54,8 +55,10 @@
             "php artisan clear-compiled"
         ],
         "post-update-cmd": [
-            "php artisan optimize"
-        ]
+            "Illuminate\\Foundation\\ComposerScripts::postUpdate",
+            "php artisan ide-helper:generate",
+            "php artisan ide-helper:meta",
+            "php artisan optimize"        ]
     },
     "config": {
         "preferred-install": "dist"

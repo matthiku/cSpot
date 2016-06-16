@@ -26,7 +26,7 @@
 
             <li class="nav-item hidden-xs-down">
                 <a class="nav-link" href="#" data-toggle="modal" data-target="#createMessage">
-                    <i class="fa fa-envelope-o" aria-hidden="true"></i> 
+                    <i class="fa fa-pencil-square-o" aria-hidden="true"></i> 
                     Page Feedback</a>
             </li>
 
