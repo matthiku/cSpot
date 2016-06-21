@@ -329,22 +329,58 @@
             no song linked to this item yet 
         -->
         @else
-            <!-- show song search only for authorized users -->
+            <!-- show only for authorized users -->
             @if( Auth::user()->ownsPlan($plan->id) )
                 
                 <div id="col-2-file-add" style="display: none;" 
                     class="col-lg-6 col-md-12 col-sm-12 col-xs-12 m-b-1 dropzone">
                         {!! Form::label('file', 'Add a file (e.g. for announcements)', ['class' => 'x']); !!}
+                        <small>(Max. Size: <?php echo ini_get("upload_max_filesize"); ?>)</small>
                         <br>
                         {!! Form::file('file'); !!}
                 </div>
+
+                <!-- show currently attached files/images -->
                 <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 m-b-1">
-                    @if ( isset($item)  &&  $item->files ) 
-                        @foreach ($item->files as $file)
-                            @include ('cspot.snippets.show_files')
+                    @if ( isset($item)  &&  $item->files )
+                        <?php 
+                            // make sure the files are sorted by seq no
+                            $files  = $item->files->sortBy('seq_no')->all(); 
+                            $fcount = count($files);
+                            $key    = 0; // we can't use a $key in the foreach statement as it's a re-sorted collection!
+                        ?>
+                        <div style="max-width: 380px;">
+                        @foreach ($files as $file)
+                            <div style="padding=2px;{{ ($key % 2 == 1) ? 'background-color: #eee;' : 'background-color: #ddd;' }}">
+                            <!-- <hr class="narrow hr-big"> -->
+                            <div class="pull-xs-left" style="min-width: 60px;">
+                                @if ( $fcount>1 && $key>0 )
+                                    <a href="{{ url("cspot/items/$item->id/movefile/$file->id/up") }}" title="Move up" 
+                                        onclick="showSpinner()" class="btn btn-info btn-sm move-button m-b-1" role="button" >
+                                        <i class="fa fa-angle-double-up fa-lg"> </i> 
+                                    </a>
+                                @endif
+                                @if ( $fcount>1 && $key>0 && $fcount>1 && $key<$fcount-1 )
+                                    <br>
+                                @endif
+                                @if ( $fcount>1 && $key<$fcount-1 )
+                                    <a href="{{ url("cspot/items/$item->id/movefile/$file->id/down") }}" title="Move down" 
+                                        onclick="showSpinner()" class="btn btn-info btn-sm move-button" role="button" >
+                                        <i class="fa fa-angle-double-down fa-lg"> </i> 
+                                    </a>
+                                @endif
+                            </div>
+                            @if ( $fcount>1)
+                                <div class="center pull-xs-right">Order:<br>{{ $file->seq_no }}</div>
+                            @endif
+                                @include ('cspot.snippets.show_files')
+                            </div>
+                            <?php $key++; ?>
                         @endforeach
+                        </div>
                     @endif
                 </div>
+
                 <div id="col-2-song-search" class="col-lg-6 col-md-12 col-sm-12 col-xs-12 m-b-1"
                     @if ( isset($item)  &&  $item->comment) 
                         style="display: none;"
@@ -393,7 +429,7 @@
                         <h6><i class="fa fa-book">&nbsp;</i>Add Bible Reference:</h6>
 
                         <select name="from-book" id="from-book" class="pull-xs-left" onchange="showNextSelect('from', 'chapter')">
-                            <option selected="TRUE" value=" ">select...</option>
+                            <option selected="TRUE" value=" ">select book...</option>
                             @foreach ($bibleBooks->getArrayOfBooks() as $book)
                                 <option value="{{ $book }}">{{ $book }}</option>
                             @endforeach                        

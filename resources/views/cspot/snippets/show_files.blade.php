@@ -14,8 +14,10 @@
     </a>
 
     <figcaption class="figure-caption">
-        <a class="pull-md-right" href="#" onclick="deleteFile({{ $file->id }})"><i class="fa fa-trash red"></i> Delete this file</a>
     	{{ $file->filename }}
+        <br />
+        <a class="small" href="#" onclick="deleteFile({{ $file->id }})"><i class="fa fa-trash red"></i> Delete this file</a>
+        <div class="pull-xs-right">Size: {{ humanFileSize($file->filesize) }}</div>
     </figcaption>
 
 </figure>

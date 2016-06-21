@@ -80,9 +80,39 @@ function findAdmins( $field='all' )
 
 
 /**
+ *  -------------
+ *  F I L E S
+ *  -------------
+ */
+
+
+/**
+ * Correct sequence of files attached to an item
+ */
+function correctFileSequence($item_id)
+{
+    $item = Item::find($item_id);
+    if ($item) {
+        // get all files attached to this item
+        $files = $item->files->sortBy('seq_no')->all();
+
+        $seq = 0;
+        // update the sequence nomber on each file
+        foreach ($files as $file) {
+            // get the actual file DB object and update it
+            DB::table('files')
+                ->where('id', $file->id)
+                ->update(['seq_no' => $seq]);
+            $seq += 1;
+        }
+    }
+}
+
+
+/**
  * Return sizes readable by humans
  */
-function human_filesize($bytes, $decimals = 2)
+function humanFileSize($bytes, $decimals = 2)
 {
   $size = ['B', 'kB', 'MB', 'GB', 'TB', 'PB'];
   $factor = floor((strlen($bytes) - 1) / 3);
@@ -108,6 +138,8 @@ function saveUploadedFile($request)
     $extension = $request->file('file')->getClientOriginalExtension();
     $token     = str_random(32).'.'.$extension; // new, random, physical file name
     $filename  = $request->file('file')->getClientOriginalName();
+    $filesize  = $request->file('file')->getClientSize();
+    $maxfilesize = $request->file('file')->getMaxFilesize();
 
     // move the anonymous file to the central location using the random name
     $destinationPath = config('files.uploads.webpath');
@@ -121,7 +153,9 @@ function saveUploadedFile($request)
     // create and return the new FILE object
     $file = new File([
         'token'    => $token,
-        'filename' => $filename
+        'filename' => $filename,
+        'filesize' => $filesize,
+        'maxfilesize' => $maxfilesize,
     ]);
     return $file;  
 }
@@ -203,6 +237,14 @@ function createThumbsForAll()
 
 
 /**
+ *  -------------
+ *  S O N G S
+ *  -------------
+ */
+
+
+
+/**
  * Search for songs
  *
  * @param  string $search
@@ -218,6 +260,16 @@ function songSearch( $search )
              orWhere('lyrics',  'like', $search)->
              take(10)->get();
 }
+
+
+
+
+/**
+ *  -------------
+ *  I T E M S
+ *  -------------
+ */
+
 
 
 
@@ -557,6 +609,16 @@ function getBibleTexts($refString)
 
 
 
+
+/**
+ *  -------------
+ *  P L A N S
+ *  -------------
+ */
+
+
+
+
 /**
  * getUsersRolesAndInstruments
  *
@@ -679,6 +741,17 @@ function checkIfLeaderOrTeacherWasChanged($request, $plan)
         }
     }
 }
+
+
+
+
+/**
+ *  -----------------
+ *  M E S S A G E S
+ *  -----------------
+ */
+
+
 
 
 /**

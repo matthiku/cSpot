@@ -8,7 +8,7 @@ class File extends Model
 {
 
     // mass assignment protection
-    protected $fillable = [ 'token', 'filename' ];
+    protected $fillable = [ 'token', 'filename', 'filesize' ];
 
 
     public $timestamps = false;

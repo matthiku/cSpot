@@ -144,7 +144,9 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     // list all current files
     Route::get('files/', 'Cspot\ItemController@indexFiles');
     // add a file to a plan item
-    Route::get('items/{item_id}/addfile/{file_id}',         'Cspot\ItemController@addfile');    
+    Route::get('items/{item_id}/addfile/{file_id}',         'Cspot\ItemController@addFile');    
+    // change seq_no of a file
+    Route::get('items/{item_id}/movefile/{file_id}/{dir}',  'Cspot\ItemController@moveFile');    
 
 
     /*

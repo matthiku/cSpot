@@ -97,10 +97,18 @@ pre.bible-text-present {
     width: initial;
 }
 
+.move-button {
+    min-width: 3em;
+}
 .narrow {
     margin: 0;
     padding: 0;
     line-height: 1;
+}
+.hr-big {
+    border-width: 5px;
+    border-color: #5bc0de;
+    border-radius: 2px;
 }
 
 .bg-grey {

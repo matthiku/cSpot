@@ -702,6 +702,33 @@ class ItemController extends Controller
         return \Redirect::back();
     }
 
+    /**
+     * Change seq_no of a file 
+     */
+    public function moveFile($item_id, $file_id, $direction)
+    {
+        $item = Item::find($item_id);
+        if ($item) {
+            $file = File::find($file_id);
+            if ($file) {
+                if ($direction=='up') {
+                    $file->seq_no = $file->seq_no-1.1;
+                }
+                if ($direction=='down') {
+                    $file->seq_no = $file->seq_no+1.1;
+                }
+                $file->save();
+                // make sure all files atteched to this item have the correct seq no now
+                correctFileSequence($item_id);
+                return \Redirect::route( 'cspot.items.edit', [$item->plan_id, $item->id] );
+            }
+            flash('Error! File with ID "' . $file_id . '" not found');
+        } else {
+            flash('Error! Item with ID "' . $item_id . '" not found');
+        }
+        return \Redirect::back();
+    }
+
 
 }
 

@@ -732,7 +732,8 @@ function reDisplayLyrics()
         // or we already have a pre-defined header line for this song part
         else { 
             // find verse indicator (can be first word in the lyrics line, like: "[1] {first line of lyrics}")
-            hdr = identifyLyricsHeadings( lyricsLine.split(' ')[0] ); 
+            // or it could be like [chorus 2]
+            var hdr = identifyLyricsHeadings( lyricsLine.split('] ')[0] ); 
             if (hdr.length>0) { 
                 // verse indicator was found!
                 curPart = hdr; 
