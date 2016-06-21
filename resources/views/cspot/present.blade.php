@@ -30,9 +30,15 @@
         @endif
 
         @if ($item->files)
-            @foreach ($item->files as $key => $file)
-                <img class="slide-background-image m-b-2" data-slides-id="{{ $key+1 }}"  style="display: none;" 
+            <?php 
+                // make sure the files are sorted by seq no
+                $files  = $item->files->sortBy('seq_no')->all(); 
+                $key    = 1; // we can't use a $key in the foreach statement as it's a re-sorted collection!
+            ?>            
+            @foreach ($files as $file)
+                <img class="slide-background-image m-b-2" data-slides-id="{{ $key }}"  style="display: none;" 
                        src="{{ url(config('files.uploads.webpath')).'/'.$file->token }}">
+                <?php $key++; ?>
             @endforeach
         @endif
 
