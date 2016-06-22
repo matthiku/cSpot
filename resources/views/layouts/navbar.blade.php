@@ -39,24 +39,27 @@
                    data-toggle="dropdown" role="button" aria-expanded="false">
                     <i class="fa fa-cogs"></i> <span class="caret"></span>
                 </a>
-                <div class="dropdown-menu" role="menu">
+                <div class="dropdown-menu dropdown-menu-right" role="menu">
                     <a class="dropdown-item" href="{{ url('admin/default_items') }}"><i class="fa fa-btn fa-server fa-lg"></i> &nbsp; Default Items</a>
                     <a class="dropdown-item" href="{{ url('cspot/files') }}"><i class="fa fa-btn fa-clone fa-lg"></i> &nbsp; Files/Images</a>
+                    <a class="dropdown-item" href="{{ url('admin/file_categories') }}"><i class="fa fa-btn fa-file-archive-o fa-lg"></i> &nbsp; File Categories</a>
                     <hr>
                     <a class="dropdown-item" href="{{ url('admin/users') }}"><i class="fa fa-btn fa-users fa-lg"></i> &nbsp; User List</a>
                     <a class="dropdown-item" href="{{ url('admin/roles') }}"><i class="fa fa-btn fa-check-square-o fa-lg"></i> &nbsp; User Roles</a>
                     <a class="dropdown-item" href="{{ url('admin/instruments') }}"><i class="fa fa-btn fa-music fa-lg"></i> &nbsp; User Instruments</a>
                     @if (Auth::user()->isAdmin())
-                    <hr>
-                    <a target="_new" class="dropdown-item" href="{{ url('admin/logs')  }}">
-                        <i class="fa fa-btn fa-file-zip-o fa-lg"></i> &nbsp; Laravel Logs</a>
-                    <a class="dropdown-item" href="{{ url('admin/customize')  }}">
-                        <i class="fa fa-btn fa-cog fa-lg"></i> &nbsp; Customization</a>
+                        <hr>
+                        <a target="_new" class="dropdown-item" href="{{ url('admin/logs')  }}">
+                            <i class="fa fa-btn fa-file-zip-o fa-lg"></i> &nbsp; Laravel Logs</a>
+                        <a class="dropdown-item" href="{{ url('admin/runjob/batch')  }}">
+                            <i class="fa fa-btn fa-cubes"></i> &nbsp; Run Batch Job(s)</a>
+                        <a class="dropdown-item" href="{{ url('admin/customize')  }}">
+                            <i class="fa fa-btn fa-cog fa-lg"></i> &nbsp; Customization</a>
                     @endif
                 </div>
             </li>
 
-            <li class="nav-item dropdown m-r-2">
+            <li class="nav-item dropdown">
                 <a href="#" class="nav-link dropdown-toggle " 
                    data-toggle="dropdown" role="button" aria-expanded="false">
                     {{ Auth::user()->first_name }}

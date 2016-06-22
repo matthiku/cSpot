@@ -221,7 +221,7 @@ class SongController extends Controller
         // handle file uplaods
         if ($request->hasFile('file')) {
             if ($request->file('file')->isValid()) {
-                // user helper function
+                // user helper function, save attached file and assign a file category of id 1 (song)
                 $file = saveUploadedFile($request);
                 // add the file as a relationship to the song
                 $song->files()->save($file);

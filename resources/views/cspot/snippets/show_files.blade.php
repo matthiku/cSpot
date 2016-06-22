@@ -1,7 +1,7 @@
 
 <!-- needs a '$file' value from the parent view -->
 
-<figure class="figure" id="file-{{ $file->id }}">
+<figure class="figure" id="file-figure-{{ $file->id }}">
 
     <!-- show thumbnail, but link to full image -->
     <a href="{{ url(config('files.uploads.webpath')).'/'.$file->token }}">

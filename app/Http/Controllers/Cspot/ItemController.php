@@ -16,6 +16,7 @@ use App\Models\Song;
 use App\Models\Plan;
 use App\Models\Item;
 use App\Models\File;
+use App\Models\FileCategory;
 
 use DB;
 use Auth;
@@ -462,6 +463,8 @@ class ItemController extends Controller
                 $file = saveUploadedFile($request);
                 // add the file as a relationship to the song
                 $item->files()->save($file);
+                // correct seq_no of attached files (if more than one)
+                correctFileSequence($id);
             }
             else {
                 flash('Uploaded file could not be validated!');
@@ -664,16 +667,31 @@ class ItemController extends Controller
 
 
     /**
-     * IMAGES HANDLING
+     * FILES/IMAGES HANDLING
      *
      */
     public function indexFiles(Request $request)
     {
-        $files = File::paginate(18);
+        $heading = 'List All Files and Images';
+
+        # does session contains a filter value?
+        if ($request->session()->has('bycategory')) {
+            // get only FILES with this specific file_category id
+            $file_category = FileCategory::find($request->session()->get('bycategory'));
+            if ($file_category) {
+                $heading = 'Show Files of type "'.$file_category->name.'"';
+                // get all files of this category
+                $files = $file_category->files()->paginate(18);
+            }
+            // only use it once in the session....
+            $request->session()->forget('bycategory');
+        }
+        if (! isset($files)) {
+            $files = File::paginate(18);
+        }
 
         $querystringArray = $request->input();
 
-        $heading = 'List All Files and Images';
         // URL contains ...?item_id=xxx (needed in order to add an existing file to an item)
         $item_id = 0;
         if ($request->has('item_id')) {
@@ -687,6 +705,24 @@ class ItemController extends Controller
         return view('admin.files', ['files'=>$files, 'item_id'=>$item_id, 'heading'=>$heading]);
     }
 
+
+    /**
+     * Update information about an existing file
+     */
+    public function updateFile(Request $request)
+    {
+        if (! $request->has('id'))
+            return;
+        $file = File::find($request->id);
+        if ($file) {
+            $file->filename = $request->filename;
+            $file->file_category_id = $request->file_category_id;
+            $file->save();
+            return 'done!';
+        }
+        return 'file not found!';
+    }
+
     /**
      * Add existing file to a plan item
      */
@@ -696,6 +732,7 @@ class ItemController extends Controller
         if ($item) {
             $file = File::find($file_id);
             $item->files()->save($file);
+            correctFileSequence($item_id);
             return \Redirect::route( 'cspot.items.edit', [$item->plan_id, $item->id] );
         }
         flash('Error! Item with ID "' . $id . '" not found');

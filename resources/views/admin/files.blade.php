@@ -38,17 +38,25 @@
 
 	        @foreach( $files as $key => $file )
     			<div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
-                    <div class="card">
-                        <div class="card-block">
+                    <div class="card" id="file-{{$file->id}}" data-content="{{$file}}">
+                        <div class="card-block card-block-files">
                             @if ( ! $item_id==0 )
                                 <a href="{{ url('cspot/items').'/'.$item_id.'/addfile/'.$file->id }}" class="btn btn-sm btn-primary">
                                     select</a>
-                            @else
+                            @elseif( Auth::user()->isEditor() )
                                 <a href="#" onclick="deleteFile({{ $file->id }})" title="delete this file" 
                                     class="btn btn-sm btn-danger pull-xs-right">
                                     <i class="fa fa-trash"></i></a>
+                                <button type="button" class="btn btn-info btn-sm pull-xs-right" data-toggle="modal" data-target="#fileEditModal"
+                                    data-id="{{ $file->id }}" data-cat="{{ $file->file_category_id }}" data-filename="{{ $file->filename }}" 
+                                    data-token="{{ url(config('files.uploads.webpath')).'/mini-'.$file->token }}">
+                                    <i class="fa fa-pencil"></i></a>
+                                </button>
                             @endif
-                            <small class="card-title">{{ $file->filename }}</small>
+                            <small class="card-title">
+                                <span class="fileshow-filename">{{ $file->filename }}</span><br>
+                                <label>Cat.:</label> <span class="fileshow-category">{{ $file->file_category->name }}</span>
+                            </small>
                         </div>
                         <a href="{{ url(config('files.uploads.webpath')).'/'.$file->token }}">
                             <img class="card-img-top"  alt="{{ $file->filename }}" width="100%"
@@ -82,5 +90,60 @@
 
 	@endif
 
-	
+<script type="text/javascript">
+    /* 
+        populate the modal popup when it's launched, with the data provided by launching button ....
+    */
+    $('#fileEditModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget); // Button that triggered the modal
+        var id       = button.data('id');    // Extract info from data-* attributes
+        var cat      = button.data('cat');
+        var filename = button.data('filename');
+        var token    = button.data('token');
+        // Update the modal's content
+        var modal = $(this);
+        modal.find('.modal-title').text('Edit File Information for ' + filename);
+        modal.find('#file-id').val(id);
+        modal.find('#filename').val(filename);
+        modal.find('img').attr('src',token);
+        modal.find('#file_category_id').val(cat);
+    })
+</script>	
+
+
 @stop
+
+
+<!-- Modal to edit file information -->
+<div class="modal fade" id="fileEditModal" tabindex="-1" role="dialog" aria-labelledby="fileEditModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="fileEditModalLabel">Edit File Information</h4>
+            </div>
+            <div class="modal-body">
+                <img src="" class="pull-xs-right" alt="image">
+                <label>File Name</label>
+                <br>
+                <input type="text" id="filename">
+                <br>
+                <input type="hidden" id="file-id" data-action-url="{{ url('cspot/files') }}/">
+                <br>
+                <label>File Category</label>
+                <br>
+                <select name="file_category_id" id="file_category_id">
+                    @foreach ( DB::table('file_categories')->get() as $fcat)
+                        <option value="{{ $fcat->id }}">{{ $fcat->name }}</option>
+                    @endforeach                        
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="updateFileInformation()">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>

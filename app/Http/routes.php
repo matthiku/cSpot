@@ -142,7 +142,9 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
      * FILES
      */
     // list all current files
-    Route::get('files/', 'Cspot\ItemController@indexFiles');
+    Route::get('files/',     ['as'=> 'cspot.files', 'uses'=>'Cspot\ItemController@indexFiles']);
+    // updata file information
+    Route::post('files/{id}',                               'Cspot\ItemController@updateFile');
     // add a file to a plan item
     Route::get('items/{item_id}/addfile/{file_id}',         'Cspot\ItemController@addFile');    
     // change seq_no of a file
@@ -159,7 +161,7 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     // specific delete route using 'get' method
     Route::get('songs/{songs}/delete',     'Cspot\SongController@destroy');
 
-    // delete an attachment to a song
+    // delete an attachment to a song or an item
     Route::delete('files/{id}/delete',     'Cspot\SongController@deleteFile');
 
 });
@@ -194,6 +196,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['web']], function() {
     Route::resource('instruments', 'Admin\InstrumentController');    
     Route::resource('types', 'Admin\TypeController');    
     Route::resource('default_items', 'Admin\DefaultItemController');    
+    Route::resource('file_categories', 'Admin\FileCategoryController');    
     // as forms cannot use DELETE method, we implement it as GET
     Route::get('users/{users}/delete', 'Admin\UserController@destroy');    
     Route::get('roles/{roles}/delete', 'Admin\RoleController@destroy');    
@@ -202,8 +205,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['web']], function() {
     Route::get('default_items/{default_items}/delete', 'Admin\DefaultItemController@destroy');    
 
     // run a specific job
-    Route::get('runjob/thumbs', function() {
-        dispatch(new App\Jobs\CreateThumbs);
+    Route::get('runjob/batch', function() {
+        dispatch(new App\Jobs\BatchJobs);
         flash( 'Done!');
         return redirect()->back();
     });

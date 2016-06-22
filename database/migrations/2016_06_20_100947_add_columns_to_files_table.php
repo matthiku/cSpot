@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddSeqNoToFilesTable extends Migration
+class AddColumnsToFilesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -15,7 +15,10 @@ class AddSeqNoToFilesTable extends Migration
         Schema::table('files', function (Blueprint $table) {
             // add sequence no for enabling ordering of images
             $table->decimal('seq_no', 2, 1);
+            // add file size in bytes
             $table->bigInteger('filesize')->unsigned();
+            // add reference to file category
+            $table->integer('file_category_id')->references('id')->on('file_category')->onDelete('no action');
         });
     }
 
@@ -29,6 +32,8 @@ class AddSeqNoToFilesTable extends Migration
         Schema::table('files', function (Blueprint $table) {
             // remove new column
             $table->dropColumn('seq_no');
+            $table->dropColumn('filesize');
+            $table->dropColumn('file_category_id');
         });
     }
 }

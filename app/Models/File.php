@@ -8,7 +8,7 @@ class File extends Model
 {
 
     // mass assignment protection
-    protected $fillable = [ 'token', 'filename', 'filesize' ];
+    protected $fillable = [ 'token', 'filename', 'filesize', 'file_category_id' ];
 
 
     public $timestamps = false;
@@ -30,5 +30,11 @@ class File extends Model
         return $this->belongsToMany('App\Models\Item');
     }
 
+
+
+    public function file_category() 
+    {
+        return $this->belongsTo('App\Models\FileCategory');
+    }
     
 }

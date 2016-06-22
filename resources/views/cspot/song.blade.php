@@ -212,7 +212,11 @@
 
             <div class="row form-group">
                 {!! Form::label('file', 'Attach an image (e.g. sheet music)', ['class' => 'col-sm-4 col-md-3 col-lg-2 col-xl-4']); !!}
-                <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width">{!! Form::file('file'); !!}</div>
+                <small>(Max. Size: <?php echo ini_get("upload_max_filesize"); ?>)</small>
+                <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width">
+                    {!! Form::file('file'); !!}
+                    {!! Form::hidden('file_category_id','1') !!}
+                </div>
             </div>
             @if ( isset($song) && $song->files)
                 @foreach ($song->files as $file)

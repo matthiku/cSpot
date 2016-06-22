@@ -149,7 +149,12 @@
                     @else
                         <h2>Add Item No {{ $seq_no }}.0</h2>
                     @endif
-                    <h5>into the Service plan for {{ $plan->date->formatLocalized('%A, %d %B %Y') }}</h5>
+                    <h5>into the 
+                        <a href="{{ url('cspot/plans/'.$plan->id)}}/edit">
+                            Service plan for {{ $plan->date->formatLocalized('%A, %d %B %Y') }}
+                        </a>
+                    </h5>
+
                 </div>
 
                 <!-- 
@@ -334,10 +339,19 @@
                 
                 <div id="col-2-file-add" style="display: none;" 
                     class="col-lg-6 col-md-12 col-sm-12 col-xs-12 m-b-1 dropzone">
+
                         {!! Form::label('file', 'Add a file (e.g. for announcements)', ['class' => 'x']); !!}
-                        <small>(Max. Size: <?php echo ini_get("upload_max_filesize"); ?>)</small>
-                        <br>
+                            <small>(Max. Size: <?php echo ini_get("upload_max_filesize"); ?>)</small><br>
                         {!! Form::file('file'); !!}
+                        <br>
+                        {!! Form::label('file_category_id', 'Select a Category for this file') !!}
+                        <select name="file_category_id" id="file_category_id">
+                            <option selected="TRUE" value=" ">select ...</option>
+                            @foreach ( DB::table('file_categories')->get() as $fcat)
+                                <option value="{{ $fcat->id }}">{{ $fcat->name }}</option>
+                            @endforeach                        
+                        </select>&nbsp;
+
                 </div>
 
                 <!-- show currently attached files/images -->
@@ -349,9 +363,9 @@
                             $fcount = count($files);
                             $key    = 0; // we can't use a $key in the foreach statement as it's a re-sorted collection!
                         ?>
-                        <div style="max-width: 380px;">
+                        <div class="center" style="max-width: 380px;">
                         @foreach ($files as $file)
-                            <div style="padding=2px;{{ ($key % 2 == 1) ? 'background-color: #eee;' : 'background-color: #ddd;' }}">
+                            <div id="file-{{ $file->id }}" style="padding=2px;{{ ($key % 2 == 1) ? 'background-color: #eee;' : 'background-color: #ddd;' }}">
                             <!-- <hr class="narrow hr-big"> -->
                             <div class="pull-xs-left" style="min-width: 60px;">
                                 @if ( $fcount>1 && $key>0 )

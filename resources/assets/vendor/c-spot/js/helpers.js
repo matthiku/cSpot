@@ -1,4 +1,3 @@
-var bibleBooks;
 
 
 // make sure all AJAX calls are using the token stored in the META tag
@@ -21,6 +20,19 @@ function showSpinner() {
 var SelectedDates = {};
 SelectedDates[new Date().toLocaleDateString()] = 'Today';
 
+
+
+
+
+
+
+/** ***************************************************
+ *
+ *          SLIDE PRESENTATION HELPERS
+ *
+ ** ***************************************************
+ */
+
 // lyrics sequence data
 var sequence;
 
@@ -29,6 +41,7 @@ var showBlankBetweenItems;
 var screenBlank = true;
 var howManyVersesPerSlide;
 
+var bibleBooks;
 
 
 /**
@@ -1001,237 +1014,8 @@ function identifyLyricsHeadings(str)
 }
 
 
-
-
-/* 
-    List filtering: Reload page with alternate filtering
-*/
-function toogleAllorFuturePlans()
-{
-    showSpinner();
-    // get current url and query string
-    var currUrl = window.location.href.split('?');
-    var newUrl  = currUrl[0];
-    if (currUrl.length > 1) 
-    {
-        var queryStr = currUrl[1].split('&');
-        if (queryStr.length > 1) {
-            newUrl += '?';
-            for (var i = queryStr.length - 1; i >= 0; i--) {
-                parms = queryStr[i].split('=');
-                if (parms[0]=='show') {
-                    parms[1]=='all'  ?  parms[1]='future'  :  parms[1]='all';
-                    queryStr[i] = 'show='+parms[1];
-                }                
-                newUrl += queryStr[i];
-                if (i > 0) newUrl += '&';
-            }
-        }
-    } 
-    window.location.href = newUrl;
-}
-
-/* 
-    List sorting: Reload page with the 'orderBy' segment and the given field name
-*/
-function reloadListOrderBy(field)
-{
-    showSpinner();
-    // get current url and query string
-    var currUrl = window.location.href.split('?');
-    var newUrl  = currUrl[0] + '?';
-    if (currUrl.length > 1) 
-    {
-        var queryStr = currUrl[1].split('&');
-        var orderbyFound = false;
-        if (queryStr.length > 1) {
-            for (var i = queryStr.length - 1; i >= 0; i--) {
-                parms = queryStr[i].split('=');
-                if (parms[0]=='orderby') {
-                    queryStr[i] = 'orderby='+field;
-                    orderbyFound = true;
-                }
-                if (parms[0]=='order') {
-                    parms[1]=='desc'  ?  parms[1]='asc'  :  parms[1]='desc';
-                    queryStr[i] = 'order='+parms[1];
-                }                
-                newUrl += queryStr[i];
-                if (i > 0) newUrl += '&';
-            }
-        } 
-        else {
-            // retain the existing query string
-            newUrl += queryStr[0];
-        }
-    } 
-    // check if existing query string already contained a orderby param
-    if (currUrl.length > 1 && ! orderbyFound) newUrl += '&';
-    if (currUrl.length < 2 || ! orderbyFound) {
-        newUrl += 'orderby='+field;
-        newUrl += '&order=asc';
-    }
-
-    window.location.href = newUrl;
-}
-
-
 /**
- * Function to open plan selected via date picker
- * better name: "openPlanByDate"
- */
-function submitDate(date) 
-{
-    window.location.href = __app_url + '/cspot/plans/by_date/' + date.value;
-}
-
-
-
-/*
-    allow Admins to delete an attached file (image)    
-*/
-function deleteFile(id)
-{
-    // TODO: Prompt for confirmation as this is irrevocable:
-    if (! confirm('Are you sure to finally remove this file?')) {return;}
-    // get token from form field
-    $.ajax({
-        url:    '/cspot/files/'+id+'/delete', 
-        method: 'DELETE',
-    }).done(function() {
-        $('#file-'+id).remove();
-    }).fail(function() {
-        alert("image deletion failed!");
-    });
-}
-
-
-/**
-    Open modal popup to show linked YT video
-*/
-function showYTvideoInModal(ytid, title)
-{
-    //https://www.youtube.com/"+ ytid.substr(0,2)=="PL" ? 'playlist?list=' : 'watch?v=' + ytid }}";
-    $('#snippet-modal-title').text(title);
-    $('#snippet-modal-content')
-        .html('<iframe width="560" height="315" src="https://www.youtube.com/embed/'+ytid+'" frameborder="0" allowfullscreen></iframe>');
-    $('.help-modal').modal();
-}
-
-
-/**
-    When user presses enter in the Songs List view, check 
-    which filter field is open and trigger its function
- */
-function findOpenFilterField() 
-{
-    // check which search fields open
-    var searchFields = $("[id^=filter-]");
-    $.each(searchFields, function(entry) {
-        if ( $(searchFields[entry]).is(':visible') ){
-            var id = $(searchFields[entry]).attr('id').split('-');
-            if (id[2] == 'input') {  // only look at input elements!
-                var action = $('#'+id[1]+'-search').attr('onclick');
-                eval(action);
-                return;
-            }
-        }
-    });
-}
-
-/*
-    Show input field in header to filter data in this column or apply the filter if already set
-*/
-function showFilterField(field)
-{
-    // Is this field already visible?
-    if ($('#filter-'+field+'-clear').is(':visible')) 
-    {
-        // check if there is a query string in the URL
-        var currUrl  = window.location.href.split('?');
-        // then clear existing filter and reload page without a filter
-        if (currUrl.length > 1) {
-            // fade background and show spinner
-            showSpinner();
-            // remove filter elements from URL query string
-            var queryStr = currUrl[1].split('&');
-            var newUrl = currUrl[0];
-            if (queryStr.length > 2) {
-                newUrl += '?';
-                for (var i = queryStr.length - 1; i >= 0; i--) {
-                    if (queryStr[i].substr(0,6) != 'filter' ) {
-                        newUrl += queryStr[i];
-                        if (i > 0) newUrl += '&';
-                    }
-                }
-            }
-            window.location.href = newUrl;
-            return;
-        }
-    }
-
-    // check if there are other search fields open
-    var searchFields = $("[id^=filter-]");
-    $.each(searchFields, function(entry) {
-        if ( $(searchFields[entry]).is(':visible') ){
-            var fld = $(searchFields[entry]).attr('id').split('-')[1];
-            if (fld != field) {
-                $('#filter-'+fld+'-input').remove();
-                $('#filter-'+fld+'-submit').remove();
-                $('#filter-'+fld+'-show').show();
-            }
-        }
-    });
-         
-    // define html code for search input field
-    var newHtml = '<input id="filter-fffff-input" style="line-height: normal;" type="text" placeholder="search fffff">'
-    newHtml    += '<i id="filter-fffff-submit" class="fa fa-check-square"> </i>';
-    // did user click on the visible search icon?
-    if ($('#filter-'+field+'-show').is(':visible')) 
-    {
-        // add new html code, replacing all placeholders with current field name
-        $('#'+field+'-search').append(newHtml.replace(/fffff/g, field));
-        $('#filter-'+field+'-input').delay(800).focus();
-        $('#filter-'+field+'-show').hide();
-    } 
-    else 
-    {
-        // Did user enter search data?
-        if ( $('#filter-'+field+'-input').val().length > 0 ) {
-            // fade background and show spinner
-            showSpinner();
-
-            var search =  $('#filter-'+field+'-input').val();
-            var currUrl  = window.location.href.replace('#','');
-            if (currUrl.indexOf('?')>1) {
-                var newUrl = currUrl + '&filterby='+field+'&filtervalue='+search;
-            } else {
-                var newUrl = currUrl + '?filterby='+field+'&filtervalue='+search;
-            }
-            window.location.href = newUrl;
-            return;
-        }
-        $('#filter-'+field+'-input').remove();
-        $('#filter-'+field+'-submit').remove();
-        $('#filter-'+field+'-show').show();
-    }
-}
-
-
-
-/*
-    On the Songs Detail page, 
-    show the previously hidden song search input field
-    and set the focus on it
-*/
-function showSongSearchInput(that, selector)
-{
-    $(that).hide();
-    $(selector).show();
-    $("input[name='search']").focus();
-}
-
-/**
- * called from the configuratino button on the navbar
+ * called from the configuration button on the navbar
  */
 function configBlankSlides() {
     var sett = ! $('#configBlankSlides').prop( "checked" );
@@ -1532,6 +1316,285 @@ function showScriptureText(version,book,chapter,fromVerse,toVerse)
 
 
 
+
+
+
+
+
+
+/** ***************************************************
+ *
+ *          VARIOUS  UI  HELPERS
+ *
+ ** ***************************************************
+ */
+
+
+
+/* 
+    Called from the Modal popup on the FILES LIST page, 
+    this function will save the updated file information via AJAX
+*/
+function updateFileInformation()
+{
+    // get the old data
+    var fileID   = $('#file-id').val();
+    var dispElem = $('#file-'+fileID);
+    var oldData  = $(dispElem).data('content');
+
+    // get the new data
+    var newFn = $('#filename').val()
+    var newFC = $('#file_category_id').val()
+
+    // compare
+    if (oldData.file_category_id == newFC 
+             && oldData.filename == newFn) return;
+
+    // get the action URL
+    var actionURL = $('#file-id').data('action-url')+fileID;
+
+    // update via AJAX 
+    $.post( actionURL, { id: fileID, filename: newFn, file_category_id: newFC })
+        .done(function(data) {
+            dispElem.find('.fileshow-filename').text(newFn);
+            dispElem.find('.fileshow-category').text($('#file_category_id option:selected').text());
+        })
+        .fail(function(data) {
+            dispElem.find('.fileshow-filename').text("Update failed! Please notify admin! " + data);
+        });
+    
+    // close the modal and update the data on the screen
+    $('#fileEditModal').modal('hide');
+}
+
+
+/* 
+    List filtering: Reload page with alternate filtering
+*/
+function toogleAllorFuturePlans()
+{
+    showSpinner();
+    // get current url and query string
+    var currUrl = window.location.href.split('?');
+    var newUrl  = currUrl[0];
+    if (currUrl.length > 1) 
+    {
+        var queryStr = currUrl[1].split('&');
+        if (queryStr.length > 1) {
+            newUrl += '?';
+            for (var i = queryStr.length - 1; i >= 0; i--) {
+                parms = queryStr[i].split('=');
+                if (parms[0]=='show') {
+                    parms[1]=='all'  ?  parms[1]='future'  :  parms[1]='all';
+                    queryStr[i] = 'show='+parms[1];
+                }                
+                newUrl += queryStr[i];
+                if (i > 0) newUrl += '&';
+            }
+        }
+    } 
+    window.location.href = newUrl;
+}
+
+/* 
+    List sorting: Reload page with the 'orderBy' segment and the given field name
+*/
+function reloadListOrderBy(field)
+{
+    showSpinner();
+    // get current url and query string
+    var currUrl = window.location.href.split('?');
+    var newUrl  = currUrl[0] + '?';
+    if (currUrl.length > 1) 
+    {
+        var queryStr = currUrl[1].split('&');
+        var orderbyFound = false;
+        if (queryStr.length > 1) {
+            for (var i = queryStr.length - 1; i >= 0; i--) {
+                parms = queryStr[i].split('=');
+                if (parms[0]=='orderby') {
+                    queryStr[i] = 'orderby='+field;
+                    orderbyFound = true;
+                }
+                if (parms[0]=='order') {
+                    parms[1]=='desc'  ?  parms[1]='asc'  :  parms[1]='desc';
+                    queryStr[i] = 'order='+parms[1];
+                }                
+                newUrl += queryStr[i];
+                if (i > 0) newUrl += '&';
+            }
+        } 
+        else {
+            // retain the existing query string
+            newUrl += queryStr[0];
+        }
+    } 
+    // check if existing query string already contained a orderby param
+    if (currUrl.length > 1 && ! orderbyFound) newUrl += '&';
+    if (currUrl.length < 2 || ! orderbyFound) {
+        newUrl += 'orderby='+field;
+        newUrl += '&order=asc';
+    }
+
+    window.location.href = newUrl;
+}
+
+
+/**
+ * Function to open plan selected via date picker
+ * better name: "openPlanByDate"
+ */
+function submitDate(date) 
+{
+    window.location.href = __app_url + '/cspot/plans/by_date/' + date.value;
+}
+
+
+/*
+    allow Admins to delete an attached file (image)    
+*/
+function deleteFile(id)
+{
+    // TODO: Prompt for confirmation as this is irrevocable:
+    if (! confirm('Are you sure to finally remove this file?')) {return;}
+    // get token from form field
+    $.ajax({
+        url:    '/cspot/files/'+id+'/delete', 
+        method: 'DELETE',
+    }).done(function(data) {
+        $('#file-'+id).html(data.data);
+    }).fail(function(data) {
+        alert("image deletion failed! "+data);
+    });
+}
+
+
+/**
+    Open modal popup to show linked YT video
+*/
+function showYTvideoInModal(ytid, title)
+{
+    //https://www.youtube.com/"+ ytid.substr(0,2)=="PL" ? 'playlist?list=' : 'watch?v=' + ytid }}";
+    $('#snippet-modal-title').text(title);
+    $('#snippet-modal-content')
+        .html('<iframe width="560" height="315" src="https://www.youtube.com/embed/'+ytid+'" frameborder="0" allowfullscreen></iframe>');
+    $('.help-modal').modal();
+}
+
+
+/**
+    When user presses enter in the Songs List view, check 
+    which filter field is open and trigger its function
+ */
+function findOpenFilterField() 
+{
+    // check which search fields open
+    var searchFields = $("[id^=filter-]");
+    $.each(searchFields, function(entry) {
+        if ( $(searchFields[entry]).is(':visible') ){
+            var id = $(searchFields[entry]).attr('id').split('-');
+            if (id[2] == 'input') {  // only look at input elements!
+                var action = $('#'+id[1]+'-search').attr('onclick');
+                eval(action);
+                return;
+            }
+        }
+    });
+}
+
+/*
+    Show input field in header to filter data in this column or apply the filter if already set
+*/
+function showFilterField(field)
+{
+    // Is this field already visible?
+    if ($('#filter-'+field+'-clear').is(':visible')) 
+    {
+        // check if there is a query string in the URL
+        var currUrl  = window.location.href.split('?');
+        // then clear existing filter and reload page without a filter
+        if (currUrl.length > 1) {
+            // fade background and show spinner
+            showSpinner();
+            // remove filter elements from URL query string
+            var queryStr = currUrl[1].split('&');
+            var newUrl = currUrl[0];
+            if (queryStr.length > 2) {
+                newUrl += '?';
+                for (var i = queryStr.length - 1; i >= 0; i--) {
+                    if (queryStr[i].substr(0,6) != 'filter' ) {
+                        newUrl += queryStr[i];
+                        if (i > 0) newUrl += '&';
+                    }
+                }
+            }
+            window.location.href = newUrl;
+            return;
+        }
+    }
+
+    // check if there are other search fields open
+    var searchFields = $("[id^=filter-]");
+    $.each(searchFields, function(entry) {
+        if ( $(searchFields[entry]).is(':visible') ){
+            var fld = $(searchFields[entry]).attr('id').split('-')[1];
+            if (fld != field) {
+                $('#filter-'+fld+'-input').remove();
+                $('#filter-'+fld+'-submit').remove();
+                $('#filter-'+fld+'-show').show();
+            }
+        }
+    });
+         
+    // define html code for search input field
+    var newHtml = '<input id="filter-fffff-input" style="line-height: normal;" type="text" placeholder="search fffff">'
+    newHtml    += '<i id="filter-fffff-submit" class="fa fa-check-square"> </i>';
+    // did user click on the visible search icon?
+    if ($('#filter-'+field+'-show').is(':visible')) 
+    {
+        // add new html code, replacing all placeholders with current field name
+        $('#'+field+'-search').append(newHtml.replace(/fffff/g, field));
+        $('#filter-'+field+'-input').delay(800).focus();
+        $('#filter-'+field+'-show').hide();
+    } 
+    else 
+    {
+        // Did user enter search data?
+        if ( $('#filter-'+field+'-input').val().length > 0 ) {
+            // fade background and show spinner
+            showSpinner();
+
+            var search =  $('#filter-'+field+'-input').val();
+            var currUrl  = window.location.href.replace('#','');
+            if (currUrl.indexOf('?')>1) {
+                var newUrl = currUrl + '&filterby='+field+'&filtervalue='+search;
+            } else {
+                var newUrl = currUrl + '?filterby='+field+'&filtervalue='+search;
+            }
+            window.location.href = newUrl;
+            return;
+        }
+        $('#filter-'+field+'-input').remove();
+        $('#filter-'+field+'-submit').remove();
+        $('#filter-'+field+'-show').show();
+    }
+}
+
+
+
+/*
+    On the Songs Detail page, 
+    show the previously hidden song search input field
+    and set the focus on it
+*/
+function showSongSearchInput(that, selector)
+{
+    $(that).hide();
+    $(selector).show();
+    $("input[name='search']").focus();
+}
+
+
 /**
  * On the Team page, show the role select element once the user was selcted
  * 
@@ -1625,7 +1688,9 @@ function userAvailableForPlan(that, plan_id) {
 }
 
 
-
+/*
+    Automatically close the info modals after a timeout
+*/
 var timeoutID;
 function delayedCloseFlashingModals(selector) {
     timeoutID = window.setTimeout( closeMyModal, 3000, selector);
@@ -1637,7 +1702,9 @@ function closeMyModal(selector) {
 }
 
 
-
+/*
+    On the ITEM DETAIL page, show or hide the trashed items ?
+*/
 function toggleTrashed() {
     $('.trashed').toggle();
     if ($('#toggleBtn').text() == 'Show') {
@@ -1647,7 +1714,9 @@ function toggleTrashed() {
     }
 }
 
-
+/*
+    Cause UI elements (e.g. buttons) to flash in order to get attention....
+*/
 function blink(selector){
     $(selector).show();
     $(selector).animate({opacity:0}, 150, "linear", function(){
@@ -1658,6 +1727,25 @@ function blink(selector){
         $(this).delay(500);
     });
 }
+
+
+
+
+
+
+
+
+
+
+
+
+/** ***************************************************
+ *
+ *    Activities when HTML Document is fully loaded
+ *
+ ** ***************************************************
+ */
+
 
 
 $(document).ready(function() {

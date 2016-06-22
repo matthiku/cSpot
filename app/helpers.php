@@ -141,6 +141,9 @@ function saveUploadedFile($request)
     $filesize  = $request->file('file')->getClientSize();
     $maxfilesize = $request->file('file')->getMaxFilesize();
 
+    // check if request contains an id for the file category, otherwise assign 'unset' (0)
+    $cat_id = $request->has('file_category_id') ? $request->get('file_category_id') : 0;
+
     // move the anonymous file to the central location using the random name
     $destinationPath = config('files.uploads.webpath');
     $request->file('file')->move($destinationPath, $token);
@@ -155,6 +158,7 @@ function saveUploadedFile($request)
         'token'    => $token,
         'filename' => $filename,
         'filesize' => $filesize,
+        'file_category_id' => $cat_id,
         'maxfilesize' => $maxfilesize,
     ]);
     return $file;  

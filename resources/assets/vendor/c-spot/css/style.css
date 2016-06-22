@@ -1,6 +1,3 @@
-.dropdown-menu {
-    min-width: 360px;
-}
 
 .action-col {
     max-width: 8.5em;
@@ -143,6 +140,12 @@ pre.bible-text-present {
 
 .red {
     color: red;
+}
+
+.card-block-files {
+    padding: 00.25rem;
+    line-height: 1.1;
+    font-weight: 900;
 }
 
 .card {
