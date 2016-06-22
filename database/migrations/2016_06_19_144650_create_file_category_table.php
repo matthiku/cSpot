@@ -18,8 +18,7 @@ class CreateFileCategoryTable extends Migration
             $table->timestamps();
         });
         // default value for existing images
-        DB::table('file_categories')->insert(['id' => 0, 'name'=>'unset']);
-        DB::table('file_categories')->insert(['id' => 1, 'name'=>'song']);
+        DB::insert('insert into file_categories (id, name) values (0, 'unset')', [1, 'song'])
     }
 
     /**
