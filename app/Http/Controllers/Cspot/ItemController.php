@@ -133,9 +133,9 @@ class ItemController extends Controller
             return redirect()->back();
         }
 
-        // check if the new item contains at least one ofthe following:
+        // check if the new item contains at least one of the following:
         //       Song, Bible reference or Comment
-        if ($request->comment=='' && $request->version=='' && !isset($request->song_id) ) {
+        if ($request->comment=='' && $request->version=='' && (!isset($request->song_id) || (isset($request->song_id)&&$request->song_id==0)) ) {
             flash('item was empty! Please add a comment, select a bible verse or add a song.');
             return redirect()->back();
         }        
@@ -146,11 +146,11 @@ class ItemController extends Controller
             $request->seq_no = ($beforeItem->seq_no) - 0.1;
         }
 
-        $xfi = isset($beforeItem->id) ? $beforeItem->id.' seqNo:'.$beforeItem->seq_no : 'missing!';
-        Log::info('STORE-Inserting new item into plan with seqNo '.$request->seq_no.' - befItemId? '.$xfi);
-
         // review numbering of current items for this plan and insert the new item
         $plan = insertItem( $request );
+
+        $xfi = isset($beforeItem->id)  ?  $beforeItem->id.' seqNo:'.$beforeItem->seq_no  :  'missing!';
+        Log::info("STORE - Inserting new item (id=$plan->newest_item_id) into plan with seq.No ".$request->seq_no.' - befItemId? '.$xfi);
 
         // see if user ticked the checkbox to add another item after this one
         if ($request->moreItems == "Y") {
@@ -175,9 +175,12 @@ class ItemController extends Controller
         // all went well and the user sees the result anyway, so no flash message needed:
         unFlash();
 
-        // back to full plan view, but first,
-        // (get plan id from the hidden input field in the form)
-        return \Redirect::route( 'cspot.plans.edit', $request->input('plan_id') );
+        // provide new item id to the view for highlighting
+        session()->put('newest_item_id', $plan->newest_item_id);
+
+        // back to full plan view
+        //      but first, get plan id from the hidden input field in the form
+        return \Redirect::route( 'cspot.plans.edit', [ 'id' => $request->input('plan_id') ]);
     }
 
 
@@ -378,10 +381,8 @@ class ItemController extends Controller
         $newestUsage = [];
         $usageCount = 0;
         if ($item->song) {
-            $plans = Plan::whereHas('items', function ($query) use ($item) {
-                $query->where('song_id', $item->song_id);
-            })->where('date', '<', $plan->date)->orderBy('date', 'desc');
-            $usageCount = count($plans->get());
+            $plans       = $item->song->plansUsingThisSong(); // get all plans using this song
+            $usageCount  = count($plans);
             $newestUsage = $plans->first();
         } 
 

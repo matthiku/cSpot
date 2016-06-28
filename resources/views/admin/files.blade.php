@@ -90,9 +90,9 @@
 
 	@endif
 
-<script type="text/javascript">
+<script>
     /* 
-        populate the modal popup when it's launched, with the data provided by launching button ....
+        populate the modal popup when it's launched, with the data provided by the launching button ....
     */
     $('#fileEditModal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget); // Button that triggered the modal

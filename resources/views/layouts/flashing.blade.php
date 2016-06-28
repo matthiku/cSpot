@@ -2,16 +2,16 @@
 <!-- # (C) 2016 Matthias Kuhs, Ireland -->
 
 <div id="show-spinner" class="modal" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
+  <div class="modal-dialog">
     <div class="modal-content center p-b-2 p-t-2">
-        <h2><i class="fa fa-spinner fa-4"> wait ...</i></h2>
+        <h2><i class="fa fa-spin fa-spinner fa-4"></i> wait ...</h2>
     </div>
   </div>
 </div>
 
 
 
-@if (session()->has('message'))
+@if (session()->has('message') && ! session('message')=='')
     <div id="myMsgModal" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -58,7 +58,7 @@
 
 
 
-@if (Session::has('status'))
+@if (Session::has('status') && ! Session::get('status')=='')
     <div id="myMsgModal" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">

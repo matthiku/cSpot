@@ -1,3 +1,10 @@
+/**
+ * c-SPOT specific style sheet
+ *
+ * see https://github.com/matthiku/cSpot
+ *
+ * (C) M.Kuhs Ireland, 2016
+ */
 
 .action-col {
     max-width: 8.5em;
@@ -44,7 +51,6 @@
     cursor: grab;
 }
 .drag-item>i:hover {
-    color: #ccc;
     color: black;
 }
 .drag-item:hover {
@@ -108,6 +114,9 @@ pre.bible-text-present {
     border-radius: 2px;
 }
 
+.bg-khaki {
+    background-color: khaki !important;
+}
 .bg-grey {
     background-color: #eee;
 }
@@ -174,6 +183,18 @@ pre.bible-text-present {
 .desc {
     height: 8em;
     overflow: hidden;
+}
+
+.c-inputs-stacked {
+    background-color: lavender;
+    border-radius: 5px;
+    padding: 0 4px;    
+}
+.c-inputs-stacked.even {
+    background-color: initial;
+}
+.c-inputs-stacked:hover {
+    background-color: lightblue;
 }
 
 .c-select {

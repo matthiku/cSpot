@@ -7,6 +7,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+use Carbon\Carbon;
+
 use DB;
 use Auth;
 
@@ -59,8 +61,8 @@ class Song extends Model
 
 
     /**
-     * Get collection of plans using this song
-     * (use this to count the number of times this song was used)
+     * Get collection of plans using this song - excluding future plans
+     *      (use this method to count the number of times this song was used!)
      */
     public function plansUsingThisSong() {
 
@@ -68,8 +70,9 @@ class Song extends Model
 
         // get list of plans using this song
         $plans = Plan::whereHas('items', function ($query) use ($id) {
-            $query->where('song_id', $id);
-        })->orderBy('id', 'desc')->get();
+            $query->where('song_id', $id) 
+                  ->where('date', '<', Carbon::now());
+        })->orderBy('date', 'desc')->get();
 
         return $plans;
     }

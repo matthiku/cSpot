@@ -74,10 +74,7 @@
 			?>
 
 			<tr id="tr-item-{{ $item->seq_no }}" data-item-id="{{ $item->id }}"
-				@if ($item->deleted_at)
-					class="trashed text-muted"
-				@endif
-				>
+					class="{{$item->deleted_at ? 'trashed text-muted' : ''}} {{ $newest_item_id==$item->id ? 'bg-khaki newest-item' : '' }}">
 
 
 				<td class="drag-item dont-print" scope="row" title="drag item into the new position">
@@ -215,47 +212,56 @@
 					</big>
 				</td>
 
+				<!-- _______________________________________________
 
-				@if( Auth::user()->ownsPlan($plan->id) )
-					<td class="center nowrap dont-print action-col">
+							ACTION buttons 
+					________________________________________________
+				-->
+				<td class="center nowrap dont-print action-col">
+					@if( Auth::user()->ownsPlan($plan->id) && $plan->date > \Carbon\Carbon::yesterday() )
 						@if ($item->deleted_at)
-							<a class="btn btn-secondary btn-sm" data-toggle="tooltip" 
-								data-placement="left" title="Restore this item" 
+							<a class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="left" title="Restore this item" 
 								href='{{ url('cspot/items/'.$item->id) }}/restore'>
 								<i class="fa fa-undo"></i></a>
 
-							<a class="btn btn-danger btn-sm" data-toggle="tooltip" 
-								title="Delete permanently!" 
+							<a class="text-danger" data-toggle="tooltip" title="Delete permanently!" 
 								href='{{ url('cspot/items/'.$item->id) }}/permDelete'>
-								<i class="fa fa-trash"></i></a>
+								&nbsp;<i class="fa fa-trash fa-lg"></i></a>
 						@else
-							<a class="btn btn-warning btn-sm hidden-md-down pull-xs-right" 
-								data-toggle="tooltip" title="Remove" 
-								href='{{ url('cspot/items/'.$item->id) }}/delete'><i class="fa fa-trash"></i></a>
+							<a class="text-warning hidden-md-down pull-xs-right" data-toggle="tooltip" title="Remove" 
+								href='{{ url('cspot/items/'.$item->id) }}/delete'>
+								&nbsp;<i class="fa fa-trash fa-lg"></i></a>
 
+							<!-- insert new item before the current -->
 							<a class="btn btn-secondary btn-sm" data-toggle="tooltip"
-								data-placement="left" title="Insert a new item before this one" 
+								data-placement="left" title="add song here" 
 								href='{{ url('cspot/plans/'.$plan->id) }}/items/create/before/{{$item->id}}'>
 								<i class="fa fa-reply"></i></a>
 
+							<!-- new MODAL POPUP to add a song -->
+							<button type="button" class="btn btn-secondary btn-sm text-info" data-toggle="modal" data-target="#searchSongModal"
+								data-plan-id="{{$plan->id}}" data-item-id="{{$item->id}}" data-seq-no="{{$item->seq_no}}" 
+								href='#' title="search for song to insert before this item">
+								<i class="fa fa-plus"></i><i class="fa fa-music"></i>
+							</button>
+
 							@if ($item->song_id)
-			 					<a class="hidden-sm-down btn btn-primary-outline btn-sm hidden-md-down" 
-			 						data-toggle="tooltip" title="Edit Song" 
+			 					<a class="hidden-sm-down" data-toggle="tooltip" title="Edit Song" 
 									href='{{ url('cspot/songs/'.$item->song->id) }}/edit/'>
-									<i class="fa fa-music"></i></a>
+									&nbsp;<i class="fa fa-music fa-lg"></i>&nbsp;</a>
 							@else
-			 					<a class="hidden-sm-down btn btn-primary-outline btn-sm hidden-md-down" 
-			 						data-toggle="tooltip" title="Edit Item" 
+			 					<a class="hidden-sm-down" data-toggle="tooltip" title="Edit Item" 
 									href='{{ url('cspot/plans/'.$plan->id) }}/items/{{$item->id}}/edit/'>
-									<i class="fa fa-pencil"></i></a>
+									&nbsp;<i class="fa fa-pencil fa-lg"></i>&nbsp;</a>
 							@endif
 
-							<a class="btn btn-secondary btn-sm" data-toggle="tooltip" 
-								data-placement="left" title="Start presentation from here" 
-								href='{{ url('cspot/items/'.$item->id) }}/present'><i class="fa fa-tv"></i></a>
 						@endif
-					</td>
-				@endif
+					@endif
+					<!-- 'start presentation' button visible for all -->
+					<a class=" hidden-xs-down" data-toggle="tooltip" data-placement="left" title="Start presentation from here" 
+						href='{{ url('cspot/items/'.$item->id) }}/present'>
+						&nbsp;<i class="fa fa-tv fa-lg"></i>&nbsp;</a>
+				</td>
 
 
 			</tr>
@@ -271,7 +277,7 @@
 @if( Auth::user()->ownsPlan($plan->id) )
 
 	@if( $trashedItemsCount )
-		<div class="pull-xs-right">
+		<div class="pull-xs-right m-l-2">
 			<i class="fa fa-trash"></i>&nbsp;contains&nbsp;<big>{{ $trashedItemsCount }}</big>&nbsp;item{{$trashedItemsCount>1 ? 's' : ''}}: &nbsp;
 			<i class="fa fa-list-ul"></i>&nbsp;<a href="#" id="toggleBtn" onclick="toggleTrashed()">Show</a> &nbsp;
 			@if( Auth::user()->ownsPlan($plan->id) )
@@ -296,11 +302,12 @@
 
 <script src="https://www.blueletterbible.org/assets/scripts/blbToolTip/BLB_ScriptTagger-min.js" type="text/javascript"></script>
 <script type="text/javascript">
-BLB.Tagger.Translation = 'ESV';
-BLB.Tagger.HyperLinks = 'all'; // 'all', 'none', 'hover'
-BLB.Tagger.HideTanslationAbbrev = false;
-BLB.Tagger.TargetNewWindow = true;
-BLB.Tagger.Style = 'par'; // 'line' or 'par'
-BLB.Tagger.NoSearchTagNames = ''; // HTML element list
-BLB.Tagger.NoSearchClassNames = 'noTag doNotTag'; // CSS class list
+	BLB.Tagger.Translation = 'ESV';
+	BLB.Tagger.HyperLinks = 'all'; // 'all', 'none', 'hover'
+	BLB.Tagger.HideTanslationAbbrev = false;
+	BLB.Tagger.TargetNewWindow = true;
+	BLB.Tagger.Style = 'par'; // 'line' or 'par'
+	BLB.Tagger.NoSearchTagNames = ''; // HTML element list
+	BLB.Tagger.NoSearchClassNames = 'noTag doNotTag'; // CSS class list
 </script>
+

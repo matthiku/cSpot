@@ -21,6 +21,7 @@ use App\Mailers\AppMailer;
 
 use Carbon\Carbon;
 use Auth;
+use Log;
 
 
 class PlanController extends Controller
@@ -203,6 +204,8 @@ class PlanController extends Controller
                     'plan'         => $plan, 
                     'types'        => $types, 
                     'users'        => $users, 
+                    'mp_song_list' => MPsongList(),
+                    'newest_item_id'  => 0,
                     'trashedItemsCount' => 0, 
                 )
             );
@@ -317,6 +320,8 @@ class PlanController extends Controller
                 'plan'         => $plan, 
                 'types'        => $types, 
                 'users'        => $users, 
+                'mp_song_list' => MPsongList(),
+                'newest_item_id'  => 0,
                 'trashedItemsCount' => 0, 
             )
         );
@@ -325,16 +330,19 @@ class PlanController extends Controller
 
 
 
+
     
 
     /**
-     * Show the form for editing the specified resource.
+     * PLAN DETAILS form
      *
      * @param  int  $id
+     * @param  int  $new_item_id    indicates a newly inserted item 
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
     {
+
         // find a single resource by ID
         $plan = Plan::with([
                 'items' => function ($query) { $query->withTrashed()->orderBy('seq_no'); }])
@@ -347,6 +355,13 @@ class PlanController extends Controller
             $users = User::orderBy('first_name')->get();
             // get list of trashed items (if any)
             $trashedItemsCount = Item::onlyTrashed()->where('plan_id', $id)->count();
+
+            // check if a new item was just now inserted (used for highlighing in the view)
+            $newest_item_id = 0;
+            if (session()->has('newest_item_id')) {
+                $newest_item_id = session()->get('newest_item_id');
+                session()->forget('newest_item_id');
+            }
             
             return view( 
                 $this->view_one, 
@@ -354,6 +369,8 @@ class PlanController extends Controller
                     'plan'         => $plan, 
                     'types'        => $types, 
                     'users'        => $users, 
+                    'mp_song_list' => MPsongList(),
+                    'newest_item_id'  => $newest_item_id,
                     'trashedItemsCount' => $trashedItemsCount, 
                 ) 
             );
@@ -362,6 +379,8 @@ class PlanController extends Controller
         flashError('Plan with id "' . $id . '" not found');
         return \Redirect::route($this->view_idx);
     }
+
+
 
     /**
      * Update the specified resource in storage.

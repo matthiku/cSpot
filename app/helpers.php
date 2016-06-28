@@ -79,10 +79,10 @@ function findAdmins( $field='all' )
 
 
 
-/**
- *  -------------
- *  F I L E S
- *  -------------
+/** __________________________________________________
+ *  
+ *                      F I L E S
+ *  __________________________________________________
  */
 
 
@@ -240,16 +240,16 @@ function createThumbsForAll()
 
 
 
-/**
- *  -------------
- *  S O N G S
- *  -------------
+/** __________________________________________________
+ *  
+ *                  S O N G S
+ *  __________________________________________________
  */
 
 
 
 /**
- * Search for songs
+ * Search for songs; return a maximum of 10
  *
  * @param  string $search
  * @return collection $songs
@@ -265,13 +265,23 @@ function songSearch( $search )
              take(10)->get();
 }
 
-
-
-
 /**
- *  -------------
- *  I T E M S
- *  -------------
+ * Create array of songs with a book reference for easy selection
+ */
+function MPsongList()
+{
+    // TODO: 
+    //      add new field containing only the numeric value of the book_ref field
+    
+    return Song::where('book_ref', '<>', '')->orderBy('book_ref')->get(['id','title','book_ref']);
+}
+
+
+
+/** __________________________________________________
+ *  
+ *                  I T E M S
+ *  __________________________________________________
  */
 
 
@@ -335,8 +345,7 @@ function getItemTitle($item, $direction='next')
  *    the list of sequence numbers of the existing items for a plan
  *    and that all current sequence numbers are in 1.0 steps
  *
- * @param object $items
- * @param number $new_seq_no
+ * @param object $request
  */
 function insertItem( $request )
 {
@@ -349,7 +358,7 @@ function insertItem( $request )
     // get all the items for this plan
     $items = $plan->items()->orderBy('seq_no')->get();
 
-    Log::info('INSERTITEM-newSeqNo old:'.$new_seq_no);
+    Log::info('INSERTITEM - newSeqNo old: '.$new_seq_no);
 
     // numbering the items, starting with 1.0
     $counter = 1.0;
@@ -384,6 +393,7 @@ function insertItem( $request )
     // saving the new Item via the relationship to the Plan
     $item = $plan->items()->save( $newItem );
     $plan->new_seq_no = $new_seq_no;
+    $plan->newest_item_id = $item->id;
 
 
     // handle file uplaods
@@ -399,7 +409,7 @@ function insertItem( $request )
         }
     } 
 
-    Log::info('INSERTITEM-newSeqNo new:'.$new_seq_no);
+    Log::info('INSERTITEM - newSeqNo new: '.$new_seq_no);
 
     if( isset($newItem->song_id) ) {
         $msg = $newItem->song->title;
@@ -614,10 +624,10 @@ function getBibleTexts($refString)
 
 
 
-/**
- *  -------------
- *  P L A N S
- *  -------------
+/** __________________________________________________
+ *  
+ *                  P L A N S
+ *  __________________________________________________
  */
 
 
@@ -749,10 +759,10 @@ function checkIfLeaderOrTeacherWasChanged($request, $plan)
 
 
 
-/**
- *  -----------------
- *  M E S S A G E S
- *  -----------------
+/** __________________________________________________
+ *  
+ *              M E S S A G E S
+ *  __________________________________________________
  */
 
 

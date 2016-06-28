@@ -166,8 +166,8 @@ class SongController extends Controller
     public function edit(Request $request, $id)
     {
         // find a single resource by ID
-        $output = Song::find($id);
-        if ($output) {
+        $song = Song::find($id);
+        if ($song) {
             // get the Pagination
             if ($request->has('currentPage')) {
                 $currentPage = $request->currentPage;
@@ -185,10 +185,10 @@ class SongController extends Controller
             $licensesEnum = $l->getLicenseEnum();
 
             return view( $this->view_one, array(
-                'song'         => $output, 
+                'song'         => $song, 
                 'licensesEnum'   => $licensesEnum,
                 'currentPage'      => $currentPage,
-                'plansUsingThisSong' => $output->plansUsingThisSong(),
+                'plansUsingThisSong' => $song->plansUsingThisSong(),
             ));
         }
         //
@@ -277,6 +277,39 @@ class SongController extends Controller
             $file->delete();
             // return to sender
             return response()->json(['status' => 200, 'data' => $file->token.' deleted.']);
+        }
+        return response()->json(['status' => 402, 'data' => 'Not found'], 402);
+    }
+
+
+
+    /**
+     * Search in the Song Database
+     *
+     * - - RESTful API request - -
+     *
+     *
+     */
+    public function searchSong(Request $request)
+    {
+        $result = false;
+        if (isset($request->song_id) && $request->song_id>0) {
+            $found = Song::find($request->song_id);
+            $found->plans = $found->plansUsingThisSong();
+            $result[0] = $found;
+        }
+        elseif (isset($request->search)) {
+            // search
+            $result = songSearch('%'.$request->search.'%');
+            // get usage statistics
+            foreach ($result as $song) {
+                # get list of plans
+                $song->plans = $song->plansUsingThisSong();
+            }
+        }
+        if ($result) {
+            // return to sender
+            return response()->json(['status' => 200, 'data' => json_encode($result)]);
         }
         return response()->json(['status' => 402, 'data' => 'Not found'], 402);
     }

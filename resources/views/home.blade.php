@@ -23,7 +23,7 @@
                     </h3>
                     for
                     <small class="pull-xs-right">CCLI # {{ (env('CHURCH_CCLI')) ? env('CHURCH_CCLI') : '?' }}</small>
-                    <a href="{{ env('CHURCH_URL') }}">
+                    <a href="{{ env('CHURCH_URL') }}" target="new">
                         <h4>
                             <img src="{{ url($logoPath.env('CHURCH_LOGO_FILENAME')) }}" height="30">
                             {{ env('CHURCH_NAME') }}

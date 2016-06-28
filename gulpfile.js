@@ -27,6 +27,7 @@ var path = {
     'jquery'        : bower_path + '/jquery',
     'tether'        : bower_path + '/tether',
     'jquery_ui'     : bower_path + '/jquery-ui',
+    'moment'        : bower_path + '/moment',
     'c_spot'        : bower_path + '/c-spot',
 };
 
@@ -60,6 +61,7 @@ elixir(function(mix) {
         path.jquery         + '/dist/jquery.js',
         path.jquery_ui      + '/jquery-ui.js',
         path.bootstrap      + '/dist/js/bootstrap.js',
+        path.moment         + '/moment.js',
         path.c_spot         + '/js/helpers.js',
     ], 'public/js/c-spot.js', './');
 

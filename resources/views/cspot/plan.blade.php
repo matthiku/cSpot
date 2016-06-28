@@ -159,11 +159,7 @@
     </div>
 
 
-    <div class="plan-details row center" 
-        @if (isset($plan))
-            style="display: none"
-        @endif
-    >
+    <div class="plan-details row center"{!! isset($plan) ? " style='display: none'" : '' !!}>
 
 
         @if (Auth::user()->isEditor())
@@ -317,7 +313,8 @@
         @if (Auth::user()->ownsPlan($plan->id) )
             <a href="{{ url('cspot/songs?plan_id='.$plan->id) }}"  onclick="showSpinner()"
                 title="Search for a song via the full song listing" 
-                class="btn btn-sm btn-info pull-xs-right">Search and add song</a>
+                class="btn btn-sm btn-info pull-xs-right">
+                    <i class="fa fa-plus"></i><i class="fa fa-music"></i>&nbsp; - Search and add song</a>
         @endif
 
     @else
@@ -417,6 +414,60 @@
             blink('.form-submit');
             $(that).parent().addClass('has-warning');
         }
-    </script>
+    </script>   
+
+
+
+
+    <!-- Modal to search for new song -->
+    <form id="searchSongForm" action="{{url('cspot/items')}}" method="POST">
+        <div class="modal fade" id="searchSongModal" tabindex="-1" role="dialog" aria-labelledby="searchSongModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title" id="searchSongModalLabel">Search Song</h4>
+                    </div>
+
+                    <div class="modal-body">
+                        <label id="search-action-label" class="center-block m-b-1">Search for song number, title, lyrics or parts thereof:</label>
+                        <input type="text"   id="search-string" class="search-input center-block m-b-1">
+
+                        <label id="MPselectLabel" for="MPselect">or select Mission Praise number</label>
+                        <select class="form-control" id="MPselect">
+                            <option value="0">select....</option>
+                            @foreach ($mp_song_list as $song)
+                                <option value="{{ $song->id }}">{{ $song->book_ref }} {{ $song->title }}</option>
+                            @endforeach
+                        </select>
+
+                        <input type="hidden" id="seq-no">
+                        <input type="hidden" id="plan_id"       name="plan_id" data-search-url="{{ url('cspot/songs/search') }}/">
+                        <input type="hidden" id="beforeItem_id" name="beforeItem_id">
+                        <input type="hidden" id="song_id"       name="song_id">
+                        {{ csrf_field() }}
+
+                        <div id="search-result"></div>
+                        <div id="searching" style="display: none;">
+                            <i class="fa fa-spinner fa-pulse fa-lg fa-fw"></i>
+                            <span>leafing through the pages ...</span>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="resetSearchForSongs()">Reset</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <a href="#" class="btn btn-primary" id="searchForSongsButton" onclick="searchForSongs()">Search</a>
+                        <button type="submit" class="btn btn-primary" id="searchForSongsSubmit" onclick="searchForSongs()" style="display: none;">Select</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </form>
+
     
 @stop

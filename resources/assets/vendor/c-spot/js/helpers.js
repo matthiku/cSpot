@@ -1324,10 +1324,131 @@ function showScriptureText(version,book,chapter,fromVerse,toVerse)
 
 /** ***************************************************
  *
- *          VARIOUS  UI  HELPERS
+ *                    SPA UTILITIES
  *
  ** ***************************************************
  */
+
+
+/* 
+    Reset the song search form
+*/
+function resetSearchForSongs() 
+{
+    $('#searching').hide();    
+    $('#search-result').html('');
+    $('#searchForSongsButton').show();
+    $('#searchForSongsSubmit').hide();
+    $('#MPselect').show();
+    $('#MPselect').val(0);
+    $('#MPselectLabel').show();
+    $('#search-string').show();
+    $('#search-string').val('');
+    $('#search-string').focus();
+    $('#search-action-label').text('Search for song number, title, lyrics or parts thereof:')
+}
+
+/* 
+    Called from the Modal popup on the PLAN OVERVIEW page, 
+    this function searches for songs, presents a list and/or 
+    song history information, all via AJAX
+*/
+function searchForSongs()
+{    
+    // are we still searching or has the user already selected a song?
+    var modus = 'selecting';
+    if ( $('#searchForSongsButton').is(':visible') ) {
+        var search        = $('#search-string').val();
+        var mp_song_id    = $('#MPselect').val();
+        if (search=='' && mp_song_id==0) {
+            return;         // search string was empty...
+        }
+        if (mp_song_id>0) {
+            search = '(song id: '+mp_song_id+')';    // MP song selection is preferred
+        }
+        modus = 'searching';
+        $('#search-string').hide();     // hide search input field
+        $('#searching').show();         // show spinner
+        $('#MPselect').hide();
+        $('#MPselectLabel').hide();
+    }
+    // alternate the form action buttons
+
+    if (modus=='searching') {
+        $('#searchForSongsButton').toggle();
+        $('#searchForSongsSubmit').toggle();
+        // get the action URL
+        var actionURL = $('#plan_id').data('search-url');
+
+        // update via AJAX 
+        $.post( actionURL, { search: search, song_id: mp_song_id })
+            .done(function(data) {
+                var result = JSON.parse(data.data);
+                if (result.length==0) {
+                    $('#search-action-label').text('Nothing found for "'+search+'", please try again:');
+                    $('#searchForSongsButton').toggle();
+                    $('#searchForSongsSubmit').toggle();
+                    $('#search-string').toggle();
+                    $('#searching').hide();  
+                    $('#MPselect').show();  
+                    $('#search-string').focus();
+                    return;
+                }
+                $('#search-action-label').text('Found these song(s) for "' + search + '":');
+                $('#searching').hide();
+
+                var html = '';  
+                // create the HTML to present the search result to the user for selection
+                for (var i = 0; i < result.length; i++) {
+                    if (result[i].id==0)
+                        continue;                       // ignore song with id # 0
+                    var count = result[i].plans.length; // number of plans that already used this song
+                    var lastPlanDate = false;           //date of last time this song was used ("2016-05-08 00:00:00")
+                    if (result[i].plans.length) {
+                        lastPlanDate = result[i].plans[0].date; 
+                    }
+                    html += '<div class="c-inputs-stacked'+ (i%2==0 ? ' even' : '') +'">';
+                    html +=     '<label class="c-input c-radio" title="';
+                    html +=         result[i].lyrics + '"><input type="radio" name="searchRadios" value="';
+                    html +=         result[i].id +'"><span class="c-indicator"></span>';
+                    html +=         (result[i].book_ref ? '('+result[i].book_ref+') ' : ' ')  + result[i].title + ' ';
+                    html +=         '<small>'+result[i].title_2+'<br><span class="pull-xs-right">';
+                    html +=             '<b>Last used:</b> <span class="label label-default">'
+                    html +=                 ( lastPlanDate ? moment(lastPlanDate, 'YYYY-MM-DD HH:mm:ss').fromNow() : 'never used');
+                    html +=             '</span> Total: <b'+ (count>25 ? ' class="red">' : '>')+ + count +'</b> times</span></small>';
+                    html +=     '</label></div>' ;
+                }
+                $('#search-result').html(html);
+            })
+            .fail(function(data) {
+                $('#searching').hide();
+                console.log(data);
+                $('#search-result').text("Search failed! Please notify admin! " + JSON.stringify(data));
+            });
+    } 
+    else {
+        // which song was selected?
+        var song_id = $('input[name=searchRadios]:checked', '#searchSongForm').val();
+
+        // did user select a song? It should always be a string, even '0'....
+        if ( ! song_id  || song_id == '0' )
+            return; // no
+
+        showSpinner()
+        $('#searchForSongsButton').toggle();
+        $('#searchForSongsSubmit').toggle();
+        
+        // write it into the form
+        $('#song_id').val(song_id);
+
+        // restore the original search form
+        $('#searchSongModal').modal('hide');        // close the modal
+        $('#search-result').html('');   // remove the search results
+        $('#search-string').val('');    // reset the search string
+        $('#searching').hide();         // hide the spinner
+    }
+
+}
 
 
 
@@ -1366,6 +1487,24 @@ function updateFileInformation()
     // close the modal and update the data on the screen
     $('#fileEditModal').modal('hide');
 }
+
+
+
+
+
+
+
+
+
+
+
+/** ***************************************************
+ *
+ *          VARIOUS  UI  HELPERS
+ *
+ ** ***************************************************
+ */
+
 
 
 /* 
@@ -1446,6 +1585,7 @@ function reloadListOrderBy(field)
  */
 function submitDate(date) 
 {
+    $('#show-spinner').modal({keyboard: false});
     window.location.href = __app_url + '/cspot/plans/by_date/' + date.value;
 }
 
@@ -1596,7 +1736,7 @@ function showSongSearchInput(that, selector)
 
 
 /**
- * On the Team page, show the role select element once the user was selcted
+ * On the Team page, show the role select element once the user was selected
  * 
  * param 'who' refers to the element from which this method was called
  */
@@ -1751,8 +1891,23 @@ function blink(selector){
 $(document).ready(function() {
 
 
+    /**
+     * Show WAIT spinner for all navbar anchor items
+     */
+    //$('a.dropdown-item, a.nav-link, input:submit, input.form-submit').click( function() {
+        //if (this.classList.contains('dropdown-toggle'))
+    $('a, input:submit, input.form-submit').click( function() {
+        // do not use for anchors with their own click handling
+        if ( $(this).attr('href')   == '#' 
+          || $(this).attr('target') != undefined    // or for links opening in new tabs
+          || $(this).attr('onclick')!= undefined )
+            return;
+        $('#show-spinner').modal({keyboard: false});
+    })
+
+
     /*
-        formatting of pagination buttons
+        formatting of pagination buttons (links)
     */
     if ($('.pagination').length>0) {
         $(function() {
@@ -1838,6 +1993,50 @@ $(document).ready(function() {
         
     }
 
+
+
+    /**
+     * On list pages, when a new item was inserted and highlighted,
+     *      slowly fade out the highlighting
+     */
+    if ($('.newest-item').length) {
+        $('.newest-item').removeClass('bg-khaki', 19999);
+    }
+
+                
+    /**
+     * Put focus on textarea when user opens the "Search For Song" modal dialog
+     * and populate the modal popup when it's launched, with the data provided by the launching button ....
+     */
+    $('#searchSongForm').on('shown.bs.modal', function (event) {
+        resetSearchForSongs();
+        var button = $(event.relatedTarget); // Button that triggered the modal
+        var plan_id  = button.data('plan-id');    // Extract info from data-* attributes
+        var item_id  = button.data('item-id');    
+        var seq_no   = button.data('seq-no' );    
+        // Update the modal's content
+        var modal = $(this);
+        $('#searchSongModalLabel').text('Insert Song before item No '+seq_no);
+        modal.find('#plan_id').val(plan_id);
+        modal.find('#beforeItem_id').val(item_id);
+        modal.find('#seq-no').val(seq_no);
+        // reset the form
+        $('#search-string').focus(); // make sure the search string input field has focus
+
+
+        // prevent the Song Search Form from being submitted when 
+        //      the ENTER key is used; instead, perform the actual search
+        $("#searchSongForm").submit(function(event){
+            if (! $('#searchForSongsButton').is(':visible') ||  $('#song_id').val()=='')
+                event.preventDefault();
+        });
+        // intervene cancel button - reset form and close the popup
+        $("#searchSongForm").on('cancel', function(event){
+            event.preventDefault();
+            resetSearchForSongs();
+            $('#searchSongModal').modal('hide');
+        });
+    })
 
     /**
      * Put focus on textarea when user opens the feedback modal dialog

@@ -155,8 +155,12 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
         SONGS
     */
         
+    Route::get('songs/search',            'Cspot\SongController@searchSong');
     // basic songs processing
     Route::resource('songs',               'Cspot\SongController');
+        
+    // song search
+    Route::post('songs/search',            'Cspot\SongController@searchSong');
 
     // specific delete route using 'get' method
     Route::get('songs/{songs}/delete',     'Cspot\SongController@destroy');
