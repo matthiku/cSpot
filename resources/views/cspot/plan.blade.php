@@ -414,6 +414,31 @@
             blink('.form-submit');
             $(that).parent().addClass('has-warning');
         }
+
+        var haystackMP = JSON.parse('{!! json_encode($mp_song_list, JSON_HEX_APOS | JSON_HEX_QUOT) !!}');
+        // {"id":10,"title":"A Safe Stronghold Our God Is Still","book_ref":"MP2","title_2":"","number":"2"}
+        function showHint(needle) {
+            if (needle.length == 0) {
+                $('#txtHint').html('');
+                return;
+            }
+            var count=0;
+            var found = 'no match';
+            needle = needle.toLowerCase();
+            for (var i=0; i<haystackMP.length; i++) {
+                if ( haystackMP[i].title.toLowerCase().indexOf(needle)>=0 
+                  || haystackMP[i].title_2.toLowerCase().indexOf(needle)>=0 
+                  || haystackMP[i].book_ref.toLowerCase().indexOf(needle)>=0 ) {
+                    if (count==0) found='';
+                    found+='<div class="radio"><label><input type="radio" onclick="$(\'#searchForSongsButton\').click();" name="haystack" id="needle-';
+                    found+=haystackMP[i].id + '" value="'+ haystackMP[i].id;
+                    found+='">' + haystackMP[i].book_ref + ' ' + haystackMP[i].title + '</label></div>';
+                    count++;
+                }
+                if (count>5) break;
+            };
+            $('#txtHint').html(found);
+        }
     </script>   
 
 
@@ -434,15 +459,22 @@
 
                     <div class="modal-body">
                         <label id="search-action-label" class="center-block m-b-1">Search for song number, title, lyrics or parts thereof:</label>
-                        <input type="text"   id="search-string" class="search-input center-block m-b-1">
+                        <input type="text"   id="search-string" class="search-input search-form-item center-block m-b-1">
 
-                        <label id="MPselectLabel" for="MPselect">or select Mission Praise number</label>
-                        <select class="form-control" id="MPselect">
+                        <label class="search-form-item" for="MPselect">...or select Mission Praise number</label>
+                        <select class="form-control m-b-1 search-form-item" id="MPselect" onchange="$('#searchForSongsButton').click();">
                             <option value="0">select....</option>
-                            @foreach ($mp_song_list as $song)
-                                <option value="{{ $song->id }}">{{ $song->book_ref }} {{ $song->title }}</option>
+                            {{-- only add MP songs --}}
+                            @foreach ($mp_song_list as $song)                                
+                                @if ( substr($song->book_ref,0,2)=='MP')
+                                    <option value="{{ $song->id }}">{{ $song->number }} - {{ $song->title }}</option>
+                                @endif
                             @endforeach
                         </select>
+
+                        <label for="haystack" class="search-form-item">..or search Song title or number</label>
+                        <input type="text" class="form-control search-form-item" id="haystack" onkeyup="showHint(this.value)">
+                        <div class="search-form-item" id="txtHint"></div>
 
                         <input type="hidden" id="seq-no">
                         <input type="hidden" id="plan_id"       name="plan_id" data-search-url="{{ url('cspot/songs/search') }}/">
@@ -458,7 +490,7 @@
                     </div>
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" onclick="resetSearchForSongs()">Reset</button>
+                        <button type="button" class="btn btn-secondary" onclick="resetSearchForSongs()">Restart</button>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                         <a href="#" class="btn btn-primary" id="searchForSongsButton" onclick="searchForSongs()">Search</a>
                         <button type="submit" class="btn btn-primary" id="searchForSongsSubmit" onclick="searchForSongs()" style="display: none;">Select</button>

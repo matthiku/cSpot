@@ -37352,13 +37352,13 @@ function resetSearchForSongs()
     $('#search-result').html('');
     $('#searchForSongsButton').show();
     $('#searchForSongsSubmit').hide();
-    $('#MPselect').show();
     $('#MPselect').val(0);
-    $('#MPselectLabel').show();
-    $('#search-string').show();
+    $('.search-form-item').show();
     $('#search-string').val('');
     $('#search-string').focus();
-    $('#search-action-label').text('Search for song number, title, lyrics or parts thereof:')
+    $('#search-action-label').text('Search for song number, title, lyrics or parts thereof:');
+    $('#txtHint').html('');
+    $('#haystack').val('');
 }
 
 /* 
@@ -37371,19 +37371,22 @@ function searchForSongs()
     // are we still searching or has the user already selected a song?
     var modus = 'selecting';
     if ( $('#searchForSongsButton').is(':visible') ) {
-        var search        = $('#search-string').val();
-        var mp_song_id    = $('#MPselect').val();
-        if (search=='' && mp_song_id==0) {
+        var search       = $('#search-string').val();
+        var mp_song_id   = $('#MPselect').val();
+        var haystack_id  = $('input[name=haystack]:checked', '#searchSongForm').val();
+        if (search=='' && mp_song_id==0  && haystack_id==undefined) {
             return;         // search string was empty...
         }
         if (mp_song_id>0) {
             search = '(song id: '+mp_song_id+')';    // MP song selection is preferred
         }
+        if (haystack_id) {
+            search = '(song id: '+mp_song_id+')'; 
+            mp_song_id = haystack_id;
+        }
         modus = 'searching';
-        $('#search-string').hide();     // hide search input field
+        $('.search-form-item').hide();  // hide search input fields and labels
         $('#searching').show();         // show spinner
-        $('#MPselect').hide();
-        $('#MPselectLabel').hide();
     }
     // alternate the form action buttons
 
@@ -37396,18 +37399,19 @@ function searchForSongs()
         // update via AJAX 
         $.post( actionURL, { search: search, song_id: mp_song_id })
             .done(function(data) {
+                if (typeof(data)!='object')
+                    data.data = "[]"; // simulate empty result
                 var result = JSON.parse(data.data);
                 if (result.length==0) {
                     $('#search-action-label').text('Nothing found for "'+search+'", please try again:');
                     $('#searchForSongsButton').toggle();
                     $('#searchForSongsSubmit').toggle();
-                    $('#search-string').toggle();
                     $('#searching').hide();  
-                    $('#MPselect').show();  
+                    $('.search-form-item').show();  
                     $('#search-string').focus();
                     return;
                 }
-                $('#search-action-label').text('Found these song(s) for "' + search + '":');
+                $('#search-action-label').text('Select one:');
                 $('#searching').hide();
 
                 var html = '';  
@@ -37420,7 +37424,7 @@ function searchForSongs()
                     if (result[i].plans.length) {
                         lastPlanDate = result[i].plans[0].date; 
                     }
-                    html += '<div class="c-inputs-stacked'+ (i%2==0 ? ' even' : '') +'">';
+                    html += '<div onclick="$(\'#searchForSongsSubmit\').click()" class="c-inputs-stacked'+ (i%2==0 ? ' even' : '') +'">';
                     html +=     '<label class="c-input c-radio" title="';
                     html +=         result[i].lyrics + '"><input type="radio" name="searchRadios" value="';
                     html +=         result[i].id +'"><span class="c-indicator"></span>';
@@ -38071,6 +38075,9 @@ $(document).ready(function() {
     $("input, textarea, input:radio, input:file").click(function() {
         // change background color of those fields
         $(this).css("background-color", "#D6D6FF");
+
+        // not when a popup is open...
+        if ($('#searchSongModal').is(':visible')) return;
 
         // do this only once ...
         if ($('.submit-button').is(':visible')) return;

@@ -267,13 +267,25 @@ function songSearch( $search )
 
 /**
  * Create array of songs with a book reference for easy selection
+ *
+ * @return JSON array 
  */
 function MPsongList()
 {
     // TODO: 
-    //      add new field containing only the numeric value of the book_ref field
-    
-    return Song::where('book_ref', '<>', '')->orderBy('book_ref')->get(['id','title','book_ref']);
+    //   1.) add new field containing only the numeric value of the book_ref field
+    //   2.) inject the song stats into each song or do this with an extra AJAX request
+    // removed: where('book_ref', 'like', 'MP%') as we do the filtering in the view
+
+    $mp_songs = Song::get(['id','title','book_ref', 'title_2']);
+    foreach ($mp_songs as $song) {
+        # convert book reference to real numbers (e.g. "MP123" to "123")
+        $song->number = filter_var($song->book_ref, FILTER_SANITIZE_NUMBER_INT);
+    }
+    // now order by the new field and remove one hierarchy in the object levels
+    $mp_songs = $mp_songs->sortBy('number')->flatten(1);
+
+    return $mp_songs;
 }
 
 
