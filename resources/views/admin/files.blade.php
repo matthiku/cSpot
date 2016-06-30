@@ -41,7 +41,7 @@
             var cat = parseInt($(that).val());
             if (typeof cat == 'number') {
                 showSpinner();
-                location.href="http://c-spot.app/admin/file_categories/"+cat;
+                location.href="{{url('admin/file_categories')}}/"+cat;
             }
         }
     </script>

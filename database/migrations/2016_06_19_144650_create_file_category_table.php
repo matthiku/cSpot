@@ -18,8 +18,11 @@ class CreateFileCategoryTable extends Migration
             $table->timestamps();
         });
         // default value for existing images
-        DB::insert('insert into file_categories (id, name) values (?, ?)', [1, 'song']);
-        DB::insert('insert into file_categories (id, name) values (?, ?)', [0, 'unset']);
+        DB::insert('insert into file_categories (id, name) values (?, ?)', [1, 'songs']);
+        DB::insert('insert into file_categories (id, name) values (?, ?)', [2, 'unset']);
+        // for some reason, the above statement doesn't allow us to create a new record with the id of '0'!
+        //  so we just execute an update
+        DB::table('file_categories')->where('id',2)->update(['id'=>0]);
     }
 
     /**
