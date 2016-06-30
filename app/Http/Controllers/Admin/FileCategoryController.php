@@ -145,9 +145,9 @@ class FileCategoryController extends Controller
         FileCategory::where('id', $id)
                 ->update($request->except(['_method','_token']));
 
-        $message = 'File Category with id "' . $id . '" updated';
-        return \Redirect::route($this->view_idx)
-                        ->with(['status' => $message]);
+        // $message = 'File Category with id "' . $id . '" updated'; 
+        return \Redirect::route($this->view_idx);
+                        // ->with(['status' => $message]);superfluos!
     }
 
     /**

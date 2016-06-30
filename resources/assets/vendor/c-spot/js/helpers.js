@@ -1612,6 +1612,26 @@ function deleteFile(id)
     });
 }
 
+/*  
+    unlink file from its item
+*/
+function unlinkFile(item_id, file_id)
+{
+    $.ajax({
+        url:    '/cspot/items/'+item_id+'/unlink/'+file_id+'', 
+        method: 'PUT',
+    }).done(function(data) {
+        $('#file-'+file_id).html(data.data);
+    }).fail(function(data) {
+        if (data.responseJSON) {
+            alert("image unlinking failed! Error: "+data.responseJSON.data+'.  Code:'+data.responseJSON.status);
+        }
+        else {
+            alert("image unlinking failed! "+JSON.stringify(data));
+        }
+    });
+}
+
 
 /**
     Open modal popup to show linked YT video

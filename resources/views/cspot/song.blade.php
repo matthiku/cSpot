@@ -244,7 +244,11 @@ when the song is presented.">
             <br/>
             {!! Form::textarea('lyrics'); !!}
             <button id="lyrics-copy-btn" class="pull-xs-right"><i class="fa fa-copy"></i>&nbsp;copy lyrics</button>
-            <!-- Add ability to copy textarea content to the clipboard -->
+
+            {{-- reset size of textarea --}}
+            <small><a href="#" id="reset-lyrics-textarea" onclick="$('#lyrics').attr('rows',6);$(this).hide()" style="display:none">resize textbox</a></small>
+
+            {{-- Add ability to copy textarea content to the clipboard --}}
             <script>
                 var copyTextareaBtn = document.querySelector('#lyrics-copy-btn');
                 copyTextareaBtn.addEventListener('click', function(event) {
@@ -256,6 +260,11 @@ when the song is presented.">
                   } catch (err) {
                   }
                   event.preventDefault();
+                });
+                $("#lyrics").click(function() {
+                    $("#lyrics").attr('rows', $("#lyrics").val().split('\n').length);
+                    $('#reset-lyrics-textarea').show();
+                    $('#reset-lyrics-textarea').position({my: 'right bottom', at: 'right top', of: '#lyrics'});
                 });
             </script>
             <br>
@@ -276,6 +285,9 @@ like "(repeat chorus!)"'>
             <button id="chords-copy-btn" class="pull-xs-right"><i class="fa fa-copy"></i>&nbsp;copy chords</button>
             <br>
 
+            {{-- reset size of textarea --}}
+            <small><a href="#" id="reset-chords-textarea" onclick="$('#chords').attr('rows',6);$(this).hide()" style="display:none">resize textbox</a></small>
+
             <!-- Add ability to copy textarea content to the clipboard -->
             <script>
                 var copyTextareaBtn = document.querySelector('#chords-copy-btn');
@@ -288,6 +300,11 @@ like "(repeat chorus!)"'>
                   } catch (err) {
                   }
                   event.preventDefault();
+                });
+                $("#chords").click(function() {
+                    $("#chords").attr('rows', $("#chords").val().split('\n').length);
+                    $('#reset-chords-textarea').show();
+                    $('#reset-chords-textarea').position({my: 'right bottom', at: 'right top', of: '#chords'});
                 });
             </script>
 

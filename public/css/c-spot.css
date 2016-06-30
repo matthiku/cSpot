@@ -9217,24 +9217,6 @@ pre.text-present {
     font-size: xx-large;
     font-family: "Times New Roman", Georgia, Serif;
 }
-pre.bible-text-present {
-    font-size: 60px;
-}
-.bible-text-present>.p>.v {
-    color: white;
-    font-size: xx-large;
-}
-.bible-text-present>.p>.s1, .bible-text-present>.p>.nd {
-    color: white;
-    font-style: italic;
-    font-size: 60px];
-}
-.bible-text-present>.p, .bible-text-present>.p>.wj, .bible-text-present>.q1, .bible-text-present>.q2 {
-    font-size: 60px;
-}
-.bible-text-present>.p>.v::after {
-    content: " ";
-}
 
 .underscore {
     padding-bottom: 2px;
@@ -9243,6 +9225,10 @@ pre.bible-text-present {
 
 .table-normal {
     width: initial;
+}
+
+.table-striped tbody tr:nth-of-type(even) {
+    background-color: #e2e8ea;
 }
 
 .move-button {

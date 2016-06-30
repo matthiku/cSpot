@@ -20,15 +20,33 @@
 		</a>
 	@endif
 
-    <h2>
-    	{{ $heading }}
-    	<small class="text-muted">
-    		<a tabindex="0" href="#"
-    			data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="focus"
-    			data-content="files....">
-    			<i class="fa fa-question-circle"></i></a>
-		</small>
-	</h2>
+    <h2 class="hidden-xs-down pull-xs-left">{{ $heading }}</h2>
+    <h5 class="hidden-sm-up pull-xs-left">{{ $heading }}</h5>
+
+	<span class="text-muted pull-xs-left m-r-2">
+		<a tabindex="0" href="#"
+			data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="focus"
+			data-content="files....">
+			<i class="fa fa-question-circle"></i></a>
+    </span>
+	
+    <select class="c-select pull-xs-left" id="fdf" onchange="selectCategory(this)">
+        <option selected>Select File Category</option>
+        @foreach ($file_categories as $cat)
+            <option value="{{ $cat->id}}">{{ $cat->name }}</option>
+        @endforeach
+    </select>
+    <script>
+        function selectCategory(that) {
+            var cat = parseInt($(that).val());
+            if (typeof cat == 'number') {
+                showSpinner();
+                location.href="http://c-spot.app/admin/file_categories/"+cat;
+            }
+        }
+    </script>
+
+    <div class="clearfix"></div>
 
 
 	@if (count($files))

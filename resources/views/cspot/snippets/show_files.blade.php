@@ -16,7 +16,10 @@
     <figcaption class="figure-caption">
     	{{ $file->filename }}
         <br />
-        <a class="small" href="#" onclick="deleteFile({{ $file->id }})"><i class="fa fa-trash red"></i> Delete this file</a>
+        @if (isset($item->id))
+            <a class="small m-r-1" href="#" onclick="unlinkFile({{ $item->id }},{{ $file->id }})"><i class="fa fa-unlink" title="Unlink this file from this item"></i> Unlink</a>
+        @endif
+        <a class="small" href="#" onclick="deleteFile({{ $file->id }})"><i class="fa fa-trash red" title="Delete this file from the database"></i> Delete</a>
         <div class="pull-xs-right">Size: {{ humanFileSize($file->filesize) }}</div>
     </figcaption>
 

@@ -7,7 +7,7 @@
 
 <div class="full-width">
     {!! Form::label('comment', 'Comments or notes', ['id'=>'comment-label']); !!}
-    <p onclick="blink('.save-buttons')">
+    <p>
         @if( Auth::user()->ownsPlan($plan->id) )
             {!! Form::text('comment'); !!}
         @elseif (isset($item))
@@ -19,4 +19,10 @@
             </span>
         @endif
     </p>
+    {{-- private notes only for leader --}}
+    @if (Auth::user()->id == $plan->leader_id)
+        {!! Form::label('priv_comment', 'Private notes', ['id'=>'comment-label']); !!}
+        (only visible to you!)
+        <p>{!! Form::textarea( 'priv_comment'); !!}</p>
+    @endif
 </div> 

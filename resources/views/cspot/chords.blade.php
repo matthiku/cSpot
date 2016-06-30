@@ -40,7 +40,7 @@
             @foreach ($item->files as $file)
                 <figure class="figure">
                     <img class="figure-img img-fluid img-rounded full-width" 
-                           src="{{ url(config('files.uploads.webpath')).'/'.$file->token }}">
+                           src="{{ url(config('files.uploads.webpath')).'/thumb-'.$file->token }}">
                 </figure>
             @endforeach
         @endif

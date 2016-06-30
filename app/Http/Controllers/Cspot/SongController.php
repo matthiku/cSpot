@@ -278,7 +278,7 @@ class SongController extends Controller
             // return to sender
             return response()->json(['status' => 200, 'data' => $file->token.' deleted.']);
         }
-        return response()->json(['status' => 402, 'data' => 'Not found'], 402);
+        return response()->json(['status' => 404, 'data' => 'Not found'], 404);
     }
 
 
@@ -311,7 +311,7 @@ class SongController extends Controller
             // return to sender
             return response()->json(['status' => 200, 'data' => json_encode($result)]);
         }
-        return response()->json(['status' => 402, 'data' => 'Not found'], 402);
+        return response()->json(['status' => 404, 'data' => 'Not found'], 404);
     }
 
 

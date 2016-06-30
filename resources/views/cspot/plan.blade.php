@@ -125,7 +125,7 @@
 
             @if ( Auth::user()->isEditor() && isset($plan) && $plan->date > \Carbon\Carbon::yesterday() ) 
                 <div class="pull-xs-right plan-details small">
-                    &nbsp; (<a href="#" onclick="$('.plan-details').toggle()">Edit Plan Details</a>)
+                    &nbsp; <a href="#" onclick="$('.plan-details').toggle()">edit plan details</a>
                 </div>
                 <div class="pull-xs-right plan-details small" style="display: none;">
                     (last changed by {{ $plan->changer }} {{ Carbon::now()->diffForHumans( $plan->updated_at, true ) }} ago)
@@ -415,35 +415,37 @@
             $(that).parent().addClass('has-warning');
         }
 
-        var haystackMP = JSON.parse('{!! json_encode($mp_song_list, JSON_HEX_APOS | JSON_HEX_QUOT) !!}');
-        // {"id":10,"title":"A Safe Stronghold Our God Is Still","book_ref":"MP2","title_2":"","number":"2"}
-        function showHint(needle) {
-            if (needle.length == 0) {
-                $('#txtHint').html('');
-                return;
-            }
-            var count=0;
-            var found = 'no match';
-            needle = needle.toLowerCase();
-            for (var i=0; i<haystackMP.length; i++) {
-                if ( haystackMP[i].title.toLowerCase().indexOf(needle)>=0 
-                  || haystackMP[i].title_2.toLowerCase().indexOf(needle)>=0 
-                  || haystackMP[i].book_ref.toLowerCase().indexOf(needle)>=0 ) {
-                    if (count==0) found='';
-                    found+='<div class="radio"><label><input type="radio" onclick="$(\'#searchForSongsButton\').click();" name="haystack" id="needle-';
-                    found+=haystackMP[i].id + '" value="'+ haystackMP[i].id;
-                    found+='">' + haystackMP[i].book_ref + ' ' + haystackMP[i].title + '</label></div>';
-                    count++;
+        @if (isset($plan))
+            var haystackMP = JSON.parse('{!! json_encode($mp_song_list, JSON_HEX_APOS | JSON_HEX_QUOT) !!}');
+            // {"id":10,"title":"A Safe Stronghold Our God Is Still","book_ref":"MP2","title_2":"","number":"2"}
+            function showHint(needle) {
+                if (needle.length == 0) {
+                    $('#txtHint').html('');
+                    return;
                 }
-                if (count>5) break;
-            };
-            $('#txtHint').html(found);
+                var count=0;
+                var found = 'no match';
+                needle = needle.toLowerCase();
+                for (var i=0; i<haystackMP.length; i++) {
+                    if ( haystackMP[i].title.toLowerCase().indexOf(needle)>=0 
+                      || haystackMP[i].title_2.toLowerCase().indexOf(needle)>=0 
+                      || haystackMP[i].book_ref.toLowerCase().indexOf(needle)>=0 ) {
+                        if (count==0) found='';
+                        found+='<div class="radio"><label><input type="radio" onclick="$(\'#searchForSongsButton\').click();" name="haystack" id="needle-';
+                        found+=haystackMP[i].id + '" value="'+ haystackMP[i].id;
+                        found+='">' + haystackMP[i].book_ref + ' ' + haystackMP[i].title + '</label></div>';
+                        count++;
+                    }
+                    if (count>5) break;
+                };
+                $('#txtHint').html(found);
+            @endif
         }
     </script>   
 
 
 
-
+ @if (isset($plan))
     <!-- Modal to search for new song -->
     <form id="searchSongForm" action="{{url('cspot/items')}}" method="POST">
         <div class="modal fade" id="searchSongModal" tabindex="-1" role="dialog" aria-labelledby="searchSongModalLabel" aria-hidden="true">
@@ -458,7 +460,7 @@
                     </div>
 
                     <div class="modal-body">
-                        <label id="search-action-label" class="center-block m-b-1">Search for song number, title, lyrics or parts thereof:</label>
+                        <label id="search-action-label" class="center-block m-b-1">Fulltext search: (lyrics, title etc)</label>
                         <input type="text"   id="search-string" class="search-input search-form-item center-block m-b-1">
 
                         <label class="search-form-item" for="MPselect">...or select Mission Praise number</label>
@@ -500,6 +502,6 @@
             </div>
         </div>
     </form>
-
+@endif
     
 @stop

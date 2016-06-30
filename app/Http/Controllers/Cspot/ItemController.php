@@ -216,6 +216,9 @@ class ItemController extends Controller
             ]);
             $newItem = $plan->items()->save($item);
 
+            // provide new item id to the view for highlighting
+            session()->put('newest_item_id', $newItem->id);
+
             return \Redirect::route( 'cspot.plans.edit', $plan_id );
         }
 
@@ -509,6 +512,9 @@ class ItemController extends Controller
             'song_id' => $song_id,
         ]);
 
+        // provide new item id to the view for highlighting
+        session()->put('newest_item_id', $item->id);
+
         // send confirmation to view
         flash('New item No '.$item->seq_no.' inserted with song '.$item->song->title);
 
@@ -700,10 +706,18 @@ class ItemController extends Controller
             $heading = 'Select a file for the Plan Item';
         }
 
+        // get list of file categories
+        $file_categories = FileCategory::get();
+
         // for pagination, always append the original query string
         $files = $files->appends($querystringArray);
 
-        return view('admin.files', ['files'=>$files, 'item_id'=>$item_id, 'heading'=>$heading]);
+        return view('admin.files', [
+            'files'           => $files, 
+            'item_id'         => $item_id, 
+            'heading'         => $heading,
+            'file_categories' => $file_categories
+        ]);
     }
 
 
@@ -739,6 +753,33 @@ class ItemController extends Controller
         flash('Error! Item with ID "' . $id . '" not found');
         return \Redirect::back();
     }
+
+    /**
+     * Unlink a file attachment
+     *
+     * - - RESTful API request - -
+     *
+     * @param int $id
+     *
+     */
+    public function unlinkFile($item_id, $file_id)
+    {
+        // find the single resource
+        $item = Item::find($item_id);
+        if ($item) {
+            $file = File::find($file_id);
+            if ($file->item_id==$item_id) {
+                $file->item_id = 0;
+                $file->save();
+                correctFileSequence($item_id);
+                // return to sender
+                return response()->json(['status' => 200, 'data' => 'File unlinked.']);
+            }
+            return response()->json(['status' => 406, 'data' => 'File with id '.$file_id.' not found being linked to item ('.$file->item_id.')!'], 406);
+        }
+        return response()->json(['status' => 404, 'data' => 'Item with id '.$item_id.' not found!'], 404);
+    }
+
 
     /**
      * Change seq_no of a file 

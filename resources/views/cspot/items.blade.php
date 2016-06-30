@@ -3,16 +3,16 @@
 <!-- # (C) 2016 Matthias Kuhs, Ireland -->
 
 <div class="table-responsive">
-	<table class="table table-striped table-bordered table-hover
+	<table class="table table-striped table-hover
 		{{ count($plan->items)>5 ? 'table-sm' : ''}} {{ count($plan->items)>10 ? 'table-xs' : ''}}">
-		<thead class="thead-default">
+		<thead class="thead-default hidden-xs-up">
 			<tr>
 				<th class="center dont-print" data-placement="right"
 						data-toggle="tooltip" title="Drag and Drop items to move them to a different position in the plan!"
 					><span class="hidden-sm-down">Order</span>
 					</th>
 
-				<th class="hidden-xs-down center always-print"
+				<th class="hidden-md-down center always-print"
 						data-toggle="tooltip" title="Hymn book reference. MP='Mission Praise'"
 					>Book#</th>
 
@@ -28,19 +28,15 @@
 						data-toggle="tooltip" title="Song Title and/or activity description."
 					>Title/Comment</th>
 
-				<th class="hidden-xl-down center"
-						data-toggle="tooltip" title="Instructions for musicians etc."
-					>Instructions</th>
-
-				<th class="hidden-lg-down center"
+				<th class="hidden-sm-down center dont-print"
 						data-toggle="tooltip" title="Lyrics with chords for guitars"
 					><small><i class="fa fa-file-code-o"></i></small></th>
 
-				<th class="hidden-lg-down center"
+				<th class="hidden-sm-down center dont-print"
 						data-toggle="tooltip" title="Sheet music attached to the song?"
 					><small><i class="fa fa-music"></i></small></th>
 
-				<th class="hidden-lg-down center"
+				<th class="hidden-sm-down center dont-print"
 						data-toggle="tooltip" title="Are there files (like announcements) attached to this item?"
 					><small><i class="fa fa-file-picture-o"></i></small></th>
 
@@ -49,7 +45,7 @@
 					>Play</th>
 
 				@if( Auth::user()->ownsPlan($plan->id) )
-					<th class="center dont-print action-col">Action</th>
+					<th class="center dont-print">Action</th>
 				@endif
 			</tr>
 		</thead>
@@ -83,11 +79,11 @@
 				</td>
 
 
-				<td {{$onclick}} {{$tooltip}} class="hidden-xs-down center link always-print">
+				<td {{$onclick}} {{$tooltip}} class="hidden-md-down center link always-print">
 					{{ ($item->song_id) ? $item->song->book_ref : '' }}</td>
 
 
-				<!-- show seperate column for song title and comment on large devices -->
+				{{-- show seperate column for song title and comment on large devices --}}
 				<td {{$onclick}} class="hidden-lg-down link" @if ($item->song_id)
 						title="{{ substr($item->song->lyrics,0,500) }}" data-toggle="tooltip" 
 						@if ($item->seq_no<10)
@@ -114,10 +110,14 @@
 				</td>
 
 
-				<!-- show combined song-title and comment column on small devices -->
+				{{-- show combined song-title and comment column on small devices --}}
 				<td {{$onclick}} {{$tooltip}} class="hidden-xl-up link">
 					@if ($item->song_id)
-						<i class="fa fa-music"></i>&nbsp;{{ $item->song->title }}
+						<i class="fa fa-music"></i>
+						<span class="hidden-lg-up">
+							{{ $item->song->book_ref ? $item->song->book_ref.' ' : '' }}
+						</span>
+						<span class="font-italic">{{ $item->song->title }}</span>
 						<small class="bg-info">
 					@endif
 					@if (preg_match('/[(][A-Z]{3}[)]/', $item->comment) )
@@ -132,19 +132,16 @@
 
 
 
-				<td {{$onclick}} {{$tooltip}} class="hidden-xl-down center link">
-					{{ $item->key }}</td>
-
-
-				<td class="hidden-lg-down center">
+				<td class="hidden-sm-down center" title="Lyrics with chords for guitars">
 					@if ($item->song_id)
 						@if ( strlen($item->song->chords)>20 )
-							<i class="fa fa-check"></i>
+							<a href="{{ url('cspot/items').'/'.$item->id }}/chords">
+								<i class="fa fa-file-code-o"></i></a>
 						@endif
 					@endif
 				</td>
 
-				<td class="hidden-lg-down center" 
+				<td class="hidden-sm-down center"  title="Sheet music attached to the song?"
 					@if ( $item->song_id && count($item->song->files)>0 )
 						title="{{ $item->song->files[0]->filename }}" data-toggle="tooltip" data-placement="left"
 						data-template='
@@ -159,16 +156,18 @@
 					@endif
 					>
 					@if ($item->song_id)
+						<a href="{{ url('cspot/items').'/'.$item->id }}/sheetmusic">
 						@if ( count($item->song->files)>1 )
 							{{ count($item->song->files) }}
 						@endif
 						@if ( count($item->song->files)==1 )
-							<i class="fa fa-check"></i>
+							<i class="fa fa-music"></i>
 						@endif
+						</a>
 					@endif
 				</td>
 
-				<td {{$onclick}} class="hidden-lg-down center link"
+				<td {{$onclick}} class="hidden-sm-down center link"
 					@if ( count($item->files)>0 )
 						title="{{ $item->files[0]->filename }}" data-toggle="tooltip" data-placement="left"
 						data-template='
@@ -186,7 +185,7 @@
 						{{ count($item->files) }}
 					@endif
 					@if ( count($item->files)==1 )
-						<i class="fa fa-check"></i>
+						<i class="fa fa-file-picture-o"></i>
 					@endif
 				</td>
 
@@ -212,12 +211,16 @@
 					</big>
 				</td>
 
-				<!-- _______________________________________________
+				{{--  _______________________________________________
 
 							ACTION buttons 
 					________________________________________________
-				-->
-				<td class="center nowrap dont-print action-col">
+				 --}}
+				<td class="text-xs-right text-nowrap dont-print">
+					{{-- 'start presentation' button visible for all --}}
+					<a class=" hidden-xs-down" data-toggle="tooltip" data-placement="left" title="Start presentation from here" 
+						href='{{ url('cspot/items/'.$item->id) }}/present'>
+						&nbsp;<i class="fa fa-tv fa-lg"></i>&nbsp;</a>
 					@if( Auth::user()->ownsPlan($plan->id) && $plan->date > \Carbon\Carbon::yesterday() )
 						@if ($item->deleted_at)
 							<a class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="left" title="Restore this item" 
@@ -228,17 +231,13 @@
 								href='{{ url('cspot/items/'.$item->id) }}/permDelete'>
 								&nbsp;<i class="fa fa-trash fa-lg"></i></a>
 						@else
-							<a class="text-warning hidden-md-down pull-xs-right" data-toggle="tooltip" title="Remove" 
-								href='{{ url('cspot/items/'.$item->id) }}/delete'>
-								&nbsp;<i class="fa fa-trash fa-lg"></i></a>
-
-							<!-- insert new item before the current -->
+							{{-- insert new item before the current --}}
 							<a class="btn btn-secondary btn-sm" data-toggle="tooltip"
 								data-placement="left" title="add song here" 
 								href='{{ url('cspot/plans/'.$plan->id) }}/items/create/before/{{$item->id}}'>
 								<i class="fa fa-reply"></i></a>
 
-							<!-- new MODAL POPUP to add a song -->
+							{{-- new MODAL POPUP to add a song --}}
 							<button type="button" class="btn btn-secondary btn-sm text-info" data-toggle="modal" data-target="#searchSongModal"
 								data-plan-id="{{$plan->id}}" data-item-id="{{$item->id}}" data-seq-no="{{$item->seq_no}}" 
 								href='#' title="search for song to insert before this item">
@@ -255,12 +254,12 @@
 									&nbsp;<i class="fa fa-pencil fa-lg"></i>&nbsp;</a>
 							@endif
 
+							<a class="text-warning hidden-md-down" data-toggle="tooltip" title="Remove" 
+								href='{{ url('cspot/items/'.$item->id) }}/delete'>
+								&nbsp;<i class="fa fa-trash fa-lg"></i></a>
+
 						@endif
 					@endif
-					<!-- 'start presentation' button visible for all -->
-					<a class=" hidden-xs-down" data-toggle="tooltip" data-placement="left" title="Start presentation from here" 
-						href='{{ url('cspot/items/'.$item->id) }}/present'>
-						&nbsp;<i class="fa fa-tv fa-lg"></i>&nbsp;</a>
 				</td>
 
 

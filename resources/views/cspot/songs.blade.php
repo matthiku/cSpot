@@ -24,10 +24,13 @@
 	</span>
 	@endif
 
-    <h2 class="hidden-xs-down pull-xs-left">{{ $heading }}
-    </h2>
-    	@include('cspot.snippets.fullTextSearch')
-
+    <h2 class="hidden-xs-down pull-xs-left">{{ $heading }}</h2>
+    
+    @include('cspot.snippets.fullTextSearch')
+	@if ($plan_id>0)
+		{{-- page was called from a plan in order to search for a song, so we open the serach box immediately --}}
+		<script>$('#fulltext-search').click();</script>
+	@endif
     
 	<center>
 		Page {{ $songs->currentPage() }} of {{ $songs->lastPage() }}<br>
