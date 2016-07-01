@@ -37630,7 +37630,7 @@ function submitDate(date)
 
 
 /*
-    allow Admins to delete an attached file (image)    
+    allow Admins/Authors/Plan owners to delete an attached file (image)    
 */
 function deleteFile(id)
 {
@@ -37643,7 +37643,12 @@ function deleteFile(id)
     }).done(function(data) {
         $('#file-'+id).html(data.data);
     }).fail(function(data) {
-        alert("image deletion failed! "+data);
+        if (data.responseJSON) {
+            alert("image deletion failed! Error: "+data.responseJSON.data+'.  Code:'+data.responseJSON.status);
+        }
+        else {
+            alert("image deletion failed! "+JSON.stringify(data));
+        }
     });
 }
 

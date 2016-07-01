@@ -13,14 +13,30 @@
             @endif
     </a>
 
+
     <figcaption class="figure-caption">
     	{{ $file->filename }}
         <br />
-        @if (isset($item->id))
-            <a class="small m-r-1" href="#" onclick="unlinkFile({{ $item->id }},{{ $file->id }})"><i class="fa fa-unlink" title="Unlink this file from this item"></i> Unlink</a>
+
+        @if (isset($item->id))        
+            {{-- check if user is leader of the corresponding plan or author/admin --}}
+            @if ( $item->plan->leader_id==Auth::user()->id || Auth::user()->isAuthor() )
+                <a class="small m-r-1" href="#" onclick="unlinkFile({{ $item->id }},{{ $file->id }})">
+                    <i class="fa fa-unlink" title="Unlink this file from this item"></i>
+                    Unlink</a>
+            @endif
         @endif
-        <a class="small" href="#" onclick="deleteFile({{ $file->id }})"><i class="fa fa-trash red" title="Delete this file from the database"></i> Delete</a>
+
+        {{-- check if user is leader of the corresponding plan or author/admin --}}
+        @if ( ! isset($item->id) || Auth::user()->isAuthor()  ||  (isset($item->id) && $item->plan->leader_id==Auth::user()->id) )        
+            <a class="small" href="#" onclick="deleteFile({{ $file->id }})">
+                <i class="fa fa-trash red" title="Delete this file from the database"></i>
+                Delete</a>
+        @endif
+
         <div class="pull-xs-right">Size: {{ humanFileSize($file->filesize) }}</div>
+
     </figcaption>
+
 
 </figure>

@@ -12,15 +12,11 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 
-use App\Models\Song;
-use App\Models\Plan;
 use App\Models\Item;
 use App\Models\File;
 use App\Models\FileCategory;
 
-use DB;
 use Auth;
-use Log;
 
 
 
@@ -34,7 +30,7 @@ class FileController extends Controller
      * FILES/IMAGES HANDLING
      *
      */
-    public function indexFiles(Request $request)
+    public function index(Request $request)
     {
         $heading = 'List All Files and Images';
 
@@ -49,6 +45,10 @@ class FileController extends Controller
                 // get all files of this category
                 $files = $file_category->files()->paginate(18)->appends($querystringArray);
             }
+        }
+        if ($request->has('newest')) {
+            $heading = 'Recently added files';
+            $files = File::orderBy('id', 'desc')->paginate(18);
         }
         // default: show all files
         if (! isset($files)) {
@@ -80,7 +80,7 @@ class FileController extends Controller
     /**
      * Update information about an existing file
      */
-    public function updateFile(Request $request)
+    public function update(Request $request)
     {
         if (! $request->has('id'))
             return;
@@ -100,7 +100,7 @@ class FileController extends Controller
     /**
      * Add existing file to a plan item
      */
-    public function addFile($item_id, $file_id)
+    public function add($item_id, $file_id)
     {
         $item = Item::find($item_id);
         if ($item) {
@@ -123,7 +123,7 @@ class FileController extends Controller
      * @param int $id
      *
      */
-    public function deleteFile($id)
+    public function delete($id)
     {
         // find the single resource
         $file = File::find($id);
@@ -159,7 +159,7 @@ class FileController extends Controller
      * @param int $id
      *
      */
-    public function unlinkFile($item_id, $file_id)
+    public function unlink($item_id, $file_id)
     {
         // find the single resource
         $item = Item::find($item_id);
@@ -183,7 +183,7 @@ class FileController extends Controller
     /**
      * Change seq_no of a file 
      */
-    public function moveFile($item_id, $file_id, $direction)
+    public function move($item_id, $file_id, $direction)
     {
         $item = Item::find($item_id);
         if ($item) {

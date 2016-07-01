@@ -281,6 +281,9 @@ class ItemController extends Controller
                 ]);
         }
 
+        // provide new item id to the view for highlighting
+        session()->put('newest_item_id', $newItem->id);
+
         return \Redirect::route( 'cspot.plans.edit', $plan_id );
     }
 
@@ -605,8 +608,9 @@ class ItemController extends Controller
         // get item and restore it
         $item = restoreItem($id);
         if ($item) {
+            // mark restored item as 'newest item'
+            session()->put(['newest_item_id' => $id]);
             // back to full plan view 
-            flash('Item restored.');
             return \Redirect::back();
         }
         flash('Error! Item with ID "' . $id . '" not found! (F:restore)');
@@ -627,10 +631,16 @@ class ItemController extends Controller
             return redirect()->back();
         }
 
-        $item->forceDelete();
+        // check if user is leader of the corresponding plan or author/admin
+        if ( $item->plan->leader_id==Auth::user()->id || Auth::user()->isAuthor() ) {
 
-        flash('Trashed item with id '.$id.' deleted permanently');
-        return \Redirect::back();
+            $item->forceDelete();
+
+            flash('Trashed item with id '.$id.' deleted permanently');
+            return \Redirect::back();
+        }
+        flash('Sorry, only plan leader or Author can delete items');
+        return redirect()->back();
     }
 
 
@@ -640,6 +650,12 @@ class ItemController extends Controller
      */
     public function deleteAllTrashed( $plan_id )
     {
+        $plan = Plan::find($plan_id);
+        // check if user is leader of the corresponding plan or author/admin
+        if ( ! $plan->leader_id==Auth::user()->id || ! Auth::user()->isAuthor() ) {
+            flash('Sorry, only plan leader or Author can delete items');
+            return redirect()->back();
+        }
         // this item should be restored
         $items = Item::onlyTrashed()->where('plan_id', $plan_id);
         if (!$items) return false;

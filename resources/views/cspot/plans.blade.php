@@ -80,7 +80,7 @@
 
 	        @foreach( $plans as $plan )
 
-				<tr><?php $editPlansHtml ="onclick=\"location.href='" . url('cspot/plans/'.$plan->id) . "/edit'";
+				<tr><?php $editPlansHtml ="onclick=\"showSpinner();location.href='" . url('cspot/plans/'.$plan->id) . "/edit'";
 						  $editPlansHtml.='" data-toggle="tooltip" title="Click a plan to view/edit it"'; ?>
 
 					<td {!! $editPlansHtml !!} class="link hidden-md-down center" scope="row">{{ $plan->id }}</td>

@@ -227,9 +227,12 @@
 								href='{{ url('cspot/items/'.$item->id) }}/restore'>
 								<i class="fa fa-undo"></i></a>
 
-							<a class="text-danger" data-toggle="tooltip" title="Delete permanently!" 
-								href='{{ url('cspot/items/'.$item->id) }}/permDelete'>
-								&nbsp;<i class="fa fa-trash fa-lg"></i></a>
+        					{{-- check if user is leader of the corresponding plan or author/admin --}}
+							@if ( $item->plan->leader_id==Auth::user()->id || Auth::user()->isAuthor() )
+								<a class="text-danger" data-toggle="tooltip" title="Delete permanently!" 
+									href='{{ url('cspot/items/'.$item->id) }}/permDelete'>
+									&nbsp;<i class="fa fa-trash fa-lg"></i></a>
+							@endif
 						@else
 							{{-- insert new item before the current --}}
 							<a class="btn btn-secondary btn-sm" data-toggle="tooltip"
@@ -282,9 +285,12 @@
 			@if( Auth::user()->ownsPlan($plan->id) )
 				<a href="{{ url('cspot/plans/'.$plan->id.'/items/trashed/restore') }}" 
 					class="text-success nowrap"><i class="fa fa-undo"></i>&nbsp;Restore&nbsp;all</a> &nbsp;
-				<a href="{{ url('cspot/plans/'.$plan->id.'/items/trashed/delete') }}" 
-					class="text-danger nowrap"><i class="fa fa-trash"></i
-						>&nbsp;Delete&nbsp;{{ $trashedItemsCount>1 ? 'all&nbsp;'.$trashedItemsCount : 'trashed' }}&nbsp;permanently</a>
+				{{-- check if user is leader of the corresponding plan or author/admin --}}
+				@if ( $item->plan->leader_id==Auth::user()->id || Auth::user()->isAuthor() )
+					<a href="{{ url('cspot/plans/'.$plan->id.'/items/trashed/delete') }}" 
+						class="text-danger nowrap"><i class="fa fa-trash"></i
+							>&nbsp;Delete&nbsp;{{ $trashedItemsCount>1 ? 'all&nbsp;'.$trashedItemsCount : 'trashed' }}&nbsp;permanently</a>
+				@endif
 			@endif
 		</div>
 	@endif

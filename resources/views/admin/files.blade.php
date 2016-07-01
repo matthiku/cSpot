@@ -20,38 +20,43 @@
 		</a>
 	@endif
 
-    <h2 class="hidden-xs-down pull-xs-left">{{ $heading }}</h2>
-    <h5 class="hidden-sm-up pull-xs-left">{{ $heading }}</h5>
+    <h2 class="hidden-xs-down pull-xs-left m-r-2">{{ $heading }}</h2>
+    <h5 class="hidden-sm-up pull-xs-left m-r-2">{{ $heading }}</h5>
 
-	<span class="text-muted pull-xs-left m-r-2">
-		<a tabindex="0" href="#"
-			data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="focus"
-			data-content="files....">
-			<i class="fa fa-question-circle"></i></a>
-    </span>
 	
     <select class="c-select pull-xs-left" id="fdf" onchange="selectCategory(this)">
-        <option selected>Select File Category</option>
+        <option selected>Select Filter</option>
+        <option value="newest">Show Newest</option>
         @foreach ($file_categories as $cat)
-            <option value="{{ $cat->id}}">{{ $cat->name }}</option>
+            <option value="{{ $cat->id}}">Category: {{ ucfirst($cat->name) }}</option>
         @endforeach
+        <option value="*">No Filter</option>
     </select>
     <script>
         function selectCategory(that) {
-            var cat = parseInt($(that).val());
-            if (typeof cat == 'number') {
-                showSpinner();
-                // get current url and query string
-                var currUrl = parseURLstring(window.location.href);
+            showSpinner();
+            var newQueryStr = '?';
+            // get current url and query string
+            var currUrl = parseURLstring(window.location.href);
+            if (currUrl.search.length>1) {
                 var qStr = currUrl.search.split('?')[1].split('&');
-                var newQueryStr = '?';
-                // make sure new query string doesn't contain 'bycategory'
+                // make sure new query string potentially only contains 'item_id'
                 for (var i = 0; i < qStr.length; i++) {
-                    if (qStr[i].split('=')[0] != 'bycategory')
+                    var query = qStr[i].split('=');
+                    if (query[0] == 'item_id')
                         newQueryStr += qStr[i] + '&';
                 }
-                location.href = "{{url('cspot/files')}}" + newQueryStr + "bycategory="+cat;
             }
+            if ( $.isNumeric($(that).val()) ) {
+                location.href = "{{url('cspot/files')}}" + newQueryStr + "bycategory="+$(that).val();
+                return;
+            }
+            if ($(that).val()=='newest') {
+                location.href = "{{url('cspot/files')}}" + newQueryStr + "newest=yes";
+                return;
+            }
+            if (newQueryStr=='?') newQueryStr='';
+            location.href = "{{url('cspot/files')}}" + newQueryStr;
         }
     </script>
 
