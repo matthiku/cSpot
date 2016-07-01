@@ -41,7 +41,16 @@
             var cat = parseInt($(that).val());
             if (typeof cat == 'number') {
                 showSpinner();
-                location.href="{{url('admin/file_categories')}}/"+cat;
+                // get current url and query string
+                var currUrl = parseURLstring(window.location.href);
+                var qStr = currUrl.search.split('?')[1].split('&');
+                var newQueryStr = '?';
+                // make sure new query string doesn't contain 'bycategory'
+                for (var i = 0; i < qStr.length; i++) {
+                    if (qStr[i].split('=')[0] != 'bycategory')
+                        newQueryStr += qStr[i] + '&';
+                }
+                location.href = "{{url('cspot/files')}}" + newQueryStr + "bycategory="+cat;
             }
         }
     </script>

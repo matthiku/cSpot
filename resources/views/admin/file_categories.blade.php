@@ -62,7 +62,7 @@
 
 					<td class="nowrap center">
 							<a class="btn btn-secondary hidden-sm-down btn-sm" title="Show Files of this category" 
-								href='{{ url('admin/file_categories/'.$file_category->id) }}'>
+								href='{{ url('cspot/files').'?bycategory='.$file_category->id }}'>
 								<i class="fa fa-filter"></i></a>
 						 @if ( Auth::user()->isEditor() )
 							<a class="btn btn-primary-outline btn-sm hidden-xs-down" title="Edit" 

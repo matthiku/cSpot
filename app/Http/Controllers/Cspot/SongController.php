@@ -250,38 +250,6 @@ class SongController extends Controller
     }
 
 
-    /**
-     * Remove a file attachment
-     *
-     * - - RESTful API request - -
-     *
-     * @param int $id
-     *
-     */
-    public function deleteFile($id)
-    {
-        // find the single resource
-        $file = File::find($id);
-        if ($file) {
-            // check authentication
-            if (! Auth::user()->isAdmin() ) {
-                return response()->json(['status' => 401, 'data' => 'Not authorized'], 401);
-            }
-            // delete the physical file
-            $destinationPath = config('files.uploads.webpath');
-            unlink(public_path().'/'.$destinationPath.'/'.$file->token);
-            // also delete possible thumbnail files
-            deleteThumbs(public_path().'/'.$destinationPath, $file->token);
-            
-            // delete the database record
-            $file->delete();
-            // return to sender
-            return response()->json(['status' => 200, 'data' => $file->token.' deleted.']);
-        }
-        return response()->json(['status' => 404, 'data' => 'Not found'], 404);
-    }
-
-
 
     /**
      * Search in the Song Database

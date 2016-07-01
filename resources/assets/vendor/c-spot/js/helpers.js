@@ -1511,6 +1511,28 @@ function updateFileInformation()
 
 
 
+/*
+    parse an URL string
+
+    @param string url
+    @returns object
+
+    This DOM ojbect provides the following values:
+        url.protocol; //(http:)
+        url.hostname ; //(www.example.com)
+        url.pathname ; //(/some/path)
+        url.search ; // (?name=value)
+        url.hash; //(#anchor)
+
+*/
+function parseURLstring(urlstring)
+{
+    var url = document.createElement('a');
+    url.href = urlstring;
+    return url;
+}
+
+
 /* 
     List filtering: Reload page with alternate filtering
 */
@@ -1922,7 +1944,7 @@ $(document).ready(function() {
         //if (this.classList.contains('dropdown-toggle'))
     $('a, input:submit, input.form-submit').click( function() {
         // do not use for anchors with their own click handling
-        if ( $(this).attr('href')   == '#' 
+        if ( $(this).attr('href').substr(0,1) == '#' 
           || $(this).attr('target') != undefined    // or for links opening in new tabs
           || $(this).attr('onclick')!= undefined )
             return;

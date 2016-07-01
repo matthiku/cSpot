@@ -19,10 +19,10 @@
             </span>
         @endif
     </p>
-    {{-- private notes only for leader --}}
-    @if (Auth::user()->id == $plan->leader_id)
-        {!! Form::label('priv_comment', 'Private notes', ['id'=>'comment-label']); !!}
-        (only visible to you!)
-        <p>{!! Form::textarea( 'priv_comment'); !!}</p>
-    @endif
+
+    {{-- private notes only visible for user --}}
+    {{-- {!! Form::label('priv_notes', 'Private notes', ['id'=>'comment-label']); !!} --}}
+    {{-- (only visible to you!) --}}
+    {{-- <p>{!! Form::textarea( 'priv_notes'); !!}</p> --}}
+
 </div> 

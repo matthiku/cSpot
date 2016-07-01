@@ -142,25 +142,25 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
      * FILES
      */
     // list all current files
-    Route::get('files/',     ['as'=> 'cspot.files', 'uses'=>'Cspot\ItemController@indexFiles']);
+    Route::get('files/',     ['as'=> 'cspot.files', 'uses'=>'Cspot\FileController@indexFiles']);
     // updata file information
-    Route::post('files/{id}',                               'Cspot\ItemController@updateFile');
+    Route::post('files/{id}',                               'Cspot\FileController@updateFile');
     // add a file to a plan item
-    Route::get('items/{item_id}/addfile/{file_id}',         'Cspot\ItemController@addFile');    
+    Route::get('items/{item_id}/addfile/{file_id}',         'Cspot\FileController@addFile');    
     // change seq_no of a file
-    Route::get('items/{item_id}/movefile/{file_id}/{dir}',  'Cspot\ItemController@moveFile');    
+    Route::get('items/{item_id}/movefile/{file_id}/{dir}',  'Cspot\FileController@moveFile');    
     // unlink an attachment from an item
-    Route::put('items/{item_id}/unlink/{file_id}',          'Cspot\ItemController@unlinkFile');
+    Route::put('items/{item_id}/unlink/{file_id}',          'Cspot\FileController@unlinkFile');
 
     // delete an attachment to a song or an item
-    Route::delete('files/{id}/delete',     'Cspot\SongController@deleteFile');
+    Route::delete('files/{id}/delete',                      'Cspot\FileController@deleteFile');
 
 
     /*
         SONGS
     */
         
-    Route::get('songs/search',            'Cspot\SongController@searchSong');
+    Route::get('songs/search',             'Cspot\SongController@searchSong');
     // basic songs processing
     Route::resource('songs',               'Cspot\SongController');
         
