@@ -164,6 +164,9 @@
         <button class="navbar-toggler btn btn-info active" type="button" data-toggle="collapse" data-target="#lyricsNavbar">
             &hellip;
         </button>        
+        <button class="btn btn-secondary-outline" type="button" onclick="$('#main-content').toggle()">
+            Blank
+        </button>        
 
 
         <!-- 
@@ -278,7 +281,7 @@
                     </label>
                 </div>
             </form>
-            <form class="form-inline nav-item m-l-1 pull-xs-left label label-info">
+            <form class="form-inline nav-item m-l-1 pull-xs-left label label-info" style="display: none">
                 <div class="checkbox" style="line-height: 2" onchange="changeConfigShowVersCount()">
                     <label class="c-input" title="How many bible verses should be shown per slide?">
                         <select class="" id="configShowVersCount">

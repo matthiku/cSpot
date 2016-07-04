@@ -831,9 +831,11 @@ function navigateTo(where)
         // check if there is an empty slide/item (an item without lyrics, bibletext or images)
         var reg = /^[\s]+$/; // regex for a string containing only white space.
         var main  = $('#main-content').text();
+        // check if there are images 
+        var images = $('.slide-background-image');
         // if the slide contains anything but spaces, we were still presenting something
         // and we now show an empty (blank) slide
-        if (! reg.test(main)) {
+        if (! reg.test(main) || images) {
             $('#main-content').html('<div>.</div>');
             console.log('inserting empty slide...');
             return;
