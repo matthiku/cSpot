@@ -74,7 +74,7 @@
 
 
 				<td class="drag-item dont-print" scope="row" title="drag item into the new position">
-					<span class="hidden-sm-down pull-xs-right">{{ $item->seq_no }}</span>
+					<span class="hidden-sm-down pull-xs-right text-success">{{ $item->seq_no }}</span>
 					<i class="p-r-1 fa fa-bars">
 				</td>
 

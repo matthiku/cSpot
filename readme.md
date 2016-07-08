@@ -91,10 +91,15 @@ Out of the box, c-SPOT uses a mySQL database to save all the data. However, Lara
 3. In the root folder of the project, copy the file **.env.example** to **.env** and customize it for your environment. Mainly, configure your database name, db user name and db password for c-SPOT and enter the connectivity details for your mail server in order to be able to send confirmation emails to users.
 4. Create a new (empty) database on your mySQL server with the aforementioned parameters (db name, user name and password etc.).
 5. Run `php artisan migrate` to initialize your c-SPOT database.
+6. Modify the predefined list of user roles according to your needs
+7. Add more users and assign roles to them
 
 #### Optional Steps
 1. In order for the **social logins** to work, you need to register your own c-SPOT app with some 'service providers' like Google or Faceook and enter the relevant details also into your private .env file.
 2. Add your songs to the songs list
+3. Modify the list of pre-defined service plan types according to your needs
+4. Add 'default items' for each service plan type
+5. Start creating new plans and add items accordingly
 
 ### Future Enhancements (c-SPOT 2.0)
 

@@ -13,6 +13,7 @@ use Cmgmyr\Messenger\Models\Thread;
 
 use Illuminate\Support\ServiceProvider;
 
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -53,8 +54,11 @@ class AppServiceProvider extends ServiceProvider
         }
 
         // provide a list (array) of user-id's with Admin rights to all views (for page feedback messages)
-        view()->share('administrators', findAdmins('id'));
-
+        // (the condition is needed in order to avoid an error in artisan  when no migration has happened yet!)
+        if (\Schema::hasTable('users'))
+        {
+            view()->share('administrators', findAdmins('id'));
+        }
 
         // detect mobile users
         $isMobileUser=false;
