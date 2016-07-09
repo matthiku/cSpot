@@ -36731,6 +36731,7 @@ function reDisplayLyrics()
     var newDiv = '<div id="start-lyrics" class="lyrics-parts" ';
     var divNam = 'start-lyrics';
     var curPart= '';
+    var region2= false;
     var apdxNam= 97; // char cod 97 = 'a' - indicates sub-parts of verses or chorusses etc
 
     // analyse each line and put it back into single pre tags
@@ -36757,7 +36758,7 @@ function reDisplayLyrics()
         }
         // or we already have a pre-defined header line for this song part
         else { 
-            // find verse indicator (can be first word in the lyrics line, like: "[1] {first line of lyrics}")
+            // find verse indicator (can be first word in the lyrics line, like: "[1] first line of lyrics")
             // or it could be like [chorus 2]
             var hdr = identifyLyricsHeadings( lyricsLine.split('] ')[0] ); 
             if (hdr.length>0) { 
@@ -36776,12 +36777,21 @@ function reDisplayLyrics()
             divNam = hdr;
             newLyr = '';
             lines  = 0;
+            region2= false;
             newDiv = '</div><div id="'+hdr+'" class="lyrics-parts" ';
         }
         // actual lyrics - insert as P element
         if (lyricsLine != undefined) {
             lines += 1;
-            newLyr += '<p class="text-present m-b-0">'+lyricsLine+'</p>';
+            // insert horizontal line when requested
+            if (lyricsLine=='[region 2]') {
+                newLyr += '<hr class="hr-big">';
+                region2 = true;
+            } else {
+                cls = '';
+                if (region2) cls = 'text-present-region2';
+                newLyr += '<p class="text-present '+cls+' m-b-0">'+lyricsLine+'</p>';
+            }
         }
     }
     // insert the last lyrics part

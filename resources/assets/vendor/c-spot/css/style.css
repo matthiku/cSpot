@@ -58,6 +58,9 @@
     background-color: #abc;
 }
 
+.text-present-region2 {
+    color: red !important;
+}
 .text-present {
     color: yellow;
     font-size: xx-large;
