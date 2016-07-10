@@ -3,7 +3,7 @@
 <!-- # (C) 2016 Matthias Kuhs, Ireland -->
 
 <div class="table-responsive">
-	<table class="table table-striped table-hover
+	<table class="table table-striped table-items
 		{{ count($plan->items)>5 ? 'table-sm' : ''}} {{ count($plan->items)>10 ? 'table-xs' : ''}}">
 		<thead class="thead-default hidden-xs-up">
 			<tr>
@@ -98,14 +98,17 @@
 					@endif
 				</td>
 
-				<td {{substr($item->comment, 0,4 )!='http' ? $onclick.' '.$tooltip : '' }} class="hidden-lg-down center link">
+				<td onclick="editItemComment(this)" class="hidden-lg-down center"
+					data-action-url="{{ route('cspot.api.items.update', $item->id) }}">
 					@if ( substr($item->comment, 0,4 )=='http' )
 						<a href="{{ $item->comment }}" target="new">
 							{{ $item->comment }}
 							<i class="fa fa-globe"></i>
 						</a>
 					@else
-						{{ $item->comment }}
+						<span class="comment-textcontent">{{ $item->comment }}</span>
+						<!-- allow for inline editing -->
+						<span class="fa fa-pencil text-muted"></span>
 					@endif
 				</td>
 
@@ -141,7 +144,7 @@
 					@endif
 				</td>
 
-				<td class="hidden-sm-down center"  title="Sheet music attached to the song?"
+				<td class="hidden-sm-down center"  title="Sheet music attached to the song"
 					@if ( $item->song_id && count($item->song->files)>0 )
 						title="{{ $item->song->files[0]->filename }}" data-toggle="tooltip" data-placement="left"
 						data-template='
@@ -250,11 +253,15 @@
 							@if ($item->song_id)
 			 					<a class="hidden-sm-down" data-toggle="tooltip" title="Edit Song" 
 									href='{{ url('cspot/songs/'.$item->song->id) }}/edit/'>
-									&nbsp;<i class="fa fa-music fa-lg"></i>&nbsp;</a>
+									<span class="fa-stack">
+										<i class="fa fa-pencil-square-o fa-stack-2x text-muted"></i>
+										<i class="fa fa-music fa-stack-1x"></i>
+									</span>
+								</a>
 							@else
 			 					<a class="hidden-sm-down" data-toggle="tooltip" title="Edit Item" 
 									href='{{ url('cspot/plans/'.$plan->id) }}/items/{{$item->id}}/edit/'>
-									&nbsp;<i class="fa fa-pencil fa-lg"></i>&nbsp;</a>
+									&nbsp;&nbsp;<i class="fa fa-pencil fa-lg"></i>&nbsp;</a>
 							@endif
 
 							<a class="text-warning hidden-md-down" data-toggle="tooltip" title="Remove" 

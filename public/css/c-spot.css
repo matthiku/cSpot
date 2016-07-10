@@ -9226,13 +9226,31 @@ pre.text-present {
     border-bottom: 1px solid #ccc;
 }
 
+
+.table td ,
+.table thead th {
+    vertical-align: middle;
+}
+.table-items {
+    border-bottom: 1px solid gray;
+}
+.table-items tbody tr:hover {
+    background-color: azure !important;
+}
+.table-bordered td {
+    border-width: 2px;
+}
 .table-normal {
     width: initial;
 }
 
-.table-striped tbody tr:nth-of-type(even) {
+.table-striped tbody tr:nth-of-type(odd) {
     background-color: #e2e8ea;
 }
+.table-striped tbody tr:nth-of-type(even) {
+    background-color: #f9f9f9;
+}
+
 
 .move-button {
     min-width: 3em;
@@ -9339,15 +9357,6 @@ pre.text-present {
 
 .plan-form-minw {
     min-width: 220px;
-}
-
-.table td ,
-.table thead th {
-    vertical-align: middle;
-}
-
-.table-bordered td {
-    border-width: 2px;
 }
 
 .padding-sm {

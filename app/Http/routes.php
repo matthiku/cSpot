@@ -82,7 +82,7 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     Route::get( 'plans/{plan_id}/team', ['as' => 'team.index', 'uses' => 'Cspot\TeamController@index']);
     Route::post('plans/{plan_id}/team', ['as' => 'team.store', 'uses' => 'Cspot\TeamController@store']);
     // user announces his availability for a certain plan
-    Route::get('plans/{plan_id}/team/available/{bool}',                  'Cspot\TeamController@available');
+    Route::get( 'plans/{plan_id}/team/available/{bool}',                 'Cspot\TeamController@available');
     // shortcut to add all musicians to a plan
     Route::get( 'plans/{plan_id}/team/addAllMusicians',                  'Cspot\TeamController@addAllMusicians');
     // show the form to edit an existing team member
@@ -123,7 +123,7 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     // change the seq no of an item
     Route::get('items/{item_id}/seq_no/{seq_no}',           'Cspot\ItemController@update');
 
-    // specific (soft) delete route using 'get' method
+    // soft delete: specific route using 'get' method
     Route::get('items/{item_id}/delete',                    'Cspot\ItemController@trash');    
     // permanently delete an item
     Route::get('items/{item_id}/permDelete',                'Cspot\ItemController@permDelete');    
@@ -136,6 +136,10 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
 
     // presentation view of a plan
     Route::get('items/{item_id}/{present?}',                'Cspot\ItemController@show');
+
+    // API: update item data using AJAX
+    Route::post('api/items/{item_id}/update', ['as'=>'cspot.api.items.update',  'uses'=>'Cspot\ItemController@APIupdate']);
+
 
 
     /**

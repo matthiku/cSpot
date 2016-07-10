@@ -527,6 +527,26 @@ class ItemController extends Controller
 
 
 
+    /**
+     * API - update item via AJAX
+     */
+    public function APIupdate(Request $request, $id)
+    {
+        // find the single resource
+        $item = Item::find($id);
+        if ($item) {
+            // check authentication
+            $plan = Plan::find( $item->plan_id );
+            if (! $this->checkRights($plan)) {
+                return response()->json(['status' => 401, 'data' => 'Not authorized'], 401);
+            }
+            $item->update( $request->input() );
+            // return to sender
+            return response()->json(['status' => 200, 'data' => $item->token.' updated.']);
+        }
+        return response()->json(['status' => 404, 'data' => 'Not found'], 404);
+    }
+
 
 
 

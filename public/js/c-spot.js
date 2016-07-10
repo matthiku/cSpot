@@ -37510,7 +37510,7 @@ function updateFileInformation()
             dispElem.find('.fileshow-category').text($('#file_category_id option:selected').text());
         })
         .fail(function(data) {
-            dispElem.find('.fileshow-filename').text("Update failed! Please notify admin! " + data);
+            dispElem.find('.fileshow-filename').text("Update failed! Please notify admin! " + JSON.stringify(data));
         });
     
     // close the modal and update the data on the screen
@@ -37519,8 +37519,44 @@ function updateFileInformation()
 
 
 
-
-
+/*
+    Allow inline editing of item comments in the Plan View
+*/
+function editItemComment(that)
+{
+    if (that.nodeName=='SPAN') that = that.parentElement;
+    // are we in editing mode?
+    if ($(that).children(".comment-textcontent").is(':visible')) 
+    {
+        $(that).children(".fa-pencil").addClass("fa-check").removeClass("fa-pencil");
+        $(that).children(".comment-textcontent").hide();
+        var txt = $(that).children(".comment-textcontent").text().trim();
+        $(that).prepend('<input type=text value="'+txt+'"">');
+        $(that).children("input").focus();
+        $(that).children("input").blur(function() {
+            editItemComment(that);
+        });
+        $(that).prop(    'onclick', null);
+        $(that).children(".fa-check").attr('onclick', 'editItemComment(this)');
+    } 
+    else {
+        var newText = $(that).children("input").val();
+        $(that).children("input").remove();
+        $(that).children(".fa-check").addClass("fa-pencil").removeClass("fa-check");
+        $(that).children(".comment-textcontent").show().html('<i class="fa fa-spinner fa-spin fa-fw"></i>');
+        // send update to API via AJAX
+        var actionURL = $(that).data().actionUrl;
+        $.post( actionURL, { comment: newText })
+            .done(function(data) {
+                $(that).children(".comment-textcontent").text(newText);
+                $(that).attr('onclick', 'editItemComment(this)');
+            })
+            .fail(function(data) {
+                $(that).children(".comment-textcontent").text('Failed! Press F12 for more');
+                console.log("Update failed! Please notify admin! " + JSON.stringify(data));
+            });
+    }
+}
 
 
 
