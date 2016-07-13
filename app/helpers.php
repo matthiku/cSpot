@@ -436,14 +436,7 @@ function insertItem( $request )
 
 
 /**
- * Delete an item from the list of items of a plan
- *
- * Make sure the new sequence number fits sequentially into 
- *    the list of sequence numbers of the existing items for a plan
- *    and that all current sequence numbers are in 1.0 steps
- *
- * @param object $items
- * @param number $new_seq_no
+ * ??
  */
 function moveItem($id, $direction)
 {
@@ -697,12 +690,12 @@ function addDefaultRolesToPlan($plan)
     // add leader/teacher roles to the team for this plan
     $team = $plan->teams()->create([
         'user_id' => $plan->leader_id, 
-        'role_id' => env('LEADER_ID', 4)  // default is 4 if not set in .env
+        'role_id' => env('LEADER_ID', 5)  // default is 4 if not set in .env
     ]);
     if ($plan->teacher_id) {
         $plan->teams()->create([
             'user_id' => $plan->teacher_id, 
-            'role_id' => env('TEACHER_ID', 5)   // default is 5 if not set in .env
+            'role_id' => env('TEACHER_ID', 4)   // default is 5 if not set in .env
         ]);
     }
 }

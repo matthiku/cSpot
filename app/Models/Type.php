@@ -10,7 +10,7 @@ class Type extends Model
 {
     //
 
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'start_time', 'end_time'];
 
 
 

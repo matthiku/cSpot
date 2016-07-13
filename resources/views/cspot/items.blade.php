@@ -3,59 +3,10 @@
 <!-- # (C) 2016 Matthias Kuhs, Ireland -->
 
 <div class="table-responsive">
-	<table class="table table-striped table-items
+	<table class="table table-items
 		{{ count($plan->items)>5 ? 'table-sm' : ''}} {{ count($plan->items)>10 ? 'table-xs' : ''}}">
-		<thead class="thead-default hidden-xs-up">
-			<tr>
-				<th class="center dont-print" data-placement="right"
-						data-toggle="tooltip" title="Drag and Drop items to move them to a different position in the plan!"
-					><span class="hidden-sm-down">Order</span>
-					</th>
 
-				<th class="hidden-md-down center always-print"
-						data-toggle="tooltip" title="Hymn book reference. MP='Mission Praise'"
-					>Book#</th>
-
-				<th class="hidden-lg-down"       
-						data-toggle="tooltip" title="Title and subtitle (if any) of the selected song."
-					><i class="fa fa-music"></i> Song Title</th>
-
-				<th class="hidden-lg-down center"
-						data-toggle="tooltip" title="Bible Readings, additional comments or description of activity."
-					>Comment/Bible Reference</th>
-
-				<th class="hidden-xl-up center"  
-						data-toggle="tooltip" title="Song Title and/or activity description."
-					>Title/Comment</th>
-
-				<th class="hidden-sm-down center dont-print"
-						data-toggle="tooltip" title="Lyrics with chords for guitars"
-					><small><i class="fa fa-file-code-o"></i></small></th>
-
-				<th class="hidden-sm-down center dont-print"
-						data-toggle="tooltip" title="Sheet music attached to the song?"
-					><small><i class="fa fa-music"></i></small></th>
-
-				<th class="hidden-sm-down center dont-print"
-						data-toggle="tooltip" title="Are there files (like announcements) attached to this item?"
-					><small><i class="fa fa-file-picture-o"></i></small></th>
-
-				<th class="hidden-xs-down center dont-print"
-						data-toggle="tooltip" title="Links to YouTube videos or sheetmusic for song items."
-					>Play</th>
-
-				@if( Auth::user()->ownsPlan($plan->id) )
-					<th class="center dont-print">Action</th>
-				@endif
-			</tr>
-		</thead>
-
-
-		<tbody 
-			@if( Auth::user()->ownsPlan($plan->id) )
-				id="tbody-items"
-			@endif
-			>
+		<tbody id="tbody-items">
 	    @foreach( $plan->items as $item )
 
 			<?php 
@@ -69,8 +20,9 @@
 				} 
 			?>
 
-			<tr id="tr-item-{{ $item->seq_no }}" data-item-id="{{ $item->id }}"
-					class="{{$item->deleted_at ? 'trashed text-muted' : ''}} {{ $newest_item_id==$item->id ? 'bg-khaki newest-item' : '' }}">
+			<tr id="tr-item-{{ str_replace('.', '-', $item->seq_no) }}" data-item-id="{{ $item->id }}" 
+				data-old-song-id="{{ ($item->song_id) ? $item->song->id : 'NULL' }}"
+				class="{{$item->deleted_at ? 'trashed text-muted' : ''}} {{ $newest_item_id==$item->id ? 'bg-khaki newest-item' : '' }}">
 
 
 				<td class="drag-item dont-print" scope="row" title="drag item into the new position">
@@ -79,12 +31,16 @@
 				</td>
 
 
-				<td {{$onclick}} {{$tooltip}} class="hidden-md-down center link always-print">
+				<td class="hidden-md-down center always-print show-songbook-ref" title="click to change"
+					data-toggle="modal" data-target="#searchSongModal" data-item-id="{{ $item->id }}"
+					data-plan-id="update-song" data-item-id="{{$item->id}}" data-seq-no="{{ $item->seq_no }}" 
+					data-action-url="{!! route('cspot.api.items.update', $item->id) !!}">
 					{{ ($item->song_id) ? $item->song->book_ref : '' }}</td>
 
 
-				{{-- show seperate column for song title and comment on large devices --}}
-				<td {{$onclick}} class="hidden-lg-down link" @if ($item->song_id)
+				{{-- show separate column for song title and comment on large devices --}}
+				<td class="hidden-lg-down show-song-title" 
+					@if ($item->song_id)
 						title="{{ substr($item->song->lyrics,0,500) }}" data-toggle="tooltip" 
 						@if ($item->seq_no<10)
 							data-placement="bottom"
@@ -92,23 +48,29 @@
 						data-template='<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><pre class="tooltip-inner tooltip-wide"></pre></div>'
 					@endif
 					>
-					@if($item->song_id) 
-						{{ $item->song->title }} 
-						{{ $item->song->title_2 ? ' ('. $item->song->title_2 .')' : '' }}
-					@endif
+					<span class="hover-show" 
+						data-toggle="modal" data-target="#searchSongModal" data-item-id="{{ $item->id }}"
+						data-plan-id="update-song" data-item-id="{{$item->id}}" data-seq-no="{{ $item->seq_no }}" 
+						data-action-url="{!! route('cspot.api.items.update', $item->id) !!}">
+						@if($item->song_id) 
+							{{ $item->song->title }} 
+							{{ $item->song->title_2 ? ' ('. $item->song->title_2 .')' : '' }}
+						@endif
+					</span>
+					<span class="hover-only fa fa-pencil text-muted"></span>
 				</td>
 
-				<td onclick="editItemComment(this)" class="hidden-lg-down center"
-					data-action-url="{{ route('cspot.api.items.update', $item->id) }}">
+				<td onclick="editItemComment(this)" class="hidden-lg-down center comment-cell" title="click to change"
+					data-action-url="{!! route('cspot.api.items.update', $item->id) !!}">
 					@if ( substr($item->comment, 0,4 )=='http' )
 						<a href="{{ $item->comment }}" target="new">
 							{{ $item->comment }}
 							<i class="fa fa-globe"></i>
 						</a>
 					@else
-						<span class="comment-textcontent">{{ $item->comment }}</span>
+						<span class="comment-textcontent hover-show">{{ $item->comment }}</span>
 						<!-- allow for inline editing -->
-						<span class="fa fa-pencil text-muted"></span>
+						<span class="{{ $item->comment ? 'hover-only' : ''}} fa fa-pencil text-muted"></span>
 					@endif
 				</td>
 
@@ -194,7 +156,7 @@
 
 
 
-				<td class="center hidden-xs-down dont-print">
+				<td class="center hidden-xs-down dont-print show-youtube-links">
 					<big>
 					@if ($item->song_id)
 	                    @if ( $item->song->hymnaldotnet_id > 0 )
@@ -221,11 +183,13 @@
 				 --}}
 				<td class="text-xs-right text-nowrap dont-print">
 					{{-- 'start presentation' button visible for all --}}
+					@if (! $item->deleted_at)
 					<a class=" hidden-xs-down" data-toggle="tooltip" data-placement="left" title="Start presentation from here" 
 						href='{{ url('cspot/items/'.$item->id) }}/present'>
 						&nbsp;<i class="fa fa-tv fa-lg"></i>&nbsp;</a>
+					@endif
 					@if( Auth::user()->ownsPlan($plan->id) && $plan->date > \Carbon\Carbon::yesterday() )
-						@if ($item->deleted_at)
+						<span class="trashedButtons" style="display: {{ $item->deleted_at ? 'initial' : 'none' }}">
 							<a class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="left" title="Restore this item" 
 								href='{{ url('cspot/items/'.$item->id) }}/restore'>
 								<i class="fa fa-undo"></i></a>
@@ -236,36 +200,35 @@
 									href='{{ url('cspot/items/'.$item->id) }}/permDelete'>
 									&nbsp;<i class="fa fa-trash fa-lg"></i></a>
 							@endif
-						@else
+						</span>
+						@if (! $item->deleted_at)
 							{{-- insert new item before the current --}}
-							<a class="btn btn-secondary btn-sm" data-toggle="tooltip"
+							<!-- <a class="btn btn-secondary btn-sm" data-toggle="tooltip"
 								data-placement="left" title="add song here" 
 								href='{{ url('cspot/plans/'.$plan->id) }}/items/create/before/{{$item->id}}'>
-								<i class="fa fa-reply"></i></a>
+								<i class="fa fa-reply"></i></a> -->
 
 							{{-- new MODAL POPUP to add a song --}}
 							<button type="button" class="btn btn-secondary btn-sm text-info" data-toggle="modal" data-target="#searchSongModal"
 								data-plan-id="{{$plan->id}}" data-item-id="{{$item->id}}" data-seq-no="{{$item->seq_no}}" 
-								href='#' title="search for song to insert before this item">
+								href='#' title="insert song, scripture or comment before this item">
 								<i class="fa fa-plus"></i><i class="fa fa-music"></i>
 							</button>
 
 							@if ($item->song_id)
-			 					<a class="hidden-sm-down" data-toggle="tooltip" title="Edit Song" 
+			 					<a class="btn btn-secondary btn-sm hidden-sm-down edit-song-link" data-toggle="tooltip" title="Edit Song" 
 									href='{{ url('cspot/songs/'.$item->song->id) }}/edit/'>
-									<span class="fa-stack">
-										<i class="fa fa-pencil-square-o fa-stack-2x text-muted"></i>
-										<i class="fa fa-music fa-stack-1x"></i>
-									</span>
+										<i class="fa fa-music"></i><i class="fa fa-pencil text-muted"></i>
 								</a>
 							@else
-			 					<a class="hidden-sm-down" data-toggle="tooltip" title="Edit Item" 
+			 					<a class="btn btn-secondary btn-sm hidden-sm-down" data-toggle="tooltip" title="Edit Item" 
 									href='{{ url('cspot/plans/'.$plan->id) }}/items/{{$item->id}}/edit/'>
 									&nbsp;&nbsp;<i class="fa fa-pencil fa-lg"></i>&nbsp;</a>
 							@endif
 
-							<a class="text-warning hidden-md-down" data-toggle="tooltip" title="Remove" 
-								href='{{ url('cspot/items/'.$item->id) }}/delete'>
+							<a class="text-warning hidden-md-down" data-toggle="tooltip" title="Remove this item" data-placement="left"
+								href='#' onclick="removeItem(this)"
+								data-action-url="{!! route('cspot.api.items.delete', $item->id) !!}">
 								&nbsp;<i class="fa fa-trash fa-lg"></i></a>
 
 						@endif
@@ -283,24 +246,23 @@
 </div>
 
 
-@if( Auth::user()->ownsPlan($plan->id) )
+@if( Auth::user()->ownsPlan($plan->id) && $plan->date > \Carbon\Carbon::yesterday() )
 
-	@if( $trashedItemsCount )
-		<div class="pull-xs-right m-l-2">
-			<i class="fa fa-trash"></i>&nbsp;contains&nbsp;<big>{{ $trashedItemsCount }}</big>&nbsp;item{{$trashedItemsCount>1 ? 's' : ''}}: &nbsp;
-			<i class="fa fa-list-ul"></i>&nbsp;<a href="#" id="toggleBtn" onclick="toggleTrashed()">Show</a> &nbsp;
-			@if( Auth::user()->ownsPlan($plan->id) )
-				<a href="{{ url('cspot/plans/'.$plan->id.'/items/trashed/restore') }}" 
-					class="text-success nowrap"><i class="fa fa-undo"></i>&nbsp;Restore&nbsp;all</a> &nbsp;
-				{{-- check if user is leader of the corresponding plan or author/admin --}}
-				@if ( $item->plan->leader_id==Auth::user()->id || Auth::user()->isAuthor() )
-					<a href="{{ url('cspot/plans/'.$plan->id.'/items/trashed/delete') }}" 
-						class="text-danger nowrap"><i class="fa fa-trash"></i
-							>&nbsp;Delete&nbsp;{{ $trashedItemsCount>1 ? 'all&nbsp;'.$trashedItemsCount : 'trashed' }}&nbsp;permanently</a>
-				@endif
+	<div class="pull-xs-right m-l-2" id="trashedItems" 
+		 style="display: {{ $trashedItemsCount ? 'initial' : 'none' }}">
+		<i class="fa fa-trash"></i>&nbsp;contains&nbsp;<big id="trashedItemsCount">{{ $trashedItemsCount }}</big>&nbsp;item{{$trashedItemsCount>1 ? 's' : ''}}: &nbsp;
+		<i class="fa fa-list-ul"></i>&nbsp;<a href="#" id="toggleBtn" onclick="toggleTrashed()">Show</a> &nbsp;
+		@if( Auth::user()->ownsPlan($plan->id) )
+			<a href="{{ url('cspot/plans/'.$plan->id.'/items/trashed/restore') }}" 
+				class="text-success nowrap"><i class="fa fa-undo"></i>&nbsp;Restore&nbsp;all</a> &nbsp;
+			{{-- check if user is leader of the corresponding plan or author/admin --}}
+			@if ( $plan->leader_id==Auth::user()->id || Auth::user()->isAuthor() )
+				<a href="{{ url('cspot/plans/'.$plan->id.'/items/trashed/delete') }}" 
+					class="text-danger nowrap"><i class="fa fa-trash"></i
+						>&nbsp;Delete&nbsp;{{ $trashedItemsCount>1 ? 'all&nbsp;'.$trashedItemsCount : 'trashed' }}&nbsp;permanently</a>
 			@endif
-		</div>
-	@endif
+		@endif
+	</div>
 
 	<div class="pull-xs-left">
 		<a class="btn btn-sm btn-primary-outline"  onclick="showSpinner()"

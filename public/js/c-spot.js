@@ -36039,12 +36039,14 @@ SelectedDates[new Date().toLocaleDateString()] = 'Today';
 
 
 
-/** ***************************************************
- *
- *          SLIDE PRESENTATION HELPERS
- *
- ** ***************************************************
- */
+/*\
+|*|
+|*|
+|*+------------------------------------------ SLIDE PRESENTATION HELPERS
+|*|
+|*|
+\*/
+
 
 // lyrics sequence data
 var sequence;
@@ -37346,29 +37348,86 @@ function showScriptureText(version,book,chapter,fromVerse,toVerse)
 
 
 
+/*\
+|*|
+|*|
+|*#======================================================================= SPA UTILITIES
+|*|
+|*|
+\*/
 
-/** ***************************************************
- *
- *                    SPA UTILITIES
- *
- ** ***************************************************
- */
 
 
+
+/* 
+    Called from the Modal popup on the FILES LIST page, 
+    this function will save the updated file information via AJAX
+*/
+function updateFileInformation()
+{
+    // get the old data
+    var fileID   = $('#file-id').val();
+    var dispElem = $('#file-'+fileID);
+    var oldData  = $(dispElem).data('content');
+
+    // get the new data
+    var newFn = $('#filename').val()
+    var newFC = $('#file_category_id').val()
+
+    // compare
+    if (oldData.file_category_id == newFC 
+             && oldData.filename == newFn) return;
+
+    // get the action URL
+    var actionURL = $('#file-id').data('action-url')+fileID;
+
+    // update via AJAX 
+    $.post( actionURL, { id: fileID, filename: newFn, file_category_id: newFC })
+        .done(function(data) {
+            dispElem.find('.fileshow-filename').text(newFn);
+            dispElem.find('.fileshow-category').text($('#file_category_id option:selected').text());
+        })
+        .fail(function(data) {
+            dispElem.find('.fileshow-filename').text("Update failed! Please notify admin! " + JSON.stringify(data));
+        });
+    
+    // close the modal and update the data on the screen
+    $('#fileEditModal').modal('hide');
+}
+
+
+/*
+    User has selected WHAT he wants to insert, 
+    now we present the appropriate input elements
+*/
+function showModalSelectionItems(what)
+{
+    $('.modal-pre-selection').hide();               // hide all pre-selection parts of the modal
+    $('.modal-select-'+what).show();                // show all parts for selecting a song or entering a comment
+    $('#searchSongModalLabel').text('Insert '+what);
+    $('.modal-input-'+what).focus();
+    // show submit button for comments or scripture
+    if (what!='song') {
+        $('#searchForSongsSubmit').show();
+    }
+}
 /* 
     Reset the song search form
 */
 function resetSearchForSongs() 
 {
+    $('.modal-select-song').hide();
+    $('.modal-select-comment').hide();
+    $('.modal-select-scripture').hide();
+    $('.modal-pre-selection').show();
+    $('#modal-show-item-id').text('');
     $('#searching').hide();    
     $('#search-result').html('');
-    $('#searchForSongsButton').show();
     $('#searchForSongsSubmit').hide();
     $('#MPselect').val(0);
-    $('.search-form-item').show();
     $('#search-string').val('');
     $('#search-string').focus();
-    $('#search-action-label').text('Search for song number, title, lyrics or parts thereof:');
+    $('#search-action-label').text('Full-text search incl. lyrics:');
     $('#txtHint').html('');
     $('#haystack').val('');
 }
@@ -37376,9 +37435,9 @@ function resetSearchForSongs()
 /* 
     Called from the Modal popup on the PLAN OVERVIEW page, 
     this function searches for songs, presents a list and/or 
-    song history information, all via AJAX
+    song history information; uses AJAX to do the full-text search
 */
-function searchForSongs()
+function searchForSongs(that)
 {    
     // are we still searching or has the user already selected a song?
     var modus = 'selecting';
@@ -37443,8 +37502,8 @@ function searchForSongs()
                     html +=         (result[i].book_ref ? '('+result[i].book_ref+') ' : ' ')  + result[i].title + ' ';
                     html +=         '<small>'+result[i].title_2+'<br><span class="pull-xs-right">';
                     html +=             '<b>Last used:</b> <span class="label label-default">'
-                    html +=                 ( lastPlanDate ? moment(lastPlanDate, 'YYYY-MM-DD HH:mm:ss').fromNow() : 'never used');
-                    html +=             '</span> Total: <b'+ (count>25 ? ' class="red">' : '>')+ + count +'</b> times</span></small>';
+                    html +=                 ( lastPlanDate ? moment(lastPlanDate, 'YYYY-MM-DD HH:mm:ss').fromNow() : 'never used!!');
+                    html +=             '</span> Total: <b'+ (count>25 ? ' class="red">' : '>') + count + '</b> times</span></small>';
                     html +=     '</label></div>' ;
                 }
                 $('#search-result').html(html);
@@ -37459,9 +37518,26 @@ function searchForSongs()
         // which song was selected?
         var song_id = $('input[name=searchRadios]:checked', '#searchSongForm').val();
 
+        var plan_id = $('#plan_id').val();
+        var seq_no  = $('#seq-no' ).val();
+
+        // was this called via showUpdateSongForm function?
+        if (plan_id=="update-song") {
+            if (song_id!=undefined)
+                // attach lyrics to song_id input field, so that when user selects this song, we can attach it as title to the table cell
+                // (we get this from the selection in the search results to whose parent element the lyrics were attached)
+                $('#song_id').attr('title',$('input[name=searchRadios]:checked', '#searchSongForm').parent().attr('title'));
+                updateSong(song_id);
+            return;
+        }
+
+        // check if user entered a comment
+        var comment = $('#comment' ).val();
+
         // did user select a song? It should always be a string, even '0'....
-        if ( ! song_id  || song_id == '0' )
-            return; // no
+        if ( (! song_id  || song_id == '0') && ! comment )
+            // nothing selected and comment is empty
+            return false; // no
 
         showSpinner()
         $('#searchForSongsButton').toggle();
@@ -37469,87 +37545,141 @@ function searchForSongs()
         
         // write it into the form
         $('#song_id').val(song_id);
+        console.log('Writing the selected song_id as value of the hidden input element: '+song_id)
 
         // restore the original search form
-        $('#searchSongModal').modal('hide');        // close the modal
-        $('#search-result').html('');   // remove the search results
-        $('#search-string').val('');    // reset the search string
-        $('#searching').hide();         // hide the spinner
+        $('#searchSongModal').modal('hide');    // close the modal
+        $('#search-result').html('');           // remove the search results
+        $('#search-string').val('');            // reset the search string
+        $('#searching').hide();                 // hide the spinner
+
+        // for some reason, the form doesn't submit if only a comment was given...
+        if (comment) document.getElementById('searchSongForm').submit();
     }
 
 }
 
 
-
-/* 
-    Called from the Modal popup on the FILES LIST page, 
-    this function will save the updated file information via AJAX
+/*
+    execute the update via AJAX and show the new data on the page
 */
-function updateFileInformation()
+function updateSong(song_id)
 {
-    // get the old data
-    var fileID   = $('#file-id').val();
-    var dispElem = $('#file-'+fileID);
-    var oldData  = $(dispElem).data('content');
+    $('#searchSongModal').modal('hide');
+    console.log('closing song form, got song id '+song_id);
+    var item_id   = $('#beforeItem_id').val();
+    var seq_no    = $('#seq-no').val();
+    var myCell    = $('#tr-item-'+seq_no.replace('.','-'));
+    myCell.children('.show-songbook-ref').html('<i class="fa fa-spinner fa-spin fa-fw"></i>');
+    myCell.children('.show-song-title').text('');
+    myCell.children('.show-youtube-links').html('');
 
-    // get the new data
-    var newFn = $('#filename').val()
-    var newFC = $('#file_category_id').val()
-
-    // compare
-    if (oldData.file_category_id == newFC 
-             && oldData.filename == newFn) return;
-
-    // get the action URL
-    var actionURL = $('#file-id').data('action-url')+fileID;
-
-    // update via AJAX 
-    $.post( actionURL, { id: fileID, filename: newFn, file_category_id: newFC })
+    // update item via AJAX
+    var actionURL = $('#searchSongForm').attr('action');
+    $.post( actionURL, { song_id: song_id })
         .done(function(data) {
-            dispElem.find('.fileshow-filename').text(newFn);
-            dispElem.find('.fileshow-category').text($('#file_category_id option:selected').text());
+            // on success, show new song data
+            for (var i=0; i<haystackMP.length; i++) {
+                if (haystackMP[i].id == song_id) {
+                    myCell.children('.show-songbook-ref').text(haystackMP[i].book_ref);
+                    myCell.children('.show-song-title').text(haystackMP[i].title);
+                    myCell.children('.show-song-title').attr('data-original-title',$('#song_id').attr('title'));
+                    var href = myCell.children().children('.edit-song-link').attr('href');
+                    if (href) {
+                        href = href.replace(myCell.data('oldSongId'),song_id);
+                        myCell.children().children('.edit-song-link').attr('href', href);
+                    }
+                    break;
+                }
+            }
         })
         .fail(function(data) {
-            dispElem.find('.fileshow-filename').text("Update failed! Please notify admin! " + JSON.stringify(data));
+            myCell.children('.show-song-title').text('Failed! Press F12 for more');
+            console.log("Update failed! Please notify admin! " + JSON.stringify(data));
         });
-    
-    // close the modal and update the data on the screen
-    $('#fileEditModal').modal('hide');
 }
 
 
 
 /*
+    remove a single item
+*/
+function removeItem(that)
+{
+    myTR = that.parentElement.parentElement;                        // get handle on whole table row
+    myTD = that.parentElement;                                      // get handle on table cell
+    $(myTR).addClass('text-muted');                                 // 'mute' table row
+    $(myTD).children().hide();                                      // hide action buttons
+    $(myTD).append('<i class="fa fa-spinner fa-spin fa-fw"></i>');  // show spinner while updating
+
+    var actionURL = $(that).data().actionUrl;                       // delete item via AJAX
+    $.post( actionURL )
+        .done(function(data) {
+            $('.fa-spinner').hide();
+            $(myTR).children('td').each(function(){
+                $(this).addClass('trashed');
+            })
+            // on success, fade-out table row and show action buttons for hidden items
+            $(myTR).slideUp(550, function() {
+                $(myTR).addClass('trashed');
+                $(myTD).children('.trashedButtons').show();
+            });
+            // update number of trashed items
+            var trashedItemsCount = parseInt($('#trashedItemsCount').text());
+            $('#trashedItemsCount').text(1+trashedItemsCount);
+            $('#trashedItems').show();
+        })
+        .fail(function(data) {
+            $(myTD).text('Failed! Press F12 for more');
+            console.log("Update failed! Please notify admin! " + JSON.stringify(data));
+        });
+}
+
+/*
     Allow inline editing of item comments in the Plan View
+    - first call of this function opens the input box
+    - second call sends the updated comment to the server
 */
 function editItemComment(that)
 {
+    // this function can be called either from the table cell or by clicking on the 'pencil' icon
     if (that.nodeName=='SPAN') that = that.parentElement;
-    // are we in editing mode?
+    // get the old comment text
+    var oldText = $(that).children(".comment-textcontent").text().trim();
+    var TRid=$(that).parent().attr('id');
+
+    // if the original comment text is visible, we are not in editing mode
     if ($(that).children(".comment-textcontent").is(':visible')) 
     {
-        $(that).children(".fa-pencil").addClass("fa-check").removeClass("fa-pencil");
-        $(that).children(".comment-textcontent").hide();
-        var txt = $(that).children(".comment-textcontent").text().trim();
-        $(that).prepend('<input type=text value="'+txt+'"">');
-        $(that).children("input").focus();
-        $(that).children("input").blur(function() {
-            editItemComment(that);
-        });
-        $(that).prop(    'onclick', null);
-        $(that).children(".fa-check").attr('onclick', 'editItemComment(this)');
+        $(that).children(".fa-pencil").addClass("fa-check").removeClass("fa-pencil");   // replace the 'editing' icon with the 'OK' icon
+        $(that).children(".comment-textcontent").hide();                                // hide the old commment
+        $(that).prepend('<input type=text value="'+oldText+'"">');                      // insert a text INPUT element
+        $(that).children("input").focus();                                              // and set the focus
+        $(that).children("input").width($(that).width()-20);                            // 
+        $(that).children("input").blur(function() { editItemComment(that); });          // call this function again when user moves focus away
+        $(that).prop(    'onclick', null);                                              // user can't trigger this function while we are editing the comment
+        $(that).children(".fa-check").attr('onclick', 'editItemComment(this)');         // user can click on the 'OK' icon to save the updated comment
+        $(that).children(".fa-check").css('display', 'inline-block');                   // un-hide the 'OK' icon
     } 
-    else {
-        var newText = $(that).children("input").val();
-        $(that).children("input").remove();
-        $(that).children(".fa-check").addClass("fa-pencil").removeClass("fa-check");
-        $(that).children(".comment-textcontent").show().html('<i class="fa fa-spinner fa-spin fa-fw"></i>');
-        // send update to API via AJAX
+    else // save the updated comment text
+    {
+        var newText = $(that).children("input").val();                                  // get new comment from input box
+        $(that).children("input").remove();                                             // remove the input box element from the DOM
+        $(that).children(".fa-check").addClass("fa-pencil").removeClass("fa-check");    // turn the 'OK' icon back into an 'edit' icon
+        $(that).children(".comment-textcontent").show()                                 // show the spinner while we are sending the updated comment to the host
+            .html('<i class="fa fa-spinner fa-spin fa-fw"></i>');
+        $(that).children(".fa-pencil").css('display', 'none');
+
+        // don't save if there was no change
+        if (oldText == newText) {
+            window.setTimeout( 'resetCommentText("'+TRid+'","'+newText+'")', 1000 );
+            return;
+        }
+        // send update via AJAX
         var actionURL = $(that).data().actionUrl;
         $.post( actionURL, { comment: newText })
             .done(function(data) {
-                $(that).children(".comment-textcontent").text(newText);
-                $(that).attr('onclick', 'editItemComment(this)');
+                resetCommentText(TRid, newText);
             })
             .fail(function(data) {
                 $(that).children(".comment-textcontent").text('Failed! Press F12 for more');
@@ -37557,19 +37687,30 @@ function editItemComment(that)
             });
     }
 }
+/*
+    show comment text again
+*/
+function resetCommentText(id, newText) {
+    that = $('#'+id).children(".comment-cell");
+    $(that).children(".comment-textcontent").text(newText);
+    if (! newText)      // only show 'edit' icon when comment is empty
+        $(that).children(".fa-pencil").css('display', 'inline');
+    $(that).attr('onclick', 'editItemComment(this)');
+}
 
 
 
 
 
 
-/** ***************************************************
- *
- *          VARIOUS  UI  HELPERS
- *
- ** ***************************************************
- */
 
+/*\
+|*|
+|*|
+|*#======================================================================= VARIOUS  UI  HELPERS
+|*|
+|*|
+\*/
 
 
 /*
@@ -37578,7 +37719,7 @@ function editItemComment(that)
     @param string url
     @returns object
 
-    This DOM ojbect provides the following values:
+    This DOM object provides the following values:
         url.protocol; //(http:)
         url.hostname ; //(www.example.com)
         url.pathname ; //(/some/path)
@@ -37762,11 +37903,14 @@ function showFilterField(field)
     // Is this field already visible?
     if ($('#filter-'+field+'-clear').is(':visible')) 
     {
+        var currUrl  = parseURLstring(window.location.href);
         // check if there is a query string in the URL
-        var currUrl  = window.location.href.split('?');
-        // then clear existing filter and reload page without a filter
-        if (currUrl.length > 1) {
-            // fade background and show spinner
+        if (currUrl.search) { 
+            // check that it doesn't contain a plan_id!
+            if (currUrl.search.search('plan_id')) {
+                return;
+            }
+            // clear existing filter and reload page without a filter
             showSpinner();
             // remove filter elements from URL query string
             var queryStr = currUrl[1].split('&');
@@ -37990,13 +38134,14 @@ function blink(selector){
 
 
 
-
-/** ***************************************************
- *
- *    Activities when HTML Document is fully loaded
- *
- ** ***************************************************
- */
+/*\
+|*|
+|*|
+|*+------------------------------------------ Triggered when HTML Document is fully loaded
+|*|
+|*|
+\*/
+ 
 
 
 
@@ -38116,25 +38261,51 @@ $(document).ready(function() {
     }
 
                 
-    /**
-     * Put focus on textarea when user opens the "Search For Song" modal dialog
-     * and populate the modal popup when it's launched, with the data provided by the launching button ....
-     */
+    /*\
+    |*|----------------------------------------------------------------------
+    |*|    Insert NEW or update EXISTING ITEMS on the Plan Overview page
+    |*|----------------------------------------------------------------------
+    |*|
+    |*| The corresponding modal is declared in plan.blade.php
+    |*|
+    |*| The method below is called when the modal popup is activated (shown) by clicking on the respective buttons or links.
+    |*| It populates the modal popup with the data provided by the launching button ....
+    |*|
+    |*| For insertion of new items, a selection is given between 'song', 'scripture' or 'comment'
+    |*| in order to show the appropriate input and selection elements
+    |*|
+    |*| This same modal is also being used to update an existing song item (ie. to change the song)
+    |*|
+    |*| The new data is processed via the 'searchForSongs' js helper function above
+    \*/
     $('#searchSongForm').on('shown.bs.modal', function (event) {
+
+        // first make sure the form is back in its initial state
         resetSearchForSongs();
-        var button = $(event.relatedTarget); // Button that triggered the modal
-        var plan_id  = button.data('plan-id');    // Extract info from data-* attributes
-        var item_id  = button.data('item-id');    
-        var seq_no   = button.data('seq-no' );    
+
+        // get item-specific data from the triggering element
+        var button = $(event.relatedTarget);        // Button that triggered the modal
+        var plan_id  = button.data('plan-id');      // Extract info from data-* attributes
+        var item_id  = button.data('item-id');
+        var seq_no   = button.data('seq-no' );
+        var actionUrl= button.data('action-url' );
+
+        // was modal opened from existing item?
+        if (plan_id=="update-song") {
+            // directly activate the song selection
+            showModalSelectionItems('song');
+            $('#searchSongForm'      ).attr('action', actionUrl);
+            $('#searchSongModalLabel').text('Select another song');
+            $('#modal-show-item-id').text('for item No '+seq_no+':');
+        } else {
+            $('#modal-show-item-id').text('before item No '+seq_no+':');
+        }
         // Update the modal's content
-        var modal = $(this);
-        $('#searchSongModalLabel').text('Insert Song before item No '+seq_no);
-        modal.find('#plan_id').val(plan_id);
-        modal.find('#beforeItem_id').val(item_id);
-        modal.find('#seq-no').val(seq_no);
+        $('#plan_id'      ).val(plan_id);
+        $('#beforeItem_id').val(item_id);
+        $('#seq-no'       ).val(seq_no);
         // reset the form
         $('#search-string').focus(); // make sure the search string input field has focus
-
 
         // prevent the Song Search Form from being submitted when 
         //      the ENTER key is used; instead, perform the actual search
@@ -38177,7 +38348,7 @@ $(document).ready(function() {
         // do this only once ...
         if ($('.submit-button').is(':visible')) return;
 
-        // show submit or sabe buttons
+        // show submit or save buttons
         $('.submit-button').show();
         blink('.submit-button');
     });

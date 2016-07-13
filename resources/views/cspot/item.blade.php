@@ -89,7 +89,7 @@
                                 onclick="showSpinner()" 
                                 href="{{ url('cspot/items/'.$item->id) }}/present"><i class="fa fa-tv"></i>&nbsp;Start presentation</a>
                             @if( Auth::user()->ownsPlan($item->plan_id) )
-                                <a class="dropdown-item nowrap text-danger"  item="button" href="{{ url('cspot/items/'. $item->id .'/delete') }}">
+                                <a class="dropdown-item nowrap text-danger" item="button" href="{{ url('cspot/items/'. $item->id .'/delete') }}">
                                     <i class="fa fa-trash" > </i>&nbsp; Delete this item!
                                 </a>
                             @endif
@@ -440,46 +440,15 @@
                         <br>
                         <br>
 
-                        <h6><i class="fa fa-book">&nbsp;</i>Add Bible Reference:</h6>
+                        @include( 'cspot.snippets.scripture_input', ['part' => 'one'] )
 
-                        <select name="from-book" id="from-book" class="pull-xs-left" onchange="showNextSelect('from', 'chapter')">
-                            <option selected="TRUE" value=" ">select book...</option>
-                            @foreach ($bibleBooks->getArrayOfBooks() as $book)
-                                <option value="{{ $book }}">{{ $book }}</option>
-                            @endforeach                        
-                        </select>&nbsp;
-
-                        <span class="select-reference" style="display: none;">                    
-                            ch.
-                            <select name="from-chapter" id="from-chapter" style="display: none;" 
-                                    onchange="showNextSelect('from', 'verse')">
-                                <option selected="" value=" "> </option>
-                            </select>
-                            verse 
-                            <select name="from-verse" id="from-verse" style="display: none;"
-                                    onchange="showNextSelect('to', 'verse')">
-                                <option selected="" value=" "> </option>
-                            </select>
-                            to 
-                            <select name="to-verse" id="to-verse" style="display: none;">
-                                <option selected="" value=" "> </option>
-                            </select>
-                        </span>
                     </div>
                     @endif
 
                     <!-- select bible version to be used -->
-                    <div class="col-xs-12 select-version" style="display: none;">
-                        {!! Form::label('version', 'Select version:'); !!}
-                        <select name="version" id="version" onchange="populateComment()">
-                            <option {{ isset($item) ? '' : 'selected' }}>
-                            </option>
-                            @foreach ($versionsEnum as $vers)
-                                <option value="{{ $vers }}">{{ $vers }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>  
+                    <div class="col-xs-12">
+                        @include( 'cspot.snippets.scripture_input', ['part' => 'two'] )
+                    </div>
 
                     <!-- show the selected bible verses -->
                     <div class="col-lg-6 col-sm-12" id="bible-passages">

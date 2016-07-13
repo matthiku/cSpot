@@ -112,11 +112,11 @@
                                     $teamList .= ",\n";
                             }
                         ?>
-                        <a href="{{ url('cspot/plans/'.$plan->id.'/team') }}" class="m-l-2" 
+                        <a href="{{ url('cspot/plans/'.$plan->id.'/team') }}" class="m-l-2 nowrap" 
                             onclick="$('#show-spinner').modal({keyboard: false});" 
                             data-template='<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><pre class="tooltip-inner tooltip-medium"></pre></div>'
                             data-placement="bottom" data-toggle="tooltip" title="{{ $teamList }}">
-                            <i class="fa fa-users"></i>&nbsp;Team
+                            <i class="fa fa-users"></i>&nbsp;Team <small>({{$plan->teams->count()}})</small>
                         </a> 
                     </big>
                 </div>
@@ -310,7 +310,7 @@
 
         @include('cspot.items')
 
-        @if (Auth::user()->ownsPlan($plan->id) )
+        @if (Auth::user()->ownsPlan($plan->id) && $plan->date > \Carbon\Carbon::yesterday() )
             <a href="{{ url('cspot/songs?plan_id='.$plan->id) }}"  onclick="showSpinner()"
                 title="Search for a song via the full song listing" 
                 class="btn btn-sm btn-info pull-xs-right">
@@ -417,7 +417,7 @@
 
         @if (isset($plan))
             var haystackMP = JSON.parse('{!! json_encode($mp_song_list, JSON_HEX_APOS | JSON_HEX_QUOT) !!}');
-            // {"id":10,"title":"A Safe Stronghold Our God Is Still","book_ref":"MP2","title_2":"","number":"2"}
+            // example: {"id":10,"title":"A Safe Stronghold Our God Is Still","book_ref":"MP2","title_2":"","number":"2"}
             function showHint(needle) {
                 if (needle.length == 0) {
                     $('#txtHint').html('');
@@ -456,15 +456,33 @@
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
-                        <h4 class="modal-title" id="searchSongModalLabel">Search Song</h4>
+                        <h4 class="modal-title">
+                            <span id="searchSongModalLabel">Select what to insert</span> <span id="modal-show-item-id"></span>
+                        </h4>
+
+                        <a href="#" class="btn btn-lg btn-primary-outline modal-pre-selection fully-width"
+                            onclick="showModalSelectionItems('song')"       >Song       </a>
+                        <a href="#" class="btn btn-lg btn-success-outline modal-pre-selection fully-width"
+                            onclick="showModalSelectionItems('scripture')"  >Scripture  </a>
+                        <a href="#" class="btn btn-lg btn-info-outline modal-pre-selection fully-width"
+                            onclick="showModalSelectionItems('comment')"    >Comment    </a>
                     </div>
 
                     <div class="modal-body">
-                        <label id="search-action-label" class="center-block m-b-1">Fulltext search: (lyrics, title etc)</label>
-                        <input type="text"   id="search-string" class="search-input search-form-item center-block m-b-1">
+                        <input type="text"   id="comment" name="comment"
+                            class="center-block m-b-1 modal-select-comment modal-input-comment modal-select-scripture fully-width">
 
-                        <label class="search-form-item" for="MPselect">...or select Mission Praise number</label>
-                        <select class="form-control m-b-1 search-form-item" id="MPselect" onchange="$('#searchForSongsButton').click();">
+                        <span class="modal-select-scripture">
+                            @include( 'cspot.snippets.scripture_input', ['part' => 'one'] )
+                            <br>
+                            @include( 'cspot.snippets.scripture_input', ['part' => 'two'] )
+                        </span>
+
+                        <label id="search-action-label" class="center-block m-b-1 modal-select-song">Full-text search incl. lyrics:</label>
+                        <input type="text"   id="search-string" class="search-input search-form-item center-block m-b-1 modal-select-song modal-input-song">
+
+                        <label class="search-form-item modal-select-song" for="MPselect">...or select Mission Praise number</label>
+                        <select class="form-control m-b-1 search-form-item modal-select-song" id="MPselect" onchange="$('#searchForSongsButton').click();">
                             <option value="0">select....</option>
                             {{-- only add MP songs --}}
                             @foreach ($mp_song_list as $song)                                
@@ -474,9 +492,9 @@
                             @endforeach
                         </select>
 
-                        <label for="haystack" class="search-form-item">..or search Song title or number</label>
-                        <input type="text" class="form-control search-form-item" id="haystack" onkeyup="showHint(this.value)">
-                        <div class="search-form-item" id="txtHint"></div>
+                        <label for="haystack" class="search-form-item modal-select-song">..or search Song title or number</label>
+                        <input type="text" class="form-control search-form-item modal-select-song" id="haystack" onkeyup="showHint(this.value)">
+                        <div class="search-form-item modal-select-song" id="txtHint"></div>
 
                         <input type="hidden" id="seq-no">
                         <input type="hidden" id="plan_id"       name="plan_id" data-search-url="{{ url('cspot/songs/search') }}/">
@@ -486,16 +504,16 @@
 
                         <div id="search-result"></div>
                         <div id="searching" style="display: none;">
-                            <i class="fa fa-spinner fa-pulse fa-lg fa-fw"></i>
-                            <span>leafing through the pages ...</span>
+                            <i class="fa fa-spinner fa-pulse fa-lg fa-fw"></i>&nbsp;<span>leafing through the pages ...</span>
                         </div>
                     </div>
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" onclick="resetSearchForSongs()">Restart</button>
+                        <button type="button" class="btn btn-secondary modal-select-song" onclick="resetSearchForSongs()">Restart</button>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <a href="#" class="btn btn-primary" id="searchForSongsButton" onclick="searchForSongs()">Search</a>
-                        <button type="submit" class="btn btn-primary" id="searchForSongsSubmit" onclick="searchForSongs()" style="display: none;">Select</button>
+                        <a href="#" class="btn btn-primary modal-select-song" id="searchForSongsButton" onclick="searchForSongs()">Search</a>
+                        <button type="submit" class="btn btn-primary" 
+                            id="searchForSongsSubmit" onclick="searchForSongs(this)">Submit</button>
                     </div>
 
                 </div>

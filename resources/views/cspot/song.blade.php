@@ -51,7 +51,7 @@
                 <div class="col-xs-4">
                     @if (isset($song))
 
-                        <big class="submit-button" style="display: none;">{!! Form::submit('Save changes', ['class'=>'full-width']); !!}</big>
+                        <big class="submit-button" onclick="showSpinner()" style="display: none;">{!! Form::submit('Save changes', ['class'=>'full-width']); !!}</big>
                         
                         @if (Auth::user()->isAdmin() && count($plansUsingThisSong)==0 )
                             </div>

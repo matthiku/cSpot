@@ -64,11 +64,6 @@ class ItemController extends Controller
             return redirect()->back();
         }
 
-        // get array of possible bible versions
-        $versionsEnum = json_decode(env('BIBLE_VERSIONS'));
-        // get array of bible books
-        $bibleBooks = new BibleBooks();
-
 
         $beforeItem = null;
         // check if this is an insertion of an item BEFORE another item
@@ -85,8 +80,8 @@ class ItemController extends Controller
                 'plan'         => $plan, 
                 'beforeItem'   => $beforeItem, 
                 'seq_no'       => $seq_no,
-                'versionsEnum' => $versionsEnum,
-                'bibleBooks'   => $bibleBooks,
+                'versionsEnum' => json_decode(env('BIBLE_VERSIONS')),   // array of possible bible versions
+                'bibleBooks'   => new BibleBooks(),                     // array of bible books
                 'bibleTexts'   => [],
             ]);
     }
@@ -142,8 +137,11 @@ class ItemController extends Controller
 
         $beforeItem = null;
         if (isset($request->beforeItem_id)) {
-            $beforeItem = Item::find($request->beforeItem_id);
-            $request->seq_no = ($beforeItem->seq_no) - 0.1;
+            $befItem = Item::find($request->beforeItem_id);
+            if ($befItem) {
+                $beforeItem = $befItem;
+                $request->seq_no = ($beforeItem->seq_no) - 0.1;
+            }
         }
 
         // review numbering of current items for this plan and insert the new item
@@ -543,6 +541,31 @@ class ItemController extends Controller
             $item->update( $request->input() );
             // return to sender
             return response()->json(['status' => 200, 'data' => $item->token.' updated.']);
+        }
+        return response()->json(['status' => 404, 'data' => 'Not found'], 404);
+    }
+
+
+
+    /**
+     * API - delete item via AJAX
+     */
+    public function APIdelete($id)
+    {
+        // find the single resource
+        $item = Item::find($id);
+        if ($item) {
+            // check authentication
+            $plan = Plan::find( $item->plan_id );
+            if (! $this->checkRights($plan)) {
+                return response()->json(['status' => 401, 'data' => 'Not authorized'], 401);
+            }
+            // get item and delete it
+            $item = deleteItem($id);
+            if ($item) {
+                return response()->json(['status' => 200, 'data' => 'Item deleted.']);
+            }
+            return response()->json(['status' => 405, 'data' => 'Item not deleted!']);
         }
         return response()->json(['status' => 404, 'data' => 'Not found'], 404);
     }

@@ -87,7 +87,8 @@ class Song extends Model
 
         // get list of plans using this song
         $plan = Plan::whereHas('items', function ($query) use ($id) {
-            $query->where('song_id', $id);
+            $query->where('song_id', $id) 
+                  ->where('date', '<', Carbon::now());
         })->orderBy('date', 'desc')->first();
 
         return $plan;

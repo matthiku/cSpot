@@ -6,6 +6,18 @@
  * (C) M.Kuhs Ireland, 2016
  */
 
+.modal-select-song, .modal-select-scripture, .modal-select-comment,  {
+    display: none;
+}
+
+
+.hover-only {
+    display: none;
+}
+.hover-show:hover + .hover-only {
+    display: inline-block;
+}
+
 .action-col {
     max-width: 8.5em;
 }
@@ -88,6 +100,8 @@ pre.text-present {
 }
 .table-items {
     border-bottom: 1px solid gray;
+    border-top: 1px solid gray;
+    border-collapse: separate;
 }
 .table-items tbody tr:hover {
     background-color: azure !important;
@@ -97,13 +111,6 @@ pre.text-present {
 }
 .table-normal {
     width: initial;
-}
-
-.table-striped tbody tr:nth-of-type(odd) {
-    background-color: #e2e8ea;
-}
-.table-striped tbody tr:nth-of-type(even) {
-    background-color: #f9f9f9;
 }
 
 

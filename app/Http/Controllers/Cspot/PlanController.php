@@ -6,6 +6,8 @@ namespace App\Http\Controllers\Cspot;
 
 use Illuminate\Http\Request;
 
+use Snap\BibleBooks\BibleBooks;
+
 use App\Http\Requests;
 use App\Http\Requests\StorePlanRequest;
 use App\Http\Controllers\Controller;
@@ -205,6 +207,8 @@ class PlanController extends Controller
                     'types'        => $types, 
                     'users'        => $users, 
                     'mp_song_list' => MPsongList(),
+                    'bibleBooks'   => new BibleBooks(),                     // array of bible books
+                    'versionsEnum' => json_decode(env('BIBLE_VERSIONS')),   // array of possible bible versions
                     'newest_item_id'  => 0,
                     'trashedItemsCount' => 0, 
                 )
@@ -321,6 +325,8 @@ class PlanController extends Controller
                 'types'        => $types, 
                 'users'        => $users, 
                 'mp_song_list' => MPsongList(),
+                'bibleBooks'   => new BibleBooks(),                     // array of bible books
+                'versionsEnum' => json_decode(env('BIBLE_VERSIONS')),   // array of possible bible versions
                 'newest_item_id'  => 0,
                 'trashedItemsCount' => 0, 
             )
@@ -370,6 +376,8 @@ class PlanController extends Controller
                     'types'        => $types, 
                     'users'        => $users, 
                     'mp_song_list' => MPsongList(),
+                    'bibleBooks'   => new BibleBooks(),                     // array of bible books
+                    'versionsEnum' => json_decode(env('BIBLE_VERSIONS')),   // array of possible bible versions
                     'newest_item_id'  => $newest_item_id,
                     'trashedItemsCount' => $trashedItemsCount, 
                 ) 

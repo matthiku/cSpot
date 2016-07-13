@@ -139,6 +139,7 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
 
     // API: update item data using AJAX
     Route::post('api/items/{item_id}/update', ['as'=>'cspot.api.items.update',  'uses'=>'Cspot\ItemController@APIupdate']);
+    Route::post('api/items/{item_id}/delete', ['as'=>'cspot.api.items.delete',  'uses'=>'Cspot\ItemController@APIdelete']);
 
 
 
