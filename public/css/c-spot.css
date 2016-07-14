@@ -9152,7 +9152,7 @@ a.bg-danger:focus, a.bg-danger:hover {
  */
 
 .modal-select-song, .modal-select-scripture, .modal-select-comment,  {
-    display: none;
+    display: none !important;
 }
 
 
@@ -9274,7 +9274,7 @@ pre.text-present {
 }
 
 .bg-khaki {
-    background-color: khaki !important;
+    background-color: rgb(240, 230, 140);
 }
 .bg-grey {
     background-color: #eee;

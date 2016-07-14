@@ -14,6 +14,7 @@ class Plan extends Model
     // mass assignment protection
 	protected $fillable = [
 		'date',
+		'date_end',
 		'leader_id',
 		'teacher_id',
 		'type_id',

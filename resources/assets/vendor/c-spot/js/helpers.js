@@ -1508,18 +1508,26 @@ function searchForSongs(that)
         var plan_id = $('#plan_id').val();
         var seq_no  = $('#seq-no' ).val();
 
-        // was this called via showUpdateSongForm function?
-        if (plan_id=="update-song") {
-            if (song_id!=undefined)
-                // attach lyrics to song_id input field, so that when user selects this song, we can attach it as title to the table cell
-                // (we get this from the selection in the search results to whose parent element the lyrics were attached)
-                $('#song_id').attr('title',$('input[name=searchRadios]:checked', '#searchSongForm').parent().attr('title'));
-                updateSong(song_id);
-            return;
-        }
-
         // check if user entered a comment
         var comment = $('#comment' ).val();
+
+        resetSearchForSongs();
+
+        // was this called via 'showUpdateSongForm' function?
+        if (plan_id=="update-song") {
+            if (song_id!=undefined) {
+                // attach lyrics to song_id input field, so that when user selects this song, we can attach it as title to the table cell
+                // (we get this from the selection in the search results to whose parent element the lyrics were attached)
+                $('#song_id').attr(  'title',  $('input[name=searchRadios]:checked', '#searchSongForm').parent().attr('title')  );
+                updateSong(song_id);
+            }
+            return;
+        }
+        // was this called via 'AddScriptureRef' button?
+        if (plan_id=="update-scripture") {
+            addScriptureRef(that);
+            return;
+        }
 
         // did user select a song? It should always be a string, even '0'....
         if ( (! song_id  || song_id == '0') && ! comment )
@@ -1541,7 +1549,9 @@ function searchForSongs(that)
         $('#searching').hide();                 // hide the spinner
 
         // for some reason, the form doesn't submit if only a comment was given...
-        if (comment) document.getElementById('searchSongForm').submit();
+        if (comment) {
+            document.getElementById('searchSongForm').submit();
+        }
     }
 
 }
@@ -1562,7 +1572,7 @@ function updateSong(song_id)
     myCell.children('.show-youtube-links').html('');
 
     // update item via AJAX
-    var actionURL = $('#searchSongForm').attr('action');
+    var actionURL = $('#searchSongForm').attr('data-action');
     $.post( actionURL, { song_id: song_id })
         .done(function(data) {
             // on success, show new song data
@@ -1593,11 +1603,11 @@ function updateSong(song_id)
 */
 function removeItem(that)
 {
-    myTR = that.parentElement.parentElement;                        // get handle on whole table row
-    myTD = that.parentElement;                                      // get handle on table cell
-    $(myTR).addClass('text-muted');                                 // 'mute' table row
-    $(myTD).children().hide();                                      // hide action buttons
-    $(myTD).append('<i class="fa fa-spinner fa-spin fa-fw"></i>');  // show spinner while updating
+    myTR = that.parentElement.parentElement.parentElement.parentElement; // get handle on whole TABLE ROW
+    myTD = that.parentElement.parentElement.parentElement;              // get handle on table CELL
+    $(myTR).addClass('text-muted');                                    // 'mute' table row
+    $(myTD).children().hide();                                        // hide action buttons
+    $(myTD).append('<i class="fa fa-spinner fa-spin fa-fw"></i>');   // show spinner while updating
 
     var actionURL = $(that).data().actionUrl;                       // delete item via AJAX
     $.post( actionURL )
@@ -1620,6 +1630,33 @@ function removeItem(that)
             $(myTD).text('Failed! Press F12 for more');
             console.log("Update failed! Please notify admin! " + JSON.stringify(data));
         });
+}
+
+
+function addScriptureRef(that)
+{
+    // get handle to table row containing the original comment
+    var seq_no = $('#seq-no').val();
+    var TRid = 'tr-item-'+seq_no.replace('.','-');
+
+    // get new comment value
+    var newText = $('#comment').val();
+
+    // send update via AJAX
+    var actionURL = $('#searchSongForm').attr('data-action');
+    that = $('#'+TRid).children(".comment-cell");                 // show spinner while updating
+    $(that).children(".comment-textcontent").html('<i class="fa fa-spinner fa-spin"></i>');
+    $.post( actionURL, { comment: newText })
+        .done(function(data) {
+            resetCommentText(TRid, newText);
+        })
+        .fail(function(data) {
+            $(that).children(".comment-textcontent").text('Failed! Press F12 for more');
+            console.log("Update failed! Please notify admin! " + JSON.stringify(data));
+        });
+
+    // close modal
+    $('#searchSongModal').modal('hide');
 }
 
 /*
@@ -2175,7 +2212,7 @@ $(document).ready(function() {
         // activate the tooltips
         $('[data-toggle="tooltip"]').tooltip();
 
-        // activate popvers
+        // activate popovers
         $('[data-toggle="popover"]').popover();
         $('.popover-dismiss').popover({
             trigger: 'focus'
@@ -2281,10 +2318,21 @@ $(document).ready(function() {
         if (plan_id=="update-song") {
             // directly activate the song selection
             showModalSelectionItems('song');
-            $('#searchSongForm'      ).attr('action', actionUrl);
+            $('#searchSongForm'      ).attr('data-action', actionUrl);
             $('#searchSongModalLabel').text('Select another song');
             $('#modal-show-item-id').text('for item No '+seq_no+':');
-        } else {
+        }
+        else if (plan_id=="update-scripture") {
+            // directly activate the song selection
+            showModalSelectionItems('scripture');
+            // use current comment text as initial value
+            $('#comment').val( button.parent().children().first().text().trim() );
+            // URL needed to update the comment as derived from the calling element
+            $('#searchSongForm'      ).attr('data-action', actionUrl);
+            $('#searchSongModalLabel').text('Select a scripture');
+            $('#modal-show-item-id').text('for item No '+seq_no+':');
+        } 
+        else {
             $('#modal-show-item-id').text('before item No '+seq_no+':');
         }
         // Update the modal's content

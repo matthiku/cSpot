@@ -4,10 +4,10 @@
 
 <div class="table-responsive">
 	<table class="table table-items
-		{{ count($plan->items)>5 ? 'table-sm' : ''}} {{ count($plan->items)>10 ? 'table-xs' : ''}}">
+		{{ count($plan->items)>5 ? 'table-sm' : 'm-t-3 m-b-4'}} {{ count($plan->items)>10 ? 'table-xs' : ''}}">
 
 		<tbody id="tbody-items">
-	    @foreach( $plan->items as $item )
+	    @foreach( $plan->items as $key => $item )
 
 			<?php 
 				// set variable for click-on-item action
@@ -21,8 +21,9 @@
 			?>
 
 			<tr id="tr-item-{{ str_replace('.', '-', $item->seq_no) }}" data-item-id="{{ $item->id }}" 
-				data-old-song-id="{{ ($item->song_id) ? $item->song->id : 'NULL' }}"
-				class="{{$item->deleted_at ? 'trashed text-muted' : ''}} {{ $newest_item_id==$item->id ? 'bg-khaki newest-item' : '' }}">
+				data-old-song-id="{{ $item->song_id  ?  $item->song->id 	  : 'NULL' }}"
+				class="{{ 		   $item->deleted_at ? 'trashed text-muted'   : '' }} 
+					   {{ $newest_item_id==$item->id ? 'bg-khaki newest-item' : '' }}">
 
 
 				<td class="drag-item dont-print" scope="row" title="drag item into the new position">
@@ -33,7 +34,7 @@
 
 				<td class="hidden-md-down center always-print show-songbook-ref" title="click to change"
 					data-toggle="modal" data-target="#searchSongModal" data-item-id="{{ $item->id }}"
-					data-plan-id="update-song" data-item-id="{{$item->id}}" data-seq-no="{{ $item->seq_no }}" 
+					data-plan-id="update-song" data-seq-no="{{ $item->seq_no }}" 
 					data-action-url="{!! route('cspot.api.items.update', $item->id) !!}">
 					{{ ($item->song_id) ? $item->song->book_ref : '' }}</td>
 
@@ -60,17 +61,22 @@
 					<span class="hover-only fa fa-pencil text-muted"></span>
 				</td>
 
-				<td onclick="editItemComment(this)" class="hidden-lg-down center comment-cell" title="click to change"
+				<!-- COMMENT column - allow for inline editing -->
+				<td onclick="editItemComment(this)" class="hidden-lg-down center comment-cell" title="click to change" contenteditable="true" 
+					onmouseover="$('.add-scripture-ref').show()" onmouseout="$('.add-scripture-ref').hide()" 
 					data-action-url="{!! route('cspot.api.items.update', $item->id) !!}">
 					@if ( substr($item->comment, 0,4 )=='http' )
-						<a href="{{ $item->comment }}" target="new">
-							{{ $item->comment }}
-							<i class="fa fa-globe"></i>
-						</a>
+						<a href="{{ $item->comment }}" target="new">{{ $item->comment }}<i class="fa fa-globe"></i></a>
 					@else
 						<span class="comment-textcontent hover-show">{{ $item->comment }}</span>
-						<!-- allow for inline editing -->
 						<span class="{{ $item->comment ? 'hover-only' : ''}} fa fa-pencil text-muted"></span>
+						<span class="text-muted add-scripture-ref" style="display: none" title="add scripture reference"
+							onmouseover="$('.comment-cell').attr('onclick','')" onmouseout="$('.comment-cell').attr('onclick','editItemComment(this)')" 
+							data-toggle="modal" data-target="#searchSongModal" data-item-id="{{ $item->id }}"
+							data-plan-id="update-scripture" data-seq-no="{{ $item->seq_no }}" 
+							data-action-url="{!! route('cspot.api.items.update', $item->id) !!}">
+							<i class="fa fa-book"></i><sup>+</sup>
+						</span>
 					@endif
 				</td>
 
@@ -168,7 +174,7 @@
 	                        <a href="#" title="Play here" class="red" data-toggle="tooltip"
 	                        	onclick="showYTvideoInModal('{{ $item->song->youtube_id }}', '{{ $item->song->title }}')">
 	                            <i class="fa fa-youtube-play"></i></a>
-                            <a title="Play in new tab" data-toggle="tooltip" target="new" class="pull-xs-right"
+                            <a title="Play in new tab" data-toggle="tooltip" target="new" class="hidden-md-down pull-xs-right"
                             	href="https://www.youtube.com/watch?v={{ $item->song->youtube_id }}">
                             	<i class="fa fa-external-link"></i></a>
 	                    @endif
@@ -202,34 +208,33 @@
 							@endif
 						</span>
 						@if (! $item->deleted_at)
-							{{-- insert new item before the current --}}
-							<!-- <a class="btn btn-secondary btn-sm" data-toggle="tooltip"
-								data-placement="left" title="add song here" 
-								href='{{ url('cspot/plans/'.$plan->id) }}/items/create/before/{{$item->id}}'>
-								<i class="fa fa-reply"></i></a> -->
 
 							{{-- new MODAL POPUP to add a song --}}
 							<button type="button" class="btn btn-secondary btn-sm text-info" data-toggle="modal" data-target="#searchSongModal"
 								data-plan-id="{{$plan->id}}" data-item-id="{{$item->id}}" data-seq-no="{{$item->seq_no}}" 
 								href='#' title="insert song, scripture or comment before this item">
-								<i class="fa fa-plus"></i><i class="fa fa-music"></i>
+								<i class="fa fa-music"></i><sup>+</sup>
 							</button>
 
-							@if ($item->song_id)
-			 					<a class="btn btn-secondary btn-sm hidden-sm-down edit-song-link" data-toggle="tooltip" title="Edit Song" 
-									href='{{ url('cspot/songs/'.$item->song->id) }}/edit/'>
-										<i class="fa fa-music"></i><i class="fa fa-pencil text-muted"></i>
-								</a>
-							@else
-			 					<a class="btn btn-secondary btn-sm hidden-sm-down" data-toggle="tooltip" title="Edit Item" 
-									href='{{ url('cspot/plans/'.$plan->id) }}/items/{{$item->id}}/edit/'>
-									&nbsp;&nbsp;<i class="fa fa-pencil fa-lg"></i>&nbsp;</a>
-							@endif
+							{{-- new DROPDOWN MENU for editing or deleting items --}}
+							<div class="btn-group {{ count($plan->items)-3 < $key  &&  $key > 0 ? 'dropup' : '' }}">
+								<button type="button" class="btn btn-secondary btn-sm dropdown-toggle" 
+									data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									<i class="fa fa-ellipsis-v"></i>
+								</button>
+								<div class="dropdown-menu dropdown-menu-right">
+									@if ($item->song_id)
+					 				<a class="dropdown-item edit-song-link" href='{{ url('cspot/songs/'.$item->song->id) }}/edit/'>
+										<i class="fa fa-music"></i><i class="fa fa-pencil text-muted"></i>&nbsp;Edit Song</a>
+									@endif
+					 				<a class="dropdown-item" href='{{ url('cspot/plans/'.$plan->id) }}/items/{{$item->id}}/edit/'>
+										<i class="fa fa-pencil fa-lg"></i>&nbsp; &nbsp;Edit Item</a>
 
-							<a class="text-warning hidden-md-down" data-toggle="tooltip" title="Remove this item" data-placement="left"
-								href='#' onclick="removeItem(this)"
-								data-action-url="{!! route('cspot.api.items.delete', $item->id) !!}">
-								&nbsp;<i class="fa fa-trash fa-lg"></i></a>
+									<a class="dropdown-item text-warning" href='#' onclick="removeItem(this)"
+										data-action-url="{!! route('cspot.api.items.delete', $item->id) !!}">
+										<i class="fa fa-trash fa-lg"></i>&nbsp; &nbsp;Remove item</a>
+								</div>
+							</div>
 
 						@endif
 					@endif

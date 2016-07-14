@@ -116,7 +116,7 @@
                             onclick="$('#show-spinner').modal({keyboard: false});" 
                             data-template='<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><pre class="tooltip-inner tooltip-medium"></pre></div>'
                             data-placement="bottom" data-toggle="tooltip" title="{{ $teamList }}">
-                            <i class="fa fa-users"></i>&nbsp;Team <small>({{$plan->teams->count()}})</small>
+                            <i class="fa fa-users"></i>&nbsp;Team<small>({{$plan->teams->count()}})</small>
                         </a> 
                     </big>
                 </div>
@@ -468,7 +468,7 @@
                             onclick="showModalSelectionItems('comment')"    >Comment    </a>
                     </div>
 
-                    <div class="modal-body">
+                    <div class="modal-body modal-select-comment modal-select-song modal-select-scripture" style="display: none;">
                         <input type="text"   id="comment" name="comment"
                             class="center-block m-b-1 modal-select-comment modal-input-comment modal-select-scripture fully-width">
 
@@ -485,11 +485,7 @@
                         <select class="form-control m-b-1 search-form-item modal-select-song" id="MPselect" onchange="$('#searchForSongsButton').click();">
                             <option value="0">select....</option>
                             {{-- only add MP songs --}}
-                            @foreach ($mp_song_list as $song)                                
-                                @if ( substr($song->book_ref,0,2)=='MP')
-                                    <option value="{{ $song->id }}">{{ $song->number }} - {{ $song->title }}</option>
-                                @endif
-                            @endforeach
+                            @foreach ($mp_song_list as $song){!!substr($song->book_ref,0,2)=='MP' ? '<option value="'.$song->id.'">'.$song->number.' - '.$song->title.'</option>' : ''!!}@endforeach
                         </select>
 
                         <label for="haystack" class="search-form-item modal-select-song">..or search Song title or number</label>
@@ -509,8 +505,9 @@
                     </div>
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary modal-select-song" onclick="resetSearchForSongs()">Restart</button>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button class="btn btn-secondary modal-select-song modal-select-comment modal-select-scripture" 
+                            type="button" onclick="resetSearchForSongs()">Restart</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="resetSearchForSongs()">Cancel</button>
                         <a href="#" class="btn btn-primary modal-select-song" id="searchForSongsButton" onclick="searchForSongs()">Search</a>
                         <button type="submit" class="btn btn-primary" 
                             id="searchForSongsSubmit" onclick="searchForSongs(this)">Submit</button>
