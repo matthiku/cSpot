@@ -128,10 +128,6 @@ class TypeController extends Controller
     {
         // was there any change?
         $output = Type::find($id);
-        if ($request->input('name') == $output->name) {
-            return \Redirect::route('admin.types.index')
-                        ->with(['status' => 'no change']);
-        }
         // get this Type
         Type::where('id', $id)
                 ->update($request->except(['_method','_token']));

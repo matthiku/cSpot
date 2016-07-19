@@ -194,7 +194,7 @@
 						href='{{ url('cspot/items/'.$item->id) }}/present'>
 						&nbsp;<i class="fa fa-tv fa-lg"></i>&nbsp;</a>
 					@endif
-					@if( Auth::user()->ownsPlan($plan->id) && $plan->date > \Carbon\Carbon::yesterday() )
+					@if( Auth::user()->ownsPlan($plan->id) && $plan->date >= \Carbon\Carbon::yesterday() )
 						<span class="trashedButtons" style="display: {{ $item->deleted_at ? 'initial' : 'none' }}">
 							<a class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="left" title="Restore this item" 
 								href='{{ url('cspot/items/'.$item->id) }}/restore'>
@@ -251,7 +251,7 @@
 </div>
 
 
-@if( Auth::user()->ownsPlan($plan->id) && $plan->date > \Carbon\Carbon::yesterday() )
+@if( Auth::user()->ownsPlan($plan->id) && $plan->date >= \Carbon\Carbon::yesterday() )
 
 	<div class="pull-xs-right m-l-2" id="trashedItems" 
 		 style="display: {{ $trashedItemsCount ? 'initial' : 'none' }}">

@@ -37750,6 +37750,19 @@ function resetCommentText(id, newText) {
 \*/
 
 
+function fillDefaultServiceTimes(that)
+{
+    // get selected service type
+    var selSerType = $(that).val();
+    // read default times from global var
+    var start = serviceTypes[selSerType].start;
+    var   end = serviceTypes[selSerType].end;
+    // assign to times input fields
+    $($('#planServiceTimes').children('input')[0]).val(start);
+    $($('#planServiceTimes').children('input')[1]).val( end );
+}
+
+
 /*
     parse an URL string
 

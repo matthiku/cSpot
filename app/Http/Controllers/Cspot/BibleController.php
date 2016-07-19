@@ -163,6 +163,9 @@ class BibleController extends Controller
         $rr = new StdClass;
         $rr->response = $response;
 
+        // return now if for some reason (offline?) the html document could not be received
+        if (! $html) return $rr;
+
         # Create a DOM parser object
         $dom = new DOMDocument;
         libxml_use_internal_errors(true);

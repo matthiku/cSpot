@@ -14,6 +14,8 @@ class Plan extends Model
     // mass assignment protection
 	protected $fillable = [
 		'date',
+		'start',
+		'end',
 		'date_end',
 		'leader_id',
 		'teacher_id',
@@ -26,7 +28,7 @@ class Plan extends Model
 		'created_at', 'updated_at'
 	];
 	protected $dates = [
-		'date', 'created_at', 'updated_at'
+		'date', 'date_end', 'created_at', 'updated_at'
 	];
 	// protected $dateFormat = 'U';
 

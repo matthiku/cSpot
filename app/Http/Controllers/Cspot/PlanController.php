@@ -264,6 +264,27 @@ class PlanController extends Controller
         // set some defaults
         $plan->changer = Auth::user()->first_name;
         $plan->state = 1;
+
+        $planDate = Carbon::instance($plan->date);
+        // insert default service TIMES if requested
+        if ($request->input('defaultTimes')=='Y') {
+            $type = Type::find($plan->type_id);
+            if (count($type)) {
+                // default end time is only the time of day. We need to combine this with the plan date
+                $startTme = Carbon::parse(   $type->start);
+                $endTime  = Carbon::parse(   $type->end  );
+                $plan->date     = $planDate->copy()->addHour($startTme->hour)->addMinute($startTme->minute);
+                $plan->date_end = $planDate->addHour(         $endTime->hour)->addMinute( $endTime->minute);
+            }
+        }
+        else {
+            // request contains custom start and end times
+            $startTme = Carbon::parse(   $request->start );
+            $endTime  = Carbon::parse(   $request->end   );
+            $plan->date     = $planDate->copy()->addHour($startTme->hour)->addMinute($startTme->minute);
+            $plan->date_end = $planDate->addHour(         $endTime->hour)->addMinute( $endTime->minute);
+        }
+
         $plan->save();
 
         addDefaultRolesToPlan($plan);
@@ -368,11 +389,19 @@ class PlanController extends Controller
                 $newest_item_id = session()->get('newest_item_id');
                 session()->forget('newest_item_id');
             }
+
+            // get service times from plan dates
+            $plan->start = Carbon::instance($plan->date)->toTimeString();
+            // for backwards compatibility, we allowed for null as end date
+            if ($plan->date_end)
+                $plan->end   = Carbon::instance($plan->date_end)->toTimeString();
+            else
+                $plan->end = "23:59";
             
             return view( 
                 $this->view_one, 
                 array(
-                    'plan'         => $plan, 
+                    'plan'         => $plan,
                     'types'        => $types, 
                     'users'        => $users, 
                     'mp_song_list' => MPsongList(),
@@ -406,8 +435,18 @@ class PlanController extends Controller
         // check if leader or teacher was changed
         checkIfLeaderOrTeacherWasChanged( $request, $plan );
 
-        //$plan->save();
-        $plan->update( $request->except(['_method','_token']) );
+        // update Service Times
+        //TODO: allow for end-time on the next day!
+        $planDate = Carbon::parse($request->date );
+        $startTme = Carbon::parse($request->start);
+        $endTime  = Carbon::parse($request->end  );
+        $plan->date     = $planDate->copy()->addHour($startTme->hour)->addMinute($startTme->minute);
+        $plan->date_end = $planDate->addHour(         $endTime->hour)->addMinute( $endTime->minute);
+
+        if ($endTime->lt($startTme))
+            $plan->date_end = $plan->date_end->addDay();
+
+        $plan->update( $request->except(['_method','_token','date','start','end']) );
 
         flash('Plan with id "' . $id . '" updated');
         return redirect()->back();

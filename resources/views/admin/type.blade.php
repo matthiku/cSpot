@@ -24,6 +24,10 @@
     @endif
         <p>{!! Form::label('name', 'Type Name'); !!}<br>
            {!! Form::text('name'); !!}</p>
+        <p>{!! Form::label('start', 'Usual start'); !!}<br>
+           {!! Form::time('start'); !!}</p>
+        <p>{!! Form::label('end', 'Usual end'); !!}<br>
+           {!! Form::time('end'); !!}</p>
 
     @if (isset($type))
         <p>{!! Form::submit('Update'); !!}</p>

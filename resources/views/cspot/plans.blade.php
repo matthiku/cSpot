@@ -57,6 +57,8 @@
 					
 					@include('cspot.snippets.theader', ['thfname' => 'type_id', 'thdisp' => 'Service Type', 'thsort'=>false, 'thclass'=>''])
 
+					<th class="hidden-lg-down center">Times</th>
+
 					<th class="center" title="Check when you are available for that particular plan"
 						data-toggle="tooltip" title="Check when you are available for that particular plan">
 						<small>Available?</small></th>
@@ -90,6 +92,14 @@
 					<td {!! $editPlansHtml !!} class="link hidden-md-up">{{ $plan->date->formatLocalized('%a, %d %b') }}</td>
 
 					<td {!! $editPlansHtml !!} class="link">{{ $plan->type->name }}</td>
+
+					<td {!! $editPlansHtml !!} class="link hidden-lg-down center" scope="row">
+						@if ($plan->date->hour==0 && $plan->date->minute==0 && ! $plan->date_end )
+							n/a
+						@else
+							{{ $plan->date->formatLocalized('%H:%M') }}{{ $plan->date_end ? '-'.$plan->date_end->formatLocalized('%H:%M') : ''}}
+						@endif
+					</td>
 
 					<td class="center">
 						<a class="hidden-lg-up pull-xs-right" title="show team for this plan" href="{{ url('cspot/plans/'.$plan->id) }}/team">staff</a>

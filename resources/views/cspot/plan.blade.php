@@ -50,31 +50,31 @@
 
             @if ( isset($plan) && $plan->items()->count() )
 
-            <div class="dont-print">
-                <div class="pull-xs-right">
-                    <a title="Show sheetmusic (if available) for the songs on this plan"
-                        onclick="$('#show-spinner').modal({keyboard: false});" 
-                        href="{{ url('cspot/items/'.$plan->firstItem()->id.'/sheetmusic/') }}">
-                        <i class="fa fa-music">&nbsp;</i>Sheetmusic</a>
+                <div class="dont-print">
+                    <div class="pull-xs-right">
+                        <a title="Show sheetmusic (if available) for the songs on this plan"
+                            onclick="$('#show-spinner').modal({keyboard: false});" 
+                            href="{{ url('cspot/items/'.$plan->firstItem()->id.'/sheetmusic/') }}">
+                            <i class="fa fa-music">&nbsp;</i>Sheetmusic</a>
+                    </div>
+                    <div class="pull-xs-right m-r-1">
+                        <a title="Show guitar chords (if available) for the songs on this plan" 
+                            onclick="$('#show-spinner').modal({keyboard: false});" 
+                            href="{{ url('cspot/items/').'/'.$plan->firstItem()->id }}/chords">
+                            <i class="fa fa-file-code-o">&nbsp;</i>Chords</a>
+                    </div>
+                    <div class="pull-xs-right m-r-1">
+                        <a title="Start projector-enabled presentation of each song and scripture reading in this plan" 
+                            onclick="$('#show-spinner').modal({keyboard: false});" 
+                            href="{{ url('cspot/items/'.$plan->firstItem()->id.'/present/') }}">
+                            <i class="fa fa-tv">&nbsp;</i>Present</a>
+                    </div>
+                    <div class="pull-xs-right m-r-1">
+                        <a title="YouTube playlist of all songs" target="new" 
+                            href="https://www.youtube.com/playlist?list=PL4XL7HPBoyv9Pcf0ZFWfa2GLY2VKPfZqz">
+                            <i class="fa fa-youtube">&nbsp;</i>play all</a>
+                    </div>
                 </div>
-                <div class="pull-xs-right m-r-1">
-                    <a title="Show guitar chords (if available) for the songs on this plan" 
-                        onclick="$('#show-spinner').modal({keyboard: false});" 
-                        href="{{ url('cspot/items/').'/'.$plan->firstItem()->id }}/chords">
-                        <i class="fa fa-file-code-o">&nbsp;</i>Chords</a>
-                </div>
-                <div class="pull-xs-right m-r-1">
-                    <a title="Start projector-enabled presentation of each song and scripture reading in this plan" 
-                        onclick="$('#show-spinner').modal({keyboard: false});" 
-                        href="{{ url('cspot/items/'.$plan->firstItem()->id.'/present/') }}">
-                        <i class="fa fa-tv">&nbsp;</i>Present</a>
-                </div>
-                <div class="pull-xs-right m-r-1">
-                    <a title="YouTube playlist of all songs" target="new" 
-                        href="https://www.youtube.com/playlist?list=PL4XL7HPBoyv9Pcf0ZFWfa2GLY2VKPfZqz">
-                        <i class="fa fa-youtube">&nbsp;</i>play all</a>
-                </div>
-            </div>
             @endif
             @if ( isset($plan) )
 
@@ -123,7 +123,7 @@
             @endif
 
 
-            @if ( Auth::user()->isEditor() && isset($plan) && $plan->date > \Carbon\Carbon::yesterday() ) 
+            @if ( Auth::user()->isEditor() && isset($plan) && $plan->date >= \Carbon\Carbon::yesterday() ) 
                 <div class="pull-xs-right plan-details small">
                     &nbsp; <a href="#" onclick="$('.plan-details').toggle()">edit plan details</a>
                 </div>
@@ -166,7 +166,7 @@
             <div class="col-xl-4 col-lg-6">
                 <div class="row form-group">
                     <select name="type_id" class="form-control text-help plan-form-minw c-select" 
-                        onchange="enableSaveButton(this)">
+                        onchange="fillDefaultServiceTimes(this)">
                         @if (! isset($plan) && ! isset($defaultValues['type_id'] ))
                             <option selected>
                                 Select ...
@@ -208,6 +208,15 @@
                             ['class' => 'plan-form-minw center', 'onchange' => 'enableSaveButton(this)' ] )
                         !!}
                     @endif
+                    <div class="form-group" id="editPlanServiceTimes">
+                        {!! Form::label('start', 'Service Time:'); !!}
+                        {!! Form::time( 'start'); !!} - 
+                        {!! Form::time( 'end');   !!}      
+                    </div>
+                    <script>
+                        $($('#editPlanServiceTimes').children('input')[0]).attr('onchange', 'enableSaveButton(this)');
+                        $($('#editPlanServiceTimes').children('input')[1]).attr('onchange', 'enableSaveButton(this)');
+                    </script>
                 </div>
             </div>                    
         @endif
@@ -310,7 +319,7 @@
 
         @include('cspot.items')
 
-        @if (Auth::user()->ownsPlan($plan->id) && $plan->date > \Carbon\Carbon::yesterday() )
+        @if (Auth::user()->ownsPlan($plan->id) && $plan->isFuture() )
             <a href="{{ url('cspot/songs?plan_id='.$plan->id) }}"  onclick="showSpinner()"
                 title="Search for a song via the full song listing" 
                 class="btn btn-sm btn-info pull-xs-right">
@@ -326,9 +335,23 @@
                 <input checked="checked" type="checkbox" value="Y" name="defaultItems">
                 Insert default items for this plan?
             </label>
-        </div>                
+        </div>    
+        <!-- Checkbox to add default TIMES into NEW plan -->
+        <input type="hidden" name="defaultTimes" value="false">
+        <div class="checkbox center">
+            <label>
+                <input checked="checked" type="checkbox" value="Y" name="defaultTimes"
+                    onclick="$('#planServiceTimes').toggle()">
+                Insert default Start- and End-times for this plan?
+            </label>
+            <div class="center" id="planServiceTimes" style="display: none">
+                {!! Form::label('start', 'New times:'); !!}
+                {!! Form::time( 'start'); !!} - 
+                {!! Form::time( 'end');   !!}      
+            </div>
+        </div>
 
-        <!-- what to do after creating this plan? Either go to this plan or add another one of this type -->
+        <!-- what to do after creating this plan? Either go to the new plan or add another one of this type -->
         <input type="hidden" name="addAnother" value="false">
         <div class="checkbox center">
             <label>
@@ -439,13 +462,16 @@
                     if (count>5) break;
                 };
                 $('#txtHint').html(found);
-            @endif
-        }
+            }
+        @endif
+        @if (isset($types))
+            var serviceTypes = JSON.parse('{!! json_encode($types, JSON_HEX_APOS | JSON_HEX_QUOT) !!}');
+        @endif
     </script>   
 
 
 
- @if (isset($plan))
+@if (isset($plan))
     <!-- Modal to search for new song -->
     <form id="searchSongForm" action="{{url('cspot/items')}}" method="POST">
         <div class="modal fade" id="searchSongModal" tabindex="-1" role="dialog" aria-labelledby="searchSongModalLabel" aria-hidden="true">

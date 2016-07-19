@@ -14,7 +14,7 @@ class CreatePlansTable extends Migration
     {
         Schema::create('plans', function (Blueprint $table) {
             $table->increments('id');
-            $table->date('date');
+            $table->datetime('date');
             $table->integer('leader_id' )->unsigned()->index();
             $table->foreign('leader_id' )->references('id')->on('users')->onDelete('no action');
             $table->integer('teacher_id')->unsigned();
