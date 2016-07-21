@@ -261,7 +261,7 @@ class SongController extends Controller
     public function searchSong(Request $request)
     {
         $result = false;
-        if (isset($request->song_id) && $request->song_id>0) {
+        if (isset($request->song_id) && intval($request->song_id)>0) {
             $found = Song::find($request->song_id);
             $found->plans = $found->plansUsingThisSong();
             $result[0] = $found;
@@ -275,7 +275,7 @@ class SongController extends Controller
                 $song->plans = $song->plansUsingThisSong();
             }
         }
-        if ($result) {
+        if (count($result)) {
             // return to sender
             return response()->json(['status' => 200, 'data' => json_encode($result)]);
         }

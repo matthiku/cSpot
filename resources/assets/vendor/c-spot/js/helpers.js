@@ -1511,8 +1511,6 @@ function searchForSongs(that)
         // check if user entered a comment
         var comment = $('#comment' ).val();
 
-        resetSearchForSongs();
-
         // was this called via 'showUpdateSongForm' function?
         if (plan_id=="update-song") {
             if (song_id!=undefined) {
@@ -1533,6 +1531,9 @@ function searchForSongs(that)
         if ( (! song_id  || song_id == '0') && ! comment )
             // nothing selected and comment is empty
             return false; // no
+
+        // reset search form back to normal
+        resetSearchForSongs();
 
         showSpinner()
         $('#searchForSongsButton').toggle();
