@@ -1644,10 +1644,15 @@ function addScriptureRef(that)
     var newText = $('#comment').val();
 
     // send update via AJAX
-    var actionURL = $('#searchSongForm').attr('data-action');
+    var actionURL = __app_url + '/cspot/api/items/update';
+
     that = $('#'+TRid).children(".comment-cell");                 // show spinner while updating
     $(that).children(".comment-textcontent").html('<i class="fa fa-spinner fa-spin"></i>');
-    $.post( actionURL, { comment: newText })
+
+    $.post( actionURL, { 
+            value : newText,
+            id    : $(that).children(".comment-textcontent").attr('id'),
+        })
         .done(function(data) {
             resetCommentText(TRid, newText);
         })
@@ -1659,59 +1664,6 @@ function addScriptureRef(that)
     // close modal
     $('#searchSongModal').modal('hide');
 }
-
-/*
-    Allow inline editing of item comments in the Plan View
-    - first call of this function opens the input box
-    - second call sends the updated comment to the server
-*/
-function editItemComment(that)
-{
-    // this function can be called either from the table cell or by clicking on the 'pencil' icon
-    if (that.nodeName=='SPAN') that = that.parentElement;
-    // get the old comment text
-    var oldText = $(that).children(".comment-textcontent").text().trim();
-    var TRid=$(that).parent().attr('id');
-
-    // if the original comment text is visible, we are not in editing mode
-    if ($(that).children(".comment-textcontent").is(':visible')) 
-    {
-        $(that).children(".fa-pencil").addClass("fa-check").removeClass("fa-pencil");   // replace the 'editing' icon with the 'OK' icon
-        $(that).children(".comment-textcontent").hide();                                // hide the old commment
-        $(that).prepend('<input type=text value="'+oldText+'"">');                      // insert a text INPUT element
-        $(that).children("input").focus();                                              // and set the focus
-        $(that).children("input").width($(that).width()-20);                            // 
-        $(that).children("input").blur(function() { editItemComment(that); });          // call this function again when user moves focus away
-        $(that).prop(    'onclick', null);                                              // user can't trigger this function while we are editing the comment
-        $(that).children(".fa-check").attr('onclick', 'editItemComment(this)');         // user can click on the 'OK' icon to save the updated comment
-        $(that).children(".fa-check").css('display', 'inline-block');                   // un-hide the 'OK' icon
-    } 
-    else // save the updated comment text
-    {
-        var newText = $(that).children("input").val();                                  // get new comment from input box
-        $(that).children("input").remove();                                             // remove the input box element from the DOM
-        $(that).children(".fa-check").addClass("fa-pencil").removeClass("fa-check");    // turn the 'OK' icon back into an 'edit' icon
-        $(that).children(".comment-textcontent").show()                                 // show the spinner while we are sending the updated comment to the host
-            .html('<i class="fa fa-spinner fa-spin fa-fw"></i>');
-        $(that).children(".fa-pencil").css('display', 'none');
-
-        // don't save if there was no change
-        if (oldText == newText) {
-            window.setTimeout( 'resetCommentText("'+TRid+'","'+newText+'")', 1000 );
-            return;
-        }
-        // send update via AJAX
-        var actionURL = $(that).data().actionUrl;
-        $.post( actionURL, { comment: newText })
-            .done(function(data) {
-                resetCommentText(TRid, newText);
-            })
-            .fail(function(data) {
-                $(that).children(".comment-textcontent").text('Failed! Press F12 for more');
-                console.log("Update failed! Please notify admin! " + JSON.stringify(data));
-            });
-    }
-}
 /*
     show comment text again
 */
@@ -1720,10 +1672,7 @@ function resetCommentText(id, newText) {
     $(that).children(".comment-textcontent").text(newText);
     if (! newText)      // only show 'edit' icon when comment is empty
         $(that).children(".fa-pencil").css('display', 'inline');
-    $(that).attr('onclick', 'editItemComment(this)');
 }
-
-
 
 
 
@@ -2184,6 +2133,19 @@ function blink(selector){
 
 
 $(document).ready(function() {
+
+
+
+
+    /**
+     * Make certain content editable
+     */
+    $('.edit').editable(__app_url + '/cspot/api/items/update', {
+        indicator : 'Saving...',
+        style     : 'display: inline',
+    });
+
+
 
 
     /**

@@ -61,24 +61,31 @@
 					<span class="hover-only fa fa-pencil text-muted"></span>
 				</td>
 
+
+
 				<!-- COMMENT column - allow for inline editing -->
-				<td onclick="editItemComment(this)" class="hidden-lg-down center comment-cell" title="click to change" contenteditable="true" 
-					onmouseover="$('.add-scripture-ref').show()" onmouseout="$('.add-scripture-ref').hide()" 
-					data-action-url="{!! route('cspot.api.items.update', $item->id) !!}">
+				<td class="hidden-lg-down center comment-cell" title="click to change"
+					onmouseover="$('.add-scripture-ref').show()" onmouseout="$('.add-scripture-ref').hide()">
+
+					{{-- is the comment text a link? --}}
 					@if ( substr($item->comment, 0,4 )=='http' )
 						<a href="{{ $item->comment }}" target="new">{{ $item->comment }}<i class="fa fa-globe"></i></a>
+
 					@else
-						<span class="comment-textcontent hover-show">{{ $item->comment }}</span>
+						<span id="comment-item-id-{{ $item->id }}" class="edit comment-textcontent hover-show">{{ $item->comment }}</span>
 						<span class="{{ $item->comment ? 'hover-only' : ''}} fa fa-pencil text-muted"></span>
+
+						{{-- icon to add scripture reference --}}
 						<span class="text-muted add-scripture-ref" style="display: none" title="add scripture reference"
-							onmouseover="$('.comment-cell').attr('onclick','')" onmouseout="$('.comment-cell').attr('onclick','editItemComment(this)')" 
 							data-toggle="modal" data-target="#searchSongModal" data-item-id="{{ $item->id }}"
 							data-plan-id="update-scripture" data-seq-no="{{ $item->seq_no }}" 
 							data-action-url="{!! route('cspot.api.items.update', $item->id) !!}">
 							<i class="fa fa-book"></i><sup>+</sup>
 						</span>
 					@endif
+
 				</td>
+
 
 
 				{{-- show combined song-title and comment column on small devices --}}

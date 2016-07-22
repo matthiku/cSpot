@@ -526,23 +526,27 @@ class ItemController extends Controller
 
 
     /**
-     * API - update item via AJAX
+     * API - update single fields of item via AJAX
      */
-    public function APIupdate(Request $request, $id)
+    public function APIupdate(Request $request)
     {
-        // find the single resource
-        $item = Item::find($id);
-        if ($item) {
-            // check authentication
-            $plan = Plan::find( $item->plan_id );
-            if (! $this->checkRights($plan)) {
-                return response()->json(['status' => 401, 'data' => 'Not authorized'], 401);
+        if ($request->has('id') && $request->has('value') ) {
+            $field_name = explode('-', $request->id)[0];
+            $item_id    = explode('-', $request->id)[3];
+            // find the single resource
+            $item = Item::find($item_id);
+            if ($item) {
+                // check authentication
+                $plan = Plan::find( $item->plan_id );
+                if (! $this->checkRights($plan)) {
+                    return response()->json(['status' => 401, 'data' => 'Not authorized'], 401);
+                }
+                $item->update( [$field_name => $request->value] );
+                // return text to sender
+                return $item[$field_name];
             }
-            $item->update( $request->input() );
-            // return to sender
-            return response()->json(['status' => 200, 'data' => $item->token.' updated.']);
         }
-        return response()->json(['status' => 404, 'data' => 'Not found'], 404);
+        return response()->json(['status' => 404, 'data' => 'API: Item not found'], 404);
     }
 
 
