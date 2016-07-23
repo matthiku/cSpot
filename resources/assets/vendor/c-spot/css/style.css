@@ -6,6 +6,7 @@
  * (C) M.Kuhs Ireland, 2016
  */
 
+
 .modal-select-song, .modal-select-scripture, .modal-select-comment,  {
     display: none !important;
 }

@@ -519,7 +519,7 @@
                         <div class="search-form-item modal-select-song" id="txtHint"></div>
 
                         <input type="hidden" id="seq-no">
-                        <input type="hidden" id="plan_id"       name="plan_id" data-search-url="{{ url('cspot/songs/search') }}/">
+                        <input type="hidden" id="plan_id"       name="plan_id" data-search-url="{{ url('cspot/songs/search') }}">
                         <input type="hidden" id="beforeItem_id" name="beforeItem_id">
                         <input type="hidden" id="song_id"       name="song_id">
                         {{ csrf_field() }}

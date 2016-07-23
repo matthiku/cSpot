@@ -122,7 +122,11 @@ function reFormatBibleText()
                         refNo += 1;
                     }
                     verse_from = rfc.verse_from;
-                    verse_to   = rfc.verse_to;
+                    // if verse_to is ommitted, we use verse_from
+                    if (rfc.verse_to != undefined)
+                        verse_to   = rfc.verse_to;
+                    else 
+                        verse_to   = rfc.verse_from;
                 }
             });
         }
@@ -1484,7 +1488,7 @@ function searchForSongs(that)
                     }
                     html += '<div onclick="$(\'#searchForSongsSubmit\').click()" class="c-inputs-stacked'+ (i%2==0 ? ' even' : '') +'">';
                     html +=     '<label class="c-input c-radio" title="';
-                    html +=         result[i].lyrics + '"><input type="radio" name="searchRadios" value="';
+                    html +=         result[i].lyrics.replace(/"/g,"&quot;") + '"><input type="radio" name="searchRadios" value="';
                     html +=         result[i].id +'"><span class="c-indicator"></span>';
                     html +=         (result[i].book_ref ? '('+result[i].book_ref+') ' : ' ')  + result[i].title + ' ';
                     html +=         '<small>'+result[i].title_2+'<br><span class="pull-xs-right">';
@@ -2139,10 +2143,19 @@ $(document).ready(function() {
 
     /**
      * Make certain content editable
+     *
+     * (see http://www.appelsiini.net/projects/jeditable)
      */
-    $('.edit').editable(__app_url + '/cspot/api/items/update', {
-        indicator : 'Saving...',
+    $('.editable').editable(__app_url + '/cspot/api/items/update', {
         style     : 'display: inline',
+        indicator : 'Saving...',
+        data      : function(value, settings) {
+            // check if text is a simple string or a html element
+            // Issue: when comment contains a string AND a bible ref...
+            if (value.substr(0,2)=='<a')
+                return $(value).text();
+            return value;
+        }
     });
 
 
@@ -2151,8 +2164,6 @@ $(document).ready(function() {
     /**
      * Show WAIT spinner for all navbar anchor items
      */
-    //$('a.dropdown-item, a.nav-link, input:submit, input.form-submit').click( function() {
-        //if (this.classList.contains('dropdown-toggle'))
     $('a, input:submit, input.form-submit').click( function() {
         // do not use for anchors with their own click handling
         if ( $(this).attr('href').substr(0,1) == '#' 
@@ -2302,7 +2313,8 @@ $(document).ready(function() {
             // directly activate the song selection
             showModalSelectionItems('scripture');
             // use current comment text as initial value
-            $('#comment').val( button.parent().children().first().text().trim() );
+            var curCom = button.parent().children().first().text().trim();
+            $('#comment').val( curCom=='Click to edit' ? '' : curCom );
             // URL needed to update the comment as derived from the calling element
             $('#searchSongForm'      ).attr('data-action', actionUrl);
             $('#searchSongModalLabel').text('Select a scripture');

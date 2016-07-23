@@ -72,7 +72,7 @@
 						<a href="{{ $item->comment }}" target="new">{{ $item->comment }}<i class="fa fa-globe"></i></a>
 
 					@else
-						<span id="comment-item-id-{{ $item->id }}" class="edit comment-textcontent hover-show">{{ $item->comment }}</span>
+						<span id="comment-item-id-{{ $item->id }}" class="editable comment-textcontent hover-show">{{ $item->comment }}</span>
 						<span class="{{ $item->comment ? 'hover-only' : ''}} fa fa-pencil text-muted"></span>
 
 						{{-- icon to add scripture reference --}}

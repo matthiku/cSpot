@@ -262,7 +262,8 @@ when the song is presented.">
                   event.preventDefault();
                 });
                 $("#lyrics").click(function() {
-                    $("#lyrics").attr('rows', $("#lyrics").val().split('\n').length);
+                    {{-- get number of lines of lyrics and set size of textarea accordingly --}}
+                    $("#lyrics").attr( 'rows', Math.max($("#lyrics").val().split('\n').length, 4) );
                     $('#reset-lyrics-textarea').show();
                     $('#reset-lyrics-textarea').position({my: 'right bottom', at: 'right top', of: '#lyrics'});
                 });
@@ -302,7 +303,8 @@ like "(repeat chorus!)"'>
                   event.preventDefault();
                 });
                 $("#chords").click(function() {
-                    $("#chords").attr('rows', $("#chords").val().split('\n').length);
+                    {{-- get number of lines of text and set size of textarea accordingly --}}
+                    $("#chords").attr('rows', Math.max($("#chords").val().split('\n').length, 4) );
                     $('#reset-chords-textarea').show();
                     $('#reset-chords-textarea').position({my: 'right bottom', at: 'right top', of: '#chords'});
                 });

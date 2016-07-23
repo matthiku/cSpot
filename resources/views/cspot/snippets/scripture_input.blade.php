@@ -36,12 +36,12 @@
     <span class="select-version" style="display: none;>
         {!! Form::label('version', 'Select version:'); !!}
         <select name="version" id="version" onchange="populateComment()">
-            <option {{ isset($item) ? '' : 'selected' }}>
-            </option>
-            @foreach ($versionsEnum as $vers)
-                <option value="{{ $vers }}">{{ $vers }}
-                </option>
-            @endforeach
+            <option {{ isset($item) ? '' : 'selected' }}></option>
+            @if (isset($versionsEnum))
+                @foreach ($versionsEnum as $vers)
+                    <option value="{{ $vers }}">{{ $vers }}</option>
+                @endforeach
+            @endif
         </select>
     </span>
 @endif
