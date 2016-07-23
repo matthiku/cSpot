@@ -73,7 +73,11 @@
 
 					@else
 						<span id="comment-item-id-{{ $item->id }}" class="editable comment-textcontent hover-show">{{ $item->comment }}</span>
-						<span class="{{ $item->comment ? 'hover-only' : ''}} fa fa-pencil text-muted"></span>
+
+						{{-- show editing icon only when comment is not empty and when hovering over it --}}
+						@if ($item->comment)
+							<span class="hover-only fa fa-pencil text-muted"></span>
+						@endif
 
 						{{-- icon to add scripture reference --}}
 						<span class="text-muted add-scripture-ref" style="display: none" title="add scripture reference"

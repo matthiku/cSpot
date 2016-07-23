@@ -36575,7 +36575,7 @@ function showSpinner() {
 }
             
 /**
- * List of future plan dates for highlighing in the calendar widget
+ * Array to keep a list of future plan dates for highlighing in the calendar widget
  */
 var SelectedDates = {};
 SelectedDates[new Date().toLocaleDateString()] = 'Today';
@@ -36589,8 +36589,11 @@ SelectedDates[new Date().toLocaleDateString()] = 'Today';
 /*\
 |*|
 |*|
+|*|
 |*+------------------------------------------ SLIDE PRESENTATION HELPERS
 |*|
+|*|
+|*| prepares raw song lyrics/bible texts and turns them into single slides
 |*|
 \*/
 
@@ -36606,16 +36609,26 @@ var howManyVersesPerSlide;
 var bibleBooks;
 
 
+
+/*\
+|* >------------------------------------------ IMAGE SLIDES
+\*/
+
+
 /**
  * show multiple images as subsequent slides
+ *  
+ * This function is called in the document.ready method, when it finds this element:
+ *      $('.slide-background-image')
  */
 function prepareImages() 
 {
     // make sure the images have the correct size, filling either width or height
-    $('#main-content').css('text-align', 'center');
-    $('.slide-background-image').height( window.innerHeight - $('.navbar-fixed-bottom').height());
-    $('.slide-background-image').css('max-width', window.innerWidth);
-    $('.app-content').css('padding', 0);
+    $('#main-content'           ).css('text-align', 'center');
+    $('.slide-background-image' ).height( window.innerHeight - $('.navbar-fixed-bottom').height());
+    $('.slide-background-image' ).css('max-width', window.innerWidth);
+    $('.app-content'            ).css('padding', 0);
+    // get list of all images and prepare them as individual slides
     var bgImages = $('.slide-background-image');
     $.each(bgImages, function(entry) {
         insertSeqNavInd(1*entry+1,entry,'slides');
@@ -36625,6 +36638,11 @@ function prepareImages()
     eval(todo);
 }
 
+
+
+/*\
+|* >------------------------------------------ BIBLE TEXT SLIDES
+\*/
 
 
 /*
@@ -36638,6 +36656,9 @@ function prepareImages()
         with differing class names. They will be used to distringuish the formats.
     The <p> elements also contain child elements for verse numbers and footnotes etc
         which have to be removed (with only the verse numbers being retained)
+
+    This function is called in the document.ready method, when it finds this element:
+        $('.bible-text-present')
 */
 function reFormatBibleText() 
 {
@@ -36856,74 +36877,12 @@ function formatBibleRefHeader( exisText, newText) {
 }
 
 
-function countLines(where) {
-    var divHeight = document.getElementById(where).offsetHeight
-    var elem = document.getElementById(where);
-    var lineHeight = parseInt(elem.style.fontSize);
-    var lines = divHeight / lineHeight;
-    return parseInt(lines);
-}
 
 
-/*
-    the Sequence indicators at the bottom right could 
-    get too long, so we need to hide some parts
-*/
-function checkSequenceIndicatorLength()
-{
-    // max items shown before or after the current item
-    var limit = 4;
-    if (window.innerWidth < 800) {
-        limit = 3; }
-    if (window.innerWidth > 1250) {
-        limit = 5; }
+/*\
+|* >------------------------------------------ SONG SLIDES
+\*/
 
-    var what = '.lyrics';
-
-    // get the list of sequence indicators
-    var seq = $(what+'-progress-indicator');
-    if (seq.length > 0  &&  seq.length < 9) {return;}
-    // no lyrics found so we might have bible texts
-    if (seq.length == 0) {
-        what = '.bible';
-        var seq = $(what+'-progress-indicator');
-        if (seq.length < 9) {return;}
-    }
-
-    // lets find the currently active sequence and then hide much earlier and much later parts
-    var active_id = getProgressIDnumber(what+'-progress-indicator.bg-danger');
-
-    // html elements to be inserted where more indicators are hidden
-    var moreIndFW = '<span class="more-indicator"><i class="fa fa-angle-double-right"></i></span>';
-    var moreIndBW = '<span class="more-indicator"><i class="fa fa-angle-double-left"></i> </span>';
-    // first remove all old 'more' indicators
-    $('.more-indicator').remove();
-
-    // walk through the list of indicators and hide those 
-    // that are too far away from the currently active one 
-    $(seq).each(function(entry){
-        // get this element's ID number
-        var thisID = 1*getProgressIDnumber(this);
-        if ( thisID+limit-2 < active_id  ||  thisID-limit > active_id ) {
-            $(this).hide();
-        } else { 
-            $(this).show(); 
-            if (thisID+limit-2 == active_id) {
-                $(this).prepend(moreIndBW);}
-            if (thisID-limit == active_id) {
-                $(this).append(moreIndFW); }
-        }
-    });
-}
-// find the sequence number in the element ID attribute
-function getProgressIDnumber(fromWhat)
-{
-    var current = $(fromWhat);
-    if (current.length==0) {return 0;}
-    var curr_id = $(fromWhat).attr('id').split('-');
-    if (curr_id.length<3) {return;}
-    return parseInt( curr_id[2] );
-}
 
 /*
     check if there are more lyric parts than 
@@ -36955,7 +36914,6 @@ function compareLyricPartsWithSequence()
         $('#sequence').text(newSequence);
 
     }
-
 }
 
 /* 
@@ -37027,6 +36985,222 @@ function createDefaultLyricSequence()
     // now write the new sequence into the proper element
     $('#sequence').text(sequence);
 }
+
+/*
+    Show lyrics in presentation mode
+
+    mainly: divide lyrics into blocks (verses, chorus etc) to be able to show them individually
+
+    NOTE: headers must be in a single line and text enclosed om square brackets! E.g.: "[Verse 1]"
+
+    This function is called in the document.ready method, when it finds this element:
+        $('#present-lyrics')
+
+*/
+function reDisplayLyrics()
+{
+    // get the lyrics text and split it into lines
+    var lyrics = $('#present-lyrics').text().split('\n');
+
+    // now remove the lyrics in the existing <pre> tag in the DOM
+    $('#present-lyrics').text('');
+
+    var newLyr = '';
+    var lines  = 0;         // counter for number of lines per each song part 
+    var headerCode = 's'    // identifies the code within the sequence data
+    // default song part if there are no headings
+    var newDiv = '<div id="start-lyrics" class="lyrics-parts" ';
+    var divNam = 'start-lyrics';
+    var curPart= '';
+    var region2= false;
+    var apdxNam= 97; // char cod 97 = 'a' - indicates sub-parts of verses or chorusses etc
+
+    // analyse each line and put it back into single pre tags
+    for (var i = 0; i <= lyrics.length - 1; i++) {
+
+        lyricsLine = lyrics[i].trim();  // get pure text
+
+        // treat empty lines as start for a new slide!
+        if (lyrics[i].length==0) {
+            if (i==0) continue; // but not a leading empty line....
+            // we have no headings in this lyris, so we invent one....
+            if (curPart == '') { 
+                hdr = curPart = 'verse1';
+                insertNewLyricsSlide(newDiv, newLyr, divNam, lines);
+                divNam = hdr;
+                newLyr = '';
+                lines  = 0;
+                newDiv = '</div><div id="'+hdr+'" class="lyrics-parts" ';
+            } else {
+                // an empty line within a song part is treated as a sub-header
+                // ==> 'verse1' will become 'verse1a'
+                hdr = curPart + String.fromCharCode(apdxNam++);
+            }
+        }
+        // or we already have a pre-defined header line for this song part
+        else { 
+            // find verse indicator (can be first word in the lyrics line, like: "[1] first line of lyrics")
+            // or it could be like [chorus 2]
+            var hdr = identifyLyricsHeadings( lyricsLine.split('] ')[0] ); 
+            if (hdr.length>0) { 
+                // verse indicator was found!
+                curPart = hdr; 
+                var apdxNam= 97; // = 'a': reset appendix indicator (for forced lyric parts)
+                // use 2nd part of initial lyricsline as actualy lyrics
+                lyricsLine = lyricsLine.split('] ')[1]; // this will be 'undefined' if line was just the indicator!
+            }
+        }
+
+        // check if we have a header or the actual lyrics
+        if (hdr.length>0) {
+            // insert identifiable blocks
+            insertNewLyricsSlide(newDiv, newLyr, divNam, lines);
+            divNam = hdr;
+            newLyr = '';
+            lines  = 0;
+            region2= false;
+            newDiv = '</div><div id="'+hdr+'" class="lyrics-parts" ';
+        }
+        // actual lyrics - insert as P element
+        if (lyricsLine != undefined) {
+            lines += 1;
+            // insert horizontal line when requested
+            if (lyricsLine=='[region 2]') {
+                newLyr += '<hr class="hr-big">';
+                region2 = true;
+            } else {
+                cls = stl = '';
+                if (region2) cls = 'text-present-region2';
+                // check if line contains style codes:
+                var styles = getStylesFromLyricsLine(lyricsLine);
+                if (styles.length>0)
+                    stl = 'style="'+styles+'"';
+                newLyr += '<p class="text-present '+cls+' m-b-0" '+stl+'>'+lyricsLine+'</p>';
+            }
+        }
+    }
+    // insert the last lyrics part
+    insertNewLyricsSlide(newDiv, newLyr, divNam, lines);
+}
+
+// extract style codes from a single lyrics line (must be at the start of line!)
+function getStylesFromLyricsLine(line)
+{
+    var codes = line.split('>');
+    if ( line.substr(0,1)=='<' && codes.length>1 ) {
+        var styles = codes[0].split('<')[1];
+        console.log('found styles: '+styles);
+        return styles;
+    }
+    return '';
+}
+
+// insert new SLIDE into the presentatinon
+function insertNewLyricsSlide(newDiv, newLyr, divNam, lines)
+{
+    // only if the part is not empty..
+    if (lines == 0) { return; }
+
+    newDiv += ' data-header-code="'+headerCode(divNam)+'">';
+
+    // insert the lyrics back into the HTML doc
+    $('#present-lyrics').append( newDiv + newLyr + '</div>' );
+    // make sure this part is still hidden
+    $('#'+divNam).hide();
+    // make the hidden select button for this part visible
+    $('#btn-show-'+divNam).show();    
+    console.log( 'Inserted lyrics part called ' + divNam );
+}
+function headerCode(divNam) {
+    switch (divNam.substr(0,5)){
+        case 'bridg': return 'b'+divNam.substr(6);
+        case 'choru': return 'c'+divNam.substr(6);
+        case 'prech': return 'p'+divNam.substr(9);
+        case 'endin': return 'e'+divNam.substr(6);
+        case 'verse': return divNam.substr(5);
+        default: return '';
+    }
+}
+
+
+
+
+/*\
+|* >------------------------------------------ GENERIC  PRESENTATION  HELPERS
+\*/
+
+
+function countLines(where) {
+    var divHeight = document.getElementById(where).offsetHeight
+    var elem = document.getElementById(where);
+    var lineHeight = parseInt(elem.style.fontSize);
+    var lines = divHeight / lineHeight;
+    return parseInt(lines);
+}
+
+
+/*
+    the Sequence indicators at the bottom right could 
+    get too long, so we need to hide some parts
+*/
+function checkSequenceIndicatorLength()
+{
+    // max items shown before or after the current item
+    var limit = 4;
+    if (window.innerWidth < 800) {
+        limit = 3; }
+    if (window.innerWidth > 1250) {
+        limit = 5; }
+
+    var what = '.lyrics';
+
+    // get the list of sequence indicators
+    var seq = $(what+'-progress-indicator');
+    if (seq.length > 0  &&  seq.length < 9) {return;}
+    // no lyrics found so we might have bible texts
+    if (seq.length == 0) {
+        what = '.bible';
+        var seq = $(what+'-progress-indicator');
+        if (seq.length < 9) {return;}
+    }
+
+    // lets find the currently active sequence and then hide much earlier and much later parts
+    var active_id = getProgressIDnumber(what+'-progress-indicator.bg-danger');
+
+    // html elements to be inserted where more indicators are hidden
+    var moreIndFW = '<span class="more-indicator"><i class="fa fa-angle-double-right"></i></span>';
+    var moreIndBW = '<span class="more-indicator"><i class="fa fa-angle-double-left"></i> </span>';
+    // first remove all old 'more' indicators
+    $('.more-indicator').remove();
+
+    // walk through the list of indicators and hide those 
+    // that are too far away from the currently active one 
+    $(seq).each(function(entry){
+        // get this element's ID number
+        var thisID = 1*getProgressIDnumber(this);
+        if ( thisID+limit-2 < active_id  ||  thisID-limit > active_id ) {
+            $(this).hide();
+        } else { 
+            $(this).show(); 
+            if (thisID+limit-2 == active_id) {
+                $(this).prepend(moreIndBW);}
+            if (thisID-limit == active_id) {
+                $(this).append(moreIndFW); }
+        }
+    });
+}
+// find the sequence number in the element ID attribute
+function getProgressIDnumber(fromWhat)
+{
+    var current = $(fromWhat);
+    if (current.length==0) {return 0;}
+    var curr_id = $(fromWhat).attr('id').split('-');
+    if (curr_id.length<3) {return;}
+    return parseInt( curr_id[2] );
+}
+
+
+
 /* 
     Insert the Sequence Navigation indicators into the navbar 
 */
@@ -37065,6 +37239,10 @@ function formatSeqInd(code){
         return char1+char2;
     return '<span class="text-muted">'+char1+char2+'<sup>'+code.substr(2)+'</sup></span>';
 }
+
+
+
+
 
 /*
     On the lyrics screen, advance to the next item or sub-item (song parts)
@@ -37261,121 +37439,6 @@ function jumpTo(where)
     // the chords page uses anchors to jump to...
     else 
         window.location.href = '#'+where;
-}
-
-
-/*
-    Show lyrics in presentation mode
-
-    mainly: divide lyrics into blocks (verses, chorus etc) to be able to show them individually
-
-    NOTE: headers must be in a single line and text enclosed om square brackets! E.g.: "[Verse 1]"
-*/
-function reDisplayLyrics()
-{
-    // get the lyrics text and split it into lines
-    var lyrics = $('#present-lyrics').text().split('\n');
-    // empty the existing pre tag
-    $('#present-lyrics').text('');
-    var newLyr = '';
-    var lines  = 0;         // counter for number of lines per each song part 
-    var headerCode = 's'    // identifies the code within the sequence data
-    // default song part if there are no headings
-    var newDiv = '<div id="start-lyrics" class="lyrics-parts" ';
-    var divNam = 'start-lyrics';
-    var curPart= '';
-    var region2= false;
-    var apdxNam= 97; // char cod 97 = 'a' - indicates sub-parts of verses or chorusses etc
-
-    // analyse each line and put it back into single pre tags
-    for (var i = 0; i <= lyrics.length - 1; i++) {
-
-        lyricsLine = lyrics[i].trim();  // get pure text
-
-        // treat empty lines as start for a new slide!
-        if (lyrics[i].length==0) {
-            if (i==0) continue; // but not a leading empty line....
-            // we have no headings in this lyris, so we invent one....
-            if (curPart == '') { 
-                hdr = curPart = 'verse1';
-                insertNewLyricsSlide(newDiv, newLyr, divNam, lines);
-                divNam = hdr;
-                newLyr = '';
-                lines  = 0;
-                newDiv = '</div><div id="'+hdr+'" class="lyrics-parts" ';
-            } else {
-                // an empty line within a song part is treated as a sub-header
-                // ==> 'verse1' will become 'verse1a'
-                hdr = curPart + String.fromCharCode(apdxNam++);
-            }
-        }
-        // or we already have a pre-defined header line for this song part
-        else { 
-            // find verse indicator (can be first word in the lyrics line, like: "[1] first line of lyrics")
-            // or it could be like [chorus 2]
-            var hdr = identifyLyricsHeadings( lyricsLine.split('] ')[0] ); 
-            if (hdr.length>0) { 
-                // verse indicator was found!
-                curPart = hdr; 
-                var apdxNam= 97; // = 'a': reset appendix indicator (for forced lyric parts)
-                // use 2nd part of initial lyricsline as actualy lyrics
-                lyricsLine = lyricsLine.split('] ')[1]; // this will be 'undefined' if line was just the indicator!
-            }
-        }
-
-        // check if we have a header or the actual lyrics
-        if (hdr.length>0) {
-            // insert identifiable blocks
-            insertNewLyricsSlide(newDiv, newLyr, divNam, lines);
-            divNam = hdr;
-            newLyr = '';
-            lines  = 0;
-            region2= false;
-            newDiv = '</div><div id="'+hdr+'" class="lyrics-parts" ';
-        }
-        // actual lyrics - insert as P element
-        if (lyricsLine != undefined) {
-            lines += 1;
-            // insert horizontal line when requested
-            if (lyricsLine=='[region 2]') {
-                newLyr += '<hr class="hr-big">';
-                region2 = true;
-            } else {
-                cls = '';
-                if (region2) cls = 'text-present-region2';
-                newLyr += '<p class="text-present '+cls+' m-b-0">'+lyricsLine+'</p>';
-            }
-        }
-    }
-    // insert the last lyrics part
-    insertNewLyricsSlide(newDiv, newLyr, divNam, lines);
-}
-
-// insert new SLIDE into the presentatinon
-function insertNewLyricsSlide(newDiv, newLyr, divNam, lines)
-{
-    // only if the part is not empty..
-    if (lines == 0) { return; }
-
-    newDiv += ' data-header-code="'+headerCode(divNam)+'">';
-
-    // insert the lyrics back into the HTML doc
-    $('#present-lyrics').append( newDiv + newLyr + '</div>' );
-    // make sure this part is still hidden
-    $('#'+divNam).hide();
-    // make the hidden select button for this part visible
-    $('#btn-show-'+divNam).show();    
-    console.log( 'Inserted lyrics part called ' + divNam );
-}
-function headerCode(divNam) {
-    switch (divNam.substr(0,5)){
-        case 'bridg': return 'b'+divNam.substr(6);
-        case 'choru': return 'c'+divNam.substr(6);
-        case 'prech': return 'p'+divNam.substr(9);
-        case 'endin': return 'e'+divNam.substr(6);
-        case 'verse': return divNam.substr(5);
-        default: return '';
-    }
 }
 
 
@@ -38707,9 +38770,9 @@ $(document).ready(function() {
      * (see http://www.appelsiini.net/projects/jeditable)
      */
     $('.editable').editable(__app_url + '/cspot/api/items/update', {
-        style     : 'display: inline',
-        indicator : 'Saving...',
-        data      : function(value, settings) {
+        style       : 'display: inline',
+        placeholder : '<span class="fa fa-pencil text-muted">&nbsp;</span>',
+        data        : function(value, settings) {
             // check if text is a simple string or a html element
             // Issue: when comment contains a string AND a bible ref...
             if (value.substr(0,2)=='<a')
@@ -38904,6 +38967,10 @@ $(document).ready(function() {
         });
     })
 
+
+
+
+
     /**
      * Put focus on textarea when user opens the feedback modal dialog
      */
@@ -38953,7 +39020,7 @@ $(document).ready(function() {
 
 
     /**
-     * items on Plan page can be moved into new positions
+     * Allow items on Plan page to be moved into new positions
      */
     if ($("#tbody-items").length) {
         $("#tbody-items").sortable({
@@ -39023,6 +39090,9 @@ $(document).ready(function() {
 
     }
     
+
+
+
     /*
         On presentation views, allow mouse-click to advance to next or prev. item
     */
@@ -39041,6 +39111,7 @@ $(document).ready(function() {
                 advancePresentation('back'); }
         });        
     }
+
 
     /**
      * Configuration for Items Presentation Views (present/chords/musicsheets)
@@ -39085,6 +39156,7 @@ $(document).ready(function() {
         });
     }
     
+
 
     /**
      * prepare lyrics or bible texts or image slides for presentation

@@ -16,7 +16,7 @@
 
 	@include('layouts.flashing')
 
-	@if( Auth::user()->isEditor() )
+	@if( Auth::user()->isEditor() && $plan_id==0 )
 	<span class="pull-sm-right">
 		<a class="btn btn-primary-outline" href={{ url('cspot/songs/create') }}>
 			<i class="fa fa-plus"> </i> &nbsp; Add a new song
@@ -32,7 +32,7 @@
 		<script>$('#fulltext-search').click();</script>
 	@endif
     
-	<center>
+	<center class="hidden-sm-down">
 		Page {{ $songs->currentPage() }} of {{ $songs->lastPage() }}<br>
 		<small>showing a total of {{ $songs->total() }} songs</small>
 	</center>
@@ -48,7 +48,7 @@
 
 					@include('cspot.snippets.theader', ['thfname' => 'title', 'thdisp' => 'Title', 'thsort'=>true, 'thclass'=>''])
 
-					@include('cspot.snippets.theader', ['thfname' => 'author', 'thdisp' => 'Author', 'thsort'=>true, 'thclass'=>''])
+					@include('cspot.snippets.theader', ['thfname' => 'author', 'thdisp' => 'Author', 'thsort'=>true, 'thclass'=>'hidden-md-down'])
 
 					<th class="center hidden-xs-down link" onclick="reloadListOrderBy('book_ref')"
 						data-toggle="tooltip" title="Sort list by Book Reference">
