@@ -259,7 +259,7 @@ class PlanController extends Controller
     public function store(StorePlanRequest $request)
     {
         // create new record
-        $plan = Plan::create( $request->all() );
+        $plan = Plan::create( $request->except(['start', 'end']) );
 
         // set some defaults
         $plan->changer = Auth::user()->first_name;

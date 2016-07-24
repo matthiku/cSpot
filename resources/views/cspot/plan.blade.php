@@ -210,7 +210,8 @@
                     @endif
                     <div class="form-group" id="editPlanServiceTimes">
                         {!! Form::label('start', 'Service Time:'); !!}
-                        {!! Form::time( 'start'); !!} - 
+                        {!! Form::time( 'start'); !!}
+                        {!! Form::label('end', ' - '); !!}
                         {!! Form::time( 'end');   !!}      
                     </div>
                     <script>
@@ -346,7 +347,8 @@
             </label>
             <div class="center" id="planServiceTimes" style="display: none">
                 {!! Form::label('start', 'New times:'); !!}
-                {!! Form::time( 'start'); !!} - 
+                {!! Form::time( 'start'); !!}
+                {!! Form::label('end', ' - '); !!}
                 {!! Form::time( 'end');   !!}      
             </div>
         </div>

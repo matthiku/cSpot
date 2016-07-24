@@ -578,6 +578,35 @@ class ItemController extends Controller
 
 
     /**
+     * Unlink a song attachment
+     *
+     * - - RESTful API request - -
+     *
+     * @param int $item_id
+     * @param int $song_id
+     *
+     */
+    public function unlinkSong($item_id, $song_id)
+    {
+        // find the single resource
+        $item = Item::find($item_id);
+        if ($item) {
+            if ($item->song_id==$song_id) {
+                $item->song_id = 0;
+                $item->save();
+                // return to sender
+                return response()->json(['status' => 200, 'data' => 'Song unlinked.']);
+            }
+            return response()->json(['status' => 406, 'data' => 'Song with id '.$song_id.' not found being linked to item ('.$item->song_id.')!'], 406);
+        }
+        return response()->json(['status' => 404, 'data' => 'Item with id '.$item_id.' not found!'], 404);
+    }
+
+
+
+
+
+    /**
      * MOVE the specified resource up or down in the list of items related to a plan.
      *
      * @param  int     $id

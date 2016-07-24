@@ -142,6 +142,9 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     Route::post('api/items/{item_id}/update', ['as'=>'cspot.api.items.update',  'uses'=>'Cspot\ItemController@APIupdate']);
     Route::post('api/items/{item_id}/delete', ['as'=>'cspot.api.items.delete',  'uses'=>'Cspot\ItemController@APIdelete']);
 
+    // unlink a song from an item
+    Route::put('items/{item_id}/unlinkSong/{song_id}',       'Cspot\ItemController@unlinkSong');
+
 
 
     /**
@@ -175,6 +178,9 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
 
     // specific delete route using 'get' method
     Route::get('songs/{songs}/delete',     'Cspot\SongController@destroy');
+
+    // SPA API
+    Route::post('api/songs/update',           [ 'uses'=>'Cspot\SongController@APIupdate']);
 
 });
 

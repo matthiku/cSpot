@@ -36573,6 +36573,9 @@ $.ajaxSetup({
 function showSpinner() {
     $('#show-spinner').modal({keyboard: false});
 }
+
+
+
             
 /**
  * Array to keep a list of future plan dates for highlighing in the calendar widget
@@ -36583,6 +36586,1485 @@ SelectedDates[new Date().toLocaleDateString()] = 'Today';
 
 
 
+/*
+    Cause UI elements (e.g. buttons) to flash in order to get attention....
+*/
+function blink(selector){
+    $(selector).show();
+    $(selector).animate({opacity:0}, 150, "linear", function(){
+        $(this).delay(50);
+        $(this).animate({opacity:1}, 150, function(){
+            blink(this);
+        });
+        $(this).delay(500);
+    });
+}
+
+
+/*
+    turn an URL string into a DOM object
+
+    @param string url
+    @returns object
+
+    This DOM object provides the following values:
+        url.protocol; //(http:)
+        url.hostname ; //(www.example.com)
+        url.pathname ; //(/some/path)
+        url.search ; // (?name=value)
+        url.hash; //(#anchor)
+*/
+function parseURLstring(urlstring)
+{
+    var url = document.createElement('a');
+    url.href = urlstring;
+    return url;
+}
+
+
+/*
+    Automatically close the info modals after a timeout
+    (called from layouts\flasing.modal.php)
+*/
+var timeoutID;
+function delayedCloseFlashingModals(selector) {
+    timeoutID = window.setTimeout( closeMyModal, 3000, selector);
+}
+function closeMyModal(selector) {
+    $(selector).modal('hide');
+    // set focus again on main input field
+    $('.main-input').focus();    
+}
+
+
+
+
+
+/*\
+|*|
+|*|
+|*#======================================================================================= VARIOUS  HELPERS  FOR  SPECIFIC  PAGES
+|*|
+|*|
+\*/
+
+
+
+
+
+/*\
+|*|
+|*+------------------------------------------ Build a Bible Reference string
+|*|
+|*| (called from scripture_input.blade.php)
+\*/
+function showNextSelect(fromOrTo, what) 
+{
+    book    = $('#from-book').val();
+    chapter = $('#from-chapter').val();
+
+    // make sure all fields are visible now
+    $('.select-reference').show();
+
+    // remove old options from select box
+    emptyRefSelect(fromOrTo, what);
+    var x = document.getElementById(fromOrTo+'-'+what);
+
+    // API call to get the books/chapter/verses data
+    if (typeof(bibleBooks)=='object') {
+        // make the element visible
+        $('#'+fromOrTo+'-'+what).show();
+
+        // minimum value for the 'to' verse is the 'from' verse
+        minNumber = 1
+        if (fromOrTo=='to' && what=='verse') {
+            minNumber = $('#from-verse').val();
+        }
+
+        // are wee looking at chapters of a book or verses of a chapter?
+        if (what=='chapter') {
+            maxNumber = Object.keys(bibleBooks[book]).length;
+        } else {
+            maxNumber = bibleBooks[book][chapter];
+        }
+
+        // populate the select input with the relevant numbers
+        for (var i = minNumber; i <= maxNumber; i++) {
+            var option = document.createElement("option");
+            option.text = i;
+            option.value = i;
+            x.add(option);
+        }
+        // if book has only one chapter, populate the verses right now
+        if (what=='chapter') {
+            showNextSelect(fromOrTo, 'verse');
+        }
+        if (fromOrTo=='from' && what=='verse') {
+            showNextSelect('to', 'verse');
+            $('.select-version').show();                
+        }
+    };
+}
+function populateComment() {
+    // ignore if nothing was selected
+    if ($('#from-book').val()==null || $('#from-book').val()==' ') { 
+        return; }
+
+    // check existing comment
+    oldComment = $('#comment').val();
+    if (oldComment.length>0) {
+        oldComment += '; ';
+    }
+
+    // set default and minimum value identical with 'from' value
+    $('#comment').val( oldComment
+        + $('#from-book').val()+' '
+        + $('#from-chapter').val()+':'
+        + $('#from-verse').val() 
+        +($('#to-verse').val() != $('#from-verse').val() ? '-'+$('#to-verse').val() : '') + ' ('
+        + $('#version').val() + ')'
+        );
+
+    $('#waiting').show();
+    // now get the bible text via API and display it on the page
+    showScriptureText($('#version').val(), $('#from-book').val(), $('#from-chapter').val(), $('#from-verse').val(), $('#to-verse').val())
+
+    $('#from-book').val('');
+    emptyRefSelect('from', 'chapter');
+    emptyRefSelect('from', 'verse');
+    emptyRefSelect('to', 'verse');
+    $('#version').val('');
+    $('.select-reference').hide();
+    $('.select-version').hide();
+    $('#col-2-song-search').hide();
+    $('#comment-label').text('Bible Reading');
+    blink('.save-buttons');
+}
+function emptyRefSelect(fromOrTo, what) {
+    // get the <select> element 
+    var x = document.getElementById(fromOrTo+'-'+what);
+    $(x).hide();
+    // clear the element of all current options
+    for (i=x.length; i>=0; i--) {
+        x.remove(i);
+    }
+}
+function showScriptureText(version,book,chapter,fromVerse,toVerse) 
+{
+    book = book.replace(' ', '+');
+
+    $.get(__app_url+'/bible/passage/'+version+'/'+book+'/'+chapter+'/'+fromVerse+'/'+toVerse , 
+        function(data, status) 
+        {
+            if ( status == 'success') 
+            {
+                $('#waiting').hide();
+                passage = data.response.search.result.passages;
+                if (passage.length>0) 
+                {
+                    text = (passage[0].text).replace(/h3/g, 'strong');
+                    text = text.replace(/h2/g, 'i');
+                    $('#bible-passages').append( 
+                        '<h5>' + passage[0].display +' ('+passage[0].version_abbreviation + ')</h5>' +
+                        '<div>'+ text + '</div>' +
+                        '<div class="small">' + passage[0].copyright + '</div><hr>'                        
+                    );                         
+                } 
+                else 
+                {
+                    $('#show-passages').html('(passage not found)');
+                }
+            }
+            else 
+            {
+                $('#waiting').append(' Not found! ' + data);
+            }
+        }
+    );
+}
+
+
+
+
+
+
+
+/*
+    Inserts default service start- and end-times 
+    when user selects a service type while creating a new service plan
+    (plan.blade.php)
+*/
+function fillDefaultServiceTimes(that)
+{
+    // get selected service type
+    var selSerType = $(that).val();
+    // read default times from global var
+    var start = serviceTypes[selSerType].start;
+    var   end = serviceTypes[selSerType].end;
+    // assign to times input fields
+    $('#start').val(start);
+    $('#end'  ).val(end);
+    //$($('#planServiceTimes').children('input')[1]).val( end );
+}
+
+
+/* 
+    List filtering: Reload page with alternate filtering
+    (plans.blade.php)
+*/
+function toogleAllorFuturePlans()
+{
+    showSpinner();
+    // get current url and query string
+    var currUrl = window.location.href.split('?');
+    var newUrl  = currUrl[0];
+    if (currUrl.length > 1) 
+    {
+        var queryStr = currUrl[1].split('&');
+        if (queryStr.length > 1) {
+            newUrl += '?';
+            for (var i = queryStr.length - 1; i >= 0; i--) {
+                parms = queryStr[i].split('=');
+                if (parms[0]=='show') {
+                    parms[1]=='all'  ?  parms[1]='future'  :  parms[1]='all';
+                    queryStr[i] = 'show='+parms[1];
+                }                
+                newUrl += queryStr[i];
+                if (i > 0) newUrl += '&';
+            }
+        }
+    } 
+    window.location.href = newUrl;
+}
+
+/* 
+    List sorting: Reload page with the 'orderBy' segment and the given field name
+*/
+function reloadListOrderBy(field)
+{
+    showSpinner();
+    // get current url and query string
+    var currUrl = window.location.href.split('?');
+    var newUrl  = currUrl[0] + '?';
+    if (currUrl.length > 1) 
+    {
+        var queryStr = currUrl[1].split('&');
+        var orderbyFound = false;
+        if (queryStr.length > 1) {
+            for (var i = queryStr.length - 1; i >= 0; i--) {
+                parms = queryStr[i].split('=');
+                if (parms[0]=='orderby') {
+                    queryStr[i] = 'orderby='+field;
+                    orderbyFound = true;
+                }
+                if (parms[0]=='order') {
+                    parms[1]=='desc'  ?  parms[1]='asc'  :  parms[1]='desc';
+                    queryStr[i] = 'order='+parms[1];
+                }                
+                newUrl += queryStr[i];
+                if (i > 0) newUrl += '&';
+            }
+        } 
+        else {
+            // retain the existing query string
+            newUrl += queryStr[0];
+        }
+    } 
+    // check if existing query string already contained a orderby param
+    if (currUrl.length > 1 && ! orderbyFound) newUrl += '&';
+    if (currUrl.length < 2 || ! orderbyFound) {
+        newUrl += 'orderby='+field;
+        newUrl += '&order=asc';
+    }
+
+    window.location.href = newUrl;
+}
+
+
+/**
+ * Function to open plan selected via date picker
+ * better name: "openPlanByDate"
+ */
+function submitDate(date) 
+{
+    $('#show-spinner').modal({keyboard: false});
+    window.location.href = __app_url + '/cspot/plans/by_date/' + date.value;
+}
+
+
+/**
+    Open modal popup to show linked YT video
+*/
+function showYTvideoInModal(ytid, title)
+{
+    //https://www.youtube.com/"+ ytid.substr(0,2)=="PL" ? 'playlist?list=' : 'watch?v=' + ytid }}";
+    $('#snippet-modal-title').text(title);
+    $('#snippet-modal-content')
+        .html('<iframe width="560" height="315" src="https://www.youtube.com/embed/'+ytid+'" frameborder="0" allowfullscreen></iframe>');
+    $('.help-modal').modal();
+}
+
+
+/**
+    When user presses enter in the Songs List view, check 
+    which filter field is open and trigger its function
+ */
+function findOpenFilterField() 
+{
+    // check which search fields open
+    var searchFields = $("[id^=filter-]");
+    $.each(searchFields, function(entry) {
+        if ( $(searchFields[entry]).is(':visible') ){
+            var id = $(searchFields[entry]).attr('id').split('-');
+            if (id[2] == 'input') {  // only look at input elements!
+                var action = $('#'+id[1]+'-search').attr('onclick');
+                eval(action);
+                return;
+            }
+        }
+    });
+}
+
+/*
+    Show input field in header to filter data in this column or apply the filter if already set
+*/
+function showFilterField(field)
+{
+    // Is this field already visible?
+    if ($('#filter-'+field+'-clear').is(':visible')) 
+    {
+        var currUrl  = parseURLstring(window.location.href);
+        // check if there is a query string in the URL
+        if (currUrl.search) { 
+            // check that it doesn't contain a plan_id!
+            if (currUrl.search.search('plan_id')) {
+                return;
+            }
+            // clear existing filter and reload page without a filter
+            showSpinner();
+            // remove filter elements from URL query string
+            var queryStr = currUrl[1].split('&');
+            var newUrl = currUrl[0];
+            if (queryStr.length > 2) {
+                newUrl += '?';
+                for (var i = queryStr.length - 1; i >= 0; i--) {
+                    if (queryStr[i].substr(0,6) != 'filter' ) {
+                        newUrl += queryStr[i];
+                        if (i > 0) newUrl += '&';
+                    }
+                }
+            }
+            window.location.href = newUrl;
+            return;
+        }
+    }
+
+    // check if there are other search fields open
+    var searchFields = $("[id^=filter-]");
+    $.each(searchFields, function(entry) {
+        if ( $(searchFields[entry]).is(':visible') ){
+            var fld = $(searchFields[entry]).attr('id').split('-')[1];
+            if (fld != field) {
+                $('#filter-'+fld+'-input').remove();
+                $('#filter-'+fld+'-submit').remove();
+                $('#filter-'+fld+'-show').show();
+            }
+        }
+    });
+         
+    // define html code for search input field
+    var newHtml = '<input id="filter-fffff-input" style="line-height: normal;" type="text" placeholder="search fffff">'
+    newHtml    += '<i id="filter-fffff-submit" class="fa fa-check-square"> </i>';
+    // did user click on the visible search icon?
+    if ($('#filter-'+field+'-show').is(':visible')) 
+    {
+        // add new html code, replacing all placeholders with current field name
+        $('#'+field+'-search').append(newHtml.replace(/fffff/g, field));
+        $('#filter-'+field+'-input').delay(800).focus();
+        $('#filter-'+field+'-show').hide();
+    } 
+    else 
+    {
+        // Did user enter search data?
+        if ( $('#filter-'+field+'-input').val().length > 0 ) {
+            // fade background and show spinner
+            showSpinner();
+
+            var search =  $('#filter-'+field+'-input').val();
+            var currUrl  = window.location.href.replace('#','');
+            if (currUrl.indexOf('?')>1) {
+                var newUrl = currUrl + '&filterby='+field+'&filtervalue='+search;
+            } else {
+                var newUrl = currUrl + '?filterby='+field+'&filtervalue='+search;
+            }
+            window.location.href = newUrl;
+            return;
+        }
+        $('#filter-'+field+'-input').remove();
+        $('#filter-'+field+'-submit').remove();
+        $('#filter-'+field+'-show').show();
+    }
+}
+
+
+
+/*
+    On the Songs Detail page, 
+    show the previously hidden song search input field
+    and set the focus on it
+*/
+function showSongSearchInput(that, selector)
+{
+    $(that).hide();
+    $(selector).show();
+    $("input[name='search']").focus();
+}
+
+
+/**
+ * On the Team page, show the role select element once the user was selected
+ * 
+ * param 'who' refers to the element from which this method was called
+ */
+function showRoleSelect(who, role_id)
+{    
+    // default value for role_id
+    role_id = role_id || undefined;
+
+    // make the role selection elements (radio buttons) visible
+    $('#select-team-role').fadeIn();
+
+    // now show the comment input and submit button
+    $('#comment-input').fadeIn();
+    $('#submit-button').fadeIn();
+
+    // grab the div around the radio buttons 
+    var roleSelectBox = $('#select-role-box');
+    // create a radio item
+    var radio1 = '<label class="c-input c-radio role-selector-items"><input id="';
+    var radio2 = '" name="role_id" type="radio"><span class="c-indicator"></span>';
+    var radio3 = '</label>';
+    
+    // make sure we have a proper JSON object with all users and all their roles
+    // ('userRolesArray' was created in a javascript snippet in the team.blade.php file)
+    if (typeof(userRolesArray)=='object') {
+        var user = userRolesArray[who.value];
+        var roles = user.roles;
+        // first empty the select box
+        $('#select-role-box').html('');
+        // add each role as a radio button and label
+        for (var i in roles) {
+            var radio = radio1 + 'role_id-'+roles[i].role_id+'" ';
+            if (roles[i].role_id == role_id) {
+                radio += 'checked ';
+            }
+            radio += 'value="' + roles[i].role_id;
+            radio += radio2 + roles[i].name + radio3;
+            roleSelectBox.append(radio);
+        }
+        var instruments = user.instruments;
+        if (instruments.length > 0) { 
+            $('#show-instruments').html('(plays: '); }
+        else {
+            $('#show-instruments').html(); }
+        for (var i in instruments) {
+            var text = instruments[i].name;
+            if (i < instruments.length-1) {
+                text += ', '; } 
+            else {
+                text += ')'; }
+            $('#show-instruments').append(text);
+        }
+    }
+    if (role_id==undefined) {
+        // select the first item, so that the user MUST make a choice
+        $('.role-selector-items').first().click();
+    }
+}
+
+
+
+/*
+    On the ITEM DETAIL page, show or hide the trashed items ?
+*/
+function toggleTrashed() {
+    $('.trashed').toggle();
+    if ($('#toggleBtn').text() == 'Show') {
+        $('#toggleBtn').text('Hide');
+    } else {
+        $('#toggleBtn').text('Show');
+    }
+}
+
+
+
+
+
+/*\
+|*|
+|*|
+|*+------------------------------------------ Triggered when HTML Document is fully loaded
+|*|
+|*|
+\*/
+ 
+
+
+
+$(document).ready(function() {
+
+
+
+
+    /**
+     * Make certain content editable
+     *
+     * (see http://www.appelsiini.net/projects/jeditable)
+     */
+    $('.editable').editable(__app_url + '/cspot/api/items/update', {
+        style       : 'display: inline',
+        placeholder : '<span class="fa fa-pencil text-muted">&nbsp;</span>',
+        data        : function(value, settings) {
+            // check if text is a simple string or a html element
+            // Issue: when comment contains a string AND a bible ref...
+            if (value.substr(0,2)=='<a')
+                return $(value).text();
+            return value;
+        }
+    });
+    $('.edit_area').editable(__app_url + '/cspot/api/songs/update', {
+        type        : 'textarea',
+        cancel      : 'Cancel',
+        submit      : 'Update',
+        onblur      : 'ignore',
+        placeholder : '<span class="fa fa-pencil text-muted">&nbsp;</span>',
+    });
+
+
+
+
+    /**
+     * Show WAIT spinner for all navbar anchor items
+     */
+    $('a, input:submit, input.form-submit').click( function() {
+        // do not use for anchors with their own click handling
+        if ( $(this).attr('href').substr(0,1) == '#' 
+          || $(this).attr('target') != undefined    // or for links opening in new tabs
+          || $(this).attr('onclick')!= undefined )
+            return;
+        $('#show-spinner').modal({keyboard: false});
+    })
+
+
+    /*
+        formatting of pagination buttons (links)
+    */
+    if ($('.pagination').length>0) {
+        $(function() {
+            // add missing classes and links into the auto-geneerated pagination buttons
+            $('.pagination').children().each(function() { $(this).addClass('page-item'); });
+            $('.page-item>a').each(function() { $(this).addClass('page-link'); });
+            var pgActive = $('.active.page-item').html();
+            $('.active.page-item').html('<a class="page-link" href="#">'+pgActive+'</a>');
+            $('.disabled.page-item').each(function() {
+                var innerHtml = $(this).html();
+                $(this).html('<a class="page-link" href="#">'+innerHtml+'</a>');
+            });
+        });
+    }
+
+
+    /**
+     * enabling certain UI features 
+     */
+    $(function () {
+        // activate the tooltips
+        $('[data-toggle="tooltip"]').tooltip();
+
+        // activate popovers
+        $('[data-toggle="popover"]').popover();
+        $('.popover-dismiss').popover({
+            trigger: 'focus'
+        });
+
+        // enable Tabs
+        $('#tabs').tabs();
+    });
+  
+
+    /**
+     * On 'Home' page, get list of future plans and show calendar widget
+     */
+    if ( window.location.href == __app_url + '/home' ) {
+        $.getJSON( __app_url + '/cspot/plans?filterby=future&api=api',
+            function(result){
+                $.each(result, function(i, field) {
+                    hint = field.type.name+' led by '+field.leader.first_name; 
+                    if ( field.teacher.first_name != "n/a" ) {
+                        hint +=', teacher is ' + field.teacher.first_name; }
+                    dt = new Date(field.date.split(' ')[0]).toLocaleDateString();
+                    SelectedDates[dt] = hint;
+                });
+                // get the current browser window dimension (width)
+                browserWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+                numberOfMonths = 3;
+                if (browserWidth<800) numberOfMonths = 2;
+                if (browserWidth<600) numberOfMonths = 1;
+                // Now style the jQ date picker
+                $(function() {
+                    /***
+                     * Show Date Picker calendar widget
+                     */
+                    $( "#inpDate" ).datepicker({
+                        numberOfMonths: numberOfMonths,
+                        changeMonth   : true,
+                        changeYear    : true,
+                        maxDate       : "+4m",
+                        dateFormat    : "yy-mm-dd",
+                        beforeShowDay : 
+                            function(date) {
+                                var dot=date.toLocaleDateString();
+                                var ui_class = '';
+                                var highlight = SelectedDates[dot];
+                                if (highlight) {
+                                    if (highlight==='Today') {
+                                        return [true, '', highlight]; }
+                                    return [true, "ui-highlighted", highlight]; }
+                                else {
+                                    if (date.getDay()==0)
+                                        return [true, 'ui-datepicker-sunday', '']; 
+                                    return [true, '', '']; 
+                                }
+                            }
+                    });
+                });
+            }
+        );
+        
+    }
+
+
+
+    /**
+     * On list pages, when a new item was inserted and highlighted,
+     *      slowly fade out the highlighting
+     */
+    if ($('.newest-item').length) {
+        $('.newest-item').removeClass('bg-khaki', 19999);
+    }
+
+                
+    /*\
+    |*|----------------------------------------------------------------------
+    |*|    Insert NEW or update EXISTING ITEMS on the Plan Overview page
+    |*|----------------------------------------------------------------------
+    |*|
+    |*| The corresponding modal is declared in plan.blade.php
+    |*|
+    |*| The method below is called when the modal popup is activated (shown) by clicking on the respective buttons or links.
+    |*| It populates the modal popup with the data provided by the launching button ....
+    |*|
+    |*| For insertion of new items, a selection is given between 'song', 'scripture' or 'comment'
+    |*| in order to show the appropriate input and selection elements
+    |*|
+    |*| This same modal is also being used to update an existing song item (ie. to change the song)
+    |*|
+    |*| The new data is processed via the 'searchForSongs' js helper function above
+    \*/
+    $('#searchSongForm').on('shown.bs.modal', function (event) {
+
+        // first make sure the form is back in its initial state
+        resetSearchForSongs();
+
+        // get item-specific data from the triggering element
+        var button = $(event.relatedTarget);        // Button that triggered the modal
+        var plan_id  = button.data('plan-id');      // Extract info from data-* attributes
+        var item_id  = button.data('item-id');
+        var seq_no   = button.data('seq-no' );
+        var actionUrl= button.data('action-url' );
+
+        // was modal opened from existing item?
+        if (plan_id=="update-song") {
+            // directly activate the song selection
+            showModalSelectionItems('song');
+            $('#searchSongForm'      ).attr('data-action', actionUrl);
+            $('#searchSongModalLabel').text('Select another song');
+            $('#modal-show-item-id').text('for item No '+seq_no+':');
+        }
+        else if (plan_id=="update-scripture") {
+            // directly activate the song selection
+            showModalSelectionItems('scripture');
+            // use current comment text as initial value
+            var curCom = button.parent().children().first().text().trim();
+            $('#comment').val( curCom=='Click to edit' ? '' : curCom );
+            // URL needed to update the comment as derived from the calling element
+            $('#searchSongForm'      ).attr('data-action', actionUrl);
+            $('#searchSongModalLabel').text('Select a scripture');
+            $('#modal-show-item-id').text('for item No '+seq_no+':');
+        } 
+        else {
+            $('#modal-show-item-id').text('before item No '+seq_no+':');
+        }
+        // Update the modal's content
+        $('#plan_id'      ).val(plan_id);
+        $('#beforeItem_id').val(item_id);
+        $('#seq-no'       ).val(seq_no);
+        // reset the form
+        $('#search-string').focus(); // make sure the search string input field has focus
+
+        // prevent the Song Search Form from being submitted when 
+        //      the ENTER key is used; instead, perform the actual search
+        $("#searchSongForm").submit(function(event){
+            if (! $('#searchForSongsButton').is(':visible') ||  $('#song_id').val()=='')
+                event.preventDefault();
+        });
+        // intervene cancel button - reset form and close the popup
+        $("#searchSongForm").on('cancel', function(event){
+            event.preventDefault();
+            resetSearchForSongs();
+            $('#searchSongModal').modal('hide');
+        });
+    })
+
+
+
+
+
+    /**
+     * Put focus on textarea when user opens the feedback modal dialog
+     */
+    $('#createMessage').on('shown.bs.modal', function () {
+        $('#feedbackMessage').focus()
+    })
+
+    /**
+     * Mark modified form fields with a new background
+     * and show the submit/save buttons
+     */
+    $("#file").on('mouseover', function() {
+        // do this only once ...
+        if ($('.submit-button').is(':visible')) return;
+        $('.submit-button').show();
+        blink('.submit-button');
+    });
+    $("input, textarea, input:radio, input:file").click(function() {
+        // change background color of those fields
+        $(this).css("background-color", "#D6D6FF");
+
+        // not when a popup is open...
+        if ($('#searchSongModal').is(':visible')) return;
+
+        // do this only once ...
+        if ($('.submit-button').is(':visible')) return;
+
+        // show submit or save buttons
+        $('.submit-button').show();
+        blink('.submit-button');
+    });
+
+
+
+    /***
+     * Get array with all bible books with all chapters and number of verses in each chapter
+     */
+    if (window.location.href.indexOf('/cspot/')>10) {
+        $.get(__app_url+'/bible/books/all/verses', function(data, status) {
+
+            if ( status == 'success') {
+                bibleBooks = data;
+            }
+        });
+    }
+
+
+
+    /**
+     * Allow items on Plan page to be moved into new positions
+     */
+    if ($("#tbody-items").length) {
+        $("#tbody-items").sortable({
+        items   : "> tr",
+        appendTo: "parent",
+        cursor  : 'move',
+        helper  : "clone",
+        handle  : '.drag-item',
+        distance: '5',
+        forceHelperSize: true,
+        stop    : function (event, ui) {
+            $('#show-spinner').show();
+            var changed=false;
+            should_seq_no = 0;
+            movedItem = [];
+            movedItem.id = ui.item.data('itemId');
+            movedItem.seq_no = ui.item.attr('id').split('-')[2];
+            // get all siblings of the just moved item
+            siblings = $(ui.item).parent().children();
+            // check each sibling's sequence
+            for (var i = 1; i <= siblings.length; i++) {
+                sib = siblings[-1+i];
+                //console.log(i + ' attr:' + sib.id + ' id:' + sib.dataset.itemId + ' class:' + sib.classList);
+                if (sib.classList.contains('trashed')) {
+                    // ignore trashed items....
+                    continue;
+                }
+                // is this the moved item?
+                if ( sib.dataset.itemId == movedItem.id ) {
+                    changed = sib;
+                    //console.log(sib.id+' was moved. ');
+                    break;
+                } 
+                else {
+                    should_seq_no = 0.0 + sib.id.split('-')[2];
+                    //console.log(sib.id + ' unmoved ');
+                    if (changed) { 
+                        break; 
+                    }
+                }
+            }
+            if (changed) {
+                should_seq_no = 1 * should_seq_no;
+                //console.log( 'Item '+changed.id+ ' (id # ' + changed.dataset.itemId +')  should now have seq no ' + (0.5 + should_seq_no) );
+                window.location.href = __app_url + '/cspot/items/' + changed.dataset.itemId + '/seq_no/'+ (0.5 + should_seq_no);
+                return;
+            } else {
+                // console.log('order unchanged');
+            }
+        },
+        }).disableSelection();
+    }
+
+    
+    /**
+     * On the Songs List page, allow some key codes
+     */
+    if (window.location.href.indexOf('cspot/songs')>10) {
+
+        $(document).keydown(function( event ) {
+            console.log('pressed key code: '+event.keyCode);
+            switch (event.keyCode) {
+                case 13: findOpenFilterField(); break; // Enter key
+                default: break;
+            }            
+        });
+
+    }
+    
+
+
+
+    /*
+        On presentation views, allow mouse-click to advance to next or prev. item
+    */
+    if ($('#main-content').length) {
+        // intercept mouse clicks into the presentation area
+        $('#main-content').contextmenu( function() {
+            return false;
+        });
+
+        // allow rght-mouse-click to move one slide or item back
+        $('#main-content').on('mouseup', function(event){
+            event.preventDefault();
+            if (event.which == 1) {
+                advancePresentation(); }
+            if (event.which == 3) {
+                advancePresentation('back'); }
+        });        
+    }
+
+
+    /**
+     * Configuration for Items Presentation Views (present/chords/musicsheets)
+     */
+    if (window.location.href.indexOf('/items/')>10) {
+
+        // handle keyboard events
+        $(document).keydown(function( event ) {
+            // key codes: 37=left arrow, 39=right, 38=up, 40=down, 34=PgDown, 33=pgUp, 
+            //            36=home, 35=End, 32=space, 27=Esc, 66=e
+            //
+            console.log('pressed key code: '+event.keyCode);
+            switch (event.keyCode) {
+                case 37: advancePresentation('back'); break; // left arrow
+                case 33: navigateTo('previous-item'); break; // left PgUp
+                case 36: navigateTo('first-item');   break; // key 'home'
+                case 39: advancePresentation();     break; // key right arrow
+                case 32: advancePresentation();    break; // spacebar
+                case 34: navigateTo('next-item'); break; // key 'PgDown'
+                case 35: navigateTo('last-item'); break; // key 'end'
+                case 27: navigateTo('back');     break; // key 'Esc'
+                case 68: navigateTo('edit');    break; // key 'd'
+                case 83: jumpTo('start-lyrics');break; // key 's'
+                case 80: jumpTo('prechorus'); break; // key 'p'
+                case 49: jumpTo('verse1'); break; // key '1'
+                case 50: jumpTo('verse2'); break; // key '2'
+                case 51: jumpTo('verse3'); break; // key '3'
+                case 52: jumpTo('verse4'); break; // key '4'
+                case 53: jumpTo('verse5'); break; // key '5'
+                case 53: jumpTo('verse6'); break; // key '6'
+                case 53: jumpTo('verse6'); break; // key '6'
+                case 53: jumpTo('verse7'); break; // key '7'
+                case 67: jumpTo('chorus1'); break; // key 'c'
+                case 75: jumpTo('chorus2');  break; // key 'k'
+                case 66: jumpTo('bridge');     break; // key 'b'
+                case 69: jumpTo('ending');       break; // key 'e'
+                case 76: $('.lyrics-parts').toggle(); break; // key 'l', show all lyrics
+                case 109: $('#decr-font').click();   break; // key '-'
+                case 107: $('#incr-font').click();   break; // key '+'
+                default: break;
+            }
+        });
+    }
+    
+
+
+    /**
+     * prepare lyrics or bible texts or image slides for presentation
+     */
+    if ( window.location.href.indexOf('/present')>10 ) {
+
+        // start showing bible parts if this is a bible reference
+        if ($('.bible-text-present').length) {
+            reFormatBibleText(); }
+
+        // re-format the lyrics
+        if ($('#present-lyrics').length) {
+            reDisplayLyrics(); }
+
+        // center and maximise images
+        if ( $('.slide-background-image').length ) {
+            prepareImages();
+        }
+
+        /**
+         * Check some user-defined settings in the Local Storage of the browser
+         */
+
+        // check if user wants a blank slide between items
+        showBlankBetweenItems = getLocalStorValue('configBlankSlides');
+        // if the value in LocalStorage was set to 'true', then we activate the checkbox:
+        if (showBlankBetweenItems=='true') {
+            $('#configBlankSlides').prop( "checked", true );
+        }
+
+        // how many bible verses per slide?
+        howManyVersesPerSlide = getLocalStorValue('configShowVersCount');
+        // if the value in LocalStorage was set to 'true', then we activate the checkbox:
+        if (howManyVersesPerSlide>0 && howManyVersesPerSlide<6) {
+            $('#configShowVersCount').val( howManyVersesPerSlide );
+        }
+
+        // check if user has changed the default font size and text alignment for the presentation
+        textAlign = getLocalStorValue('.text-present_text-align');
+        $('.text-present').css('text-align', textAlign);
+        $('.bible-text-present').css('text-align', textAlign);
+        $('.bible-text-present>p').css('text-align', textAlign);
+        $('.bible-text-present>h1').css('text-align', textAlign);
+
+        fontSize = getLocalStorValue('.text-present_font-size');
+        if ($.isNumeric(fontSize)) {
+            $('.text-present').css('font-size', parseInt(fontSize));
+        }
+        $('.text-present').show();
+
+        fontSize = getLocalStorValue('.bible-text-present_font-size');
+        if ($.isNumeric(fontSize)) {
+           $('.bible-text-present').css('font-size', parseInt(fontSize));
+           $('.bible-text-present>p').css('font-size', parseInt(fontSize));
+           $('.bible-text-present>h1').css('font-size', parseInt(fontSize));
+        }
+
+        // check if we have a predefined sequence from the DB
+        sequence=($('#sequence').text()).split(',');
+
+        // check if there are more lyric parts than 
+        // indicated in the sequence due to blank lines discoverd in the lyrics
+        if (sequence.length>1) 
+            compareLyricPartsWithSequence();
+
+        // auto-detect sequence if it is missing
+        if (sequence.length<2) {
+            createDefaultLyricSequence();
+            sequence=($('#sequence').text()).split(',');
+        }
+
+        // make sure the sequence indicator isn't getting too big! 
+        checkSequenceIndicatorLength();
+
+        // make sure the main content covers all the display area, but that no scrollbar appears
+        $('#main-content').css('max-height', window.innerHeight - $('.navbar-fixed-bottom').height());
+        $('#main-content').css('min-height', window.innerHeight - $('.navbar-fixed-bottom').height() - 10);
+
+    }
+
+    /**
+     * re-design the showing of lyrics interspersed with guitar chords
+     */
+    if ( $('#chords').text() != '' ) {
+        // only do this for PRE tags, not on input fields etc...
+        if ($('#chords')[0].nodeName == 'PRE') {
+            reDisplayChords();
+        }
+        $('.edit-show-buttons').css('display', 'inline');
+    }
+    // remove dropup button and menu on info screens
+    else if ( $('#bibletext').text()!='' || $('#comment').text()!='' ) {
+        $('#jumplist').remove();
+    }
+
+    // if sheetmusic is displayed, show button to swap between sheetmusic and chords
+    if ( window.location.href.indexOf('sheetmusic')>0 || window.location.href.indexOf('swap')>0 ) {
+        $('#show-chords-or-music').css('display', 'inline');
+    }
+
+});
+
+/* 
+    main javascript for c-SPOT
+    (C) 2016 Matthias Kuhs, Ireland
+*/
+
+
+
+/*\
+|*|
+|*|
+|*#=========================================================================================== SPA UTILITIES
+|*|
+|*|
+\*/
+
+
+
+
+/*
+    allow Admins/Authors/Plan owners to delete an attached file (image)    
+*/
+function deleteFile(id)
+{
+    // TODO: Prompt for confirmation as this is irrevocable:
+    if (! confirm('Are you sure to finally remove this file?')) {return;}
+    // get token from form field
+    $.ajax({
+        url:    '/cspot/files/'+id+'/delete', 
+        method: 'DELETE',
+    }).done(function(data) {
+        $('#file-'+id).html(data.data);
+    }).fail(function(data) {
+        if (data.responseJSON) {
+            alert("image deletion failed! Error: "+data.responseJSON.data+'.  Code:'+data.responseJSON.status);
+        }
+        else {
+            alert("image deletion failed! "+JSON.stringify(data));
+        }
+    });
+}
+
+/*  
+    unlink FILE from its item
+*/
+function unlinkFile(item_id, file_id)
+{
+    $.ajax({
+        url:    '/cspot/items/'+item_id+'/unlink/'+file_id+'', 
+        method: 'PUT',
+    }).done(function(data) {
+        $('#file-'+file_id).html(data.data);
+    }).fail(function(data) {
+        if (data.responseJSON) {
+            alert("image unlinking failed! Error: "+data.responseJSON.data+'.  Code:'+data.responseJSON.status);
+        }
+        else {
+            alert("image unlinking failed! "+JSON.stringify(data));
+        }
+    });
+}
+
+
+/*  
+    unlink SONG from its item
+*/
+function unlinkSong(item_id, song_id, plan_url)
+{
+    $.ajax({
+        url:    '/cspot/items/'+item_id+'/unlinkSong/'+song_id+'', 
+        method: 'PUT',
+    }).done(function(data) {
+        console.log(data);
+        // go back to plan 
+        window.location.href = plan_url;
+    }).fail(function(data) {
+        if (data.responseJSON) {
+            alert("song unlinking failed! Error: "+data.responseJSON.data+'.  Code:'+data.responseJSON.status);
+        }
+        else {
+            alert("song unlinking failed! "+JSON.stringify(data));
+        }
+    });
+}
+
+
+
+/**
+ * Record a user's availability for a certain plan
+ * (called when user clicks on the 'available' icon on plans.blade.php)
+ */
+function userAvailableForPlan(that, plan_id) {
+    // make sure the tooltip is hidden now
+    $(that).parent().parent().tooltip('hide')
+    $('#user-available-for-plan-id-'+plan_id).text( "wait..." );
+
+    var teamPage = false;
+    // was this function called from within the Team page?
+    if (that.checked == undefined) {
+        showSpinner();
+        teamPage = true;
+        // inverse the current available status
+        that.checked = ! $(that).data().available;
+    }
+
+    if ( $.isNumeric(plan_id) ) {
+        console.log('User wants his availability changed to '+that.checked);
+        // make AJAX call to 'plans/{plan_id}/team/{user_id}/available/'+that.checked
+        $.get( __app_url+'/cspot/plans/'+plan_id+'/team/available/'+that.checked)
+        .done(function() {
+            $('#user-available-for-plan-id-'+plan_id).text( that.checked ? 'yes' : 'no');
+            if (teamPage) { location.reload(); }
+        })
+        .fail(function() {
+            $('#user-available-for-plan-id-'+plan_id).text( "error" );
+        })        
+    }
+}
+
+
+
+/* 
+    Called from the Modal popup on the FILES LIST page, 
+    this function will save the updated file information via AJAX
+*/
+function updateFileInformation()
+{
+    // get the old data
+    var fileID   = $('#file-id').val();
+    var dispElem = $('#file-'+fileID);
+    var oldData  = $(dispElem).data('content');
+
+    // get the new data
+    var newFn = $('#filename').val()
+    var newFC = $('#file_category_id').val()
+
+    // compare
+    if (oldData.file_category_id == newFC 
+             && oldData.filename == newFn) return;
+
+    // get the action URL
+    var actionURL = $('#file-id').data('action-url')+fileID;
+
+    // update via AJAX 
+    $.post( actionURL, { id: fileID, filename: newFn, file_category_id: newFC })
+        .done(function(data) {
+            dispElem.find('.fileshow-filename').text(newFn);
+            dispElem.find('.fileshow-category').text($('#file_category_id option:selected').text());
+        })
+        .fail(function(data) {
+            dispElem.find('.fileshow-filename').text("Update failed! Please notify admin! " + JSON.stringify(data));
+        });
+    
+    // close the modal and update the data on the screen
+    $('#fileEditModal').modal('hide');
+}
+
+
+/*
+    User has selected WHAT he wants to insert, 
+    now we present the appropriate input elements
+*/
+function showModalSelectionItems(what)
+{
+    $('.modal-pre-selection').hide();               // hide all pre-selection parts of the modal
+    $('.modal-select-'+what).show();                // show all parts for selecting a song or entering a comment
+    $('#searchSongModalLabel').text('Insert '+what);
+    $('.modal-input-'+what).focus();
+    // show submit button for comments or scripture
+    if (what!='song') {
+        $('#searchForSongsSubmit').show();
+    }
+}
+/* 
+    Reset the song search form
+*/
+function resetSearchForSongs() 
+{
+    $('.modal-select-song').hide();
+    $('.modal-select-comment').hide();
+    $('.modal-select-scripture').hide();
+    $('.modal-pre-selection').show();
+    $('#modal-show-item-id').text('');
+    $('#searching').hide();    
+    $('#search-result').html('');
+    $('#searchForSongsSubmit').hide();
+    $('#MPselect').val(0);
+    $('#search-string').val('');
+    $('#search-string').focus();
+    $('#search-action-label').text('Full-text search incl. lyrics:');
+    $('#txtHint').html('');
+    $('#haystack').val('');
+}
+
+/* 
+    Called from the Modal popup on the PLAN OVERVIEW page, 
+    this function searches for songs, presents a list and/or 
+    song history information; uses AJAX to do the full-text search
+*/
+function searchForSongs(that)
+{    
+    // are we still searching or has the user already selected a song?
+    var modus = 'selecting';
+    if ( $('#searchForSongsButton').is(':visible') ) {
+        var search       = $('#search-string').val();
+        var mp_song_id   = $('#MPselect').val();
+        var haystack_id  = $('input[name=haystack]:checked', '#searchSongForm').val();
+        if (search=='' && mp_song_id==0  && haystack_id==undefined) {
+            return;         // search string was empty...
+        }
+        if (mp_song_id>0) {
+            search = '(song id: '+mp_song_id+')';    // MP song selection is preferred
+        }
+        if (haystack_id) {
+            search = '(song id: '+mp_song_id+')'; 
+            mp_song_id = haystack_id;
+        }
+        modus = 'searching';
+        $('.search-form-item').hide();  // hide search input fields and labels
+        $('#searching').show();         // show spinner
+    }
+    // alternate the form action buttons
+
+    if (modus=='searching') {
+        $('#searchForSongsButton').toggle();
+        $('#searchForSongsSubmit').toggle();
+        // get the action URL
+        var actionURL = $('#plan_id').data('search-url');
+
+        // update via AJAX 
+        $.post( actionURL, { search: search, song_id: mp_song_id })
+            .done(function(data) {
+                if (typeof(data)!='object')
+                    data.data = "[]"; // simulate empty result
+                var result = JSON.parse(data.data);
+                if (result.length==0) {
+                    $('#search-action-label').text('Nothing found for "'+search+'", please try again:');
+                    $('#searchForSongsButton').toggle();
+                    $('#searchForSongsSubmit').toggle();
+                    $('#searching').hide();  
+                    $('.search-form-item').show();  
+                    $('#search-string').focus();
+                    return;
+                }
+                $('#search-action-label').text('Select one:');
+                $('#searching').hide();
+
+                var html = '';  
+                // create the HTML to present the search result to the user for selection
+                for (var i = 0; i < result.length; i++) {
+                    if (result[i].id==0)
+                        continue;                       // ignore song with id # 0
+                    var count = result[i].plans.length; // number of plans that already used this song
+                    var lastPlanDate = false;           //date of last time this song was used ("2016-05-08 00:00:00")
+                    if (result[i].plans.length) {
+                        lastPlanDate = result[i].plans[0].date; 
+                    }
+                    html += '<div onclick="$(\'#searchForSongsSubmit\').click()" class="c-inputs-stacked'+ (i%2==0 ? ' even' : '') +'">';
+                    html +=     '<label class="c-input c-radio" title="';
+                    html +=         result[i].lyrics.replace(/"/g,"&quot;") + '"><input type="radio" name="searchRadios" value="';
+                    html +=         result[i].id +'"><span class="c-indicator"></span>';
+                    html +=         (result[i].book_ref ? '('+result[i].book_ref+') ' : ' ')  + result[i].title + ' ';
+                    html +=         '<small>'+result[i].title_2+'<br><span class="pull-xs-right">';
+                    html +=             '<b>Last used:</b> <span class="label label-default">'
+                    html +=                 ( lastPlanDate ? moment(lastPlanDate, 'YYYY-MM-DD HH:mm:ss').fromNow() : 'never used!!');
+                    html +=             '</span> Total: <b'+ (count>25 ? ' class="red">' : '>') + count + '</b> times</span></small>';
+                    html +=     '</label></div>' ;
+                }
+                $('#search-result').html(html);
+            })
+            .fail(function(data) {
+                $('#searching').hide();
+                console.log(data);
+                $('#search-result').text("Search failed! Please notify admin! " + JSON.stringify(data));
+            });
+    } 
+    else {
+        // which song was selected?
+        var song_id = $('input[name=searchRadios]:checked', '#searchSongForm').val();
+
+        var plan_id = $('#plan_id').val();
+        var seq_no  = $('#seq-no' ).val();
+
+        // check if user entered a comment
+        var comment = $('#comment' ).val();
+
+        // was this called via 'showUpdateSongForm' function?
+        if (plan_id=="update-song") {
+            if (song_id!=undefined) {
+                // attach lyrics to song_id input field, so that when user selects this song, we can attach it as title to the table cell
+                // (we get this from the selection in the search results to whose parent element the lyrics were attached)
+                $('#song_id').attr(  'title',  $('input[name=searchRadios]:checked', '#searchSongForm').parent().attr('title')  );
+                updateSong(song_id);
+            }
+            return;
+        }
+        // was this called via 'AddScriptureRef' button?
+        if (plan_id=="update-scripture") {
+            addScriptureRef(that);
+            return;
+        }
+
+        // did user select a song? It should always be a string, even '0'....
+        if ( (! song_id  || song_id == '0') && ! comment )
+            // nothing selected and comment is empty
+            return false; // no
+
+        // reset search form back to normal
+        resetSearchForSongs();
+
+        showSpinner()
+        $('#searchForSongsButton').toggle();
+        $('#searchForSongsSubmit').toggle();
+        
+        // write it into the form
+        $('#song_id').val(song_id);
+        console.log('Writing the selected song_id as value of the hidden input element: '+song_id)
+
+        // restore the original search form
+        $('#searchSongModal').modal('hide');    // close the modal
+        $('#search-result').html('');           // remove the search results
+        $('#search-string').val('');            // reset the search string
+        $('#searching').hide();                 // hide the spinner
+
+        // for some reason, the form doesn't submit if only a comment was given...
+        if (comment) {
+            document.getElementById('searchSongForm').submit();
+        }
+    }
+
+}
+
+
+/*
+    execute the update via AJAX and show the new data on the page
+*/
+function updateSong(song_id)
+{
+    $('#searchSongModal').modal('hide');
+    console.log('closing song form, got song id '+song_id);
+    var item_id   = $('#beforeItem_id').val();
+    var seq_no    = $('#seq-no').val();
+    var myCell    = $('#tr-item-'+seq_no.replace('.','-'));
+    myCell.children('.show-songbook-ref').html('<i class="fa fa-spinner fa-spin fa-fw"></i>');
+    myCell.children('.show-song-title').text('');
+    myCell.children('.show-youtube-links').html('');
+
+    // update item via AJAX
+    var actionURL = $('#searchSongForm').attr('data-action');
+    $.post( actionURL, { song_id: song_id })
+        .done(function(data) {
+            // on success, show new song data
+            for (var i=0; i<haystackMP.length; i++) {
+                if (haystackMP[i].id == song_id) {
+                    myCell.children('.show-songbook-ref').text(haystackMP[i].book_ref);
+                    myCell.children('.show-song-title').text(haystackMP[i].title);
+                    myCell.children('.show-song-title').attr('data-original-title',$('#song_id').attr('title'));
+                    var href = myCell.children().children('.edit-song-link').attr('href');
+                    if (href) {
+                        href = href.replace(myCell.data('oldSongId'),song_id);
+                        myCell.children().children('.edit-song-link').attr('href', href);
+                    }
+                    break;
+                }
+            }
+        })
+        .fail(function(data) {
+            myCell.children('.show-song-title').text('Failed! Press F12 for more');
+            console.log("Update failed! Please notify admin! " + JSON.stringify(data));
+        });
+}
+
+
+
+/*
+    remove a single item
+*/
+function removeItem(that)
+{
+    myTR = that.parentElement.parentElement.parentElement.parentElement; // get handle on whole TABLE ROW
+    myTD = that.parentElement.parentElement.parentElement;              // get handle on table CELL
+    $(myTR).addClass('text-muted');                                    // 'mute' table row
+    $(myTD).children().hide();                                        // hide action buttons
+    $(myTD).append('<i class="fa fa-spinner fa-spin fa-fw"></i>');   // show spinner while updating
+
+    var actionURL = $(that).data().actionUrl;                       // delete item via AJAX
+    $.post( actionURL )
+        .done(function(data) {
+            $('.fa-spinner').hide();
+            $(myTR).children('td').each(function(){
+                $(this).addClass('trashed');
+            })
+            // on success, fade-out table row and show action buttons for hidden items
+            $(myTR).slideUp(550, function() {
+                $(myTR).addClass('trashed');
+                $(myTD).children('.trashedButtons').show();
+            });
+            // update number of trashed items
+            var trashedItemsCount = parseInt($('#trashedItemsCount').text());
+            $('#trashedItemsCount').text(1+trashedItemsCount);
+            $('#trashedItems').show();
+        })
+        .fail(function(data) {
+            $(myTD).text('Failed! Press F12 for more');
+            console.log("Update failed! Please notify admin! " + JSON.stringify(data));
+        });
+}
+
+
+function addScriptureRef(that)
+{
+    // get handle to table row containing the original comment
+    var seq_no = $('#seq-no').val();
+    var TRid = 'tr-item-'+seq_no.replace('.','-');
+
+    // get new comment value
+    var newText = $('#comment').val();
+
+    // send update via AJAX
+    var actionURL = __app_url + '/cspot/api/items/update';
+
+    that = $('#'+TRid).children(".comment-cell");                 // show spinner while updating
+    $(that).children(".comment-textcontent").html('<i class="fa fa-spinner fa-spin"></i>');
+
+    $.post( actionURL, { 
+            value : newText,
+            id    : $(that).children(".comment-textcontent").attr('id'),
+        })
+        .done(function(data) {
+            resetCommentText(TRid, newText);
+        })
+        .fail(function(data) {
+            $(that).children(".comment-textcontent").text('Failed! Press F12 for more');
+            console.log("Update failed! Please notify admin! " + JSON.stringify(data));
+        });
+
+    // close modal
+    $('#searchSongModal').modal('hide');
+}
+/*
+    show comment text again
+*/
+function resetCommentText(id, newText) {
+    that = $('#'+id).children(".comment-cell");
+    $(that).children(".comment-textcontent").text(newText);
+    if (! newText)      // only show 'edit' icon when comment is empty
+        $(that).children(".fa-pencil").css('display', 'inline');
+}
 
 
 
@@ -36590,7 +38072,7 @@ SelectedDates[new Date().toLocaleDateString()] = 'Today';
 |*|
 |*|
 |*|
-|*+------------------------------------------ SLIDE PRESENTATION HELPERS
+|*#=========================================================================================== SLIDE PRESENTATION HELPERS
 |*|
 |*|
 |*| prepares raw song lyrics/bible texts and turns them into single slides
@@ -36611,7 +38093,7 @@ var bibleBooks;
 
 
 /*\
-|* >------------------------------------------ IMAGE SLIDES
+|* >------------------------------------------ PREPARE IMAGE SLIDES
 \*/
 
 
@@ -36641,7 +38123,7 @@ function prepareImages()
 
 
 /*\
-|* >------------------------------------------ BIBLE TEXT SLIDES
+|* >------------------------------------------ PREPARE BIBLE TEXT SLIDES
 \*/
 
 
@@ -36880,7 +38362,7 @@ function formatBibleRefHeader( exisText, newText) {
 
 
 /*\
-|* >------------------------------------------ SONG SLIDES
+|* >------------------------------------------ PREPARE SONG SLIDES
 \*/
 
 
@@ -37069,13 +38551,17 @@ function reDisplayLyrics()
                 newLyr += '<hr class="hr-big">';
                 region2 = true;
             } else {
-                cls = stl = '';
-                if (region2) cls = 'text-present-region2';
+                cls = 'text-present ';
+                stl = '';
+                if (region2) cls = 'text-present text-present-region2';
                 // check if line contains style codes:
                 var styles = getStylesFromLyricsLine(lyricsLine);
-                if (styles.length>0)
+                if (styles.length>0) {
                     stl = 'style="'+styles+'"';
-                newLyr += '<p class="text-present '+cls+' m-b-0" '+stl+'>'+lyricsLine+'</p>';
+                    cls = '';
+                    lyricsLine = lyricsLine.split('>')[1];
+                }
+                newLyr += '<p class="'+cls+' m-b-0" '+stl+'>'+lyricsLine+'</p>';
             }
         }
     }
@@ -37125,8 +38611,107 @@ function headerCode(divNam) {
 
 
 
+
 /*\
-|* >------------------------------------------ GENERIC  PRESENTATION  HELPERS
+|* >------------------------------------------ PREPARE  CHORDS  DISPLAY
+\*/
+
+
+/*
+    Use Regex patterns to identify chords versus lyrics versus headings
+    and to show them in different colors
+    (called from document.ready.js)
+*/
+function reDisplayChords()
+{
+    // get the chords text and split it into lines
+    chords = $('#chords').text().split('\n');
+    // empty the exisint pre tag
+    $('#chords').text('');
+    // analyse each line and put it back into single pre tags
+    for (var i = 0; i <= chords.length - 1; i++) {
+        if (chords[i].length==0) continue;
+        // if a line looks like chords, make it red
+        if ( identifyChords(chords[i]) ) {
+            $('#chords').append('<pre class="red m-b-0">'+chords[i]+'</pre>');
+        }
+        else {
+            hdr = identifyHeadings(chords[i]).split('$');
+            anchor = '';
+            if (hdr.length>1 && hdr[1].length>0)
+                anchor = '<a name="'+hdr[1]+'"></a>';
+            $('#chords').append(anchor+'<pre class="m-b-0 '+hdr[0]+'">'+chords[i]+'</pre>');
+        }
+    }
+}
+function identifyHeadings(str)
+{
+    // identify headers by the first word in a line, case-insensitive
+
+    patt = /^(coda|end)/i;
+    if ( patt.test(str) ) 
+        return ' p-l-3 bg-info$';
+
+    patt = /^(Verse)/i;
+    if ( patt.test(str) ) {
+        nm=''; n=str.split(' '); 
+        if (n.length>1) {
+            nm=n[1].substr(0,1); 
+            $('#jumplist').show();
+            $('#jump-verse'+nm).show();
+        }
+        return ' p-l-3 bg-success$verse'+nm; 
+    }
+    patt = /^(Chorus)/i;
+    if ( patt.test(str) ) {
+        $('#jumplist').show();
+        $('#jump-chorus').show();
+        return ' p-l-3 bg-info$chorus';
+    }
+    patt = /^(Pre-Chorus)/i;
+    if ( patt.test(str) ) {
+        $('#jumplist').show();
+        $('#jump-chorus').show();
+        return ' p-l-3 bg-info$chorus';
+    }
+    patt = /^(bridge)/i;
+    if ( patt.test(str) ) {
+        $('#jumplist').show();
+        $('#jump-bridge').show();
+        return ' p-l-3 bg-info$bridge';
+    }
+
+    patt = /^(Capo|Key|\()/;
+    if ( patt.test(str) ) 
+        return ' big text-primary$';
+
+    patt = /^(Intro|Other|\()/;
+    if ( patt.test(str) ) 
+        return ' text-primary$';
+
+    return '';
+}
+function identifyChords(str)
+{
+    
+    var patt = /[klopqrtvwxyz1368]/g;
+    if ( patt.test(str) ) return false;
+    
+    var patt = /\b[CDEFGAB](?:#{1,2}|b{1,2})?(?:maj7?|min7?|sus2?|sus4?|m?)\b/g;
+    if ( patt.test(str) ) return true;
+    
+    var patt = /\b[CDEFGB]\b/g;
+    if ( patt.test(str) ) return true;
+
+    return false;
+}
+
+
+
+
+
+/*\
+|* >------------------------------------------ HELPERS  TO  PREPARE  THE  PRESENTATION  UI
 \*/
 
 
@@ -37242,6 +38827,12 @@ function formatSeqInd(code){
 
 
 
+
+
+
+/*\
+|* >------------------------------------------ HELPERS  FOR  NAVIGATION IN THE  ACTUAL PRESENTATION
+\*/
 
 
 /*
@@ -37734,1527 +39325,3 @@ function requestFullScreen(element) {
         }
     }
 }
-
-
-/*
-    Use Regex patterns to identify chords versus lyrics versus headings
-    and to show them in different colors
-*/
-function reDisplayChords()
-{
-    // get the chords text and split it into lines
-    chords = $('#chords').text().split('\n');
-    // empty the exisint pre tag
-    $('#chords').text('');
-    // analyse each line and put it back into single pre tags
-    for (var i = 0; i <= chords.length - 1; i++) {
-        if (chords[i].length==0) continue;
-        // if a line looks like chords, make it red
-        if ( identifyChords(chords[i]) ) {
-            $('#chords').append('<pre class="red m-b-0">'+chords[i]+'</pre>');
-        }
-        else {
-            hdr = identifyHeadings(chords[i]).split('$');
-            anchor = '';
-            if (hdr.length>1 && hdr[1].length>0)
-                anchor = '<a name="'+hdr[1]+'"></a>';
-            $('#chords').append(anchor+'<pre class="m-b-0 '+hdr[0]+'">'+chords[i]+'</pre>');
-        }
-    }
-}
-function identifyHeadings(str)
-{
-    // identify headers by the first word in a line, case-insensitive
-
-    patt = /^(coda|end)/i;
-    if ( patt.test(str) ) 
-        return ' p-l-3 bg-info$';
-
-    patt = /^(Verse)/i;
-    if ( patt.test(str) ) {
-        nm=''; n=str.split(' '); 
-        if (n.length>1) {
-            nm=n[1].substr(0,1); 
-            $('#jumplist').show();
-            $('#jump-verse'+nm).show();
-        }
-        return ' p-l-3 bg-success$verse'+nm; 
-    }
-    patt = /^(Chorus)/i;
-    if ( patt.test(str) ) {
-        $('#jumplist').show();
-        $('#jump-chorus').show();
-        return ' p-l-3 bg-info$chorus';
-    }
-    patt = /^(Pre-Chorus)/i;
-    if ( patt.test(str) ) {
-        $('#jumplist').show();
-        $('#jump-chorus').show();
-        return ' p-l-3 bg-info$chorus';
-    }
-    patt = /^(bridge)/i;
-    if ( patt.test(str) ) {
-        $('#jumplist').show();
-        $('#jump-bridge').show();
-        return ' p-l-3 bg-info$bridge';
-    }
-
-    patt = /^(Capo|Key|\()/;
-    if ( patt.test(str) ) 
-        return ' big text-primary$';
-
-    patt = /^(Intro|Other|\()/;
-    if ( patt.test(str) ) 
-        return ' text-primary$';
-
-    return '';
-}
-function identifyChords(str)
-{
-    
-    var patt = /[klopqrtvwxyz1368]/g;
-    if ( patt.test(str) ) return false;
-    
-    var patt = /\b[CDEFGAB](?:#{1,2}|b{1,2})?(?:maj7?|min7?|sus2?|sus4?|m?)\b/g;
-    if ( patt.test(str) ) return true;
-    
-    var patt = /\b[CDEFGB]\b/g;
-    if ( patt.test(str) ) return true;
-
-    return false;
-}
-
-
-
-
-/***
- * Build a Bible Reference string
- */
-function showNextSelect(fromOrTo, what) {
-    book    = $('#from-book').val();
-    chapter = $('#from-chapter').val();
-
-    // make sure all fields are visible now
-    $('.select-reference').show();
-
-    // remove old options from select box
-    emptyRefSelect(fromOrTo, what);
-    var x = document.getElementById(fromOrTo+'-'+what);
-
-    // API call to get the books/chapter/verses data
-    if (typeof(bibleBooks)=='object') {
-        // make the element visible
-        $('#'+fromOrTo+'-'+what).show();
-
-        // minimum value for the 'to' verse is the 'from' verse
-        minNumber = 1
-        if (fromOrTo=='to' && what=='verse') {
-            minNumber = $('#from-verse').val();
-        }
-
-        // are wee looking at chapters of a book or verses of a chapter?
-        if (what=='chapter') {
-            maxNumber = Object.keys(bibleBooks[book]).length;
-        } else {
-            maxNumber = bibleBooks[book][chapter];
-        }
-
-        // populate the select input with the relevant numbers
-        for (var i = minNumber; i <= maxNumber; i++) {
-            var option = document.createElement("option");
-            option.text = i;
-            option.value = i;
-            x.add(option);
-        }
-        // if book has only one chapter, populate the verses right now
-        if (what=='chapter') {
-            showNextSelect(fromOrTo, 'verse');
-        }
-        if (fromOrTo=='from' && what=='verse') {
-            showNextSelect('to', 'verse');
-            $('.select-version').show();                
-        }
-    };
-}
-function populateComment() {
-    // ignore if nothing was selected
-    if ($('#from-book').val()==null || $('#from-book').val()==' ') { 
-        return; }
-
-    // check existing comment
-    oldComment = $('#comment').val();
-    if (oldComment.length>0) {
-        oldComment += '; ';
-    }
-
-    // set default and minimum value identical with 'from' value
-    $('#comment').val( oldComment
-        + $('#from-book').val()+' '
-        + $('#from-chapter').val()+':'
-        + $('#from-verse').val() 
-        +($('#to-verse').val() != $('#from-verse').val() ? '-'+$('#to-verse').val() : '') + ' ('
-        + $('#version').val() + ')'
-        );
-
-    $('#waiting').show();
-    // now get the bible text via API and display it on the page
-    showScriptureText($('#version').val(), $('#from-book').val(), $('#from-chapter').val(), $('#from-verse').val(), $('#to-verse').val())
-
-    $('#from-book').val('');
-    emptyRefSelect('from', 'chapter');
-    emptyRefSelect('from', 'verse');
-    emptyRefSelect('to', 'verse');
-    $('#version').val('');
-    $('.select-reference').hide();
-    $('.select-version').hide();
-    $('#col-2-song-search').hide();
-    $('#comment-label').text('Bible Reading');
-    blink('.save-buttons');
-}
-function emptyRefSelect(fromOrTo, what) {
-    // get the <select> element 
-    var x = document.getElementById(fromOrTo+'-'+what);
-    $(x).hide();
-    // clear the element of all current options
-    for (i=x.length; i>=0; i--) {
-        x.remove(i);
-    }
-}
-function showScriptureText(version,book,chapter,fromVerse,toVerse) 
-{
-    book = book.replace(' ', '+');
-
-    $.get(__app_url+'/bible/passage/'+version+'/'+book+'/'+chapter+'/'+fromVerse+'/'+toVerse , 
-        function(data, status) 
-        {
-            if ( status == 'success') 
-            {
-                $('#waiting').hide();
-                passage = data.response.search.result.passages;
-                if (passage.length>0) 
-                {
-                    text = (passage[0].text).replace(/h3/g, 'strong');
-                    text = text.replace(/h2/g, 'i');
-                    $('#bible-passages').append( 
-                        '<h5>' + passage[0].display +' ('+passage[0].version_abbreviation + ')</h5>' +
-                        '<div>'+ text + '</div>' +
-                        '<div class="small">' + passage[0].copyright + '</div><hr>'                        
-                    );                         
-                } 
-                else 
-                {
-                    $('#show-passages').html('(passage not found)');
-                }
-            }
-            else 
-            {
-                $('#waiting').append(' Not found! ' + data);
-            }
-        }
-    );
-}
-
-
-
-
-
-
-
-
-
-/*\
-|*|
-|*|
-|*#======================================================================= SPA UTILITIES
-|*|
-|*|
-\*/
-
-
-
-
-/* 
-    Called from the Modal popup on the FILES LIST page, 
-    this function will save the updated file information via AJAX
-*/
-function updateFileInformation()
-{
-    // get the old data
-    var fileID   = $('#file-id').val();
-    var dispElem = $('#file-'+fileID);
-    var oldData  = $(dispElem).data('content');
-
-    // get the new data
-    var newFn = $('#filename').val()
-    var newFC = $('#file_category_id').val()
-
-    // compare
-    if (oldData.file_category_id == newFC 
-             && oldData.filename == newFn) return;
-
-    // get the action URL
-    var actionURL = $('#file-id').data('action-url')+fileID;
-
-    // update via AJAX 
-    $.post( actionURL, { id: fileID, filename: newFn, file_category_id: newFC })
-        .done(function(data) {
-            dispElem.find('.fileshow-filename').text(newFn);
-            dispElem.find('.fileshow-category').text($('#file_category_id option:selected').text());
-        })
-        .fail(function(data) {
-            dispElem.find('.fileshow-filename').text("Update failed! Please notify admin! " + JSON.stringify(data));
-        });
-    
-    // close the modal and update the data on the screen
-    $('#fileEditModal').modal('hide');
-}
-
-
-/*
-    User has selected WHAT he wants to insert, 
-    now we present the appropriate input elements
-*/
-function showModalSelectionItems(what)
-{
-    $('.modal-pre-selection').hide();               // hide all pre-selection parts of the modal
-    $('.modal-select-'+what).show();                // show all parts for selecting a song or entering a comment
-    $('#searchSongModalLabel').text('Insert '+what);
-    $('.modal-input-'+what).focus();
-    // show submit button for comments or scripture
-    if (what!='song') {
-        $('#searchForSongsSubmit').show();
-    }
-}
-/* 
-    Reset the song search form
-*/
-function resetSearchForSongs() 
-{
-    $('.modal-select-song').hide();
-    $('.modal-select-comment').hide();
-    $('.modal-select-scripture').hide();
-    $('.modal-pre-selection').show();
-    $('#modal-show-item-id').text('');
-    $('#searching').hide();    
-    $('#search-result').html('');
-    $('#searchForSongsSubmit').hide();
-    $('#MPselect').val(0);
-    $('#search-string').val('');
-    $('#search-string').focus();
-    $('#search-action-label').text('Full-text search incl. lyrics:');
-    $('#txtHint').html('');
-    $('#haystack').val('');
-}
-
-/* 
-    Called from the Modal popup on the PLAN OVERVIEW page, 
-    this function searches for songs, presents a list and/or 
-    song history information; uses AJAX to do the full-text search
-*/
-function searchForSongs(that)
-{    
-    // are we still searching or has the user already selected a song?
-    var modus = 'selecting';
-    if ( $('#searchForSongsButton').is(':visible') ) {
-        var search       = $('#search-string').val();
-        var mp_song_id   = $('#MPselect').val();
-        var haystack_id  = $('input[name=haystack]:checked', '#searchSongForm').val();
-        if (search=='' && mp_song_id==0  && haystack_id==undefined) {
-            return;         // search string was empty...
-        }
-        if (mp_song_id>0) {
-            search = '(song id: '+mp_song_id+')';    // MP song selection is preferred
-        }
-        if (haystack_id) {
-            search = '(song id: '+mp_song_id+')'; 
-            mp_song_id = haystack_id;
-        }
-        modus = 'searching';
-        $('.search-form-item').hide();  // hide search input fields and labels
-        $('#searching').show();         // show spinner
-    }
-    // alternate the form action buttons
-
-    if (modus=='searching') {
-        $('#searchForSongsButton').toggle();
-        $('#searchForSongsSubmit').toggle();
-        // get the action URL
-        var actionURL = $('#plan_id').data('search-url');
-
-        // update via AJAX 
-        $.post( actionURL, { search: search, song_id: mp_song_id })
-            .done(function(data) {
-                if (typeof(data)!='object')
-                    data.data = "[]"; // simulate empty result
-                var result = JSON.parse(data.data);
-                if (result.length==0) {
-                    $('#search-action-label').text('Nothing found for "'+search+'", please try again:');
-                    $('#searchForSongsButton').toggle();
-                    $('#searchForSongsSubmit').toggle();
-                    $('#searching').hide();  
-                    $('.search-form-item').show();  
-                    $('#search-string').focus();
-                    return;
-                }
-                $('#search-action-label').text('Select one:');
-                $('#searching').hide();
-
-                var html = '';  
-                // create the HTML to present the search result to the user for selection
-                for (var i = 0; i < result.length; i++) {
-                    if (result[i].id==0)
-                        continue;                       // ignore song with id # 0
-                    var count = result[i].plans.length; // number of plans that already used this song
-                    var lastPlanDate = false;           //date of last time this song was used ("2016-05-08 00:00:00")
-                    if (result[i].plans.length) {
-                        lastPlanDate = result[i].plans[0].date; 
-                    }
-                    html += '<div onclick="$(\'#searchForSongsSubmit\').click()" class="c-inputs-stacked'+ (i%2==0 ? ' even' : '') +'">';
-                    html +=     '<label class="c-input c-radio" title="';
-                    html +=         result[i].lyrics.replace(/"/g,"&quot;") + '"><input type="radio" name="searchRadios" value="';
-                    html +=         result[i].id +'"><span class="c-indicator"></span>';
-                    html +=         (result[i].book_ref ? '('+result[i].book_ref+') ' : ' ')  + result[i].title + ' ';
-                    html +=         '<small>'+result[i].title_2+'<br><span class="pull-xs-right">';
-                    html +=             '<b>Last used:</b> <span class="label label-default">'
-                    html +=                 ( lastPlanDate ? moment(lastPlanDate, 'YYYY-MM-DD HH:mm:ss').fromNow() : 'never used!!');
-                    html +=             '</span> Total: <b'+ (count>25 ? ' class="red">' : '>') + count + '</b> times</span></small>';
-                    html +=     '</label></div>' ;
-                }
-                $('#search-result').html(html);
-            })
-            .fail(function(data) {
-                $('#searching').hide();
-                console.log(data);
-                $('#search-result').text("Search failed! Please notify admin! " + JSON.stringify(data));
-            });
-    } 
-    else {
-        // which song was selected?
-        var song_id = $('input[name=searchRadios]:checked', '#searchSongForm').val();
-
-        var plan_id = $('#plan_id').val();
-        var seq_no  = $('#seq-no' ).val();
-
-        // check if user entered a comment
-        var comment = $('#comment' ).val();
-
-        // was this called via 'showUpdateSongForm' function?
-        if (plan_id=="update-song") {
-            if (song_id!=undefined) {
-                // attach lyrics to song_id input field, so that when user selects this song, we can attach it as title to the table cell
-                // (we get this from the selection in the search results to whose parent element the lyrics were attached)
-                $('#song_id').attr(  'title',  $('input[name=searchRadios]:checked', '#searchSongForm').parent().attr('title')  );
-                updateSong(song_id);
-            }
-            return;
-        }
-        // was this called via 'AddScriptureRef' button?
-        if (plan_id=="update-scripture") {
-            addScriptureRef(that);
-            return;
-        }
-
-        // did user select a song? It should always be a string, even '0'....
-        if ( (! song_id  || song_id == '0') && ! comment )
-            // nothing selected and comment is empty
-            return false; // no
-
-        // reset search form back to normal
-        resetSearchForSongs();
-
-        showSpinner()
-        $('#searchForSongsButton').toggle();
-        $('#searchForSongsSubmit').toggle();
-        
-        // write it into the form
-        $('#song_id').val(song_id);
-        console.log('Writing the selected song_id as value of the hidden input element: '+song_id)
-
-        // restore the original search form
-        $('#searchSongModal').modal('hide');    // close the modal
-        $('#search-result').html('');           // remove the search results
-        $('#search-string').val('');            // reset the search string
-        $('#searching').hide();                 // hide the spinner
-
-        // for some reason, the form doesn't submit if only a comment was given...
-        if (comment) {
-            document.getElementById('searchSongForm').submit();
-        }
-    }
-
-}
-
-
-/*
-    execute the update via AJAX and show the new data on the page
-*/
-function updateSong(song_id)
-{
-    $('#searchSongModal').modal('hide');
-    console.log('closing song form, got song id '+song_id);
-    var item_id   = $('#beforeItem_id').val();
-    var seq_no    = $('#seq-no').val();
-    var myCell    = $('#tr-item-'+seq_no.replace('.','-'));
-    myCell.children('.show-songbook-ref').html('<i class="fa fa-spinner fa-spin fa-fw"></i>');
-    myCell.children('.show-song-title').text('');
-    myCell.children('.show-youtube-links').html('');
-
-    // update item via AJAX
-    var actionURL = $('#searchSongForm').attr('data-action');
-    $.post( actionURL, { song_id: song_id })
-        .done(function(data) {
-            // on success, show new song data
-            for (var i=0; i<haystackMP.length; i++) {
-                if (haystackMP[i].id == song_id) {
-                    myCell.children('.show-songbook-ref').text(haystackMP[i].book_ref);
-                    myCell.children('.show-song-title').text(haystackMP[i].title);
-                    myCell.children('.show-song-title').attr('data-original-title',$('#song_id').attr('title'));
-                    var href = myCell.children().children('.edit-song-link').attr('href');
-                    if (href) {
-                        href = href.replace(myCell.data('oldSongId'),song_id);
-                        myCell.children().children('.edit-song-link').attr('href', href);
-                    }
-                    break;
-                }
-            }
-        })
-        .fail(function(data) {
-            myCell.children('.show-song-title').text('Failed! Press F12 for more');
-            console.log("Update failed! Please notify admin! " + JSON.stringify(data));
-        });
-}
-
-
-
-/*
-    remove a single item
-*/
-function removeItem(that)
-{
-    myTR = that.parentElement.parentElement.parentElement.parentElement; // get handle on whole TABLE ROW
-    myTD = that.parentElement.parentElement.parentElement;              // get handle on table CELL
-    $(myTR).addClass('text-muted');                                    // 'mute' table row
-    $(myTD).children().hide();                                        // hide action buttons
-    $(myTD).append('<i class="fa fa-spinner fa-spin fa-fw"></i>');   // show spinner while updating
-
-    var actionURL = $(that).data().actionUrl;                       // delete item via AJAX
-    $.post( actionURL )
-        .done(function(data) {
-            $('.fa-spinner').hide();
-            $(myTR).children('td').each(function(){
-                $(this).addClass('trashed');
-            })
-            // on success, fade-out table row and show action buttons for hidden items
-            $(myTR).slideUp(550, function() {
-                $(myTR).addClass('trashed');
-                $(myTD).children('.trashedButtons').show();
-            });
-            // update number of trashed items
-            var trashedItemsCount = parseInt($('#trashedItemsCount').text());
-            $('#trashedItemsCount').text(1+trashedItemsCount);
-            $('#trashedItems').show();
-        })
-        .fail(function(data) {
-            $(myTD).text('Failed! Press F12 for more');
-            console.log("Update failed! Please notify admin! " + JSON.stringify(data));
-        });
-}
-
-
-function addScriptureRef(that)
-{
-    // get handle to table row containing the original comment
-    var seq_no = $('#seq-no').val();
-    var TRid = 'tr-item-'+seq_no.replace('.','-');
-
-    // get new comment value
-    var newText = $('#comment').val();
-
-    // send update via AJAX
-    var actionURL = __app_url + '/cspot/api/items/update';
-
-    that = $('#'+TRid).children(".comment-cell");                 // show spinner while updating
-    $(that).children(".comment-textcontent").html('<i class="fa fa-spinner fa-spin"></i>');
-
-    $.post( actionURL, { 
-            value : newText,
-            id    : $(that).children(".comment-textcontent").attr('id'),
-        })
-        .done(function(data) {
-            resetCommentText(TRid, newText);
-        })
-        .fail(function(data) {
-            $(that).children(".comment-textcontent").text('Failed! Press F12 for more');
-            console.log("Update failed! Please notify admin! " + JSON.stringify(data));
-        });
-
-    // close modal
-    $('#searchSongModal').modal('hide');
-}
-/*
-    show comment text again
-*/
-function resetCommentText(id, newText) {
-    that = $('#'+id).children(".comment-cell");
-    $(that).children(".comment-textcontent").text(newText);
-    if (! newText)      // only show 'edit' icon when comment is empty
-        $(that).children(".fa-pencil").css('display', 'inline');
-}
-
-
-
-
-
-/*\
-|*|
-|*|
-|*#======================================================================= VARIOUS  UI  HELPERS
-|*|
-|*|
-\*/
-
-
-function fillDefaultServiceTimes(that)
-{
-    // get selected service type
-    var selSerType = $(that).val();
-    // read default times from global var
-    var start = serviceTypes[selSerType].start;
-    var   end = serviceTypes[selSerType].end;
-    // assign to times input fields
-    $($('#planServiceTimes').children('input')[0]).val(start);
-    $($('#planServiceTimes').children('input')[1]).val( end );
-}
-
-
-/*
-    parse an URL string
-
-    @param string url
-    @returns object
-
-    This DOM object provides the following values:
-        url.protocol; //(http:)
-        url.hostname ; //(www.example.com)
-        url.pathname ; //(/some/path)
-        url.search ; // (?name=value)
-        url.hash; //(#anchor)
-
-*/
-function parseURLstring(urlstring)
-{
-    var url = document.createElement('a');
-    url.href = urlstring;
-    return url;
-}
-
-
-/* 
-    List filtering: Reload page with alternate filtering
-*/
-function toogleAllorFuturePlans()
-{
-    showSpinner();
-    // get current url and query string
-    var currUrl = window.location.href.split('?');
-    var newUrl  = currUrl[0];
-    if (currUrl.length > 1) 
-    {
-        var queryStr = currUrl[1].split('&');
-        if (queryStr.length > 1) {
-            newUrl += '?';
-            for (var i = queryStr.length - 1; i >= 0; i--) {
-                parms = queryStr[i].split('=');
-                if (parms[0]=='show') {
-                    parms[1]=='all'  ?  parms[1]='future'  :  parms[1]='all';
-                    queryStr[i] = 'show='+parms[1];
-                }                
-                newUrl += queryStr[i];
-                if (i > 0) newUrl += '&';
-            }
-        }
-    } 
-    window.location.href = newUrl;
-}
-
-/* 
-    List sorting: Reload page with the 'orderBy' segment and the given field name
-*/
-function reloadListOrderBy(field)
-{
-    showSpinner();
-    // get current url and query string
-    var currUrl = window.location.href.split('?');
-    var newUrl  = currUrl[0] + '?';
-    if (currUrl.length > 1) 
-    {
-        var queryStr = currUrl[1].split('&');
-        var orderbyFound = false;
-        if (queryStr.length > 1) {
-            for (var i = queryStr.length - 1; i >= 0; i--) {
-                parms = queryStr[i].split('=');
-                if (parms[0]=='orderby') {
-                    queryStr[i] = 'orderby='+field;
-                    orderbyFound = true;
-                }
-                if (parms[0]=='order') {
-                    parms[1]=='desc'  ?  parms[1]='asc'  :  parms[1]='desc';
-                    queryStr[i] = 'order='+parms[1];
-                }                
-                newUrl += queryStr[i];
-                if (i > 0) newUrl += '&';
-            }
-        } 
-        else {
-            // retain the existing query string
-            newUrl += queryStr[0];
-        }
-    } 
-    // check if existing query string already contained a orderby param
-    if (currUrl.length > 1 && ! orderbyFound) newUrl += '&';
-    if (currUrl.length < 2 || ! orderbyFound) {
-        newUrl += 'orderby='+field;
-        newUrl += '&order=asc';
-    }
-
-    window.location.href = newUrl;
-}
-
-
-/**
- * Function to open plan selected via date picker
- * better name: "openPlanByDate"
- */
-function submitDate(date) 
-{
-    $('#show-spinner').modal({keyboard: false});
-    window.location.href = __app_url + '/cspot/plans/by_date/' + date.value;
-}
-
-
-/*
-    allow Admins/Authors/Plan owners to delete an attached file (image)    
-*/
-function deleteFile(id)
-{
-    // TODO: Prompt for confirmation as this is irrevocable:
-    if (! confirm('Are you sure to finally remove this file?')) {return;}
-    // get token from form field
-    $.ajax({
-        url:    '/cspot/files/'+id+'/delete', 
-        method: 'DELETE',
-    }).done(function(data) {
-        $('#file-'+id).html(data.data);
-    }).fail(function(data) {
-        if (data.responseJSON) {
-            alert("image deletion failed! Error: "+data.responseJSON.data+'.  Code:'+data.responseJSON.status);
-        }
-        else {
-            alert("image deletion failed! "+JSON.stringify(data));
-        }
-    });
-}
-
-/*  
-    unlink file from its item
-*/
-function unlinkFile(item_id, file_id)
-{
-    $.ajax({
-        url:    '/cspot/items/'+item_id+'/unlink/'+file_id+'', 
-        method: 'PUT',
-    }).done(function(data) {
-        $('#file-'+file_id).html(data.data);
-    }).fail(function(data) {
-        if (data.responseJSON) {
-            alert("image unlinking failed! Error: "+data.responseJSON.data+'.  Code:'+data.responseJSON.status);
-        }
-        else {
-            alert("image unlinking failed! "+JSON.stringify(data));
-        }
-    });
-}
-
-
-/**
-    Open modal popup to show linked YT video
-*/
-function showYTvideoInModal(ytid, title)
-{
-    //https://www.youtube.com/"+ ytid.substr(0,2)=="PL" ? 'playlist?list=' : 'watch?v=' + ytid }}";
-    $('#snippet-modal-title').text(title);
-    $('#snippet-modal-content')
-        .html('<iframe width="560" height="315" src="https://www.youtube.com/embed/'+ytid+'" frameborder="0" allowfullscreen></iframe>');
-    $('.help-modal').modal();
-}
-
-
-/**
-    When user presses enter in the Songs List view, check 
-    which filter field is open and trigger its function
- */
-function findOpenFilterField() 
-{
-    // check which search fields open
-    var searchFields = $("[id^=filter-]");
-    $.each(searchFields, function(entry) {
-        if ( $(searchFields[entry]).is(':visible') ){
-            var id = $(searchFields[entry]).attr('id').split('-');
-            if (id[2] == 'input') {  // only look at input elements!
-                var action = $('#'+id[1]+'-search').attr('onclick');
-                eval(action);
-                return;
-            }
-        }
-    });
-}
-
-/*
-    Show input field in header to filter data in this column or apply the filter if already set
-*/
-function showFilterField(field)
-{
-    // Is this field already visible?
-    if ($('#filter-'+field+'-clear').is(':visible')) 
-    {
-        var currUrl  = parseURLstring(window.location.href);
-        // check if there is a query string in the URL
-        if (currUrl.search) { 
-            // check that it doesn't contain a plan_id!
-            if (currUrl.search.search('plan_id')) {
-                return;
-            }
-            // clear existing filter and reload page without a filter
-            showSpinner();
-            // remove filter elements from URL query string
-            var queryStr = currUrl[1].split('&');
-            var newUrl = currUrl[0];
-            if (queryStr.length > 2) {
-                newUrl += '?';
-                for (var i = queryStr.length - 1; i >= 0; i--) {
-                    if (queryStr[i].substr(0,6) != 'filter' ) {
-                        newUrl += queryStr[i];
-                        if (i > 0) newUrl += '&';
-                    }
-                }
-            }
-            window.location.href = newUrl;
-            return;
-        }
-    }
-
-    // check if there are other search fields open
-    var searchFields = $("[id^=filter-]");
-    $.each(searchFields, function(entry) {
-        if ( $(searchFields[entry]).is(':visible') ){
-            var fld = $(searchFields[entry]).attr('id').split('-')[1];
-            if (fld != field) {
-                $('#filter-'+fld+'-input').remove();
-                $('#filter-'+fld+'-submit').remove();
-                $('#filter-'+fld+'-show').show();
-            }
-        }
-    });
-         
-    // define html code for search input field
-    var newHtml = '<input id="filter-fffff-input" style="line-height: normal;" type="text" placeholder="search fffff">'
-    newHtml    += '<i id="filter-fffff-submit" class="fa fa-check-square"> </i>';
-    // did user click on the visible search icon?
-    if ($('#filter-'+field+'-show').is(':visible')) 
-    {
-        // add new html code, replacing all placeholders with current field name
-        $('#'+field+'-search').append(newHtml.replace(/fffff/g, field));
-        $('#filter-'+field+'-input').delay(800).focus();
-        $('#filter-'+field+'-show').hide();
-    } 
-    else 
-    {
-        // Did user enter search data?
-        if ( $('#filter-'+field+'-input').val().length > 0 ) {
-            // fade background and show spinner
-            showSpinner();
-
-            var search =  $('#filter-'+field+'-input').val();
-            var currUrl  = window.location.href.replace('#','');
-            if (currUrl.indexOf('?')>1) {
-                var newUrl = currUrl + '&filterby='+field+'&filtervalue='+search;
-            } else {
-                var newUrl = currUrl + '?filterby='+field+'&filtervalue='+search;
-            }
-            window.location.href = newUrl;
-            return;
-        }
-        $('#filter-'+field+'-input').remove();
-        $('#filter-'+field+'-submit').remove();
-        $('#filter-'+field+'-show').show();
-    }
-}
-
-
-
-/*
-    On the Songs Detail page, 
-    show the previously hidden song search input field
-    and set the focus on it
-*/
-function showSongSearchInput(that, selector)
-{
-    $(that).hide();
-    $(selector).show();
-    $("input[name='search']").focus();
-}
-
-
-/**
- * On the Team page, show the role select element once the user was selected
- * 
- * param 'who' refers to the element from which this method was called
- */
-function showRoleSelect(who, role_id)
-{    
-    // default value for role_id
-    role_id = role_id || undefined;
-
-    // make the role selection elements (radio buttons) visible
-    $('#select-team-role').fadeIn();
-
-    // now show the comment input and submit button
-    $('#comment-input').fadeIn();
-    $('#submit-button').fadeIn();
-
-    // grab the div around the radio buttons 
-    var roleSelectBox = $('#select-role-box');
-    // create a radio item
-    var radio1 = '<label class="c-input c-radio role-selector-items"><input id="';
-    var radio2 = '" name="role_id" type="radio"><span class="c-indicator"></span>';
-    var radio3 = '</label>';
-    
-    // make sure we have a proper JSON object with all users and all their roles
-    // ('userRolesArray' was created in a javascript snippet in the team.blade.php file)
-    if (typeof(userRolesArray)=='object') {
-        var user = userRolesArray[who.value];
-        var roles = user.roles;
-        // first empty the select box
-        $('#select-role-box').html('');
-        // add each role as a radio button and label
-        for (var i in roles) {
-            var radio = radio1 + 'role_id-'+roles[i].role_id+'" ';
-            if (roles[i].role_id == role_id) {
-                radio += 'checked ';
-            }
-            radio += 'value="' + roles[i].role_id;
-            radio += radio2 + roles[i].name + radio3;
-            roleSelectBox.append(radio);
-        }
-        var instruments = user.instruments;
-        if (instruments.length > 0) { 
-            $('#show-instruments').html('(plays: '); }
-        else {
-            $('#show-instruments').html(); }
-        for (var i in instruments) {
-            var text = instruments[i].name;
-            if (i < instruments.length-1) {
-                text += ', '; } 
-            else {
-                text += ')'; }
-            $('#show-instruments').append(text);
-        }
-    }
-    if (role_id==undefined) {
-        // select the first item, so that the user MUST make a choice
-        $('.role-selector-items').first().click();
-    }
-}
-
-/**
- * Record a user's availability for a certain plan
- */
-function userAvailableForPlan(that, plan_id) {
-    // make sure the tooltip is hidden now
-    $(that).parent().parent().tooltip('hide')
-    $('#user-available-for-plan-id-'+plan_id).text( "wait..." );
-
-    var teamPage = false;
-    // was this function called from within the Team page?
-    if (that.checked == undefined) {
-        showSpinner();
-        teamPage = true;
-        // inverse the current available status
-        that.checked = ! $(that).data().available;
-    }
-
-    if ( $.isNumeric(plan_id) ) {
-        console.log('User wants his availability changed to '+that.checked);
-        // make AJAX call to 'plans/{plan_id}/team/{user_id}/available/'+that.checked
-        $.get( __app_url+'/cspot/plans/'+plan_id+'/team/available/'+that.checked)
-        .done(function() {
-            $('#user-available-for-plan-id-'+plan_id).text( that.checked ? 'yes' : 'no');
-            if (teamPage) { location.reload(); }
-        })
-        .fail(function() {
-            $('#user-available-for-plan-id-'+plan_id).text( "error" );
-        })        
-    }
-}
-
-
-/*
-    Automatically close the info modals after a timeout
-*/
-var timeoutID;
-function delayedCloseFlashingModals(selector) {
-    timeoutID = window.setTimeout( closeMyModal, 3000, selector);
-}
-function closeMyModal(selector) {
-    $(selector).modal('hide');
-    // set focus again on main input field
-    $('.main-input').focus();    
-}
-
-
-/*
-    On the ITEM DETAIL page, show or hide the trashed items ?
-*/
-function toggleTrashed() {
-    $('.trashed').toggle();
-    if ($('#toggleBtn').text() == 'Show') {
-        $('#toggleBtn').text('Hide');
-    } else {
-        $('#toggleBtn').text('Show');
-    }
-}
-
-/*
-    Cause UI elements (e.g. buttons) to flash in order to get attention....
-*/
-function blink(selector){
-    $(selector).show();
-    $(selector).animate({opacity:0}, 150, "linear", function(){
-        $(this).delay(50);
-        $(this).animate({opacity:1}, 150, function(){
-            blink(this);
-        });
-        $(this).delay(500);
-    });
-}
-
-
-
-
-
-
-
-
-
-
-
-/*\
-|*|
-|*|
-|*+------------------------------------------ Triggered when HTML Document is fully loaded
-|*|
-|*|
-\*/
- 
-
-
-
-$(document).ready(function() {
-
-
-
-
-    /**
-     * Make certain content editable
-     *
-     * (see http://www.appelsiini.net/projects/jeditable)
-     */
-    $('.editable').editable(__app_url + '/cspot/api/items/update', {
-        style       : 'display: inline',
-        placeholder : '<span class="fa fa-pencil text-muted">&nbsp;</span>',
-        data        : function(value, settings) {
-            // check if text is a simple string or a html element
-            // Issue: when comment contains a string AND a bible ref...
-            if (value.substr(0,2)=='<a')
-                return $(value).text();
-            return value;
-        }
-    });
-
-
-
-
-    /**
-     * Show WAIT spinner for all navbar anchor items
-     */
-    $('a, input:submit, input.form-submit').click( function() {
-        // do not use for anchors with their own click handling
-        if ( $(this).attr('href').substr(0,1) == '#' 
-          || $(this).attr('target') != undefined    // or for links opening in new tabs
-          || $(this).attr('onclick')!= undefined )
-            return;
-        $('#show-spinner').modal({keyboard: false});
-    })
-
-
-    /*
-        formatting of pagination buttons (links)
-    */
-    if ($('.pagination').length>0) {
-        $(function() {
-            // add missing classes and links into the auto-geneerated pagination buttons
-            $('.pagination').children().each(function() { $(this).addClass('page-item'); });
-            $('.page-item>a').each(function() { $(this).addClass('page-link'); });
-            var pgActive = $('.active.page-item').html();
-            $('.active.page-item').html('<a class="page-link" href="#">'+pgActive+'</a>');
-            $('.disabled.page-item').each(function() {
-                var innerHtml = $(this).html();
-                $(this).html('<a class="page-link" href="#">'+innerHtml+'</a>');
-            });
-        });
-    }
-
-
-    /**
-     * enabling certain UI features 
-     */
-    $(function () {
-        // activate the tooltips
-        $('[data-toggle="tooltip"]').tooltip();
-
-        // activate popovers
-        $('[data-toggle="popover"]').popover();
-        $('.popover-dismiss').popover({
-            trigger: 'focus'
-        });
-
-        // enable Tabs
-        $('#tabs').tabs();
-    });
-  
-
-    /**
-     * On 'Home' page, get list of future plans and show calendar widget
-     */
-    if ( window.location.href == __app_url + '/home' ) {
-        $.getJSON( __app_url + '/cspot/plans?filterby=future&api=api',
-            function(result){
-                $.each(result, function(i, field) {
-                    hint = field.type.name+' led by '+field.leader.first_name; 
-                    if ( field.teacher.first_name != "n/a" ) {
-                        hint +=', teacher is ' + field.teacher.first_name; }
-                    dt = new Date(field.date.split(' ')[0]).toLocaleDateString();
-                    SelectedDates[dt] = hint;
-                });
-                // get the current browser window dimension (width)
-                browserWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-                numberOfMonths = 3;
-                if (browserWidth<800) numberOfMonths = 2;
-                if (browserWidth<600) numberOfMonths = 1;
-                // Now style the jQ date picker
-                $(function() {
-                    /***
-                     * Show Date Picker calendar widget
-                     */
-                    $( "#inpDate" ).datepicker({
-                        numberOfMonths: numberOfMonths,
-                        changeMonth   : true,
-                        changeYear    : true,
-                        maxDate       : "+4m",
-                        dateFormat    : "yy-mm-dd",
-                        beforeShowDay : 
-                            function(date) {
-                                var dot=date.toLocaleDateString();
-                                var ui_class = '';
-                                var highlight = SelectedDates[dot];
-                                if (highlight) {
-                                    if (highlight==='Today') {
-                                        return [true, '', highlight]; }
-                                    return [true, "ui-highlighted", highlight]; }
-                                else {
-                                    if (date.getDay()==0)
-                                        return [true, 'ui-datepicker-sunday', '']; 
-                                    return [true, '', '']; 
-                                }
-                            }
-                    });
-                });
-            }
-        );
-        
-    }
-
-
-
-    /**
-     * On list pages, when a new item was inserted and highlighted,
-     *      slowly fade out the highlighting
-     */
-    if ($('.newest-item').length) {
-        $('.newest-item').removeClass('bg-khaki', 19999);
-    }
-
-                
-    /*\
-    |*|----------------------------------------------------------------------
-    |*|    Insert NEW or update EXISTING ITEMS on the Plan Overview page
-    |*|----------------------------------------------------------------------
-    |*|
-    |*| The corresponding modal is declared in plan.blade.php
-    |*|
-    |*| The method below is called when the modal popup is activated (shown) by clicking on the respective buttons or links.
-    |*| It populates the modal popup with the data provided by the launching button ....
-    |*|
-    |*| For insertion of new items, a selection is given between 'song', 'scripture' or 'comment'
-    |*| in order to show the appropriate input and selection elements
-    |*|
-    |*| This same modal is also being used to update an existing song item (ie. to change the song)
-    |*|
-    |*| The new data is processed via the 'searchForSongs' js helper function above
-    \*/
-    $('#searchSongForm').on('shown.bs.modal', function (event) {
-
-        // first make sure the form is back in its initial state
-        resetSearchForSongs();
-
-        // get item-specific data from the triggering element
-        var button = $(event.relatedTarget);        // Button that triggered the modal
-        var plan_id  = button.data('plan-id');      // Extract info from data-* attributes
-        var item_id  = button.data('item-id');
-        var seq_no   = button.data('seq-no' );
-        var actionUrl= button.data('action-url' );
-
-        // was modal opened from existing item?
-        if (plan_id=="update-song") {
-            // directly activate the song selection
-            showModalSelectionItems('song');
-            $('#searchSongForm'      ).attr('data-action', actionUrl);
-            $('#searchSongModalLabel').text('Select another song');
-            $('#modal-show-item-id').text('for item No '+seq_no+':');
-        }
-        else if (plan_id=="update-scripture") {
-            // directly activate the song selection
-            showModalSelectionItems('scripture');
-            // use current comment text as initial value
-            var curCom = button.parent().children().first().text().trim();
-            $('#comment').val( curCom=='Click to edit' ? '' : curCom );
-            // URL needed to update the comment as derived from the calling element
-            $('#searchSongForm'      ).attr('data-action', actionUrl);
-            $('#searchSongModalLabel').text('Select a scripture');
-            $('#modal-show-item-id').text('for item No '+seq_no+':');
-        } 
-        else {
-            $('#modal-show-item-id').text('before item No '+seq_no+':');
-        }
-        // Update the modal's content
-        $('#plan_id'      ).val(plan_id);
-        $('#beforeItem_id').val(item_id);
-        $('#seq-no'       ).val(seq_no);
-        // reset the form
-        $('#search-string').focus(); // make sure the search string input field has focus
-
-        // prevent the Song Search Form from being submitted when 
-        //      the ENTER key is used; instead, perform the actual search
-        $("#searchSongForm").submit(function(event){
-            if (! $('#searchForSongsButton').is(':visible') ||  $('#song_id').val()=='')
-                event.preventDefault();
-        });
-        // intervene cancel button - reset form and close the popup
-        $("#searchSongForm").on('cancel', function(event){
-            event.preventDefault();
-            resetSearchForSongs();
-            $('#searchSongModal').modal('hide');
-        });
-    })
-
-
-
-
-
-    /**
-     * Put focus on textarea when user opens the feedback modal dialog
-     */
-    $('#createMessage').on('shown.bs.modal', function () {
-        $('#feedbackMessage').focus()
-    })
-
-    /**
-     * Mark modified form fields with a new background
-     * and show the submit/save buttons
-     */
-    $("#file").on('mouseover', function() {
-        // do this only once ...
-        if ($('.submit-button').is(':visible')) return;
-        $('.submit-button').show();
-        blink('.submit-button');
-    });
-    $("input, textarea, input:radio, input:file").click(function() {
-        // change background color of those fields
-        $(this).css("background-color", "#D6D6FF");
-
-        // not when a popup is open...
-        if ($('#searchSongModal').is(':visible')) return;
-
-        // do this only once ...
-        if ($('.submit-button').is(':visible')) return;
-
-        // show submit or save buttons
-        $('.submit-button').show();
-        blink('.submit-button');
-    });
-
-
-
-    /***
-     * Get array with all bible books with all chapters and number of verses in each chapter
-     */
-    if (window.location.href.indexOf('/cspot/')>10) {
-        $.get(__app_url+'/bible/books/all/verses', function(data, status) {
-
-            if ( status == 'success') {
-                bibleBooks = data;
-            }
-        });
-    }
-
-
-
-    /**
-     * Allow items on Plan page to be moved into new positions
-     */
-    if ($("#tbody-items").length) {
-        $("#tbody-items").sortable({
-        items   : "> tr",
-        appendTo: "parent",
-        cursor  : 'move',
-        helper  : "clone",
-        handle  : '.drag-item',
-        distance: '5',
-        forceHelperSize: true,
-        stop    : function (event, ui) {
-            $('#show-spinner').show();
-            var changed=false;
-            should_seq_no = 0;
-            movedItem = [];
-            movedItem.id = ui.item.data('itemId');
-            movedItem.seq_no = ui.item.attr('id').split('-')[2];
-            // get all siblings of the just moved item
-            siblings = $(ui.item).parent().children();
-            // check each sibling's sequence
-            for (var i = 1; i <= siblings.length; i++) {
-                sib = siblings[-1+i];
-                //console.log(i + ' attr:' + sib.id + ' id:' + sib.dataset.itemId + ' class:' + sib.classList);
-                if (sib.classList.contains('trashed')) {
-                    // ignore trashed items....
-                    continue;
-                }
-                // is this the moved item?
-                if ( sib.dataset.itemId == movedItem.id ) {
-                    changed = sib;
-                    //console.log(sib.id+' was moved. ');
-                    break;
-                } 
-                else {
-                    should_seq_no = 0.0 + sib.id.split('-')[2];
-                    //console.log(sib.id + ' unmoved ');
-                    if (changed) { 
-                        break; 
-                    }
-                }
-            }
-            if (changed) {
-                should_seq_no = 1 * should_seq_no;
-                //console.log( 'Item '+changed.id+ ' (id # ' + changed.dataset.itemId +')  should now have seq no ' + (0.5 + should_seq_no) );
-                window.location.href = __app_url + '/cspot/items/' + changed.dataset.itemId + '/seq_no/'+ (0.5 + should_seq_no);
-                return;
-            } else {
-                // console.log('order unchanged');
-            }
-        },
-        }).disableSelection();
-    }
-
-    
-    /**
-     * On the Songs List page, allow some key codes
-     */
-    if (window.location.href.indexOf('cspot/songs')>10) {
-
-        $(document).keydown(function( event ) {
-            console.log('pressed key code: '+event.keyCode);
-            switch (event.keyCode) {
-                case 13: findOpenFilterField(); break; // Enter key
-                default: break;
-            }            
-        });
-
-    }
-    
-
-
-
-    /*
-        On presentation views, allow mouse-click to advance to next or prev. item
-    */
-    if ($('#main-content').length) {
-        // intercept mouse clicks into the presentation area
-        $('#main-content').contextmenu( function() {
-            return false;
-        });
-
-        // allow rght-mouse-click to move one slide or item back
-        $('#main-content').on('mouseup', function(event){
-            event.preventDefault();
-            if (event.which == 1) {
-                advancePresentation(); }
-            if (event.which == 3) {
-                advancePresentation('back'); }
-        });        
-    }
-
-
-    /**
-     * Configuration for Items Presentation Views (present/chords/musicsheets)
-     */
-    if (window.location.href.indexOf('/items/')>10) {
-
-        // handle keyboard events
-        $(document).keydown(function( event ) {
-            // key codes: 37=left arrow, 39=right, 38=up, 40=down, 34=PgDown, 33=pgUp, 
-            //            36=home, 35=End, 32=space, 27=Esc, 66=e
-            //
-            console.log('pressed key code: '+event.keyCode);
-            switch (event.keyCode) {
-                case 37: advancePresentation('back'); break; // left arrow
-                case 33: navigateTo('previous-item'); break; // left PgUp
-                case 36: navigateTo('first-item');   break; // key 'home'
-                case 39: advancePresentation();     break; // key right arrow
-                case 32: advancePresentation();    break; // spacebar
-                case 34: navigateTo('next-item'); break; // key 'PgDown'
-                case 35: navigateTo('last-item'); break; // key 'end'
-                case 27: navigateTo('back');     break; // key 'Esc'
-                case 68: navigateTo('edit');    break; // key 'd'
-                case 83: jumpTo('start-lyrics');break; // key 's'
-                case 80: jumpTo('prechorus'); break; // key 'p'
-                case 49: jumpTo('verse1'); break; // key '1'
-                case 50: jumpTo('verse2'); break; // key '2'
-                case 51: jumpTo('verse3'); break; // key '3'
-                case 52: jumpTo('verse4'); break; // key '4'
-                case 53: jumpTo('verse5'); break; // key '5'
-                case 53: jumpTo('verse6'); break; // key '6'
-                case 53: jumpTo('verse6'); break; // key '6'
-                case 53: jumpTo('verse7'); break; // key '7'
-                case 67: jumpTo('chorus1'); break; // key 'c'
-                case 75: jumpTo('chorus2');  break; // key 'k'
-                case 66: jumpTo('bridge');     break; // key 'b'
-                case 69: jumpTo('ending');       break; // key 'e'
-                case 76: $('.lyrics-parts').toggle(); break; // key 'l', show all lyrics
-                case 109: $('#decr-font').click();   break; // key '-'
-                case 107: $('#incr-font').click();   break; // key '+'
-                default: break;
-            }
-        });
-    }
-    
-
-
-    /**
-     * prepare lyrics or bible texts or image slides for presentation
-     */
-    if ( window.location.href.indexOf('/present')>10 ) {
-
-        // start showing bible parts if this is a bible reference
-        if ($('.bible-text-present').length) {
-            reFormatBibleText(); }
-
-        // re-format the lyrics
-        if ($('#present-lyrics').length) {
-            reDisplayLyrics(); }
-
-        // center and maximise images
-        if ( $('.slide-background-image').length ) {
-            prepareImages();
-        }
-
-        /**
-         * Check some user-defined settings in the Local Storage of the browser
-         */
-
-        // check if user wants a blank slide between items
-        showBlankBetweenItems = getLocalStorValue('configBlankSlides');
-        // if the value in LocalStorage was set to 'true', then we activate the checkbox:
-        if (showBlankBetweenItems=='true') {
-            $('#configBlankSlides').prop( "checked", true );
-        }
-
-        // how many bible verses per slide?
-        howManyVersesPerSlide = getLocalStorValue('configShowVersCount');
-        // if the value in LocalStorage was set to 'true', then we activate the checkbox:
-        if (howManyVersesPerSlide>0 && howManyVersesPerSlide<6) {
-            $('#configShowVersCount').val( howManyVersesPerSlide );
-        }
-
-        // check if user has changed the default font size and text alignment for the presentation
-        textAlign = getLocalStorValue('.text-present_text-align');
-        $('.text-present').css('text-align', textAlign);
-        $('.bible-text-present').css('text-align', textAlign);
-        $('.bible-text-present>p').css('text-align', textAlign);
-        $('.bible-text-present>h1').css('text-align', textAlign);
-
-        fontSize = getLocalStorValue('.text-present_font-size');
-        if ($.isNumeric(fontSize)) {
-            $('.text-present').css('font-size', parseInt(fontSize));
-        }
-        $('.text-present').show();
-
-        fontSize = getLocalStorValue('.bible-text-present_font-size');
-        if ($.isNumeric(fontSize)) {
-           $('.bible-text-present').css('font-size', parseInt(fontSize));
-           $('.bible-text-present>p').css('font-size', parseInt(fontSize));
-           $('.bible-text-present>h1').css('font-size', parseInt(fontSize));
-        }
-
-        // check if we have a predefined sequence from the DB
-        sequence=($('#sequence').text()).split(',');
-
-        // check if there are more lyric parts than 
-        // indicated in the sequence due to blank lines discoverd in the lyrics
-        if (sequence.length>1) 
-            compareLyricPartsWithSequence();
-
-        // auto-detect sequence if it is missing
-        if (sequence.length<2) {
-            createDefaultLyricSequence();
-            sequence=($('#sequence').text()).split(',');
-        }
-
-        // make sure the sequence indicator isn't getting too big! 
-        checkSequenceIndicatorLength();
-
-        // make sure the main content covers all the display area, but that no scrollbar appears
-        $('#main-content').css('max-height', window.innerHeight - $('.navbar-fixed-bottom').height());
-        $('#main-content').css('min-height', window.innerHeight - $('.navbar-fixed-bottom').height() - 10);
-
-    }
-
-    /**
-     * re-design the showing of lyrics interspersed with guitar chords
-     */
-    if ( $('#chords').text() != '' ) {
-        // only do this for PRE tags, not on input fields etc...
-        if ($('#chords')[0].nodeName == 'PRE') {
-            reDisplayChords();
-        }
-        $('.edit-show-buttons').css('display', 'inline');
-    }
-    // remove dropup button and menu on info screens
-    else if ( $('#bibletext').text()!='' || $('#comment').text()!='' ) {
-        $('#jumplist').remove();
-    }
-
-    // if sheetmusic is displayed, show button to swap between sheetmusic and chords
-    if ( window.location.href.indexOf('sheetmusic')>0 || window.location.href.indexOf('swap')>0 ) {
-        $('#show-chords-or-music').css('display', 'inline');
-    }
-
-});

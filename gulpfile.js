@@ -64,7 +64,10 @@ elixir(function(mix) {
         path.bootstrap      + '/dist/js/bootstrap.js',
         path.moment         + '/moment.js',
         path.jeditable      + '/jquery.jeditable.js',
-        path.c_spot         + '/js/helpers.js',
+        path.c_spot         + '/js/_main.js',
+        path.c_spot         + '/js/document.ready.js',
+        path.c_spot         + '/js/spa.utilities.js',
+        path.c_spot         + '/js/presentation.js',
     ], 'public/js/c-spot.js', './');
 
 

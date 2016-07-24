@@ -252,6 +252,34 @@ class SongController extends Controller
 
 
     /**
+     * API - update single fields of item via AJAX
+     */
+    public function APIupdate(Request $request)
+    {
+        if ($request->has('id') && $request->has('value') ) {
+            $field_name = explode('-', $request->id)[0];
+            $song_id    = explode('-', $request->id)[3];
+            // find the single resource
+            $song = Song::find($song_id);
+            if ($song) {
+                // check authentication
+                if ( ! Auth::user()->isEditor() )  {
+                    return response()->json(['status' => 401, 'data' => 'Not authorized'], 401);
+                }
+                $song->update( [$field_name => $request->value] );
+                // return text to sender
+                return $song[$field_name];
+            }
+        }
+        return response()->json(['status' => 404, 'data' => 'API: Item not found'], 404);
+    }
+
+
+
+
+
+
+    /**
      * Search in the Song Database
      *
      * - - RESTful API request - -

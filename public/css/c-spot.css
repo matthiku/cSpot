@@ -9157,6 +9157,10 @@ a.bg-danger:focus, a.bg-danger:hover {
     min-width: 150px;
 }
 
+.edit_area>form>textarea { 
+    display: block;
+}
+
 
 .modal-select-song, .modal-select-scripture, .modal-select-comment,  {
     display: none !important;

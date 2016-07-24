@@ -242,7 +242,7 @@
                         <br>
 
                         <div class="row">
-                            <div class="col-xs-12 col-sm-4 full-btn">
+                            <div class="col-sm-12 col-md-3 full-btn">
                                 @if ($item->song->youtube_id)
                                     <a href="https://www.youtube.com/watch?v={{ $item->song->youtube_id }}" 
                                         target="new" class="fully-width btn btn-primary-outline btn-sm" 
@@ -255,15 +255,21 @@
                                 @endif
                             </div>
                             @if ( Auth::user()->ownsPlan($item->plan_id) )
-                                <div class="col-xs-12 col-sm-4 full-btn">
+                                <div class="col-sm-12 col-md-3 full-btn">
                                     <a href="#" class="fully-width btn btn-primary-outline btn-sm" 
                                         onclick="showSongSearchInput(this, '.song-search')" 
                                         title="Select another song" data-toggle="tooltip"
                                     ><i class="fa fa-exchange"></i>&nbsp;change song</a>
                                 </div>
+                                <div class="col-sm-12 col-md-3 full-btn">
+                                    <a href="#" class="fully-width btn btn-primary-outline btn-sm" 
+                                        onclick="unlinkSong({{ $item->id.', '.$item->song_id.', \''.route('cspot.plans.edit', $item->plan_id)."'" }})" 
+                                        title="Unlink song from this item" data-toggle="tooltip"
+                                    ><i class="fa fa-exchange"></i>&nbsp;unlink song</a>
+                                </div>
                             @endif
                             @if (Auth::user()->isEditor() )
-                                <div class="col-xs-12 col-sm-4 full-btn">
+                                <div class="col-sm-12 col-md-3 full-btn">
                                     <a href="#" class="fully-width btn btn-primary-outline btn-sm" accesskey="69" id="go-edit"
                                         onclick="showSpinner();location.href='{{ route('cspot.songs.edit', $item->song_id) }}'" 
                                           title="Edit details of this song" data-toggle="tooltip"
@@ -298,6 +304,7 @@
 
             </div>
 
+
             <!-- 
                 show song lyrics and/or chords 
             -->
@@ -309,11 +316,11 @@
                         <li><a href="#sheet-tab">Sheet Music</a></li>
                     </ul>
                         <div id="lyrics-tab">
-                            <span class="text-info">({{ $item->song->sequence ? 'Sequence: '.$item->song->sequence : 'No sequence pre-defined' }})</span>
-                            <pre>{{ $item->song->lyrics }}</pre>
+                            <span class="text-info">({{ $item->song->sequence ? 'Sequence: '.$item->song->sequence : 'No sequence predefined' }})</span>
+                            <pre id="lyrics-song-id-{{ $item->song->id }}" {{ (Auth::user()->isEditor()) ? 'class=edit_area' : '' }}>{{ $item->song->lyrics }}</pre>
                         </div>
                         <div id="chords-tab">
-                            <pre id="chords">{{ $item->song->chords }}</pre>
+                            <pre id="chords-song-id-{{ $item->song->id }}" {{ (Auth::user()->isEditor()) ? 'class=edit_area' : '' }}>{{ $item->song->chords }}</pre>
                         </div>
                         <div id="sheet-tab">
                             @foreach ($item->song->files as $file)
