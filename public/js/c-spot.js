@@ -36558,6 +36558,19 @@ var Popover = (function ($) {
 
 })(jQuery);
 
+/*\
+|  \
+|   \__________________________________
+|
+|        main javascript for c-SPOT
+|
+|      (C) 2016 Matthias Kuhs, Ireland
+|    __________________________________
+|   /
+|  /
+\*/
+
+
 
 
 // make sure all AJAX calls are using the token stored in the META tag
@@ -37288,7 +37301,7 @@ $(document).ready(function() {
             // directly activate the song selection
             showModalSelectionItems('song');
             $('#searchSongForm'      ).attr('data-action', actionUrl);
-            $('#searchSongModalLabel').text('Select another song');
+            $('#searchSongModalLabel').text('Select song');
             $('#modal-show-item-id').text('for item No '+seq_no+':');
         }
         else if (plan_id=="update-scripture") {
@@ -37617,12 +37630,6 @@ $(document).ready(function() {
     }
 
 });
-
-/* 
-    main javascript for c-SPOT
-    (C) 2016 Matthias Kuhs, Ireland
-*/
-
 
 
 /*\

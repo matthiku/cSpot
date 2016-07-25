@@ -188,7 +188,7 @@ $(document).ready(function() {
             // directly activate the song selection
             showModalSelectionItems('song');
             $('#searchSongForm'      ).attr('data-action', actionUrl);
-            $('#searchSongModalLabel').text('Select another song');
+            $('#searchSongModalLabel').text('Select song');
             $('#modal-show-item-id').text('for item No '+seq_no+':');
         }
         else if (plan_id=="update-scripture") {

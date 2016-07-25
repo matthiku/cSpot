@@ -1,3 +1,16 @@
+/*\
+|  \
+|   \__________________________________
+|
+|        main javascript for c-SPOT
+|
+|      (C) 2016 Matthias Kuhs, Ireland
+|    __________________________________
+|   /
+|  /
+\*/
+
+
 
 
 // make sure all AJAX calls are using the token stored in the META tag

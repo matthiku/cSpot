@@ -528,25 +528,33 @@ class ItemController extends Controller
     /**
      * API - update single fields of item via AJAX
      */
-    public function APIupdate(Request $request)
+    public function APIupdate(Request $request, $item_id=null)
     {
+        // is this a generic item update (various fields)
         if ($request->has('id') && $request->has('value') ) {
             $field_name = explode('-', $request->id)[0];
             $item_id    = explode('-', $request->id)[3];
-            // find the single resource
-            $item = Item::find($item_id);
-            if ($item) {
-                // check authentication
-                $plan = Plan::find( $item->plan_id );
-                if (! $this->checkRights($plan)) {
-                    return response()->json(['status' => 401, 'data' => 'Not authorized'], 401);
-                }
-                $item->update( [$field_name => $request->value] );
-                // return text to sender
-                return $item[$field_name];
-            }
         }
-        return response()->json(['status' => 404, 'data' => 'API: Item not found'], 404);
+        // or is this a specific update of the song id?
+        elseif ($item_id) {
+            $field_name = 'song_id';
+        }
+        else { 
+            return response()->json(['status' => 404, 'data' => 'APIupdate: item_id missing!'], 404);
+        }
+        // find the single resource
+        $item = Item::find($item_id);
+        if ($item) {
+            // check authentication
+            $plan = Plan::find( $item->plan_id );
+            if (! $this->checkRights($plan)) {
+                return response()->json(['status' => 401, 'data' => 'Not authorized'], 401);
+            }
+            $item->update( [$field_name => $request->value] );
+            // return text to sender
+            return $item[$field_name];
+        }
+        return response()->json(['status' => 404, 'data' => 'APIupdate: item not found'], 404);
     }
 
 

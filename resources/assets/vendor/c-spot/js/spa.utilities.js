@@ -1,9 +1,3 @@
-/* 
-    main javascript for c-SPOT
-    (C) 2016 Matthias Kuhs, Ireland
-*/
-
-
 
 /*\
 |*|
