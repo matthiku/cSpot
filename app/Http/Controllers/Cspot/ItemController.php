@@ -530,7 +530,7 @@ class ItemController extends Controller
      */
     public function APIupdate(Request $request, $item_id=null)
     {
-        // is this a generic item update (various fields)
+        // is this a generic item update (different field names)
         if ($request->has('id') && $request->has('value') ) {
             $field_name = explode('-', $request->id)[0];
             $item_id    = explode('-', $request->id)[3];
@@ -538,6 +538,7 @@ class ItemController extends Controller
         // or is this a specific update of the song id?
         elseif ($item_id) {
             $field_name = 'song_id';
+            $request->value = $request->song_id;
         }
         else { 
             return response()->json(['status' => 404, 'data' => 'APIupdate: item_id missing!'], 404);
