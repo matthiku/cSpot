@@ -39,13 +39,15 @@
 					@if ($item->song_id) 
 						title="click to change"
 					@else
-						title="select a song" onmouseover="$('.add-song-button').show()" onmouseout="$('.add-song-button').hide()" 
+						title="select a song" 
+						onmouseover="$(this).children('.add-song-button').toggleClass('text-muted')" 
+						onmouseout="$( this).children('.add-song-button').toggleClass('text-muted')" 
 					@endif
 					>
 					@if ($item->song_id) 
 						{{ $item->song->book_ref }}
 					@else
-						<span class="add-song-button" style="display: none;"><i class="fa fa-music"></i><sup>+</sup></span>
+						<span class="add-song-button link text-muted"><i class="fa fa-plus"></i><sup><i class="fa fa-music"></i></sup></span> &nbsp;
 					@endif
 				</td>
 
@@ -76,7 +78,7 @@
 
 				<!-- COMMENT column - allow for inline editing -->
 				<td class="hidden-lg-down center comment-cell" title="click to change"
-					onmouseover="$('.add-scripture-ref').show()" onmouseout="$('.add-scripture-ref').hide()">
+					onmouseover="$(this).children('.add-scripture-ref').show()" onmouseout="$('.add-scripture-ref').hide()">
 
 					{{-- is the comment text a link? --}}
 					@if ( substr($item->comment, 0,4 )=='http' )

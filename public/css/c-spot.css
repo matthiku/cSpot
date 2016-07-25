@@ -9157,6 +9157,7 @@ a.bg-danger:focus, a.bg-danger:hover {
     min-width: 150px;
 }
 
+/* for jeditable: make sure textarea is not inline! */
 .edit_area>form>textarea { 
     display: block;
 }
