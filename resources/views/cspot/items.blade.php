@@ -32,11 +32,22 @@
 				</td>
 
 
-				<td class="hidden-md-down center always-print show-songbook-ref" title="click to change"
+				<td class="hidden-md-down center always-print show-songbook-ref" 
 					data-toggle="modal" data-target="#searchSongModal" data-item-id="{{ $item->id }}"
 					data-plan-id="update-song" data-seq-no="{{ $item->seq_no }}" 
-					data-action-url="{!! route('cspot.api.items.update', $item->id) !!}">
-					{{ ($item->song_id) ? $item->song->book_ref : '' }}</td>
+					data-action-url="{!! route('cspot.api.items.update', $item->id) !!}"
+					@if ($item->song_id) 
+						title="click to change"
+					@else
+						title="select a song" onmouseover="$('.add-song-button').show()" onmouseout="$('.add-song-button').hide()" 
+					@endif
+					>
+					@if ($item->song_id) 
+						{{ $item->song->book_ref }}
+					@else
+						<span class="add-song-button" style="display: none;"><i class="fa fa-music"></i><sup>+</sup></span>
+					@endif
+				</td>
 
 
 				{{-- show separate column for song title and comment on large devices --}}
@@ -220,7 +231,7 @@
 						</span>
 						@if (! $item->deleted_at)
 
-							{{-- new MODAL POPUP to add a song --}}
+							{{-- new MODAL POPUP to add song/scripture/comment --}}
 							<button type="button" class="btn btn-secondary btn-sm text-info" data-toggle="modal" data-target="#searchSongModal"
 								data-plan-id="{{$plan->id}}" data-item-id="{{$item->id}}" data-seq-no="{{$item->seq_no}}" 
 								href='#' title="insert song, scripture or comment before this item">
