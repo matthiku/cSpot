@@ -15,7 +15,7 @@
 
             <!-- show unread messages count -->
             <?php 
-                $count = Auth::user()->newMessagesCount(); 
+                $count = Auth::user()->newThreadsCount(); 
             ?>
             @if($count > 0)
                <li class="nav-item" title="You have new mail!">

@@ -1,5 +1,6 @@
 
 
+
 /*\
 |*|
 |*|
@@ -7,9 +8,6 @@
 |*|
 |*|
 \*/
- 
-
-
 
 $(document).ready(function() {
 
@@ -435,11 +433,54 @@ $(document).ready(function() {
             prepareImages();
         }
 
+
+
         /**
          * Check some user-defined settings in the Local Storage of the browser
          */
 
-        // check if user wants a blank slide between items
+
+        // check if we want to be Main Presenter
+        configMainPresenterSetting = getLocalStorValue('configMainPresenter');
+        // if the value in LocalStorage was set to 'true', then we activate the checkbox:
+        if (configMainPresenterSetting=='true') {
+            // Check if there already is a presenter
+            if ( cSpot.presentation.mainPresenter && cSpot.presentation.mainPresenter.id != cSpot.user.id ) {
+                // someone else is already ....
+                $('#configMainPresenter').parent().parent().parent().hide();
+                localStorage.setItem('configMainPresenter', 'false');
+            } 
+            else {
+                // make sure the Server knows we want to be presenter (if we are allowed to...)
+                setMainPresenter();
+                // activate the checkbox in the UI
+                $('#configMainPresenter').prop( "checked", true );
+                // if we are Main Presenter, we can't sync to another ....
+                localStorage.setItem('configSyncPresentation', 'false');
+                // hide the form the contains this checkbox
+                $('#configSyncPresentation').parent().parent().parent().hide();
+            }
+        } else {
+            // Make sure the server knows we don't want to be Main Presenter
+            setMainPresenter('false');
+        }
+
+        // check if we want to syncronise our own presentation with the Main Presenter
+        configSyncPresentationSetting = getLocalStorValue('configSyncPresentation');
+        // if the value in LocalStorage was set to 'true', then we activate the checkbox:
+        if (configSyncPresentationSetting=='true') {
+            $('#configSyncPresentation').prop( "checked", true );
+            // if we sync our presentation, we can't be Main Presenter
+            localStorage.setItem('configMainPresenter', 'false');
+            // hide the form the contains this checkbox
+            $('#configMainPresenter').parent().parent().parent().hide();
+            // save in global namespace
+            cSpot.presentation.sync = true;
+        }
+
+
+
+        // check if we want a blank slide between items
         showBlankBetweenItems = getLocalStorValue('configBlankSlides');
         // if the value in LocalStorage was set to 'true', then we activate the checkbox:
         if (showBlankBetweenItems=='true') {
@@ -453,7 +494,7 @@ $(document).ready(function() {
             $('#configShowVersCount').val( howManyVersesPerSlide );
         }
 
-        // check if user has changed the default font size and text alignment for the presentation
+        // check if we have changed the default font size and text alignment for the presentation
         textAlign = getLocalStorValue('.text-present_text-align');
         $('.text-present').css('text-align', textAlign);
         $('.bible-text-present').css('text-align', textAlign);

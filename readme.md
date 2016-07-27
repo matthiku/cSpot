@@ -5,6 +5,8 @@
 - Present your songs in a slideshow fashion via a projector 
 - Control the slide show from **any device** using a Chromecast device attached to your projector
 - Provide chords, lyrics and sheetmusic for musicians an all kinds of devices
+- Allows extensive collaboration and input from all users
+- Allows for a synchronised presentation of lyrics, chords or sheet music on all designated devices!
 - Send email and/or internal messages between users
 
 As a free and open source project, you can download ('clone') the sources, modify (customize) them and run the tool from your own web site.

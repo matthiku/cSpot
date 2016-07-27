@@ -4,6 +4,7 @@ namespace App\Providers;
 
 
 use Auth;
+use Cache;
 use App\Models\Item;
 use App\Models\Plan;
 use App\Models\User;
@@ -43,6 +44,16 @@ class AppServiceProvider extends ServiceProvider
             //dd($msg);
         });*/
 
+
+
+        // provide the name of the current Main Presenter to all views
+        if (Cache::has('MainPresenter')) {
+            $value = Cache::get('MainPresenter');
+            view()->share('serverSideMainPresenter', $value);
+        }
+        else {
+            view()->share('serverSideMainPresenter', []);
+        }
 
 
 

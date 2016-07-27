@@ -155,6 +155,17 @@ $modalContent = '
                     class="hidden-sm-down nav-item btn btn-sm btn-warning edit-show-buttons" role="button">
                 <i class="fa fa-file-text"></i> <i class="fa fa-refresh fa-lg"></i> <i class="fa fa-music"></i>
             </a>
+
+            {{-- synchronise this presentation with the Main Presenter --}}
+            <form class="form-inline nav-item m-l-1 label label-info">
+                <div class="checkbox" style="line-height: 2" onmouseup="configSyncPresentation()">
+                    <label class="checkbox-inline c-input c-checkbox" title="Synchronise this presentation with Main Presenter">
+                        <input type="checkbox" id="configSyncPresentation">
+                            <span class="c-indicator"></span>&nbsp;Sync Presentation
+                    </label>
+                </div>
+            </form>
+
         </li>
     </ul>
 

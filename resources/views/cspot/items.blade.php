@@ -39,7 +39,7 @@
 					@if ($item->song_id) 
 						title="click to change"
 					@else
-						title="select a song" 
+						title="select a song for this item" 
 						onmouseover="$(this).children('.add-song-button').toggleClass('text-muted')" 
 						onmouseout="$( this).children('.add-song-button').toggleClass('text-muted')" 
 					@endif

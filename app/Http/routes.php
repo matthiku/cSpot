@@ -182,6 +182,15 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     // SPA API
     Route::post('api/songs/update',           [ 'uses'=>'Cspot\SongController@APIupdate']);
 
+
+    /*
+        SYNC PRESENTATION
+    */
+    // Manage Main Presenter
+    Route::put('presentation/mainPresenter', ['as'=>'presentation.mainPresenter.set', 'uses'=>'Cspot\PresentationController@setMainPresenter']);
+    // define sync stream
+    Route::get('presentation/sync',          ['as'=>'presentation.sync',              'uses'=>'Cspot\PresentationController@syncPresentation']);
+
 });
 
 /*

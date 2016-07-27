@@ -37113,6 +37113,7 @@ function toggleTrashed() {
 
 
 
+
 /*\
 |*|
 |*|
@@ -37120,9 +37121,6 @@ function toggleTrashed() {
 |*|
 |*|
 \*/
- 
-
-
 
 $(document).ready(function() {
 
@@ -37548,11 +37546,54 @@ $(document).ready(function() {
             prepareImages();
         }
 
+
+
         /**
          * Check some user-defined settings in the Local Storage of the browser
          */
 
-        // check if user wants a blank slide between items
+
+        // check if we want to be Main Presenter
+        configMainPresenterSetting = getLocalStorValue('configMainPresenter');
+        // if the value in LocalStorage was set to 'true', then we activate the checkbox:
+        if (configMainPresenterSetting=='true') {
+            // Check if there already is a presenter
+            if ( cSpot.presentation.mainPresenter && cSpot.presentation.mainPresenter.id != cSpot.user.id ) {
+                // someone else is already ....
+                $('#configMainPresenter').parent().parent().parent().hide();
+                localStorage.setItem('configMainPresenter', 'false');
+            } 
+            else {
+                // make sure the Server knows we want to be presenter (if we are allowed to...)
+                setMainPresenter();
+                // activate the checkbox in the UI
+                $('#configMainPresenter').prop( "checked", true );
+                // if we are Main Presenter, we can't sync to another ....
+                localStorage.setItem('configSyncPresentation', 'false');
+                // hide the form the contains this checkbox
+                $('#configSyncPresentation').parent().parent().parent().hide();
+            }
+        } else {
+            // Make sure the server knows we don't want to be Main Presenter
+            setMainPresenter('false');
+        }
+
+        // check if we want to syncronise our own presentation with the Main Presenter
+        configSyncPresentationSetting = getLocalStorValue('configSyncPresentation');
+        // if the value in LocalStorage was set to 'true', then we activate the checkbox:
+        if (configSyncPresentationSetting=='true') {
+            $('#configSyncPresentation').prop( "checked", true );
+            // if we sync our presentation, we can't be Main Presenter
+            localStorage.setItem('configMainPresenter', 'false');
+            // hide the form the contains this checkbox
+            $('#configMainPresenter').parent().parent().parent().hide();
+            // save in global namespace
+            cSpot.presentation.sync = true;
+        }
+
+
+
+        // check if we want a blank slide between items
         showBlankBetweenItems = getLocalStorValue('configBlankSlides');
         // if the value in LocalStorage was set to 'true', then we activate the checkbox:
         if (showBlankBetweenItems=='true') {
@@ -37566,7 +37607,7 @@ $(document).ready(function() {
             $('#configShowVersCount').val( howManyVersesPerSlide );
         }
 
-        // check if user has changed the default font size and text alignment for the presentation
+        // check if we have changed the default font size and text alignment for the presentation
         textAlign = getLocalStorValue('.text-present_text-align');
         $('.text-present').css('text-align', textAlign);
         $('.bible-text-present').css('text-align', textAlign);
@@ -39281,6 +39322,95 @@ function changeTextAlign(selectorList, how) {
     });
 }
 
+// User becomes Main presenter (if no other is yet)
+function configMainPresenter() {
+    var sett = ! $('#configMainPresenter').prop( "checked" );
+    console.log('User tries to change setting for "Become Main Presenter" to ' + sett );
+
+    if (sett==false) {
+        // User is no longer the Main Presenter, so make sure he can sync 
+        $('#configSyncPresentation').parent().parent().parent().show();
+        
+        // inform the server accordingly
+        setMainPresenter('false');
+
+        localStorage.setItem('configMainPresenter', sett);
+
+    } 
+    else {    
+        // inform the server accordingly
+        setMainPresenter();
+    }
+}
+
+// User wants to sync with the main presentation
+function configSyncPresentation() {
+    var sett = ! $('#configSyncPresentation').prop( "checked" );
+    console.log('User tries to change setting for "Sync Presentation" to ' + sett );
+
+    if (sett==false) {
+        // User is no longer the Main Presenter, so make sure this checkbox is visible now
+        $('#configMainPresenter').parent().parent().parent().show();        
+    } else {
+        // The Main Presenter can't sync with another presenter...
+        $('#configMainPresenter').parent().parent().parent().hide();
+    }
+    // save this to local storage for later reference
+    localStorage.setItem('configSyncPresentation', sett);
+    // save in global namespace
+    cSpot.presentation.sync = true;
+}
+
+// User wants to become Main Presenter
+function setMainPresenter(trueOrFalse) {
+    var sett = trueOrFalse || 'true';
+    // we first uncheck this and see what the server says...
+    $('#configMainPresenter').prop( "checked", false);
+    // keep the user updated...
+    $('.showPresenterName').html('<i class="fa fa-spin fa-spinner"></i>');
+
+    // now check with the Server - is there already a Main Presenter?
+    $.ajax({
+        url: cSpot.presentation.mainPresenterSetURL,
+        type: 'PUT',
+        data: {switch: sett},
+        success: function(data, status) {
+            // user was accepted     or  was already the active Main Presenter
+            if (data.status == '201' || (data.status == '202' && data.data.id == cSpot.user.id) ) {
+                // Hide the Sync checkbox as the Main Presenter can't sync with another presenter...
+                $('#configSyncPresentation').parent().parent().parent().hide();
+                // tick the Main Presenter checkbox
+                $('#configMainPresenter').prop( "checked", true);
+                console.log('User was accepted as "Main Presenter"' );
+                localStorage.setItem('configMainPresenter', 'true');
+                // show presenter name 
+                $('.showPresenterName').text(' ('+data.data.name+')')
+            }
+            else {
+                if (data.status == '205') {
+                    console.log(data.status + ' User removed as Main Presenter');
+                    $('.showPresenterName').text(' (none)')
+                }
+                else {
+                    console.log(data.status + ' User was NOT accepted as "Main Presenter"' + data.data );
+                    $('.showPresenterName').text(' ('+data.data.name+')')
+                }
+                localStorage.setItem('configMainPresenter', 'false');
+                $('#configMainPresenter').prop( "checked", false);
+            }
+            // in any case, set the local value of the Main Presenter
+            cSpot.presentation.mainPresenter = data.data;
+        },
+        error: function(data) {
+            console.log(data);
+            $('#configMainPresenter').prop( "checked", false);
+        },
+        complete: function(data) {
+            console.log(data);
+        }
+    });
+}
+
 /**
  * Increase or decrease font size of a given element
  *
@@ -39313,7 +39443,6 @@ function getLocalStorValue(name) {
     // console.log('LocalStorage for '+name+' was at '+value);
     return value;
 }
-
 
 
 /**

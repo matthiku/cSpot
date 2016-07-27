@@ -241,6 +241,7 @@
             <a href="{{ url('cspot/items/').'/'.$item->plan->lastItem()->id.'/present'  }}" id="go-last-item" ></a>
 
 
+
             <ul class="nav navbar-nav pull-xs-left">
                 <li>
                     <a href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/go/previous/present') }}"
@@ -281,6 +282,35 @@
                     </label>
                 </div>
             </form>
+
+
+
+            {{-- become MAIN presenter, if possible --}}
+            <form class="form-inline nav-item m-l-1 pull-xs-left label label-info">
+                <div class="checkbox" style="line-height: 2" onmouseup="configMainPresenter()">
+                    <label class="checkbox-inline c-input c-checkbox" title="Become Main Presenter controlling other presentations?">
+                        <input type="checkbox" id="configMainPresenter">
+                            <span class="c-indicator"></span>&nbsp;Main Presenter
+                    </label>
+                </div>
+                <span class="small showPresenterName"> ({{ $serverSideMainPresenter ? $serverSideMainPresenter['name'] : 'none' }})</span>
+            </form>
+
+            {{-- synchronise this presentation with the Main Presenter --}}
+            <form class="form-inline nav-item m-l-1 label label-info">
+                <div class="checkbox" style="line-height: 2" onmouseup="configSyncPresentation()">
+                    <label class="checkbox-inline c-input c-checkbox" title="Synchronise this presentation with Main Presenter">
+                        <input type="checkbox" id="configSyncPresentation">
+                            <span class="c-indicator"></span>&nbsp;Sync Presentation
+                    </label>
+                </div>
+                <span class="small">&nbsp;with:</span>
+                <span class="small showPresenterName"> ({{ $serverSideMainPresenter ? $serverSideMainPresenter['name'] : 'none' }})</span>
+            </form>
+
+
+
+            {{-- TODO: this is currently not working properly --}}
             <form class="form-inline nav-item m-l-1 pull-xs-left label label-info" style="display: none">
                 <div class="checkbox" style="line-height: 2" onchange="changeConfigShowVersCount()">
                     <label class="c-input" title="How many bible verses should be shown per slide?">

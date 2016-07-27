@@ -15,15 +15,20 @@ echo
 
 echo
 echo 
-read -p 'Enter the description of this Commit: ' "DESC"
+read -r -p 'Enter the description of this Commit: ' "DESC"
 if [ -z "$DESC" ]; then
     exit
 fi
 
+
+
 echo
 echo Uploading all changes to GitHub with this description:
-echo '====> "' $DESC '" <===='
-read -p 'Continue? (Y/n)'
+echo '====> ' 
+printf "     " "$DESC"
+echo
+echo  ' <===='
+read -p 'Continue? (Y/n) '
 if [ "$REPLY" = "n" ]; then
     echo 'Aborting...'
     exit

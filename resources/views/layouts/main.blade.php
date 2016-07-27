@@ -27,6 +27,21 @@
 
     <script>
         var __app_url = "{{ url('/') }}";
+        var cSpot = {};
+        cSpot.user = JSON.parse('{!! json_encode(Auth::user(), JSON_HEX_APOS | JSON_HEX_QUOT ) !!}');
+        cSpot.presentation = {};
+        cSpot.presentation.sync = false;
+        cSpot.presentation.mainPresenter = JSON.parse('{!! json_encode($serverSideMainPresenter, JSON_HEX_APOS | JSON_HEX_QUOT ) !!}');
+        cSpot.presentation.mainPresenterSetURL = '{{ route('presentation.mainPresenter.set') }}';
+
+        @if (Request::is('*/present') || Request::is('*/chords') || Request::is('*/sheetmusic'))
+            // first steps with Server-Sent Events
+            var es = new EventSource("{{ route('presentation.sync') }}");
+            es.onmessage = function(e) {
+                  console.log(e);
+            }
+        @endif
+
     </script>
 
 </head>
@@ -61,6 +76,6 @@
 
 
 
-    </body>
+</body>
 
 </html>
