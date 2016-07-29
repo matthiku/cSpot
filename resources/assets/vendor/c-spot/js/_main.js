@@ -57,7 +57,7 @@ function blink(selector){
 /*
     turn an URL string into a DOM object
 
-    @param string url
+    @param string url (default: current url)
     @returns object
 
     This DOM object provides the following values:
@@ -69,6 +69,7 @@ function blink(selector){
 */
 function parseURLstring(urlstring)
 {
+    urlstring = urlstring || window.location.href;
     var url = document.createElement('a');
     url.href = urlstring;
     return url;

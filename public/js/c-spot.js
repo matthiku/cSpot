@@ -36617,7 +36617,7 @@ function blink(selector){
 /*
     turn an URL string into a DOM object
 
-    @param string url
+    @param string url (default: current url)
     @returns object
 
     This DOM object provides the following values:
@@ -36629,6 +36629,7 @@ function blink(selector){
 */
 function parseURLstring(urlstring)
 {
+    urlstring = urlstring || window.location.href;
     var url = document.createElement('a');
     url.href = urlstring;
     return url;
@@ -37528,6 +37529,25 @@ $(document).ready(function() {
     
 
 
+
+    /**
+     * check sync setting for chords or sheetmusic presentation
+     */
+    if ( window.location.href.indexOf('/chords')>10 || window.location.href.indexOf('/sheetmusic')>10 ) {
+
+        // check if we want to syncronise our own presentation with the Main Presenter
+        configSyncPresentationSetting = getLocalStorValue('configSyncPresentation');
+        // if the value in LocalStorage was set to 'true', then we activate the checkbox:
+        if (configSyncPresentationSetting=='true') {
+            $('#configSyncPresentation').prop( "checked", true );
+            // save in global namespace
+            cSpot.presentation.sync = true;
+        }
+
+    }
+
+
+
     /**
      * prepare lyrics or bible texts or image slides for presentation
      */
@@ -37558,9 +37578,8 @@ $(document).ready(function() {
         // if the value in LocalStorage was set to 'true', then we activate the checkbox:
         if (configMainPresenterSetting=='true') {
             // Check if there already is a presenter
-            if ( cSpot.presentation.mainPresenter && cSpot.presentation.mainPresenter.id != cSpot.user.id ) {
+            if ( cSpot.presentation.mainPresenter && ! isPresenter ) {
                 // someone else is already ....
-                $('#configMainPresenter').parent().parent().parent().hide();
                 localStorage.setItem('configMainPresenter', 'false');
             } 
             else {
@@ -37571,7 +37590,10 @@ $(document).ready(function() {
                 // if we are Main Presenter, we can't sync to another ....
                 localStorage.setItem('configSyncPresentation', 'false');
                 // hide the form the contains this checkbox
-                $('#configSyncPresentation').parent().parent().parent().hide();
+                //$('#configSyncPresentation').parent().parent().parent().hide();
+
+                // now broadcast our current position!
+                sendShowPosition('start');  // will include plan_id and item_id 
             }
         } else {
             // Make sure the server knows we don't want to be Main Presenter
@@ -37586,7 +37608,7 @@ $(document).ready(function() {
             // if we sync our presentation, we can't be Main Presenter
             localStorage.setItem('configMainPresenter', 'false');
             // hide the form the contains this checkbox
-            $('#configMainPresenter').parent().parent().parent().hide();
+            //$('#configMainPresenter').parent().parent().parent().hide();
             // save in global namespace
             cSpot.presentation.sync = true;
         }
@@ -38211,7 +38233,7 @@ function reFormatBibleText()
     $(p).each( function(entry) {
         text = $(this).text();
         clas = $(this).attr('class')
-        console.log( 'CLASS: ' + clas + ' CONTENT: ' + $(this).html() );
+        ;;;console.log( 'CLASS: ' + clas + ' CONTENT: ' + $(this).html() );
 
         // write the bible ref as title
         if (clas=='bible-text-present-ref') {
@@ -38351,7 +38373,7 @@ function appendBibleText(type, text, verno)
 {
     style = '';
     parts = '" ';
-    id    = ' id="'+verno+'">';
+    id    = ' id="'+verno+'">';  // name of the SLIDE
 
     // actual bible text is inserted as <p> element, and hidden at first
     if (type=='p') {
@@ -38362,7 +38384,7 @@ function appendBibleText(type, text, verno)
     // if the text is a bible reference, will be treated as H1 element
     if (type=='h1') {
         // if there are multiple bible references in one item, we only 
-        // want to have on H1 element, so we attach the next bible ref to the existing H1
+        // want to have one H1 element, so we attach the next bible ref to the existing H1
         hText = $('#bible-text-ref-header').text();
         if (hText != '') {
             formatBibleRefHeader(hText, text);
@@ -38643,7 +38665,7 @@ function insertNewLyricsSlide(newDiv, newLyr, divNam, lines)
     $('#'+divNam).hide();
     // make the hidden select button for this part visible
     $('#btn-show-'+divNam).show();    
-    console.log( 'Inserted lyrics part called ' + divNam );
+    ;;;console.log( 'Inserted new SLIDE (lyrics part) called ' + divNam );
 }
 function headerCode(divNam) {
     switch (divNam.substr(0,5)){
@@ -38904,7 +38926,7 @@ function advancePresentation(direction)
 
         // no sequence indicators found! Hopefully the default lyrics block was created...
         if (seq.length < 1) {
-            // first check if have been here before, then we can advance to the next item
+            // first check if we have been here before, then we can advance to the next item
             if ( $('#start-lyrics').data('was-shown')=='true' ) {
                 navigateTo('next-item');
                 return;
@@ -38921,7 +38943,7 @@ function advancePresentation(direction)
             $(seq).each(function(entry){
                 if ( $(this).data().showStatus  == 'unshown' ) {
                     found = true;
-                    console.log('found ' + $(this).attr('id'));
+                    ;;;console.log('found ' + $(this).attr('id'));
                     $(this).data().showStatus = 'done';
                     $('.lyrics-progress-indicator').removeClass('bg-danger');
                     $(this).addClass('bg-danger');
@@ -38943,7 +38965,7 @@ function advancePresentation(direction)
         else {
             for (var i = seq.length - 1; i >= 0; i--) {
                 if ($(seq[i]).hasClass('bg-danger')) {
-                    console.log('currently active part is # '+i+' with text: '+$(seq[i]).text() );
+                    ;;;console.log('currently active part is # '+i+' with text: '+$(seq[i]).text() );
                     // we have reached the first part, going further back means previous plan item!
                     if (i==0) { 
                         navigateTo('previous-item'); 
@@ -38974,12 +38996,11 @@ function advancePresentation(direction)
             $(seq).each(function(entry){
                 if ( $(this).data().showStatus  == 'unshown' ) {
                     found = true;
-                    console.log('found ' + $(this).attr('id'));
+                    var thisID = $(this).attr('id')
+                    ;;;console.log('found ' + thisID);
+                    sendShowPosition(thisID);
                     $(this).data().showStatus = 'done';
-                    $('.bible-progress-indicator').removeClass('bg-danger');
-                    $(this).addClass('bg-danger');
-                    todo = $(this).attr('onclick');
-                    eval( todo );
+                    navigateToBibleVerse(thisID);
                     return false; // escape the each loop...
                 }
             });
@@ -38993,11 +39014,14 @@ function advancePresentation(direction)
             found=false;
             for (var i = seq.length - 1; i >= 0; i--) {
                 if ( $(seq[i]).data().showStatus == 'done') {
-                    console.log('found ' + $(seq[i]).attr('id'));
+                    var thisID = $(seq[i]).attr('id')
+                    ;;;console.log('found ' + thisID);
                     if (i<1) {break;} // we can't move any further back....
                     found=true;
                     $(seq[i]).data().showStatus = 'unshown';  // make this part 'unshown'
                     $('.bible-progress-indicator').removeClass('bg-danger');
+                    var thisID = $(seq[i-1]).attr('id')
+                    sendShowPosition(thisID);
                     $(seq[i-1]).addClass('bg-danger');
                     todo = $(seq[i-1]).attr('onclick');
                     eval( todo );
@@ -39021,7 +39045,7 @@ function advancePresentation(direction)
             $(seq).each(function(entry){
                 if ( $(this).data().showStatus  == 'unshown' ) {
                     found = true;
-                    console.log('found ' + $(this).attr('id'));
+                    ;;;console.log('found ' + $(this).attr('id'));
                     $(this).data().showStatus = 'done';
                     $('.slides-progress-indicator').removeClass('bg-danger');
                     $(this).addClass('bg-danger');
@@ -39039,7 +39063,7 @@ function advancePresentation(direction)
             found=false;
             for (var i = seq.length - 1; i >= 0; i--) {
                 if ( $(seq[i]).data().showStatus == 'done') {
-                    console.log('found ' + $(seq[i]).attr('id'));
+                    ;;;console.log('found ' + $(seq[i]).attr('id'));
                     if (i<1) {break;} // we can't move any further back....
                     found=true;
                     $(seq[i]).data().showStatus = 'unshown';  // make this part 'unshown'
@@ -39080,6 +39104,16 @@ function jumpTo(where)
         window.location.href = '#'+where;
 }
 
+/*
+    show the indicated bible verse and indicate it on the Progress Indicator Bar
+*/
+function navigateToBibleVerse(thisID)
+{
+    $('.bible-progress-indicator').removeClass('bg-danger');
+    $('#'+thisID).addClass('bg-danger');
+    todo = $('#'+thisID).attr('onclick');
+    eval( todo );
+}
 
 
 /** 
@@ -39115,12 +39149,15 @@ function navigateTo(where)
         // and we now show an empty (blank) slide
         if (! reg.test(main) || images) {
             $('#main-content').html('<div>.</div>');
-            console.log('inserting empty slide...');
+            ;;;console.log('inserting empty slide...');
             return;
         }
         console.log('slide was already empty, proceeding to next item...');
         // otherwise, if the slide/item was empty anyway, we proceed to the next item
     }
+
+    // inform server of current position if we are presenter
+    sendShowPosition(where);
 
     // make content disappear slowly...
     $('#main-content').fadeOut();
@@ -39242,6 +39279,9 @@ function lyricsShow(what)
 
     console.log('showing song part called '+what);
     
+    // inform server accordingly
+    sendShowPosition(what);
+    
     // first, fade out the currently shown text, then fade in the new text
     $('.lyrics-parts').fadeOut().promise().done( function() { $('#'+what).fadeIn() } );
 
@@ -39294,6 +39334,13 @@ function identifyLyricsHeadings(str)
 }
 
 
+
+/*\
+|* >------------------------------------------------------------------ CONFIGURATION
+\*/
+
+
+
 /**
  * called from the configuration button on the navbar
  */
@@ -39308,6 +39355,7 @@ function changeConfigShowVersCount() {
     localStorage.setItem('configShowVersCount', sett);
 }
 
+
 function changeTextAlign(selectorList, how) {
     if ( typeof selectorList === 'string') {
         selectorList = [selectorList];
@@ -39321,6 +39369,8 @@ function changeTextAlign(selectorList, how) {
         }
     });
 }
+
+
 
 // User becomes Main presenter (if no other is yet)
 function configMainPresenter() {
@@ -39359,6 +39409,8 @@ function configSyncPresentation() {
     localStorage.setItem('configSyncPresentation', sett);
     // save in global namespace
     cSpot.presentation.sync = true;
+    // now do the first sync
+    syncPresentation(cSpot.presentation.syncData);
 }
 
 // User wants to become Main Presenter
@@ -39389,7 +39441,7 @@ function setMainPresenter(trueOrFalse) {
             else {
                 if (data.status == '205') {
                     console.log(data.status + ' User removed as Main Presenter');
-                    $('.showPresenterName').text(' (none)')
+                    $('.showPresenterName').text(' ('+data.data.name+')')
                 }
                 else {
                     console.log(data.status + ' User was NOT accepted as "Main Presenter"' + data.data );
@@ -39405,11 +39457,42 @@ function setMainPresenter(trueOrFalse) {
             console.log(data);
             $('#configMainPresenter').prop( "checked", false);
         },
-        complete: function(data) {
-            console.log(data);
-        }
     });
 }
+
+// new Sync request received
+function syncPresentation(syncData) {
+    ;;;console.log('tyring to sync show for: ' + JSON.stringify(syncData));
+
+    // do nothing if we are already at the right location...
+    if (cSpot.presentation.plan_id == syncData.plan_id 
+     && cSpot.presentation.item_id == syncData.item_id 
+     && cSpot.presentation.slide   == syncData.slide   ) {
+            ;;;console.log('already in sync!');
+            return;
+    }
+
+    // analyze current url
+    var myurl = parseURLstring();
+    var pathParts = myurl.pathname.split('/');
+    var showType  = pathParts[pathParts.length-1];
+
+    // are we still on the same plan and item?
+    if ( cSpot.presentation.plan_id != syncData.plan_id  ||  cSpot.presentation.item_id != syncData.item_id ) {
+        // ;;;console.log('we have to load a new page:'+myurl.pathname);
+        if (showType == 'present' || showType == 'chords' || showType == 'sheetmusic')
+            window.location.href = __app_url + '/cspot/items/' + syncData.item_id + '/' + showType;
+        return;
+    }
+    // go to the new slide
+    ;;;console.log('we have to jump to a new slide: ' + syncData.slide);
+    if (showType == 'present')
+        lyricsShow(syncData.slide);
+    else 
+        navigateTo(syncData.slide);
+}
+
+
 
 /**
  * Increase or decrease font size of a given element
@@ -39443,6 +39526,8 @@ function getLocalStorValue(name) {
     // console.log('LocalStorage for '+name+' was at '+value);
     return value;
 }
+
+
 
 
 /**

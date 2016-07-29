@@ -288,7 +288,7 @@
             {{-- become MAIN presenter, if possible --}}
             <form class="form-inline nav-item m-l-1 pull-xs-left label label-info">
                 <div class="checkbox" style="line-height: 2" onmouseup="configMainPresenter()">
-                    <label class="checkbox-inline c-input c-checkbox" title="Become Main Presenter controlling other presentations?">
+                    <label class="checkbox-inline c-input c-checkbox" title="Become Main Presenter controlling other presentations">
                         <input type="checkbox" id="configMainPresenter">
                             <span class="c-indicator"></span>&nbsp;Main Presenter
                     </label>

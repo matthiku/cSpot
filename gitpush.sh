@@ -25,7 +25,7 @@ fi
 echo
 echo Uploading all changes to GitHub with this description:
 echo '====> ' 
-printf "     " "$DESC"
+printf "$DESC"
 echo
 echo  ' <===='
 read -p 'Continue? (Y/n) '

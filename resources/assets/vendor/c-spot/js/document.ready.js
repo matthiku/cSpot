@@ -415,6 +415,25 @@ $(document).ready(function() {
     
 
 
+
+    /**
+     * check sync setting for chords or sheetmusic presentation
+     */
+    if ( window.location.href.indexOf('/chords')>10 || window.location.href.indexOf('/sheetmusic')>10 ) {
+
+        // check if we want to syncronise our own presentation with the Main Presenter
+        configSyncPresentationSetting = getLocalStorValue('configSyncPresentation');
+        // if the value in LocalStorage was set to 'true', then we activate the checkbox:
+        if (configSyncPresentationSetting=='true') {
+            $('#configSyncPresentation').prop( "checked", true );
+            // save in global namespace
+            cSpot.presentation.sync = true;
+        }
+
+    }
+
+
+
     /**
      * prepare lyrics or bible texts or image slides for presentation
      */
@@ -445,9 +464,8 @@ $(document).ready(function() {
         // if the value in LocalStorage was set to 'true', then we activate the checkbox:
         if (configMainPresenterSetting=='true') {
             // Check if there already is a presenter
-            if ( cSpot.presentation.mainPresenter && cSpot.presentation.mainPresenter.id != cSpot.user.id ) {
+            if ( cSpot.presentation.mainPresenter && ! isPresenter ) {
                 // someone else is already ....
-                $('#configMainPresenter').parent().parent().parent().hide();
                 localStorage.setItem('configMainPresenter', 'false');
             } 
             else {
@@ -458,7 +476,10 @@ $(document).ready(function() {
                 // if we are Main Presenter, we can't sync to another ....
                 localStorage.setItem('configSyncPresentation', 'false');
                 // hide the form the contains this checkbox
-                $('#configSyncPresentation').parent().parent().parent().hide();
+                //$('#configSyncPresentation').parent().parent().parent().hide();
+
+                // now broadcast our current position!
+                sendShowPosition('start');  // will include plan_id and item_id 
             }
         } else {
             // Make sure the server knows we don't want to be Main Presenter
@@ -473,7 +494,7 @@ $(document).ready(function() {
             // if we sync our presentation, we can't be Main Presenter
             localStorage.setItem('configMainPresenter', 'false');
             // hide the form the contains this checkbox
-            $('#configMainPresenter').parent().parent().parent().hide();
+            //$('#configMainPresenter').parent().parent().parent().hide();
             // save in global namespace
             cSpot.presentation.sync = true;
         }

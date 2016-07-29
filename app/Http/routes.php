@@ -188,6 +188,8 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     */
     // Manage Main Presenter
     Route::put('presentation/mainPresenter', ['as'=>'presentation.mainPresenter.set', 'uses'=>'Cspot\PresentationController@setMainPresenter']);
+    // Send current show position
+    Route::put('presentation/setPositon',    ['as'=>'presentation.position.set',      'uses'=>'Cspot\PresentationController@setPosition']);
     // define sync stream
     Route::get('presentation/sync',          ['as'=>'presentation.sync',              'uses'=>'Cspot\PresentationController@syncPresentation']);
 

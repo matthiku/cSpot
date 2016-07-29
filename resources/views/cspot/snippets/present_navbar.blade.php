@@ -164,6 +164,8 @@ $modalContent = '
                             <span class="c-indicator"></span>&nbsp;Sync Presentation
                     </label>
                 </div>
+                <span class="small">&nbsp;with:</span>
+                <span class="small showPresenterName"> ({{ $serverSideMainPresenter ? $serverSideMainPresenter['name'] : 'none' }})</span>
             </form>
 
         </li>

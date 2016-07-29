@@ -14,43 +14,87 @@ use Auth;
 use Log;
 
 
+
 class PresentationController extends Controller
 {
+
+
 
     // watch changes of current MP
     protected $currentMainPresenterID = -1;
     protected $oldMainPresenterID = -2;
+    protected $currentShowPositionID = -1;
+    protected $oldShowPositionID = -2;
 
 
+
+    /**
+     * Server-Sent event stream handling
+     *
+     */
     public function syncPresentation()
     {
-        $response = new StreamedResponse(function() {
-
-            // get current MP
-            $data = $this->getNewMainPresenter();
-
-            // endless loop to keep stream open
-            while (true) {
-                // data will be empty if there was no change since last inquiry
-                if ( $data ) {
-                    Log::info('Sending new MP id: '. $data['id']);
-                    echo "data: " .$data['id'] . "\n\n";
-                    ob_flush();
-                    flush();
-                }
-                sleep(2);
-                // get latest data
-                $data = $this->getNewMainPresenter();
-            }
-        });
-
+        // define the new SSE stream
+        $response = new StreamedResponse;
         $response->headers->set('Content-Type', 'text/event-stream');
         $response->headers->set('Cache-Control', 'no-cache');
-        return $response;
+        $response->headers->set("X-Accel-Buffering", "no");
+        $response->setCallback(function() {
 
+            // get current data 
+            $newMP  = $this->getNewestMainPresenter();
+            $newPos = $this->getNewestShowPosition();
+
+            // (nearly) endless loop to keep stream open
+            // the client will automatically reconnect when we close the stream after a while.
+            // this is ti avoid memory leaks and hangs on the server side!
+            $count = 0;
+            while (true) {
+
+                // if we have a new show position, send it out
+                if ( $newPos ) {
+                    echo "event: syncPresentation\n";
+                    echo "id: ".$count++."\n";
+                    echo "data: ". json_encode($newPos) . "\n\n";
+                    ob_flush(); flush();
+                }
+
+                // if we have a new MP, send it out
+                if ( $newMP ) {
+                    echo "event: newMainPresenter\n";
+                    echo "id: ".$count++."\n";
+                    echo "data: ". json_encode($newMP) . "\n\n";
+                    ob_flush(); flush();
+                }
+                sleep(2);
+
+                // get latest data (will be empty if there was no change)
+                $newMP  = $this->getNewestMainPresenter();
+                $newPos = $this->getNewestShowPosition();
+
+                // close the stream after some time
+                if (++$count > 100)
+                    break;
+            }
+        });
+        return $response;
     }
 
-    public function getNewMainPresenter()
+
+    protected function getNewestMainPresenter()
+    {
+
+        $mainPresenter = $this->getMainPresenter();
+
+        if ( ! $this->currentMainPresenterID == $this->oldMainPresenterID) {
+            Log::info($this->oldMainPresenterID .' New MP found: '.$this->currentMainPresenterID);
+            $this->oldMainPresenterID = $this->currentMainPresenterID;
+            return $mainPresenter;
+        }
+        return '';
+    }
+
+    protected function getMainPresenter()
     {
         // Do we already have a Main Presenter?
         if (Cache::has('MainPresenter')) {
@@ -60,15 +104,71 @@ class PresentationController extends Controller
         // there is no MP at the moment
         else {
             $mainPresenter['id'] = 0;
+            $mainPresenter['name'] = 'none';
             $this->currentMainPresenterID = 0;
         }
-        // return the full value if the MP just changed
-        if ( ! $this->currentMainPresenterID == $this->oldMainPresenterID) {
-            Log::info($this->oldMainPresenterID .' New MP found: '.$this->currentMainPresenterID);
-            $this->oldMainPresenterID = $this->currentMainPresenterID;
-            return $mainPresenter;
+        return $mainPresenter;
+    }
+
+
+    protected function getNewestShowPosition()
+    {
+
+        $showPosition = $this->getShowPosition();
+
+        if ( ! ($this->currentShowPositionID == $this->oldShowPositionID) ) {
+            Log::info( '---- New Show Position found: ' . json_encode($showPosition) );
+            $this->oldShowPositionID = $this->currentShowPositionID;
+            return $showPosition;
         }
         return '';
+    }
+
+    protected function getShowPosition()
+    {
+        // Do we already have a Main Presenter?
+        if (Cache::has('showPosition')) {
+            $showPosition = Cache::get('showPosition');
+            //Log::info( 'Current Show Position is: ' . json_encode($showPosition) );
+            $this->currentShowPositionID = $showPosition['id'];
+        } 
+        // there is no MP at the moment
+        else {
+            Log::info('No show position found!');
+            $showPosition['id'] = 0;
+            $showPosition['plan_id'] = 0;
+            $showPosition['item_id'] = 0;
+            $showPosition['slide'] = 'none';
+            $this->currentShowPositionID = 0;
+        }
+        return $showPosition;
+    }
+
+
+
+
+
+    public function setPosition(Request $request)
+    {
+        // check if user is currently the MP
+        if (! Auth::user()->id == $this->getMainPresenter()['id']) {
+            return response()->json(['status' => 401, 'data' => 'Not a Main Presenter!'], 401);
+        }
+        // check if data is complete
+        if ($request->has('plan_id') && $request->has('item_id') && $request->has('slide') ) {
+
+            $data = $request->only(['plan_id', 'item_id', 'slide']);
+            // add a random identifier string to it
+            $data['id'] = random_int(1,9999999);
+            // save to cache
+            Cache::put('showPosition', $data, 600);
+
+            Log::info('new show pos recvd: '.json_encode($data));
+
+            return response()->json( ['status' => 202, 'data' => $data['id'] ], 202 );
+        }
+
+        return response()->json(['status' => 406, 'data' => 'Incomplete request!'], 406);
     }
 
 
@@ -96,6 +196,10 @@ class PresentationController extends Controller
             Log::info('User wants to stop being Main Presenter: (id: '.$user->id.') '.$user->name);
         }
 
+        // set default values if there is no MP at the moment
+        $mainPresenter['id'] = 0;
+        $mainPresenter['name'] = 'none';
+
         // Do we already have a Main Presenter?
         if (Cache::has('MainPresenter')) {
             $mainPresenter = Cache::get('MainPresenter');
@@ -104,11 +208,15 @@ class PresentationController extends Controller
                 Cache::forget('MainPresenter');
                 return response()->json( ['status' => 205, 'data' => ''], 202 ); // 202 = "accepted"
             }
-            return response()->json( ['status' => 202, 'data' => $mainPresenter], 202 );
+            // Only Admins can replace an existing presenter!
+            if (! $user->isAdmin()) {
+                return response()->json( ['status' => 202, 'data' => $mainPresenter], 202 );
+            }
         }
+
         // no further action needed if user just want to state that he is not a Main Presenter...
         if ($removeMe) {
-            return response()->json( ['status' => 205, 'data' => ''], 202 ); // 202 = "accepted"
+            return response()->json( ['status' => 205, 'data' => $mainPresenter], 202 ); // 202 = "accepted"
         }
 
         // save current user as Main Presenter

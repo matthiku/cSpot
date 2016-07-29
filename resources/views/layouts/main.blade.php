@@ -29,17 +29,80 @@
         var __app_url = "{{ url('/') }}";
         var cSpot = {};
         cSpot.user = JSON.parse('{!! json_encode(Auth::user(), JSON_HEX_APOS | JSON_HEX_QUOT ) !!}');
-        cSpot.presentation = {};
-        cSpot.presentation.sync = false;
-        cSpot.presentation.mainPresenter = JSON.parse('{!! json_encode($serverSideMainPresenter, JSON_HEX_APOS | JSON_HEX_QUOT ) !!}');
-        cSpot.presentation.mainPresenterSetURL = '{{ route('presentation.mainPresenter.set') }}';
 
+        {{-- only on presentation pages --}}
         @if (Request::is('*/present') || Request::is('*/chords') || Request::is('*/sheetmusic'))
-            // first steps with Server-Sent Events
+
+            cSpot.presentation = {};
+            cSpot.presentation.sync = false;
+            cSpot.presentation.slide = 'start';     // the initial SLIDE name
+            cSpot.presentation.mainPresenter = JSON.parse('{!! json_encode($serverSideMainPresenter, JSON_HEX_APOS | JSON_HEX_QUOT ) !!}');
+            cSpot.presentation.mainPresenterSetURL = '{{ route('presentation.mainPresenter.set') }}';
+
+            // simple function to determine if the current user is the MP
+            function isPresenter() {
+                if (cSpot.user.id == cSpot.presentation.mainPresenter.id)
+                    return true;
+                return false;
+            }
+
+            // get relevant ids of current slides
+            cSpot.presentation.plan_id = {{ $item->plan_id }};
+            cSpot.presentation.item_id  = {{ $item->id  }};
+            cSpot.presentation.setPositionURL = '{{ route('presentation.position.set') }}';
+
+            // prepare Server-Sent Events
             var es = new EventSource("{{ route('presentation.sync') }}");
+            // handle generic messages
             es.onmessage = function(e) {
                   console.log(e);
+            };
+
+            // handle advetisements of new Show Positions
+            es.addEventListener("syncPresentation", function(e) {
+                cSpot.presentation.syncData = JSON.parse(e.data);
+                //;;;console.log('New sync request received: ' + JSON.stringify(syncData));
+                // has user requested a syncchronisation?
+                if (cSpot.presentation.sync) {
+                    // TODO: call function to sync 
+                    syncPresentation(cSpot.presentation.syncData);
+                }
+            });
+
+            // handle advertisements of new MPs
+            es.addEventListener("newMainPresenter", function(e) {
+                cSpot.presentation.mainPresenter = JSON.parse(e.data);
+                // are we not longer MP?
+                if (!isPresenter()) {
+                    // make sure the MP checkbox is no longer checked!
+                    $('#configMainPresenter').prop( "checked", false);
+                    // make sure the Sync checkbox is visible!
+                    $('#configSyncPresentation').parent().parent().parent().show();
+                }
+                // write the new MP name into checkbox label
+                $('.showPresenterName').text(' ('+cSpot.presentation.mainPresenter.name+')')
+            });
+
+
+            // Function to inform server of current position
+            function sendShowPosition(slideName) {
+                cSpot.presentation.slide = slideName;
+                if (isPresenter()) {
+                    var data = {
+                            plan_id : cSpot.presentation.plan_id,
+                            item_id : cSpot.presentation.item_id,
+                            slide   : slideName,
+                        }
+                    ;;;console.log('sending show position: '+JSON.stringify(data));
+                    $.ajax({
+                        url: cSpot.presentation.setPositionURL,
+                        type: 'PUT',
+                        data: data,
+                    });
+                }
             }
+
+
         @endif
 
     </script>
