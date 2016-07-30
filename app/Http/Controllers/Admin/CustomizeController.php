@@ -7,18 +7,26 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 
+
 class CustomizeController extends Controller
 {
 
     protected function updateDotEnv($key, $newValue, $delim='')
     {
         $path = base_path('.env');
+        // get old value from current env
+        $oldValue = env($key);
+        // special case for true/false values
+        // (we need to first 'stringify' it!)
+        if ($newValue=='true' || $newValue=='false' ) {
+            $oldValue = $oldValue ? 'true' : 'false';
+        }
         // rewrite file content with changed data
         if (file_exists($path)) {
             // replace current value with new value 
             file_put_contents(
                 $path, str_replace(
-                    $key.'='.$delim.env($key).$delim, 
+                    $key.'='.$delim.$oldValue.$delim, 
                     $key.'='.$delim.$newValue.$delim, 
                     file_get_contents($path)
                 )
@@ -45,6 +53,11 @@ class CustomizeController extends Controller
         }
         if ($request->has('church_ccli')) {
             $this->updateDotEnv('CHURCH_CCLI', $request->church_ccli);
+        }
+        if ($request->has('enable_sync')) {
+            $this->updateDotEnv('PRESENTATION_ENABLE_SYNC', 'true');
+        } else {
+            $this->updateDotEnv('PRESENTATION_ENABLE_SYNC', 'false');
         }
 
         if ($request->hasFile('favicon_file')) {
