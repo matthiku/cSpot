@@ -39371,6 +39371,11 @@ function changeTextAlign(selectorList, how) {
 }
 
 
+// dummy method which will only be called if Sync Presentation is disabled
+// the actual (working) function is found in main.blade.php!
+function sendShowPosition() {
+    return;
+}
 
 // User becomes Main presenter (if no other is yet)
 function configMainPresenter() {
@@ -39462,6 +39467,10 @@ function setMainPresenter(trueOrFalse) {
 
 // new Sync request received
 function syncPresentation(syncData) {
+
+    // initially, we might not have any syncData....
+    if (syncData==undefined) return;
+
     ;;;console.log('tyring to sync show for: ' + JSON.stringify(syncData));
 
     // do nothing if we are already at the right location...

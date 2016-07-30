@@ -852,3 +852,21 @@ function sendEmailNotification(Message $message)
 }
 
 
+/**
+ * get current Main Presenter for Presentation Synchronisation
+ */
+function getMainPresenter()
+{
+    // Do we already have a Main Presenter?
+    if (Cache::has('MainPresenter')) {
+        $mainPresenter = Cache::get('MainPresenter');
+    } 
+    // there is no MP at the moment
+    else {
+        $mainPresenter['id'] = 0;
+        $mainPresenter['name'] = 'none';
+    }
+    return $mainPresenter;
+}
+
+

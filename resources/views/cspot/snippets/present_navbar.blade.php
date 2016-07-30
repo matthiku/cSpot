@@ -156,6 +156,7 @@ $modalContent = '
                 <i class="fa fa-file-text"></i> <i class="fa fa-refresh fa-lg"></i> <i class="fa fa-music"></i>
             </a>
 
+        @if( env('PRESENTATION_ENABLE_SYNC', 'false') )
             {{-- synchronise this presentation with the Main Presenter --}}
             <form class="form-inline nav-item m-l-1 label label-info">
                 <div class="checkbox" style="line-height: 2" onmouseup="configSyncPresentation()">
@@ -167,6 +168,7 @@ $modalContent = '
                 <span class="small">&nbsp;with:</span>
                 <span class="small showPresenterName"> ({{ $serverSideMainPresenter ? $serverSideMainPresenter['name'] : 'none' }})</span>
             </form>
+        @endif
 
         </li>
     </ul>

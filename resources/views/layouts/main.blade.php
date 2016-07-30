@@ -30,14 +30,15 @@
         var cSpot = {};
         cSpot.user = JSON.parse('{!! json_encode(Auth::user(), JSON_HEX_APOS | JSON_HEX_QUOT ) !!}');
 
-        {{-- only on presentation pages --}}
-        @if (Request::is('*/present') || Request::is('*/chords') || Request::is('*/sheetmusic'))
+        cSpot.presentation = {};
+        cSpot.presentation.sync = false;
+        cSpot.presentation.mainPresenterSetURL = '{{ route('presentation.mainPresenter.set') }}';
 
-            cSpot.presentation = {};
-            cSpot.presentation.sync = false;
+        {{-- only on presentation pages --}}
+        @if( (Request::is('*/present') || Request::is('*/chords') || Request::is('*/sheetmusic')) && env('PRESENTATION_ENABLE_SYNC', 'false') )
+
             cSpot.presentation.slide = 'start';     // the initial SLIDE name
             cSpot.presentation.mainPresenter = JSON.parse('{!! json_encode($serverSideMainPresenter, JSON_HEX_APOS | JSON_HEX_QUOT ) !!}');
-            cSpot.presentation.mainPresenterSetURL = '{{ route('presentation.mainPresenter.set') }}';
 
             // simple function to determine if the current user is the MP
             function isPresenter() {

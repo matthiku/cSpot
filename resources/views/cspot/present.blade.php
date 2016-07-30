@@ -284,7 +284,7 @@
             </form>
 
 
-
+        @if( env('PRESENTATION_ENABLE_SYNC', 'false') )
             {{-- become MAIN presenter, if possible --}}
             <form class="form-inline nav-item m-l-1 pull-xs-left label label-info">
                 <div class="checkbox" style="line-height: 2" onmouseup="configMainPresenter()">
@@ -307,7 +307,7 @@
                 <span class="small">&nbsp;with:</span>
                 <span class="small showPresenterName"> ({{ $serverSideMainPresenter ? $serverSideMainPresenter['name'] : 'none' }})</span>
             </form>
-
+        @endif
 
 
             {{-- TODO: this is currently not working properly --}}

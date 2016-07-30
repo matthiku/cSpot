@@ -47,13 +47,7 @@ class AppServiceProvider extends ServiceProvider
 
 
         // provide the name of the current Main Presenter to all views
-        if (Cache::has('MainPresenter')) {
-            $value = Cache::get('MainPresenter');
-            view()->share('serverSideMainPresenter', $value);
-        }
-        else {
-            view()->share('serverSideMainPresenter', []);
-        }
+        view()->share('serverSideMainPresenter', getMainPresenter());
 
 
 

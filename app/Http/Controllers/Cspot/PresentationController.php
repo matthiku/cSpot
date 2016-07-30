@@ -34,6 +34,12 @@ class PresentationController extends Controller
      */
     public function syncPresentation()
     {
+
+        Log::info('setting: '.env('PRESENTATION_ENABLE_SYNC', 'false'));
+        if ( ! env('PRESENTATION_ENABLE_SYNC', 'false') ) {
+            return;
+        }
+
         // define the new SSE stream
         $response = new StreamedResponse;
         $response->headers->set('Content-Type', 'text/event-stream');
@@ -84,30 +90,15 @@ class PresentationController extends Controller
     protected function getNewestMainPresenter()
     {
 
-        $mainPresenter = $this->getMainPresenter();
+        $mainPresenter = getMainPresenter();
+        $this->currentMainPresenterID = $mainPresenter['id'];
 
-        if ( ! $this->currentMainPresenterID == $this->oldMainPresenterID) {
+        if ( $this->currentMainPresenterID != $this->oldMainPresenterID) {
             Log::info($this->oldMainPresenterID .' New MP found: '.$this->currentMainPresenterID);
             $this->oldMainPresenterID = $this->currentMainPresenterID;
             return $mainPresenter;
         }
         return '';
-    }
-
-    protected function getMainPresenter()
-    {
-        // Do we already have a Main Presenter?
-        if (Cache::has('MainPresenter')) {
-            $mainPresenter = Cache::get('MainPresenter');
-            $this->currentMainPresenterID = $mainPresenter['id'];
-        } 
-        // there is no MP at the moment
-        else {
-            $mainPresenter['id'] = 0;
-            $mainPresenter['name'] = 'none';
-            $this->currentMainPresenterID = 0;
-        }
-        return $mainPresenter;
     }
 
 
@@ -151,7 +142,7 @@ class PresentationController extends Controller
     public function setPosition(Request $request)
     {
         // check if user is currently the MP
-        if (! Auth::user()->id == $this->getMainPresenter()['id']) {
+        if (Auth::user()->id != getMainPresenter()['id']) {
             return response()->json(['status' => 401, 'data' => 'Not a Main Presenter!'], 401);
         }
         // check if data is complete
