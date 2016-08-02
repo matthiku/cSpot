@@ -193,7 +193,7 @@ class PlanController extends Controller
         // get plan with items ordered by seq no
         $plan = Plan::with([
                 'items' => function ($query) { $query->orderBy('seq_no'); }])
-            ->where('date', $date)->first();
+            ->where('date', 'like', $date.'%')->first();
 
         if ($plan) {
             $types = Type::get();

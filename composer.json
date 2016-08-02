@@ -14,7 +14,7 @@
         "cmgmyr/messenger": "~2.0",
         "rap2hpoutre/laravel-log-viewer": "^0.6.0",
         "intervention/image": "^2.3",
-        "guzzlehttp/guzzle": "~5.3|~6.0",
+        "guzzlehttp/guzzle": "~6.0",
         "barryvdh/laravel-ide-helper": "^2.2"
     },
     "require-dev": {

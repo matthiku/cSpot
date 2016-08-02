@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+use Log;
 
 
 class CustomizeController extends Controller
@@ -13,14 +14,26 @@ class CustomizeController extends Controller
 
     protected function updateDotEnv($key, $newValue, $delim='')
     {
+
+        Log::info('Request to update key '.$key.' to new value: '.$newValue);
+
         $path = base_path('.env');
         // get old value from current env
         $oldValue = env($key);
+
+        // was there any change?
+        if ($oldValue === $newValue) {
+            return;
+        }
+
         // special case for true/false values
         // (we need to first 'stringify' it!)
         if ($newValue=='true' || $newValue=='false' ) {
             $oldValue = $oldValue ? 'true' : 'false';
         }
+
+        Log::info('Customization: Update for key '.$key.': Old value: '.$oldValue.', New value: '.$newValue);
+
         // rewrite file content with changed data
         if (file_exists($path)) {
             // replace current value with new value 
@@ -34,11 +47,16 @@ class CustomizeController extends Controller
         }
     }
 
+
+
+
     // show current configuration
     public function index()
     {
         return view('admin/customize');
     }
+
+
 
 
     // show current configuration
@@ -55,10 +73,8 @@ class CustomizeController extends Controller
             $this->updateDotEnv('CHURCH_CCLI', $request->church_ccli);
         }
         if ($request->has('enable_sync')) {
-            $this->updateDotEnv('PRESENTATION_ENABLE_SYNC', 'true');
-        } else {
-            $this->updateDotEnv('PRESENTATION_ENABLE_SYNC', 'false');
-        }
+            $this->updateDotEnv('PRESENTATION_ENABLE_SYNC', $request->get('enable_sync'));
+        } 
 
         if ($request->hasFile('favicon_file')) {
             if ($request->file('favicon_file')->isValid()) {

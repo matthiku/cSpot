@@ -48,9 +48,11 @@
             </div>
 
             <hr>
+            {{-- default value for checkbox --}}
+            <input type="hidden" name="enable_sync" value="false">
             <div class="form-group">
                 {!! Form::label('enable_sync', 'Allow Presentation Synchronisation between clients:') !!}<br>
-                {!! Form::checkbox('enable_sync', env('PRESENTATION_ENABLE_SYNC'), env('PRESENTATION_ENABLE_SYNC')); !!}
+                {!! Form::checkbox('enable_sync', 'true', env('PRESENTATION_ENABLE_SYNC')); !!}
            </div>
 
             <hr>
