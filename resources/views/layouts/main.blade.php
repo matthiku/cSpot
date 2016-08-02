@@ -35,7 +35,7 @@
         cSpot.presentation.mainPresenterSetURL = '{{ route('presentation.mainPresenter.set') }}';
 
         {{-- only on presentation pages --}}
-        @if( (Request::is('*/present') || Request::is('*/chords') || Request::is('*/sheetmusic')) && env('PRESENTATION_ENABLE_SYNC', 'false') )
+        @if( env('PRESENTATION_ENABLE_SYNC', 'false') && (Request::is('*/present') || Request::is('*/chords') || Request::is('*/sheetmusic')) )
 
             cSpot.presentation.slide = 'start';     // the initial SLIDE name
             cSpot.presentation.mainPresenter = JSON.parse('{!! json_encode($serverSideMainPresenter, JSON_HEX_APOS | JSON_HEX_QUOT ) !!}');

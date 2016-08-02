@@ -10,24 +10,27 @@
 </div>
 
 
-
+{{-- show status messages within the document --}}
 @if (session()->has('message') && ! session('message')=='')
-    <div id="myMsgModal" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="alert alert-info center" role="alert">
-                {{ session('message') }}
-            </div>
-        </div>
-      </div>
-    </div>
-    <script>
-        $(document).ready(function() {
-            $('#myMsgModal').modal('show');
-            delayedCloseFlashingModals($('#myMsgModal'));
-        });        
-    </script>
+   <div class="alert alert-info alert-dismissible fade in" role="alert">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <strong>Info:</strong> {{ session('message') }}
+   </div>
 @endif
+
+
+
+@if (Session::has('status') && ! Session::get('status')=='')
+   <div class="alert alert-success alert-dismissible fade in" role="alert">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <strong>Status:</strong> {{ Session::get('status') }}
+   </div>
+@endif
+
 
 
 @if (session()->has('error'))
@@ -52,26 +55,6 @@
     <script>
         $(document).ready(function() {
             $('#myErrorModal').modal('show');
-        });        
-    </script>
-@endif
-
-
-
-@if (Session::has('status') && ! Session::get('status')=='')
-    <div id="myMsgModal" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="alert alert-info center" role="alert">
-                Status: {{ Session::get('status') }}
-            </div>
-        </div>
-      </div>
-    </div>
-    <script>
-        $(document).ready(function() {
-            $('#myMsgModal').modal('show');
-            delayedCloseFlashingModals($('#myMsgModal'));
         });        
     </script>
 @endif
