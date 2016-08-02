@@ -857,15 +857,16 @@ function sendEmailNotification(Message $message)
  */
 function getMainPresenter()
 {
+    // set default values
+    $mainPresenter['id'] = 0;
+    $mainPresenter['name'] = 'none';
+
     // Do we already have a Main Presenter?
-    if (Cache::has('MainPresenter')) {
+    if (Cache::has('MainPresenter')) 
+    {
         $mainPresenter = Cache::get('MainPresenter');
     } 
-    // there is no MP at the moment
-    else {
-        $mainPresenter['id'] = 0;
-        $mainPresenter['name'] = 'none';
-    }
+    
     return $mainPresenter;
 }
 

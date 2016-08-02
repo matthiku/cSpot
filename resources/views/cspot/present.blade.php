@@ -164,7 +164,7 @@
         <button class="navbar-toggler btn btn-info active" type="button" data-toggle="collapse" data-target="#lyricsNavbar">
             &hellip;
         </button>        
-        <button class="btn btn-secondary-outline" type="button" onclick="$('#main-content').toggle()">
+        <button class="btn btn-secondary-outline" type="button" onclick="showBlankScreen()">
             Blank
         </button>        
 

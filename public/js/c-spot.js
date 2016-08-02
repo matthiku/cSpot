@@ -38997,10 +38997,8 @@ function advancePresentation(direction)
                 if ( $(this).data().showStatus  == 'unshown' ) {
                     found = true;
                     var thisID = $(this).attr('id')
-                    ;;;console.log('found ' + thisID);
-                    sendShowPosition(thisID);
                     $(this).data().showStatus = 'done';
-                    navigateToBibleVerse(thisID);
+                    showNextSlide(thisID,'.bible');
                     return false; // escape the each loop...
                 }
             });
@@ -39015,16 +39013,11 @@ function advancePresentation(direction)
             for (var i = seq.length - 1; i >= 0; i--) {
                 if ( $(seq[i]).data().showStatus == 'done') {
                     var thisID = $(seq[i]).attr('id')
-                    ;;;console.log('found ' + thisID);
                     if (i<1) {break;} // we can't move any further back....
                     found=true;
                     $(seq[i]).data().showStatus = 'unshown';  // make this part 'unshown'
-                    $('.bible-progress-indicator').removeClass('bg-danger');
                     var thisID = $(seq[i-1]).attr('id')
-                    sendShowPosition(thisID);
-                    $(seq[i-1]).addClass('bg-danger');
-                    todo = $(seq[i-1]).attr('onclick');
-                    eval( todo );
+                    showNextSlide(thisID,'.bible');
                     break; // escape the for loop...
                 }
             }
@@ -39045,12 +39038,9 @@ function advancePresentation(direction)
             $(seq).each(function(entry){
                 if ( $(this).data().showStatus  == 'unshown' ) {
                     found = true;
-                    ;;;console.log('found ' + $(this).attr('id'));
+                    var thisID = $(this).attr('id')
                     $(this).data().showStatus = 'done';
-                    $('.slides-progress-indicator').removeClass('bg-danger');
-                    $(this).addClass('bg-danger');
-                    todo = $(this).attr('onclick');
-                    eval( todo );
+                    showNextSlide(thisID,'.slides');
                     return false; // escape the each loop...
                 }
             });
@@ -39063,14 +39053,11 @@ function advancePresentation(direction)
             found=false;
             for (var i = seq.length - 1; i >= 0; i--) {
                 if ( $(seq[i]).data().showStatus == 'done') {
-                    ;;;console.log('found ' + $(seq[i]).attr('id'));
                     if (i<1) {break;} // we can't move any further back....
                     found=true;
                     $(seq[i]).data().showStatus = 'unshown';  // make this part 'unshown'
-                    $('.slides-progress-indicator').removeClass('bg-danger');
-                    $(seq[i-1]).addClass('bg-danger');
-                    todo = $(seq[i-1]).attr('onclick');
-                    eval( todo );
+                    var thisID = $(seq[i-1]).attr('id')
+                    showNextSlide(thisID,'.slides','back');
                     break; // escape the for loop...
                 }
             }
@@ -39107,11 +39094,23 @@ function jumpTo(where)
 /*
     show the indicated bible verse and indicate it on the Progress Indicator Bar
 */
-function navigateToBibleVerse(thisID)
+function showNextSlide(thisID,what,direction)
 {
-    $('.bible-progress-indicator').removeClass('bg-danger');
+    // modify the background color of the progress indicators
+    $(what+'-progress-indicator').removeClass('bg-danger');
     $('#'+thisID).addClass('bg-danger');
+
+    // get the click-event of the progress-indicator button
     todo = $('#'+thisID).attr('onclick');
+
+    // for sending positons, we have special case for bible verse slides
+    var snp = thisID.split('-');
+    if (direction=='back' && snp.length>2 && snp[0]=='bible') {
+        thisID = snp[0]+'-'+snp[1]+'-'+(1+1*snp[2]); // we must add 1 to the id number
+    }
+    sendShowPosition(thisID);
+
+    // execute the click-event of the button
     eval( todo );
 }
 
@@ -39173,7 +39172,11 @@ function navigateTo(where)
 }
 
 
-
+function showBlankScreen()
+{
+    $('#main-content').toggle();
+    sendShowPosition('blank');
+}
 
 function slidesShow(what)
 {
@@ -39476,7 +39479,9 @@ function syncPresentation(syncData) {
     // do nothing if we are already at the right location...
     if (cSpot.presentation.plan_id == syncData.plan_id 
      && cSpot.presentation.item_id == syncData.item_id 
-     && cSpot.presentation.slide   == syncData.slide   ) {
+     && cSpot.presentation.slide   == syncData.slide
+     && syncData.slide != 'blank'   ) // (blank is a toggler!)
+    { 
             ;;;console.log('already in sync!');
             return;
     }
@@ -39493,10 +39498,29 @@ function syncPresentation(syncData) {
             window.location.href = __app_url + '/cspot/items/' + syncData.item_id + '/' + showType;
         return;
     }
+
+    ;;;console.log('Showtype is '+showType+'. We have to jump to a new slide: ' + syncData.slide);
+
+    slideNameParts = syncData.slide.split('-');
+
     // go to the new slide
-    ;;;console.log('we have to jump to a new slide: ' + syncData.slide);
     if (showType == 'present')
-        lyricsShow(syncData.slide);
+        if (slideNameParts.length>2) {
+            if (slideNameParts[0]=='bible') {
+                console.log('jumping to bible verse ' + slideNameParts[2]);
+                bibleShow(slideNameParts[2]);
+            } 
+            if (slideNameParts[0]=='slides') {
+                console.log('jumping to image slide ' + slideNameParts[2]);
+                slidesShow(slideNameParts[2]);
+            } 
+        } 
+        else if (syncData.slide=='blank') {
+            showBlankScreen();
+        }
+        else {
+            lyricsShow(syncData.slide);
+        }
     else 
         navigateTo(syncData.slide);
 }

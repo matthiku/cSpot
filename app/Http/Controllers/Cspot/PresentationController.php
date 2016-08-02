@@ -210,8 +210,9 @@ class PresentationController extends Controller
             return response()->json( ['status' => 205, 'data' => $mainPresenter], 202 ); // 202 = "accepted"
         }
 
-        // save current user as Main Presenter
-        $value = $user->toArray(); // (object) ['id' => $user->id, 'name' => $user->name ];
+        // save current user as Main Presenter  WAS: $user->toArray(); //
+        $value =  ['id' => $user->id, 'name' => $user->name ];
+
         // set expiration date for this setting
         $expiresAt = Carbon::now()->addDays( env('PRESENTATION_EXPIRATION_DAYS', 1) );
         Cache::put( 'MainPresenter', $value, $expiresAt );
