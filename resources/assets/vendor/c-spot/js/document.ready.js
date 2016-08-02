@@ -439,17 +439,23 @@ $(document).ready(function() {
      */
     if ( window.location.href.indexOf('/present')>10 ) {
 
-        // start showing bible parts if this is a bible reference
-        if ($('.bible-text-present').length) {
-            reFormatBibleText(); }
+        // check if we have a VideoClip item or just lyrics
+        if ($('#videoclip-url').length) {
+            var videoclipUrl = $("#videoclip-url").text();
+            console.log('this is a Video Clip!');
+        }
+        // we have just lyrics
+        else if ($('#present-lyrics').length) {
+            // re-format the lyrics
+            reDisplayLyrics(); 
 
-        // re-format the lyrics
-        if ($('#present-lyrics').length) {
-            reDisplayLyrics(); }
+            // start showing bible parts if this is a bible reference
+            if ($('.bible-text-present').length) {
+                reFormatBibleText(); }
 
-        // center and maximise images
-        if ( $('.slide-background-image').length ) {
-            prepareImages();
+            // center and maximise images
+            if ( $('.slide-background-image').length ) {
+                prepareImages(); }
         }
 
 

@@ -389,16 +389,16 @@ function showFilterField(field)
     {
         var currUrl  = parseURLstring(window.location.href);
         // check if there is a query string in the URL
-        if (currUrl.search) { 
+        if (currUrl.search.length > 1) { 
             // check that it doesn't contain a plan_id!
-            if (currUrl.search.search('plan_id')) {
+            if (currUrl.search.search('plan_id') > 1) {
                 return;
             }
             // clear existing filter and reload page without a filter
             showSpinner();
             // remove filter elements from URL query string
-            var queryStr = currUrl[1].split('&');
-            var newUrl = currUrl[0];
+            var queryStr = currUrl.search.split('?')[1].split('&');
+            var newUrl = currUrl.pathname;
             if (queryStr.length > 2) {
                 newUrl += '?';
                 for (var i = queryStr.length - 1; i >= 0; i--) {

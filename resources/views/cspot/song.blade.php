@@ -105,7 +105,16 @@
 
 
             <div class="row form-group">
-                {!! Form::label('title_2', 'Subtitle', ['class' => 'col-sm-4 col-md-3 col-lg-2 col-xl-4']); !!}
+                <div class='col-sm-4 col-md-3 col-lg-2 col-xl-4'>                    
+                    {!! Form::label('title_2', 'Subtitle'); !!}
+                    <small>(or use 'video' or 'infoscreen')</small>
+                    <big>
+                        <a tabindex="0" href="#"
+                            data-container="body" data-toggle="tooltip"
+                            title="Set subtitle to 'video' and the linked Youtube video can be shown on the presentation screen! Select 'infoscreen' in order to show Powerpoint-like slides!">
+                            <i class="fa fa-question-circle"></i></a>
+                    </big>
+                </div>
                 <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width">{!! Form::text('title_2'); !!}</div>
             </div>
 

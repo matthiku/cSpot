@@ -1218,7 +1218,6 @@ function changeConfigShowVersCount() {
     localStorage.setItem('configShowVersCount', sett);
 }
 
-
 function changeTextAlign(selectorList, how) {
     if ( typeof selectorList === 'string') {
         selectorList = [selectorList];
@@ -1232,6 +1231,46 @@ function changeTextAlign(selectorList, how) {
         }
     });
 }
+
+/**
+ * Increase or decrease font size of a given element
+ *
+ * stores the value in LocalStorage for later reference
+ *
+ * param  selectorList string or array of valid CSS selectors
+ * return void
+ */
+function changeFontSize(selectorList, how) {
+    if ( typeof selectorList === 'string') {
+        selectorList = [selectorList];
+    }
+    var factor = 1.1;
+    if (how=='decrease')
+        factor = 0.9;
+    selectorList.forEach( function(selector) {
+        element = $(selector);
+        if (element.length>0) {
+            fontSize = parseFloat($(element).css('font-size')) * factor;
+            if (fontSize<8 || fontSize>150) return;
+            $(element).css('font-size', fontSize);
+            localStorage.setItem(selector+'_font-size', fontSize);
+            console.log('LocalStorage for '+selector+' was set to '+localStorage.getItem(selector+'_font-size'));
+        }
+    });
+}
+
+function getLocalStorValue(name) {
+    value = localStorage.getItem(name);
+    // console.log('LocalStorage for '+name+' was at '+value);
+    return value;
+}
+
+
+
+
+/*\
+|* >------------------------------------------------------------------ SYNC PRESENTATION
+\*/
 
 
 // dummy method which will only be called if Sync Presentation is disabled
@@ -1385,57 +1424,3 @@ function syncPresentation(syncData) {
         navigateTo(syncData.slide);
 }
 
-
-
-/**
- * Increase or decrease font size of a given element
- *
- * stores the value in LocalStorage for later reference
- *
- * param  selectorList string or array of valid CSS selectors
- * return void
- */
-function changeFontSize(selectorList, how) {
-    if ( typeof selectorList === 'string') {
-        selectorList = [selectorList];
-    }
-    var factor = 1.1;
-    if (how=='decrease')
-        factor = 0.9;
-    selectorList.forEach( function(selector) {
-        element = $(selector);
-        if (element.length>0) {
-            fontSize = parseFloat($(element).css('font-size')) * factor;
-            if (fontSize<8 || fontSize>150) return;
-            $(element).css('font-size', fontSize);
-            localStorage.setItem(selector+'_font-size', fontSize);
-            console.log('LocalStorage for '+selector+' was set to '+localStorage.getItem(selector+'_font-size'));
-        }
-    });
-}
-
-function getLocalStorValue(name) {
-    value = localStorage.getItem(name);
-    // console.log('LocalStorage for '+name+' was at '+value);
-    return value;
-}
-
-
-
-
-/**
- * Ask user to allow fullscreen mode for presentations
- */
-function requestFullScreen(element) {
-    // Supports most browsers and their versions.
-    var requestMethod = element.requestFullScreen || element.webkitRequestFullScreen || element.mozRequestFullScreen || element.msRequestFullscreen;
-
-    if (requestMethod) { // Native full screen.
-        requestMethod.call(element);
-    } else if (typeof window.ActiveXObject !== "undefined") { // Older IE.
-        var wscript = new ActiveXObject("WScript.Shell");
-        if (wscript !== null) {
-            wscript.SendKeys("{F11}");
-        }
-    }
-}

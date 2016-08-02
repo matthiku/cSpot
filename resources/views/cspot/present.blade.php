@@ -17,17 +17,34 @@
     <!-- ================================================================================ -->
     <div id="main-content" class="bg-inverse">
 
+
         @if ($item->song_id )
             @if ($item->song->lyrics )
+
                 <div class="text-present m-b-3 lyrics-parts" id="lyrics-title" style="display: none;">
-                    {{ $item->song->title }}{{ $item->song->title2 ? '('.$item->song->title2.')' : '' }}
+                    {{ $item->song->title }}
+                    @if ($item->song->title_2 && $item->song->title_2 != 'video') 
+                        ({{ $item->song->title_2}}) 
+                    @endif
                 </div>
-                <div class="text-present m-b-3" id="present-lyrics" style="display: none;" >
-                    {{ $item->song->lyrics }}
-                </div>
+
+                {{-- insert videoclip or lyrics --}}
+                @if ($item->song->title_2=='video')
+                    <div class="hidden-xs-up" id="videoclip-url">{{ $item->song->title_2}}</div>
+                    <div class="text-present m-b-3" id="present-lyrics">
+                        <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ $item->song->youtube_id }}" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                @else 
+                    <div class="text-present m-b-3" id="present-lyrics" style="display: none;" >
+                        {{ $item->song->lyrics }}
+                    </div>
+                @endif
+
                 <div class="hidden-xs-up" id="sequence">{{ $item->song->sequence }}</div>
+
             @endif
         @endif
+
 
         @if ($item->files)
             <?php 
@@ -41,6 +58,7 @@
                 <?php $key++; ?>
             @endforeach
         @endif
+
 
         @if ($bibleTexts)
             <div class="bible-text-present" id="bible-text-present-all" style="display: none;" >

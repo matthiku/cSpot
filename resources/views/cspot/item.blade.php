@@ -245,27 +245,25 @@
                             <div class="col-sm-12 col-md-3 full-btn">
                                 @if ($item->song->youtube_id)
                                     <a href="https://www.youtube.com/watch?v={{ $item->song->youtube_id }}" 
-                                        target="new" class="fully-width btn btn-primary-outline btn-sm" 
-                                          title="Play on YouTube" data-toggle="tooltip">
-                                    <i class="red fa fa-youtube-play"></i>&nbsp;play</a>
+                                        target="new" class="fully-width btn btn-primary-outline btn-sm">
+                                    <i class="red fa fa-youtube-play"></i><br><small>play<span class="hidden-lg-down"> on YouTube</span></small></a>
                                 @else
                                     <a href="#" class="fully-width btn btn-secondary-outline btn-sm disabled"
                                           title="Missing YouTube Video" data-toggle="tooltip">
-                                    <i class="red fa fa-youtube-play"></i>&nbsp;play</a>
+                                    <i class="red fa fa-youtube-play"></i><br><small>play</small></a>
                                 @endif
                             </div>
                             @if ( Auth::user()->ownsPlan($item->plan_id) )
                                 <div class="col-sm-12 col-md-3 full-btn">
                                     <a href="#" class="fully-width btn btn-primary-outline btn-sm" 
                                         onclick="showSongSearchInput(this, '.song-search')" 
-                                        title="Select another song" data-toggle="tooltip"
-                                    ><i class="fa fa-exchange"></i>&nbsp;change song</a>
+                                    ><i class="fa fa-exchange"></i><br><small>change song</small></a>
                                 </div>
                                 <div class="col-sm-12 col-md-3 full-btn">
                                     <a href="#" class="fully-width btn btn-primary-outline btn-sm" 
                                         onclick="unlinkSong({{ $item->id.', '.$item->song_id.', \''.route('cspot.plans.edit', $item->plan_id)."'" }})" 
-                                        title="Unlink song from this item" data-toggle="tooltip"
-                                    ><i class="fa fa-exchange"></i>&nbsp;unlink song</a>
+                                        title="Detach song from this item" data-toggle="tooltip"
+                                    ><i class="fa fa-unlink"></i><br><small>unlink song</small></a>
                                 </div>
                             @endif
                             @if (Auth::user()->isEditor() )
@@ -273,7 +271,7 @@
                                     <a href="#" class="fully-width btn btn-primary-outline btn-sm" accesskey="69" id="go-edit"
                                         onclick="showSpinner();location.href='{{ route('cspot.songs.edit', $item->song_id) }}'" 
                                           title="Edit details of this song" data-toggle="tooltip"
-                                    ><i class="fa fa-edit"></i>&nbsp;edit song</a>
+                                    ><i class="fa fa-edit"></i><br><small>edit song</small></a>
                                 </div>
                             @endif
                         </div>

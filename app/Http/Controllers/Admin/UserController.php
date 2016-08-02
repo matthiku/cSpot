@@ -204,6 +204,7 @@ class UserController extends Controller
         // get the current user record
         $user = User::find($id);
 
+        $alert = '';
         // prepare success message
         $message = 'User with id "' . $id . '" updated';
 
@@ -227,10 +228,10 @@ class UserController extends Controller
                 $user->assignRole($role);
             } 
             else {
-                if ($user->id<>1 || $role->name<>'administrator' ) {
-                    $user->removeRole($role);
+                if ($user->id == Auth::user()->id && $role->name<>'administrator' ) {
+                    $alert = 'Admin rights cannot be removed from current user! Ask a new Admin to do that.';
                 } else {
-                    $message .= '. Admin rights cannot be removed from user with id 1!';
+                    $user->removeRole($role);
                 }
             }
         }
@@ -251,7 +252,8 @@ class UserController extends Controller
         // send admins back to all users view
         if (Auth::user()->isAdmin()) {
             return \Redirect::route($this->view_all_idx)
-                        ->with(['status' => $message]);
+                        ->with(['status' => $message])
+                        ->with(['error'  => $alert]);
         }
         // send 'normal' users back to profile view
         return redirect()->route('admin.users.show', [$user->id]);

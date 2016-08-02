@@ -36949,16 +36949,16 @@ function showFilterField(field)
     {
         var currUrl  = parseURLstring(window.location.href);
         // check if there is a query string in the URL
-        if (currUrl.search) { 
+        if (currUrl.search.length > 1) { 
             // check that it doesn't contain a plan_id!
-            if (currUrl.search.search('plan_id')) {
+            if (currUrl.search.search('plan_id') > 1) {
                 return;
             }
             // clear existing filter and reload page without a filter
             showSpinner();
             // remove filter elements from URL query string
-            var queryStr = currUrl[1].split('&');
-            var newUrl = currUrl[0];
+            var queryStr = currUrl.search.split('?')[1].split('&');
+            var newUrl = currUrl.pathname;
             if (queryStr.length > 2) {
                 newUrl += '?';
                 for (var i = queryStr.length - 1; i >= 0; i--) {
@@ -37553,17 +37553,23 @@ $(document).ready(function() {
      */
     if ( window.location.href.indexOf('/present')>10 ) {
 
-        // start showing bible parts if this is a bible reference
-        if ($('.bible-text-present').length) {
-            reFormatBibleText(); }
+        // check if we have a VideoClip item or just lyrics
+        if ($('#videoclip-url').length) {
+            var videoclipUrl = $("#videoclip-url").text();
+            console.log('this is a Video Clip!');
+        }
+        // we have just lyrics
+        else if ($('#present-lyrics').length) {
+            // re-format the lyrics
+            reDisplayLyrics(); 
 
-        // re-format the lyrics
-        if ($('#present-lyrics').length) {
-            reDisplayLyrics(); }
+            // start showing bible parts if this is a bible reference
+            if ($('.bible-text-present').length) {
+                reFormatBibleText(); }
 
-        // center and maximise images
-        if ( $('.slide-background-image').length ) {
-            prepareImages();
+            // center and maximise images
+            if ( $('.slide-background-image').length ) {
+                prepareImages(); }
         }
 
 
@@ -39359,7 +39365,6 @@ function changeConfigShowVersCount() {
     localStorage.setItem('configShowVersCount', sett);
 }
 
-
 function changeTextAlign(selectorList, how) {
     if ( typeof selectorList === 'string') {
         selectorList = [selectorList];
@@ -39373,6 +39378,46 @@ function changeTextAlign(selectorList, how) {
         }
     });
 }
+
+/**
+ * Increase or decrease font size of a given element
+ *
+ * stores the value in LocalStorage for later reference
+ *
+ * param  selectorList string or array of valid CSS selectors
+ * return void
+ */
+function changeFontSize(selectorList, how) {
+    if ( typeof selectorList === 'string') {
+        selectorList = [selectorList];
+    }
+    var factor = 1.1;
+    if (how=='decrease')
+        factor = 0.9;
+    selectorList.forEach( function(selector) {
+        element = $(selector);
+        if (element.length>0) {
+            fontSize = parseFloat($(element).css('font-size')) * factor;
+            if (fontSize<8 || fontSize>150) return;
+            $(element).css('font-size', fontSize);
+            localStorage.setItem(selector+'_font-size', fontSize);
+            console.log('LocalStorage for '+selector+' was set to '+localStorage.getItem(selector+'_font-size'));
+        }
+    });
+}
+
+function getLocalStorValue(name) {
+    value = localStorage.getItem(name);
+    // console.log('LocalStorage for '+name+' was at '+value);
+    return value;
+}
+
+
+
+
+/*\
+|* >------------------------------------------------------------------ SYNC PRESENTATION
+\*/
 
 
 // dummy method which will only be called if Sync Presentation is disabled
@@ -39526,57 +39571,3 @@ function syncPresentation(syncData) {
         navigateTo(syncData.slide);
 }
 
-
-
-/**
- * Increase or decrease font size of a given element
- *
- * stores the value in LocalStorage for later reference
- *
- * param  selectorList string or array of valid CSS selectors
- * return void
- */
-function changeFontSize(selectorList, how) {
-    if ( typeof selectorList === 'string') {
-        selectorList = [selectorList];
-    }
-    var factor = 1.1;
-    if (how=='decrease')
-        factor = 0.9;
-    selectorList.forEach( function(selector) {
-        element = $(selector);
-        if (element.length>0) {
-            fontSize = parseFloat($(element).css('font-size')) * factor;
-            if (fontSize<8 || fontSize>150) return;
-            $(element).css('font-size', fontSize);
-            localStorage.setItem(selector+'_font-size', fontSize);
-            console.log('LocalStorage for '+selector+' was set to '+localStorage.getItem(selector+'_font-size'));
-        }
-    });
-}
-
-function getLocalStorValue(name) {
-    value = localStorage.getItem(name);
-    // console.log('LocalStorage for '+name+' was at '+value);
-    return value;
-}
-
-
-
-
-/**
- * Ask user to allow fullscreen mode for presentations
- */
-function requestFullScreen(element) {
-    // Supports most browsers and their versions.
-    var requestMethod = element.requestFullScreen || element.webkitRequestFullScreen || element.mozRequestFullScreen || element.msRequestFullscreen;
-
-    if (requestMethod) { // Native full screen.
-        requestMethod.call(element);
-    } else if (typeof window.ActiveXObject !== "undefined") { // Older IE.
-        var wscript = new ActiveXObject("WScript.Shell");
-        if (wscript !== null) {
-            wscript.SendKeys("{F11}");
-        }
-    }
-}
