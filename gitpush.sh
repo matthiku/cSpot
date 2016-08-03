@@ -1,6 +1,11 @@
 #!/bin/sh
 
 
+# of course you need to copy the corresponding 'gitpull.sh' to the home folder of root
+# and you need to change the server name:
+HOSTNAME="root@eec.ie"
+
+
 echo ----
 git status
 echo ----
@@ -57,7 +62,7 @@ echo
 echo ----
 echo "Calling pull command on the server"
 echo ----
-ssh root@eec.ie ./gitpull.sh plan "PACKAGE"              # adapt this according to your host name
+ssh $HOSTNAME ./gitpull.sh plan $PACKAGE
 echo ----
 
 

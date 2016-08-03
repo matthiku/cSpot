@@ -75,6 +75,9 @@ class CustomizeController extends Controller
         if ($request->has('enable_sync')) {
             $this->updateDotEnv('PRESENTATION_ENABLE_SYNC', $request->get('enable_sync'));
         } 
+        if ($request->has('enable_debug')) {
+            $this->updateDotEnv('APP_DEBUG', $request->get('enable_debug'));
+        } 
 
         if ($request->hasFile('favicon_file')) {
             if ($request->file('favicon_file')->isValid()) {

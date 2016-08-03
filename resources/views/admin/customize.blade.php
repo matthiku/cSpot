@@ -47,7 +47,10 @@
                 {!! Form::file('logo_file'); !!}
             </div>
 
-            <hr>
+            <hr class="hr-big">
+
+            <h4>System Configuration:</h4>
+
             {{-- default value for checkbox --}}
             <input type="hidden" name="enable_sync" value="false">
             <div class="form-group">
@@ -55,7 +58,16 @@
                 {!! Form::checkbox('enable_sync', 'true', env('PRESENTATION_ENABLE_SYNC')); !!}
            </div>
 
-            <hr>
+            {{-- default value for checkbox --}}
+            <input type="hidden" name="enable_debug" value="false">
+            <div class="form-group">
+                {!! Form::label('enable_debug', 'Enable debugging:') !!}<br>
+                {!! Form::checkbox('enable_debug', 'true', env('APP_DEBUG')); !!}<br>
+                <small>Warning! Debugging slows down the app! Use only temporarily.</small>
+           </div>
+
+            <hr class="hr-big">
+
             {!! Form::submit('Apply Changes'); !!}
             <p>(Note: Some settings will only be visible after reloading)</p>
 

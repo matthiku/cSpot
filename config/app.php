@@ -164,6 +164,7 @@ return [
         Cmgmyr\Messenger\MessengerServiceProvider::class,
         Rap2hpoutre\LaravelLogViewer\LaravelLogViewerServiceProvider::class,
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
+        Barryvdh\Debugbar\ServiceProvider::class,
 
         // Image processing - http://image.intervention.io/
         Intervention\Image\ImageServiceProvider::class,
@@ -222,6 +223,8 @@ return [
         'Input'     => Illuminate\Support\Facades\Input::class,
 
         'Image'     => Intervention\Image\Facades\Image::class,
+
+        'Debugbar' => Barryvdh\Debugbar\Facade::class,
 
     ],
 
