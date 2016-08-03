@@ -34,6 +34,9 @@ if [ "$REPLY" = "n" ]; then
     exit
 fi
 
+read -p 'Need to add a new package via composer? Then enter the full package name: ' "PACKAGE"
+
+
 
 # add all files to the commit
 git add .
@@ -54,7 +57,7 @@ echo
 echo ----
 echo "Calling pull command on the server"
 echo ----
-ssh root@eec.ie ./gitpull.sh plan               # adapt this according to your host name
+ssh root@eec.ie ./gitpull.sh plan "PACKAGE"              # adapt this according to your host name
 echo ----
 
 

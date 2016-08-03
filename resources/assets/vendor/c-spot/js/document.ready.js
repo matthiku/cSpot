@@ -442,12 +442,14 @@ $(document).ready(function() {
         // check if we have a VideoClip item or just lyrics
         if ($('#videoclip-url').length) {
             var videoclipUrl = $("#videoclip-url").text();
-            console.log('this is a Video Clip!');
+            console.log('Current item is a Video Clip');
         }
-        // we have just lyrics
-        else if ($('#present-lyrics').length) {
+
+        // instead, have just lyrics or bible verses or images
+        else { 
+            if ($('#present-lyrics').length) {
             // re-format the lyrics
-            reDisplayLyrics(); 
+            reDisplayLyrics(); }
 
             // start showing bible parts if this is a bible reference
             if ($('.bible-text-present').length) {

@@ -33,7 +33,7 @@
 
 
 
-@if (session()->has('error'))
+@if (session()->has('error') && Session::get('error') != '')
     <div id="myErrorModal" class="modal fade">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
