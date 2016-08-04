@@ -20,6 +20,16 @@ if [ "$1" = "plan" ]; then
     fi
 
 	git pull
+    
+    if ! [ $? -eq 0 ]; then
+        echo
+        echo '"git pull" failed so we are trying to do a hard reset and overwrite:'
+        echo
+        echo '---------------------------------------------- fetch all updates'
+        git fetch --all
+        echo '---------------------------------------------- ignore all local changes'
+        git reset --hard origin/master
+    fi
 	php artisan migrate
 
 	echo
