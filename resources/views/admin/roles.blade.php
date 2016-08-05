@@ -15,7 +15,7 @@
 	@include('layouts.flashing')
 
 	@if( Auth::user()->isEditor() )
-		<a class="btn btn-primary-outline pull-xs-right" href='{{ url('admin/roles/create') }}'>
+		<a class="btn btn-outline-primary pull-xs-right" href='{{ url('admin/roles/create') }}'>
 			<i class="fa fa-plus"> </i> &nbsp; Add a new role
 		</a>
 	@endif
@@ -56,7 +56,7 @@
 					<td class="nowrap">
 						<a class="btn btn-secondary btn-sm" title="Show Users" href='{{ url('admin/roles/'.$role->id) }}'><i class="fa fa-filter"></i></a>
 						 @if( $role->id>3 &&   Auth::user()->isEditor() )
-							<a class="btn btn-primary-outline btn-sm" title="Edit" href='{{ url('admin/roles/'.$role->id) }}/edit'><i class="fa fa-pencil"></i></a>
+							<a class="btn btn-outline-primary btn-sm" title="Edit" href='{{ url('admin/roles/'.$role->id) }}/edit'><i class="fa fa-pencil"></i></a>
 							<a class="btn btn-danger btn-sm" title="Delete!" href='{{ url('admin/roles/'.$role->id) }}/delete'><i class="fa fa-trash"></i></a>
 						@endif
 						@if( $role->id < 4  &&   Auth::user()->isEditor() )

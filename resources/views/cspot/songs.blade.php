@@ -18,7 +18,7 @@
 
 	@if( Auth::user()->isEditor() && $plan_id==0 )
 	<span class="pull-sm-right">
-		<a class="btn btn-primary-outline" href={{ url('cspot/songs/create') }}>
+		<a class="btn btn-outline-primary" href={{ url('cspot/songs/create') }}>
 			<i class="fa fa-plus"> </i> &nbsp; Add a new song
 		</a>
 	</span>

@@ -30,26 +30,6 @@ class ItemController extends Controller
 
 
     /**
-     * Authentication
-     *
-     * we must allow individual teachers or leaders to modify items of their own plans!
-     */
-    private function checkRights($plan) {
-
-        if ( auth()->user()->isEditor() // editor and higher can always
-          || auth()->user()->id == $plan->teacher_id 
-          || auth()->user()->id == $plan->leader_id  ) 
-             return true;
-
-        flash('Only the leader or teacher or editors can modify this plan.');
-        return false;
-    }
-
-
-
-
-
-    /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
@@ -60,7 +40,7 @@ class ItemController extends Controller
         $plan = Plan::find( $plan_id );
 
         // check user rights (teachers and leaders can edit items of their own plan)
-        if (! $this->checkRights($plan)) {
+        if (! checkRights($plan)) {
             return redirect()->back();
         }
 
@@ -124,7 +104,7 @@ class ItemController extends Controller
         }
 
         // check user rights (teachers and leaders can edit items of their own plan)
-        if (! $this->checkRights($plan)) {
+        if (! checkRights($plan)) {
             return redirect()->back();
         }
 
@@ -196,7 +176,7 @@ class ItemController extends Controller
     {
         // check user rights (teachers and leaders can edit items of their own plan)
         $plan = Plan::find( $plan_id );
-        if (! $this->checkRights($plan)) {
+        if (! checkRights($plan)) {
             return redirect()->back();
         }
 
@@ -233,7 +213,7 @@ class ItemController extends Controller
     {
         // check user rights (teachers and leaders can edit items of their own plan)
         $plan = Plan::find( $plan_id );
-        if (! $this->checkRights($plan)) {
+        if (! checkRights($plan)) {
             return redirect()->back();
         }
 
@@ -457,7 +437,7 @@ class ItemController extends Controller
         }
 
         // check user rights (teachers and leaders can edit items of their own plan)
-        if (! $this->checkRights($plan)) {
+        if (! checkRights($plan)) {
             return redirect()->back();
         }
 
@@ -504,7 +484,7 @@ class ItemController extends Controller
     {
         // check user rights (teachers and leaders can edit items of their own plan)
         $plan = Plan::find( $plan_id );
-        if (! $this->checkRights($plan)) {
+        if (! checkRights($plan)) {
             return redirect()->back();
         }
 
@@ -548,7 +528,7 @@ class ItemController extends Controller
         if ($item) {
             // check authentication
             $plan = Plan::find( $item->plan_id );
-            if (! $this->checkRights($plan)) {
+            if (! checkRights($plan)) {
                 return response()->json(['status' => 401, 'data' => 'Not authorized'], 401);
             }
             $item->update( [$field_name => $request->value] );
@@ -570,7 +550,7 @@ class ItemController extends Controller
         if ($item) {
             // check authentication
             $plan = Plan::find( $item->plan_id );
-            if (! $this->checkRights($plan)) {
+            if (! checkRights($plan)) {
                 return response()->json(['status' => 401, 'data' => 'Not authorized'], 401);
             }
             // get item and delete it
@@ -655,7 +635,7 @@ class ItemController extends Controller
         }
 
         // check user rights (teachers and leaders can edit items of their own plan)
-        if (! $this->checkRights($plan)) {
+        if (! checkRights($plan)) {
             return redirect()->back();
         }
 
@@ -686,7 +666,7 @@ class ItemController extends Controller
         $item    = Item::onlyTrashed()->find($id);
         $plan_id = $item->plan_id;
         $plan    = Plan::find( $plan_id );
-        if (! $this->checkRights($plan)) {
+        if (! checkRights($plan)) {
             return redirect()->back();
         }
 

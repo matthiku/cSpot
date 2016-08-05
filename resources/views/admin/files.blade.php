@@ -15,7 +15,7 @@
 	@include('layouts.flashing')
 
 	@if( Auth::user()->isEditor() )
-		<a class="hidden-xs-up btn btn-primary-outline pull-xs-right" href='{{ url('admin/files/create') }}'>
+		<a class="hidden-xs-up btn btn-outline-primary pull-xs-right" href='{{ url('admin/files/create') }}'>
 			<i class="fa fa-plus"> </i> &nbsp; Add a new file
 		</a>
 	@endif

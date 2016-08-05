@@ -119,6 +119,19 @@
                             <i class="fa fa-users"></i>&nbsp;Team<small>({{$plan->teams->count()}})</small>
                         </a> 
                     </big>
+                        <?php
+                            $resrcList = ''; // create the list of team members and their roles for this plan
+                            foreach ( $plan->resources as $key => $resrc ) {
+                                $resrcList .= $resrc->name; 
+                                $resrcList .= ' ('+$resrc->pivot->comment+')'; 
+                                if ($key+1 < $plan->resources->count())
+                                    $resrcList .= ",\n";
+                            }
+                        ?>
+                        <a href="{{ url('cspot/plans/'.$plan->id.'/resource') }}" class="m-l-2 nowrap" 
+                            onclick="$('#show-spinner').modal({keyboard: false});" title="{{ $resrcList }}">
+                            <i class="fa fa-cubes"></i>&nbsp;Resources<small>({{$plan->resources->count()}})</small>
+                        </a> 
                 </div>
             @endif
 
@@ -488,11 +501,11 @@
                             <span id="searchSongModalLabel">Select what to insert</span> <span id="modal-show-item-id"></span>
                         </h4>
 
-                        <a href="#" class="btn btn-lg btn-primary-outline modal-pre-selection fully-width"
+                        <a href="#" class="btn btn-lg btn-outline-primary modal-pre-selection fully-width"
                             onclick="showModalSelectionItems('song')"       >Song       </a>
-                        <a href="#" class="btn btn-lg btn-success-outline modal-pre-selection fully-width"
+                        <a href="#" class="btn btn-lg btn-outline-success modal-pre-selection fully-width"
                             onclick="showModalSelectionItems('scripture')"  >Scripture  </a>
-                        <a href="#" class="btn btn-lg btn-info-outline modal-pre-selection fully-width"
+                        <a href="#" class="btn btn-lg btn-outline-info modal-pre-selection fully-width"
                             onclick="showModalSelectionItems('comment')"    >Comment    </a>
                     </div>
 

@@ -40,6 +40,7 @@ class Plan extends Model
 	}
 
 
+
 	// the leader_id points to the id on the users table
 	public function leader() 
 	{
@@ -59,6 +60,18 @@ class Plan extends Model
 	}
 
 
+    /**
+     * Many-to-many relationship with resources table
+     *
+     * (Allow individual comment for each resource assigned to a plan)
+     */
+    public function resources()
+    {
+        return $this->belongsToMany('App\Models\Resource')->withPivot('id', 'comment')->withTimestamps();
+    }
+
+
+
     public function items()
     {
         return $this->hasMany('App\Models\Item');
@@ -69,6 +82,10 @@ class Plan extends Model
     {
         return $this->hasMany('App\Models\Team');
     }
+
+
+
+
 
 
     public function firstItem() 

@@ -34,7 +34,7 @@
                     @else
                         href='{{ url('cspot/plans/'.$plan->id) }}/items/store/seq_no/{{$seq_no }}/song/{{ $song->id }}/{{$moreItems}}/{{$beforeItem_id}}' 
                     @endif
-                    class="btn btn-primary-outline btn-sm btn-select" role="button"
+                    class="btn btn-outline-primary btn-sm btn-select" role="button"
                     title="{{ substr($song->lyrics, 0, 250).' ...' }}" data-toggle="tooltip" 
                     @if ($counter<6)
                         data-placement="bottom"

@@ -104,43 +104,43 @@
                 <!-- potential buttons for lyric parts (cerses, chorusses etc) -->
                 <a href="#" onclick="lyricsShow('start-lyrics');" 
                     title="show start lyrics" id="btn-show-start-lyrics" style="display: none;" 
-                    class="nav-item btn btn-sm btn-info-outline lyrics-show-btns" role="button">S</a>
+                    class="nav-item btn btn-sm btn-outline-info lyrics-show-btns" role="button">S</a>
                 <a href="#" onclick="lyricsShow('verse1');" 
                     title="show verse 1" id="btn-show-verse1" style="display: none;" 
-                    class="nav-item btn btn-sm btn-info-outline lyrics-show-btns" role="button">1</a>                
+                    class="nav-item btn btn-sm btn-outline-info lyrics-show-btns" role="button">1</a>                
                 <a href="#" onclick="lyricsShow('verse2');" 
                     title="show verse 2" id="btn-show-verse2" style="display: none;" 
-                    class="nav-item btn btn-sm btn-info-outline lyrics-show-btns" role="button">2</a>                
+                    class="nav-item btn btn-sm btn-outline-info lyrics-show-btns" role="button">2</a>                
                 <a href="#" onclick="lyricsShow('verse3');" 
                     title="show verse 3" id="btn-show-verse3" style="display: none;" 
-                    class="nav-item btn btn-sm btn-info-outline lyrics-show-btns" role="button">3</a>                
+                    class="nav-item btn btn-sm btn-outline-info lyrics-show-btns" role="button">3</a>                
                 <a href="#" onclick="lyricsShow('verse4');" 
                     title="show verse 4" id="btn-show-verse4" style="display: none;" 
-                    class="nav-item btn btn-sm btn-info-outline lyrics-show-btns" role="button">4</a>                
+                    class="nav-item btn btn-sm btn-outline-info lyrics-show-btns" role="button">4</a>                
                 <a href="#" onclick="lyricsShow('verse5');" 
                     title="show verse 5" id="btn-show-verse5" style="display: none;" 
-                    class="nav-item btn btn-sm btn-info-outline lyrics-show-btns" role="button">5</a>
+                    class="nav-item btn btn-sm btn-outline-info lyrics-show-btns" role="button">5</a>
                 <a href="#" onclick="lyricsShow('verse6');" 
                     title="show verse 6" id="btn-show-verse6" style="display: none;" 
-                    class="nav-item btn btn-sm btn-info-outline lyrics-show-btns" role="button">6</a>                
+                    class="nav-item btn btn-sm btn-outline-info lyrics-show-btns" role="button">6</a>                
                 <a href="#" onclick="lyricsShow('verse7');" 
                     title="show verse 7" id="btn-show-verse7" style="display: none;" 
-                    class="nav-item btn btn-sm btn-info-outline lyrics-show-btns" role="button">7</a>                
+                    class="nav-item btn btn-sm btn-outline-info lyrics-show-btns" role="button">7</a>                
                 <a href="#" onclick="lyricsShow('prechorus');" 
                     title="show pre-chorus" id="btn-show-prechorus" style="display: none;" 
-                    class="nav-item btn btn-sm btn-info-outline lyrics-show-btns" role="button">P</a>
+                    class="nav-item btn btn-sm btn-outline-info lyrics-show-btns" role="button">P</a>
                 <a href="#" onclick="lyricsShow('chorus1');" 
                     title="show chorus" id="btn-show-chorus1" style="display: none;" 
-                    class="nav-item btn btn-sm btn-info-outline lyrics-show-btns" role="button">Ch</a>
+                    class="nav-item btn btn-sm btn-outline-info lyrics-show-btns" role="button">Ch</a>
                 <a href="#" onclick="lyricsShow('chorus2');" 
                     title="show chorus 2" id="btn-show-chorus2" style="display: none;" 
-                    class="nav-item btn btn-sm btn-info-outline lyrics-show-btns" role="button">Ch2</a>
+                    class="nav-item btn btn-sm btn-outline-info lyrics-show-btns" role="button">Ch2</a>
                 <a href="#" onclick="lyricsShow('bridge');" 
                     title="show bridge" id="btn-show-bridge" style="display: none;" 
-                    class="nav-item btn btn-sm btn-info-outline lyrics-show-btns" role="button">B</a>
+                    class="nav-item btn btn-sm btn-outline-info lyrics-show-btns" role="button">B</a>
                 <a href="#" onclick="lyricsShow('ending');" 
                     title="show ending" id="btn-show-ending" style="display: none;" 
-                    class="nav-item btn btn-sm btn-info-outline lyrics-show-btns" role="button">E</a>
+                    class="nav-item btn btn-sm btn-outline-info lyrics-show-btns" role="button">E</a>
             </li>
         </ul>
         <ul class="nav navbar-nav pull-xs-right">
@@ -182,7 +182,7 @@
         <button class="navbar-toggler btn btn-info active" type="button" data-toggle="collapse" data-target="#lyricsNavbar">
             &hellip;
         </button>        
-        <button class="btn btn-secondary-outline" type="button" onclick="showBlankScreen()">
+        <button class="btn btn-outline-secondary" type="button" onclick="showBlankScreen()">
             Blank
         </button>        
 
@@ -248,7 +248,7 @@
 
             <!-- help button to show modal -->
             <a href="#" title="show keyboard shortcuts" data-toggle="modal" data-target=".help-modal"
-                class="hidden-sm-down pull-xs-right btn btn-sm btn-success-outline m-r-1">
+                class="hidden-sm-down pull-xs-right btn btn-sm btn-outline-success m-r-1">
             <i class="fa fa-question-circle fa-lg"></i></a>
 
 
@@ -292,11 +292,11 @@
                 </div>
             </div>
 
-            <form class="form-inline nav-item m-l-1 pull-xs-left label label-info">
+            <form class="form-inline nav-item m-l-1 pull-xs-left">
                 <div class="checkbox" style="line-height: 2" onmouseup="configBlankSlides()">
-                    <label class="checkbox-inline c-input c-checkbox" title="Show empty slides between items?">
+                    <label class="checkbox-inline c-input c-checkbox btn btn-sm btn-info" title="Show empty slides between items?">
                         <input type="checkbox" id="configBlankSlides">
-                            <span class="c-indicator"></span>&nbsp;blank slides between items?
+                            <span class="c-indicator"></span>&nbsp;insert blank slides?
                     </label>
                 </div>
             </form>
@@ -304,9 +304,9 @@
 
         @if( env('PRESENTATION_ENABLE_SYNC', 'false') )
             {{-- become MAIN presenter, if possible --}}
-            <form class="form-inline nav-item m-l-1 pull-xs-left label label-info">
+            <form class="form-inline nav-item m-l-1 pull-xs-left">
                 <div class="checkbox" style="line-height: 2" onmouseup="configMainPresenter()">
-                    <label class="checkbox-inline c-input c-checkbox" title="Become Main Presenter controlling other presentations">
+                    <label class="checkbox-inline c-input c-checkbox btn-sm btn-info" title="Become Main Presenter controlling other presentations">
                         <input type="checkbox" id="configMainPresenter">
                             <span class="c-indicator"></span>&nbsp;Main Presenter
                     </label>
@@ -315,9 +315,9 @@
             </form>
 
             {{-- synchronise this presentation with the Main Presenter --}}
-            <form class="form-inline nav-item m-l-1 label label-info">
+            <form class="form-inline nav-item m-l-1">
                 <div class="checkbox" style="line-height: 2" onmouseup="configSyncPresentation()">
-                    <label class="checkbox-inline c-input c-checkbox" title="Synchronise this presentation with Main Presenter">
+                    <label class="checkbox-inline c-input c-checkbox btn-sm btn-info" title="Synchronise this presentation with Main Presenter">
                         <input type="checkbox" id="configSyncPresentation">
                             <span class="c-indicator"></span>&nbsp;Sync Presentation
                     </label>
@@ -329,9 +329,9 @@
 
 
             {{-- TODO: this is currently not working properly --}}
-            <form class="form-inline nav-item m-l-1 pull-xs-left label label-info" style="display: none">
+            <form class="form-inline nav-item m-l-1 pull-xs-left" style="display: none">
                 <div class="checkbox" style="line-height: 2" onchange="changeConfigShowVersCount()">
-                    <label class="c-input" title="How many bible verses should be shown per slide?">
+                    <label class="c-input btn-sm btn-info" title="How many bible verses should be shown per slide?">
                         <select class="" id="configShowVersCount">
                             <option value="1">1</option>
                             <option value="2">2</option>
@@ -339,7 +339,7 @@
                             <option value="4">4</option>
                             <option value="5">5</option>
                         </select>
-                            Number of verses per slide?
+                            How many verses per slide?
                     </label>
                 </div>
             </form>

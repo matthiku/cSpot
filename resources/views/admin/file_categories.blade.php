@@ -15,7 +15,7 @@
 	@include('layouts.flashing')
 
 	@if( Auth::user()->isEditor() )
-	<a class="btn btn-primary-outline pull-xs-right" href="{{ url('admin/file_categories/create') }}">
+	<a class="btn btn-outline-primary pull-xs-right" href="{{ url('admin/file_categories/create') }}">
 		<i class="fa fa-plus"> </i> &nbsp; Add a new File Category
 	</a>
 	@endif
@@ -65,7 +65,7 @@
 								href='{{ url('cspot/files').'?bycategory='.$file_category->id }}'>
 								<i class="fa fa-filter"></i></a>
 						 @if ( Auth::user()->isEditor() )
-							<a class="btn btn-primary-outline btn-sm hidden-xs-down" title="Edit" 
+							<a class="btn btn-outline-primary btn-sm hidden-xs-down" title="Edit" 
 								href="{{ url('admin/file_categories/'.$file_category->id) }}/edit"><i class="fa fa-pencil"></i></a>
 							@if ($file_category->id>1)
 								<a class="btn btn-danger btn-sm" title="Delete!" 

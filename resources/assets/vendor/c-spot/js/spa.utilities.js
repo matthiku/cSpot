@@ -235,7 +235,7 @@ function searchForSongs(that)
                     $('#search-string').focus();
                     return;
                 }
-                $('#search-action-label').text('Click to select a Song:');
+                $('#search-action-label').text('Click the desired Song:');
                 $('#searching').hide();
                 $('#searchForSongsSubmit').hide();
 

@@ -30,12 +30,21 @@ $(document).ready(function() {
             return value;
         }
     });
+    
+    // lyrics and chords textareas on the item details page
     $('.edit_area').editable(__app_url + '/cspot/api/songs/update', {
         type        : 'textarea',
         cancel      : 'Cancel',
         submit      : 'Update',
         onblur      : 'ignore',
         placeholder : '<span class="fa fa-pencil text-muted">&nbsp;</span>',
+    });
+
+    // comment field in the resources list of a plan
+    $('.editable-resource').editable(__app_url + '/cspot/api/plans/resource/update', {
+        style       : 'display: inline',
+        placeholder : '<span class="fa fa-pencil text-muted">&nbsp;</span>',
+        onblur      : 'ignore',
     });
 
 

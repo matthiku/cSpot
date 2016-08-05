@@ -46,12 +46,16 @@ Route::group(['middleware' => 'web'], function () {
 
 
 
+
+
 /*
 |--------------------------------------------------------------------------
 |    Routes for the core application
 |--------------------------------------------------------------------------
 */
 Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() {
+
+
 
     /*
          PLANS
@@ -95,6 +99,20 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     Route::get( 'plans/{plan_id}/team/{team_id}/sendrequest',            'Cspot\TeamController@sendrequest');
     // user confirms his partizipation
     Route::get( 'plans/{plan_id}/team/{team_id}/confirm',                'Cspot\TeamController@confirm');
+
+
+    /*
+        RESOURCES
+    */
+    // Manage resources for a service plan
+    Route::get( 'plans/{plan_id}/resource', ['as' => 'resource.index', 'uses' => 'Cspot\PlanController@indexResource']);
+    Route::post('plans/{plan_id}/resource', ['as' => 'resource.store', 'uses' => 'Cspot\PlanController@storeResource']);
+    // show the form to edit an existing resource
+    //Route::get( 'plans/{plan_id}/resource/{resource_id}/edit',                   'Cspot\PlanController@editResource');
+    // update an existing resource
+    Route::post('api/plans/resource/update',                                     'Cspot\PlanController@APIupdateResource');
+    // delete an existing resource
+    Route::get( 'plans/{plan_id}/resource/{resource_id}/delete',                 'Cspot\PlanController@destroyResource');
 
 
     /*
@@ -195,6 +213,8 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
 
 });
 
+
+
 /*
 |--------------------------------------------------------------------------
 | Routes for messages between users
@@ -222,6 +242,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['web']], function() {
     // admin only: CRUD for users
     Route::resource('users', 'Admin\UserController');    
     Route::resource('roles', 'Admin\RoleController');    
+    Route::resource('resources', 'Admin\ResourceController');    
     Route::resource('instruments', 'Admin\InstrumentController');    
     Route::resource('types', 'Admin\TypeController');    
     Route::resource('default_items', 'Admin\DefaultItemController');    
@@ -229,6 +250,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['web']], function() {
     // as forms cannot use DELETE method, we implement it as GET
     Route::get('users/{users}/delete', 'Admin\UserController@destroy');    
     Route::get('roles/{roles}/delete', 'Admin\RoleController@destroy');    
+    Route::get('resources/{resources}/delete', 'Admin\ResourceController@destroy');    
     Route::get('instruments/{instrument}/delete', 'Admin\InstrumentController@destroy');    
     Route::get('types/{types}/delete', 'Admin\TypeController@destroy');    
     Route::get('default_items/{default_items}/delete', 'Admin\DefaultItemController@destroy');    

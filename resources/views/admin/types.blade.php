@@ -15,7 +15,7 @@
 	@include('layouts.flashing')
 
 	@if(Auth::user()->isEditor())
-	<a class="btn btn-primary-outline pull-xs-right" href="{{ url('admin/types/create') }}">
+	<a class="btn btn-outline-primary pull-xs-right" href="{{ url('admin/types/create') }}">
 		<i class="fa fa-plus"> </i> &nbsp; Add a new type
 	</a>
 	@endif
@@ -70,7 +70,7 @@
 					<td class="nowrap center">
 						<a class="btn btn-secondary btn-sm" title="Show upcoming Plans" href='{{ url('cspot/plans?show=future&filterby=type&filtervalue='.$type->id ) }}'><i class="fa fa-filter"></i></a>
 						 @if( Auth::user()->isEditor() )
-							<a class="btn btn-primary-outline btn-sm" title="Edit" 
+							<a class="btn btn-outline-primary btn-sm" title="Edit" 
 								href='{{ url('admin/types/'.$type->id) }}/edit'>
 									<i class="fa fa-pencil"></i></a>
 							@if (! $type->plans->count())

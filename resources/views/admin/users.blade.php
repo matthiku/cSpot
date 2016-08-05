@@ -16,7 +16,7 @@
 
 
 	@if( Auth::user()->isAdmin() )
-		<a class="btn btn-primary-outline pull-xs-right" href="{{ url('admin/users/create') }}">
+		<a class="btn btn-outline-primary pull-xs-right" href="{{ url('admin/users/create') }}">
 			<i class="fa fa-user-plus"> </i> &nbsp; Add a user
 		</a>
 	@endif
@@ -71,7 +71,7 @@
 				<td class="hidden-md-down">{{ $user->created_at }}</td>
 				<td class="nowrap">
 					@if( Auth::user()->isAdmin() || (Auth::user()->isEditor() && $user->id > 1) )
-						<a class="btn btn-primary-outline btn-sm hidden-lg-down" title="Edit" href='{{ url('admin/users/'. $user->id) }}/edit'  ><i class="fa fa-pencil"></i></a>
+						<a class="btn btn-outline-primary btn-sm hidden-lg-down" title="Edit" href='{{ url('admin/users/'. $user->id) }}/edit'  ><i class="fa fa-pencil"></i></a>
 						@if( Auth::user()->isAdmin() && $user->id > 1 )
 							<a class="btn btn-danger  btn-sm" 	   title="Delete!" href='{{ url('admin/users/'. $user->id) }}/delete'><i class="fa fa-trash" ></i></a>
 						@endif

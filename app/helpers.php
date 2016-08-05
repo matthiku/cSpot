@@ -871,3 +871,23 @@ function getMainPresenter()
 }
 
 
+
+
+/**
+ * Authentication
+ *
+ * we must allow individual teachers or leaders to modify items of their own plans!
+ */
+function checkRights($plan) {
+
+    if ( auth()->user()->isEditor() // editor and higher can always
+      || auth()->user()->id == $plan->teacher_id 
+      || auth()->user()->id == $plan->leader_id  ) 
+         return true;
+
+    flash('Only the leader or teacher or editors can modify this plan.');
+    return false;
+}
+
+
+

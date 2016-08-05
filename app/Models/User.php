@@ -209,7 +209,8 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
     public function removeRole($role)
     {
-        if ( $this->id==1 && $role->id<4 )
+        // do not allow a user to dismember from higher rights himself, unless another admin does it
+        if ( $this->id==Auth::user()->id && $role->id<4 )
         {
             return false;
         }

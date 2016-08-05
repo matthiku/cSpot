@@ -20,7 +20,7 @@
 
 
 	@if( Auth::user()->isEditor() )
-	<a class="btn btn-primary-outline pull-xs-right" href="{{ url('cspot/plans/create') }}">
+	<a class="btn btn-outline-primary pull-xs-right" href="{{ url('cspot/plans/create') }}">
 		<i class="fa fa-plus"> </i> &nbsp; Add a new plan
 	</a>
 	@endif

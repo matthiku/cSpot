@@ -15,7 +15,7 @@
 	@include('layouts.flashing')
 
 	@if( Auth::user()->isEditor() )
-		<a class="btn btn-primary-outline pull-xs-right" href='{{ url('admin/instruments/create') }}'>
+		<a class="btn btn-outline-primary pull-xs-right" href='{{ url('admin/instruments/create') }}'>
 			<i class="fa fa-plus"> </i> &nbsp; Add a new instrument
 		</a>
 	@endif
@@ -50,7 +50,7 @@
 					<td class="nowrap">
 						<a class="btn btn-secondary btn-sm" title="Show Users" href='{{ url('admin/instruments/'.$instrument->id) }}'><i class="fa fa-filter"></i></a>
 						 @if( Auth::user()->isEditor() )
-							<a class="btn btn-primary-outline btn-sm" title="Edit" href='{{ url('admin/instruments/'.$instrument->id) }}/edit'><i class="fa fa-pencil"></i></a>
+							<a class="btn btn-outline-primary btn-sm" title="Edit" href='{{ url('admin/instruments/'.$instrument->id) }}/edit'><i class="fa fa-pencil"></i></a>
 							<a class="btn btn-danger btn-sm" title="Delete!" href='{{ url('admin/instruments/'.$instrument->id) }}/delete'><i class="fa fa-trash"></i></a>
 						@endif
 					</td>

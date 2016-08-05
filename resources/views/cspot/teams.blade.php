@@ -124,7 +124,7 @@
                 <!-- row ACTIONS -->
                 @if( $userIsAuthorized )
                 <td class="nowrap">
-                        <a class="btn btn-primary-outline btn-sm" title="Edit" 
+                        <a class="btn btn-outline-primary btn-sm" title="Edit" 
                             onclick="$('#show-spinner').modal({keyboard: false});" 
                             href='{{ url('cspot/plans/'.$team->plan_id.'/team/'.$team->id) }}/edit'><i class="fa fa-pencil"></i></a>
                         <a class="btn btn-danger btn-sm" title="Delete!" 

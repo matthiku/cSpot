@@ -101,7 +101,7 @@ $modalContent = '
             <i class="red fa fa-youtube-play fa-lg"></i>&nbsp;</a>
         @else
             <a href="#" disabled="" 
-               class="pull-xs-right btn btn-sm btn-secondary-outline hidden-lg-down">
+               class="pull-xs-right btn btn-sm btn-outline-secondary hidden-lg-down">
             <i class="fa fa-youtube-play fa-lg"></i>&nbsp;</a>
         @endif
     </div>
@@ -110,7 +110,7 @@ $modalContent = '
         help button 
     -->
     <a href="#" title="show keyboard shortcuts" data-toggle="modal" data-target=".help-modal"
-        class="hidden-sm-down pull-xs-right btn btn-sm btn-success-outline m-r-1">
+        class="hidden-sm-down pull-xs-right btn btn-sm btn-outline-success m-r-1">
     <i class="fa fa-question-circle fa-lg"></i></a>
 
 

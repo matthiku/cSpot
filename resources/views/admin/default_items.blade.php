@@ -15,7 +15,7 @@
 	@include('layouts.flashing')
 
 	@if( Auth::user()->isEditor() )
-	<a class="btn btn-primary-outline pull-xs-right" href="{{ url('admin/default_items/create') }}">
+	<a class="btn btn-outline-primary pull-xs-right" href="{{ url('admin/default_items/create') }}">
 		<i class="fa fa-plus"> </i> &nbsp; Add a new default_item
 	</a>
 	@endif
@@ -56,7 +56,7 @@
 					<td>{{ $default_item->text }}</td>
 					<td class="nowrap center">
 						 @if( Auth::user()->isEditor() )
-							<a class="btn btn-primary-outline btn-sm hidden-lg-down" title="Edit" 
+							<a class="btn btn-outline-primary btn-sm hidden-lg-down" title="Edit" 
 								href="{{ url('admin/default_items/'.$default_item->id) }}/edit"><i class="fa fa-pencil"></i></a>
 							<a class="btn btn-danger btn-sm" title="Delete!" 
 								href="{{ url('admin/default_items/'.$default_item->id) }}/delete"><i class="fa fa-trash"></i></a>

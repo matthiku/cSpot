@@ -245,22 +245,22 @@
                             <div class="col-sm-12 col-md-3 full-btn">
                                 @if ($item->song->youtube_id)
                                     <a href="https://www.youtube.com/watch?v={{ $item->song->youtube_id }}" 
-                                        target="new" class="fully-width btn btn-primary-outline btn-sm">
+                                        target="new" class="fully-width btn btn-outline-primary btn-sm">
                                     <i class="red fa fa-youtube-play"></i><br><small>play<span class="hidden-lg-down"> on YouTube</span></small></a>
                                 @else
-                                    <a href="#" class="fully-width btn btn-secondary-outline btn-sm disabled"
+                                    <a href="#" class="fully-width btn btn-outline-secondary btn-sm disabled"
                                           title="Missing YouTube Video" data-toggle="tooltip">
                                     <i class="red fa fa-youtube-play"></i><br><small>play</small></a>
                                 @endif
                             </div>
                             @if ( Auth::user()->ownsPlan($item->plan_id) )
                                 <div class="col-sm-12 col-md-3 full-btn">
-                                    <a href="#" class="fully-width btn btn-primary-outline btn-sm" 
+                                    <a href="#" class="fully-width btn btn-outline-primary btn-sm" 
                                         onclick="showSongSearchInput(this, '.song-search')" 
                                     ><i class="fa fa-exchange"></i><br><small>change song</small></a>
                                 </div>
                                 <div class="col-sm-12 col-md-3 full-btn">
-                                    <a href="#" class="fully-width btn btn-primary-outline btn-sm" 
+                                    <a href="#" class="fully-width btn btn-outline-primary btn-sm" 
                                         onclick="unlinkSong({{ $item->id.', '.$item->song_id.', \''.route('cspot.plans.edit', $item->plan_id)."'" }})" 
                                         title="Detach song from this item" data-toggle="tooltip"
                                     ><i class="fa fa-unlink"></i><br><small>unlink song</small></a>
@@ -268,7 +268,7 @@
                             @endif
                             @if (Auth::user()->isEditor() )
                                 <div class="col-sm-12 col-md-3 full-btn">
-                                    <a href="#" class="fully-width btn btn-primary-outline btn-sm" accesskey="69" id="go-edit"
+                                    <a href="#" class="fully-width btn btn-outline-primary btn-sm" accesskey="69" id="go-edit"
                                         onclick="showSpinner();location.href='{{ route('cspot.songs.edit', $item->song_id) }}'" 
                                           title="Edit details of this song" data-toggle="tooltip"
                                     ><i class="fa fa-edit"></i><br><small>edit song</small></a>
@@ -315,7 +315,8 @@
                     </ul>
                         <div id="lyrics-tab">
                             <span class="text-info">({{ $item->song->sequence ? 'Sequence: '.$item->song->sequence : 'No sequence predefined' }})</span>
-                            <pre id="lyrics-song-id-{{ $item->song->id }}" {{ (Auth::user()->isEditor()) ? 'class=edit_area' : '' }}>{{ $item->song->lyrics }}</pre>
+                            <pre id="lyrics-song-id-{{ $item->song->id }}" onclick="location.href='#bottom'"
+                                {{ (Auth::user()->isEditor()) ? 'class=edit_area' : '' }}>{{ $item->song->lyrics }}</pre>
                         </div>
                         <div id="chords-tab">
                             <pre id="chords-song-id-{{ $item->song->id }}" {{ (Auth::user()->isEditor()) ? 'class=edit_area' : '' }}>{{ $item->song->chords }}</pre>
@@ -489,5 +490,6 @@
         </script>
     @endif
 
-    
+    <hr>
+    <div id="bottom"></div>
 @stop
