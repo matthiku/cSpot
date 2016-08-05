@@ -39894,7 +39894,6 @@ $(document).ready(function() {
         }
 
 
-
         /**
          * Check some user-defined settings in the Local Storage of the browser
          */
@@ -39924,7 +39923,8 @@ $(document).ready(function() {
             }
         } else {
             // Make sure the server knows we don't want to be Main Presenter
-            setMainPresenter('false');
+            // CURRENTLY DEACTIVATED UNTIL SYNC IS WORKING FINE ON NGINX!
+            //setMainPresenter('false');
         }
 
         // check if we want to syncronise our own presentation with the Main Presenter
@@ -39996,6 +39996,28 @@ $(document).ready(function() {
         // make sure the main content covers all the display area, but that no scrollbar appears
         $('#main-content').css('max-height', window.innerHeight - $('.navbar-fixed-bottom').height());
         $('#main-content').css('min-height', window.innerHeight - $('.navbar-fixed-bottom').height() - 10);
+
+
+
+        /**
+         * Save the new content into the local storage for offline presentations!
+         */
+        var mainContentData = $('#main-content').data();
+        var plan_id = mainContentData.planId;
+        var item_id = mainContentData.itemId;
+        var seq_no  = parseFloat(mainContentData.seqNo);
+        var itemTme = mainContentData.itemUpdatedAt;
+        cSpot.presentation.itemIdentifier     = plan_id+'-'+item_id+'-'+   seq_no+   '-'+itemTme;
+        cSpot.presentation.itemIdentifierNext = plan_id+'-'+item_id+'-'+(1*seq_no+1)+'-'+itemTme;
+        cSpot.presentation.itemIdentifierPrev = plan_id+'-'+item_id+'-'+(1*seq_no-1)+'-'+itemTme;
+
+        // use the data as identifier and save the Main Content into localStorage
+        localStorage.setItem(cSpot.presentation.itemIdentifier+'-mainContent', $('#main-content').html());
+        // also save the lyrics parts indicator element
+        localStorage.setItem(cSpot.presentation.itemIdentifier+'-seqIndicator', $('#lyrics-parts-indicators').html());
+        // also save the sequence navigator element
+        localStorage.setItem(cSpot.presentation.itemIdentifier+'-sequenceNav', $('#lyrics-sequence-nav').html());
+
 
     }
 

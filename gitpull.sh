@@ -19,6 +19,7 @@ if [ "$1" = "plan" ]; then
         echo '-------------------------------------------------------------------------------'
     fi
 
+    # try normal git pull first
 	git pull
     
     if ! [ $? -eq 0 ]; then
@@ -32,6 +33,10 @@ if [ "$1" = "plan" ]; then
     fi
 	php artisan migrate
 
+
+
+
+
 	echo
 	echo '------------------------------------------------------- Updating c-spot.cu.cc'
 	cd /var/www/c-spot.cu.cc/html/cSpot/
@@ -44,13 +49,21 @@ if [ "$1" = "plan" ]; then
         echo '-------------------------------------------------------------------------------'
     fi
 
-	echo '---------------------------------------------- fetch all updates'
-	git fetch --all
-	echo '---------------------------------------------- ignore all local changes'
-	git reset --hard origin/master
-	php artisan migrate
+    # try normal git pull first
+    git pull
+    
+    if ! [ $? -eq 0 ]; then
+    	echo '---------------------------------------------- fetch all updates'
+    	git fetch --all
+    	echo '---------------------------------------------- ignore all local changes'
+    	git reset --hard origin/master
+    	php artisan migrate
+    fi
+
 	echo
+
 	exit
+
 fi
 
 

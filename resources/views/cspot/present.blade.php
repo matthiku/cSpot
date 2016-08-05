@@ -15,7 +15,8 @@
 
 
     <!-- ================================================================================ -->
-    <div id="main-content" class="bg-inverse">
+    <div id="main-content" class="bg-inverse" 
+        data-plan-id="{{$item->plan_id}}" data-item-id="{{$item->id}}" data-seq-no="{{$item->seq_no}}" data-item-updated-at="{{strtotime($item->updated_at)}}">
 
 
         @if ($item->song_id )
@@ -100,7 +101,7 @@
     <nav class="navbar navbar-fixed-bottom navbar-dark bg-black center" id="bottom-fixed-navbar" style="padding: 0;">
 
         <ul class="nav navbar-nav">
-            <li>
+            <li id="lyrics-parts-indicators">
                 <!-- potential buttons for lyric parts (cerses, chorusses etc) -->
                 <a href="#" onclick="lyricsShow('start-lyrics');" 
                     title="show start lyrics" id="btn-show-start-lyrics" style="display: none;" 

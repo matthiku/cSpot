@@ -2,7 +2,7 @@
 
 
 # of course you need to copy the corresponding 'gitpull.sh' to the home folder of root
-# and you need to change the server name:
+# and you need to change the server name here:
 HOSTNAME="root@eec.ie"
 
 
@@ -55,6 +55,13 @@ echo ----
 git push
 echo ----
 
+
+echo
+read -p 'Push done. Want to continue? (Y/n) '
+if [ "$REPLY" = "n" ]; then
+    echo 'Aborting...'
+    exit
+fi
 
 
 # call the pull command script on the server via SSH (using PPK)
