@@ -580,19 +580,21 @@ $(document).ready(function() {
          */
         var mainContentData = $('#main-content').data();
         var plan_id = mainContentData.planId;
-        var item_id = mainContentData.itemId;
         var seq_no  = parseFloat(mainContentData.seqNo);
-        var itemTme = mainContentData.itemUpdatedAt;
-        cSpot.presentation.itemIdentifier     = plan_id+'-'+item_id+'-'+   seq_no+   '-'+itemTme;
-        cSpot.presentation.itemIdentifierNext = plan_id+'-'+item_id+'-'+(1*seq_no+1)+'-'+itemTme;
-        cSpot.presentation.itemIdentifierPrev = plan_id+'-'+item_id+'-'+(1*seq_no-1)+'-'+itemTme;
+        cSpot.presentation.seq_no = seq_no;
+        cSpot.presentation.itemIdentifier = {};
+        cSpot.presentation.itemIdentifier[seq_no] = plan_id+'-'+   seq_no;
 
-        // use the data as identifier and save the Main Content into localStorage
-        localStorage.setItem(cSpot.presentation.itemIdentifier+'-mainContent', $('#main-content').html());
-        // also save the lyrics parts indicator element
-        localStorage.setItem(cSpot.presentation.itemIdentifier+'-seqIndicator', $('#lyrics-parts-indicators').html());
-        // also save the sequence navigator element
-        localStorage.setItem(cSpot.presentation.itemIdentifier+'-sequenceNav', $('#lyrics-sequence-nav').html());
+        // use the data as identifier and save the Main Content and aux info into localStorage
+        localStorage.setItem(cSpot.presentation.itemIdentifier[seq_no]+'-mainContent', $('#main-content').html());
+        // lyrics parts indicator element
+        localStorage.setItem(cSpot.presentation.itemIdentifier[seq_no]+'-seqIndicator',$('#lyrics-parts-indicators').html());
+        // sequence navigator element
+        localStorage.setItem(cSpot.presentation.itemIdentifier[seq_no]+'-sequenceNav', $('#lyrics-sequence-nav').html());
+        // item label 
+        localStorage.setItem(cSpot.presentation.itemIdentifier[seq_no]+'-itemNavBar',  $('#item-navbar-label').html());
+
+        console.log('saving this item with seq.no '+seq_no+' from plan with id '+plan_id+' to Local Storage.');
 
 
     }

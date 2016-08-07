@@ -40004,19 +40004,21 @@ $(document).ready(function() {
          */
         var mainContentData = $('#main-content').data();
         var plan_id = mainContentData.planId;
-        var item_id = mainContentData.itemId;
         var seq_no  = parseFloat(mainContentData.seqNo);
-        var itemTme = mainContentData.itemUpdatedAt;
-        cSpot.presentation.itemIdentifier     = plan_id+'-'+item_id+'-'+   seq_no+   '-'+itemTme;
-        cSpot.presentation.itemIdentifierNext = plan_id+'-'+item_id+'-'+(1*seq_no+1)+'-'+itemTme;
-        cSpot.presentation.itemIdentifierPrev = plan_id+'-'+item_id+'-'+(1*seq_no-1)+'-'+itemTme;
+        cSpot.presentation.seq_no = seq_no;
+        cSpot.presentation.itemIdentifier = {};
+        cSpot.presentation.itemIdentifier[seq_no] = plan_id+'-'+   seq_no;
 
-        // use the data as identifier and save the Main Content into localStorage
-        localStorage.setItem(cSpot.presentation.itemIdentifier+'-mainContent', $('#main-content').html());
-        // also save the lyrics parts indicator element
-        localStorage.setItem(cSpot.presentation.itemIdentifier+'-seqIndicator', $('#lyrics-parts-indicators').html());
-        // also save the sequence navigator element
-        localStorage.setItem(cSpot.presentation.itemIdentifier+'-sequenceNav', $('#lyrics-sequence-nav').html());
+        // use the data as identifier and save the Main Content and aux info into localStorage
+        localStorage.setItem(cSpot.presentation.itemIdentifier[seq_no]+'-mainContent', $('#main-content').html());
+        // lyrics parts indicator element
+        localStorage.setItem(cSpot.presentation.itemIdentifier[seq_no]+'-seqIndicator',$('#lyrics-parts-indicators').html());
+        // sequence navigator element
+        localStorage.setItem(cSpot.presentation.itemIdentifier[seq_no]+'-sequenceNav', $('#lyrics-sequence-nav').html());
+        // item label 
+        localStorage.setItem(cSpot.presentation.itemIdentifier[seq_no]+'-itemNavBar',  $('#item-navbar-label').html());
+
+        console.log('saving this item with seq.no '+seq_no+' from plan with id '+plan_id+' to Local Storage.');
 
 
     }
@@ -41505,12 +41507,30 @@ function navigateTo(where)
         // otherwise, if the slide/item was empty anyway, we proceed to the next item
     }
 
-    // inform server of current position if we are presenter
-    sendShowPosition(where);
+
+    // check if the next (or previous) item is in LocalStorage
+    var cur_seq_no = cSpot.presentation.seq_no;
+    var next_seq_no = 1*cur_seq_no+1;
+    var prev_seq_no = 1*cur_seq_no-1;
+    var nextItem = getLocalStorValue(cSpot.presentation.itemIdentifier[next_seq_no]+'-seqIndicator');
+    var prevItem = getLocalStorValue(cSpot.presentation.itemIdentifier[prev_seq_no]+'-seqIndicator');
+
+    if ( where == 'next-item' && nextItem != null) {
+        console.log('getting next item from local storage! Seq.No: '+next_seq_no);
+        $('#lyrics-parts-indicators').html(nextItem);
+        $('#main-content'           ).html(getLocalStorValue(cSpot.presentation.itemIdentifier[next_seq_no]+'-mainContent'));
+        $('#lyrics-sequence-nav'    ).html(getLocalStorValue(cSpot.presentation.itemIdentifier[next_seq_no]+'-sequenceNav' ));
+        $('#item-navbar-label'      ).html(getLocalStorValue(cSpot.presentation.itemIdentifier[next_seq_no]+'-itemNavBar' ));
+        return;
+    }
+
 
     // make content disappear slowly...
     $('#main-content').fadeOut();
     $('#bottom-fixed-navbar>ul').fadeOut();
+
+    // inform server of current position if we are presenter
+    sendShowPosition(where);
 
     if (a.onclick==null) {
         // try to go to the location defined in href

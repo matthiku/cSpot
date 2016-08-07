@@ -167,7 +167,7 @@
         <!-- <span class="navbar-brand center" id="show-linecount"></span> -->
 
         <!-- show song title or comment in first navbar on bigger screens only -->
-        <span class="nav navbar-nav center hidden-sm-down">
+        <span class="nav navbar-nav center hidden-sm-down" id="item-navbar-label">
             <small class="hidden-md-down text-muted">Item {{$item->seq_no}} -</small>
             <span class="hidden-md-down">
                 {{ ($item->song_id && $item->song->title) ? $item->song->title : $item->comment }}

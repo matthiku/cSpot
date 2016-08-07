@@ -1015,12 +1015,30 @@ function navigateTo(where)
         // otherwise, if the slide/item was empty anyway, we proceed to the next item
     }
 
-    // inform server of current position if we are presenter
-    sendShowPosition(where);
+
+    // check if the next (or previous) item is in LocalStorage
+    var cur_seq_no = cSpot.presentation.seq_no;
+    var next_seq_no = 1*cur_seq_no+1;
+    var prev_seq_no = 1*cur_seq_no-1;
+    var nextItem = getLocalStorValue(cSpot.presentation.itemIdentifier[next_seq_no]+'-seqIndicator');
+    var prevItem = getLocalStorValue(cSpot.presentation.itemIdentifier[prev_seq_no]+'-seqIndicator');
+
+    if ( where == 'next-item' && nextItem != null) {
+        console.log('getting next item from local storage! Seq.No: '+next_seq_no);
+        $('#lyrics-parts-indicators').html(nextItem);
+        $('#main-content'           ).html(getLocalStorValue(cSpot.presentation.itemIdentifier[next_seq_no]+'-mainContent'));
+        $('#lyrics-sequence-nav'    ).html(getLocalStorValue(cSpot.presentation.itemIdentifier[next_seq_no]+'-sequenceNav' ));
+        $('#item-navbar-label'      ).html(getLocalStorValue(cSpot.presentation.itemIdentifier[next_seq_no]+'-itemNavBar' ));
+        return;
+    }
+
 
     // make content disappear slowly...
     $('#main-content').fadeOut();
     $('#bottom-fixed-navbar>ul').fadeOut();
+
+    // inform server of current position if we are presenter
+    sendShowPosition(where);
 
     if (a.onclick==null) {
         // try to go to the location defined in href
