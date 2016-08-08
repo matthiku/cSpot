@@ -144,12 +144,15 @@ class Song extends Model
      */
     public function setYoutubeIdAttribute( $value )
     {
-        if ( strpos($value, '=') !== FALSE ) {
-            $new_yt_id = explode('=', $value);
-            $value = $new_yt_id[1];
+        $equalPos = strpos($value, '=');
+
+        if ( substr($value,0,4)=='http'  &&  $equalPos !== FALSE ) {
+            $value = substr( $value, $equalPos+1 );
         }
+
         $this->attributes['youtube_id'] = $value;
     }
+
 
 
 

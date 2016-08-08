@@ -581,18 +581,23 @@ $(document).ready(function() {
         var mainContentData = $('#main-content').data();
         var plan_id = mainContentData.planId;
         var seq_no  = parseFloat(mainContentData.seqNo);
-        cSpot.presentation.seq_no = seq_no;
-        cSpot.presentation.itemIdentifier = {};
-        cSpot.presentation.itemIdentifier[seq_no] = plan_id+'-'+   seq_no;
+        var max_seq_no  = parseFloat(mainContentData.maxSeqNo);
+        cSpot.presentation.seq_no  = seq_no;
+        cSpot.presentation.max_seq_no  = max_seq_no;
+        cSpot.presentation.plan_id = plan_id;
+        var itemIdentifier = 'offline-' + plan_id + '-' + seq_no;
+
+        // we should have only one plan in LocalStorage!
+        checkLocalStorageForPresentation(plan_id);
 
         // use the data as identifier and save the Main Content and aux info into localStorage
-        localStorage.setItem(cSpot.presentation.itemIdentifier[seq_no]+'-mainContent', $('#main-content').html());
+        localStorage.setItem(itemIdentifier +'-mainContent', $('#main-content').html());
         // lyrics parts indicator element
-        localStorage.setItem(cSpot.presentation.itemIdentifier[seq_no]+'-seqIndicator',$('#lyrics-parts-indicators').html());
+        localStorage.setItem(itemIdentifier +'-seqIndicator',$('#lyrics-parts-indicators').html());
         // sequence navigator element
-        localStorage.setItem(cSpot.presentation.itemIdentifier[seq_no]+'-sequenceNav', $('#lyrics-sequence-nav').html());
+        localStorage.setItem(itemIdentifier +'-sequenceNav', $('#lyrics-sequence-nav').html());
         // item label 
-        localStorage.setItem(cSpot.presentation.itemIdentifier[seq_no]+'-itemNavBar',  $('#item-navbar-label').html());
+        localStorage.setItem(itemIdentifier +'-itemNavBar',  $('#item-navbar-label').html());
 
         console.log('saving this item with seq.no '+seq_no+' from plan with id '+plan_id+' to Local Storage.');
 
@@ -602,9 +607,9 @@ $(document).ready(function() {
     /**
      * re-design the showing of lyrics interspersed with guitar chords
      */
-    if ( $('#chords').text() != '' ) {
+    if ( $('#chords').text() != ''  ||  $('.show-chords').text() != '' ) {
         // only do this for PRE tags, not on input fields etc...
-        if ($('#chords')[0].nodeName == 'PRE') {
+        if ( $('.show-chords')[0].nodeName == 'PRE'  ||  $('#chords')[0].nodeName == 'PRE' ) {
             reDisplayChords();
         }
         $('.edit-show-buttons').css('display', 'inline');
@@ -620,3 +625,15 @@ $(document).ready(function() {
     }
 
 });
+
+
+
+
+
+/*\
+|*|
+|*|
+|*+------------------------------------------ END of    document.ready.js   ------------------------------------
+|*|
+\*/
+

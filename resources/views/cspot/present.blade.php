@@ -16,7 +16,11 @@
 
     <!-- ================================================================================ -->
     <div id="main-content" class="bg-inverse" 
-        data-plan-id="{{$item->plan_id}}" data-item-id="{{$item->id}}" data-seq-no="{{$item->seq_no}}" data-item-updated-at="{{strtotime($item->updated_at)}}">
+        data-plan-id="{{$item->plan_id}}" 
+        data-item-id="{{$item->id     }}" 
+        data-seq-no="{{ $item->seq_no }}" 
+        data-max-seq-no="{{ $item->plan->lastItem()->seq_no }}"
+        data-item-updated-at="{{strtotime($item->updated_at)}}">
 
 
         @if ($item->song_id )

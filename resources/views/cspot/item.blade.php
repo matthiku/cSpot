@@ -313,26 +313,40 @@
                         <li><a href="#chords-tab">Chords</a></li>
                         <li><a href="#sheet-tab">Sheet Music</a></li>
                     </ul>
-                        <div id="lyrics-tab">
+
+                    <div id="lyrics-tab">
+                        @if ($item->song->title_2 != 'video')
                             <span class="text-info">({{ $item->song->sequence ? 'Sequence: '.$item->song->sequence : 'No sequence predefined' }})</span>
-                            <pre id="lyrics-song-id-{{ $item->song->id }}" onclick="location.href='#bottom'"
-                                {{ (Auth::user()->isEditor()) ? 'class=edit_area' : '' }}>{{ $item->song->lyrics }}</pre>
-                        </div>
-                        <div id="chords-tab">
-                            <pre id="chords-song-id-{{ $item->song->id }}" {{ (Auth::user()->isEditor()) ? 'class=edit_area' : '' }}>{{ $item->song->chords }}</pre>
-                        </div>
-                        <div id="sheet-tab">
-                            @foreach ($item->song->files as $file)
-                                @if ($item->song->license=='PD' || Auth::user()->isMusician() )
-                                    @include ('cspot.snippets.present_files')
-                                @else
-                                    <span>(copyrighted material)</span>
-                                @endif
-                            @endforeach
-                        </div>
+                        @else
+                            <small>(possible time parameter was ignored!)</small>
+                            <br>
+                            <iframe width="560" height="315" 
+                                src="https://www.youtube.com/embed/{{ strpos($item->song->youtube_id,'&')!= false ? explode('&', $item->song->youtube_id)[0] : $item->song->youtube_id }}" 
+                                frameborder="0" allowfullscreen>                                    
+                            </iframe>
+                        @endif
+                        <pre id="lyrics-song-id-{{ $item->song->id }}" {{ (Auth::user()->isEditor()) ? 'class=edit_area' : '' }}>{{ $item->song->lyrics }}</pre>
                     </div>
+
+                    <div id="chords-tab">
+                        <pre id="chords-song-id-{{ $item->song->id }}" class="{{ (Auth::user()->isEditor()) ? 'edit_area' : '' }} show-chords">{{ $item->song->chords }}</pre>
+                    </div>
+
+                    <div id="sheet-tab">
+                        @foreach ($item->song->files as $file)
+                            @if ($item->song->license=='PD' || Auth::user()->isMusician() )
+                                @include ('cspot.snippets.present_files')
+                            @else
+                                <span>(copyrighted material)</span>
+                            @endif
+                        @endforeach
+                    </div>
+
                 </div>
             </div>
+
+
+        </div>
 
 
 

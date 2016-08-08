@@ -554,23 +554,39 @@ function headerCode(divNam) {
 */
 function reDisplayChords()
 {
+    // selector of the chords element is different on the Item Detail page or in a presentation
+    var selectorName = '#chords';
     // get the chords text and split it into lines
-    chords = $('#chords').text().split('\n');
+    chords = $(selectorName).text().split('\n');
+
+    // we are on the Item Detail page!
+    if (chords.length==1) {
+        return;
+        //                                     TODO!!
+        
+        // in order for this to work, we need to change the logic on how to be able to edit this via the editable plugin!
+        // as this is an editable field we have to get the original chords text from womewhere else, maybe from a hidden div?
+
+        selectorName = '.show-chords';
+        chords = $(selectorName);
+        if (chords.length) 
+            chords = $(chords[0]).text().split('\n');
+    }
     // empty the exisint pre tag
-    $('#chords').text('');
+    $(selectorName).text('');
     // analyse each line and put it back into single pre tags
     for (var i = 0; i <= chords.length - 1; i++) {
         if (chords[i].length==0) continue;
         // if a line looks like chords, make it red
         if ( identifyChords(chords[i]) ) {
-            $('#chords').append('<pre class="red m-b-0">'+chords[i]+'</pre>');
+            $(selectorName).append('<pre class="red m-b-0">'+chords[i]+'</pre>');
         }
         else {
             hdr = identifyHeadings(chords[i]).split('$');
             anchor = '';
             if (hdr.length>1 && hdr[1].length>0)
                 anchor = '<a name="'+hdr[1]+'"></a>';
-            $('#chords').append(anchor+'<pre class="m-b-0 '+hdr[0]+'">'+chords[i]+'</pre>');
+            $(selectorName).append(anchor+'<pre class="m-b-0 '+hdr[0]+'">'+chords[i]+'</pre>');
         }
     }
 }
@@ -997,7 +1013,7 @@ function navigateTo(where)
         showSpinner();
 
     // in presentation Mode, do we want a blank slide between items?
-    if (showBlankBetweenItems && screenBlank ) {
+    if ( (showBlankBetweenItems=='true' || showBlankBetweenItems)  &&  screenBlank ) {
         screenBlank = false;
         // check if there is an empty slide/item (an item without lyrics, bibletext or images)
         var reg = /^[\s]+$/; // regex for a string containing only white space.
@@ -1016,21 +1032,72 @@ function navigateTo(where)
     }
 
 
-    // check if the next (or previous) item is in LocalStorage
-    var cur_seq_no = cSpot.presentation.seq_no;
-    var next_seq_no = 1*cur_seq_no+1;
-    var prev_seq_no = 1*cur_seq_no-1;
-    var nextItem = getLocalStorValue(cSpot.presentation.itemIdentifier[next_seq_no]+'-seqIndicator');
-    var prevItem = getLocalStorValue(cSpot.presentation.itemIdentifier[prev_seq_no]+'-seqIndicator');
 
+    /*\
+       > For OFFLINE MODE: check if the next (or previous) item is in LocalStorage 
+    \*/
+
+    // get the current item identification values
+    var cur_seq_no  = cSpot.presentation.seq_no;        // dynamic value (will be changed below or on reload)
+    var max_seq_no  = cSpot.presentation.max_seq_no;    // static value
+    var cur_plan_id = 'offline-'+cSpot.presentation.plan_id;       // static value
+
+    // calculate the identifiers for the next or previous item in local storage
+    if (cur_seq_no < max_seq_no) {
+        var next_seq_no = cur_plan_id + '-' + (1*cur_seq_no+1);
+    } else {
+        var next_seq_no = cur_plan_id + '-' + 1;
+    }
+    if (cur_seq_no > 1) {
+        var prev_seq_no = cur_plan_id + '-' + (1*cur_seq_no-1);
+    } else {
+        var prev_seq_no = cur_plan_id + '-' + max_seq_no;
+    }
+
+    // read data for next or previous item from Local Storage 
+    var nextItem = getLocalStorValue(next_seq_no + '-seqIndicator');
+    var prevItem = getLocalStorValue(prev_seq_no + '-seqIndicator');
+
+    // now rewrite the page content with the cached data from Local Storage (LS)
+    
+    // test if direction is forward and if next item exists in LS
     if ( where == 'next-item' && nextItem != null) {
-        console.log('getting next item from local storage! Seq.No: '+next_seq_no);
+        console.log('getting next item from local storage! Identifier: '+next_seq_no);
         $('#lyrics-parts-indicators').html(nextItem);
-        $('#main-content'           ).html(getLocalStorValue(cSpot.presentation.itemIdentifier[next_seq_no]+'-mainContent'));
-        $('#lyrics-sequence-nav'    ).html(getLocalStorValue(cSpot.presentation.itemIdentifier[next_seq_no]+'-sequenceNav' ));
-        $('#item-navbar-label'      ).html(getLocalStorValue(cSpot.presentation.itemIdentifier[next_seq_no]+'-itemNavBar' ));
+        $('#main-content'           ).html(getLocalStorValue(next_seq_no + '-mainContent'));
+        $('#lyrics-sequence-nav'    ).html(getLocalStorValue(next_seq_no + '-sequenceNav'));
+        $('#item-navbar-label'      ).html(getLocalStorValue(next_seq_no + '-itemNavBar' ));
+
+        // maintain the correct item sequence number for the just inserted slides
+        if (cSpot.presentation.seq_no == max_seq_no) {
+            cSpot.presentation.seq_no = 1;
+        } else {
+            cSpot.presentation.seq_no += 1;
+        }
+
+        // set to default....
+        screenBlank = true;
+        return;
+    }    
+    // test if direction is backward and if previous item exists in LS
+    if ( where == 'previous-item' && prevItem != null) {
+        console.log('getting previous item from local storage! Identifier: '+prev_seq_no);
+        $('#lyrics-parts-indicators').html(nextItem);
+        $('#main-content'           ).html(getLocalStorValue(prev_seq_no + '-mainContent'));
+        $('#lyrics-sequence-nav'    ).html(getLocalStorValue(prev_seq_no + '-sequenceNav'));
+        $('#item-navbar-label'      ).html(getLocalStorValue(prev_seq_no + '-itemNavBar' ));
+
+        // maintain the correct item sequence number for the just inserted slides
+        cSpot.presentation.seq_no -= 1;
+        if (cSpot.presentation.seq_no <= 1) {
+            cSpot.presentation.seq_no = 1*max_seq_no+1;
+        }
+
+        // set to default....
+        screenBlank = true;
         return;
     }
+
 
 
     // make content disappear slowly...
@@ -1229,6 +1296,7 @@ function configBlankSlides() {
     var sett = ! $('#configBlankSlides').prop( "checked" );
     console.log('User changed setting for "Show empty slides between items" to ' + sett );
     localStorage.setItem('configBlankSlides', sett);
+    showBlankBetweenItems = sett;
 }
 function changeConfigShowVersCount() {
     var sett = $('#configShowVersCount').val();
@@ -1281,6 +1349,31 @@ function getLocalStorValue(name) {
     value = localStorage.getItem(name);
     // console.log('LocalStorage for '+name+' was at '+value);
     return value;
+}
+
+/*
+    Make sure LocalStorage contains only one plan cached for the presentation for offline use
+*/
+function checkLocalStorageForPresentation(plan_id) {
+
+    // do nothing if parameter is missing
+    if (!plan_id) return;
+    
+    // loop through each localStorage item
+    for (var key in localStorage) {
+
+        // look for key names with a specific structure: offline-<ppp>-<s>-<text....>
+        // (where: ppp=planId, s=seq.no and text is element name)
+        var ident = key.split('-');
+
+        if (ident.length==4 && ident[0]=='offline') {
+            // check if planId != given plan_id
+            if ( ident[1].length>0  &&  !isNaN(ident[1])  &&  ident[1]!=plan_id ) {
+                console.log('removing item from other plan from localStorage: '+key);
+                localStorage.removeItem(key);
+            }
+        }
+    }
 }
 
 
