@@ -19,7 +19,7 @@ var screenBlank = true;
 var howManyVersesPerSlide;
 
 var bibleBooks;
-
+var planCache;
 
 
 /*\
@@ -1013,7 +1013,7 @@ function navigateTo(where)
         showSpinner();
 
     // in presentation Mode, do we want a blank slide between items?
-    if ( (showBlankBetweenItems=='true' || showBlankBetweenItems)  &&  screenBlank ) {
+    if ( cSpot.presentation.configBlankSlides  &&  screenBlank ) {
         screenBlank = false;
         // check if there is an empty slide/item (an item without lyrics, bibletext or images)
         var reg = /^[\s]+$/; // regex for a string containing only white space.
@@ -1036,68 +1036,70 @@ function navigateTo(where)
     /*\
        > For OFFLINE MODE: check if the next (or previous) item is in LocalStorage 
     \*/
+    if (cSpot.presentation.useOfflineMode) {
 
-    // get the current item identification values
-    var cur_seq_no  = cSpot.presentation.seq_no;        // dynamic value (will be changed below or on reload)
-    var max_seq_no  = cSpot.presentation.max_seq_no;    // static value
-    var cur_plan_id = 'offline-'+cSpot.presentation.plan_id;       // static value
+        // get the current item identification values
+        var cur_seq_no  = cSpot.presentation.seq_no;        // dynamic value (will be changed below or on reload)
+        var max_seq_no  = cSpot.presentation.max_seq_no;    // static value
+        var cur_plan_id = 'offline-'+cSpot.presentation.plan_id;       // static value
 
-    // calculate the identifiers for the next or previous item in local storage
-    if (cur_seq_no < max_seq_no) {
-        var next_seq_no = cur_plan_id + '-' + (1*cur_seq_no+1);
-    } else {
-        var next_seq_no = cur_plan_id + '-' + 1;
-    }
-    if (cur_seq_no > 1) {
-        var prev_seq_no = cur_plan_id + '-' + (1*cur_seq_no-1);
-    } else {
-        var prev_seq_no = cur_plan_id + '-' + max_seq_no;
-    }
-
-    // read data for next or previous item from Local Storage 
-    var nextItem = getLocalStorValue(next_seq_no + '-seqIndicator');
-    var prevItem = getLocalStorValue(prev_seq_no + '-seqIndicator');
-
-    // now rewrite the page content with the cached data from Local Storage (LS)
-    
-    // test if direction is forward and if next item exists in LS
-    if ( where == 'next-item' && nextItem != null) {
-        console.log('getting next item from local storage! Identifier: '+next_seq_no);
-        $('#lyrics-parts-indicators').html(nextItem);
-        $('#main-content'           ).html(getLocalStorValue(next_seq_no + '-mainContent'));
-        $('#lyrics-sequence-nav'    ).html(getLocalStorValue(next_seq_no + '-sequenceNav'));
-        $('#item-navbar-label'      ).html(getLocalStorValue(next_seq_no + '-itemNavBar' ));
-
-        // maintain the correct item sequence number for the just inserted slides
-        if (cSpot.presentation.seq_no == max_seq_no) {
-            cSpot.presentation.seq_no = 1;
+        // calculate the identifiers for the next or previous item in local storage
+        if (cur_seq_no < max_seq_no) {
+            var next_seq_no = cur_plan_id + '-' + (1*cur_seq_no+1);
         } else {
-            cSpot.presentation.seq_no += 1;
+            var next_seq_no = cur_plan_id + '-' + 1;
+        }
+        if (cur_seq_no > 1) {
+            var prev_seq_no = cur_plan_id + '-' + (1*cur_seq_no-1);
+        } else {
+            var prev_seq_no = cur_plan_id + '-' + max_seq_no;
         }
 
-        // set to default....
-        screenBlank = true;
-        return;
-    }    
-    // test if direction is backward and if previous item exists in LS
-    if ( where == 'previous-item' && prevItem != null) {
-        console.log('getting previous item from local storage! Identifier: '+prev_seq_no);
-        $('#lyrics-parts-indicators').html(nextItem);
-        $('#main-content'           ).html(getLocalStorValue(prev_seq_no + '-mainContent'));
-        $('#lyrics-sequence-nav'    ).html(getLocalStorValue(prev_seq_no + '-sequenceNav'));
-        $('#item-navbar-label'      ).html(getLocalStorValue(prev_seq_no + '-itemNavBar' ));
+        // read data for next or previous item from Local Storage 
+        var nextItem = localStorage.getItem(next_seq_no + '-seqIndicator');
+        var prevItem = localStorage.getItem(prev_seq_no + '-seqIndicator');
 
-        // maintain the correct item sequence number for the just inserted slides
-        cSpot.presentation.seq_no -= 1;
-        if (cSpot.presentation.seq_no <= 1) {
-            cSpot.presentation.seq_no = 1*max_seq_no+1;
+        // now rewrite the page content with the cached data from Local Storage (LS)
+        
+        // test if direction is forward and if next item exists in LS
+        if ( where == 'next-item' && nextItem != null) {
+            console.log('getting next item from local storage! Identifier: '+next_seq_no);
+            $('#lyrics-parts-indicators').html(nextItem);
+            $('#main-content'           ).html(localStorage.getItem(next_seq_no + '-mainContent'));
+            $('#lyrics-sequence-nav'    ).html(localStorage.getItem(next_seq_no + '-sequenceNav'));
+            $('#item-navbar-label'      ).html(localStorage.getItem(next_seq_no + '-itemNavBar' ));
+
+            // maintain the correct item sequence number for the just inserted slides
+            if (cSpot.presentation.seq_no == max_seq_no) {
+                cSpot.presentation.seq_no = 1;
+            } else {
+                cSpot.presentation.seq_no += 1;
+            }
+
+            // set to default....
+            screenBlank = true;
+            return;
+        }    
+        // test if direction is backward and if previous item exists in LS
+        if ( where == 'previous-item' && prevItem != null) {
+            console.log('getting previous item from local storage! Identifier: '+prev_seq_no);
+            $('#lyrics-parts-indicators').html(nextItem);
+            $('#main-content'           ).html(localStorage.getItem(prev_seq_no + '-mainContent'));
+            $('#lyrics-sequence-nav'    ).html(localStorage.getItem(prev_seq_no + '-sequenceNav'));
+            $('#item-navbar-label'      ).html(localStorage.getItem(prev_seq_no + '-itemNavBar' ));
+
+            // maintain the correct item sequence number for the just inserted slides
+            cSpot.presentation.seq_no -= 1;
+            if (cSpot.presentation.seq_no <= 1) {
+                cSpot.presentation.seq_no = 1*max_seq_no+1;
+            }
+
+            // set to default....
+            screenBlank = true;
+            return;
         }
 
-        // set to default....
-        screenBlank = true;
-        return;
     }
-
 
 
     // make content disappear slowly...
@@ -1298,6 +1300,13 @@ function configBlankSlides() {
     localStorage.setItem('configBlankSlides', sett);
     showBlankBetweenItems = sett;
 }
+function configOfflineMode() {
+    var sett = ! $('#configOfflineMode').prop( "checked" );
+    console.log('User changed setting for "Use cached items from Local Storage" to ' + sett );
+    localStorage.setItem('configOfflineMode', sett);
+    useOfflineMode = sett;
+}
+
 function changeConfigShowVersCount() {
     var sett = $('#configShowVersCount').val();
     console.log('User changed setting for "Show how many bible verses per slide" to ' + sett );
@@ -1345,12 +1354,6 @@ function changeFontSize(selectorList, how) {
     });
 }
 
-function getLocalStorValue(name) {
-    value = localStorage.getItem(name);
-    // console.log('LocalStorage for '+name+' was at '+value);
-    return value;
-}
-
 /*
     Make sure LocalStorage contains only one plan cached for the presentation for offline use
 */
@@ -1362,7 +1365,8 @@ function checkLocalStorageForPresentation(plan_id) {
     // loop through each localStorage item
     for (var key in localStorage) {
 
-        // look for key names with a specific structure: offline-<ppp>-<s>-<text....>
+        // look for key names with a specific structure: 
+        //      "offline-<ppp>-<s>-<text....>"
         // (where: ppp=planId, s=seq.no and text is element name)
         var ident = key.split('-');
 
@@ -1375,6 +1379,40 @@ function checkLocalStorageForPresentation(plan_id) {
         }
     }
 }
+/*\
+   > load server-cached pre-rendered items into LocalStorage
+\*/
+function loadCachedPresentation(plan_id)
+{
+    // get data via AJAX call
+    $.get(__app_url+'/cspot/plan/'+plan_id+'/cache', function(data, status) {
+
+        if ( status == 'success') {
+            // save to LocalStorage
+            planCache = JSON.parse(data.data);
+
+            // make sure we have only one plan locally in cache!
+            checkLocalStorageForPresentation(plan_id);
+
+            // get each key/value pair and save it to LocalStorage
+            for (var item in planCache) {
+
+                // but first check if an identical item doesn't already exists locally 
+                var existingValue = localStorage.getItem(planCache[item].key);
+                // do nothing if identical !
+                if ( existingValue  &&  existingValue.localeCompare(planCache[item].value) == 0 ) {
+                    ;;;console.log('already in cache: ' + planCache[item].key)
+                    continue;
+                }
+                // now save new item to local store
+                localStorage.setItem( planCache[item].key, planCache[item].value );
+            }            
+            ;;;console.log('Saving server-cached pre-rendered items to LocalStorage');
+        }
+    });
+
+}
+
 
 
 

@@ -77,6 +77,10 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
 
     // send an email reminder to a leader or teacher for a plan
     Route::get('plans/{plan_id}/remind/{user_id}', ['as'=>'sendReminder', 'uses'=> 'Cspot\PlanController@sendReminder']);
+
+    // store client-rendered presentation slides locally for other users to download
+    Route::post('plan/{plan_id}/cache',                                            'Cspot\PlanController@postCache');
+    Route::get( 'plan/{plan_id}/cache',                                            'Cspot\PlanController@getCache');
     
 
     /*
@@ -105,14 +109,14 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
         RESOURCES
     */
     // Manage resources for a service plan
-    Route::get( 'plans/{plan_id}/resource', ['as' => 'resource.index', 'uses' => 'Cspot\PlanController@indexResource']);
-    Route::post('plans/{plan_id}/resource', ['as' => 'resource.store', 'uses' => 'Cspot\PlanController@storeResource']);
+    Route::get( 'plans/{plan_id}/resource', ['as' => 'resource.index', 'uses' => 'Cspot\ResourceController@index']);
+    Route::post('plans/{plan_id}/resource', ['as' => 'resource.store', 'uses' => 'Cspot\ResourceController@store']);
     // show the form to edit an existing resource
-    //Route::get( 'plans/{plan_id}/resource/{resource_id}/edit',                   'Cspot\PlanController@editResource');
+    //Route::get( 'plans/{plan_id}/resource/{resource_id}/edit',                   'Cspot\ResourceController@edit');
     // update an existing resource
-    Route::post('api/plans/resource/update',                                     'Cspot\PlanController@APIupdateResource');
+    Route::post('api/plans/resource/update',                                     'Cspot\ResourceController@APIupdate');
     // delete an existing resource
-    Route::get( 'plans/{plan_id}/resource/{resource_id}/delete',                 'Cspot\PlanController@destroyResource');
+    Route::get( 'plans/{plan_id}/resource/{resource_id}/delete',                 'Cspot\ResourceController@destroy');
 
 
     /*

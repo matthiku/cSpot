@@ -479,9 +479,11 @@
                 $('#txtHint').html(found);
             }
         @endif
+        
         @if (isset($types))
             var serviceTypes = JSON.parse('{!! json_encode($types, JSON_HEX_APOS | JSON_HEX_QUOT) !!}');
         @endif
+
     </script>   
 
 

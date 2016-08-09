@@ -26,11 +26,8 @@
         @if ($item->song_id )
             @if ($item->song->lyrics )
 
-                <div class="text-present m-b-3 lyrics-parts" id="lyrics-title" style="display: none;">
-                    {{ $item->song->title }}
-                    @if ($item->song->title_2 && $item->song->title_2 != 'video') 
-                        ({{ $item->song->title_2}}) 
-                    @endif
+                <div class="text-present m-b-3 lyrics-parts" id="lyrics-title" style="display: none;">{{ $item->song->title }}
+                    {{ ($item->song->title_2 && $item->song->title_2 != 'video') ? '('.$item->song->title_2.')' : '' }}
                 </div>
 
                 {{-- insert videoclip or lyrics --}}
@@ -40,9 +37,7 @@
                         <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ $item->song->youtube_id }}" frameborder="0" allowfullscreen></iframe>
                     </div>
                 @else 
-                    <div class="text-present m-b-3" id="present-lyrics" style="display: none;" >
-                        {{ $item->song->lyrics }}
-                    </div>
+                    <div class="text-present m-b-3" id="present-lyrics" style="display: none;" >{{ $item->song->lyrics }}</div>
                 @endif
 
                 <div class="hidden-xs-up" id="sequence">{{ $item->song->sequence }}</div>
@@ -306,6 +301,15 @@
                 </div>
             </form>
 
+            <form class="form-inline nav-item m-l-1 pull-xs-left">
+                <div class="checkbox" style="line-height: 2" onmouseup="configOfflineMode()">
+                    <label class="checkbox-inline c-input c-checkbox btn btn-sm btn-info" title="Get cached slides from local storage instead of from the server?">
+                        <input type="checkbox" id="configOfflineMode">
+                            <span class="c-indicator"></span>&nbsp;use offline mode?
+                    </label>
+                </div>
+            </form>
+
 
         @if( env('PRESENTATION_ENABLE_SYNC', 'false') )
             {{-- become MAIN presenter, if possible --}}
@@ -333,6 +337,8 @@
         @endif
 
 
+
+
             {{-- TODO: this is currently not working properly --}}
             <form class="form-inline nav-item m-l-1 pull-xs-left" style="display: none">
                 <div class="checkbox" style="line-height: 2" onchange="changeConfigShowVersCount()">
@@ -349,8 +355,18 @@
                 </div>
             </form>
 
+
+
         </div>
     </nav>
+
+
+
+        @if ($item->plan->has('planCaches'))
+        <script>
+            loadCachedPresentation({{ $item->plan->id }});
+        </script>
+        @endif
 
 
 @stop

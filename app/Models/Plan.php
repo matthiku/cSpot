@@ -84,6 +84,11 @@ class Plan extends Model
     }
 
 
+    public function planCaches()
+    {
+        return $this->hasMany('App\Models\PlanCache');
+    }
+
 
 
 

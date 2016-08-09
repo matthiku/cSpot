@@ -239,8 +239,36 @@ function showScriptureText(version,book,chapter,fromVerse,toVerse)
 
 
 
+/*\
+   > Save data to local Storage and also cache it on the server for others to use
+\*/
+function saveLocallyAndRemote(plan_id, key, value)
+{
+    if (!plan_id || !key || !value) {
+        return;
+    }
 
+    // compare with value already existing in cache 
+    var existingValue = localStorage.getItem(key);
+    // do nothing if identical !
+    if ( existingValue  &&  existingValue.localeCompare(value) == 0 ) {
+        ;;;console.log('already in cache: ' + key)
+        return;
+    }
 
+    // save locally
+    localStorage.setItem(key, value);
+
+    // save on server
+    $.post(
+        __app_url+'/cspot/plan/'+plan_id+'/cache',
+        {
+            'key'  : key,
+            'value': value.trim() + ' ',       // have at least one blank for server-side validation to work
+        }, 
+        console.log('cache saved on server: ' + key)
+    );
+}
 
 
 /*

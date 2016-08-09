@@ -1,15 +1,16 @@
 # The Church Service Planning Online Tool
 - Create Order of Services with all relevant data
 - Customize for your church and allow others to participate
-- Manage your team (staff) with their roles
+- Manage your team (staff) with their roles; also manage the resources needed for a service (rooms, devices etc.)
 - Present your songs in a slideshow fashion via a projector 
+- The slideshow can be done off-line with all slides downlaoded to the local computer
 - Control the slide show from **any device** using a Chromecast device attached to your projector
-- Provide chords, lyrics and sheetmusic for musicians an all kinds of devices
-- Allows extensive collaboration and input from all users
+- Provide chords, lyrics and sheetmusic for musicians on all kinds of devices
+- Allows extensive collaboration and input from all users with full rights management
 - Allows for a _synchronised presentation_ of lyrics, chords or sheet music _accross all designated devices!_
 - Send email and/or internal messages between users
 
-As a free and open source project, you can download ('clone') the sources, modify (customize) them and run the tool from your own web site.
+As a free and open source project, you can download ('clone') the sources, modify (customize) them and run the tool from your own web site hoster.
 
 **Developers**, please feel free to contribute and make pull requests! **Testers**, please send your bug reports and enhancement suggestions!
 
@@ -72,8 +73,6 @@ Chrome's menu and a new icon will appear on your homescreen:
 ##### Backend
 This PHP project is based on the [Laravel 5.2 framework](https://laravel.com/) with the [Socialite](https://github.com/laravel/socialite) and [LaravelCollective](https://laravelcollective.com) extensions. 
 ##### Frontend
-Currently, the development focus is still more on the backend. So far, there is no asynchronous interaction (AJAX) and only little Javascript involved.
-
 The design is intended to be fully responsive with a mobile-first approach and uses the [Bootstrap framework](http://v4-alpha.getbootstrap.com/) in version 4. (Which is still in alpha but hopefully will be fully released before this project is out of beta!)
 
 #### Prerequisites
