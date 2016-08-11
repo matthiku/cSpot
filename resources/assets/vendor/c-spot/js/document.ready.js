@@ -636,9 +636,9 @@ $(document).ready(function() {
     /**
      * re-design the showing of lyrics interspersed with guitar chords
      */
-    if ( $('#chords').text() != ''  ||  $('.show-chords').text() != '' ) {
+    if ( $('#chords').text() != '' ) {
         // only do this for PRE tags, not on input fields etc...
-        if ( $('.show-chords')[0].nodeName == 'PRE'  ||  $('#chords')[0].nodeName == 'PRE' ) {
+        if ( $('#chords')[0].nodeName == 'PRE' ) {
             reDisplayChords();
         }
         $('.edit-show-buttons').css('display', 'inline');

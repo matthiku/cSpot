@@ -97,14 +97,18 @@
     @include( 'cspot/snippets/modal', ['modalContent' => $modalContent, 'modalTitle' => $modalTitle ] )
 
 
+
     <nav class="navbar navbar-fixed-bottom navbar-dark bg-black center" id="bottom-fixed-navbar" style="padding: 0;">
 
+
         <ul class="nav navbar-nav">
+
             <li id="lyrics-parts-indicators">
-                <!-- potential buttons for lyric parts (cerses, chorusses etc) -->
+                <!-- potential buttons for lyric parts (verses, chorusses etc) -->
                 <a href="#" onclick="lyricsShow('start-lyrics');" 
                     title="show start lyrics" id="btn-show-start-lyrics" style="display: none;" 
                     class="nav-item btn btn-sm btn-outline-info lyrics-show-btns" role="button">S</a>
+
                 <a href="#" onclick="lyricsShow('verse1');" 
                     title="show verse 1" id="btn-show-verse1" style="display: none;" 
                     class="nav-item btn btn-sm btn-outline-info lyrics-show-btns" role="button">1</a>                
@@ -125,7 +129,8 @@
                     class="nav-item btn btn-sm btn-outline-info lyrics-show-btns" role="button">6</a>                
                 <a href="#" onclick="lyricsShow('verse7');" 
                     title="show verse 7" id="btn-show-verse7" style="display: none;" 
-                    class="nav-item btn btn-sm btn-outline-info lyrics-show-btns" role="button">7</a>                
+                    class="nav-item btn btn-sm btn-outline-info lyrics-show-btns" role="button">7</a>   
+
                 <a href="#" onclick="lyricsShow('prechorus');" 
                     title="show pre-chorus" id="btn-show-prechorus" style="display: none;" 
                     class="nav-item btn btn-sm btn-outline-info lyrics-show-btns" role="button">P</a>
@@ -135,18 +140,26 @@
                 <a href="#" onclick="lyricsShow('chorus2');" 
                     title="show chorus 2" id="btn-show-chorus2" style="display: none;" 
                     class="nav-item btn btn-sm btn-outline-info lyrics-show-btns" role="button">Ch2</a>
+
                 <a href="#" onclick="lyricsShow('bridge');" 
                     title="show bridge" id="btn-show-bridge" style="display: none;" 
                     class="nav-item btn btn-sm btn-outline-info lyrics-show-btns" role="button">B</a>
+
                 <a href="#" onclick="lyricsShow('ending');" 
                     title="show ending" id="btn-show-ending" style="display: none;" 
                     class="nav-item btn btn-sm btn-outline-info lyrics-show-btns" role="button">E</a>
             </li>
         </ul>
+
         <ul class="nav navbar-nav pull-xs-right">
             <li>
                 <!-- jump to next plan item -->
-                <a href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/go/next/present') }}"
+                <a 
+                    @if ($item->id == $item->plan->lastItem()->id)
+                        href="#" disabled="disabled"
+                    @else
+                        href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/go/next/present') }}"
+                    @endif
                     class="nav-item btn btn-sm btn-warning" role="button" id="go-next-item">
                     <i class="fa fa-angle-double-right fa-lg"></i>
                 </a>
@@ -174,8 +187,10 @@
             <span class="hidden-lg-up">
                 {{ substr(($item->song_id && $item->song->title) ? $item->song->title : $item->comment, 0, 20) }}
             </span>
-            <small class="hidden-lg-up hidden-xs-down text-muted">(next: {{ substr(getItemTitle($item),0,15) }})</small>
-            <small class="hidden-md-down text-muted">(up next: {{ getItemTitle($item) }})</small>
+            @if ($item->id != $item->plan->lastItem()->id)
+                <small class="hidden-lg-up hidden-xs-down text-muted">(next: {{ substr(getItemTitle($item),0,15) }})</small>
+                <small class="hidden-md-down text-muted">(up next: {{ getItemTitle($item) }})</small>
+            @endif
         </span>
     
         <!-- button to reveal the second navbar at the bottom -->
@@ -192,7 +207,7 @@
         -->
         <div class="collapse navbar-toggleable" id="lyricsNavbar">
 
-            <!-- show song title or comment in secong navbar on smaller screens only -->
+            <!-- show song title or comment in second navbar on smaller screens only -->
             <span class="nav navbar-nav center hidden-md-up hidden-xs-down">
                 <small class="hidden-md-down text-muted">Item {{$item->seq_no}} -</small>
                 @if ($item->song_id && $item->song->title)
@@ -206,7 +221,7 @@
             <!-- 
                 DropUP Menu Button
             -->
-            <div class="btn-group dropup center">
+            <div id="popup-goto-menu" class="btn-group dropup center">
 
                 <button type="button" class="btn btn-sm btn-info dropdown-toggle" 
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -226,6 +241,7 @@
                             @else
                                 {{ substr($menu_item->comment, 0, 45) }}
                             @endif
+                            <small id="in-cache-seq-no-{{ $menu_item->seq_no }}" style="display: none">&nbsp;*</small>
                         </a>
                     @endforeach
                     @if (Auth::user()->ownsPlan($item->plan_id))
@@ -241,6 +257,7 @@
                         href="{{ url('cspot/plans/'.$item->plan_id) }}">
                         <i class="fa fa-undo"></i>
                         Back to plan overview
+                        <small class="pull-xs-right">(* = item in local cache)</small>
                     </a>
                 </div>
 
@@ -262,7 +279,12 @@
 
             <ul class="nav navbar-nav pull-xs-left">
                 <li>
-                    <a href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/go/previous/present') }}"
+                    <a 
+                        @if ($item->id == $item->plan->firstItem()->id)
+                            href="#" disabled="disabled"
+                        @else
+                            href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/go/previous/present') }}"
+                        @endif                        
                         class="nav-item btn btn-sm btn-warning" role="button" id="go-previous-item">
                         <i class="fa fa-angle-double-left fa-lg"></i>
                     </a> 

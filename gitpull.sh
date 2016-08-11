@@ -31,6 +31,7 @@ if [ "$1" = "plan" ]; then
         echo '---------------------------------------------- ignore all local changes'
         git reset --hard origin/master
     fi
+    
 	php artisan migrate
 
 
@@ -57,8 +58,9 @@ if [ "$1" = "plan" ]; then
     	git fetch --all
     	echo '---------------------------------------------- ignore all local changes'
     	git reset --hard origin/master
-    	php artisan migrate
     fi
+
+    php artisan migrate
 
 	echo
 

@@ -6,6 +6,17 @@
  * (C) M.Kuhs Ireland, 2016
  */
 
+/* disabled anchors */
+a[disabled] {
+    pointer-events: none;
+    cursor: not-allowed;
+    color: gray;
+    background-color: unset;
+}
+
+.slides-progress-indicator, .lyrics-progress-indicator {
+    cursor: pointer;
+}
 
 /* Minimum size of JEDITABLE text input element */
 .editable>form>input, 

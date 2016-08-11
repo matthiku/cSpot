@@ -40088,9 +40088,9 @@ $(document).ready(function() {
     /**
      * re-design the showing of lyrics interspersed with guitar chords
      */
-    if ( $('#chords').text() != ''  ||  $('.show-chords').text() != '' ) {
+    if ( $('#chords').text() != '' ) {
         // only do this for PRE tags, not on input fields etc...
-        if ( $('.show-chords')[0].nodeName == 'PRE'  ||  $('#chords')[0].nodeName == 'PRE' ) {
+        if ( $('#chords')[0].nodeName == 'PRE' ) {
             reDisplayChords();
         }
         $('.edit-show-buttons').css('display', 'inline');
@@ -41570,9 +41570,9 @@ function navigateTo(where)
     if (document.activeElement.tagName != "BODY") return;
 
     // get the element that contains the proper link
-    a = document.getElementById('go-'+where);
+    goWhereButton = document.getElementById('go-'+where);
     // link doesn't exist:
-    if (a==null) return;
+    if (goWhereButton==null) return;
 
     // fade background and show spinner, but not in presentation mode!
     if ( document.baseURI.search('/present')<10 )
@@ -41610,12 +41610,12 @@ function navigateTo(where)
         var cur_plan_id = 'offline-'+cSpot.presentation.plan_id;       // static value
 
         // calculate the identifiers for the next or previous item in local storage
-        if (cur_seq_no < max_seq_no) {
-            var next_seq_no = cur_plan_id + '-' + (1*cur_seq_no+1);
-        } else {
+        if (cur_seq_no >= max_seq_no) {
             var next_seq_no = cur_plan_id + '-' + 1;
+        } else {
+            var next_seq_no = cur_plan_id + '-' + (1*cur_seq_no+1);
         }
-        if (cur_seq_no > 1) {
+        if (cur_seq_no >= 1) {
             var prev_seq_no = cur_plan_id + '-' + (1*cur_seq_no-1);
         } else {
             var prev_seq_no = cur_plan_id + '-' + max_seq_no;
@@ -41642,8 +41642,10 @@ function navigateTo(where)
                 cSpot.presentation.seq_no += 1;
             }
 
-            // set to default....
-            screenBlank = true;
+            // modify the next-item button to reflect the new item in the url
+            modifyHrefOfJumpbutton(next_seq_no, prev_seq_no)
+
+            screenBlank = true;     // reset to default....
             return;
         }    
         // test if direction is backward and if previous item exists in LS
@@ -41660,8 +41662,10 @@ function navigateTo(where)
                 cSpot.presentation.seq_no = 1*max_seq_no+1;
             }
 
-            // set to default....
-            screenBlank = true;
+            // modify the previous-item button to reflect the new item in the url
+            modifyHrefOfJumpbutton(next_seq_no, prev_seq_no)
+
+            screenBlank = true;     // set to default....
             return;
         }
 
@@ -41675,15 +41679,42 @@ function navigateTo(where)
     // inform server of current position if we are presenter
     sendShowPosition(where);
 
-    if (a.onclick==null) {
+    if (goWhereButton.onclick==null) {
         // try to go to the location defined in href
-        window.location.href = a.href;
+        window.location.href = goWhereButton.href;
         return;
     }    
     // try to simulate a click on this element
-    a.click();
+    goWhereButton.click();
 }
 
+/* 
+    change the item-id to seq-no in the href element of the 'next' and 'previous' buttons 
+*/
+function modifyHrefOfJumpbutton(next_seq_no, prev_seq_no)
+{
+    // provide seq no for both buttons
+    var btn_seq_no = {'next-item': next_seq_no, 'previous-item': prev_seq_no};
+
+    // modify both buttons
+    for (where in btn_seq_no) {
+
+        // get handle on the button element
+        goWhereButton = document.getElementById('go-'+where);
+
+        // if link doesn't exist, ignore the rest
+        if (goWhereButton==null) continue;
+
+        // find the old item id
+        var hrefValue = goWhereButton.href.split('/');
+        var indexItemId = hrefValue.indexOf('items')+1;
+        if (indexItemId>0) {
+            var buttonsItemId = hrefValue[indexItemId];
+            var newHref = goWhereButton.href.replace(buttonsItemId, btn_seq_no[where]);
+            goWhereButton.setAttribute('href', newHref);
+        }
+    }
+}
 
 function showBlankScreen()
 {
@@ -41946,7 +41977,10 @@ function checkLocalStorageForPresentation(plan_id) {
     }
 }
 /*\
-   > load server-cached pre-rendered items into LocalStorage
+    
+    load server-cached pre-rendered items into LocalStorage
+    (this is called from the presentation view file)
+
 \*/
 function loadCachedPresentation(plan_id)
 {
@@ -41962,6 +41996,10 @@ function loadCachedPresentation(plan_id)
 
             // get each key/value pair and save it to LocalStorage
             for (var item in planCache) {
+
+                // indicate presence of cache in the dropup menu
+                var seq_no = planCache[item].key.split('-')[2];
+                $('#in-cache-seq-no-'+seq_no+'\\.0').show();
 
                 // but first check if an identical item doesn't already exists locally 
                 var existingValue = localStorage.getItem(planCache[item].key);

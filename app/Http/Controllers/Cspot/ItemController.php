@@ -310,20 +310,24 @@ class ItemController extends Controller
      * show the previous or NEXT item in the list of items related to a plan
      *  or swap between chords and sheetmusic 
      *
-     * @param  int     $id      plan id
-     * @param  int     $id      item id
+     * @param  int     $id          plan id
+     * @param  int     $id          item id  or: 'seq-no-<seq_no>' !
      * @param  string  $direction   next|previous|swap
+     * @param  string  $chords      (chords|sheetmusic)
+     *
      * @return \Illuminate\Http\Response
      */
     public function next(Request $request, $plan_id, $item_id, $direction, $chords=null)
     {
-        // get seq_no of next or previous item from helper function
+        // get item id of next or previous item from helper function
         $new_item_id = nextItem( $plan_id, $item_id, $direction );
 
         // call edit with new item id 
         if ($chords==null) {
             return $this->edit( $plan_id, $new_item_id );
         } 
+
+        // swap between showing chords or sheetmusic
         if ($direction=='swap') {
             if ($chords=='chords') 
                 $chords = 'sheetmusic';

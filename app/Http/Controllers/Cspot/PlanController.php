@@ -546,7 +546,7 @@ class PlanController extends Controller
         $plan = Plan::find($plan_id);
         if ($plan->count()) {
 
-            // save key and value to local cache
+            // save key and value to local cache (replacing existing values)
             $cache = new PlanCache([
                     'key'   => $request->key,
                     'value' => $request->value

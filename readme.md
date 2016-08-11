@@ -8,7 +8,7 @@
 - Provide chords, lyrics and sheetmusic for musicians on all kinds of devices
 - Allows extensive collaboration and input from all users with full rights management
 - Allows for a _synchronised presentation_ of lyrics, chords or sheet music _accross all designated devices!_
-- Send email and/or internal messages between users
+- Exchange email and/or internal messages between users
 
 As a free and open source project, you can download ('clone') the sources, modify (customize) them and run the tool from your own web site hoster.
 
