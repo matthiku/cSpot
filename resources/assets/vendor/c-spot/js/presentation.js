@@ -511,7 +511,7 @@ function getStylesFromLyricsLine(line)
     return '';
 }
 
-// insert new SLIDE into the presentatinon
+// insert new SLIDE into the presentation
 function insertNewLyricsSlide(newDiv, newLyr, divNam, lines)
 {
     // only if the part is not empty..
@@ -548,10 +548,55 @@ function headerCode(divNam) {
 
 
 /*
-    Use Regex patterns to identify chords versus lyrics versus headings
-    and to show them in different colors
-    (called from document.ready.js)
+    called directly from Present_navbar blade file
+    used by chords.blade.php and sheetmusic.blade.php
+
+    this MUST run after reDisplayChords!
 */
+function prepareChordsPresentation(what)
+{
+    // make type of presentation globally available
+    cSpot.presentation.type = what;
+
+    // check if user has changed the default font size for the presentation
+    fontSize = localStorage.getItem('.text-song_font-size');
+    if (fontSize) {
+        $('.text-song').css('font-size', parseInt(fontSize));
+    }
+
+    // make sure the main content covers all the display area
+    $('#main-content').css('min-height', window.screen.height);
+
+    // intercept mouse clicks into the presentation area
+    $('body').contextmenu( function() {
+        return false;
+    });
+
+    // Allow mouse click (or finger touch) to move forward
+    $('#main-content').click(function(){
+        navigateTo('next-item');
+    });
+    // allow rght-mouse-click to move one slide or item back
+    $('#main-content').on('mouseup', function(event){
+        if (event.which == 3) {
+            event.preventDefault();
+            navigateTo('previous-item');
+        }
+    });
+
+    // check if rendered items for this plan are 
+    // cached no the server - then load it into local storage
+    loadCachedPresentation(cSpot.presentation.plan_id); 
+
+    // save the final rendition of this page to LocalStorage
+    saveMainContentToLocalStorage(what);
+}
+
+
+
+// Use Regex patterns to identify chords versus lyrics versus headings
+// and to show them in different colors
+// (called from document.ready.js)
 function reDisplayChords()
 {
     // selector of the chords element is different on the Item Detail page or in a presentation
@@ -559,19 +604,18 @@ function reDisplayChords()
     // get the chords text and split it into lines
     chords = $(selectorName).text().split('\n');
 
-    // we are on the Item Detail page!
+    // Are we on the Item Detail page?
+    //                                       TODO!! (Currently not implemented)
+    // in order to get this to work, we need to change the logic on how to be able to edit this via the editable plugin!
+    // as this is an editable field we have to get the original chords text from somewhere else, maybe from a hidden div?
     if (chords.length==1) {
         return;
-        //                                     TODO!!
-        
-        // in order for this to work, we need to change the logic on how to be able to edit this via the editable plugin!
-        // as this is an editable field we have to get the original chords text from womewhere else, maybe from a hidden div?
-
         selectorName = '.show-chords';
         chords = $(selectorName);
         if (chords.length) 
             chords = $(chords[0]).text().split('\n');
     }
+
     // empty the exisint pre tag
     $(selectorName).text('');
     // analyse each line and put it back into single pre tags
@@ -670,10 +714,8 @@ function countLines(where) {
 }
 
 
-/*
-    the Sequence indicators at the bottom right could 
-    get too long, so we need to hide some parts
-*/
+// the Sequence indicators at the bottom right could 
+// get too long, so we need to hide some parts
 function checkSequenceIndicatorLength()
 {
     // max items shown before or after the current item
@@ -732,9 +774,7 @@ function getProgressIDnumber(fromWhat)
 
 
 
-/* 
-    Insert the Sequence Navigation indicators into the navbar 
-*/
+// Insert the Sequence Navigation indicators into the navbar 
 function insertSeqNavInd(what, nr, where)
 {
     // set default action
@@ -748,9 +788,7 @@ function insertSeqNavInd(what, nr, where)
 
     $('#lyrics-sequence-nav').append( data );
 }
-/*
-    special formatting for sequence indicators of lyric parts
-*/
+// special formatting for sequence indicators of lyric parts
 function formatSeqInd(code){
     code  = code.toString();
     char1 = code.substr(0,1);
@@ -781,9 +819,7 @@ function formatSeqInd(code){
 \*/
 
 
-/*
-    On the lyrics screen, advance to the next item or sub-item (song parts)
-*/
+// On the lyrics screen, advance to the next item or sub-item (song parts)
 function advancePresentation(direction)
 {
     // set default value....
@@ -952,9 +988,7 @@ function advancePresentation(direction)
 }
 
 
-/*
-    Using keyboard shortcuts differently on the lyrics presentation or chords pages
-*/
+// Using keyboard shortcuts differently on the lyrics presentation or chords pages
 function jumpTo(where)
 {
     // the lyrics presentation page uses buttons to show parts and hide the rest
@@ -967,9 +1001,7 @@ function jumpTo(where)
         window.location.href = '#'+where;
 }
 
-/*
-    show the indicated bible verse and indicate it on the Progress Indicator Bar
-*/
+// show the indicated bible verse and indicate it on the Progress Indicator Bar
 function showNextSlide(thisID,what,direction)
 {
     // modify the background color of the progress indicators
@@ -1034,7 +1066,7 @@ function navigateTo(where)
 
 
     /*\
-       > For OFFLINE MODE: check if the next (or previous) item is in LocalStorage 
+       > For OFFLINE MODE: check if the next (or previous) item is cached in LocalStorage 
     \*/
     if (cSpot.presentation.useOfflineMode) {
 
@@ -1055,19 +1087,16 @@ function navigateTo(where)
             var prev_seq_no = cur_plan_id + '-' + max_seq_no;
         }
 
-        // read data for next or previous item from Local Storage 
-        var nextItem = localStorage.getItem(next_seq_no + '-seqIndicator');
-        var prevItem = localStorage.getItem(prev_seq_no + '-seqIndicator');
-
-        // now rewrite the page content with the cached data from Local Storage (LS)
+        // Rewrite the page content with the cached data from Local Storage (LS)
         
         // test if direction is forward and if next item exists in LS
-        if ( where == 'next-item' && nextItem != null) {
-            console.log('getting next item from local storage! Identifier: '+next_seq_no);
-            $('#lyrics-parts-indicators').html(nextItem);
-            $('#main-content'           ).html(localStorage.getItem(next_seq_no + '-mainContent'));
-            $('#lyrics-sequence-nav'    ).html(localStorage.getItem(next_seq_no + '-sequenceNav'));
-            $('#item-navbar-label'      ).html(localStorage.getItem(next_seq_no + '-itemNavBar' ));
+        if ( where == 'next-item'     && isInLocalStore(next_seq_no) ) {
+
+            // write cached data into the DOM
+            writeCachedDataIntoDOM(next_seq_no);
+
+            // re-apply locally defined text formatting
+            applyLocallyDefinedTextFormatting();
 
             // maintain the correct item sequence number for the just inserted slides
             if (cSpot.presentation.seq_no == max_seq_no) {
@@ -1077,18 +1106,20 @@ function navigateTo(where)
             }
 
             // modify the next-item button to reflect the new item in the url
-            modifyHrefOfJumpbutton(next_seq_no, prev_seq_no)
+            modifyHRefOfJumpbutton(next_seq_no, prev_seq_no)
 
             screenBlank = true;     // reset to default....
             return;
-        }    
+        }
+
         // test if direction is backward and if previous item exists in LS
-        if ( where == 'previous-item' && prevItem != null) {
-            console.log('getting previous item from local storage! Identifier: '+prev_seq_no);
-            $('#lyrics-parts-indicators').html(nextItem);
-            $('#main-content'           ).html(localStorage.getItem(prev_seq_no + '-mainContent'));
-            $('#lyrics-sequence-nav'    ).html(localStorage.getItem(prev_seq_no + '-sequenceNav'));
-            $('#item-navbar-label'      ).html(localStorage.getItem(prev_seq_no + '-itemNavBar' ));
+        if ( where == 'previous-item' && isInLocalStore(prev_seq_no) ) {
+
+            // write cached data into the DOM
+            writeCachedDataIntoDOM(prev_seq_no);
+
+            // re-apply locally defined text formatting
+            applyLocallyDefinedTextFormatting();
 
             // maintain the correct item sequence number for the just inserted slides
             cSpot.presentation.seq_no -= 1;
@@ -1097,7 +1128,7 @@ function navigateTo(where)
             }
 
             // modify the previous-item button to reflect the new item in the url
-            modifyHrefOfJumpbutton(next_seq_no, prev_seq_no)
+            modifyHRefOfJumpbutton(next_seq_no, prev_seq_no)
 
             screenBlank = true;     // set to default....
             return;
@@ -1122,10 +1153,8 @@ function navigateTo(where)
     goWhereButton.click();
 }
 
-/* 
-    change the item-id to seq-no in the href element of the 'next' and 'previous' buttons 
-*/
-function modifyHrefOfJumpbutton(next_seq_no, prev_seq_no)
+// change the item-id to seq-no in the href element of the 'next' and 'previous' buttons 
+function modifyHRefOfJumpbutton(next_seq_no, prev_seq_no)
 {
     // provide seq no for both buttons
     var btn_seq_no = {'next-item': next_seq_no, 'previous-item': prev_seq_no};
@@ -1148,7 +1177,30 @@ function modifyHrefOfJumpbutton(next_seq_no, prev_seq_no)
             goWhereButton.setAttribute('href', newHref);
         }
     }
+
+    // hide spinner, if present
+    $('#show-spinner').modal('hide')    
 }
+
+// write cached data into the DOM
+function writeCachedDataIntoDOM(identifier) {
+
+    ;;;console.log('Next item comes cached from local storage! Identifier: '+identifier);
+
+    var type = cSpot.presentation.type;
+
+    if ( type == 'chords'  || type == 'sheetmusic' ) {
+        $('#main-content'       ).html(localStorage.getItem(identifier + '-mainContent-'+ type));
+        $('#present-navbar'     ).html(localStorage.getItem(identifier + '-present-navbar' ));
+        return;
+    }
+
+    $('#lyrics-parts-indicators').html(localStorage.getItem(identifier + '-seqIndicator'));
+    $('#main-content'           ).html(localStorage.getItem(identifier + '-mainContent'));
+    $('#lyrics-sequence-nav'    ).html(localStorage.getItem(identifier + '-sequenceNav'));
+    $('#item-navbar-label'      ).html(localStorage.getItem(identifier + '-itemNavBar' ));
+}
+
 
 function showBlankScreen()
 {
@@ -1321,10 +1373,61 @@ function identifyLyricsHeadings(str)
 \*/
 
 
+// --------------------------------------------------------- GET
 
-/**
- * called from the configuration button on the navbar
- */
+// read and apply locallydefined text format settings
+function applyLocallyDefinedTextFormatting() 
+{
+    // check if we have changed the default font size and text alignment for the presentation
+    textAlign = localStorage.getItem('.text-present_text-align');
+    $('.text-present').css('text-align', textAlign);
+    $('.bible-text-present').css('text-align', textAlign);
+    $('.bible-text-present>p').css('text-align', textAlign);
+    $('.bible-text-present>h1').css('text-align', textAlign);
+
+    fontSize = localStorage.getItem('.text-present_font-size');
+    if ($.isNumeric(fontSize)) {
+        $('.text-present').css('font-size', parseInt(fontSize));
+    }
+    $('.text-present').show();
+
+    fontSize = localStorage.getItem('.bible-text-present_font-size');
+    if ($.isNumeric(fontSize)) {
+       $('.bible-text-present').css('font-size', parseInt(fontSize));
+       $('.bible-text-present>p').css('font-size', parseInt(fontSize));
+       $('.bible-text-present>h1').css('font-size', parseInt(fontSize));
+    }
+
+    // check if user has changed the default font size for chords/sheetmusic presentation
+    fontSize = localStorage.getItem('.text-song_font-size');
+    if (fontSize) {
+        $('.text-song').css('font-size', parseInt(fontSize));
+    }
+}
+
+// check if we want to use the offline mode (Local Storage) - Default is: ON
+function checkOfflineMode() {
+
+    // get value from local storage
+    useOfflineMode = localStorage.getItem('configOfflineMode');
+
+    // if the value in LocalStorage was set to 'true', then we activate the checkbox:
+    if (useOfflineMode=='false') {
+
+        $('#configOfflineMode').prop( "checked", false );
+        cSpot.presentation.useOfflineMode = false;
+
+    } 
+    else {
+        $('#configOfflineMode').prop( "checked", true );
+        cSpot.presentation.useOfflineMode = true;
+    }
+}
+
+
+// --------------------------------------------------------- SET
+
+// called from the configuration button on the navbar
 function configBlankSlides() {
     var sett = ! $('#configBlankSlides').prop( "checked" );
     console.log('User changed setting for "Show empty slides between items" to ' + sett );
@@ -1353,7 +1456,7 @@ function changeTextAlign(selectorList, how) {
         if (element.length>0) {
             $(element).css('text-align', how);
             localStorage.setItem(selector+'_text-align', how);
-            console.log('LocalStorage for '+selector+' was set to '+localStorage.getItem(selector+'_text-align'));
+            ;;;console.log('LocalStorage for '+selector+' was set to '+localStorage.getItem(selector+'_text-align'));
         }
     });
 }
@@ -1380,16 +1483,49 @@ function changeFontSize(selectorList, how) {
             if (fontSize<8 || fontSize>150) return;
             $(element).css('font-size', fontSize);
             localStorage.setItem(selector+'_font-size', fontSize);
-            console.log('LocalStorage for '+selector+' was set to '+localStorage.getItem(selector+'_font-size'));
+            ;;;console.log('LocalStorage for '+selector+' was set to '+localStorage.getItem(selector+'_font-size'));
         }
     });
 }
 
-/*
-    Make sure LocalStorage contains only one plan cached for the presentation for offline use
-*/
-function checkLocalStorageForPresentation(plan_id) {
 
+
+
+/*\
+|* >------------------------------------------------------------------ LOCAL STORAGE
+\*/
+
+
+
+// save main content html to local storage
+function saveMainContentToLocalStorage(what) {    
+
+    if (what) {
+        what = '-' + what;
+    }
+    var plan_id = cSpot.presentation.plan_id
+    var itemIdentifier = 'offline-' + plan_id + '-' + cSpot.presentation.seq_no;
+
+    // we should have only one plan in LocalStorage!
+    checkLocalStorageForPresentation(plan_id);
+
+    // save the Main Content into localStorage
+    saveLocallyAndRemote(plan_id, itemIdentifier +'-mainContent'+what,  $('#main-content').html());
+    // lyrics parts indicator element
+    saveLocallyAndRemote(plan_id, itemIdentifier +'-seqIndicator',      $('#lyrics-parts-indicators').html());
+    // sequence navigator element
+    saveLocallyAndRemote(plan_id, itemIdentifier +'-sequenceNav',       $('#lyrics-sequence-nav').html());
+    // item label 
+    saveLocallyAndRemote(plan_id, itemIdentifier +'-itemNavBar',        $('#item-navbar-label').html());
+    // whole NavBar for chords and sheetmusic
+    saveLocallyAndRemote(plan_id, itemIdentifier +'-present-navbar',    $('#present-navbar').html());
+
+    ;;;console.log('saving this item with seq.no '+cSpot.presentation.seq_no+' from plan with id '+plan_id+' to Local Storage.');
+}
+
+// Make sure LocalStorage contains only one plan cached for the presentation for offline use
+function checkLocalStorageForPresentation(plan_id) 
+{
     // do nothing if parameter is missing
     if (!plan_id) return;
     
@@ -1401,7 +1537,7 @@ function checkLocalStorageForPresentation(plan_id) {
         // (where: ppp=planId, s=seq.no and text is element name)
         var ident = key.split('-');
 
-        if (ident.length==4 && ident[0]=='offline') {
+        if (ident.length>3 && ident[0]=='offline') {
             // check if planId != given plan_id
             if ( ident[1].length>0  &&  !isNaN(ident[1])  &&  ident[1]!=plan_id ) {
                 console.log('removing item from other plan from localStorage: '+key);
@@ -1410,14 +1546,72 @@ function checkLocalStorageForPresentation(plan_id) {
         }
     }
 }
-/*\
-    
-    load server-cached pre-rendered items into LocalStorage
-    (this is called from the presentation view file)
 
-\*/
+function isInLocalStore(identifier)
+{
+    // do nothing if parameter is missing
+    if (!identifier) return false;
+
+    var type = cSpot.presentation.type;
+
+    var ik = identifier.split('-');
+    
+    // loop through each localStorage item
+    for (var key in localStorage) {
+
+        // look for key names with a specific structure: 
+        //      "offline-<ppp>-<s>-<text....>"
+        // (where: ppp=planId, s=seq.no and text is element name)
+        var sk = key.split('-');
+
+        if (sk[0]!='offline') continue;
+
+        if ( ik[0]==sk[0] && ik[1]==sk[1] && ik[2]==sk[2] ) 
+        {
+            if ( type == 'lyrics' || sk[3]=='present' || sk[4]==type )
+                return true;
+        }
+    }
+    return false;
+}
+
+// Save data to local Storage and also cache it on the server for others to use
+function saveLocallyAndRemote(plan_id, key, value)
+{
+    if (!plan_id || !key || !value) {
+        return;
+    }
+
+    // compare with value already existing in cache 
+    var existingValue = localStorage.getItem(key);
+    // do nothing if identical !
+    if ( existingValue  &&  existingValue.localeCompare(value) == 0 ) {
+        ;;;console.log('already in cache: ' + key)
+        return;
+    }
+
+    // save locally
+    localStorage.setItem(key, value);
+
+    // save on server
+    $.post(
+        __app_url+'/cspot/plan/'+plan_id+'/cache',
+        {
+            'key'  : key,
+            'value': value.trim() + ' ',       // have at least one blank for server-side validation to work
+        }, 
+        console.log('cache saved on server: ' + key)
+    );
+}
+
+// load server-cached pre-rendered items into LocalStorage
+// (this is called from the presentation view file)
 function loadCachedPresentation(plan_id)
 {
+    // validate plan id
+    if (!plan_id || isNaN(parseInt(plan_id)))
+        return;
+
     // get data via AJAX call
     $.get(__app_url+'/cspot/plan/'+plan_id+'/cache', function(data, status) {
 
@@ -1427,6 +1621,8 @@ function loadCachedPresentation(plan_id)
 
             // make sure we have only one plan locally in cache!
             checkLocalStorageForPresentation(plan_id);
+            
+            ;;;console.log('Saving server-cached pre-rendered items to LocalStorage');
 
             // get each key/value pair and save it to LocalStorage
             for (var item in planCache) {
@@ -1445,13 +1641,33 @@ function loadCachedPresentation(plan_id)
                 // now save new item to local store
                 localStorage.setItem( planCache[item].key, planCache[item].value );
             }            
-            ;;;console.log('Saving server-cached pre-rendered items to LocalStorage');
         }
     });
-
 }
 
+// clear local cache
+function clearLocalCache()
+{
+    // we 'hack' this function and pretend to ave a plan with this fantasy id
+    checkLocalStorageForPresentation(999999999);
+}
 
+// clear local cache
+function clearServerCache(plan_id)
+{
+    // validate plan id
+    if (!plan_id || isNaN(parseInt(plan_id)))
+        return;
+    $.post(__app_url+'/cspot/plan/'+plan_id+'/cache/delete', function(data, status) {
+
+        if ( status == 'success') {
+            // show result in UI
+            result = data.data;
+            $('#showCachedItems').text(result);
+        }
+
+    });
+}
 
 
 

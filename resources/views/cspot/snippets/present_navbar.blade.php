@@ -13,7 +13,7 @@ $modalContent = '
 @include( 'cspot/snippets/modal', ['modalContent' => $modalContent, 'modalTitle' => 'Use your keyboard to:' ] )
 
 
-<nav class="navbar navbar-fixed-bottom bg-primary center p-b-0 p-t-0">
+<nav class="navbar navbar-fixed-bottom bg-primary center p-b-0 p-t-0" id="present-navbar">
 
     <ul class="nav navbar-nav pull-xs-right">
         <li>
@@ -28,9 +28,13 @@ $modalContent = '
     <span class="nav navbar-nav center">
         <small class="hidden-sm-down">{{$item->seq_no}} </small>
         @if ($item->song_id && $item->song->title)
-            <small class="hidden-xs-down">{{ $item->song->title }}</small>
+            <span class="hidden-xs-down">{{ $item->song->title }}</span>
         @else
             {{ $item->comment }}
+        @endif
+        @if ($item->id != $item->plan->lastItem()->id)
+            <small class="hidden-lg-up hidden-xs-down">(next: {{ substr(getItemTitle($item),0,15) }})</small>
+            <small class="hidden-md-down">(up next: {{ getItemTitle($item) }})</small>
         @endif
     </span>
 
@@ -61,6 +65,7 @@ $modalContent = '
                     @else
                         {{ $menu_item->comment }}
                     @endif
+                    <sup id="in-cache-seq-no-{{ $menu_item->seq_no }}" style="display: none">*</sup>
                 </a>
             @endforeach
             @if (Auth::user()->ownsPlan($item->plan_id))
@@ -84,6 +89,7 @@ $modalContent = '
                 href="{{ url('cspot/plans/'.$item->plan_id) }}">
                 <i class="fa fa-undo"></i>
                 Back to plan overview
+                <small class="pull-xs-right">(* = item in local cache)</small>
             </a>
         </div>
 
@@ -156,19 +162,19 @@ $modalContent = '
                 <i class="fa fa-file-text"></i> <i class="fa fa-refresh fa-lg"></i> <i class="fa fa-music"></i>
             </a>
 
-        @if( env('PRESENTATION_ENABLE_SYNC', 'false') )
-            {{-- synchronise this presentation with the Main Presenter --}}
-            <form class="form-inline nav-item m-l-1 label label-info">
-                <div class="checkbox" style="line-height: 2" onmouseup="configSyncPresentation()">
-                    <label class="checkbox-inline c-input c-checkbox" title="Synchronise this presentation with Main Presenter">
-                        <input type="checkbox" id="configSyncPresentation">
-                            <span class="c-indicator"></span>&nbsp;Sync Presentation
-                    </label>
-                </div>
-                <span class="small">&nbsp;with:</span>
-                <span class="small showPresenterName"> ({{ $serverSideMainPresenter ? $serverSideMainPresenter['name'] : 'none' }})</span>
-            </form>
-        @endif
+            @if( env('PRESENTATION_ENABLE_SYNC', 'false') )
+                {{-- synchronise this presentation with the Main Presenter --}}
+                <form class="form-inline nav-item m-l-1 label label-info">
+                    <div class="checkbox" style="line-height: 2" onmouseup="configSyncPresentation()">
+                        <label class="checkbox-inline c-input c-checkbox" title="Synchronise this presentation with Main Presenter">
+                            <input type="checkbox" id="configSyncPresentation">
+                                <span class="c-indicator"></span>&nbsp;Sync Presentation
+                        </label>
+                    </div>
+                    <span class="small">&nbsp;with:</span>
+                    <span class="small showPresenterName"> ({{ $serverSideMainPresenter ? $serverSideMainPresenter['name'] : 'none' }})</span>
+                </form>
+            @endif
 
         </li>
     </ul>
@@ -216,31 +222,9 @@ $modalContent = '
 
 <script>
     $(document).ready(function() {
-        // check if user has changed the default font size for the presentation
-        fontSize = localStorage.getItem('.text-song_font-size');
-        if (fontSize) {
-            $('.text-song').css('font-size', parseInt(fontSize));
-        }
 
-        // make sure the main content covers all the display area
-        $('#main').css('min-height', window.screen.height);
-
-        // intercept mouse clicks into the presentation area
-        $('body').contextmenu( function() {
-            return false;
-        });
-
-        // Allow mouse click (or finger touch) to move forward
-        $('#main').click(function(){
-            navigateTo('next-item');
-        });
-        // allow rght-mouse-click to move one slide or item back
-        $('#main').on('mouseup', function(event){
-            if (event.which == 3) {
-                event.preventDefault();
-                navigateTo('previous-item');
-            }
-        });
+        prepareChordsPresentation('{{ $type }}');
+        
     });
 </script>
 

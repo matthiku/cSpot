@@ -18,7 +18,7 @@
 
 
     <!-- ================================================================================ -->
-    <div id="main">
+    <div id="main-content">
     <!-- ================================================================================ -->
 
         @if ($item->song_id )
@@ -30,6 +30,7 @@
                     <pre class="text-song big" id="chords">{{ $item->song->chords }}</pre>
                 </div>
             @else
+                (chords missing!)
                 <pre class="text-song big m-b-3" id="lyrics">{{ $item->song->lyrics }}</pre>
             @endif
         @endif

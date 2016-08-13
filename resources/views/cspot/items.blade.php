@@ -275,6 +275,14 @@
 </div>
 
 
+@if( Auth::user()->ownsPlan($plan->id) )
+	<div 	class="small pull-xs-right m-l-2" id="showCachedItems" 
+		 	style="display: {{ $plan->planCaches()->count() ? 'initial' : 'none' }}">
+		Cache contains {{ $plan->planCaches()->count() }} pre-rendered items. 
+		<a href="#" onclick="clearServerCache({{ $plan->id }});"><i class="fa fa-trash"></i>&nbsp;Delete.</a>
+	</div>
+@endif
+
 @if( Auth::user()->ownsPlan($plan->id) && $plan->date >= \Carbon\Carbon::yesterday() )
 
 	<div class="pull-xs-right m-l-2" id="trashedItems" 
@@ -305,12 +313,12 @@
 
 <script src="https://www.blueletterbible.org/assets/scripts/blbToolTip/BLB_ScriptTagger-min.js" type="text/javascript"></script>
 <script type="text/javascript">
-	BLB.Tagger.Translation = 'ESV';
-	BLB.Tagger.HyperLinks = 'all'; // 'all', 'none', 'hover'
+	BLB.Tagger.Translation 			= 'ESV';
+	BLB.Tagger.HyperLinks 			= 'all'; // 'all', 'none', 'hover'
 	BLB.Tagger.HideTanslationAbbrev = false;
-	BLB.Tagger.TargetNewWindow = true;
-	BLB.Tagger.Style = 'par'; // 'line' or 'par'
-	BLB.Tagger.NoSearchTagNames = ''; // HTML element list
-	BLB.Tagger.NoSearchClassNames = 'noTag doNotTag'; // CSS class list
+	BLB.Tagger.TargetNewWindow 		= true;
+	BLB.Tagger.Style 				= 'par'; // 'line' or 'par'
+	BLB.Tagger.NoSearchTagNames 	= ''; // HTML element list
+	BLB.Tagger.NoSearchClassNames 	= 'noTag doNotTag'; // CSS class list
 </script>
 

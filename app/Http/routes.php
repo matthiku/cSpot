@@ -79,8 +79,9 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     Route::get('plans/{plan_id}/remind/{user_id}', ['as'=>'sendReminder', 'uses'=> 'Cspot\PlanController@sendReminder']);
 
     // store client-rendered presentation slides locally for other users to download
-    Route::post('plan/{plan_id}/cache',                                            'Cspot\PlanController@postCache');
-    Route::get( 'plan/{plan_id}/cache',                                            'Cspot\PlanController@getCache');
+    Route::post( 'plan/{plan_id}/cache',                                            'Cspot\PlanController@postCache');
+    Route::get(  'plan/{plan_id}/cache',                                            'Cspot\PlanController@getCache');
+    Route::post( 'plan/{plan_id}/cache/delete',                                     'Cspot\PlanController@deleteCache');
     
 
     /*

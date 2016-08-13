@@ -34,6 +34,15 @@
         cSpot.presentation.sync = false;
         cSpot.presentation.mainPresenterSetURL = '{{ route('presentation.mainPresenter.set') }}';
 
+        @if( Request::is('*/present') || Request::is('*/chords') || Request::is('*/sheetmusic') )
+            // get relevant ids of current slides
+            cSpot.presentation.plan_id = {{ $item->plan_id }};
+            cSpot.presentation.item_id = {{ $item->id      }};
+            cSpot.presentation.seq_no  = {{ $item->seq_no  }};
+            cSpot.presentation.max_seq_no = {{ $item->plan->lastItem()->seq_no }};
+            cSpot.presentation.useOfflineMode = true;
+        @endif
+
         {{-- only on presentation pages --}}
         @if( env('PRESENTATION_ENABLE_SYNC', 'false') && (Request::is('*/present') || Request::is('*/chords') || Request::is('*/sheetmusic')) )
 
@@ -47,9 +56,6 @@
                 return false;
             }
 
-            // get relevant ids of current slides
-            cSpot.presentation.plan_id = {{ $item->plan_id }};
-            cSpot.presentation.item_id  = {{ $item->id  }};
             cSpot.presentation.setPositionURL = '{{ route('presentation.position.set') }}';
 
             // prepare Server-Sent Events

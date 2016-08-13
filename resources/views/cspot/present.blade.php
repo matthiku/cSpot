@@ -15,12 +15,7 @@
 
 
     <!-- ================================================================================ -->
-    <div id="main-content" class="bg-inverse" 
-        data-plan-id="{{$item->plan_id}}" 
-        data-item-id="{{$item->id     }}" 
-        data-seq-no="{{ $item->seq_no }}" 
-        data-max-seq-no="{{ $item->plan->lastItem()->seq_no }}"
-        data-item-updated-at="{{strtotime($item->updated_at)}}">
+    <div id="main-content" class="bg-inverse">
 
 
         @if ($item->song_id )
@@ -241,7 +236,7 @@
                             @else
                                 {{ substr($menu_item->comment, 0, 45) }}
                             @endif
-                            <small id="in-cache-seq-no-{{ $menu_item->seq_no }}" style="display: none">&nbsp;*</small>
+                            <sup id="in-cache-seq-no-{{ $menu_item->seq_no }}" style="display: none">*</sup>
                         </a>
                     @endforeach
                     @if (Auth::user()->ownsPlan($item->plan_id))
@@ -327,10 +322,15 @@
                 <div class="checkbox" style="line-height: 2" onmouseup="configOfflineMode()">
                     <label class="checkbox-inline c-input c-checkbox btn btn-sm btn-info" title="Get cached slides from local storage instead of from the server?">
                         <input type="checkbox" id="configOfflineMode">
-                            <span class="c-indicator"></span>&nbsp;use offline mode?
+                            <span class="c-indicator"></span>&nbsp;use cached items?
                     </label>
                 </div>
             </form>
+            <a      class="m-l-0 nav-item btn btn-sm btn-outline-danger pull-xs-left"
+                    href="#" onclick="clearLocalCache();" role="button" 
+                    title="delete all locally cached items" id="clear-local-cache">
+                <i class="fa fa-trash-o fa-lg"></i>
+            </a>
 
 
         @if( env('PRESENTATION_ENABLE_SYNC', 'false') )
@@ -383,9 +383,12 @@
     </nav>
 
 
-
+        {{-- load cached items from server - if there are any --}}
         @if ($item->plan->has('planCaches'))
-        <script>
+        <script>        
+            // make type of presentation globally available
+            cSpot.presentation.type = 'lyrics';
+
             loadCachedPresentation({{ $item->plan->id }});
         </script>
         @endif

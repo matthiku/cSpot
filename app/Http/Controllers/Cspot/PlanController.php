@@ -544,17 +544,29 @@ class PlanController extends Controller
 
         // make sure it's a valid plan id
         $plan = Plan::find($plan_id);
+
+        // save key and value to local cache (replacing existing values)
         if ($plan->count()) {
 
-            // save key and value to local cache (replacing existing values)
+            // is there alerady a value for that key?
+            $cache = PlanCache::where('key', $request->key)->first();
+
+            if ($cache) {
+                // yes, so just update the existing value
+                $cache->update(['value' => $request->value]);
+                // return ok response
+                return response()->json(['status' => 200, 'data' => "Updated!"], 200);
+            } 
+
+            // no, so create a new key/value pair in the PlanCaches table
             $cache = new PlanCache([
                     'key'   => $request->key,
                     'value' => $request->value
                 ]);
             $plan->planCaches()->save($cache);
-
+            
             // return ok response
-            return response()->json(['status' => 200, 'data' => "OK!"], 200);
+            return response()->json(['status' => 200, 'data' => "Inserted!"], 200);
         }
 
         return response()->json(['status' => 404, 'data' => "plan with id $plan_id not found"], 404);
@@ -566,7 +578,6 @@ class PlanController extends Controller
      */
     public function getCache($plan_id)
     {
-
         // make sure it's a valid plan id
         $plan = Plan::find($plan_id);
 
@@ -577,6 +588,29 @@ class PlanController extends Controller
 
             // return ok response
             return response()->json(['status' => 200, 'data' => json_encode($cache)], 200);
+        }
+
+        return response()->json(['status' => 404, 'data' => "plan with id $plan_id not found"], 404);
+    }
+
+
+    /**
+     * receive pre-rendered slides from client and buffer them for other users to download
+     */
+    public function deleteCache($plan_id)
+    {
+        // make sure it's a valid plan id
+        $plan = Plan::find($plan_id);
+
+        if ($plan->count()) {
+
+            $cacheCount = $plan->planCaches()->count();
+
+            // delete cached items from this plan
+            $cache = $plan->planCaches()->delete();
+
+            // return ok response
+            return response()->json(['status' => 200, 'data' => $cacheCount.' cache-items deleted. '.$plan->planCaches()->count()], 200);
         }
 
         return response()->json(['status' => 404, 'data' => "plan with id $plan_id not found"], 404);

@@ -288,9 +288,7 @@ $(document).ready(function() {
                     ;;;console.log('Saving verses structure to LocalStorage');
                 }
             });
-        } else {
-            ;;;console.log('using verses structure from LocalStorage');
-        }
+        } 
     }
 
 
@@ -319,7 +317,6 @@ $(document).ready(function() {
             // check each sibling's sequence
             for (var i = 1; i <= siblings.length; i++) {
                 sib = siblings[-1+i];
-                //console.log(i + ' attr:' + sib.id + ' id:' + sib.dataset.itemId + ' class:' + sib.classList);
                 if (sib.classList.contains('trashed')) {
                     // ignore trashed items....
                     continue;
@@ -327,12 +324,10 @@ $(document).ready(function() {
                 // is this the moved item?
                 if ( sib.dataset.itemId == movedItem.id ) {
                     changed = sib;
-                    //console.log(sib.id+' was moved. ');
                     break;
                 } 
                 else {
                     should_seq_no = 0.0 + sib.id.split('-')[2];
-                    //console.log(sib.id + ' unmoved ');
                     if (changed) { 
                         break; 
                     }
@@ -340,12 +335,9 @@ $(document).ready(function() {
             }
             if (changed) {
                 should_seq_no = 1 * should_seq_no;
-                //console.log( 'Item '+changed.id+ ' (id # ' + changed.dataset.itemId +')  should now have seq no ' + (0.5 + should_seq_no) );
                 window.location.href = __app_url + '/cspot/items/' + changed.dataset.itemId + '/seq_no/'+ (0.5 + should_seq_no);
                 return;
-            } else {
-                // console.log('order unchanged');
-            }
+            } 
         },
         }).disableSelection();
     }
@@ -357,7 +349,7 @@ $(document).ready(function() {
     if (window.location.href.indexOf('cspot/songs')>10) {
 
         $(document).keydown(function( event ) {
-            console.log('pressed key code: '+event.keyCode);
+            ;;;console.log('pressed key code: '+event.keyCode);
             switch (event.keyCode) {
                 case 13: findOpenFilterField(); break; // Enter key
                 default: break;
@@ -399,7 +391,7 @@ $(document).ready(function() {
             // key codes: 37=left arrow, 39=right, 38=up, 40=down, 34=PgDown, 33=pgUp, 
             //            36=home, 35=End, 32=space, 27=Esc, 66=e
             //
-            console.log('pressed key code: '+event.keyCode);
+            ;;;console.log('pressed key code: '+event.keyCode);
             switch (event.keyCode) {
                 case 37: advancePresentation('back'); break; // left arrow
                 case 33: navigateTo('previous-item'); break; // left PgUp
@@ -461,7 +453,7 @@ $(document).ready(function() {
         // check if we have a VideoClip item or just lyrics
         if ($('#videoclip-url').length) {
             var videoclipUrl = $("#videoclip-url").text();
-            console.log('Current item is a Video Clip');
+            ;;;console.log('Current item is a Video Clip');
         }
 
         // instead, have just lyrics or bible verses or images
@@ -507,11 +499,7 @@ $(document).ready(function() {
                 // now broadcast our current position!
                 sendShowPosition('start');  // will include plan_id and item_id 
             }
-        } else {
-            // Make sure the server knows we don't want to be Main Presenter
-            // CURRENTLY DEACTIVATED UNTIL SYNC IS WORKING FINE ON NGINX!
-            //setMainPresenter('false');
-        }
+        } 
 
         // check if we want to syncronise our own presentation with the Main Presenter
         configSyncPresentationSetting = localStorage.getItem('configSyncPresentation');
@@ -540,15 +528,7 @@ $(document).ready(function() {
         }
 
         // check if we want to use the offline cache
-        useOfflineMode = localStorage.getItem('configOfflineMode');
-        // if the value in LocalStorage was set to 'true', then we activate the checkbox:
-        if (useOfflineMode=='false') {
-            $('#configOfflineMode').prop( "checked", false );
-            cSpot.presentation.useOfflineMode = false;
-        } else {
-            $('#configOfflineMode').prop( "checked", true );
-            cSpot.presentation.useOfflineMode = true;
-        }
+        checkOfflineMode();
 
         // how many bible verses per slide?
         howManyVersesPerSlide = localStorage.getItem('configShowVersCount');
@@ -557,25 +537,9 @@ $(document).ready(function() {
             $('#configShowVersCount').val( howManyVersesPerSlide );
         }
 
-        // check if we have changed the default font size and text alignment for the presentation
-        textAlign = localStorage.getItem('.text-present_text-align');
-        $('.text-present').css('text-align', textAlign);
-        $('.bible-text-present').css('text-align', textAlign);
-        $('.bible-text-present>p').css('text-align', textAlign);
-        $('.bible-text-present>h1').css('text-align', textAlign);
+        // read and apply locallydefined text format settings
+        applyLocallyDefinedTextFormatting()
 
-        fontSize = localStorage.getItem('.text-present_font-size');
-        if ($.isNumeric(fontSize)) {
-            $('.text-present').css('font-size', parseInt(fontSize));
-        }
-        $('.text-present').show();
-
-        fontSize = localStorage.getItem('.bible-text-present_font-size');
-        if ($.isNumeric(fontSize)) {
-           $('.bible-text-present').css('font-size', parseInt(fontSize));
-           $('.bible-text-present>p').css('font-size', parseInt(fontSize));
-           $('.bible-text-present>h1').css('font-size', parseInt(fontSize));
-        }
 
         // check if we have a predefined sequence from the DB
         sequence=($('#sequence').text()).split(',');
@@ -604,32 +568,8 @@ $(document).ready(function() {
          * Save the new content into the local storage for offline presentations!
          */
         if (cSpot.presentation.useOfflineMode) {
-            var mainContentData = $('#main-content').data();
-            var plan_id = mainContentData.planId;
-            var seq_no  = parseFloat(mainContentData.seqNo);
-            var max_seq_no  = parseFloat(mainContentData.maxSeqNo);
-            cSpot.presentation.seq_no  = seq_no;
-            cSpot.presentation.max_seq_no  = max_seq_no;
-            cSpot.presentation.plan_id = plan_id;
-            var itemIdentifier = 'offline-' + plan_id + '-' + seq_no;
-
-            // we should have only one plan in LocalStorage!
-            checkLocalStorageForPresentation(plan_id);
-
-            // use the data as identifier and save the Main Content and aux info into localStorage
-            saveLocallyAndRemote(plan_id, itemIdentifier +'-mainContent', $('#main-content').html());
-            // lyrics parts indicator element
-            saveLocallyAndRemote(plan_id, itemIdentifier +'-seqIndicator',$('#lyrics-parts-indicators').html());
-            // sequence navigator element
-            saveLocallyAndRemote(plan_id, itemIdentifier +'-sequenceNav', $('#lyrics-sequence-nav').html());
-            // item label 
-            saveLocallyAndRemote(plan_id, itemIdentifier +'-itemNavBar',  $('#item-navbar-label').html());
-
-            console.log('saving this item with seq.no '+seq_no+' from plan with id '+plan_id+' to Local Storage.');
+            saveMainContentToLocalStorage();
         } 
-        else {
-            console.log('User configured to not use offline mode to cache items locally.');
-        }
 
     }
 
