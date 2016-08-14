@@ -1093,7 +1093,7 @@ function navigateTo(where)
         if ( where == 'next-item'     && isInLocalStore(next_seq_no) ) {
 
             // write cached data into the DOM
-            writeCachedDataIntoDOM(next_seq_no);
+            writeCachedDataIntoDOM( next_seq_no );
 
             // re-apply locally defined text formatting
             applyLocallyDefinedTextFormatting();
@@ -1107,6 +1107,10 @@ function navigateTo(where)
 
             // modify the next-item button to reflect the new item in the url
             modifyHRefOfJumpbutton(next_seq_no, prev_seq_no)
+
+            // show new location in DropUp menu
+            $('.dropdown-item.nowrap').removeClass('bg-info')
+            $('#menu-item-seq-no-'+cSpot.presentation.seq_no+'\\.0').addClass('bg-info');
 
             screenBlank = true;     // reset to default....
             return;
@@ -1502,6 +1506,8 @@ function saveMainContentToLocalStorage(what) {
 
     if (what) {
         what = '-' + what;
+    } else {
+        what = '';
     }
     var plan_id = cSpot.presentation.plan_id
     var itemIdentifier = 'offline-' + plan_id + '-' + cSpot.presentation.seq_no;
@@ -1658,6 +1664,8 @@ function clearServerCache(plan_id)
     // validate plan id
     if (!plan_id || isNaN(parseInt(plan_id)))
         return;
+
+    // send the delte request
     $.post(__app_url+'/cspot/plan/'+plan_id+'/cache/delete', function(data, status) {
 
         if ( status == 'success') {

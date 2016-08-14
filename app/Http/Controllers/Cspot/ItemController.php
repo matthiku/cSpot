@@ -11,6 +11,7 @@ use Snap\BibleBooks\BibleBooks;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+use App\Events\CspotItemUpdated;
 
 use App\Models\Song;
 use App\Models\Plan;
@@ -475,6 +476,9 @@ class ItemController extends Controller
             $newItem = moveItem( $item->id, 'static');
         }
 
+        // notify event listener that an item was updated
+        event( new CspotItemUpdated($item) );
+
         // back to full plan view 
         return \Redirect::route('cspot.plans.edit', $plan_id);
     }
@@ -536,6 +540,10 @@ class ItemController extends Controller
                 return response()->json(['status' => 401, 'data' => 'Not authorized'], 401);
             }
             $item->update( [$field_name => $request->value] );
+
+            // notify event listener that an item was updated
+            event( new CspotItemUpdated($item) );
+
             // return text to sender
             return $item[$field_name];
         }
@@ -560,6 +568,9 @@ class ItemController extends Controller
             // get item and delete it
             $item = deleteItem($id);
             if ($item) {
+                // notify event listener that an item was updated
+                event( new CspotItemUpdated($item) );
+
                 return response()->json(['status' => 200, 'data' => 'Item deleted.']);
             }
             return response()->json(['status' => 405, 'data' => 'Item not deleted!']);
@@ -587,6 +598,10 @@ class ItemController extends Controller
             if ($item->song_id==$song_id) {
                 $item->song_id = 0;
                 $item->save();
+
+                // notify event listener that an item was updated
+                event( new CspotItemUpdated($item) );
+
                 // return to sender
                 return response()->json(['status' => 200, 'data' => 'Song unlinked.']);
             }
@@ -611,6 +626,10 @@ class ItemController extends Controller
         // call helper function to do the actual 'move'
         $item = moveItem($id, $direction);
         if ($item) {
+
+            // notify event listener that an item was updated
+            event( new CspotItemUpdated($item) );
+
             // back to full plan view 
             return \Redirect::back();
         }
@@ -646,6 +665,9 @@ class ItemController extends Controller
         // get item and delete it
         $item = deleteItem($id);
         if ($item) {
+            // notify event listener that an item was updated
+            event( new CspotItemUpdated($item) );
+            
             // back to full plan view 
             //flash('Item deleted.');
             return \Redirect::route('cspot.plans.edit', $plan_id);

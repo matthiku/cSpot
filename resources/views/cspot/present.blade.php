@@ -224,11 +224,8 @@
                 </button>
                 <div class="dropdown-menu dropdown-menu-right bg-faded">
                     @foreach ($items as $menu_item)
-                        <a class="dropdown-item nowrap 
-                            @if ($item->id == $menu_item->id)
-                                bg-info
-                            @endif
-                            "
+                        <a class="dropdown-item nowrap{{ $item->id == $menu_item->id ? ' bg-info' : '' }}"
+                            id="menu-item-seq-no-{{ $menu_item->seq_no }}"
                             href="{{ url('cspot/items/').'/'.$menu_item->id.'/present' }}">
                             <small class="hidden-md-down">{{ $menu_item->seq_no }}</small> &nbsp; 
                             @if ($menu_item->song_id && $menu_item->song->title)

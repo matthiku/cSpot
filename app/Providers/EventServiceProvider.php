@@ -16,6 +16,9 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\NewMessageGenerated' => [
             'App\Listeners\NewMessagesListener',
         ],
+        'App\Events\CspotItemUpdated' => [
+            'App\Listeners\CspotItemsListener',
+        ],
     ];
 
     /**

@@ -610,7 +610,7 @@ class PlanController extends Controller
             $cache = $plan->planCaches()->delete();
 
             // return ok response
-            return response()->json(['status' => 200, 'data' => $cacheCount.' cache-items deleted. '.$plan->planCaches()->count()], 200);
+            return response()->json(['status' => 200, 'data' => $cacheCount.' cache-items deleted. '], 200);
         }
 
         return response()->json(['status' => 404, 'data' => "plan with id $plan_id not found"], 404);
