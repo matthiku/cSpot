@@ -134,7 +134,8 @@ function reFormatBibleText()
             $(elem).each( function() {
                 eltext = $(this).text();
                 // if (eltext=='13') {debugger;}
-                if ($(this).attr('class')=='reftext') {
+                var thisCls = $(this).attr('class');
+                if (thisCls=='reftext') {
                     if (verse && verno != eltext) {
                         // only append text that is within the reference
                         if ( 1*verno >= 1*verse_from && 1*verno <= 1*verse_to ) {
@@ -142,7 +143,7 @@ function reFormatBibleText()
                         verno = eltext;
                     }
                     verse = '('+eltext+') '; } // add verse indicator at the front
-                else if ( this.nodeName == '#text' || $(this).attr('class')=='name' ) {  // only add real text nodes
+                else if ( this.nodeName == '#text' || thisCls=='name' || thisCls=='red' ) {  // only add real text nodes
                     if (eltext.substr(0,1)=='\n') { eltext=eltext.substr(1); }
                     verse += eltext;
                 }
@@ -1592,9 +1593,12 @@ function saveLocallyAndRemote(plan_id, key, value)
     var existingValue = localStorage.getItem(key);
     // do nothing if identical !
     if ( existingValue  &&  existingValue.localeCompare(value) == 0 ) {
-        ;;;console.log('already in cache: ' + key)
+        ;;;console.log(value.length + ' already in cache: ' + key)
         return;
     }
+
+    // remove excess blanks from the string
+    value = value.replace(/  /g,' ')
 
     // save locally
     localStorage.setItem(key, value);
@@ -1606,7 +1610,7 @@ function saveLocallyAndRemote(plan_id, key, value)
             'key'  : key,
             'value': value.trim() + ' ',       // have at least one blank for server-side validation to work
         }, 
-        console.log('cache saved on server: ' + key)
+        console.log(value.length + ' cache saved on server: ' + key)
     );
 }
 

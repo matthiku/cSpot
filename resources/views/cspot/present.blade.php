@@ -357,25 +357,6 @@
 
 
 
-
-            {{-- TODO: this is currently not working properly --}}
-            <form class="form-inline nav-item m-l-1 pull-xs-left" style="display: none">
-                <div class="checkbox" style="line-height: 2" onchange="changeConfigShowVersCount()">
-                    <label class="c-input btn-sm btn-info" title="How many bible verses should be shown per slide?">
-                        <select class="" id="configShowVersCount">
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                        </select>
-                            How many verses per slide?
-                    </label>
-                </div>
-            </form>
-
-
-
         </div>
     </nav>
 

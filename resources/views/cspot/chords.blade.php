@@ -30,8 +30,17 @@
                     <pre class="text-song big" id="chords">{{ $item->song->chords }}</pre>
                 </div>
             @else
-                (chords missing!)
-                <pre class="text-song big m-b-3" id="lyrics">{{ $item->song->lyrics }}</pre>
+                @if ( count($item->song->files)>0 )
+                    <div class="m-b-3">
+                        @foreach ($item->song->files as $file)
+                            <img class="figure-img img-fluid img-rounded"  
+                                src="{{ url(config('files.uploads.webpath')).'/'.$file->token }}">
+                        @endforeach
+                    </div>
+                @else
+                    (chords missing!)
+                    <pre class="text-song big m-b-3" id="lyrics">{{ $item->song->lyrics }}</pre>
+                @endif
             @endif
         @endif
 
