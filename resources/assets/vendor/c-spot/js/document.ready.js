@@ -416,7 +416,8 @@ $(document).ready(function() {
                 case 75: jumpTo('chorus2');  break; // key 'k'
                 case 66: jumpTo('bridge');     break; // key 'b'
                 case 69: jumpTo('ending');       break; // key 'e'
-                case 76: $('.lyrics-parts').toggle(); break; // key 'l', show all lyrics
+                case 76: $('.lyrics-parts').toggle();break; // key 'l', (letter l) show all lyrics
+                case 96: showBlankScreen();          break; // key '0'
                 case 109: $('#decr-font').click();   break; // key '-'
                 case 107: $('#incr-font').click();   break; // key '+'
                 default: break;
@@ -475,70 +476,7 @@ $(document).ready(function() {
         /**
          * Check some user-defined settings in the Local Storage of the browser
          */
-
-
-        // check if we want to be Main Presenter
-        configMainPresenterSetting = localStorage.getItem('configMainPresenter');
-        // if the value in LocalStorage was set to 'true', then we activate the checkbox:
-        if (configMainPresenterSetting=='true') {
-            // Check if there already is a presenter
-            if ( cSpot.presentation.mainPresenter && ! isPresenter ) {
-                // someone else is already ....
-                localStorage.setItem('configMainPresenter', 'false');
-            } 
-            else {
-                // make sure the Server knows we want to be presenter (if we are allowed to...)
-                setMainPresenter();
-                // activate the checkbox in the UI
-                $('#configMainPresenter').prop( "checked", true );
-                // if we are Main Presenter, we can't sync to another ....
-                localStorage.setItem('configSyncPresentation', 'false');
-                // hide the form the contains this checkbox
-                //$('#configSyncPresentation').parent().parent().parent().hide();
-
-                // now broadcast our current position!
-                sendShowPosition('start');  // will include plan_id and item_id 
-            }
-        } 
-
-        // check if we want to syncronise our own presentation with the Main Presenter
-        configSyncPresentationSetting = localStorage.getItem('configSyncPresentation');
-        // if the value in LocalStorage was set to 'true', then we activate the checkbox:
-        if (configSyncPresentationSetting=='true') {
-            $('#configSyncPresentation').prop( "checked", true );
-            // if we sync our presentation, we can't be Main Presenter
-            localStorage.setItem('configMainPresenter', 'false');
-            // hide the form the contains this checkbox
-            //$('#configMainPresenter').parent().parent().parent().hide();
-            // save in global namespace
-            cSpot.presentation.sync = true;
-        }
-
-
-
-        // check if we want a blank slide between items
-        showBlankBetweenItems = localStorage.getItem('configBlankSlides');
-        // if the value in LocalStorage was set to 'true', then we activate the checkbox:
-        if (showBlankBetweenItems=='true') {
-            $('#configBlankSlides').prop( "checked", true );
-            cSpot.presentation.configBlankSlides = true;
-        } else {
-            $('#configBlankSlides').prop( "checked", false );
-            cSpot.presentation.configBlankSlides = false;
-        }
-
-        // check if we want to use the offline cache
-        checkOfflineMode();
-
-        // how many bible verses per slide?
-        howManyVersesPerSlide = localStorage.getItem('configShowVersCount');
-        // if the value in LocalStorage was set to 'true', then we activate the checkbox:
-        if (howManyVersesPerSlide>0 && howManyVersesPerSlide<6) {
-            $('#configShowVersCount').val( howManyVersesPerSlide );
-        }
-
-        // read and apply locallydefined text format settings
-        applyLocallyDefinedTextFormatting()
+        getLocalConfiguration()
 
 
         // check if we have a predefined sequence from the DB

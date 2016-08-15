@@ -22,7 +22,7 @@
             @if ($item->song->lyrics )
 
                 <div class="text-present m-b-3 lyrics-parts" id="lyrics-title" style="display: none;">{{ $item->song->title }}
-                    {{ ($item->song->title_2 && $item->song->title_2 != 'video') ? '('.$item->song->title_2.')' : '' }}
+                    {{ ($item->song->title_2 && $item->song->title_2 != 'video' && $item->song->title_2 != 'infoscreen') ? '('.$item->song->title_2.')' : '' }}
                 </div>
 
                 {{-- insert videoclip or lyrics --}}
@@ -161,7 +161,7 @@
             </li>
         </ul>
 
-        <!-- 'sequence' indicates the order in which the various lyric parts are to be shown -->
+        {{-- 'sequence' indicates the order in which the various lyric parts are to be shown --}}
         <span class="navbar-brand pull-xs-right hidden-xs-down" id="lyrics-sequence-nav">
             <!-- {{-- this is currently resolved on the client side --}} -->
             @if ($item->song_id && $item->song->sequence)
@@ -171,12 +171,12 @@
             @endif
         </span>
 
-        <!-- <span class="navbar-brand center" id="show-linecount"></span> -->
+        {{-- <span class="navbar-brand center" id="show-linecount"></span> --}}
 
-        <!-- show song title or comment in first navbar on bigger screens only -->
+        {{-- show song title or comment in first navbar on bigger screens only --}}
         <span class="nav navbar-nav center hidden-sm-down" id="item-navbar-label">
             <small class="hidden-md-down text-muted">Item {{$item->seq_no}} -</small>
-            <span class="hidden-md-down">
+            <span class="text-success hidden-md-down">
                 {{ ($item->song_id && $item->song->title) ? $item->song->title : $item->comment }}
             </span>
             <span class="hidden-lg-up">
@@ -188,14 +188,15 @@
             @endif
         </span>
     
-        <!-- button to reveal the second navbar at the bottom -->
+        {{-- button to reveal the second navbar at the bottom --}}
         <button class="navbar-toggler btn btn-info active" type="button" data-toggle="collapse" data-target="#lyricsNavbar">
-            &hellip;
-        </button>        
-        <button class="btn btn-outline-secondary" type="button" onclick="showBlankScreen()">
-            Blank
-        </button>        
+            &dArr;
+        </button>
 
+        <button class="btn btn-sm btn-outline-secondary" type="button" onclick="showBlankScreen()">
+            <span class="hidden-sm-down text-muted">Blank</span><i class="fa fa-tv hidden-md-up"></i>
+        </button>        
+        
 
         <!-- 
             the second navbar is hidden at first 
@@ -212,6 +213,51 @@
                 @endif
             </span>
 
+
+            {{-- configuration menu --}}
+            <div class="btn-group dropup">
+
+                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                     id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="text-muted hidden-sm-down">Config </span><i class="fa fa-cog"></i>
+                </button>
+
+                <div class="dropdown-menu dropdown-menu-right dropdown-menu-presentation" aria-labelledby="dropdownMenuButton">
+
+                    <h6 class="dropdown-header">Show Configuration</h6>
+
+                    <a      href="#" class="dropdown-item" onclick="changeBlankSlidesConfig()" 
+                            title="Show empty slides between plan items">
+                        <i id="configBlankSlidesItem" class="fa fa-square-o">&nbsp;</i>insert blank slides between items?</a>
+
+                    <a      href="#" class="dropdown-item" onclick="changeOfflineModeConfig()" 
+                            title="Work off-line and get slides from local storage instead of from the server">
+                        <i id="configOfflineModeItem" class="fa fa-square-o">&nbsp;</i>use locally cached slides?</a>
+
+                    <a      href="#" class="dropdown-item small" onclick="clearLocalCache();"
+                            title="delete all locally cached items">
+                        <i class="fa fa-trash-o red"></i>&nbsp;</i>delete all locally cached slides</a>
+
+
+                    <div class="dropdown-divider"></div>
+                    <h6 class="dropdown-header">Synchronisation Settings</h6>
+
+                    <a      href="#" class="dropdown-item{{ env('PRESENTATION_ENABLE_SYNC', 'false') ? '' : ' disabled' }}" 
+                            onclick="changeSyncPresentation()" title="Synchronise this presentation with Main Presenter">
+                        <i id="syncPresentationIndicator" class="fa fa-square-o">&nbsp;</i>Sync presentation?
+                        <span class="small">&nbsp;with:</span>
+                        <span class="small showPresenterName"> ({{ $serverSideMainPresenter ? $serverSideMainPresenter['name'] : 'none' }})</span>
+                    </a>
+
+                    <a      href="#" class="dropdown-item{{ env('PRESENTATION_ENABLE_SYNC', 'false') ? '' : ' disabled' }}" 
+                            onclick="changeMainPresenter()" title="Become Main Presenter controlling other presentations">
+                        <i id="setMainPresenterItem" class="fa fa-square-o">&nbsp;</i>Be Main Presenter?
+                        <span class="small showPresenterName"> ({{ $serverSideMainPresenter ? $serverSideMainPresenter['name'] : 'none' }})</span>
+                    </a>
+
+                </div>
+            </div>
+
             
             <!-- 
                 DropUP Menu Button
@@ -222,7 +268,7 @@
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Go to
                 </button>
-                <div class="dropdown-menu dropdown-menu-right bg-faded">
+                <div class="dropdown-menu dropdown-menu-right dropdown-menu-presentation">
                     @foreach ($items as $menu_item)
                         <a class="dropdown-item nowrap{{ $item->id == $menu_item->id ? ' bg-info' : '' }}"
                             id="menu-item-seq-no-{{ $menu_item->seq_no }}"
@@ -254,6 +300,7 @@
                 </div>
 
             </div>
+
 
             <!-- help button to show modal -->
             <a href="#" title="show keyboard shortcuts" data-toggle="modal" data-target=".help-modal"
@@ -305,56 +352,6 @@
                         class="dropdown-item" href="#"><i class="fa fa-align-center fa-lg"></i> Center</a>
                 </div>
             </div>
-
-            <form class="form-inline nav-item m-l-1 pull-xs-left">
-                <div class="checkbox" style="line-height: 2" onmouseup="configBlankSlides()">
-                    <label class="checkbox-inline c-input c-checkbox btn btn-sm btn-info" title="Show empty slides between items?">
-                        <input type="checkbox" id="configBlankSlides">
-                            <span class="c-indicator"></span>&nbsp;insert blank slides?
-                    </label>
-                </div>
-            </form>
-
-            <form class="form-inline nav-item m-l-1 pull-xs-left">
-                <div class="checkbox" style="line-height: 2" onmouseup="configOfflineMode()">
-                    <label class="checkbox-inline c-input c-checkbox btn btn-sm btn-info" title="Get cached slides from local storage instead of from the server?">
-                        <input type="checkbox" id="configOfflineMode">
-                            <span class="c-indicator"></span>&nbsp;use cached items?
-                    </label>
-                </div>
-            </form>
-            <a      class="m-l-0 nav-item btn btn-sm btn-outline-danger pull-xs-left"
-                    href="#" onclick="clearLocalCache();" role="button" 
-                    title="delete all locally cached items" id="clear-local-cache">
-                <i class="fa fa-trash-o fa-lg"></i>
-            </a>
-
-
-        @if( env('PRESENTATION_ENABLE_SYNC', 'false') )
-            {{-- become MAIN presenter, if possible --}}
-            <form class="form-inline nav-item m-l-1 pull-xs-left">
-                <div class="checkbox" style="line-height: 2" onmouseup="configMainPresenter()">
-                    <label class="checkbox-inline c-input c-checkbox btn-sm btn-info" title="Become Main Presenter controlling other presentations">
-                        <input type="checkbox" id="configMainPresenter">
-                            <span class="c-indicator"></span>&nbsp;Main Presenter
-                    </label>
-                </div>
-                <span class="small showPresenterName"> ({{ $serverSideMainPresenter ? $serverSideMainPresenter['name'] : 'none' }})</span>
-            </form>
-
-            {{-- synchronise this presentation with the Main Presenter --}}
-            <form class="form-inline nav-item m-l-1">
-                <div class="checkbox" style="line-height: 2" onmouseup="configSyncPresentation()">
-                    <label class="checkbox-inline c-input c-checkbox btn-sm btn-info" title="Synchronise this presentation with Main Presenter">
-                        <input type="checkbox" id="configSyncPresentation">
-                            <span class="c-indicator"></span>&nbsp;Sync Presentation
-                    </label>
-                </div>
-                <span class="small">&nbsp;with:</span>
-                <span class="small showPresenterName"> ({{ $serverSideMainPresenter ? $serverSideMainPresenter['name'] : 'none' }})</span>
-            </form>
-        @endif
-
 
 
         </div>

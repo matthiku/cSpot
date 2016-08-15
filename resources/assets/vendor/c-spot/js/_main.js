@@ -92,6 +92,34 @@ function closeMyModal(selector) {
 
 
 
+/*
+    changes the class of the selected html element so that
+    it either shows a checked tickbox or an unchecked tickbox
+*/
+function changeCheckboxIcon(selector, onOrOff)
+{
+    var unchecked = "fa-square-o";
+    var checked = "fa-check-square-o";
+
+    if (onOrOff) {
+        $(selector).removeClass( unchecked );
+        $(selector).addClass( checked );
+    } else {
+        $(selector).removeClass( checked );
+        $(selector).addClass( unchecked );
+    }
+}
+
+
+/*
+    Gets the value from the Local Storage for a given key
+    or returns a default value if the key doesn't exist
+*/
+function getLocalStorageItem(key, defaultValue)
+{
+    return localStorage.getItem(key) ? localStorage.getItem(key) : defaultValue;
+}
+
 
 
 /*\

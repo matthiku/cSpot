@@ -27,7 +27,7 @@
             @endif
             @if ($item->song->chords )
                 <div class="m-b-3">
-                    <pre class="text-song big" id="chords">{{ $item->song->chords }}</pre>
+                    <pre class="text-song" id="chords">{{ $item->song->chords }}</pre>
                 </div>
             @else
                 @if ( count($item->song->files)>0 )
@@ -39,7 +39,7 @@
                     </div>
                 @else
                     (chords missing!)
-                    <pre class="text-song big m-b-3" id="lyrics">{{ $item->song->lyrics }}</pre>
+                    <pre class="text-song m-b-3" id="lyrics">{{ $item->song->lyrics }}</pre>
                 @endif
             @endif
         @endif
@@ -60,7 +60,7 @@
             <div class="col-xl-6" id="bibletext">
                 @foreach ($bibleTexts as $btext)
                     <h3>{{ $btext->display }} ({{ $btext->version_abbreviation }})</h3>
-                    <div class="big">{!! $btext->text !!}</div>
+                    <div>{!! $btext->text !!}</div>
                     <div class="small">{!! $btext->copyright !!}</div>
                     <hr>
                 @endforeach

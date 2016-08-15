@@ -6,6 +6,13 @@
  * (C) M.Kuhs Ireland, 2016
  */
 
+
+/* drop-up menu in presentation*/
+.dropdown-menu-presentation {
+    min-width: 290px;
+    background-color: #c2c2d6;
+}
+
 /* disabled anchors */
 a[disabled] {
     pointer-events: none;
