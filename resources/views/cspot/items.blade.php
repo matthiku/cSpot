@@ -20,7 +20,12 @@
 				} 
 			?>
 
-			<tr id="tr-item-{{ str_replace('.', '-', $item->seq_no) }}" data-item-id="{{ $item->id }}" 
+
+			{{-- check if this is a "FLEO" item - only visible to the leader --}}
+			@if ( (! $item->forLeadersEyesOnly) || Auth::user()->ownsPlan($plan->id) )
+
+			<tr id="tr-item-{{ str_replace('.', '-', $item->seq_no) }}" 
+				data-item-id="{{ $item->id }}" data-item-update-action="{{ route('cspot.api.items.update', $item->id) }}"
 				data-old-song-id="{{ $item->song_id  ?  $item->song->id 	  : 'NULL' }}"
 				class="{{ 		   $item->deleted_at ? 'trashed text-muted'   : '' }} 
 					   {{ $newest_item_id==$item->id ? 'bg-khaki newest-item' : '' }}">
@@ -31,8 +36,18 @@
 					<i class="p-r-1 fa fa-bars">
 				</td>
 
+				{{-- for leader's eyes only? --}}
+				@if( Auth::user()->ownsPlan($plan->id) )
+					<td 	class="hidden-sm-down link" onclick="changeForLeadersEyesOnly(this)" 
+							data-value="{{ $item->forLeadersEyesOnly }}"
+							title="Make item visible for leader's eyes only (useful for personal notes etc.)">
+						{!! $item->forLeadersEyesOnly ? '<i class="fa fa-eye-slash"></i>' : '<i class="fa fa-eye"></i>' !!}
+					</td>
+				@endif
 
-				<td class="hidden-md-down center always-print show-songbook-ref" 
+
+				{{-- Song Details editable via popup dialog --}}
+				<td class="hidden-md-down center always-print link show-songbook-ref" 
 					data-toggle="modal" data-target="#searchSongModal" data-item-id="{{ $item->id }}"
 					data-plan-id="update-song" data-seq-no="{{ $item->seq_no }}" 
 					data-action-url="{!! route('cspot.api.items.update', $item->id) !!}"
@@ -53,7 +68,7 @@
 
 
 				{{-- show separate column for song title and comment on large devices --}}
-				<td class="hidden-lg-down show-song-title" 
+				<td class="hidden-lg-down link show-song-title" 
 					@if ($item->song_id)
 						title="{{ substr($item->song->lyrics,0,500) }}" data-toggle="tooltip" 
 						@if ($item->seq_no<10)
@@ -266,6 +281,7 @@
 
 
 			</tr>
+			@endif {{-- (is it a FLEO item?) --}}
 
 	    @endforeach
 

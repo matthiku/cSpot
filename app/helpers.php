@@ -305,12 +305,26 @@ function MPsongList()
  */
 function nextItem($plan_id, $item_id, $direction)
 {
-
     // get the full plan
     $plan    = Plan::find($plan_id);
 
-    // get all the items for this plan
-    $items   = $plan->items()->orderBy('seq_no')->get();
+    // items list sort order depending on direction
+    $orderBy = "asc";
+    if ($direction=='previous')
+        $orderBy = 'desc';
+
+    if ( Auth::user()->ownsPlan($plan_id) ) {
+        // get all the items for this plan
+        $items = $plan->items()
+            ->orderBy('seq_no', $orderBy)
+            ->get();
+    } else {
+        // get all items but not "FLEO" items (for leaders eyes only)
+        $items = $plan->items()
+            ->where('forLeadersEyesOnly', false)
+            ->orderBy('seq_no', $orderBy)
+            ->get();
+    }
 
     // perhaps the item_id is a seq no
     $Ar_seq_no = explode('-', $item_id);
@@ -362,12 +376,16 @@ function nextItem($plan_id, $item_id, $direction)
 
     // find the new item id
     foreach ($items as $item) {
-        if ($item->seq_no == $new_seq_no) {
+        if     ($direction == 'next'     && $item->seq_no >= $new_seq_no) 
             return $item->id;
-        }
+        elseif ($direction == 'previous' && $item->seq_no <= $new_seq_no)
+            return $item->id;        
+        elseif ($item->seq_no == $new_seq_no) 
+            return $item->id;
     }
     return $item->id;
 }
+
 
 function getItemTitle($item, $direction='next')
 {

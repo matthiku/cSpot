@@ -270,17 +270,19 @@
                 </button>
                 <div class="dropdown-menu dropdown-menu-right dropdown-menu-presentation">
                     @foreach ($items as $menu_item)
-                        <a class="dropdown-item nowrap{{ $item->id == $menu_item->id ? ' bg-info' : '' }}"
-                            id="menu-item-seq-no-{{ $menu_item->seq_no }}"
-                            href="{{ url('cspot/items/').'/'.$menu_item->id.'/present' }}">
-                            <small class="hidden-md-down">{{ $menu_item->seq_no }}</small> &nbsp; 
-                            @if ($menu_item->song_id && $menu_item->song->title)
-                                <i class="fa fa-music">&nbsp;</i><strong>{{ $menu_item->song->title }}</strong>
-                            @else
-                                {{ substr($menu_item->comment, 0, 45) }}
-                            @endif
-                            <sup id="in-cache-seq-no-{{ $menu_item->seq_no }}" style="display: none">*</sup>
-                        </a>
+                        @if (! $menu_item->forLeadersEyesOnly)
+                            <a class="dropdown-item nowrap{{ $item->id == $menu_item->id ? ' bg-info' : '' }}"
+                                id="menu-item-seq-no-{{ $menu_item->seq_no }}"
+                                href="{{ url('cspot/items/').'/'.$menu_item->id.'/present' }}">
+                                <small class="hidden-md-down">{{ $menu_item->seq_no }}</small> &nbsp; 
+                                @if ($menu_item->song_id && $menu_item->song->title)
+                                    <i class="fa fa-music">&nbsp;</i><strong>{{ $menu_item->song->title }}</strong>
+                                @else
+                                    {{ substr($menu_item->comment, 0, 45) }}
+                                @endif
+                                <sup id="in-cache-seq-no-{{ $menu_item->seq_no }}" style="display: none">*</sup>
+                            </a>
+                        @endif
                     @endforeach
                     @if (Auth::user()->ownsPlan($item->plan_id))
                         <div class="dropdown-divider"></div>

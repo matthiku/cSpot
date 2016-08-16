@@ -49,24 +49,26 @@ $modalContent = '
         </button>
         <div class="dropdown-menu dropdown-menu-right bg-faded">
             @foreach ($items as $menu_item)
-                <a class="dropdown-item nowrap 
-                    @if ($item->id == $menu_item->id)
-                        bg-info
-                    @endif
-                    @if (! $menu_item->song_id)
-                        hidden-md-down
-                    @endif
-                    "
-                    onclick="$('#show-spinner').modal({keyboard: false});" 
-                    href="{{ url('cspot/items/').'/'.$menu_item->id.'/'.$type }}">
-                    <small class="hidden-xs-down">{{ $menu_item->seq_no }} &nbsp;</small> 
-                    @if ($menu_item->song_id && $menu_item->song->title)
-                        <i class="fa fa-music">&nbsp;</i><strong>{{ $menu_item->song->title }}</strong>
-                    @else
-                        {{ $menu_item->comment }}
-                    @endif
-                    <sup id="in-cache-seq-no-{{ $menu_item->seq_no }}" style="display: none">*</sup>
-                </a>
+                @if (! $menu_item->forLeadersEyesOnly)
+                    <a class="dropdown-item nowrap 
+                        @if ($item->id == $menu_item->id)
+                            bg-info
+                        @endif
+                        @if (! $menu_item->song_id)
+                            hidden-md-down
+                        @endif
+                        "
+                        onclick="$('#show-spinner').modal({keyboard: false});" 
+                        href="{{ url('cspot/items/').'/'.$menu_item->id.'/'.$type }}">
+                        <small class="hidden-xs-down">{{ $menu_item->seq_no }} &nbsp;</small> 
+                        @if ($menu_item->song_id && $menu_item->song->title)
+                            <i class="fa fa-music">&nbsp;</i><strong>{{ $menu_item->song->title }}</strong>
+                        @else
+                            {{ $menu_item->comment }}
+                        @endif
+                        <sup id="in-cache-seq-no-{{ $menu_item->seq_no }}" style="display: none">*</sup>
+                    </a>
+                @endif
             @endforeach
             @if (Auth::user()->ownsPlan($item->plan_id))
                 <div class="dropdown-divider"></div>

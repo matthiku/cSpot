@@ -95,20 +95,24 @@
                             @endif
                             <hr>
                             @foreach ($items as $menu_item)
-                                <a class="dropdown-item nowrap {{ $item->id==$menu_item->id ? 'bg-info' : '' }}"
-                                    onclick="showSpinner()" 
-                                    href="{{ url('cspot/plans/'.$plan->id.'/items').'/'.$menu_item->id.'/edit' }}">
-                                    <small class="hidden-xs-down">{{ $menu_item->seq_no }} &nbsp;</small> 
-                                    @if ($menu_item->song_id && $menu_item->song->title)
-                                        <i class="fa fa-music">&nbsp;</i><strong>{{ $menu_item->song->title }}</strong>
-                                    @else
-                                        {{ $menu_item->comment }}
-                                    @endif
-                                </a>
+                                @if (! $menu_item->forLeadersEyesOnly)
+                                    <a class="dropdown-item nowrap {{ $item->id==$menu_item->id ? 'bg-info' : '' }}"
+                                        onclick="showSpinner()" 
+                                        href="{{ url('cspot/plans/'.$plan->id.'/items').'/'.$menu_item->id.'/edit' }}">
+                                        <small class="hidden-xs-down">{{ $menu_item->seq_no }} &nbsp;</small> 
+                                        @if ($menu_item->song_id && $menu_item->song->title)
+                                            <i class="fa fa-music">&nbsp;</i><strong>{{ $menu_item->song->title }}</strong>
+                                        @else
+                                            {{ $menu_item->comment }}
+                                        @endif
+                                    </a>
+                                @endif
                             @endforeach
                         </div>
 
                     </span>
+
+
                 </h2>
                 <h5 class="hidden-md-down">
                     of the 
@@ -123,22 +127,41 @@
 
             </div>
 
+
             <!-- action buttons -->
-            <div class="col-md-6 text-xs-right nowrap">
+            <div    class="col-md-6 text-xs-right nowrap"
+                    data-item-id="{{ $item->id }}" 
+                    data-item-update-action="{{ route('cspot.api.items.update', $item->id) }}">
 
                 @if( Auth::user()->ownsPlan($item->plan_id) )
                     &nbsp;
                     <span class="save-buttons submit-button" onclick="showSpinner()" style="display: none;">
                         {!! Form::submit('Save changes'); !!}
                     </span>
+
+                    {{-- is this item for leader's eyes only? --}}
+                    <a      href="#" class="hidden-sm-down link" onclick="changeForLeadersEyesOnly(this)" 
+                            data-value="{{ $item->forLeadersEyesOnly }}"
+                            title="Make item visible for {{ $item->forLeadersEyesOnly ? 'everyone': "leader's eyes only (useful for personal notes etc.)" }}">
+                        @if ($item->forLeadersEyesOnly)
+                            <i class="fa fa-eye-slash"></i>
+                        @else
+                            <i class="fa fa-eye"></i>
+                        @endif
+                        <small style="display: {{ $item->forLeadersEyesOnly ? 'initial' : 'none' }}">(for your eyes only)</small>
+                        <small style="display: {{ $item->forLeadersEyesOnly ? 'none' : 'initial' }}">(item visible to all)</small>
+                    </a>
                 @endif
+
                 @if ($item->updated_at)
                     <br>
                     <small class="hidden-sm-down">Last updated:
                         {{ Carbon::now()->diffForHumans( $item->updated_at, true ) }} ago
                     </small>
                 @endif
+
             </div>
+
 
         @else
             <div class="row">

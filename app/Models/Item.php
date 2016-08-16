@@ -21,6 +21,7 @@ class Item extends Model
         'seq_no',
         'comment',
         'key',
+        'forLeadersEyesOnly'
     ];
 
     protected $hidden = [

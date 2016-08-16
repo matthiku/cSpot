@@ -40006,20 +40006,29 @@ $(document).ready(function() {
 
 
 
-/*
-    allow Admins/Authors/Plan owners to delete an attached file (image)    
+
+/*\__________________________________________________________________________  ITEM  Details Page
+\*/
+
+
+
+/* allow Admins/Authors/Plan owners to delete an attached file (image)    
 */
 function deleteFile(id)
 {
-    // TODO: Prompt for confirmation as this is irrevocable:
-    if (! confirm('Are you sure to finally remove this file?')) {return;}
+    // Prompt for confirmation as this is irrevocable:
+    if ( ! confirm('Are you sure to finally remove this file?') ) 
+        return;
+
     // get token from form field
     $.ajax({
         url:    '/cspot/files/'+id+'/delete', 
         method: 'DELETE',
-    }).done(function(data) {
+    })
+    .done(function(data) {
         $('#file-'+id).html(data.data);
-    }).fail(function(data) {
+    })
+    .fail(function(data) {
         if (data.responseJSON) {
             alert("image deletion failed! Error: "+data.responseJSON.data+'.  Code:'+data.responseJSON.status);
         }
@@ -40029,8 +40038,7 @@ function deleteFile(id)
     });
 }
 
-/*  
-    unlink FILE from its item
+/* unlink FILE from its item
 */
 function unlinkFile(item_id, file_id)
 {
@@ -40050,8 +40058,7 @@ function unlinkFile(item_id, file_id)
 }
 
 
-/*  
-    unlink SONG from its item
+/* unlink SONG from its item
 */
 function unlinkSong(item_id, song_id, plan_url)
 {
@@ -40074,10 +40081,14 @@ function unlinkSong(item_id, song_id, plan_url)
 
 
 
-/**
- * Record a user's availability for a certain plan
- * (called when user clicks on the 'available' icon on plans.blade.php)
- */
+
+/*\____________________________________________________________________________  PLAN  Details Page
+\*/
+
+
+
+/* Record a user's availability for a certain plan
+ * (called when user clicks on the 'available' icon on plans.blade.php) */
 function userAvailableForPlan(that, plan_id) {
     // make sure the tooltip is hidden now
     $(that).parent().parent().tooltip('hide')
@@ -40108,47 +40119,8 @@ function userAvailableForPlan(that, plan_id) {
 
 
 
-/* 
-    Called from the Modal popup on the FILES LIST page, 
-    this function will save the updated file information via AJAX
-*/
-function updateFileInformation()
-{
-    // get the old data
-    var fileID   = $('#file-id').val();
-    var dispElem = $('#file-'+fileID);
-    var oldData  = $(dispElem).data('content');
-
-    // get the new data
-    var newFn = $('#filename').val()
-    var newFC = $('#file_category_id').val()
-
-    // compare
-    if (oldData.file_category_id == newFC 
-             && oldData.filename == newFn) return;
-
-    // get the action URL
-    var actionURL = $('#file-id').data('action-url')+fileID;
-
-    // update via AJAX 
-    $.post( actionURL, { id: fileID, filename: newFn, file_category_id: newFC })
-        .done(function(data) {
-            dispElem.find('.fileshow-filename').text(newFn);
-            dispElem.find('.fileshow-category').text($('#file_category_id option:selected').text());
-        })
-        .fail(function(data) {
-            dispElem.find('.fileshow-filename').text("Update failed! Please notify admin! " + JSON.stringify(data));
-        });
-    
-    // close the modal and update the data on the screen
-    $('#fileEditModal').modal('hide');
-}
-
-
-/*
-    User has selected WHAT he wants to insert, 
-    now we present the appropriate input elements
-*/
+/* User has selected WHAT he wants to insert, 
+   now we present the appropriate input elements */
 function showModalSelectionItems(what)
 {
     $('.modal-pre-selection').hide();               // hide all pre-selection parts of the modal
@@ -40160,8 +40132,8 @@ function showModalSelectionItems(what)
         $('#searchForSongsSubmit').show();
     }
 }
-/* 
-    Reset the song search form
+
+/* Reset the song search form
 */
 function resetSearchForSongs() 
 {
@@ -40181,11 +40153,9 @@ function resetSearchForSongs()
     $('#haystack').val('');
 }
 
-/* 
-    Called from the Modal popup on the PLAN OVERVIEW page, 
-    this function searches for songs, presents a list and/or 
-    song history information; uses AJAX to do the full-text search
-*/
+/* Called from the Modal popup on the PLAN details page, 
+   this function searches for songs, presents a list and/or 
+   song history information; uses AJAX to do the full-text search */
 function searchForSongs(that)
 {    
     // are we still searching or has the user already selected a song?
@@ -40320,14 +40290,12 @@ function searchForSongs(that)
 
 }
 
-
-/*
-    execute the update via AJAX and show the new data on the page
+/* execute the update via AJAX and show the new data on the page
 */
 function updateSong(song_id)
 {
     $('#searchSongModal').modal('hide');
-    console.log('closing song form, got song id '+song_id);
+    ;;;console.log('closing song form, got song id '+song_id);
     var item_id   = $('#beforeItem_id').val();
     var seq_no    = $('#seq-no').val();
     var myCell    = $('#tr-item-'+seq_no.replace('.','-'));
@@ -40362,8 +40330,7 @@ function updateSong(song_id)
 
 
 
-/*
-    remove a single item
+/* remove a single item
 */
 function removeItem(that)
 {
@@ -40427,8 +40394,8 @@ function addScriptureRef(that)
     // close modal
     $('#searchSongModal').modal('hide');
 }
-/*
-    show comment text again
+
+/* show comment text again
 */
 function resetCommentText(id, newText) {
     that = $('#'+id).children(".comment-cell");
@@ -40436,6 +40403,95 @@ function resetCommentText(id, newText) {
     if (! newText)      // only show 'edit' icon when comment is empty
         $(that).children(".fa-pencil").css('display', 'inline');
 }
+
+
+/* FLEO - Plan leader can mark an item as "for leader's eyes only"
+*/
+function changeForLeadersEyesOnly(that) {
+
+    // get data from parent html element (tr)
+    var data = $(that).parent().data();
+    if (! data) return; // should not happen!
+
+    // construct values for the AJAX call
+    var actionURL = data.itemUpdateAction;
+    var value     = $(that).data('value') ? '0' : '1'; // reverse the current value
+    var id        = 'forLeadersEyesOnly-item-id-' + data.itemId;
+
+    $(that).children('i').removeClass('fa-eye');
+    $(that).children('i').removeClass('fa-eye-slash');
+    $(that).children('i').addClass('fa-spin fa-spinner');
+
+    // AJAX update
+    $.post( actionURL, 
+        {
+            value : value,
+            id    : id,
+        })
+        .done( function(data) 
+        {
+            $(that).children('i').removeClass('fa-spin fa-spinner');
+            // show correct icon according to new setting
+            $(that).children('i').addClass( data==1 ? 'fa-eye-slash': 'fa-eye');
+            // reflect new setting also in the data attribute
+            $(that).attr('data-value', data); $(that).data('value', data);
+            // on the Item Detail page, also show the right text for the new setting
+            $(that).children('small').toggle();
+        })
+        .fail( function(data) 
+        {
+            $(that).children('i').removeClass('fa-eye');
+            $(that).children('i').removeClass('fa-eye-slash');
+            $(that).children('i').addClass('fa-exclamation-triangle');
+            console.log('update of forLeadresEyesOnly failed!!');
+        });
+}
+
+
+
+
+
+/* Called from the Modal popup on the FILES LIST page, 
+   this function will save the updated file information via AJAX */
+function updateFileInformation()
+{
+    // get the old data
+    var fileID   = $('#file-id').val();
+    var dispElem = $('#file-'+fileID);
+    var oldData  = $(dispElem).data('content');
+
+    // get the new data
+    var newFn = $('#filename').val()
+    var newFC = $('#file_category_id').val()
+
+    // compare
+    if (oldData.file_category_id == newFC 
+             && oldData.filename == newFn) return;
+
+    // get the action URL
+    var actionURL = $('#file-id').data('action-url')+fileID;
+
+    // update via AJAX 
+    $.post( actionURL, { id: fileID, filename: newFn, file_category_id: newFC })
+        .done(function(data) {
+            dispElem.find('.fileshow-filename').text(newFn);
+            dispElem.find('.fileshow-category').text($('#file_category_id option:selected').text());
+        })
+        .fail(function(data) {
+            dispElem.find('.fileshow-filename').text("Update failed! Please notify admin! " + JSON.stringify(data));
+        });
+    
+    // close the modal and update the data on the screen
+    $('#fileEditModal').modal('hide');
+}
+
+
+
+/*\
+|*#===========================================================================================    END   OF SPA UTILITIES
+\*/
+
+
 
 
 
