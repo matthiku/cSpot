@@ -1,10 +1,12 @@
 # The Church Service Planning Online Tool
-- Create Order of Services with all relevant data
+- Frontend: Responsive design, runs on *any* device that supports a browser with javascript!
+- Create Order of Services with all relevant data (team (leaders, musicians, other functions), resources, songs, free slides, embedded videoclips etc)
 - Customize for your church and allow others to participate
 - Manage your team (staff) with their roles; also manage the resources needed for a service (rooms, devices etc.)
 - Present your songs in a slideshow fashion via a projector 
 - The slideshow can be done off-line with all slides downlaoded to the local computer
 - Control the slide show from **any device** using a Chromecast device attached to your projector
+- Or control the presentation from a small device (e.g. smartphone) that syncs with the main device attached to the projector!
 - Provide chords, lyrics and sheetmusic for musicians on all kinds of devices
 - Allows extensive collaboration and input from all users with full rights management
 - Allows for a _synchronised presentation_ of lyrics, chords or sheet music _accross all designated devices!_

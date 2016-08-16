@@ -8,7 +8,7 @@
 @section('content')
 
     <div class="row">
-        <div class="col-lg-6 col-lg-offset-3 signin-body">
+        <div class="col-lg-6 offset-lg-3 signin-body">
 
             @include('layouts.flashing')
             <form class="form-horizontal" role="form" method="POST" action="{{ url('password/reset') }}">
@@ -60,7 +60,7 @@
                 </div>
 
                 <div class="form-group">
-                    <div class="col-md-6 col-md-offset-4">
+                    <div class="col-md-6 offset-md-4">
                         <button type="submit" class="btn btn-primary">
                             <i class="fa fa-btn fa-refresh"></i> Reset Password
                         </button>

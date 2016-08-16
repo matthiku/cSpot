@@ -12,7 +12,7 @@
 
 
     <div class="row">
-        <div class="col-lg-6 col-lg-offset-3 signin-body">
+        <div class="col-lg-6 offset-lg-3 signin-body">
 
             @include('layouts.flashing')
 
@@ -30,7 +30,7 @@
                 <h3 class="card-header">Or register here:</h3>
 
                 <div class="row form-group{{ $errors->has('first_name') ? ' has-error' : '' }}">
-                    <label class="col-md-3 col-md-offset-1 control-label">First Name</label>
+                    <label class="col-md-3 offset-md-1 control-label">First Name</label>
 
                     <div class="col-md-6">
                         <input required type="text" class="form-control" name="first_name" value="{{ old('first_name') }}">
@@ -44,7 +44,7 @@
                 </div>
 
                 <div class="row form-group{{ $errors->has('last_name') ? ' has-error' : '' }}">
-                    <label class="col-md-3 col-md-offset-1 control-label">Last Name</label>
+                    <label class="col-md-3 offset-md-1 control-label">Last Name</label>
 
                     <div class="col-md-6">
                         <input required type="text" class="form-control" name="last_name" value="{{ old('last_name') }}">
@@ -58,7 +58,7 @@
                 </div>
 
                 <div class="row form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-                    <label class="col-md-3 col-md-offset-1 control-label">E-Mail Address</label>
+                    <label class="col-md-3 offset-md-1 control-label">E-Mail Address</label>
 
                     <div class="col-md-6">
                         <input required type="email" class="form-control" name="email" value="{{ old('email') }}">
@@ -72,7 +72,7 @@
                 </div>
 
                 <div class="row form-group{{ $errors->has('password') ? ' has-error' : '' }}">
-                    <label class="col-md-3 col-md-offset-1 control-label">Password</label>
+                    <label class="col-md-3 offset-md-1 control-label">Password</label>
 
                     <div class="col-md-6">
                         <input required type="password" class="form-control" name="password">
@@ -86,7 +86,7 @@
                 </div>
 
                 <div class="row form-group{{ $errors->has('password_confirmation') ? ' has-error' : '' }}">
-                    <label class="col-md-3 col-md-offset-1 control-label">Confirm Password</label>
+                    <label class="col-md-3 offset-md-1 control-label">Confirm Password</label>
 
                     <div class="col-md-6">
                         <input required type="password" class="form-control" name="password_confirmation">
@@ -100,7 +100,7 @@
                 </div>
 
                 <div class="row form-group">
-                    <div class="col-md-2 col-md-offset-8">
+                    <div class="col-md-2 offset-md-8">
                         <button type="submit" class="btn btn-primary form-btn">
                             <i class="fa fa-btn fa-envelope"></i> Register
                         </button>

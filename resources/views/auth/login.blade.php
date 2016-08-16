@@ -11,7 +11,7 @@
 
 
     <div class="row">
-        <div class="col-lg-6 col-lg-offset-3 signin-body">
+        <div class="col-lg-6 offset-lg-3 signin-body">
 
             @include('layouts.flashing')
             
@@ -28,7 +28,7 @@
                 <h2 class="card-header">Or sign in via email:</h2>
 
                 <div class="row form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-                    <label class="col-md-3 col-md-offset-1 control-label">E-Mail Address</label>
+                    <label class="col-md-3 offset-md-1 control-label">E-Mail Address</label>
 
                     <div class="col-md-6">
                         <input required type="email" class="form-control" name="email" value="{{ old('email') }}">
@@ -42,7 +42,7 @@
                 </div>
 
                 <div class="row form-group{{ $errors->has('password') ? ' has-error' : '' }}">
-                    <label class="col-md-3 col-md-offset-1 control-label">Password</label>
+                    <label class="col-md-3 offset-md-1 control-label">Password</label>
 
                     <div class="col-md-6">
                         <input required type="password" class="form-control" name="password">
@@ -56,7 +56,7 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-md-6 col-md-offset-4">
+                    <div class="col-md-6 offset-md-4">
                         <div class="checkbox">
                             <label>
                                 <input type="checkbox" name="remember"> Remember Me
@@ -66,7 +66,7 @@
                 </div>
 
                 <div class="row form-group">
-                    <div class="col-md-6 col-md-offset-4">
+                    <div class="col-md-6 offset-md-4">
                         <button type="submit" class="btn btn-primary">
                             <i class="fa fa-btn fa-sign-in"></i> Login
                         </button>
