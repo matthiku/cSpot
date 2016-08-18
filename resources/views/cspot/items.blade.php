@@ -141,6 +141,18 @@
 				</td>
 
 
+				{{-- show personal notes as popup --}}
+				<td {{$onclick}} class="hidden-sm-down center link"
+					title="Your Private Notes:{!! $item->itemNotes->where('user_id', Auth::user()->id)->first() ? "\n".$item->itemNotes->where('user_id', Auth::user()->id)->first()->text."\n" : "\nyour private notes\n" !!}(Click to edit)"
+					data-toggle="tooltip" data-placement="bottom"
+					data-template='
+							<div class="tooltip" role="tooltip">
+								<div class="tooltip-arrow"></div>
+								<pre class="center tooltip-inner tooltip-medium"></pre>
+							</div>'>
+					{!! $item->itemNotes->where('user_id', Auth::user()->id)->first() ? '<i class="fa fa-sticky-note-o"> </i>' : '' !!}
+				</td>
+
 
 				<td class="hidden-sm-down center" title="Lyrics with chords for guitars">
 					@if ($item->song_id)
@@ -150,6 +162,7 @@
 						@endif
 					@endif
 				</td>
+				
 
 				<td class="hidden-sm-down center"  title="Sheet music attached to the song"
 					@if ( $item->song_id && count($item->song->files)>0 )

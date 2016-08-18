@@ -20,6 +20,7 @@ $(document).ready(function() {
      * (see http://www.appelsiini.net/projects/jeditable)
      */
     $('.editable').editable(__app_url + '/cspot/api/items/update', {
+        onblur      : 'cancel',
         style       : 'display: inline',
         placeholder : '<span class="fa fa-pencil text-muted">&nbsp;</span>',
         data        : function(value, settings) {
@@ -44,7 +45,31 @@ $(document).ready(function() {
     $('.editable-resource').editable(__app_url + '/cspot/api/plans/resource/update', {
         style       : 'display: inline',
         placeholder : '<span class="fa fa-pencil text-muted">&nbsp;</span>',
+        event       : 'mouseover',
+        onblur      : 'cancel',
+    });
+
+    // comment field or private notes on the Item Detail page
+    $('.editable-item-field').editable(__app_url + '/cspot/api/items/update', {
+        type        : 'textarea',
+        event       : 'mouseover',
+        event       : 'mouseover',
+        width       : '100%',
+        rows        : '3',
+        cancel      : 'Cancel',
+        submit      : 'Save',
         onblur      : 'ignore',
+        indicator   : '<span class="fa fa-refresh fa-spin"> </span> saving...',
+        placeholder : '<span class="fa fa-edit">&nbsp;</span>',
+    });
+
+    $('.editable-item-field-present').editable(__app_url + '/cspot/api/items/update', {
+        type        : 'textarea',
+        cancel      : 'Cancel',
+        submit      : 'Save',
+        onblur      : 'cancel',
+        indicator   : '<span class="fa fa-refresh fa-spin"> </span> saving...',
+        placeholder : '<span class="fa fa-edit">&nbsp;</span>',
     });
 
 

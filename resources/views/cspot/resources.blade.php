@@ -73,10 +73,10 @@
                 <td class="hidden-xs-down" scope="row">
                     <span id="comment-resource-id-{{ $resource->pivot->id }}" class="editable-resource comment-textcontent hover-show">{{ $resource->pivot->comment }}</span>
 
-                    {{-- show editing icon only when comment is not empty and when hovering over it --}}
+                    {{-- show editing icon only when comment is not empty and when hovering over it 
                     @if ($resource->pivot->comment)
                         <span class="hover-only fa fa-pencil text-muted"></span>
-                    @endif
+                    @endif--}}
                 </td>
 
                 <!-- row ACTIONS -->

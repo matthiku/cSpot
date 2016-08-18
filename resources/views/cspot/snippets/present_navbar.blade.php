@@ -86,9 +86,9 @@ $modalContent = '
                 </a>
             @endif
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" id="go-back"
+            <a      class="dropdown-item" id="go-back"
                     onclick="$('#show-spinner').modal({keyboard: false});" 
-                href="{{ url('cspot/plans/'.$item->plan_id) }}">
+                    href="{{ url('cspot/plans/'.$item->plan_id) }}">
                 <i class="fa fa-undo"></i>
                 Back to plan overview
                 <small class="pull-xs-right">(* = item in local cache)</small>
@@ -114,6 +114,7 @@ $modalContent = '
         @endif
     </div>
 
+
     <!-- 
         help button 
     -->
@@ -121,6 +122,29 @@ $modalContent = '
         class="hidden-sm-down pull-xs-right btn btn-sm btn-outline-success m-r-1">
     <i class="fa fa-question-circle fa-lg"></i></a>
 
+
+    <!-- 
+        Personal Notes 
+    -->
+    <div class="dropup hidden-sm-down pull-xs-right m-r-1">
+        <button type="button" class="btn btn-sm btn-success dropdown-toggle" title="Your Private Notes" 
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="fa fa-sticky-note-o fa-lg"></i>
+        </button>
+
+        <div class="dropdown-menu dropdown-menu-right bg-faded">
+
+            <h6 class="dropdown-header">Your Private Notes</h6>
+
+            <pre id="notes-item-id-{{ $item->id }}" class="editable-item-field-present center">{{ 
+                $item->itemNotes->where('user_id', Auth::user()->id)->first() ? $item->itemNotes->where('user_id', Auth::user()->id)->first()->text : '' }}</pre>
+
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item disabled" href="#">(Click to edit)</a>
+
+        </div>
+
+    </div>
 
 
     <!-- 

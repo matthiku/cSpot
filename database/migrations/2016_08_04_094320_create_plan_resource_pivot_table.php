@@ -15,7 +15,7 @@ class CreatePlanResourcePivotTable extends Migration
         Schema::create('plan_resource', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('plan_id')->unsigned()->index();
-            $table->foreign('plan_id')->references('id')->on('plans')->onDelete('restrict');
+            $table->foreign('plan_id')->references('id')->on('plans')->onDelete('no action');
             $table->integer('resource_id')->unsigned()->index();
             $table->foreign('resource_id')->references('id')->on('resources')->onDelete('no action');
             $table->text('comment');

@@ -1383,8 +1383,6 @@ function identifyLyricsHeadings(str)
 
 function getLocalConfiguration() 
 {
-
-
     // check if we want to be Main Presenter
     // if the value in LocalStorage was set to 'true', then we activate the checkbox:
     if ( getLocalStorageItem('configMainPresenter', 'false') == 'true' ) {
@@ -1404,7 +1402,7 @@ function getLocalConfiguration()
             // now broadcast our current position!
             sendShowPosition('start');  // will include plan_id and item_id 
         }
-    } 
+    }
 
 
     // check if we want to syncronise our own presentation with the Main Presenter
@@ -1419,8 +1417,9 @@ function getLocalConfiguration()
 
         // save in global namespace
         cSpot.presentation.sync = true;
-    } else 
-    { cSpot.presentation.sync = false; }
+    } 
+    else 
+        cSpot.presentation.sync = false; 
 
 
 
@@ -1446,10 +1445,14 @@ function getLocalConfiguration()
         $('#configShowVersCount').val( howManyVersesPerSlide );
     }
 
+    applyLocallyDefinedTextFormatting();
 
+}
 
-    // read and apply locally defined text format settings
-
+// read and apply locally defined text format settings
+function applyLocallyDefinedTextFormatting() 
+{
+    
     // check if we have changed the default font size and text alignment for the presentation
     textAlign = localStorage.getItem('.text-present_text-align');
     $('.text-present').css('text-align', textAlign);
@@ -1475,7 +1478,6 @@ function getLocalConfiguration()
     if (fontSize) {
         $('.text-song').css('font-size', parseInt(fontSize));
     }
-
 
 }
 

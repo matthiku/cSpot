@@ -43,32 +43,41 @@
     @endif
 
 
+
+
     <!-- 
         header area 
     -->
     <div class="row" id=title-bar>
+
 
         @if (isset($item))
 
             <!-- title text -->
             <div class="col-md-6">
 
+
                 <div class="pull-xs-right">
-                    <!-- hide until changes are made   -->
+
+                    <!-- hide SUBMIT button until changes are made   -->
                     @if( Auth::user()->ownsPlan($item->plan_id) )
-                    <span class="save-buttons submit-button hidden-lg-down" onclick="showSpinner()" style="display: none;">
-                        {!! Form::submit('Save!'); !!}
-                    </span>
+                        <span class="save-buttons submit-button hidden-lg-down" onclick="showSpinner()" style="display: none;">
+                            {!! Form::submit('Save!'); !!}
+                        </span>
                     @endif
+
                 </div>
 
+
                 <h2 class="nowrap">
+
                     <a href="{{ url('cspot/plans/'.$plan->id.'/items/'.$item->id.'/go/previous') }}"
                         onclick="showSpinner()" 
                         class="btn btn-secondary" role="button" id="go-previous-item"
                         title="go to previous item: '{{getItemTitle($item,'previous')}}'" data-toggle="tooltip" data-placement="right">
                         <i class="fa fa-angle-double-left fa-lg"></i>
                     </a> 
+
                     Review Item No {{$seq_no}}
                     <a href="{{ url('cspot/plans/'.$plan->id.'/items/'.$item->id.'/go/next') }}"
                         onclick="showSpinner()" 
@@ -76,6 +85,7 @@
                         title="go to next item: '{{getItemTitle($item)}}'" data-toggle="tooltip" data-placement="right">
                         <i class="fa fa-angle-double-right fa-lg"></i>
                     </a>
+
                     <span class="dropdown">
                         <button class="btn btn-secondary dropdown-toggle" type="button" id="goToAnotherItem" 
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -205,7 +215,12 @@
     </div>
 
 
+
     <hr class="bg-info">
+
+
+
+
 
 
     <!-- 

@@ -125,20 +125,20 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
      */
 
     // update a specific item (this is usually called from a form)
-    Route::put('items/{item_id}',  ['as'=>'cspot.items.update', 'uses'=>'Cspot\ItemController@update']);    
-    Route::post('items',           ['as'=>'cspot.items.store',  'uses'=>'Cspot\ItemController@store']);    
+    Route::put('items/{item_id}',       ['as'=>'cspot.items.update', 'uses'=>'Cspot\ItemController@update']);    
+    Route::post('items',                ['as'=>'cspot.items.store',  'uses'=>'Cspot\ItemController@store']);    
     // add song directly from the song list to a plan
     Route::get('plans/{plan_id}/addsong/{song_id}',                          'Cspot\ItemController@addSong');
     // show form of next or previous item for a plan
-    Route::get('plans/{plan_id}/items/{item_id}/go/{direction}/{chords?}',          'Cspot\ItemController@next');
+    Route::get('plans/{plan_id}/items/{item_id}/go/{direction}/{chords?}',    'Cspot\ItemController@next');
     // show form to create a new item for a plan
-    Route::get('plans/{plan_id}/items/create/before/{item_id}',                                 'Cspot\ItemController@create');    
+    Route::get('plans/{plan_id}/items/create/before/{item_id}',               'Cspot\ItemController@create');    
     // insert new item with song_id 
     Route::get('plans/{plan_id}/items/store/seq_no/{seq_no}/song/{song_id}/{moreItems?}/{beforeItem?}',     'Cspot\ItemController@insertSong');    
     // update item with new song_id 
-    Route::get('plans/{plan_id}/items/update/item/{item_id}/song/{song_id}',     'Cspot\ItemController@updateSong');    
+    Route::get('plans/{plan_id}/items/update/item/{item_id}/song/{song_id}',  'Cspot\ItemController@updateSong');    
     // show form to create a new item for a plan
-    Route::get('plans/{plan_id}/items/create/{seq_no}',                     'Cspot\ItemController@create');    
+    Route::get('plans/{plan_id}/items/create/{seq_no}',                        'Cspot\ItemController@create');    
     // show form to update a new item for a plan
     Route::get('plans/{plan_id}/items/{item_id}/edit', ['as'=>'cspot.items.edit', 'uses'=>'Cspot\ItemController@edit']);    
     // MOVE the specified resource up or down in the list of items related to a plan
@@ -161,13 +161,16 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     Route::get('items/{item_id}/{present?}',                'Cspot\ItemController@show');
 
     // API: update item data using AJAX
-    Route::post('api/items/update',           [ 'uses'=>'Cspot\ItemController@APIupdate']);
+    Route::post('api/items/update',           [                                 'uses'=>'Cspot\ItemController@APIupdate']);
     Route::post('api/items/{item_id}/update', ['as'=>'cspot.api.items.update',  'uses'=>'Cspot\ItemController@APIupdate']);
     Route::post('api/items/{item_id}/delete', ['as'=>'cspot.api.items.delete',  'uses'=>'Cspot\ItemController@APIdelete']);
 
     // unlink a song from an item
-    Route::put('items/{item_id}/unlinkSong/{song_id}',       'Cspot\ItemController@unlinkSong');
+    Route::put('items/{item_id}/unlinkSong/{song_id}',                                  'Cspot\ItemController@unlinkSong');
 
+    // Item NOTES (add, update, delete controlled via )
+    Route::get( 'api/items/{item_id}/note',                                             'Cspot\ItemController@APIgetItemNotes');
+    Route::post('api/items/{item_id}/note',   ['as'=>'cspot.api.items.note',    'uses'=>'Cspot\ItemController@APIitemNotes']);
 
 
     /**

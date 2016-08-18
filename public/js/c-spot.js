@@ -39469,6 +39469,7 @@ $(document).ready(function() {
      * (see http://www.appelsiini.net/projects/jeditable)
      */
     $('.editable').editable(__app_url + '/cspot/api/items/update', {
+        onblur      : 'cancel',
         style       : 'display: inline',
         placeholder : '<span class="fa fa-pencil text-muted">&nbsp;</span>',
         data        : function(value, settings) {
@@ -39493,7 +39494,31 @@ $(document).ready(function() {
     $('.editable-resource').editable(__app_url + '/cspot/api/plans/resource/update', {
         style       : 'display: inline',
         placeholder : '<span class="fa fa-pencil text-muted">&nbsp;</span>',
+        event       : 'mouseover',
+        onblur      : 'cancel',
+    });
+
+    // comment field or private notes on the Item Detail page
+    $('.editable-item-field').editable(__app_url + '/cspot/api/items/update', {
+        type        : 'textarea',
+        event       : 'mouseover',
+        event       : 'mouseover',
+        width       : '100%',
+        rows        : '3',
+        cancel      : 'Cancel',
+        submit      : 'Save',
         onblur      : 'ignore',
+        indicator   : '<span class="fa fa-refresh fa-spin"> </span> saving...',
+        placeholder : '<span class="fa fa-edit">&nbsp;</span>',
+    });
+
+    $('.editable-item-field-present').editable(__app_url + '/cspot/api/items/update', {
+        type        : 'textarea',
+        cancel      : 'Cancel',
+        submit      : 'Save',
+        onblur      : 'cancel',
+        indicator   : '<span class="fa fa-refresh fa-spin"> </span> saving...',
+        placeholder : '<span class="fa fa-edit">&nbsp;</span>',
     });
 
 
@@ -40079,6 +40104,21 @@ function unlinkSong(item_id, song_id, plan_url)
     });
 }
 
+
+
+function deletePrivateItemNote(id) 
+{
+    $('#'+id).html('<i class="fa fa-spinner fa-spin fa-fw"></i>');
+    $.post( 
+        __app_url + '/cspot/api/items/update', 
+        { 'id' : id, 'value' : '_' }
+    ).done( function(data) {
+        // remove old text from note element
+        $('#'+id).html('');
+        //$('#'+id).val('');
+        $('#private-notes-erase-link').hide();
+    });
+}
 
 
 
@@ -41880,8 +41920,6 @@ function identifyLyricsHeadings(str)
 
 function getLocalConfiguration() 
 {
-
-
     // check if we want to be Main Presenter
     // if the value in LocalStorage was set to 'true', then we activate the checkbox:
     if ( getLocalStorageItem('configMainPresenter', 'false') == 'true' ) {
@@ -41901,7 +41939,7 @@ function getLocalConfiguration()
             // now broadcast our current position!
             sendShowPosition('start');  // will include plan_id and item_id 
         }
-    } 
+    }
 
 
     // check if we want to syncronise our own presentation with the Main Presenter
@@ -41916,8 +41954,9 @@ function getLocalConfiguration()
 
         // save in global namespace
         cSpot.presentation.sync = true;
-    } else 
-    { cSpot.presentation.sync = false; }
+    } 
+    else 
+        cSpot.presentation.sync = false; 
 
 
 
@@ -41943,10 +41982,14 @@ function getLocalConfiguration()
         $('#configShowVersCount').val( howManyVersesPerSlide );
     }
 
+    applyLocallyDefinedTextFormatting();
 
+}
 
-    // read and apply locally defined text format settings
-
+// read and apply locally defined text format settings
+function applyLocallyDefinedTextFormatting() 
+{
+    
     // check if we have changed the default font size and text alignment for the presentation
     textAlign = localStorage.getItem('.text-present_text-align');
     $('.text-present').css('text-align', textAlign);
@@ -41972,7 +42015,6 @@ function getLocalConfiguration()
     if (fontSize) {
         $('.text-song').css('font-size', parseInt(fontSize));
     }
-
 
 }
 

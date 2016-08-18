@@ -1,4 +1,7 @@
 # The Church Service Planning Online Tool
+
+c-SPOT was designed to help (small) churches plan their Sunday and Midweek services as well as other events.
+
 - Frontend: Responsive design, runs on *any* device that supports a browser with javascript!
 - Create Order of Services with all relevant data (team (leaders, musicians, other functions), resources, songs, free slides, embedded videoclips etc)
 - Customize for your church and allow others to participate
@@ -19,7 +22,6 @@ As a free and open source project, you can download ('clone') the sources, modif
 Check the [Installation instructions](#installation)
 
 ### Why c-SPOT?
-c-SPOT was designed to help (small) churches plan their Sunday and Midweek services as well as other events.
 
 Many people don’t understand the complexities of making church services happen. If you just turn up, it probably looks pretty straightforward. However, a lot goes on behind the scenes before the event! This tool tries to help with that.
 

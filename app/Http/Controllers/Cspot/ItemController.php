@@ -17,6 +17,7 @@ use App\Models\Song;
 use App\Models\Plan;
 use App\Models\Item;
 use App\Models\File;
+use App\Models\ItemNote;
 use App\Models\FileCategory;
 
 use DB;
@@ -518,12 +519,13 @@ class ItemController extends Controller
      */
     public function APIupdate(Request $request, $item_id=null)
     {
-        // is this a generic item update (different field names)
+        // Is this a generic item update (different field names) ?
         if ($request->has('id') && $request->has('value') ) {
             $field_name = explode('-', $request->id)[0];
             $item_id    = explode('-', $request->id)[3];
         }
-        // or is this a specific update of the song id?
+
+        // Is this a specific update of the song id?
         elseif ($item_id) {
             $field_name = 'song_id';
             $request->value = $request->song_id;
@@ -531,6 +533,12 @@ class ItemController extends Controller
         else { 
             return response()->json(['status' => 404, 'data' => 'APIupdate: item_id missing!'], 404);
         }
+
+        // Is this a notes update?
+        if ($field_name == 'notes') {
+            return $this->UpdateItemNotes($item_id, $request->value);
+        }
+
         // find the single resource
         $item = Item::find($item_id);
         if ($item) {
@@ -578,6 +586,51 @@ class ItemController extends Controller
         return response()->json(['status' => 404, 'data' => 'Not found'], 404);
     }
 
+
+
+    /**
+     * Simple interface to
+     *      add, update or delete private item notes 
+     *
+     * request must contain item_id and the note text
+     * 
+     * if the text of the note is just one underscore ('_'), the note gets deleted.
+     */
+    protected function UpdateItemNotes($item_id, $value)
+    {
+        $item = Item::find($item_id);
+
+        if (! $item) {
+            return response()->json(['status' => 404, 'data' => "APIitemNotes: item with id $item_id not found!"], 404);
+        }
+
+        // get notes linked to this item and belong to this user
+        $notes = $item->itemNotes->where('user_id', Auth::user()->id)->first();
+
+        // Is there already a note for this item from this user?
+        if ( ! $notes ) {
+            
+            $newNote = $item->itemNotes()
+                ->create([
+                    'text' => $value,    // save a NEW NOTE for this item
+                    'user_id' => Auth::user()->id
+                ]);
+            return $newNote->text;
+        }
+
+        # update an existing note
+        elseif ($value!='_') {
+            
+            $notes->update(['text' => $value]);
+            return $notes->text;
+        }
+
+        else {
+            $notes->delete();
+            return 'deleted! ';
+        }    
+
+    }
 
 
 
@@ -636,6 +689,10 @@ class ItemController extends Controller
         flash('Error! Item with ID "' . $id . '" not found');
         return \Redirect::back();
     }
+
+
+
+
 
 
     /**

@@ -37,8 +37,9 @@
                                 src="{{ url(config('files.uploads.webpath')).'/'.$file->token }}">
                         @endforeach
                     </div>
-                @else
+                @elseif ($item->song->title_2 != 'video')
                     (chords missing!)
+                @else
                     <pre class="text-song m-b-3" id="lyrics">{{ $item->song->lyrics }}</pre>
                 @endif
             @endif

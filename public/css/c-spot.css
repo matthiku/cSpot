@@ -9403,7 +9403,13 @@ a[disabled] {
 }
 
 /* for jeditable: make sure textarea is not inline! */
-.edit_area>form>textarea { 
+.edit_area>form>textarea {
+    display: block;
+}
+.editable-item-field>form>textarea { 
+    display: block;
+}
+.editable-item-field-present>form>textarea { 
     display: block;
 }
 

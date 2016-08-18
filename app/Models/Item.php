@@ -62,4 +62,12 @@ class Item extends Model
 
 
 
+    /**
+     * Each item can have several (private) notes owned by their creator (user)
+     */
+    public function itemNotes()
+    {
+        return $this->hasMany('App\Models\ItemNote');
+    }
+
 }

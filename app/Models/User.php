@@ -72,6 +72,18 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
 
 
+    /**
+     * Relationship with the Item Notes
+     */
+    public function itemNotes() 
+    {
+        return $this->hasMany('App\Models\ItemNote');
+    }
+
+
+
+
+
 
     /**
      * Many-to-many relationship with instruments table

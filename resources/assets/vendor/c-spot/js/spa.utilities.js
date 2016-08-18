@@ -85,6 +85,21 @@ function unlinkSong(item_id, song_id, plan_url)
 
 
 
+function deletePrivateItemNote(id) 
+{
+    $('#'+id).html('<i class="fa fa-spinner fa-spin fa-fw"></i>');
+    $.post( 
+        __app_url + '/cspot/api/items/update', 
+        { 'id' : id, 'value' : '_' }
+    ).done( function(data) {
+        // remove old text from note element
+        $('#'+id).html('');
+        //$('#'+id).val('');
+        $('#private-notes-erase-link').hide();
+    });
+}
+
+
 
 /*\____________________________________________________________________________  PLAN  Details Page
 \*/
