@@ -8,7 +8,7 @@ class PlanCache extends Model
 {
 
     // mass assignement protection
-    protected $fillable = ['key', 'value'];
+    protected $fillable = ['key', 'value', 'item_id'];
 
     public function plan() {
         return $this->belongsTo('App\Models\Plan');

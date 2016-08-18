@@ -238,6 +238,9 @@ class SongController extends Controller
         $song->youtube_id = $request->youtube_id;
         $song->save();
 
+        // make sure no chached item refers to a changed song
+        deleteCachedItemsContainingSongId( $song );
+
         // get the Pagination
         $currentPage = 9;
         if ($request->has('currentPage')) {
@@ -257,16 +260,30 @@ class SongController extends Controller
     public function APIupdate(Request $request)
     {
         if ($request->has('id') && $request->has('value') ) {
-            $field_name = explode('-', $request->id)[0];
-            $song_id    = explode('-', $request->id)[3];
+
+            // the id field in the request was taken from the 'id' attribute 
+            //      of the html element that triggered this request.
+            //  It's format is: <field_name>-song-id-<song_id>
+            $identity   = explode('-', $request->id);
+            $field_name = $identity[0];
+            $song_id    = $identity[3];
+
+
             // find the single resource
             $song = Song::find($song_id);
-            if ($song) {
+
+            if ( $song ) {
+
                 // check authentication
                 if ( ! Auth::user()->isEditor() )  {
                     return response()->json(['status' => 401, 'data' => 'Not authorized'], 401);
                 }
+                // perform the update
                 $song->update( [$field_name => $request->value] );
+
+                // delete possible cached items which contain this song
+                deleteCachedItemsContainingSongId( $song );
+            
                 // return text to sender
                 return $song[$field_name];
             }

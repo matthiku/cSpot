@@ -126,7 +126,7 @@ $modalContent = '
     <!-- 
         Personal Notes 
     -->
-    <div class="dropup hidden-sm-down pull-xs-right m-r-1">
+    <div class="dropup hidden-xs-down pull-xs-right m-r-1">
         <button type="button" class="btn btn-sm btn-success dropdown-toggle" title="Your Private Notes" 
             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="fa fa-sticky-note-o fa-lg"></i>

@@ -4,6 +4,7 @@
 
 use App\Models\Item;
 use App\Models\Plan;
+use App\Models\PlanCache;
 use App\Models\Song;
 use App\Models\File;
 use App\Models\User;
@@ -675,6 +676,23 @@ function getBibleTexts($refString)
     return $bibleTexts;
 }
 
+
+function deleteCachedItemsContainingSongId(Song $song)
+{
+    // get all items that refer this song
+    $items = $song->items()->get();
+
+    $item_id_list = [];
+    // get each item id into an array
+    foreach ($items as $item) {
+        # find item in cache
+        array_push($item_id_list, $item->id);
+    }
+
+    // get all items in the cache with the same item_id's
+    $cachedItems = PlanCache::whereIn('item_id', $item_id_list);
+    $cachedItems->delete();
+}
 
 
 

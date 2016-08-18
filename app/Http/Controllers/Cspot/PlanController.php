@@ -558,10 +558,17 @@ class PlanController extends Controller
                 return response()->json(['status' => 200, 'data' => "Updated!"], 200);
             } 
 
+            // extract item id from request
+            if ($request->has('item_id')) 
+                $item_id = $request->item_id;
+            else
+                $item_id = 9999999;
+
             // no, so create a new key/value pair in the PlanCaches table
             $cache = new PlanCache([
-                    'key'   => $request->key,
-                    'value' => $request->value
+                    'key'     => $request->key,
+                    'value'   => $request->value,
+                    'item_id' => $item_id
                 ]);
             $plan->planCaches()->save($cache);
             

@@ -15,6 +15,7 @@ class CreatePlanCachesTable extends Migration
         Schema::create('plan_caches', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('plan_id');
+            $table->integer('item_id');
             $table->string('key')->unique();
             $table->text('value');
             $table->timestamps();

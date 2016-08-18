@@ -341,16 +341,21 @@
             </div>
 
 
+
+
+
             <!-- 
                 show song lyrics and/or chords 
             -->
             <div id="col-3-lyrics" class="col-xl-8 col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <div id="tabs">
+
                     <ul>
                         <li><a href="#lyrics-tab">Lyrics</a></li>
                         <li><a href="#chords-tab">Chords</a></li>
                         <li><a href="#sheet-tab">Sheet Music</a></li>
                     </ul>
+
 
                     <div id="lyrics-tab">
                         @if ($item->song->title_2 != 'video')
@@ -366,9 +371,11 @@
                         <pre id="lyrics-song-id-{{ $item->song->id }}" {{ (Auth::user()->isEditor()) ? 'class=edit_area' : '' }}>{{ $item->song->lyrics }}</pre>
                     </div>
 
+
                     <div id="chords-tab">
                         <pre id="chords-song-id-{{ $item->song->id }}" class="{{ (Auth::user()->isEditor()) ? 'edit_area' : '' }} show-chords">{{ $item->song->chords }}</pre>
                     </div>
+                    
 
                     <div id="sheet-tab">
                         @foreach ($item->song->files as $file)
@@ -380,8 +387,11 @@
                         @endforeach
                     </div>
 
+
                 </div>
             </div>
+
+
 
 
         </div>

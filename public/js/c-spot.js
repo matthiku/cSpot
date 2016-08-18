@@ -42204,8 +42204,9 @@ function saveLocallyAndRemote(plan_id, key, value)
     $.post(
         __app_url+'/cspot/plan/'+plan_id+'/cache',
         {
-            'key'  : key,
-            'value': value.trim() + ' ',       // have at least one blank for server-side validation to work
+            'item_id'   : cSpot.presentation.item_id,
+            'key'       : key,
+            'value'     : value.trim() + ' ',       // have at least one blank for server-side validation to work
         }, 
         console.log(value.length + ' cache saved on server: ' + key)
     );
