@@ -14,6 +14,7 @@
     @include('layouts.flashing')
 
 
+
     @if (isset($user))
         <h2>Update User</h2>
         {!! Form::model( $user, array('route' => array('admin.users.update', $user->id), 'method' => 'put', 'id' => 'inputForm') ) !!}
@@ -22,58 +23,100 @@
         {!! Form::open(array('action' => 'Admin\UserController@store', 'id' => 'inputForm')) !!}
     @endif
 
-        <p>{!! Form::label('first_name', 'First Name') !!}<br>
-           {!! Form::text('first_name'); !!}</p>
 
-        <p>{!! Form::label('last_name', 'Last Name') !!}<br>
-           {!! Form::text('last_name'); !!}</p>
+    <div class="row">
 
-        <p>{!! Form::label('name', 'Display Name (must be unique)') !!}<br>
-           {!! Form::text('name'); !!}</p>
+        <div class="col-md-6">
 
-        <p>{!! Form::label('email', 'Email Address') !!}<br>
-
-        @if (Auth::user()->isAdmin())
-            {!! Form::text('email') !!}</p>
-
-            <div class="row">
-                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-5">
-                    <strong>Select Roles:</strong><br />
-                    @foreach ($roles as $role)
-                        <input name="{{ str_replace(' ','_',$role->name) }}" type="checkbox"
-                             {{ isset($user) && $user->hasRole($role->name) ? 'checked="checked"' : '' }}>
-                        <label  for="{{ str_replace(' ','_',$role->name) }}">{{ $role->name }}</label><br />
-                    @endforeach
+            <div class="row m-b-1">
+                <div class="col-sm-6 text-sm-right">
+                    {!! Form::label('first_name', 'First Name') !!}
                 </div>
-                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-5">
-                    <strong>Select Instruments:</strong><br />
-                    @foreach ($instruments as $instrument)
-                        <input name="{{ str_replace(' ','_',$instrument->name) }}" type="checkbox"
-                             {{ isset($user) && $user->hasInstrument($instrument->name) ? 'checked="checked"' : '' }}>
-                        <label  for="{{ str_replace(' ','_',$instrument->name) }}">{{ $instrument->name }}</label><br />
-                    @endforeach
-                </div>
+                <div class="col-sm-6">
+                   {!! Form::text('first_name'); !!}
+               </div>
             </div>
 
-        @else
-            {!! Form::hidden('email') !!}
-            {{ isset($user) ? $user->email : '' }}
-            <br />
-            <br />
+            <div class="row m-b-1">
+                <div class="col-sm-6 text-sm-right">
+                    {!! Form::label('last_name', 'Last Name') !!}
+                </div>
+                <div class="col-sm-6">
+                    {!! Form::text('last_name'); !!}
+               </div>
+            </div>
 
-        @endif
+            <div class="row m-b-1">
+                <div class="col-sm-6 text-sm-right">
+                    {!! Form::label('name', 'Display Name (must be unique)') !!}
+                </div>
+                <div class="col-sm-6">
+                    {!! Form::text('name'); !!}
+               </div>
+            </div>
 
+            <div class="row m-b-1">
+                <div class="col-sm-6 text-sm-right">
+                    {!! Form::label('email', 'Email Address') !!}
+                </div>
+                <div class="col-sm-6">
+                    @if (Auth::user()->isAdmin())
+                        {!! Form::text('email') !!}
+                    @else
+                        {!! Form::hidden('email') !!}
+                        {{ isset($user) ? $user->email : '' }}
+                    @endif
+               </div>
+            </div>
+
+            
+            @if (isset($user))
+                <p class="btn btn-secondary" onclick="$(this).children('input')[1].click();">
+                    {!! Form::hidden('notify_by_email', '0') !!}
+                    {!! Form::checkbox('notify_by_email', '1') !!}&nbsp;<strong>Send email notifications<br>of new internal messages</strong>
+                </p>
+            @endif
+
+
+        </div>
+
+
+
+
+        <div class="col-md-6">
+
+            @if (Auth::user()->isAdmin())
+                <div class="row">
+                    <div class="col-sm-6">
+                        <strong class="text-primary">Select Roles:</strong><br />
+                        @foreach ($roles as $role)
+                            <input name="{{ str_replace(' ','_',$role->name) }}" type="checkbox"
+                                 {{ isset($user) && $user->hasRole($role->name) ? 'checked="checked"' : '' }}>
+                            <label  for="{{ str_replace(' ','_',$role->name) }}">{{ $role->name }}</label><br />
+                        @endforeach
+                    </div>
+                    <div class="col-sm-6">
+                        <strong class="text-primary">Select Instruments:</strong><br />
+                        @foreach ($instruments as $instrument)
+                            <input name="{{ str_replace(' ','_',$instrument->name) }}" type="checkbox"
+                                 {{ isset($user) && $user->hasInstrument($instrument->name) ? 'checked="checked"' : '' }}>
+                            <label  for="{{ str_replace(' ','_',$instrument->name) }}">{{ $instrument->name }}</label><br />
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+
+        </div>
+
+    </div>
+
+    <hr>
 
     @if (isset($user))
 
-        {!! Form::hidden('notify_by_email', '0') !!}
-        {!! Form::checkbox('notify_by_email', '1') !!}
-        {!! Form::label('notify_by_email', 'Send me email notifications of new internal messages') !!}
-
-
         <p>{!! Form::submit('Update'); !!}</p>
         @if (Auth::user()->isAdmin())
-            <hr>
+            <br>
             <a class="btn btn-danger btn-sm"  role="button" href="{{ url('admin/users/'. $user->id) }}/delete">
                 <i class="fa fa-trash" > </i> &nbsp; Delete
             </a>

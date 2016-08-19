@@ -248,20 +248,23 @@ Route::group(['prefix' => 'messages', 'middleware' => ['web', 'auth']], function
 Route::group(['prefix' => 'admin', 'middleware' => ['web']], function() {
 
     // admin only: CRUD for users
-    Route::resource('users', 'Admin\UserController');    
-    Route::resource('roles', 'Admin\RoleController');    
-    Route::resource('resources', 'Admin\ResourceController');    
+    Route::resource('users',    'Admin\UserController');    
+    Route::resource('roles',     'Admin\RoleController');    
+    Route::resource('resources',  'Admin\ResourceController');    
     Route::resource('instruments', 'Admin\InstrumentController');    
-    Route::resource('types', 'Admin\TypeController');    
+    Route::resource('types',        'Admin\TypeController');    
     Route::resource('default_items', 'Admin\DefaultItemController');    
-    Route::resource('file_categories', 'Admin\FileCategoryController');    
+    Route::resource('file_categories','Admin\FileCategoryController');    
     // as forms cannot use DELETE method, we implement it as GET
-    Route::get('users/{users}/delete', 'Admin\UserController@destroy');    
-    Route::get('roles/{roles}/delete', 'Admin\RoleController@destroy');    
-    Route::get('resources/{resources}/delete', 'Admin\ResourceController@destroy');    
-    Route::get('instruments/{instrument}/delete', 'Admin\InstrumentController@destroy');    
-    Route::get('types/{types}/delete', 'Admin\TypeController@destroy');    
-    Route::get('default_items/{default_items}/delete', 'Admin\DefaultItemController@destroy');    
+    Route::get('users/{users}/delete',    'Admin\UserController@destroy');    
+    Route::get('roles/{roles}/delete',       'Admin\RoleController@destroy');    
+    Route::get('resources/{resources}/delete',  'Admin\ResourceController@destroy');    
+    Route::get('instruments/{instrument}/delete',  'Admin\InstrumentController@destroy');    
+    Route::get('types/{types}/delete',               'Admin\TypeController@destroy');    
+    Route::get('default_items/{default_items}/delete',  'Admin\DefaultItemController@destroy');    
+
+    // user wants to set current page as their homepage
+    Route::post('users/{user_id}/setstartPage', ['as'=>'user.set.startPage', 'uses' => 'Admin\UserController@setStartPage']);
 
     // run a specific job
     Route::get('runjob/batch', function() {

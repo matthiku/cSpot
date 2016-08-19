@@ -1,19 +1,26 @@
 
 <nav id="main-navbar" class="tek-nav navbar navbar-dark bg-inverse navbar-full">
 
+
+    {{--___________________________________________________________
+
+                                            RIGHT - Admin and User
+        ___________________________________________________________
+    --}}
+
     <ul class="nav navbar-nav pull-xs-right">
 
-        <!-- 
-            RIGHT - Authentication Links 
-        -->
+
+
         @if (Auth::guest())
 
+            {{-- user is not logged in --}}
             <li class="nav-item"><a class="nav-link" href="{{ url('login') }}">Sign in</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ url('register') }}">Register</a></li>
 
         @else
 
-            <!-- show unread messages count -->
+            {{-- show unread messages count --}}
             <?php 
                 $count = Auth::user()->newThreadsCount(); 
             ?>
@@ -24,16 +31,22 @@
                 <script>blink($('.mail-alert'))</script>
             @endif
 
+
+            {{-- show modal popup for feedback on current page --}}
             <li class="nav-item hidden-xs-down">
                 <a class="nav-link" href="#" data-toggle="modal" data-target="#createMessage">
                     <i class="fa fa-pencil-square-o" aria-hidden="true"></i> 
                     Page Feedback</a>
             </li>
 
+
+            {{-- direct link to user list page --}}
             <li class="nav-item hidden-lg-down">
                 <a class="nav-link" href="{{ url('admin/users') }}">User List</a>
             </li>
 
+
+            {{-- main administration drop-down menu --}}
             <li class="nav-item dropdown">
                 <a href="#" class="nav-link dropdown-toggle{{ Request::is('admin/*') ? ' active' : '' }}" 
                    data-toggle="dropdown" role="button" aria-expanded="false">
@@ -60,6 +73,8 @@
                 </div>
             </li>
 
+
+            {{-- user specific drop-down menu  --}}
             <li class="nav-item dropdown">
                 <a href="#" class="nav-link dropdown-toggle " 
                    data-toggle="dropdown" role="button" aria-expanded="false">
@@ -71,6 +86,12 @@
                     <a class="dropdown-item" href="{{ url('admin/users/'.Auth::user()->id) }}">
                         <i class="fa fa-btn fa-user fa-lg"></i>
                         Profile</a>
+                    <hr>
+                    <a  class="dropdown-item" href="#" onclick="setCurrentPageAsStartupPage(this)" 
+                        data-action-URL="{{ route('user.set.homepage', Auth::user()->id) }}"
+                        title="Set the current page as your personal startup page">
+                        <i class="fa fa-btn fa-home fa-lg"></i>
+                        Set as Startup Page</a>
                     <hr>
                     <a class="dropdown-item" href="#" data-toggle="modal" data-target="#createMessage">
                         <i class="fa fa-btn fa-pencil-square-o fa-lg"></i>
@@ -89,13 +110,19 @@
                 
             </li>
 
+
         @endif
 
     </ul>
 
-    <!--  
-        RIGHT - Login form
-    -->
+
+
+
+    {{--________________________________________________________
+
+                                            RIGHT - Login form        
+        ________________________________________________________
+    --}}
     @if ( Auth::guest() )
         <form class="form-inline pull-xs-right hidden-md-down" method="POST" role="form" action="{{ url('login') }}">
             Log in using @include('auth.social', ['hideLblText' => 'true']) or: 
@@ -116,17 +143,23 @@
     @endif
 
 
-    <!-- 
-        LEFT - Home button
-     -->
+
+    {{--________________________________________________________
+
+                    LEFT - Home button
+        ________________________________________________________
+    --}}
     <a class="navbar-brand" href="{{ Auth::guest() ? url('.') : url('home') }}">
         <img src="{{ url('images/xs-cspot.png') }}" height="20" width="30"></a>
 
 
 
-    <!-- 
-        LEFT - Main menu items
-     -->
+
+    {{--________________________________________________________
+
+                    LEFT - Main menu items
+        ________________________________________________________
+    --}}
     <ul class="nav navbar-nav">
         @if (Auth::user())
         <li class="nav-item dropdown {{ Request::is('cspot/plans*') ? 'active' : '' }}">

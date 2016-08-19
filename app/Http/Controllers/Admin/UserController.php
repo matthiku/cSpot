@@ -283,4 +283,23 @@ class UserController extends Controller
 
 
 
+    public function setStartPage(Request $request, $id)
+    {
+        // users can only see their own profile, unless they are Admins
+        if ( Auth::user()->id<>$id  &&   ! Auth::user()->isAdmin() ) {
+            //TODO change this to a JSON response
+            flash('You are not authorized for this request.');
+            return redirect()->back();
+        }
+
+        // get the current user record
+        $user = User::find($id);
+
+        if ($request->has('url')) {
+            // set startupPage in user record
+        }
+
+    }
+
+
 }

@@ -40029,6 +40029,19 @@ $(document).ready(function() {
 \*/
 
 
+function setCurrentPageAsStartupPage(that)
+{
+    var actionURL = $(that).data('actionUrl');
+
+    // send the POST request
+    $.post(actionURL, {'url' : window.location.href})
+    .done( function(data) {
+        // show confirmation
+        console.log('set current page as startup-page for this user');
+    }).fail( function(data) {
+        console.log('Setting current page as home page failed!'+data);
+    });
+}
 
 
 
