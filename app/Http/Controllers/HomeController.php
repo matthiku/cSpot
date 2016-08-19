@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests;
 use Illuminate\Http\Request;
 
+use Auth;
+
+
 class HomeController extends Controller
 {
     /**
@@ -28,12 +31,17 @@ class HomeController extends Controller
     }
 
     /**
-     * Show the welcome screen.
+     * Show the welcome screen after a successful logon
+     *
+     * or another screen the user chose as his start page
      *
      * @return Response
      */
     public function welcome()
     {
+        if (Auth::user()->startPage != '') {
+            return redirect( Auth::user()->startPage );
+        }
         return view('welcome');
     }
 }

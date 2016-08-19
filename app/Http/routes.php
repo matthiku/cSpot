@@ -264,7 +264,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['web']], function() {
     Route::get('default_items/{default_items}/delete',  'Admin\DefaultItemController@destroy');    
 
     // user wants to set current page as their homepage
-    Route::post('users/{user_id}/setstartPage', ['as'=>'user.set.startPage', 'uses' => 'Admin\UserController@setStartPage']);
+    Route::post('users/{user_id}/setstartpage', ['as'=>'user.setstartpage', 'uses' => 'Admin\UserController@setStartPage']);
 
     // run a specific job
     Route::get('runjob/batch', function() {

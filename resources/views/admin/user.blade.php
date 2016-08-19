@@ -28,7 +28,7 @@
 
         <div class="col-md-6">
 
-            <div class="row m-b-1">
+            <div class="row m-b-1 full-width">
                 <div class="col-sm-6 text-sm-right">
                     {!! Form::label('first_name', 'First Name') !!}
                 </div>
@@ -37,7 +37,7 @@
                </div>
             </div>
 
-            <div class="row m-b-1">
+            <div class="row m-b-1 full-width">
                 <div class="col-sm-6 text-sm-right">
                     {!! Form::label('last_name', 'Last Name') !!}
                 </div>
@@ -46,7 +46,7 @@
                </div>
             </div>
 
-            <div class="row m-b-1">
+            <div class="row m-b-1 full-width">
                 <div class="col-sm-6 text-sm-right">
                     {!! Form::label('name', 'Display Name (must be unique)') !!}
                 </div>
@@ -55,7 +55,7 @@
                </div>
             </div>
 
-            <div class="row m-b-1">
+            <div class="row m-b-1 full-width">
                 <div class="col-sm-6 text-sm-right">
                     {!! Form::label('email', 'Email Address') !!}
                 </div>
@@ -70,12 +70,28 @@
             </div>
 
             
-            @if (isset($user))
-                <p class="btn btn-secondary" onclick="$(this).children('input')[1].click();">
-                    {!! Form::hidden('notify_by_email', '0') !!}
-                    {!! Form::checkbox('notify_by_email', '1') !!}&nbsp;<strong>Send email notifications<br>of new internal messages</strong>
-                </p>
-            @endif
+            <div class="row">
+                <div class="col-sm-6">
+                </div>
+                <div class="col-sm-6">
+                    @if (isset($user))
+                        <p class="btn btn-secondary" onclick="$(this).children('input')[1].click();">
+                            {!! Form::hidden('notify_by_email', '0') !!}
+                            {!! Form::checkbox('notify_by_email', '1') !!}&nbsp;<small>Send me email notifications<br>of new internal messages</small>
+                        </p>
+                    @endif
+                </div>
+            </div>
+
+            <div class="row m-b-1 full-width">
+                <div class="col-sm-6 text-sm-right">
+                    <strong>Your Start Page</strong><br>
+                    <small>(The page you are directed to after login)</small>
+                </div>
+                <div class="col-sm-6">
+                    {!! Form::text('startPage'); !!}
+               </div>
+            </div>
 
 
         </div>

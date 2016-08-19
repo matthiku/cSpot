@@ -88,7 +88,7 @@
                         Profile</a>
                     <hr>
                     <a  class="dropdown-item" href="#" onclick="setCurrentPageAsStartupPage(this)" 
-                        data-action-URL="{{ route('user.set.homepage', Auth::user()->id) }}"
+                        data-action-URL="{{ route('user.setstartpage', Auth::user()->id) }}"
                         title="Set the current page as your personal startup page">
                         <i class="fa fa-btn fa-home fa-lg"></i>
                         Set as Startup Page</a>

@@ -40032,14 +40032,16 @@ $(document).ready(function() {
 function setCurrentPageAsStartupPage(that)
 {
     var actionURL = $(that).data('actionUrl');
+    var pathname = window.location.pathname;
 
     // send the POST request
-    $.post(actionURL, {'url' : window.location.href})
+    $.post(actionURL, {'url' : pathname})
     .done( function(data) {
         // show confirmation
-        console.log('set current page as startup-page for this user');
+        console.log('set current page as startup-page for this user: '+pathname);
     }).fail( function(data) {
-        console.log('Setting current page as home page failed!'+data);
+        console.log('Setting current page as home page failed!');
+        console.log(data);
     });
 }
 

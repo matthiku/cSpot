@@ -123,7 +123,7 @@
                             $resrcList = ''; // create the list of team members and their roles for this plan
                             foreach ( $plan->resources as $key => $resrc ) {
                                 $resrcList .= $resrc->name; 
-                                $resrcList .= ' ('+$resrc->pivot->comment+')'; 
+                                //$resrcList .= ' ('+$resrc->pivot->comment+')'; 
                                 if ($key+1 < $plan->resources->count())
                                     $resrcList .= ",\n";
                             }

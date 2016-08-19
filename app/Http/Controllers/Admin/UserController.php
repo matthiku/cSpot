@@ -228,7 +228,7 @@ class UserController extends Controller
                 $user->assignRole($role);
             } 
             else {
-                if ($user->id == Auth::user()->id && $role->name<>'administrator' ) {
+                if ($user->id == Auth::user()->id && $role->name=='administrator' ) {
                     $alert = 'Admin rights cannot be removed from current user! Ask a new Admin to do that.';
                 } else {
                     $user->removeRole($role);
@@ -239,7 +239,8 @@ class UserController extends Controller
         // update name and email addr
         $user->first_name = $request->input('first_name');
         $user->last_name  = $request->input('last_name');
-        $user->name  = $request->input('name');
+        $user->name       = $request->input('name');
+        $user->startPage  = $request->has('startPage') ? $request->startPage : '';
 
         $user->notify_by_email = $request->notify_by_email;
 
@@ -288,16 +289,19 @@ class UserController extends Controller
         // users can only see their own profile, unless they are Admins
         if ( Auth::user()->id<>$id  &&   ! Auth::user()->isAdmin() ) {
             //TODO change this to a JSON response
-            flash('You are not authorized for this request.');
-            return redirect()->back();
+            return 'You are not authorized for this request.';
         }
 
         // get the current user record
         $user = User::find($id);
 
         if ($request->has('url')) {
-            // set startupPage in user record
+            // set startPage in user record
+            $user->update(['startPage'  => $request->url]);
+            return 'OK!';
         }
+
+        return 'missing URL!';
 
     }
 
