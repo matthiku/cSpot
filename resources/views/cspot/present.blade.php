@@ -14,45 +14,89 @@
 
 
 
+
     <!-- ================================================================================ -->
     <div id="main-content" class="bg-inverse">
 
 
-        @if ($item->song_id )
+
+        @if ( $item->song_id )
+
+
             @if ($item->song->lyrics )
 
-                <div class="text-present m-b-3 lyrics-parts" id="lyrics-title" style="display: none;">{{ $item->song->title }}
-                    {{ ($item->song->title_2 && $item->song->title_2 != 'video' && $item->song->title_2 != 'infoscreen') ? '('.$item->song->title_2.')' : '' }}
-                </div>
+                <div style="position: relative; width: 100%; height: 100%;">
 
-                {{-- insert videoclip or lyrics --}}
-                @if ($item->song->title_2=='video')
-                    <div class="hidden-xs-up" id="videoclip-url">{{ $item->song->title_2}}</div>
-                    <div class="text-present m-b-3" id="present-lyrics">
-                        <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ $item->song->youtube_id }}" frameborder="0" allowfullscreen></iframe>
+                    @if ($item->files->count())
+                        <?php // make sure the files are sorted by seq no
+                            $files  = $item->files->sortBy('seq_no')->all(); 
+                            $key    = 1; // we can't use a $key in the foreach statement as it's a re-sorted collection!
+                        ?>            
+                        @foreach ($files as $file)
+                            <img class="slide-background-image song-background-image m-b-2" data-slides-id="{{ $key }}" style="display: none;" 
+                                   src="{{ url(config('files.uploads.webpath')).'/'.$file->token }}">
+                            <?php $key++; ?>
+                        @endforeach
+                    @endif
+
+                    <div class="text-present m-b-3 lyrics-parts" id="lyrics-title"
+                         style="display: none; position: absolute; left: auto; top: 0px; width: 100%;">
+                        {{ $item->song->title }}
+                        {{ ($item->song->title_2 && $item->song->title_2 != 'video' && $item->song->title_2 != 'infoscreen') ? '('.$item->song->title_2.')' : '' }}
                     </div>
-                @else 
-                    <div class="text-present m-b-3" id="present-lyrics" style="display: none;" >{{ $item->song->lyrics }}</div>
-                @endif
+
+                    {{-- insert videoclip or lyrics --}}
+                    @if ($item->song->title_2=='video')
+
+                        <div class="hidden-xs-up" id="videoclip-url">{{ $item->song->title_2}}</div>
+                        <div class="text-present m-b-3" id="present-lyrics">
+                            <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ $item->song->youtube_id }}" frameborder="0" allowfullscreen></iframe>
+                        </div>
+
+                    @else 
+
+                        <div class="text-present m-b-3"
+                             style="display: none; position: absolute; left: auto; top: 0px; width: 100%;"
+                                id="present-lyrics">{{ $item->song->lyrics }}
+                        </div>
+
+                    @endif
+
+                </div>
 
                 <div class="hidden-xs-up" id="sequence">{{ $item->song->sequence }}</div>
 
             @endif
+
+
+
+
+
+        @elseif ($item->files->count())
+        
+            {{-- prepare div as background for overlaying the comment text --}}
+            <div style="position: relative; width: 100%; height: 100%;">
+                <?php // make sure the files are sorted by seq no
+                    $files  = $item->files->sortBy('seq_no')->all(); 
+                    $key    = 1; // we can't use a $key in the foreach statement as it's a re-sorted collection!
+                ?>            
+                @foreach ($files as $file)
+                    <img class="slide-background-image m-b-2" data-slides-id="{{ $key }}" style="display: none;" 
+                           src="{{ url(config('files.uploads.webpath')).'/'.$file->token }}">
+                    <?php $key++; ?>
+                @endforeach
+
+                {{-- show comment text as overlaying the background image --}}
+                @if ($item->show_comment)
+                    <div class="text-present"
+                         style="position: absolute; left: auto; top: 0px; width: 100%;"
+                        >{{ $item->comment }}</div>
+                @endif
+            </div>
+
         @endif
 
 
-        @if ($item->files)
-            <?php 
-                // make sure the files are sorted by seq no
-                $files  = $item->files->sortBy('seq_no')->all(); 
-                $key    = 1; // we can't use a $key in the foreach statement as it's a re-sorted collection!
-            ?>            
-            @foreach ($files as $file)
-                <img class="slide-background-image m-b-2" data-slides-id="{{ $key }}"  style="display: none;" 
-                       src="{{ url(config('files.uploads.webpath')).'/'.$file->token }}">
-                <?php $key++; ?>
-            @endforeach
-        @endif
 
 
         @if ($bibleTexts)
@@ -304,10 +348,37 @@
             </div>
 
 
+            <!-- 
+                Personal Notes 
+            -->
+            <div class="btn-group dropup hidden-xs-down m-l-1">
+                <button type="button" class="btn btn-sm btn-success dropdown-toggle" title="Your Private Notes" 
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fa fa-sticky-note-o fa-lg"></i>
+                </button>
+
+                <div class="dropdown-menu dropdown-menu-right bg-faded">
+
+                    <h6 class="dropdown-header">Your Private Notes</h6>
+
+                    <pre id="notes-item-id-{{ $item->id }}" class="editable-item-field-present center">{{ 
+                        $item->itemNotes->where('user_id', Auth::user()->id)->first() ? $item->itemNotes->where('user_id', Auth::user()->id)->first()->text : '' }}</pre>
+
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item disabled" href="#">(Click to edit)</a>
+
+                </div>
+
+            </div>
+
+
+
             <!-- help button to show modal -->
             <a href="#" title="show keyboard shortcuts" data-toggle="modal" data-target=".help-modal"
                 class="hidden-sm-down pull-xs-right btn btn-sm btn-outline-success m-r-1">
             <i class="fa fa-question-circle fa-lg"></i></a>
+
+
 
 
             <!-- 

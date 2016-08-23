@@ -5,7 +5,9 @@
     scripture reference selection 
 -->
 
+
 @if ($part=='one')
+
     <h6><i class="fa fa-book">&nbsp;</i>Add Bible Reference:</h6>
 
     <select name="from-book" id="from-book" class="pull-xs-left" onchange="showNextSelect('from', 'chapter')">
@@ -32,9 +34,15 @@
         </select>
     </span>
 @endif
+
+
+
 @if ($part=='two')
+
     <span class="select-version" style="display: none;>
+
         {!! Form::label('version', 'Select version:'); !!}
+
         <select name="version" id="version" onchange="populateComment()">
             <option {{ isset($item) ? '' : 'selected' }}></option>
             @if (isset($versionsEnum))
@@ -43,5 +51,7 @@
                 @endforeach
             @endif
         </select>
+        
     </span>
+
 @endif

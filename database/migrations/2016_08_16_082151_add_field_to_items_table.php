@@ -15,6 +15,7 @@ class AddFieldToItemsTable extends Migration
         Schema::table('items', function (Blueprint $table) {
             // add field to make item visible only for plan leader
             $table->boolean('forLeadersEyesOnly')->default(false);
+            $table->boolean('show_comment')->default(false);
         });
     }
 
@@ -28,6 +29,7 @@ class AddFieldToItemsTable extends Migration
         Schema::table('items', function (Blueprint $table) {
             //
             $table->dropColumn('forLeadersEyesOnly');
+            $table->dropColumn('show_comment');
         });
     }
 }

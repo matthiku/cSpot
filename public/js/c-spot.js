@@ -39691,7 +39691,7 @@ $(document).ready(function() {
         $('#beforeItem_id').val(item_id);
         $('#seq-no'       ).val(seq_no);
         // reset the form
-        $('#search-string').focus(); // make sure the search string input field has focus
+        $('#haystack').focus(); // make sure the search string input field has focus
 
         // prevent the Song Search Form from being submitted when 
         //      the ENTER key is used; instead, perform the actual search
@@ -39858,7 +39858,9 @@ $(document).ready(function() {
     /**
      * Configuration for Items Presentation Views (present/chords/musicsheets)
      */
-    if (window.location.href.indexOf('/items/')>10) {
+    if ( window.location.href.indexOf('/present' ) > 10
+      || window.location.href.indexOf('/chords'   ) > 10
+      || window.location.href.indexOf('/sheetmusic') > 10 ) {
 
         // handle keyboard events
         $(document).keydown(function( event ) {
@@ -40060,6 +40062,9 @@ function deleteFile(id)
     if ( ! confirm('Are you sure to finally remove this file?') ) 
         return;
 
+    // show wait spinner
+    $('#file-'+file_id).html('<i class="fa fa-spinner fa-spin fa-fw"></i>');
+
     // get token from form field
     $.ajax({
         url:    '/cspot/files/'+id+'/delete', 
@@ -40082,6 +40087,9 @@ function deleteFile(id)
 */
 function unlinkFile(item_id, file_id)
 {
+    // show wait spinner
+    $('#file-'+file_id).html('<i class="fa fa-spinner fa-spin fa-fw"></i>');
+
     $.ajax({
         url:    '/cspot/items/'+item_id+'/unlink/'+file_id+'', 
         method: 'PUT',
@@ -40100,16 +40108,24 @@ function unlinkFile(item_id, file_id)
 
 /* unlink SONG from its item
 */
-function unlinkSong(item_id, song_id, plan_url)
+function unlinkSong(that, item_id, song_id, plan_url)
 {
+    // disable button and show wait spinner
+    $(that).addClass('disabled');
+    $(that).children('small').html('<i class="fa fa-spinner fa-spin fa-fw"></i>');
+
+    // send unlink request
     $.ajax({
         url:    '/cspot/items/'+item_id+'/unlinkSong/'+song_id+'', 
         method: 'PUT',
-    }).done(function(data) {
+    })
+    .done(function(data) {
         console.log(data);
+        $(that).children('small').text(data.data);
         // go back to plan 
-        window.location.href = plan_url;
-    }).fail(function(data) {
+        //window.location.href = plan_url;
+    })
+    .fail(function(data) {
         if (data.responseJSON) {
             alert("song unlinking failed! Error: "+data.responseJSON.data+'.  Code:'+data.responseJSON.status);
         }
@@ -40120,20 +40136,97 @@ function unlinkSong(item_id, song_id, plan_url)
 }
 
 
-
-function deletePrivateItemNote(id) 
+/* toggle field 'show_comment'
+*/
+function toggleShowComment(that, id, actionUrl) 
 {
+    // replace current note with spinner while doing AJAX
     $('#'+id).html('<i class="fa fa-spinner fa-spin fa-fw"></i>');
+
     $.post( 
-        __app_url + '/cspot/api/items/update', 
-        { 'id' : id, 'value' : '_' }
-    ).done( function(data) {
-        // remove old text from note element
-        $('#'+id).html('');
-        //$('#'+id).val('');
-        $('#private-notes-erase-link').hide();
-    });
+        actionUrl, 
+        { 
+            'id'    : id, 
+            'value' : $(that).prop('checked'),
+        })
+    .done( 
+        function(data) {
+            // show result
+            if (data == 'true')
+                $('#'+id).html( 'Show comment as title in the presentation' );
+            else
+                $('#'+id).html( 'Make comment visible in the presentation' );
+        }
+    );
 }
+
+
+/* empty (clear) a public or private note of an item
+*/
+function deleteItemNote(which, id, actionUrl) 
+{
+    // replace current note with spinner while doing AJAX
+    $('#'+id).html('<i class="fa fa-spinner fa-spin fa-fw"></i>');
+
+    $.post( 
+        actionUrl, 
+        { 
+            'id'    : id, 
+            'value' : '_' 
+        })
+    .done( 
+        function(data) {
+            // remove old text from note element
+            $('#'+id).html('');
+            // remove the link that triggered this function
+            $('#'+which+'-notes-erase-link').hide();
+        }
+    );
+}
+
+
+/* FLEO - Plan leader can mark an item as "for leader's eyes only"
+*/
+function changeForLeadersEyesOnly(that) {
+
+    // get data from parent html element (tr)
+    var data = $(that).parent().data();
+    if (! data) return; // should not happen!
+
+    // construct values for the AJAX call
+    var actionURL = data.itemUpdateAction;
+    var value     = $(that).data('value') ? '0' : '1'; // reverse the current value
+    var id        = 'forLeadersEyesOnly-item-id-' + data.itemId;
+
+    $(that).children('i').removeClass('fa-eye');
+    $(that).children('i').removeClass('fa-eye-slash');
+    $(that).children('i').addClass('fa-spin fa-spinner');
+
+    // AJAX update
+    $.post( actionURL, 
+        {
+            value : value,
+            id    : id,
+        })
+        .done( function(data) 
+        {
+            $(that).children('i').removeClass('fa-spin fa-spinner');
+            // show correct icon according to new setting
+            $(that).children('i').addClass( data==1 ? 'fa-eye-slash': 'fa-eye');
+            // reflect new setting also in the data attribute
+            $(that).attr('data-value', data); $(that).data('value', data);
+            // on the Item Detail page, also show the right text for the new setting
+            $(that).children('small').toggle();
+        })
+        .fail( function(data) 
+        {
+            $(that).children('i').removeClass('fa-eye');
+            $(that).children('i').removeClass('fa-eye-slash');
+            $(that).children('i').addClass('fa-exclamation-triangle');
+            console.log('update of forLeadresEyesOnly failed!!');
+        });
+}
+
 
 
 
@@ -40202,7 +40295,8 @@ function resetSearchForSongs()
     $('#searchForSongsSubmit').hide();
     $('#MPselect').val(0);
     $('#search-string').val('');
-    $('#search-string').focus();
+    $('#haystack').focus();
+    $('#searchSongModalLabel').text('Select what to insert ...');
     $('#search-action-label').text('Full-text search incl. lyrics:');
     $('#txtHint').html('');
     $('#haystack').val('');
@@ -40253,7 +40347,7 @@ function searchForSongs(that)
                     $('#searchForSongsSubmit').toggle();
                     $('#searching').hide();  
                     $('.search-form-item').show();  
-                    $('#search-string').focus();
+                    $('#haystack').focus();
                     return;
                 }
                 $('#search-action-label').text('Click the desired Song:');
@@ -40460,50 +40554,6 @@ function resetCommentText(id, newText) {
 }
 
 
-/* FLEO - Plan leader can mark an item as "for leader's eyes only"
-*/
-function changeForLeadersEyesOnly(that) {
-
-    // get data from parent html element (tr)
-    var data = $(that).parent().data();
-    if (! data) return; // should not happen!
-
-    // construct values for the AJAX call
-    var actionURL = data.itemUpdateAction;
-    var value     = $(that).data('value') ? '0' : '1'; // reverse the current value
-    var id        = 'forLeadersEyesOnly-item-id-' + data.itemId;
-
-    $(that).children('i').removeClass('fa-eye');
-    $(that).children('i').removeClass('fa-eye-slash');
-    $(that).children('i').addClass('fa-spin fa-spinner');
-
-    // AJAX update
-    $.post( actionURL, 
-        {
-            value : value,
-            id    : id,
-        })
-        .done( function(data) 
-        {
-            $(that).children('i').removeClass('fa-spin fa-spinner');
-            // show correct icon according to new setting
-            $(that).children('i').addClass( data==1 ? 'fa-eye-slash': 'fa-eye');
-            // reflect new setting also in the data attribute
-            $(that).attr('data-value', data); $(that).data('value', data);
-            // on the Item Detail page, also show the right text for the new setting
-            $(that).children('small').toggle();
-        })
-        .fail( function(data) 
-        {
-            $(that).children('i').removeClass('fa-eye');
-            $(that).children('i').removeClass('fa-eye-slash');
-            $(that).children('i').addClass('fa-exclamation-triangle');
-            console.log('update of forLeadresEyesOnly failed!!');
-        });
-}
-
-
-
 
 
 /* Called from the Modal popup on the FILES LIST page, 
@@ -40592,12 +40642,17 @@ function prepareImages()
     $('.slide-background-image' ).height( window.innerHeight - $('.navbar-fixed-bottom').height());
     $('.slide-background-image' ).css('max-width', window.innerWidth);
     $('.app-content'            ).css('padding', 0);
+    
     // get list of all images and prepare them as individual slides
     var bgImages = $('.slide-background-image');
+
     $.each(bgImages, function(entry) {
-        insertSeqNavInd(1*entry+1,entry,'slides');
+        insertSeqNavInd( 1*entry+1, entry, 'slides' );
+        // background image counter
+        cSpot.presentation.BGimageCount += 1;
     });
-    // activate the first image
+
+    // activate (show) the first image
     todo = $('#slides-progress-0').attr('onclick');
     eval(todo);
 }
@@ -41414,14 +41469,13 @@ function advancePresentation(direction)
                     $(this).addClass('bg-danger');
                     todo = $(this).attr('onclick');
                     eval( todo );
-                    // $(this).click();
                     return false;
                 }
                 if (found) {return false;}
             });
             // all items were shown, so we can move to the next item
             if (! found) {
-                //$('#present-lyrics').fadeOut();
+                $('#present-lyrics').fadeOut();
                 navigateTo('next-item');
                 return;
             }
@@ -41440,7 +41494,6 @@ function advancePresentation(direction)
                     $(seq[i-1]).addClass('bg-danger');
                     todo = $(seq[i-1]).attr('onclick');
                     eval( todo );
-                    //$(seq[i-1]).click();
                     return;
                 } 
             }
@@ -41868,6 +41921,9 @@ function lyricsShow(what)
     if ( $('#'+what).length == 0 )  { return }
 
     console.log('showing song part called '+what);
+
+    if (cSpot.presentation.BGimageCount > 0)
+        showNextBGimage();
     
     // inform server accordingly
     sendShowPosition(what);
@@ -41892,6 +41948,7 @@ function decompPartCode(what) {
     }
     return what;
 }
+
 function identifyLyricsHeadings(str)
 {
     switch (str.toLowerCase()) {
@@ -41923,6 +41980,21 @@ function identifyLyricsHeadings(str)
     }
 }
 
+function showNextBGimage()
+{
+    // compute next bg image number
+    var nr = ++cSpot.presentation.currentBGimage;
+    if (nr >= cSpot.presentation.BGimageCount) {
+        cSpot.presentation.currentBGimage = 0;
+        nr = 0;
+    }
+
+    // activate (show) the first image
+    ;;;console.log('showing next BG image: '+nr);
+    todo = $('#slides-progress-'+nr).attr('onclick');
+    eval(todo);
+
+}
 
 
 /*\
@@ -42109,7 +42181,7 @@ function changeFontSize(selectorList, how) {
 
 
 /*\
-|* >------------------------------------------------------------------ LOCAL STORAGE
+|* >------------------------------------------------------------------ CACHING ELEMENTS IN LOCAL STORAGE AND ON THE SERVER
 \*/
 
 
@@ -42285,6 +42357,9 @@ function clearServerCache(plan_id)
     // validate plan id
     if (!plan_id || isNaN(parseInt(plan_id)))
         return;
+
+    // show wait spinner
+    $('#showCachedItems').html('<i class="fa fa-spin fa-spinner"></i> one moment, please ...');
 
     // send the delte request
     $.post(__app_url+'/cspot/plan/'+plan_id+'/cache/delete', function(data, status) {

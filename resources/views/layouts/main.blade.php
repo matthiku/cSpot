@@ -35,6 +35,11 @@
         cSpot.presentation.mainPresenterSetURL = '{{ route('presentation.mainPresenter.set') }}';
 
         @if( Request::is('*/present') || Request::is('*/chords') || Request::is('*/sheetmusic') )
+
+            // keep track of current background image
+            cSpot.presentation.currentBGimage = 0;
+            cSpot.presentation.BGimageCount = 0;
+
             // get relevant ids of current slides
             cSpot.presentation.plan_id = {{ $item->plan_id }};
             cSpot.presentation.item_id = {{ $item->id      }};

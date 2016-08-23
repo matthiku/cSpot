@@ -242,7 +242,7 @@ $(document).ready(function() {
         $('#beforeItem_id').val(item_id);
         $('#seq-no'       ).val(seq_no);
         // reset the form
-        $('#search-string').focus(); // make sure the search string input field has focus
+        $('#haystack').focus(); // make sure the search string input field has focus
 
         // prevent the Song Search Form from being submitted when 
         //      the ENTER key is used; instead, perform the actual search
@@ -409,7 +409,9 @@ $(document).ready(function() {
     /**
      * Configuration for Items Presentation Views (present/chords/musicsheets)
      */
-    if (window.location.href.indexOf('/items/')>10) {
+    if ( window.location.href.indexOf('/present' ) > 10
+      || window.location.href.indexOf('/chords'   ) > 10
+      || window.location.href.indexOf('/sheetmusic') > 10 ) {
 
         // handle keyboard events
         $(document).keydown(function( event ) {

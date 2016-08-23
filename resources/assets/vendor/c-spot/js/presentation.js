@@ -40,12 +40,17 @@ function prepareImages()
     $('.slide-background-image' ).height( window.innerHeight - $('.navbar-fixed-bottom').height());
     $('.slide-background-image' ).css('max-width', window.innerWidth);
     $('.app-content'            ).css('padding', 0);
+    
     // get list of all images and prepare them as individual slides
     var bgImages = $('.slide-background-image');
+
     $.each(bgImages, function(entry) {
-        insertSeqNavInd(1*entry+1,entry,'slides');
+        insertSeqNavInd( 1*entry+1, entry, 'slides' );
+        // background image counter
+        cSpot.presentation.BGimageCount += 1;
     });
-    // activate the first image
+
+    // activate (show) the first image
     todo = $('#slides-progress-0').attr('onclick');
     eval(todo);
 }
@@ -862,14 +867,13 @@ function advancePresentation(direction)
                     $(this).addClass('bg-danger');
                     todo = $(this).attr('onclick');
                     eval( todo );
-                    // $(this).click();
                     return false;
                 }
                 if (found) {return false;}
             });
             // all items were shown, so we can move to the next item
             if (! found) {
-                //$('#present-lyrics').fadeOut();
+                $('#present-lyrics').fadeOut();
                 navigateTo('next-item');
                 return;
             }
@@ -888,7 +892,6 @@ function advancePresentation(direction)
                     $(seq[i-1]).addClass('bg-danger');
                     todo = $(seq[i-1]).attr('onclick');
                     eval( todo );
-                    //$(seq[i-1]).click();
                     return;
                 } 
             }
@@ -1316,6 +1319,9 @@ function lyricsShow(what)
     if ( $('#'+what).length == 0 )  { return }
 
     console.log('showing song part called '+what);
+
+    if (cSpot.presentation.BGimageCount > 0)
+        showNextBGimage();
     
     // inform server accordingly
     sendShowPosition(what);
@@ -1340,6 +1346,7 @@ function decompPartCode(what) {
     }
     return what;
 }
+
 function identifyLyricsHeadings(str)
 {
     switch (str.toLowerCase()) {
@@ -1371,6 +1378,21 @@ function identifyLyricsHeadings(str)
     }
 }
 
+function showNextBGimage()
+{
+    // compute next bg image number
+    var nr = ++cSpot.presentation.currentBGimage;
+    if (nr >= cSpot.presentation.BGimageCount) {
+        cSpot.presentation.currentBGimage = 0;
+        nr = 0;
+    }
+
+    // activate (show) the first image
+    ;;;console.log('showing next BG image: '+nr);
+    todo = $('#slides-progress-'+nr).attr('onclick');
+    eval(todo);
+
+}
 
 
 /*\
@@ -1557,7 +1579,7 @@ function changeFontSize(selectorList, how) {
 
 
 /*\
-|* >------------------------------------------------------------------ LOCAL STORAGE
+|* >------------------------------------------------------------------ CACHING ELEMENTS IN LOCAL STORAGE AND ON THE SERVER
 \*/
 
 
@@ -1733,6 +1755,9 @@ function clearServerCache(plan_id)
     // validate plan id
     if (!plan_id || isNaN(parseInt(plan_id)))
         return;
+
+    // show wait spinner
+    $('#showCachedItems').html('<i class="fa fa-spin fa-spinner"></i> one moment, please ...');
 
     // send the delte request
     $.post(__app_url+'/cspot/plan/'+plan_id+'/cache/delete', function(data, status) {

@@ -349,7 +349,8 @@ class ItemController extends Controller
     /**
      * Show the form for editing an existing ITEM.
      *
-     * @param  int  $id
+     * @param  int  $plan_id     plan id
+     * @param  int  $id          item id
      * @return \Illuminate\Http\Response
      */
     public function edit($plan_id, $id)
@@ -480,6 +481,9 @@ class ItemController extends Controller
         // notify event listener that an item was updated
         event( new CspotItemUpdated($item) );
 
+        // redirect back to the item
+        return redirect()->action('Cspot\ItemController@edit', ['plan_id' => $plan_id, 'item_id' => $id]);
+
         // back to full plan view 
         return \Redirect::route('cspot.plans.edit', $plan_id);
     }
@@ -539,6 +543,13 @@ class ItemController extends Controller
             return $this->UpdateItemNotes($item_id, $request->value);
         }
 
+        // As AJAX doesn't allow to send an 'empty' value, we send a 
+        // placeholder ('_') instead, which indicates that the field should be cleared
+        if ($field_name == 'comment') {
+            if ( $request->value == '_')
+                $request->value = '';
+        }
+
         // find the single resource
         $item = Item::find($item_id);
         if ($item) {
@@ -547,6 +558,13 @@ class ItemController extends Controller
             if (! checkRights($plan)) {
                 return response()->json(['status' => 401, 'data' => 'Not authorized'], 401);
             }
+
+            // cater for boolean values
+            if ($request->value == 'true')
+                $request->value = 1;
+            if ($request->value == 'false')
+                $request->value = 0;
+
             $item->update( [$field_name => $request->value] );
 
             // notify event listener that an item was updated

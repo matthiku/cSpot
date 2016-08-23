@@ -160,10 +160,14 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     // presentation view of a plan
     Route::get('items/{item_id}/{present?}',                'Cspot\ItemController@show');
 
+
     // API: update item data using AJAX
-    Route::post('api/items/update',           [                                 'uses'=>'Cspot\ItemController@APIupdate']);
+    // this route gets the item id via form field
+    Route::post('api/items/update',           ['as'=>'cspot.api.item.update',   'uses'=>'Cspot\ItemController@APIupdate']);
+    // item id via URL
     Route::post('api/items/{item_id}/update', ['as'=>'cspot.api.items.update',  'uses'=>'Cspot\ItemController@APIupdate']);
     Route::post('api/items/{item_id}/delete', ['as'=>'cspot.api.items.delete',  'uses'=>'Cspot\ItemController@APIdelete']);
+
 
     // unlink a song from an item
     Route::put('items/{item_id}/unlinkSong/{song_id}',                                  'Cspot\ItemController@unlinkSong');
@@ -171,6 +175,7 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     // Item NOTES (add, update, delete controlled via )
     Route::get( 'api/items/{item_id}/note',                                             'Cspot\ItemController@APIgetItemNotes');
     Route::post('api/items/{item_id}/note',   ['as'=>'cspot.api.items.note',    'uses'=>'Cspot\ItemController@APIitemNotes']);
+
 
 
     /**

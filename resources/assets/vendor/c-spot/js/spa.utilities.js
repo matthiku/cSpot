@@ -39,6 +39,9 @@ function deleteFile(id)
     if ( ! confirm('Are you sure to finally remove this file?') ) 
         return;
 
+    // show wait spinner
+    $('#file-'+file_id).html('<i class="fa fa-spinner fa-spin fa-fw"></i>');
+
     // get token from form field
     $.ajax({
         url:    '/cspot/files/'+id+'/delete', 
@@ -61,6 +64,9 @@ function deleteFile(id)
 */
 function unlinkFile(item_id, file_id)
 {
+    // show wait spinner
+    $('#file-'+file_id).html('<i class="fa fa-spinner fa-spin fa-fw"></i>');
+
     $.ajax({
         url:    '/cspot/items/'+item_id+'/unlink/'+file_id+'', 
         method: 'PUT',
@@ -79,16 +85,24 @@ function unlinkFile(item_id, file_id)
 
 /* unlink SONG from its item
 */
-function unlinkSong(item_id, song_id, plan_url)
+function unlinkSong(that, item_id, song_id, plan_url)
 {
+    // disable button and show wait spinner
+    $(that).addClass('disabled');
+    $(that).children('small').html('<i class="fa fa-spinner fa-spin fa-fw"></i>');
+
+    // send unlink request
     $.ajax({
         url:    '/cspot/items/'+item_id+'/unlinkSong/'+song_id+'', 
         method: 'PUT',
-    }).done(function(data) {
+    })
+    .done(function(data) {
         console.log(data);
+        $(that).children('small').text(data.data);
         // go back to plan 
-        window.location.href = plan_url;
-    }).fail(function(data) {
+        //window.location.href = plan_url;
+    })
+    .fail(function(data) {
         if (data.responseJSON) {
             alert("song unlinking failed! Error: "+data.responseJSON.data+'.  Code:'+data.responseJSON.status);
         }
@@ -99,20 +113,97 @@ function unlinkSong(item_id, song_id, plan_url)
 }
 
 
-
-function deletePrivateItemNote(id) 
+/* toggle field 'show_comment'
+*/
+function toggleShowComment(that, id, actionUrl) 
 {
+    // replace current note with spinner while doing AJAX
     $('#'+id).html('<i class="fa fa-spinner fa-spin fa-fw"></i>');
+
     $.post( 
-        __app_url + '/cspot/api/items/update', 
-        { 'id' : id, 'value' : '_' }
-    ).done( function(data) {
-        // remove old text from note element
-        $('#'+id).html('');
-        //$('#'+id).val('');
-        $('#private-notes-erase-link').hide();
-    });
+        actionUrl, 
+        { 
+            'id'    : id, 
+            'value' : $(that).prop('checked'),
+        })
+    .done( 
+        function(data) {
+            // show result
+            if (data == 'true')
+                $('#'+id).html( 'Show comment as title in the presentation' );
+            else
+                $('#'+id).html( 'Make comment visible in the presentation' );
+        }
+    );
 }
+
+
+/* empty (clear) a public or private note of an item
+*/
+function deleteItemNote(which, id, actionUrl) 
+{
+    // replace current note with spinner while doing AJAX
+    $('#'+id).html('<i class="fa fa-spinner fa-spin fa-fw"></i>');
+
+    $.post( 
+        actionUrl, 
+        { 
+            'id'    : id, 
+            'value' : '_' 
+        })
+    .done( 
+        function(data) {
+            // remove old text from note element
+            $('#'+id).html('');
+            // remove the link that triggered this function
+            $('#'+which+'-notes-erase-link').hide();
+        }
+    );
+}
+
+
+/* FLEO - Plan leader can mark an item as "for leader's eyes only"
+*/
+function changeForLeadersEyesOnly(that) {
+
+    // get data from parent html element (tr)
+    var data = $(that).parent().data();
+    if (! data) return; // should not happen!
+
+    // construct values for the AJAX call
+    var actionURL = data.itemUpdateAction;
+    var value     = $(that).data('value') ? '0' : '1'; // reverse the current value
+    var id        = 'forLeadersEyesOnly-item-id-' + data.itemId;
+
+    $(that).children('i').removeClass('fa-eye');
+    $(that).children('i').removeClass('fa-eye-slash');
+    $(that).children('i').addClass('fa-spin fa-spinner');
+
+    // AJAX update
+    $.post( actionURL, 
+        {
+            value : value,
+            id    : id,
+        })
+        .done( function(data) 
+        {
+            $(that).children('i').removeClass('fa-spin fa-spinner');
+            // show correct icon according to new setting
+            $(that).children('i').addClass( data==1 ? 'fa-eye-slash': 'fa-eye');
+            // reflect new setting also in the data attribute
+            $(that).attr('data-value', data); $(that).data('value', data);
+            // on the Item Detail page, also show the right text for the new setting
+            $(that).children('small').toggle();
+        })
+        .fail( function(data) 
+        {
+            $(that).children('i').removeClass('fa-eye');
+            $(that).children('i').removeClass('fa-eye-slash');
+            $(that).children('i').addClass('fa-exclamation-triangle');
+            console.log('update of forLeadresEyesOnly failed!!');
+        });
+}
+
 
 
 
@@ -181,7 +272,8 @@ function resetSearchForSongs()
     $('#searchForSongsSubmit').hide();
     $('#MPselect').val(0);
     $('#search-string').val('');
-    $('#search-string').focus();
+    $('#haystack').focus();
+    $('#searchSongModalLabel').text('Select what to insert ...');
     $('#search-action-label').text('Full-text search incl. lyrics:');
     $('#txtHint').html('');
     $('#haystack').val('');
@@ -232,7 +324,7 @@ function searchForSongs(that)
                     $('#searchForSongsSubmit').toggle();
                     $('#searching').hide();  
                     $('.search-form-item').show();  
-                    $('#search-string').focus();
+                    $('#haystack').focus();
                     return;
                 }
                 $('#search-action-label').text('Click the desired Song:');
@@ -437,50 +529,6 @@ function resetCommentText(id, newText) {
     if (! newText)      // only show 'edit' icon when comment is empty
         $(that).children(".fa-pencil").css('display', 'inline');
 }
-
-
-/* FLEO - Plan leader can mark an item as "for leader's eyes only"
-*/
-function changeForLeadersEyesOnly(that) {
-
-    // get data from parent html element (tr)
-    var data = $(that).parent().data();
-    if (! data) return; // should not happen!
-
-    // construct values for the AJAX call
-    var actionURL = data.itemUpdateAction;
-    var value     = $(that).data('value') ? '0' : '1'; // reverse the current value
-    var id        = 'forLeadersEyesOnly-item-id-' + data.itemId;
-
-    $(that).children('i').removeClass('fa-eye');
-    $(that).children('i').removeClass('fa-eye-slash');
-    $(that).children('i').addClass('fa-spin fa-spinner');
-
-    // AJAX update
-    $.post( actionURL, 
-        {
-            value : value,
-            id    : id,
-        })
-        .done( function(data) 
-        {
-            $(that).children('i').removeClass('fa-spin fa-spinner');
-            // show correct icon according to new setting
-            $(that).children('i').addClass( data==1 ? 'fa-eye-slash': 'fa-eye');
-            // reflect new setting also in the data attribute
-            $(that).attr('data-value', data); $(that).data('value', data);
-            // on the Item Detail page, also show the right text for the new setting
-            $(that).children('small').toggle();
-        })
-        .fail( function(data) 
-        {
-            $(that).children('i').removeClass('fa-eye');
-            $(that).children('i').removeClass('fa-eye-slash');
-            $(that).children('i').addClass('fa-exclamation-triangle');
-            console.log('update of forLeadresEyesOnly failed!!');
-        });
-}
-
 
 
 

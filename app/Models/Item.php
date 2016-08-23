@@ -20,6 +20,7 @@ class Item extends Model
         'song_id',
         'seq_no',
         'comment',
+        'show_comment',
         'key',
         'forLeadersEyesOnly'
     ];

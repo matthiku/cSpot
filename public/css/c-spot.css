@@ -9434,6 +9434,9 @@ a[disabled] {
 .slide-background-image {
     min-height: 100%;
 }
+.song-background-image {
+    width: 100%;
+}
 
 .mail-alert {
     padding: .25em .4em !important;

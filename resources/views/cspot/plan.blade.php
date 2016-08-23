@@ -469,7 +469,7 @@
                       || haystackMP[i].title_2.toLowerCase().indexOf(needle)>=0 
                       || haystackMP[i].book_ref.toLowerCase().indexOf(needle)>=0 ) {
                         if (count==0) found='';
-                        found+='<div class="radio"><label><input type="radio" onclick="$(\'#searchForSongsButton\').click();" name="haystack" id="needle-';
+                        found+='<div class="radio"><label class="text-muted link"><input type="radio" onclick="$(\'#searchForSongsButton\').click();" name="haystack" id="needle-';
                         found+=haystackMP[i].id + '" value="'+ haystackMP[i].id;
                         found+='">' + haystackMP[i].book_ref + ' ' + haystackMP[i].title + '</label></div>';
                         count++;
@@ -499,16 +499,16 @@
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
-                        <h4 class="modal-title">
+                        <h4 class="modal-title m-b-1">
                             <span id="searchSongModalLabel">Select what to insert</span> <span id="modal-show-item-id"></span>
                         </h4>
 
-                        <a href="#" class="btn btn-lg btn-outline-primary modal-pre-selection fully-width"
-                            onclick="showModalSelectionItems('song')"       >Song       </a>
-                        <a href="#" class="btn btn-lg btn-outline-success modal-pre-selection fully-width"
+                        <a href="#" class="btn btn-lg btn-outline-primary modal-pre-selection fully-width m-b-1"
+                            onclick="showModalSelectionItems('song')"       ><strong>Song</strong> <small>(or videoclip or infoscreen)</small></a>
+                        <a href="#" class="btn btn-lg btn-outline-success modal-pre-selection fully-width m-b-1"
                             onclick="showModalSelectionItems('scripture')"  >Scripture  </a>
-                        <a href="#" class="btn btn-lg btn-outline-info modal-pre-selection fully-width"
-                            onclick="showModalSelectionItems('comment')"    >Comment    </a>
+                        <a href="#" class="btn btn-lg btn-outline-info modal-pre-selection fully-width m-b-1"
+                            onclick="showModalSelectionItems('comment')"    >Comment or Notes</a>
                     </div>
 
                     <div class="modal-body modal-select-comment modal-select-song modal-select-scripture" style="display: none;">
@@ -521,19 +521,19 @@
                             @include( 'cspot.snippets.scripture_input', ['part' => 'two'] )
                         </span>
 
-                        <label id="search-action-label" class="center-block m-b-1 modal-select-song">Full-text search incl. lyrics:</label>
-                        <input type="text"   id="search-string" class="search-input search-form-item center-block m-b-1 modal-select-song modal-input-song">
+                        <label for="haystack" class="search-form-item modal-select-song m-b-0">Search Song title or number:</label>
+                        <input type="text" class="form-control search-form-item modal-select-song modal-input-song m-b-0" id="haystack" onkeyup="showHint(this.value)">
+                        <div class="search-form-item modal-select-song" id="txtHint"></div>
 
-                        <label class="search-form-item modal-select-song" for="MPselect">...or select Mission Praise number</label>
+                        <label class="search-form-item modal-select-song m-t-1 m-b-0" for="MPselect">...or select Mission Praise number:</label>
                         <select class="form-control m-b-1 search-form-item modal-select-song" id="MPselect" onchange="$('#searchForSongsButton').click();">
                             <option value="0">select....</option>
                             {{-- only add MP songs --}}
                             @foreach ($mp_song_list as $song){!!substr($song->book_ref,0,2)=='MP' ? '<option value="'.$song->id.'">'.$song->number.' - '.$song->title.'</option>' : ''!!}@endforeach
                         </select>
 
-                        <label for="haystack" class="search-form-item modal-select-song">..or search Song title or number</label>
-                        <input type="text" class="form-control search-form-item modal-select-song" id="haystack" onkeyup="showHint(this.value)">
-                        <div class="search-form-item modal-select-song" id="txtHint"></div>
+                        <label id="search-action-label" class="center-block modal-select-song m-b-0">Full-text search incl. lyrics:</label>
+                        <input type="text"   id="search-string" class="search-input search-form-item center-block modal-select-song">
 
                         <input type="hidden" id="seq-no">
                         <input type="hidden" id="plan_id"       name="plan_id" data-search-url="{{ url('cspot/songs/search') }}">
