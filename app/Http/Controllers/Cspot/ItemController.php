@@ -117,10 +117,16 @@ class ItemController extends Controller
             return redirect()->back();
         }        
 
+        // find out what the correct sequnce number for this new item is supposed to be
         $beforeItem = null;
         if (isset($request->beforeItem_id)) {
-            $befItem = Item::find($request->beforeItem_id);
-            if ($befItem) {
+            // is the new item to be added at the end of the sequence?
+            $array = explode('-', $request->beforeItem_id);
+            if ( substr($array[0], 0, 5)=='after' ) {
+                $request->seq_no = $array[1] + 1;
+            }
+            $befItem = Item::find( $request->beforeItem_id );
+            if ( $befItem ) {
                 $beforeItem = $befItem;
                 $request->seq_no = ($beforeItem->seq_no) - 0.1;
             }
@@ -471,11 +477,15 @@ class ItemController extends Controller
                 $fields['song_id'] = $songs[0]->id;
             }
             $item->update( $fields );
-        } else {
+        } 
+        else {
             // only update the sequence number
             $item->seq_no = $seq_no;
             $item->save();
             $newItem = moveItem( $item->id, 'static');
+
+            // back to full plan view 
+            return \Redirect::route('cspot.plans.edit', $plan_id);        
         }
 
         // notify event listener that an item was updated
@@ -484,8 +494,6 @@ class ItemController extends Controller
         // redirect back to the item
         return redirect()->action('Cspot\ItemController@edit', ['plan_id' => $plan_id, 'item_id' => $id]);
 
-        // back to full plan view 
-        return \Redirect::route('cspot.plans.edit', $plan_id);
     }
 
 
@@ -592,8 +600,8 @@ class ItemController extends Controller
                 return response()->json(['status' => 401, 'data' => 'Not authorized'], 401);
             }
             // get item and delete it
-            $item = deleteItem($id);
-            if ($item) {
+            $item2 = deleteItem($id);
+            if ($item2) {
                 // notify event listener that an item was updated
                 event( new CspotItemUpdated($item) );
 

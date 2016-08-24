@@ -331,10 +331,14 @@
 	</div>
 
 	<div class="pull-xs-left">
-		<a class="btn btn-sm btn-outline-primary"  onclick="showSpinner()"
-			href='{{ url('cspot/plans/'.$plan->id) }}/items/create/{{isset($item) ? $item->seq_no+1 : 1}}'>
-			<i class="fa fa-plus"> </i> &nbsp; Add item {{ isset($item) ? $item->seq_no+1 : 1 }}.0
-		</a>
+		{{-- new MODAL POPUP to add song/scripture/comment --}}
+		<button     type="button" class="btn btn-outline-primary btn-sm" 
+			 data-toggle="modal" data-target="#searchSongModal"
+			data-plan-id="{{$plan->id}}" data-item-id="{{$item->id}}" 
+			 data-seq-no="after-{{ $item->seq_no }}"
+		           title="Append new Song, Scripture or Comment to this plan">
+			<i class="fa fa-plus"></i> &nbsp; Add item {{ isset($item) ? $item->seq_no+1 : 1 }}.0
+		</button>
 	</div>
 
 @endif

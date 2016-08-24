@@ -30,6 +30,7 @@
                     <pre class="text-song" id="chords">{{ $item->song->chords }}</pre>
                 </div>
             @else
+                (No chords available!)
                 @if ( count($item->song->files)>0 )
                     <div class="m-b-3">
                         @foreach ($item->song->files as $file)
@@ -38,16 +39,12 @@
                         @endforeach
                     </div>
                 @elseif ($item->song->title_2 != 'video')
-                    (chords missing!)
-                @else
                     <pre class="text-song m-b-3" id="lyrics">{{ $item->song->lyrics }}</pre>
                 @endif
             @endif
-        @endif
-
 
         
-        @if ($item->files)
+        @elseif ($item->files)
             @foreach ($item->files as $file)
                 <figure class="figure">
                     <img class="figure-img img-fluid img-rounded full-width" 

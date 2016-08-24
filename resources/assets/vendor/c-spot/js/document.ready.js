@@ -235,7 +235,11 @@ $(document).ready(function() {
             $('#modal-show-item-id').text('for item No '+seq_no+':');
         } 
         else {
-            $('#modal-show-item-id').text('before item No '+seq_no+':');
+            var ar_seq = seq_no.split('-');
+            var txt = 'before item No '+seq_no;
+            if ( ar_seq[0] == 'after')
+                txt = 'after item No '+ar_seq[1];
+            $('#modal-show-item-id').text(txt+':');
         }
         // Update the modal's content
         $('#plan_id'      ).val(plan_id);

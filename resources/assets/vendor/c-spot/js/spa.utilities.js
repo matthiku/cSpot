@@ -408,8 +408,16 @@ function searchForSongs(that)
         $('#search-string').val('');            // reset the search string
         $('#searching').hide();                 // hide the spinner
 
+        // Is this intended to be a new item at the end of the list of items?
+        // Then we can't use the 'insert-before-item-so-and-so' concept in the Item Controller
+        // and we need to change the beforeItem_ID accordingly ...
+        if (seq_no.substr(0,5) == 'after')
+            $('#beforeItem_id').val(seq_no);
+
         // for some reason, the form doesn't submit if only a comment was given...
         if (comment) {
+
+            // submit the form - causes a POST http request to STORE a new item
             document.getElementById('searchSongForm').submit();
         }
     }
