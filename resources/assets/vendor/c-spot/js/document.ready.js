@@ -303,11 +303,13 @@ $(document).ready(function() {
 
 
 
-
+    /* 
+        provide certain (locally cached) data accross all cSpot  views 
+    */
     if (window.location.href.indexOf('/cspot/')>10) {
 
 
-        /* check if songList exists in local cache,
+        /*  check if songList exists in local cache,
             otherwise grab an update from the server
 
             TODO: make sure we always get an update when the songs table was changed!
@@ -324,8 +326,12 @@ $(document).ready(function() {
                     cSpot.songList = JSON.parse(data);
                     localStorage.setItem( 'songList', JSON.stringify(cSpot.songList) );
                     ;;;console.log('Saving Song Titles List to LocalStorage');
+                    addOptionsToMPsongSelect();
                 }
             });
+        } 
+        else {
+            addOptionsToMPsongSelect();
         }
         
 
@@ -344,11 +350,13 @@ $(document).ready(function() {
                     cSpot.bibleBooks = data;
                     localStorage.setItem( 'bibleBooks', JSON.stringify(cSpot.bibleBooks) );
                     ;;;console.log('Saving verses structure to LocalStorage');
+                    addOptionsToBookSelect();
                 }
             });
-        } 
-
-
+        }
+        else {
+            addOptionsToBookSelect();
+        }
 
     }
 

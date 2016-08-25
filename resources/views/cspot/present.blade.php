@@ -372,6 +372,21 @@
             </div>
 
 
+            <!-- 
+                Add New Item into Plan! 
+            -->
+            <div class="btn-group dropup hidden-xs-down m-l-1">
+                {{-- new MODAL POPUP to add song, scripture or comment --}}
+                <button type="button" class="btn btn-sm btn-outline-info btn-sm" title="Add New Item (Song)" 
+                     data-toggle="modal" data-target="#searchSongModal"
+                    data-plan-id="{{$item->plan_id}}" data-item-id="{{$item->id}}" 
+                     data-seq-no="after-{{ $item->seq_no }}"
+                           title="Select new Song, Scripture or Comment">
+                    <i class="fa fa-plus"></i> &nbsp; song or scripture
+                </button>
+            </div>
+
+
 
             <!-- help button to show modal -->
             <a href="#" title="show keyboard shortcuts" data-toggle="modal" data-target=".help-modal"
@@ -431,15 +446,24 @@
     </nav>
 
 
+
+    {{-- 
+            provide popup to add/insert new item 
+    --}}
+    @include('cspot.snippets.add_item_modal')
+
+
+
+    <script>        
+        // make type of presentation globally available
+        cSpot.presentation.type = 'lyrics';
+
         {{-- load cached items from server - if there are any --}}
         @if ($item->plan->has('planCaches'))
-        <script>        
-            // make type of presentation globally available
-            cSpot.presentation.type = 'lyrics';
-
             loadCachedPresentation({{ $item->plan->id }});
-        </script>
         @endif
+
+    </script>
 
 
 @stop

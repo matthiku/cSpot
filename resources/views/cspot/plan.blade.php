@@ -452,36 +452,9 @@
             blink('.form-submit');
             $(that).parent().addClass('has-warning');
         }
-
-        @if (isset($plan))
-            var haystackMP = JSON.parse('{!! json_encode($mp_song_list, JSON_HEX_APOS | JSON_HEX_QUOT) !!}');
-            // example: {"id":10,"title":"A Safe Stronghold Our God Is Still","book_ref":"MP2","title_2":"","number":"2"}
-            function showHint(needle) {
-                if (needle.length == 0) {
-                    $('#txtHint').html('');
-                    return;
-                }
-                var count=0;
-                var found = 'no match';
-                needle = needle.toLowerCase();
-                for (var i=0; i<haystackMP.length; i++) {
-                    if ( haystackMP[i].title.toLowerCase().indexOf(needle)>=0 
-                      || haystackMP[i].title_2.toLowerCase().indexOf(needle)>=0 
-                      || haystackMP[i].book_ref.toLowerCase().indexOf(needle)>=0 ) {
-                        if (count==0) found='';
-                        found+='<div class="radio"><label class="text-muted link"><input type="radio" onclick="$(\'#searchForSongsButton\').click();" name="haystack" id="needle-';
-                        found+=haystackMP[i].id + '" value="'+ haystackMP[i].id;
-                        found+='">' + haystackMP[i].book_ref + ' ' + haystackMP[i].title + '</label></div>';
-                        count++;
-                    }
-                    if (count>5) break;
-                };
-                $('#txtHint').html(found);
-            }
-        @endif
         
         @if (isset($types))
-            var serviceTypes = JSON.parse('{!! json_encode($types, JSON_HEX_APOS | JSON_HEX_QUOT) !!}');
+            cSpot.serviceTypes = JSON.parse('{!! json_encode($types, JSON_HEX_APOS | JSON_HEX_QUOT) !!}');
         @endif
 
     </script>   
@@ -489,8 +462,12 @@
 
 
     @if (isset($plan))
-        {{-- provide popup to add/insert new item --}}
+
+        {{-- 
+                provide popup to add/insert new item 
+        --}}
         @include('cspot.snippets.add_item_modal')
+
     @endif
 
 

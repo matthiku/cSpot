@@ -12,9 +12,6 @@
 
     <select name="from-book" id="from-book" class="pull-xs-left" onchange="showNextSelect('from', 'chapter')">
         <option selected="TRUE" value=" ">select book...</option>
-        @foreach ($bibleBooks->getArrayOfBooks() as $book)
-            <option value="{{ $book }}">{{ $book }}</option>
-        @endforeach                        
     </select>&nbsp;
 
     <span class="select-reference" style="display: none;">                    

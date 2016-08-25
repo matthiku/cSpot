@@ -39023,7 +39023,7 @@ function showNextSelect(fromOrTo, what)
     var x = document.getElementById(fromOrTo+'-'+what);
 
     // API call to get the books/chapter/verses data
-    if (typeof(bibleBooks)=='object') {
+    if (typeof(cSpot.bibleBooks)=='object') {
         // make the element visible
         $('#'+fromOrTo+'-'+what).show();
 
@@ -39035,9 +39035,9 @@ function showNextSelect(fromOrTo, what)
 
         // are wee looking at chapters of a book or verses of a chapter?
         if (what=='chapter') {
-            maxNumber = Object.keys(bibleBooks[book]).length;
+            maxNumber = Object.keys(cSpot.bibleBooks[book]).length;
         } else {
-            maxNumber = bibleBooks[book][chapter];
+            maxNumber = cSpot.bibleBooks[book][chapter];
         }
 
         // populate the select input with the relevant numbers
@@ -39139,7 +39139,8 @@ function showScriptureText(version,book,chapter,fromVerse,toVerse)
 
 
 /*
-    In the Song Search modal popup, show songs that correspond to the entered search string
+    In the Song Search modal popup, show list of max 5 songs that 
+    correspond to the entered search string (needle)
 */
 function showSongHints(that, needle)
 {
@@ -39168,6 +39169,52 @@ function showSongHints(that, needle)
     $(that).html(found);
 }
 
+/*
+    from the (locally cached) songlist, get all MP songs
+    and add them as options to the dropdown-select box
+    in the Song Search modal popup
+*/
+function addOptionsToMPsongSelect()
+{
+    // get handle on current html element
+    var mps = document.getElementById('MPselect');
+    var songs = cSpot.songList;
+
+    // create new nodes with the data from each song and add it to the list of options
+    for (var i in songs) {
+        // we only want MP songs....
+        if ( songs[i].book_ref.substr(0,2) == "MP" ) {
+            var opt = document.createElement('option');
+            opt.value = songs[i].id;
+            opt.text = songs[i].number + '-' + songs[i].title;
+            mps.appendChild(opt);
+        }
+    }
+
+}
+
+
+/*
+    from the (locally cached) list of Bible books,
+    add each as options to the dropdown-select box
+    in the Scripture input dropdown selection
+*/
+function addOptionsToBookSelect()
+{
+    // get handle on current html element
+    var mps = document.getElementById('from-book');
+    var books = cSpot.bibleBooks;
+
+    // create new nodes with the data from each song and add it to the list of options
+    for (var book in books) {
+        var opt = document.createElement('option');
+        opt.value = book;
+        opt.text  = book;
+        mps.appendChild(opt);
+    }
+
+}
+
 
 
 /*
@@ -39179,12 +39226,15 @@ function fillDefaultServiceTimes(that)
 {
     // get selected service type
     var selSerType = $(that).val();
+
     // read default times from global var
-    var start = serviceTypes[selSerType].start;
-    var   end = serviceTypes[selSerType].end;
+    var start = cSpot.serviceTypes[selSerType].start;
+    var   end = cSpot.serviceTypes[selSerType].end;
+
     // assign to times input fields
     $('#start').val(start);
     $('#end'  ).val(end);
+
     //$($('#planServiceTimes').children('input')[1]).val( end );
 }
 
@@ -39784,11 +39834,13 @@ $(document).ready(function() {
 
 
 
-
+    /* 
+        provide certain (locally cached) data accross all cSpot  views 
+    */
     if (window.location.href.indexOf('/cspot/')>10) {
 
 
-        /* check if songList exists in local cache,
+        /*  check if songList exists in local cache,
             otherwise grab an update from the server
 
             TODO: make sure we always get an update when the songs table was changed!
@@ -39805,8 +39857,12 @@ $(document).ready(function() {
                     cSpot.songList = JSON.parse(data);
                     localStorage.setItem( 'songList', JSON.stringify(cSpot.songList) );
                     ;;;console.log('Saving Song Titles List to LocalStorage');
+                    addOptionsToMPsongSelect();
                 }
             });
+        } 
+        else {
+            addOptionsToMPsongSelect();
         }
         
 
@@ -39825,11 +39881,13 @@ $(document).ready(function() {
                     cSpot.bibleBooks = data;
                     localStorage.setItem( 'bibleBooks', JSON.stringify(cSpot.bibleBooks) );
                     ;;;console.log('Saving verses structure to LocalStorage');
+                    addOptionsToBookSelect();
                 }
             });
-        } 
-
-
+        }
+        else {
+            addOptionsToBookSelect();
+        }
 
     }
 

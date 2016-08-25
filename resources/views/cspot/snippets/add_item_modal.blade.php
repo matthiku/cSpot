@@ -32,14 +32,12 @@
                         </span>
 
                         <label for="haystack" class="search-form-item modal-select-song m-b-0">Search Song title or number:</label>
-                        <input type="text" class="form-control search-form-item modal-select-song modal-input-song m-b-0" id="haystack" onkeyup="showHint(this.value)">
+                        <input type="text" class="form-control search-form-item modal-select-song modal-input-song m-b-0" id="haystack" onkeyup="showSongHints('#txtHint', this.value)">
                         <div class="search-form-item modal-select-song" id="txtHint"></div>
 
                         <label class="search-form-item modal-select-song m-t-1 m-b-0" for="MPselect">...or select Mission Praise number:</label>
                         <select class="form-control m-b-1 search-form-item modal-select-song" id="MPselect" onchange="$('#searchForSongsButton').click();">
                             <option value="0">select....</option>
-                            {{-- only add MP songs --}}
-                            @foreach ($mp_song_list as $song){!!substr($song->book_ref,0,2)=='MP' ? '<option value="'.$song->id.'">'.$song->number.' - '.$song->title.'</option>' : ''!!}@endforeach
                         </select>
 
                         <label id="search-action-label" class="center-block modal-select-song m-b-0">Full-text search incl. lyrics:</label>
