@@ -292,7 +292,13 @@ class SongController extends Controller
     }
 
 
-
+    /**
+     * API - get list of song titles for easy search
+     */
+    public function APIgetSongList()
+    {
+        return json_encode(MPsongList(), JSON_HEX_APOS | JSON_HEX_QUOT);
+    }
 
 
 

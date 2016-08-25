@@ -213,6 +213,9 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     // SPA API
     Route::post('api/songs/update',           [ 'uses'=>'Cspot\SongController@APIupdate']);
 
+    // song list
+    Route::get('api/songs/getsonglist', ['as'=>'getsonglist', 'uses'=>'Cspot\SongController@APIgetSongList']);
+
 
     /*
         SYNC PRESENTATION

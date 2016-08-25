@@ -45,6 +45,8 @@
             cSpot.presentation.item_id = {{ $item->id      }};
             cSpot.presentation.seq_no  = {{ $item->seq_no  }};
             cSpot.presentation.max_seq_no = {{ $item->plan->lastItem()->seq_no }};
+
+            // set offline mode (using cahced items) as default
             cSpot.presentation.useOfflineMode = true;
         @endif
 

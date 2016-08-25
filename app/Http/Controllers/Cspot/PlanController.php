@@ -196,23 +196,9 @@ class PlanController extends Controller
             ->where('date', 'like', $date.'%')->first();
 
         if ($plan) {
-            $types = Type::get();
-            // get list of users
-            $users = User::orderBy('first_name')->get();
-
-            return view( 
-                $this->view_one, 
-                array(
-                    'plan'         => $plan, 
-                    'types'        => $types, 
-                    'users'        => $users, 
-                    'mp_song_list' => MPsongList(),
-                    'bibleBooks'   => new BibleBooks(),                     // array of bible books
-                    'versionsEnum' => json_decode(env('BIBLE_VERSIONS')),   // array of possible bible versions
-                    'newest_item_id'  => 0,
-                    'trashedItemsCount' => 0, 
-                )
-            );
+            
+            // call the edit action for a single plan
+            return $this->edit($plan->id);
         }
 
         // No plan found for this day, let the user create a new one

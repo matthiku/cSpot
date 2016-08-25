@@ -269,6 +269,38 @@ function showScriptureText(version,book,chapter,fromVerse,toVerse)
 
 
 /*
+    In the Song Search modal popup, show songs that correspond to the entered search string
+*/
+function showSongHints(that, needle)
+{
+    // get list of songs from global variable
+    var haystackMP = cSpot.songList;
+
+    if (needle.length == 0) {
+        $(that).html('');
+        return;
+    }
+    var count=0;
+    var found = 'no match';
+    needle = needle.toLowerCase();
+    for (var i=0; i<haystackMP.length; i++) {
+        if ( haystackMP[i].title.toLowerCase().indexOf(needle)>=0 
+          || haystackMP[i].title_2.toLowerCase().indexOf(needle)>=0 
+          || haystackMP[i].book_ref.toLowerCase().indexOf(needle)>=0 ) {
+            if (count==0) found='';
+            found+='<div class="radio"><label class="text-muted link"><input type="radio" onclick="$(\'#searchForSongsButton\').click();" name="haystack" id="needle-';
+            found+=haystackMP[i].id + '" value="'+ haystackMP[i].id;
+            found+='">' + haystackMP[i].book_ref + ' ' + haystackMP[i].title + '</label></div>';
+            count++;
+        }
+        if (count>5) break;
+    };
+    $(that).html(found);
+}
+
+
+
+/*
     Inserts default service start- and end-times 
     when user selects a service type while creating a new service plan
     (plan.blade.php)

@@ -185,6 +185,8 @@ $(document).ready(function() {
         $('.newest-item').removeClass('bg-khaki', 19999);
     }
 
+
+
                 
     /*\
     |*|----------------------------------------------------------------------
@@ -300,24 +302,54 @@ $(document).ready(function() {
 
 
 
-    /***
-     * Get array with all bible books with all chapters and number of verses in each chapter
-     */
+
+
     if (window.location.href.indexOf('/cspot/')>10) {
 
-        // first check if data is alerady cached locally
-        bibleBooks = JSON.parse(localStorage.getItem('bibleBooks'));
 
-        if (bibleBooks==null) {
+        /* check if songList exists in local cache,
+            otherwise grab an update from the server
+
+            TODO: make sure we always get an update when the songs table was changed!
+        */
+
+        // check local storage
+        cSpot.songList = JSON.parse(localStorage.getItem('songList'));
+
+        // not found in local storage, so get it from the server
+        if (cSpot.songList==null) {
+            $.get(__app_url+'/cspot/api/songs/getsonglist', function(data, status) {
+
+                if ( status == 'success') {
+                    cSpot.songList = JSON.parse(data);
+                    localStorage.setItem( 'songList', JSON.stringify(cSpot.songList) );
+                    ;;;console.log('Saving Song Titles List to LocalStorage');
+                }
+            });
+        }
+        
+
+
+        /***
+         * Get array with all bible books with all chapters and number of verses in each chapter
+         */
+
+        // first check if data is alerady cached locally
+        cSpot.bibleBooks = JSON.parse(localStorage.getItem('bibleBooks'));
+
+        if (cSpot.bibleBooks==null) {
             $.get(__app_url+'/bible/books/all/verses', function(data, status) {
 
                 if ( status == 'success') {
-                    bibleBooks = data;
-                    localStorage.setItem( 'bibleBooks', JSON.stringify(bibleBooks) );
+                    cSpot.bibleBooks = data;
+                    localStorage.setItem( 'bibleBooks', JSON.stringify(cSpot.bibleBooks) );
                     ;;;console.log('Saving verses structure to LocalStorage');
                 }
             });
         } 
+
+
+
     }
 
 
