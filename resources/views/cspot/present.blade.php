@@ -382,7 +382,7 @@
                     data-plan-id="{{$item->plan_id}}" data-item-id="{{$item->id}}" 
                      data-seq-no="after-{{ $item->seq_no }}"
                            title="Select new Song, Scripture or Comment">
-                    <i class="fa fa-plus"></i> &nbsp; song or scripture
+                    <i class="fa fa-plus"></i> song etc.
                 </button>
             </div>
 

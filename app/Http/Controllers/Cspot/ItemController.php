@@ -80,7 +80,13 @@ class ItemController extends Controller
      */
     public function store(Request $request)
     {
+        // make sure we have a plan...
         $plan = Plan::find( $request->input('plan_id') );
+        if ( ! $plan ) {
+            flash('Unable to find plan!');
+            return redirect()->back();
+        }
+
         // searching for a song?
         if ($request->has('search')) {
             $songs = songSearch( '%'.$request->search.'%' );
@@ -107,6 +113,7 @@ class ItemController extends Controller
 
         // check user rights (teachers and leaders can edit items of their own plan)
         if (! checkRights($plan)) {
+            flash('Unable to insert item!');
             return redirect()->back();
         }
 
@@ -120,13 +127,19 @@ class ItemController extends Controller
         // find out what the correct sequnce number for this new item is supposed to be
         $beforeItem = null;
         if (isset($request->beforeItem_id)) {
+
             // is the new item to be added at the end of the sequence?
             $array = explode('-', $request->beforeItem_id);
-            if ( substr($array[0], 0, 5)=='after' ) {
+
+            if ( substr($array[0], 0, 5) == 'after' ) {
+
                 $request->seq_no = $array[1] + 1;
             }
+
             $befItem = Item::find( $request->beforeItem_id );
+
             if ( $befItem ) {
+
                 $beforeItem = $befItem;
                 $request->seq_no = ($beforeItem->seq_no) - 0.1;
             }
@@ -527,7 +540,7 @@ class ItemController extends Controller
 
 
     /**
-     * API - update single fields of item via AJAX
+     * API - update single fields of an item via AJAX
      */
     public function APIupdate(Request $request, $item_id=null)
     {
@@ -611,6 +624,35 @@ class ItemController extends Controller
         }
         return response()->json(['status' => 404, 'data' => 'Not found'], 404);
     }
+
+
+    /**
+     * API insert new item via AJAX
+     *
+     * (called from presentation view)
+     */
+    public function APIinsert(Request $request)
+    {
+        // find plan
+        if ( ! $request->has('plan_id') )
+            return response()->json(['status' => 404, 'data' => 'APIinsert: plan_id missing!'], 404);
+
+        $plan  = Plan::find($request->plan_id);
+
+        // check user rights
+        if ( ! checkRights($plan) )
+            return response()->json(['status' => 401, 'data' => 'Not authorized'], 401);
+
+        // insert item into plan
+        $plan = insertItem( $request );
+
+        if ( $plan)
+            return response()->json(['status' => 200, 'data' => 'Item inserted.']);
+
+        // something went wrong!
+        return response()->json(['status' => 405, 'data' => 'Error! Item not inserted!']);
+    }
+
 
 
 

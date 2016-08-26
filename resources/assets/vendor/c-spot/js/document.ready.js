@@ -193,19 +193,19 @@ $(document).ready(function() {
     |*|    Insert NEW or update EXISTING ITEMS on the Plan Overview page
     |*|----------------------------------------------------------------------
     |*|
-    |*| The corresponding modal is declared in plan.blade.php
+    |*| The corresponding modal is included in plan.blade.php
     |*|
     |*| The method below is called when the modal popup is activated (shown) by clicking on the respective buttons or links.
     |*| It populates the modal popup with the data provided by the launching button ....
     |*|
-    |*| For insertion of new items, a selection is given between 'song', 'scripture' or 'comment'
-    |*| in order to show the appropriate input and selection elements
+    |*| Initially, a menu with 3 buttons is shown for the selection of 'Song', 'Scripture' or 'Comment/Note'.
+    |*| Each will un-hide a different list of input and selection elements.
     |*|
     |*| This same modal is also being used to update an existing song item (ie. to change the song)
     |*|
     |*| The new data is processed via the 'searchForSongs' js helper function above
     \*/
-    $('#searchSongForm').on('shown.bs.modal', function (event) {
+    $('#searchSongForm').on('show.bs.modal', function (event) {
 
         // first make sure the form is back in its initial state
         resetSearchForSongs();
@@ -264,6 +264,29 @@ $(document).ready(function() {
         });
     })
 
+    /*
+         in Presentation mode, modify the modal's position and outlook
+    */
+    if ( window.location.pathname.indexOf('/present') > 10 ) {
+
+        $('#searchSongModal').on('show.bs.modal', function (event) {
+
+            // move to the bottom
+            $('#searchSongModal').css('top','inherit');
+
+            // no animation
+            $('#searchSongModal').removeClass('fade');
+
+            $('.modal-title').hide();   /* title not needed */
+
+            // darker background
+            $('.modal-content').css('background-color', '#c2c2d6');
+
+        });
+
+    }
+
+
 
 
 
@@ -306,7 +329,7 @@ $(document).ready(function() {
     /* 
         provide certain (locally cached) data accross all cSpot  views 
     */
-    if (window.location.href.indexOf('/cspot/')>10) {
+    if (window.location.pathname.indexOf('cspot/')>0) {
 
 
         /*  check if songList exists in local cache,
@@ -415,7 +438,7 @@ $(document).ready(function() {
     /**
      * On the Songs List page, allow some key codes
      */
-    if (window.location.href.indexOf('cspot/songs')>10) {
+    if (window.location.pathname.indexOf('cspot/songs')>1) {
 
         $(document).keydown(function( event ) {
             ;;;console.log('pressed key code: '+event.keyCode);
@@ -453,12 +476,16 @@ $(document).ready(function() {
     /**
      * Configuration for Items Presentation Views (present/chords/musicsheets)
      */
-    if ( window.location.href.indexOf('/present' ) > 10
-      || window.location.href.indexOf('/chords'   ) > 10
-      || window.location.href.indexOf('/sheetmusic') > 10 ) {
+    if ( window.location.pathname.indexOf('/present' ) > 10
+      || window.location.pathname.indexOf('/chords'   ) > 10
+      || window.location.pathname.indexOf('/sheetmusic') > 10 ) {
 
         // handle keyboard events
         $(document).keydown(function( event ) {
+
+            // do nothing while a modal is open
+            if ($('.modal-content').is(':visible')) return;
+
             // key codes: 37=left arrow, 39=right, 38=up, 40=down, 34=PgDown, 33=pgUp, 
             //            36=home, 35=End, 32=space, 27=Esc, 66=e
             //
@@ -502,7 +529,7 @@ $(document).ready(function() {
     /**
      * check sync setting for chords or sheetmusic presentation
      */
-    if ( window.location.href.indexOf('/chords')>10 || window.location.href.indexOf('/sheetmusic')>10 ) {
+    if ( window.location.pathname.indexOf('/chords')>10 || window.location.pathname.indexOf('/sheetmusic')>10 ) {
 
         // check if we want to syncronise our own presentation with the Main Presenter
         configSyncPresentationSetting = localStorage.getItem('configSyncPresentation');
@@ -520,7 +547,7 @@ $(document).ready(function() {
     /**
      * prepare lyrics or bible texts or image slides for presentation
      */
-    if ( window.location.href.indexOf('/present')>10 ) {
+    if ( window.location.pathname.indexOf('/present')>10 ) {
 
         // check if we have a VideoClip item or just lyrics
         if ($('#videoclip-url').length) {
@@ -598,7 +625,7 @@ $(document).ready(function() {
     }
 
     // if sheetmusic is displayed, show button to swap between sheetmusic and chords
-    if ( window.location.href.indexOf('sheetmusic')>0 || window.location.href.indexOf('swap')>0 ) {
+    if ( window.location.pathname.indexOf('sheetmusic')>0 || window.location.pathname.indexOf('swap')>0 ) {
         $('#show-chords-or-music').css('display', 'inline');
     }
 

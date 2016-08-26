@@ -248,15 +248,22 @@ function userAvailableForPlan(that, plan_id) {
    now we present the appropriate input elements */
 function showModalSelectionItems(what)
 {
-    $('.modal-pre-selection').hide();               // hide all pre-selection parts of the modal
-    $('.modal-select-'+what).show();                // show all parts for selecting a song or entering a comment
+    // hide all pre-selection parts of the modal
+    $('.modal-pre-selection').hide();               
+
+    // show all parts for selecting a song or entering a comment
+    $('.modal-select-'+what).show();                
+
+    $('.modal-content').css('background-color', '#c2c2d6'); // different background color during song selection
+
     $('#searchSongModalLabel').text('Insert '+what);
+
     $('.modal-input-'+what).focus();
+
     // show submit button for comments or scripture
-    if (what!='song') {
-        $('#searchForSongsSubmit').show();
-    }
+    if (what!='song') $('#searchForSongsSubmit').show();
 }
+
 
 /* Reset the song search form
 */
@@ -408,6 +415,13 @@ function searchForSongs(that)
         $('#search-string').val('');            // reset the search string
         $('#searching').hide();                 // hide the spinner
 
+        // if this is called from the Presentation view, 
+        // we will make the insertion via an AJAX call
+        if ( location.pathname.indexOf('/present') ) {
+            insertNewItemIntoPlan( plan_id, seq_no, song_id, comment );
+            return;
+        }
+
         // Is this intended to be a new item at the end of the list of items?
         // Then we can't use the 'insert-before-item-so-and-so' concept in the Item Controller
         // and we need to change the beforeItem_ID accordingly ...
@@ -460,6 +474,29 @@ function updateSong(song_id)
             myCell.children('.show-song-title').text('Failed! Press F12 for more');
             console.log("Update failed! Please notify admin! " + JSON.stringify(data));
         });
+}
+
+
+/* Insert new item into a plan via AJAX
+*/
+function insertNewItemIntoPlan( plan_id, seq_no, song_id, comment )
+{
+    var url = __app_url + '/cspot/api/items';
+
+    $.post(url,{
+        'plan_id' : plan_id,
+        'seq_no'  : seq_no,
+        'song_id' : song_id,
+        'comment' : comment,
+    })
+    .done(function(data){
+        // advance to next item
+        ;;;console.log('item inserted!');
+    })
+    .fail(function(data) {
+        // show error somewhere...
+        console.log(data);
+    });
 }
 
 
