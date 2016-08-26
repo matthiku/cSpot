@@ -294,6 +294,8 @@ class ItemController extends Controller
     /**
      * Display single items of a plan with options to move to the next or previous item on this plan
      *
+     * This is used for the presentation views (lyrics, chords, sheetmusic)
+     *
      * @param  int     $id      item id
      * @param  string  $present (optional) chords (default), sheetmusic or present (for overhead presentations)
      *
@@ -308,13 +310,11 @@ class ItemController extends Controller
             if ( ! $present) { $present = 'chords'; }
 
             return view('cspot.'.$present, [
-                    'item'       => $item,          
-                    // all items of the plan to which this item belongs
-                    'items'      => $item->plan->items->sortBy('seq_no')->all(),         
-                    // what kind of item presentation is requested
-                    'type'       => $present,       
-                    // the bible text if there was any reference in the comment field of the item
-                    'bibleTexts' => getBibleTexts($item->comment)
+                    'item'          => $item,          
+                    'versionsEnum'  => json_decode(env('BIBLE_VERSIONS')),
+                    'items'         => $item->plan->items->sortBy('seq_no')->all(),   // all items of the plan to which this item belongs      
+                    'type'          => $present,                            // what kind of item presentation is requested
+                    'bibleTexts'    => getBibleTexts($item->comment)   // the bible text if there was any reference in the comment field of the item
                 ]);
         }
 

@@ -206,7 +206,7 @@
         </ul>
 
         {{-- 'sequence' indicates the order in which the various lyric parts are to be shown --}}
-        <span class="navbar-brand pull-xs-right hidden-xs-down" id="lyrics-sequence-nav">
+        <span class="navbar-nav pull-xs-right hidden-xs-down" id="lyrics-sequence-nav">
             <!-- {{-- this is currently resolved on the client side --}} -->
             @if ($item->song_id && $item->song->sequence)
                 <a href="#" onclick="advancePresentation();" 
@@ -233,7 +233,8 @@
         </span>
     
         {{-- button to reveal the second navbar at the bottom --}}
-        <button class="navbar-toggler btn btn-info active" type="button" data-toggle="collapse" data-target="#lyricsNavbar">
+        <button class="navbar-toggler presentation-navbar-toggler btn btn-info active" 
+                 type="button" data-toggle="collapse" data-target="#lyricsNavbar">
             &dArr;
         </button>
 
@@ -387,18 +388,24 @@
             </div>
 
 
+            {{-- link to show linked YT video --}}
+            @if ($item->song_id && $item->song->youtube_id)
+                <a href="https://www.youtube.com/watch?v={{ $item->song->youtube_id }}" 
+                    target="new" class="pull-xs-right btn btn-sm btn-info hidden-sm-down m-l-1">
+                <i class="red fa fa-youtube-play fa-lg"></i>&nbsp;</a>
+            @endif
 
-            <!-- help button to show modal -->
+            {{-- help button to show modal --}}
             <a href="#" title="show keyboard shortcuts" data-toggle="modal" data-target=".help-modal"
-                class="hidden-sm-down pull-xs-right btn btn-sm btn-outline-success m-r-1">
+                class="hidden-sm-down pull-xs-right btn btn-sm btn-outline-success">
             <i class="fa fa-question-circle fa-lg"></i></a>
 
 
 
 
-            <!-- 
-                go to first/last slide 
-            -->
+            {{-- 
+                    go to first/last slide
+            --}}
             <a href="{{ url('cspot/items/').'/'.$item->plan->firstItem()->id.'/present' }}" id="go-first-item"></a>
             <a href="{{ url('cspot/items/').'/'.$item->plan->lastItem()->id.'/present'  }}" id="go-last-item" ></a>
 

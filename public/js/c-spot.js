@@ -40659,6 +40659,12 @@ function insertNewItemIntoPlan( plan_id, seq_no, song_id, comment )
 {
     var url = __app_url + '/cspot/api/items';
 
+    // determine new sequence number
+    sno = seq_no.split('-');
+    if (sno[0]=='after') {
+        seq_no = 1 * sno[1] + 0.1;
+    }
+
     $.post(url,{
         'plan_id' : plan_id,
         'seq_no'  : seq_no,
@@ -40666,8 +40672,12 @@ function insertNewItemIntoPlan( plan_id, seq_no, song_id, comment )
         'comment' : comment,
     })
     .done(function(data){
-        // advance to next item
+
         ;;;console.log('item inserted!');
+
+        // advance to next item (which now is the just inserted item!)
+        document.getElementById('go-next-item').click();
+
     })
     .fail(function(data) {
         // show error somewhere...

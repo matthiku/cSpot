@@ -2,20 +2,20 @@
 
 c-SPOT was designed to help (small) churches plan their Sunday and Midweek services as well as other events.
 
-c-SPOT provides the tools to manage all event information - the order of services, resources, worship song lists for worship leaders, musicians and every other person involved in the service or event and allows all users to add or modify information accordingly using the platform or device of their choice!
+c-SPOT provides the tools to manage all event information - the order of services, resources, worship song lists for worship leaders, musicians and every other person involved in the service or event and allows all participants to use, add or modify information accordingly using the platform or device of their choice!
 
 It allows the management of song lyrics, music scores, guitar chords, event resources and teams in a user-friendly web application.
 
 - Frontend: Responsive design, runs on *any* device that supports a browser with javascript!
 - Create Order of Services with all relevant data (team (leaders, musicians, other functions), resources, songs, free slides, embedded videoclips etc)
-- Customize for your church and allow others to participate
+- Can be customized for your church with logos and external links
 - Manage your team (staff) with their roles; also manage the resources needed for a service (rooms, devices etc.)
 - Present your songs in a slideshow fashion via a projector 
-- The slideshow can be done off-line with all slides downlaoded to the local computer
+- The slideshow can be done off-line with all slides downloaded to the local computer
 - Control the slide show from **any device** using a Chromecast device attached to your projector
 - Or control the presentation from a small device (e.g. smartphone) that syncs with the main device attached to the projector!
 - Provide chords, lyrics and sheetmusic for musicians on all kinds of devices
-- Allows extensive collaboration and input from all users with full rights management
+- Allows extensive collaboration and input from all users, but with full rights management, specified for each user type
 - Allows for a _synchronised presentation_ of lyrics, chords or sheet music _accross all designated devices!_
 - Exchange email and/or internal messages between users
 
@@ -36,6 +36,11 @@ That's when the development of the predecessor of c-SPOT was started. It was my 
 
 #### New Design
 Out came an online tool, designed for mobile devices and desktop devices, fully responsive to all sizes of screens with the ability to still access and/or modify all the relevant data. Tables are adaptive so that more and more columns with less important information are hidden or their content displayed in a more compact way the smaller a device gets.
+![sample Order of Service Plan](https://raw.githubusercontent.com/matthiku/cSpot/master/public/images/PlanOverviewNew-Small.png)
+[full size](https://raw.githubusercontent.com/matthiku/cSpot/master/public/images/PlanOverviewNew.png)
+![plan with embedded YT video in popup](https://raw.githubusercontent.com/matthiku/cSpot/master/public/images/PlanOverviewWithYoutube-Small.png)
+[full size](https://raw.githubusercontent.com/matthiku/cSpot/master/public/images/PlanOverviewWithYoutube.png)
+
 
 ### Users
 c-SPOT provides event information and worship song lists to worship leaders, musicians and every other person involved in the service and allows them to add or modify information accordingly.
@@ -70,7 +75,7 @@ Currently, the following user rights are assigned to roles:
 | administrator | same as editor plus management of all users and their roles |
 
 ## Support of mobile devices
-Although this is a web-based application, with the frontend running in a browser, a user can run it like an app using Chrome's feater "Add to homescreen",
+Although this is a web-based application, with the frontend running in a browser, a user can run it like an app using Chrome's feature called "Add to homescreen",
 which is available on all major mobile platforms. Once opened in the Chrome browser app on your mobile device, select this function in 
 Chrome's menu and a new icon will appear on your homescreen:
 ![homescreen](https://raw.githubusercontent.com/matthiku/cSpot/master/public/images/homescreenIcon.png)

@@ -9378,6 +9378,11 @@ a.ui-button:active,
  */
 
 
+/* button to show hidden navbar */
+.presentation-navbar-toggler {
+    padding: 0 .75rem;
+}
+
 /* drop-up menu in presentation*/
 .dropdown-menu-presentation {
     min-width: 290px;
