@@ -59,6 +59,18 @@ class Song extends Model
 
 
 
+    /**
+     * A song has a corresponding song text, divided into song parts
+     * 
+     * this text contains both lyrics with chords interspersed (like the OnSong format)
+     */
+    public function song_texts() 
+    {
+        return $this->hasMany('App\Models\Song_text');
+    }
+
+
+
 
     /**
      * Get collection of plans using this song - excluding future plans

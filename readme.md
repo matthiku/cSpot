@@ -1,4 +1,4 @@
-# The **C**hurch **S**ervice **P**lanning **O**nline **T**ool
+# The *C*hurch *S*ervice *P*lanning *O*nline *T*ool
 
 c-SPOT was designed to help (small) churches plan their Sunday and Midweek services as well as other events.
 
@@ -18,6 +18,7 @@ It allows the management of song lyrics, music scores, guitar chords, event reso
 - Allows extensive collaboration and input from all users, but with full rights management, specified for each user type
 - Allows for a _synchronised presentation_ of lyrics, chords or sheet music _accross all designated devices!_
 - Exchange email and/or internal messages between users
+- Allows fast addition of songs even during the actual presentation!
 
 As a free and open source project, you can download ('clone') the sources, modify (customize) them and run the tool from your own web site hoster.
 
@@ -32,13 +33,13 @@ Many people don’t understand the complexities of making church services happen
 #### History
 In our church, this was first done by the leader of the service, when he handed out his paper-based list of songs to the musicians on a Sunday morning. As things progressed, this was no longer viable, as musicians needed more time to practice the songs and the slides for the projection needed to be prepared. So we switched to sending emails around - but quite often, things were changed after the email went out and then not everyone was up-to-date. 
 
-That's when the development of the predecessor of c-SPOT was started. It was my first trial of a project in PHP, mySQL, HTML and Javascript and therefore, while user-friendly, not very developer-friendly... Also, it was never designed to be used on mobile devices. After recently learning a lot about Laravel and Bootstrap, I finally decided to re-write this tool from scratch, with a popular PHP framwork and the mobile-first approach. Due to time constraints, however, it has not a "[single page application (SPA)](https://en.wikipedia.org/wiki/Single-page_application)" design!
+That's when the development of the predecessor of c-SPOT was started. It was my first trial of a project in PHP, mySQL, HTML and Javascript and therefore, while user-friendly, not very developer-friendly... Additionally, it was never designed to be used on mobile devices. After recently learning a lot about Laravel and Bootstrap, I finally decided to re-write this tool from scratch, with a popular PHP framwork and the mobile-first approach. Due to time constraints, however, it has only a limited "[single page application (SPA)](https://en.wikipedia.org/wiki/Single-page_application)" design!
 
 #### New Design
 Out came an online tool, designed for mobile devices and desktop devices, fully responsive to all sizes of screens with the ability to still access and/or modify all the relevant data. Tables are adaptive so that more and more columns with less important information are hidden or their content displayed in a more compact way the smaller a device gets.
 ![sample Order of Service Plan](https://raw.githubusercontent.com/matthiku/cSpot/master/public/images/PlanOverviewNew-Small.png)
 [full size](https://raw.githubusercontent.com/matthiku/cSpot/master/public/images/PlanOverviewNew.png)
-![plan with embedded YT video in popup](https://raw.githubusercontent.com/matthiku/cSpot/master/public/images/PlanOverviewWithYoutube-Small.png)
+![plan with embedded YT video in popup](https://raw.githubusercontent.com/matthiku/cSpot/master/public/images/PlanOverviewWithYoutube-small.png)
 [full size](https://raw.githubusercontent.com/matthiku/cSpot/master/public/images/PlanOverviewWithYoutube.png)
 
 

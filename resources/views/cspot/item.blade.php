@@ -418,6 +418,11 @@
 
     </div>
 
+    {{-- activate the tabs --}}
+    <script>
+        $( "#tabs" ).tabs();
+    </script>
+
     {!! Form::close() !!}
 
 

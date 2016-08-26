@@ -39178,6 +39178,10 @@ function addOptionsToMPsongSelect()
 {
     // get handle on current html element
     var mps = document.getElementById('MPselect');
+
+    // ignore the rest if the element wasn't found
+    if (! mps) return;
+
     var songs = cSpot.songList;
 
     // create new nodes with the data from each song and add it to the list of options
@@ -39203,6 +39207,10 @@ function addOptionsToBookSelect()
 {
     // get handle on current html element
     var mps = document.getElementById('from-book');
+
+    // ignore the rest if the element wasn't found
+    if (! mps) return;
+
     var books = cSpot.bibleBooks;
 
     // create new nodes with the data from each song and add it to the list of options
@@ -39650,8 +39658,6 @@ $(document).ready(function() {
             trigger: 'focus'
         });
 
-        // enable Tabs
-        $('#tabs').tabs();
     });
   
 

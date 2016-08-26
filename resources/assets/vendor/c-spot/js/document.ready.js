@@ -119,8 +119,6 @@ $(document).ready(function() {
             trigger: 'focus'
         });
 
-        // enable Tabs
-        $('#tabs').tabs();
     });
   
 
