@@ -38,7 +38,7 @@
 
     <span class="select-version" style="display: none;>
 
-        {!! Form::label('version', 'Select version:'); !!}
+        {!! Form::label('version', 'Select version:') !!}
 
         <select name="version" id="version" onchange="populateComment()">
             <option {{ isset($item) ? '' : 'selected' }}></option>

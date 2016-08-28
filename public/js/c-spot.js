@@ -40222,7 +40222,7 @@ function deleteFile(id)
         return;
 
     // show wait spinner
-    $('#file-'+file_id).html('<i class="fa fa-spinner fa-spin fa-fw"></i>');
+    $('#file-'+id).html('<i class="fa fa-spinner fa-spin fa-fw"></i>');
 
     // get token from form field
     $.ajax({
@@ -40599,7 +40599,7 @@ function searchForSongs(that)
 
         // if this is called from the Presentation view, 
         // we will make the insertion via an AJAX call
-        if ( location.pathname.indexOf('/present') ) {
+        if ( location.pathname.indexOf('/present') > 0 ) {
             insertNewItemIntoPlan( plan_id, seq_no, song_id, comment );
             return;
         }
@@ -40681,8 +40681,11 @@ function insertNewItemIntoPlan( plan_id, seq_no, song_id, comment )
 
         ;;;console.log('item inserted!');
 
-        // advance to next item (which now is the just inserted item!)
-        document.getElementById('go-next-item').click();
+        // only when we are in Presentation Mode
+        if (sno.length > 1) {
+            // advance to next item (which now is the just inserted item!)
+            document.getElementById('go-next-item').click();
+        }
 
     })
     .fail(function(data) {

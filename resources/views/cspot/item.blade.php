@@ -160,48 +160,67 @@
 
 
 
+
+
+
+
     <!-- 
         ITEM area 
     -->
     <div id="tabs"  style="max-width: 60rem; ">
 
 
+
         {{-- 
-                TABS headers 
+                ----------------------------------------------------------------------------------------------    TABS headers 
         --}}
+
+
         <ul>
+
             @if ( $item->song_id )
                 <li><a href="#song-details-tab"><span class="hidden-sm-down">Song </span>Details</a></li>
             @endif
+
+            <li>
+                <a href="#notes-tab">Notes
+                    <sup class="text-muted">{!!
+                        ( $item->comment || $item->itemNotes->where('user_id', Auth::user()->id)->first() ) ? 
+                            '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>' 
+                        !!}</sup>
+                </a>
+            </li>
 
             @if ( $bibleTexts )
                 <li><a href="#scripture-tab">Scripture</a></li>
             @endif
 
-            <li><a href="#notes-tab">Notes
-                <sup class="text-muted">{!!
-                        ( $item->comment || $item->itemNotes->where('user_id', Auth::user()->id)->first() ) ? 
-                            '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>' 
-                    !!}</sup></a></li>
-
             <li><a href="#bg-images-tab"><span class="hidden-sm-down">Background </span>Images
-                <sup class="text-muted">({{ $item->files->count() }})</sup></a></li>
+                <sup class="text-muted">({{ $item->files->count() }})</sup>
+            </a></li>
 
             @if ( $item->song_id )
                 <li><a href="#lyrics-tab">Lyrics
-                    <sup class="text-muted">{!! $item->song->lyrics ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>' !!}</sup></a></li>
+                    <sup class="text-muted">{!! $item->song->lyrics ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>' !!}</sup>
+                </a></li>
                 <li><a href="#chords-tab">Chords
-                    <sup class="text-muted">{!! $item->song->chords ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>' !!}</sup></a></li>
+                    <sup class="text-muted">{!! $item->song->chords ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>' !!}</sup>
+                </a></li>
                 <li><a href="#sheet-tab">Sheet Music
-                    <sup class="text-muted">{!! $item->song->files->count() ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>' !!}</sup></a></li>
+                    <sup class="text-muted">{!! $item->song->files->count() ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>' !!}</sup>
+                </a></li>
             @endif
+
         </ul>
 
 
 
+
+
         {{-- 
-                actual TABS 
+                -------------------------------------------------------------------------------------------------------------   actual TABS 
         --}}
+
         @if ( $item->song_id )
             {!! Form::hidden('song_id', $item->song_id) !!}
             <div id="song-details-tab">
@@ -287,6 +306,13 @@
         @endif
 
 
+
+        <div id="notes-tab">
+            @include('cspot.snippets.comment_input')
+        </div>
+
+
+
         <div id="scripture-tab">
             @foreach ($bibleTexts as $btext)
                 <h5>{{ $btext->display }} ({{ $btext->version_abbreviation }})</h5>
@@ -299,10 +325,6 @@
             @endforeach
         </div>
 
-
-        <div id="notes-tab">
-            @include('cspot.snippets.comment_input')
-        </div>
 
 
         <div id="bg-images-tab">
