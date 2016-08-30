@@ -54,15 +54,18 @@ $modalContent = '
                         @if ($item->id == $menu_item->id)
                             bg-info
                         @endif
-                        @if (! $menu_item->song_id)
+                        @if ( ! $menu_item->song_id || $menu_item->song->title_2=='infoscreen' )
                             hidden-md-down
                         @endif
                         "
                         onclick="$('#show-spinner').modal({keyboard: false});" 
                         href="{{ url('cspot/items/').'/'.$menu_item->id.'/'.$type }}">
                         <small class="hidden-xs-down">{{ $menu_item->seq_no }} &nbsp;</small> 
-                        @if ($menu_item->song_id && $menu_item->song->title)
-                            <i class="fa fa-music">&nbsp;</i><strong>{{ $menu_item->song->title }}</strong>
+                        @if ( $menu_item->song_id && $menu_item->song->title )
+                            {!! $menu_item->song->title_2=='infoscreen'
+                                ? $menu_item->song->title
+                                : '<i class="fa fa-music">&nbsp;</i><strong>'.$menu_item->song->title.'</strong>' 
+                            !!}
                         @else
                             {{ $menu_item->comment }}
                         @endif

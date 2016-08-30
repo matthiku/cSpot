@@ -172,7 +172,7 @@
 
 
         {{-- 
-                ----------------------------------------------------------------------------------------------    TABS headers 
+                ======================================================================================================    TABS headers 
         --}}
 
 
@@ -218,7 +218,7 @@
 
 
         {{-- 
-                -------------------------------------------------------------------------------------------------------------   actual TABS 
+                ======================================================================================================   actual TABS 
         --}}
 
         @if ( $item->song_id )
@@ -382,8 +382,8 @@
                     {!! Form::file('file'); !!}
                     <br>
                     {!! Form::label('file_category_id', 'Select a Category for this file') !!}
-                    <select name="file_category_id" id="file_category_id">
-                        <option selected="TRUE" value=" ">select ...</option>
+                    <select required="" name="file_category_id" id="file_category_id">
+                        <option selected="TRUE" value="">select ...</option>
                         @foreach ( DB::table('file_categories')->get() as $fcat)
                             <option value="{{ $fcat->id }}">{{ $fcat->name }}</option>
                         @endforeach                        

@@ -125,37 +125,37 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
      */
 
     // update a specific item (this is usually called from a form)
-    Route::put('items/{item_id}',       ['as'=>'cspot.items.update', 'uses'=>'Cspot\ItemController@update']);    
-    Route::post('items',                ['as'=>'cspot.items.store',  'uses'=>'Cspot\ItemController@store']);    
+    Route::put('items/{item_id}',       ['as'=>'cspot.items.update', 'uses'=>'Cspot\ItemController@update']);
+    Route::post('items',                ['as'=>'cspot.items.store',  'uses'=>'Cspot\ItemController@store']);
     // add song directly from the song list to a plan
     Route::get('plans/{plan_id}/addsong/{song_id}',                          'Cspot\ItemController@addSong');
     // show form of next or previous item for a plan
     Route::get('plans/{plan_id}/items/{item_id}/go/{direction}/{chords?}',    'Cspot\ItemController@next');
     // show form to create a new item for a plan
-    Route::get('plans/{plan_id}/items/create/before/{item_id}',               'Cspot\ItemController@create');    
+    Route::get('plans/{plan_id}/items/create/before/{item_id}',               'Cspot\ItemController@create');
     // insert new item with song_id 
     Route::get('plans/{plan_id}/items/store/seq_no/{seq_no}/song/{song_id}/{moreItems?}/{beforeItem?}',     'Cspot\ItemController@insertSong');    
     // update item with new song_id 
-    Route::get('plans/{plan_id}/items/update/item/{item_id}/song/{song_id}',  'Cspot\ItemController@updateSong');    
+    Route::get('plans/{plan_id}/items/update/item/{item_id}/song/{song_id}',  'Cspot\ItemController@updateSong');
     // show form to create a new item for a plan
-    Route::get('plans/{plan_id}/items/create/{seq_no}',                        'Cspot\ItemController@create');    
+    Route::get('plans/{plan_id}/items/create/{seq_no}',                        'Cspot\ItemController@create');
     // show form to update a new item for a plan
-    Route::get('plans/{plan_id}/items/{item_id}/edit', ['as'=>'cspot.items.edit', 'uses'=>'Cspot\ItemController@edit']);    
+    Route::get('plans/{plan_id}/items/{item_id}/edit', ['as'=>'cspot.items.edit', 'uses'=>'Cspot\ItemController@edit']);
     // MOVE the specified resource up or down in the list of items related to a plan
     Route::get('items/{item_id}/move/{direction}',          'Cspot\ItemController@move');
     // change the seq no of an item
     Route::get('items/{item_id}/seq_no/{seq_no}',           'Cspot\ItemController@update');
 
     // soft delete: specific route using 'get' method
-    Route::get('items/{item_id}/delete',                    'Cspot\ItemController@trash');    
+    Route::get('items/{item_id}/delete',                    'Cspot\ItemController@trash');
     // permanently delete an item
-    Route::get('items/{item_id}/permDelete',                'Cspot\ItemController@permDelete');    
+    Route::get('items/{item_id}/permDelete',                'Cspot\ItemController@permDelete');
     // restore a soft-deleted item
-    Route::get('items/{item_id}/restore',                   'Cspot\ItemController@restore');    
+    Route::get('items/{item_id}/restore',                   'Cspot\ItemController@restore');
     // delete all trashed items of a plan
-    Route::get('plans/{plan_id}/items/trashed/restore',     'Cspot\ItemController@restoreAllTrashed');    
+    Route::get('plans/{plan_id}/items/trashed/restore',     'Cspot\ItemController@restoreAllTrashed');
     // delete all trashed items of a plan
-    Route::get('plans/{plan_id}/items/trashed/delete',      'Cspot\ItemController@deleteAllTrashed');    
+    Route::get('plans/{plan_id}/items/trashed/delete',      'Cspot\ItemController@deleteAllTrashed');
 
     // presentation view of a plan
     Route::get('items/{item_id}/{present?}',                'Cspot\ItemController@show');

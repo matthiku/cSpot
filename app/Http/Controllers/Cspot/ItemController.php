@@ -469,6 +469,21 @@ class ItemController extends Controller
 
         // handle file uplaods
         if ($request->hasFile('file')) {
+
+            // file category is mandatory
+            if ( ! $request->has('file_category_id')  ){
+                flash('You must select a category for this file!');
+                return \Redirect::route('cspot.items.edit', [$plan_id, $id]);
+            }
+
+            // only accept valid categories
+            $cats = DB::table('file_categories')->find($request->file_category_id);
+            if (!$cats) {
+                flash('No valid category selected for this file!');
+                return \Redirect::route('cspot.items.edit', [$plan_id, $id]);
+            }
+
+            // check if it is a valid file
             if ($request->file('file')->isValid()) {
                 // use the helper function
                 $file = saveUploadedFile($request);
@@ -479,8 +494,10 @@ class ItemController extends Controller
             }
             else {
                 flash('Uploaded file could not be validated!');
+                return \Redirect::route('cspot.items.edit', [$plan_id, $id]);
             }
         }
+
 
         if ($seq_no==null) {
             // get all item fields from the request

@@ -30,7 +30,7 @@
                     <pre class="text-song" id="chords">{{ $item->song->chords }}</pre>
                 </div>
             @else
-                (No chords available!)
+                {{ $item->song->title_2=='infoscreen' ? '(Info slide)' : '(No chords available!)' }}
                 @if ( count($item->song->files)>0 )
                     <div class="m-b-3">
                         @foreach ($item->song->files as $file)

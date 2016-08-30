@@ -39,7 +39,11 @@ if [ "$REPLY" = "n" ]; then
     exit
 fi
 
+echo
 read -p 'Need to add a new package via composer? Then enter the full package name: ' "PACKAGE"
+
+echo
+read -p 'Execute GIT PULL on the server as well? (Y/n) ' "GITPULL"
 
 
 
@@ -56,9 +60,7 @@ git push
 echo ----
 
 
-echo
-read -p 'Push done. Want to continue? (Y/n) '
-if [ "$REPLY" = "n" ]; then
+if [ "$GITPULL" = "n" ]; then
     echo 'Aborting...'
     exit
 fi

@@ -287,7 +287,7 @@ lines and end with a colon (:).
 Blank lines will be ignored.
 
 Put instructions on separate lines and
-enclose them with brackets,
+enclose them in brackets,
 like "(repeat chorus!)"'>
                     <i class="fa fa-question-circle m-l-2"></i></a></big>
             <br/>
