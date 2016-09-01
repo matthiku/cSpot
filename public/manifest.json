@@ -2,9 +2,7 @@
   "name": "c-Spot",
   "short_name": "c-Spot",
   "description": "Helps churches organize their Sunday and Midweek Services as well as other events",
-  "start_url": "index.php",
   "display": "standalone",
-  "orientation": "landscape",
   "icons": [
     {
       "src": "images/cspoticon36.png",
