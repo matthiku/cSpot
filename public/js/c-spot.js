@@ -40095,16 +40095,19 @@ $(document).ready(function() {
         // instead, have just lyrics or bible verses or images
         else { 
             if ($('#present-lyrics').length) {
-            // re-format the lyrics
-            reDisplayLyrics(); }
+                // re-format the lyrics
+                reDisplayLyrics(); 
+            }
 
             // start showing bible parts if this is a bible reference
             if ($('.bible-text-present').length) {
-                reFormatBibleText(); }
+                reFormatBibleText(); 
+            }
 
             // center and maximise images
             if ( $('.slide-background-image').length ) {
-                prepareImages(); }
+                prepareImages(); 
+            }
         }
 
 

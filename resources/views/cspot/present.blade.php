@@ -42,7 +42,7 @@
                     <div class="text-present m-b-3 lyrics-parts" id="lyrics-title"
                          style="display: none; position: absolute; left: auto; top: 0px; width: 100%;">
                         {{ $item->song->title }}
-                        {{ ($item->song->title_2 && $item->song->title_2 != 'video' && $item->song->title_2 != 'infoscreen') ? '('.$item->song->title_2.')' : '' }}
+                        {!! ($item->song->title_2 && $item->song->title_2 != 'video' && $item->song->title_2 != 'infoscreen') ? '<br>('.$item->song->title_2.')' : '' !!}
                     </div>
 
                     {{-- insert videoclip or lyrics --}}
@@ -94,7 +94,12 @@
                 @endif
             </div>
 
+
+
+        @elseif ($item->show_comment)
+            <pre class="text-present">{{ $item->comment }}</pre>
         @endif
+    
 
 
 

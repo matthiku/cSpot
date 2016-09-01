@@ -492,7 +492,7 @@ class ItemController extends Controller
                 // correct seq_no of attached files (if more than one)
                 correctFileSequence($id);
                 // notify the view about the newly added file
-                $request->session()->flash(['newFileAdded' => $file->id]);
+                $request->session()->flash('newFileAdded', $file->id);
             }
             else {
                 flashError('Uploaded file could not be validated!');

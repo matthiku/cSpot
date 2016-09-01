@@ -103,10 +103,16 @@ class FileController extends Controller
     public function add($item_id, $file_id)
     {
         $item = Item::find($item_id);
+
         if ($item) {
+            
             $file = File::find($file_id);
             $item->files()->save($file);
             correctFileSequence($item_id);
+
+            // notify the view about the newly added file
+            $request->session()->flash('newFileAdded', $file->id);
+
             return \Redirect::route( 'cspot.items.edit', [$item->plan_id, $item->id] );
         }
         flash('Error! Item with ID "' . $id . '" not found');

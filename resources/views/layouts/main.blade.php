@@ -20,7 +20,7 @@
     <link rel="shortcut icon" sizes="192x192" href="{{ url($logoPath.'cspoticon.png') }}">
     <link rel="shortcut icon" sizes="128x128" href="{{ url($logoPath.'cspoticon128.png') }}">
 
-    <link rel="manifest" href="{{ url('/') }}/manifest.json">
+    <!-- link rel="manifest" href="{{ url('/') }}/manifest.json"> -->
 
 
     <meta name="csrf-token" content="{{ csrf_token() }}">    
