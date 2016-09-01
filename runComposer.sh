@@ -1,8 +1,8 @@
 #!/bin/bash
 
 if [ -z "$1" ]; then
-	echo run Composer require to install a new package into your project
-        echo usage: $0 directory packagename
+	echo "run 'Composer require' to install a new package into your project"
+        echo "usage: $0 directory packagename"
         exit
 fi
 

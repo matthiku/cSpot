@@ -506,7 +506,7 @@ function showFilterField(field)
         // check if there is a query string in the URL
         if (currUrl.search.length > 1) { 
             // check that it doesn't contain a plan_id!
-            if (currUrl.search.search('plan_id') > 1) {
+            if (currUrl.search.search('plan_id') >= 0) {
                 return;
             }
             // clear existing filter and reload page without a filter

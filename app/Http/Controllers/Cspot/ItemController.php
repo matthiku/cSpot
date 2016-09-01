@@ -83,7 +83,7 @@ class ItemController extends Controller
         // make sure we have a plan...
         $plan = Plan::find( $request->input('plan_id') );
         if ( ! $plan ) {
-            flash('Unable to find plan!');
+            flashError('Unable to find plan!');
             return redirect()->back();
         }
 
@@ -91,7 +91,7 @@ class ItemController extends Controller
         if ($request->has('search')) {
             $songs = songSearch( '%'.$request->search.'%' );
             if (!count($songs)) {
-                flash('No songs found for '.$request->search);
+                flashError('No songs found for '.$request->search);
                 return redirect()->back()->withInput();
             }
             // Success! Just one song found! Update the request with the new song_id
@@ -113,14 +113,14 @@ class ItemController extends Controller
 
         // check user rights (teachers and leaders can edit items of their own plan)
         if (! checkRights($plan)) {
-            flash('Unable to insert item!');
+            flashError('Unable to insert item!');
             return redirect()->back();
         }
 
         // check if the new item contains at least one of the following:
         //       Song, Bible reference or Comment
         if ($request->comment=='' && $request->version=='' && (!isset($request->song_id) || (isset($request->song_id)&&$request->song_id==0)) ) {
-            flash('item was empty! Please add a comment, select a bible verse or add a song.');
+            flashError('item was empty! Please add a comment, select a bible verse or add a song.');
             return redirect()->back();
         }        
 
@@ -221,7 +221,7 @@ class ItemController extends Controller
             return \Redirect::route( 'cspot.plans.edit', $plan_id );
         }
 
-        flash('Error! Plan with ID "' . $plan_id . '" not found! (F:addSong)');
+        flashError('Error! Plan with ID "' . $plan_id . '" not found! (F:addSong)');
         return \Redirect::route('home');        
     }
 
@@ -318,7 +318,7 @@ class ItemController extends Controller
                 ]);
         }
 
-        flash('Error! Item with ID "' . $id . '" was not found! (F:show)');
+        flashError('Error! Item with ID "' . $id . '" was not found! (F:show)');
         return \Redirect::route('home');        
     }
 
@@ -379,7 +379,7 @@ class ItemController extends Controller
 
         $item = Item::find($id);
         if (!$item) { 
-            flash('Error! Item with ID "' . $id . '" not found! (F:edit)');
+            flashError('Error! Item with ID "' . $id . '" not found! (F:edit)');
             return redirect()->back();
         }
         $seq_no = $item->seq_no;
@@ -434,7 +434,7 @@ class ItemController extends Controller
     {
         $item    = Item::find($id);
         if (!$item) {
-            flash('Error! Item with ID "' . $id . '" not found! (F:update)');
+            flashError('Error! Item with ID "' . $id . '" not found! (F:update)');
             return \Redirect::back();
         }
         $plan_id = $item->plan_id;
@@ -472,14 +472,14 @@ class ItemController extends Controller
 
             // file category is mandatory
             if ( ! $request->has('file_category_id')  ){
-                flash('You must select a category for this file!');
+                flashError('You must select a category for this file!');
                 return \Redirect::route('cspot.items.edit', [$plan_id, $id]);
             }
 
             // only accept valid categories
             $cats = DB::table('file_categories')->find($request->file_category_id);
             if (!$cats) {
-                flash('No valid category selected for this file!');
+                flashError('No valid category selected for this file!');
                 return \Redirect::route('cspot.items.edit', [$plan_id, $id]);
             }
 
@@ -491,9 +491,11 @@ class ItemController extends Controller
                 $item->files()->save($file);
                 // correct seq_no of attached files (if more than one)
                 correctFileSequence($id);
+                // notify the view about the newly added file
+                $request->session()->flash(['newFileAdded' => $file->id]);
             }
             else {
-                flash('Uploaded file could not be validated!');
+                flashError('Uploaded file could not be validated!');
                 return \Redirect::route('cspot.items.edit', [$plan_id, $id]);
             }
         }
@@ -771,7 +773,7 @@ class ItemController extends Controller
             // back to full plan view 
             return \Redirect::back();
         }
-        flash('Error! Item with ID "' . $id . '" not found');
+        flashError('Error! Item with ID "' . $id . '" not found');
         return \Redirect::back();
     }
 
@@ -795,7 +797,7 @@ class ItemController extends Controller
             $plan    = Plan::find( $plan_id );
         } 
         else {
-            flash('Error! Item with ID "' . $id . '" not found! (F:trash)' );
+            flashError('Error! Item with ID "' . $id . '" not found! (F:trash)' );
             return \Redirect::back();
         }
 
@@ -814,7 +816,7 @@ class ItemController extends Controller
             //flash('Item deleted.');
             return \Redirect::route('cspot.plans.edit', $plan_id);
         }
-        flash('Error! Problem trying to delete item with ID "' . $id . '"');
+        flashError('Error! Problem trying to delete item with ID "' . $id . '"');
         return \Redirect::back();
     }
 
@@ -846,7 +848,7 @@ class ItemController extends Controller
             // back to full plan view 
             return \Redirect::back();
         }
-        flash('Error! Item with ID "' . $id . '" not found! (F:restore)');
+        flashError('Error! Item with ID "' . $id . '" not found! (F:restore)');
         return \Redirect::back();
     }
 
@@ -872,7 +874,7 @@ class ItemController extends Controller
             flash('Trashed item with id '.$id.' deleted permanently');
             return \Redirect::back();
         }
-        flash('Sorry, only plan leader or Author can delete items');
+        flashError('Sorry, only plan leader or Author can delete items');
         return redirect()->back();
     }
 

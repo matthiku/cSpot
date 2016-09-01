@@ -11,10 +11,17 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
+
     <!-- Allow this to be installed an app on the device's home screen -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <link rel="icon" sizes="192x192" href="{{ url($logoPath.'favicon.ico') }}" />
+
+    <link rel="shortcut icon" sizes="192x192" href="{{ url($logoPath.'cspoticon.png') }}">
+    <link rel="shortcut icon" sizes="128x128" href="{{ url($logoPath.'cspoticon128.png') }}">
+
+    <link rel="manifest" href="{{ url('/') }}/manifest.json">
+
 
     <meta name="csrf-token" content="{{ csrf_token() }}">    
 

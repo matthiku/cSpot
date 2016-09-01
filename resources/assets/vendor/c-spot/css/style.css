@@ -7,6 +7,13 @@
  */
 
 
+/* smaller drop-up menu on presentation views */
+.dropup-menu-item {
+    font-size: 90%;
+    padding: 0 5px;
+}
+
+
 /* button to show hidden navbar */
 .presentation-navbar-toggler {
     padding: 0 .75rem;

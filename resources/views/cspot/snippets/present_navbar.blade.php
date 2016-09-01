@@ -51,13 +51,9 @@ $modalContent = '
             @foreach ($items as $menu_item)
                 @if (! $menu_item->forLeadersEyesOnly)
                     <a class="dropdown-item nowrap 
-                        @if ($item->id == $menu_item->id)
-                            bg-info
-                        @endif
-                        @if ( ! $menu_item->song_id || $menu_item->song->title_2=='infoscreen' )
-                            hidden-md-down
-                        @endif
-                        "
+                        {{ $item->id == $menu_item->id ? 'bg-info' : '' }}
+                        {{ ! $menu_item->song_id || $menu_item->song->title_2=='infoscreen' ? 'hidden-md-down' : '' }}
+                        {{ count($items) > 15 ? 'dropup-menu-item' : '' }}"
                         onclick="$('#show-spinner').modal({keyboard: false});" 
                         href="{{ url('cspot/items/').'/'.$menu_item->id.'/'.$type }}">
                         <small class="hidden-xs-down">{{ $menu_item->seq_no }} &nbsp;</small> 
