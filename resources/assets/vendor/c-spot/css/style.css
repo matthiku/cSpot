@@ -6,6 +6,14 @@
  * (C) M.Kuhs Ireland, 2016
  */
 
+.limited-width {
+    -o-text-overflow: ellipsis;   /* Opera */
+    text-overflow   : ellipsis;   /* IE, Safari (WebKit) */
+    overflow        : hidden;              /* don't show excess chars */
+    white-space     : nowrap;           /* force single line */
+    display         : inline-flex;
+    max-width       : 250px;                 /* fixed width */
+}
 
 /* smaller drop-up menu on presentation views */
 .dropup-menu-item {

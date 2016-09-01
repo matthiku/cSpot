@@ -138,9 +138,12 @@ class FileController extends Controller
             if (! Auth::user()->isAdmin() ) {
                 return response()->json(['status' => 401, 'data' => 'Not authorized'], 401);
             }
-            // delete the physical file
             $destinationPath = config('files.uploads.webpath');
-            unlink(public_path().'/'.$destinationPath.'/'.$file->token);
+            // check if file actually exists
+            if ( file_exists(public_path().'/'.$destinationPath.'/'.$file->token)) {
+                // delete the physical file
+                unlink(public_path().'/'.$destinationPath.'/'.$file->token);
+            }
             // also delete possible thumbnail files
             deleteThumbs(public_path().'/'.$destinationPath, $file->token);
             

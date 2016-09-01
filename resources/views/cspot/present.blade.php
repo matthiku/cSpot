@@ -81,7 +81,7 @@
                     $key    = 1; // we can't use a $key in the foreach statement as it's a re-sorted collection!
                 ?>            
                 @foreach ($files as $file)
-                    <img class="slide-background-image m-b-2" data-slides-id="{{ $key }}" style="display: none;" 
+                    <img class="slide-background-image  {{ $bibleTexts ? 'song-background-image' : '' }}  m-b-2" data-slides-id="{{ $key }}" style="display: none;" 
                            src="{{ url(config('files.uploads.webpath')).'/'.$file->token }}">
                     <?php $key++; ?>
                 @endforeach
@@ -92,19 +92,33 @@
                          style="position: absolute; left: auto; top: 0px; width: 100%;"
                         >{{ $item->comment }}</div>
                 @endif
+
+                @if ($bibleTexts)
+                    <div class="bible-text-present" id="bible-text-present-all" 
+                         style="position: absolute; left: auto; top: 0px; width: 100%; display: none;" >
+                        @foreach ($bibleTexts as $btext)
+                            <p class="item-comment" id="item-comment" style="display: none;" >{{ $item->comment }}</p>
+                            <p class="bible-text-present-ref" style="display: none;" >{{ $btext->display }}</p>
+                            <h1>{{ $btext->display }}</h1> 
+                            <div class="bible-text-present" style="display: none;" >{!! $btext->text !!}</div>
+                            <!-- {!! $btext->copyright !!} -->
+                            <hr>
+                        @endforeach
+                    </div>
+                @endif
+
             </div>
 
 
 
-        @elseif ($item->show_comment)
+        @elseif ( $item->show_comment )
+
             <pre class="text-present">{{ $item->comment }}</pre>
-        @endif
-    
 
 
 
+        @elseif ( $bibleTexts )
 
-        @if ($bibleTexts)
             <div class="bible-text-present" id="bible-text-present-all" style="display: none;" >
                 @foreach ($bibleTexts as $btext)
                     <p class="item-comment" id="item-comment" style="display: none;" >{{ $item->comment }}</p>
@@ -115,7 +129,10 @@
                     <hr>
                 @endforeach
             </div>
+
         @endif
+
+
 
     </div>
     <!-- ================================================================================ -->
@@ -195,9 +212,10 @@
             </li>
         </ul>
 
+
+        <!-- jump to next plan item -->
         <ul class="nav navbar-nav pull-xs-right">
             <li>
-                <!-- jump to next plan item -->
                 <a 
                     @if ($item->id == $item->plan->lastItem()->id)
                         href="#" disabled="disabled"
@@ -210,8 +228,9 @@
             </li>
         </ul>
 
+
         {{-- 'sequence' indicates the order in which the various lyric parts are to be shown --}}
-        <span class="navbar-nav pull-xs-right hidden-xs-down" id="lyrics-sequence-nav">
+        <span class="navbar-nav pull-xs-right hidden-xs-down text-success" id="lyrics-sequence-nav">
             <!-- {{-- this is currently resolved on the client side --}} -->
             @if ($item->song_id && $item->song->sequence)
                 <a href="#" onclick="advancePresentation();" 
@@ -220,22 +239,18 @@
             @endif
         </span>
 
-        {{-- <span class="navbar-brand center" id="show-linecount"></span> --}}
 
         {{-- show song title or comment in first navbar on bigger screens only --}}
         <span class="nav navbar-nav center hidden-sm-down" id="item-navbar-label">
             <small class="hidden-md-down text-muted">Item {{$item->seq_no}} -</small>
-            <span class="text-success hidden-md-down">
+            <span class="text-success hidden-md-down limited-width">
                 {{ ($item->song_id && $item->song->title) ? $item->song->title : $item->comment }}
             </span>
-            <span class="hidden-lg-up">
+            <span class="text-success hidden-lg-up limited-width">
                 {{ substr(($item->song_id && $item->song->title) ? $item->song->title : $item->comment, 0, 20) }}
             </span>
-            @if ($item->id != $item->plan->lastItem()->id)
-                <small class="hidden-lg-up hidden-xs-down text-muted">(next: {{ substr(getItemTitle($item),0,15) }})</small>
-                <small class="hidden-md-down text-muted">(up next: {{ getItemTitle($item) }})</small>
-            @endif
         </span>
+
     
         {{-- button to reveal the second navbar at the bottom --}}
         <button class="navbar-toggler presentation-navbar-toggler btn btn-info active" 
@@ -245,68 +260,33 @@
 
         <button class="btn btn-sm btn-outline-secondary" type="button" onclick="showBlankScreen()">
             <span class="hidden-sm-down text-muted">Blank</span><i class="fa fa-tv hidden-md-up"></i>
-        </button>        
+        </button>     
+
+
+        {{-- what's coming next? (Show unless we are on the last item!) --}}
+        <span class="nav navbar-nav">
+            @if ($item->id != $item->plan->lastItem()->id)
+                <small class="hidden-lg-up hidden-xs-down text-muted limited-width">(next: {{ substr(getItemTitle($item),0,15) }})</small>
+                <small class="hidden-md-down text-muted limited-width">(up next: {{ getItemTitle($item) }})</small>
+            @endif
+        </span>
         
+
+
 
         <!-- 
             the second navbar is hidden at first 
         -->
+
         <div class="collapse navbar-toggleable" id="lyricsNavbar">
 
             <!-- show song title or comment in second navbar on smaller screens only -->
             <span class="nav navbar-nav center hidden-md-up hidden-xs-down">
                 <small class="hidden-md-down text-muted">Item {{$item->seq_no}} -</small>
-                @if ($item->song_id && $item->song->title)
-                    {{ $item->song->title }}
-                @else
-                    {{ $item->comment }}
-                @endif
+                <span style="max-width: 250px">
+                    {{ ($item->song_id && $item->song->title)  ?  $item->song->title  :  $item->comment }}
+                </span>
             </span>
-
-
-            {{-- configuration menu --}}
-            <div class="btn-group dropup">
-
-                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
-                     id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <span class="text-muted hidden-sm-down">Config </span><i class="fa fa-cog"></i>
-                </button>
-
-                <div class="dropdown-menu dropdown-menu-right dropdown-menu-presentation" aria-labelledby="dropdownMenuButton">
-
-                    <h6 class="dropdown-header">Show Configuration</h6>
-
-                    <a      href="#" class="dropdown-item" onclick="changeBlankSlidesConfig()" 
-                            title="Show empty slides between plan items">
-                        <i id="configBlankSlidesItem" class="fa fa-square-o">&nbsp;</i>insert blank slides between items?</a>
-
-                    <a      href="#" class="dropdown-item" onclick="changeOfflineModeConfig()" 
-                            title="Work off-line and get slides from local storage instead of from the server">
-                        <i id="configOfflineModeItem" class="fa fa-square-o">&nbsp;</i>use locally cached slides?</a>
-
-                    <a      href="#" class="dropdown-item small" onclick="clearLocalCache();"
-                            title="delete all locally cached items">
-                        <i class="fa fa-trash-o red"></i>&nbsp;</i>delete all locally cached slides</a>
-
-
-                    <div class="dropdown-divider"></div>
-                    <h6 class="dropdown-header">Synchronisation Settings</h6>
-
-                    <a      href="#" class="dropdown-item{{ env('PRESENTATION_ENABLE_SYNC', 'false') ? '' : ' disabled' }}" 
-                            onclick="changeSyncPresentation()" title="Synchronise this presentation with Main Presenter">
-                        <i id="syncPresentationIndicator" class="fa fa-square-o">&nbsp;</i>Sync presentation?
-                        <span class="small">&nbsp;with:</span>
-                        <span class="small showPresenterName"> ({{ $serverSideMainPresenter ? $serverSideMainPresenter['name'] : 'none' }})</span>
-                    </a>
-
-                    <a      href="#" class="dropdown-item{{ env('PRESENTATION_ENABLE_SYNC', 'false') ? '' : ' disabled' }}" 
-                            onclick="changeMainPresenter()" title="Become Main Presenter controlling other presentations">
-                        <i id="setMainPresenterItem" class="fa fa-square-o">&nbsp;</i>Be Main Presenter?
-                        <span class="small showPresenterName"> ({{ $serverSideMainPresenter ? $serverSideMainPresenter['name'] : 'none' }})</span>
-                    </a>
-
-                </div>
-            </div>
 
             
             <!-- 
@@ -361,7 +341,8 @@
                 Personal Notes 
             -->
             <div class="btn-group dropup hidden-xs-down m-l-1">
-                <button type="button" class="btn btn-sm btn-success dropdown-toggle" title="Your Private Notes" 
+                <button    type="button" title="Your Private Notes"
+                          class="btn btn-sm btn{{ $item->itemNotes->where('user_id', Auth::user()->id)->first() ? '' : '-outline' }}-success dropdown-toggle"                     
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="fa fa-sticky-note-o fa-lg"></i>
                 </button>
@@ -455,6 +436,51 @@
                         class="dropdown-item" href="#"><i class="fa fa-align-center fa-lg"></i> Center</a>
                 </div>
             </div>
+
+            {{-- configuration menu --}}
+            <div class="nav-item btn-group dropup pull-xs-left m-l-1">
+
+                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                     id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="text-muted hidden-sm-down">Config </span><i class="fa fa-cog"></i>
+                </button>
+
+                <div class="dropdown-menu dropdown-menu-right dropdown-menu-presentation" aria-labelledby="dropdownMenuButton">
+
+                    <h6 class="dropdown-header">Show Configuration</h6>
+
+                    <a      href="#" class="dropdown-item" onclick="changeBlankSlidesConfig()" 
+                            title="Show empty slides between plan items">
+                        <i id="configBlankSlidesItem" class="fa fa-square-o">&nbsp;</i>insert blank slides between items?</a>
+
+                    <a      href="#" class="dropdown-item" onclick="changeOfflineModeConfig()" 
+                            title="Work off-line and get slides from local storage instead of from the server">
+                        <i id="configOfflineModeItem" class="fa fa-square-o">&nbsp;</i>use locally cached slides?</a>
+
+                    <a      href="#" class="dropdown-item small" onclick="clearLocalCache();"
+                            title="delete all locally cached items">
+                        <i class="fa fa-trash-o red"></i>&nbsp;</i>delete all locally cached slides</a>
+
+
+                    <div class="dropdown-divider"></div>
+                    <h6 class="dropdown-header">Synchronisation Settings</h6>
+
+                    <a      href="#" class="dropdown-item{{ env('PRESENTATION_ENABLE_SYNC', 'false') ? '' : ' disabled' }}" 
+                            onclick="changeSyncPresentation()" title="Synchronise this presentation with Main Presenter">
+                        <i id="syncPresentationIndicator" class="fa fa-square-o">&nbsp;</i>Sync presentation?
+                        <span class="small">&nbsp;with:</span>
+                        <span class="small showPresenterName"> ({{ $serverSideMainPresenter ? $serverSideMainPresenter['name'] : 'none' }})</span>
+                    </a>
+
+                    <a      href="#" class="dropdown-item{{ env('PRESENTATION_ENABLE_SYNC', 'false') ? '' : ' disabled' }}" 
+                            onclick="changeMainPresenter()" title="Become Main Presenter controlling other presentations">
+                        <i id="setMainPresenterItem" class="fa fa-square-o">&nbsp;</i>Be Main Presenter?
+                        <span class="small showPresenterName"> ({{ $serverSideMainPresenter ? $serverSideMainPresenter['name'] : 'none' }})</span>
+                    </a>
+
+                </div>
+            </div>
+
 
 
         </div>
