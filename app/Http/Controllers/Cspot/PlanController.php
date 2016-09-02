@@ -145,7 +145,7 @@ class PlanController extends Controller
             if (isset($request->api)) {
                 return json_encode($plans->get());
             }
-            $heading = 'Upcoming Service Plans';
+            $heading = 'Upcoming Services or Events';
             // get list of plans of which the current user is member
             $userIsPlanMember = listOfPlansForUser();
         }
@@ -162,7 +162,7 @@ class PlanController extends Controller
                           ->with('type')
                           ->orderBy($orderBy, $order);
             }
-            $heading = 'Your Service Plans';
+            $heading = 'Your Services/Events';
         }
 
         // for pagination, always append the original query string

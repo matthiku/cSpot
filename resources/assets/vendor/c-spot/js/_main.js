@@ -585,9 +585,14 @@ function showFilterField(field)
 */
 function showSongSearchInput(that, selector)
 {
+    // hide the triggering item
     $(that).hide();
+    // show the desired element 
     $(selector).show();
     $("input[name='search']").focus();
+
+    // make sure the form can be submitted without a mandatory 'file_category_id' field
+    $('#file_category_id').removeAttr('required')
 }
 
 

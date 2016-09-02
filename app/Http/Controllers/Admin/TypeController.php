@@ -39,7 +39,7 @@ class TypeController extends Controller
         //
         $types = Type::get();
 
-        $heading = 'Manage list with Types of Services';
+        $heading = 'Manage list with Types of Services or Events';
         return view( 'admin.types', array('types' => $types, 'heading' => $heading) );
     }
 

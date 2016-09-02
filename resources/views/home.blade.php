@@ -52,7 +52,7 @@
                                     title="Show all upcoming Service Plans">
                                 &nbsp; <i class="fa fa-question-circle bg-primary"></i></a>
                             <a href="{{ url('cspot/plans?filterby=future') }}" class="bg-primary">
-                                Upcoming Service Plans
+                                Upcoming Events
                             </a>
                         </span>
                         &nbsp;
@@ -62,7 +62,7 @@
                                     title="Show (future) plans where you are leader or teacher">
                                 &nbsp; <i class="fa fa-question-circle"></i></a>
                             <a href="{{ url('cspot/plans') }}">
-                                Your Service Plans
+                                Your Services/Events
                             </a>
                         </span>
 

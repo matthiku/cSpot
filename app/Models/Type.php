@@ -10,7 +10,7 @@ class Type extends Model
 {
     //
 
-    protected $fillable = ['name', 'start', 'end'];
+    protected $fillable = ['name', 'start', 'end', 'repeat'];
 
 
 

@@ -170,16 +170,16 @@
                 <a class="dropdown-item {{ Request::is('cspot/plans/next') ? 'active' : '' }}" href="{{ url('cspot/plans/next') }}">
                     <i class="fa fa-btn fa-bell-o fa-lg"></i> &nbsp; Next Sunday</a>
                 <a class="dropdown-item" href="{{ url('cspot/plans?filterby=future') }}">
-                    <i class="fa fa-btn fa-calendar fa-lg"></i> &nbsp; Upcoming Plans</a>
+                    <i class="fa fa-btn fa-calendar fa-lg"></i> &nbsp; Upcoming Events</a>
                 <hr>
                 <a class="dropdown-item {{ Request::is('cspot/plans') ? 'active' : '' }}" href="{{ url('cspot/plans') }}">
-                    <i class="fa fa-btn fa-calendar-check-o fa-lg"></i> &nbsp; Your Service Plans</a>
+                    <i class="fa fa-btn fa-calendar-check-o fa-lg"></i> &nbsp; Your Events</a>
                 @if( Auth::user()->isEditor() )
                 <a class="dropdown-item" href="{{ url('cspot/plans/create') }}">
-                    <i class="fa fa-btn fa-calendar-plus-o fa-lg"></i> &nbsp; Add New Plan</a>
+                    <i class="fa fa-btn fa-calendar-plus-o fa-lg"></i> &nbsp; Add New Event</a>
                 @endif
                 <a class="dropdown-item" href="{{ url('admin/types') }}">
-                    <i class="fa fa-btn fa-tasks fa-lg"></i> &nbsp; Service Types</a>
+                    <i class="fa fa-btn fa-tasks fa-lg"></i> &nbsp; Event Types</a>
                 <hr>
                 <a class="dropdown-item" href="{{ url('cspot/songs') }}">
                 <i class="fa fa-btn fa-music fa-lg"></i> &nbsp; Songs</a>
@@ -189,10 +189,10 @@
             <a class="nav-link {{ Request::is('cspot/plans/next') ? 'active' : '' }}" href="{{ url('cspot/plans/next') }}">Next Sunday</a>
         </li>
         <li class="nav-item hidden-sm-down">
-            <a class="nav-link" href="{{ url('cspot/plans?filterby=future') }}">Upcoming Plans</a>
+            <a class="nav-link" href="{{ url('cspot/plans?filterby=future') }}">Upcoming Events</a>
         </li>
         <li class="nav-item hidden-lg-down">
-            <a class="nav-link {{ Request::is('cspot/plans') ? 'active' : '' }}" href="{{ url('cspot/plans') }}">Your Plans</a>
+            <a class="nav-link {{ Request::is('cspot/plans') ? 'active' : '' }}" href="{{ url('cspot/plans') }}">Your Events</a>
         </li>
         @endif
 

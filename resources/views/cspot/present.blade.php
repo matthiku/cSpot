@@ -365,16 +365,18 @@
             <!-- 
                 Add New Item into Plan! 
             -->
-            <div class="btn-group dropup hidden-xs-down m-l-1">
-                {{-- new MODAL POPUP to add song, scripture or comment --}}
-                <button type="button" class="btn btn-sm btn-outline-info btn-sm" title="Add New Item (Song)" 
-                     data-toggle="modal" data-target="#searchSongModal"
-                    data-plan-id="{{$item->plan_id}}" data-item-id="{{$item->id}}" 
-                     data-seq-no="after-{{ $item->seq_no }}"
-                           title="Select new Song, Scripture or Comment">
-                    <i class="fa fa-plus"></i> song etc.
-                </button>
-            </div>
+            @if (Auth::user()->ownsPlan($item->plan_id))
+                <div class="btn-group dropup hidden-xs-down m-l-1">
+                    {{-- new MODAL POPUP to add song, scripture or comment --}}
+                    <button type="button" class="btn btn-sm btn-outline-info btn-sm" title="Add New Item (Song)" 
+                         data-toggle="modal" data-target="#searchSongModal"
+                        data-plan-id="{{$item->plan_id}}" data-item-id="{{$item->id}}" 
+                         data-seq-no="after-{{ $item->seq_no }}"
+                               title="Select new Song, Scripture or Comment">
+                        <i class="fa fa-plus"></i> song etc.
+                    </button>
+                </div>
+            @endif
 
 
             {{-- link to show linked YT video --}}

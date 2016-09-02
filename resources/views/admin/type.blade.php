@@ -28,6 +28,8 @@
            {!! Form::time('start'); !!}</p>
         <p>{!! Form::label('end', 'Usual end'); !!}<br>
            {!! Form::time('end'); !!}</p>
+        <p>{!! Form::label('repeat', 'Repeats?'); !!}<br>
+           {!! Form::text('repeat'); !!}</p>
 
     @if (isset($type))
         <p>{!! Form::submit('Update'); !!}</p>

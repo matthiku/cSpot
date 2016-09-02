@@ -5,7 +5,7 @@
 
 @extends('layouts.main')
 
-@section('title', "Create or Update a Service Plan")
+@section('title', "Event Planning")
 
 @section('plans', 'active')
 

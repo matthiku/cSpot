@@ -21,7 +21,7 @@
 
 	@if( Auth::user()->isEditor() )
 	<a class="btn btn-outline-primary pull-xs-right" href="{{ url('cspot/plans/create') }}">
-		<i class="fa fa-plus"> </i> &nbsp; Add a new plan
+		<i class="fa fa-plus"> </i> &nbsp; Add a new Service/Event
 	</a>
 	@endif
 
@@ -32,7 +32,7 @@
 			<small class="pull-xs-left" style="font-size: 50%">
 				<a href="#" onclick="toogleAllorFuturePlans()">
 					<input type="checkbox" {{Request::get('show')=='all' ? '' : 'checked'}}>
-					show only upcoming service plans</a>
+					show only upcoming events</a>
 			</small>
 		@endif
     </h2>
@@ -42,7 +42,7 @@
 
 
 	@if ( isset($plans) && count($plans) )
-		<center><small>(Total: {{ $plans->total() }} Service Plans)</small></center>
+		<center><small>(Total: {{ $plans->total() }} Events)</small></center>
 
 		<table class="table table-striped table-bordered table-hover
 					@if(count($plans)>15)

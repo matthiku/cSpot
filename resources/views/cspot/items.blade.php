@@ -334,8 +334,8 @@
 		{{-- new MODAL POPUP to add song/scripture/comment --}}
 		<button     type="button" class="btn btn-outline-primary btn-sm" 
 			 data-toggle="modal" data-target="#searchSongModal"
-			data-plan-id="{{$plan->id}}" data-item-id="{{$item->id}}" 
-			 data-seq-no="after-{{ $item->seq_no }}"
+			data-plan-id="{{$plan->id}}" data-item-id="{{ isset($item) ? $item->id : '0' }}" 
+			 data-seq-no="after-{{ isset($item) ? $item->seq_no : '0' }}"
 		           title="Append new Song, Scripture or Comment to this plan">
 			<i class="fa fa-plus"></i> &nbsp; Add item {{ isset($item) ? $item->seq_no+1 : 1 }}.0
 		</button>
