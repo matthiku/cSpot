@@ -417,9 +417,13 @@ function searchForSongs(that)
 
         // if this is called from the Presentation view, 
         // we will make the insertion via an AJAX call
-        if ( location.pathname.indexOf('/present') > 0 ) {
+        if (  location.pathname.indexOf('/present') > 0  ||  location.pathname.search('chords') > 0  ) {
+            
+            // this function inserts the new item via AJAX
             insertNewItemIntoPlan( plan_id, seq_no, song_id, comment );
-            return;
+
+            // we need return false to the form so that it doesn't submit!
+            return false;
         }
 
         // Is this intended to be a new item at the end of the list of items?
@@ -454,7 +458,10 @@ function updateSong(song_id)
     // update item via AJAX
     var actionURL = $('#searchSongForm').attr('data-action');
     $.post( actionURL, { song_id: song_id })
+
         .done(function(data) {
+            // get global song list in order to show the newly added song in the UI
+            var haystackMP = cSpot.songList;
             // on success, show new song data
             for (var i=0; i<haystackMP.length; i++) {
                 if (haystackMP[i].id == song_id) {
@@ -470,6 +477,7 @@ function updateSong(song_id)
                 }
             }
         })
+        
         .fail(function(data) {
             myCell.children('.show-song-title').text('Failed! Press F12 for more');
             console.log("Update failed! Please notify admin! " + JSON.stringify(data));
@@ -497,7 +505,8 @@ function insertNewItemIntoPlan( plan_id, seq_no, song_id, comment )
     })
     .done(function(data){
 
-        ;;;console.log('item inserted!');
+        ;;;console.log('New item inserted! Seq_No: ' + seq_no);
+        ;;;console.log(data);
 
         // only when we are in Presentation Mode
         if (sno.length > 1) {

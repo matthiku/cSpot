@@ -184,10 +184,10 @@
 
             <li>
                 <a href="#notes-tab">Notes
-                    <sup class="text-muted">{!!
+                    <small class="text-muted">{!!
                         ( $item->comment || $item->itemNotes->where('user_id', Auth::user()->id)->first() ) ? 
                             '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>' 
-                        !!}</sup>
+                        !!}</small>
                 </a>
             </li>
 
@@ -196,18 +196,18 @@
             @endif
 
             <li><a href="#bg-images-tab"><span class="hidden-sm-down">Background </span>Images
-                <sup class="text-muted">({{ $item->files->count() }})</sup>
+                <small class="text-muted">({{ $item->files->count() }})</small>
             </a></li>
 
             @if ( $item->song_id )
                 <li><a href="#lyrics-tab">Lyrics
-                    <sup class="text-muted">{!! $item->song->lyrics ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>' !!}</sup>
+                    <small class="text-muted">{!! $item->song->lyrics ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>' !!}</small>
                 </a></li>
                 <li><a href="#chords-tab">Chords
-                    <sup class="text-muted">{!! $item->song->chords ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>' !!}</sup>
+                    <small class="text-muted">{!! $item->song->chords ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>' !!}</small>
                 </a></li>
                 <li><a href="#sheet-tab">Sheet Music
-                    <sup class="text-muted">{!! $item->song->files->count() ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>' !!}</sup>
+                    <small class="text-muted">{!! $item->song->files->count() ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>' !!}</small>
                 </a></li>
             @endif
 
@@ -454,7 +454,7 @@
         $( function() {
             $( "#tabs" ).tabs({
                 event: "mouseover",
-                active: {{ session()->has('newFileAdded') ? '1' : '0' }}
+                active: {{ session()->has('newFileAdded') ? ($item->song_id ? '2' : '1') : '0' }}
             });
         });
     </script>

@@ -1,13 +1,16 @@
 
-
-
 /*\
-|*|
-|*|
-|*+------------------------------------------ Triggered when HTML Document is fully loaded
-|*|
-|*|
+|  \
+|   \__________________________________
+|
+|            document.ready.js
+|
+|      (C) 2016 Matthias Kuhs, Ireland
+|    __________________________________
+|   /
+|  /
 \*/
+
 
 $(document).ready(function() {
 
@@ -215,16 +218,24 @@ $(document).ready(function() {
         var seq_no   = button.data('seq-no' );
         var actionUrl= button.data('action-url' );
 
+        // prepare title text for popup dialog
+        var ar_seq = seq_no.split('-');
+        var titleText = 'before item No '+seq_no;
+
         // was modal opened from existing item?
-        if (plan_id=="update-song") {
+        if (plan_id=="update-song" || location.pathname.search('chords') > 0) {
             // directly activate the song selection
             showModalSelectionItems('song');
             $('#searchSongForm'      ).attr('data-action', actionUrl);
             $('#searchSongModalLabel').text('Select song');
-            $('#modal-show-item-id').text('for item No '+seq_no+':');
+
+            titleText = 'for item No '+seq_no;
+            if ( ar_seq[0] == 'after')
+                titleText = 'after item No '+ar_seq[1];
         }
+
         else if (plan_id=="update-scripture") {
-            // directly activate the song selection
+            // directly activate the scripture selection
             showModalSelectionItems('scripture');
             // use current comment text as initial value
             var curCom = button.parent().children().first().text().trim();
@@ -232,15 +243,14 @@ $(document).ready(function() {
             // URL needed to update the comment as derived from the calling element
             $('#searchSongForm'      ).attr('data-action', actionUrl);
             $('#searchSongModalLabel').text('Select a scripture');
-            $('#modal-show-item-id').text('for item No '+seq_no+':');
+
+            titleText = 'for item No ' + seq_no;
         } 
-        else {
-            var ar_seq = seq_no.split('-');
-            var txt = 'before item No '+seq_no;
-            if ( ar_seq[0] == 'after')
-                txt = 'after item No '+ar_seq[1];
-            $('#modal-show-item-id').text(txt+':');
-        }
+
+        // set title text for popup dialog
+        $('#modal-show-item-id').text( titleText+':' );
+
+
         // Update the modal's content
         $('#plan_id'      ).val(plan_id);
         $('#beforeItem_id').val(item_id);

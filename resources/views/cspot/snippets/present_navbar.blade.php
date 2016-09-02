@@ -126,7 +126,8 @@ $modalContent = '
         Personal Notes 
     -->
     <div class="dropup hidden-xs-down pull-xs-right m-r-1">
-        <button type="button" class="btn btn-sm btn-success dropdown-toggle" title="Your Private Notes" 
+        <button    type="button" title="Your Private Notes" 
+                  class="btn btn-sm btn{{ $item->itemNotes->where('user_id', Auth::user()->id)->first() ? '' : '-outline' }}-success dropdown-toggle" 
             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="fa fa-sticky-note-o fa-lg"></i>
         </button>
@@ -144,6 +145,22 @@ $modalContent = '
         </div>
 
     </div>
+
+
+    <!-- 
+        Add New Item into Plan! 
+    -->
+    <div class="btn-group dropup hidden-xs-down pull-xs-right m-r-1">
+        {{-- new MODAL POPUP to add song, scripture or comment --}}
+        <button type="button" class="btn btn-sm btn-outline-info btn-sm" title="Add New Item (Song)" 
+             data-toggle="modal" data-target="#searchSongModal"
+            data-plan-id="{{$item->plan_id}}" data-item-id="{{$item->id}}" 
+             data-seq-no="after-{{ $item->seq_no }}"
+                   title="Select new Song, Scripture or Comment">
+            <i class="fa fa-plus"></i> song etc.
+        </button>
+    </div>
+
 
 
     <!-- 
@@ -244,6 +261,15 @@ $modalContent = '
 
 
 </nav>
+
+
+
+{{-- 
+        provide popup to add/insert new item 
+--}}
+@include('cspot.snippets.add_item_modal')
+
+
 
 <script>
     $(document).ready(function() {

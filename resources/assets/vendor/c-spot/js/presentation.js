@@ -1587,6 +1587,11 @@ function changeFontSize(selectorList, how) {
 // save main content html to local storage
 function saveMainContentToLocalStorage(what) {    
 
+    // only if activated ....
+    if ( !cSpot.presentation.sync ) {
+        return;
+    }
+
     if (what) {
         what = '-' + what;
     } else {
@@ -1615,6 +1620,11 @@ function saveMainContentToLocalStorage(what) {
 // Make sure LocalStorage contains only one plan cached for the presentation for offline use
 function checkLocalStorageForPresentation(plan_id) 
 {
+    // only if activated ....
+    if ( !cSpot.presentation.sync ) {
+        return;
+    }
+
     // do nothing if parameter is missing
     if (!plan_id) return;
     
@@ -1667,7 +1677,7 @@ function isInLocalStore(identifier)
 // Save data to local Storage and also cache it on the server for others to use
 function saveLocallyAndRemote(plan_id, key, value)
 {
-    if (!plan_id || !key || !value) {
+    if (!plan_id || !key || !value ) {
         return;
     }
 

@@ -1,6 +1,6 @@
 
     <!-- Modal to search for new song -->
-    <form id="searchSongForm" action="{{url('cspot/items')}}" method="POST">
+    <form id="searchSongForm" action="{{url('cspot/items')}}" method="POST"  onsubmit="return searchForSongs(this)">
 
         <div class="modal fade" id="searchSongModal" tabindex="-1" role="dialog" aria-labelledby="searchSongModalLabel" aria-hidden="true">
 
@@ -87,8 +87,7 @@
 
                         <a href="#" class="btn btn-primary modal-select-song" id="searchForSongsButton" onclick="searchForSongs()">Search</a>
 
-                        <button type="submit" class="btn btn-primary" 
-                            id="searchForSongsSubmit" onclick="searchForSongs(this)">Submit</button>
+                        <button type="submit" class="btn btn-primary" id="searchForSongsSubmit">Submit</button>
 
                     </div>
 

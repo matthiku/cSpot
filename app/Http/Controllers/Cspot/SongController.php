@@ -259,36 +259,42 @@ class SongController extends Controller
      */
     public function APIupdate(Request $request)
     {
-        if ($request->has('id') && $request->has('value') ) {
-
-            // the id field in the request was taken from the 'id' attribute 
-            //      of the html element that triggered this request.
-            //  It's format is: <field_name>-song-id-<song_id>
-            $identity   = explode('-', $request->id);
-            $field_name = $identity[0];
-            $song_id    = $identity[3];
-
-
-            // find the single resource
-            $song = Song::find($song_id);
-
-            if ( $song ) {
-
-                // check authentication
-                if ( ! Auth::user()->isEditor() )  {
-                    return response()->json(['status' => 401, 'data' => 'Not authorized'], 401);
-                }
-                // perform the update
-                $song->update( [$field_name => $request->value] );
-
-                // delete possible cached items which contain this song
-                deleteCachedItemsContainingSongId( $song );
-            
-                // return text to sender
-                return $song[$field_name];
-            }
+        if ( ! $request->has('id') ) {
+            // request was incomplete!
+            return response()->json(['status' => 404, 'data' => 'API: item id missing!'], 404);
         }
-        return response()->json(['status' => 404, 'data' => 'API: Item not found'], 404);
+
+        // if the value is missing, that means we just set it to blank (empty)
+        if ( ! $request->has('value') ) {
+            $request->value = '';
+        }
+
+        // the id field in the request was taken from the 'id' attribute 
+        //      of the html element that triggered this request.
+        //  It's format is: <field_name>-song-id-<song_id>
+        $identity   = explode('-', $request->id);
+        $field_name = $identity[0];
+        $song_id    = $identity[3];
+
+
+        // find the single resource
+        $song = Song::find($song_id);
+
+        if ( $song ) {
+
+            // check authentication
+            if ( ! Auth::user()->isEditor() )  {
+                return response()->json(['status' => 401, 'data' => 'Not authorized'], 401);
+            }
+            // perform the update
+            $song->update( [$field_name => $request->value] );
+
+            // delete possible cached items which contain this song
+            deleteCachedItemsContainingSongId( $song );
+        
+            // return text to sender
+            return $song[$field_name];
+        }
     }
 
 

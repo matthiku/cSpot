@@ -100,7 +100,7 @@ class FileController extends Controller
     /**
      * Add existing file to a plan item
      */
-    public function add($item_id, $file_id)
+    public function add(Request $request, $item_id, $file_id)
     {
         $item = Item::find($item_id);
 
