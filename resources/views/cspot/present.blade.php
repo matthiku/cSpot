@@ -130,6 +130,11 @@
                 @endforeach
             </div>
 
+
+        @elseif ( $item->key=='announcements' )
+
+            @include('cspot.snippets.announcements')
+
         @endif
 
 

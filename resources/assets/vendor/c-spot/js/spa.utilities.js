@@ -130,9 +130,34 @@ function toggleShowComment(that, id, actionUrl)
         function(data) {
             // show result
             if (data == 'true')
-                $('#'+id).html( 'Show comment as title in the presentation' );
+                $('#'+id).html( 'Notes are presented as Title in the presentation' );
             else
-                $('#'+id).html( 'Make comment visible in the presentation' );
+                $('#'+id).html( 'Show notes as Title in the presentation' );
+        }
+    );
+}
+
+
+/* toggle field 'key' in order to use item as Announcements Slide
+*/
+function toggleShowAnnouncement(that, id, actionUrl) 
+{
+    // replace current note with spinner while doing AJAX
+    $('#'+id).html('<i class="fa fa-spinner fa-spin fa-fw"></i>');
+
+    $.post( 
+        actionUrl, 
+        { 
+            'id'    : id, 
+            'value' : $(that).prop('checked') ? 'announcements' : 'none',
+        })
+    .done( 
+        function(data) {
+            // show result
+            if (data == 'announcements')
+                $('#'+id).html( 'This item will show the Announcements Slide in the presentation' );
+            else
+                $('#'+id).html( 'Use this item to show the announcements in the presentation?' );
         }
     );
 }

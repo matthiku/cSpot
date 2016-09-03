@@ -27,7 +27,7 @@
                 @endif
 
                 @if (! $item->song_id)
-                    {{-- checkbox to indicate if public note should be shown in the presenation --}}
+                    {{-- checkbox to indicate if public note should be shown in the presentation --}}
                     <span class="btn btn-secondary pull-xs-left">
                         <label class="custom-control custom-checkbox">
                             <input type="checkbox" id="toggle-show-comment" 
@@ -48,6 +48,25 @@
                             style="max-width: 150px; display: {{ $item->comment ? 'initial' : 'none' }}">
                         <small><i class="fa fa-remove text-muted"></i> clear comment</small>
                     </a>
+                @endif
+
+                @if (! $item->song_id)
+                    {{-- checkbox to indicate if this item should be used to show the ANNOUNCEMENTS in the presentation --}}
+                    <br>
+                    <br>
+                    <span class="btn btn-secondary pull-xs-left">
+                        <label class="custom-control custom-checkbox">
+                            <input type="checkbox" id="toggle-show-announcements" 
+                                  class="custom-control-input" {{ $item->key == 'announcements' ? 'checked="checked"' : '' }}
+                                onclick="toggleShowAnnouncement(this, 'key-item-id-{{ $item->id }}', '{{ route('cspot.api.item.update') }}')"
+                                {{ Auth::user()->ownsPlan($plan->id) ? '' : ' disabled' }}>
+                            <span class="custom-control-indicator"></span>
+                            <span class="custom-control-description" id="key-item-id-{{ $item->id }}"
+                                >{{ $item->key=='announcements' 
+                                    ? 'This item will show the announcements' 
+                                    : 'Use this item to show the announcements' }} in the presentation</span>
+                        </label>
+                    </span>
                 @endif
 
             </p>

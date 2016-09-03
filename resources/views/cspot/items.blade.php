@@ -210,6 +210,9 @@
 					@if ( count($item->files)==1 )
 						<i class="fa fa-file-picture-o"></i>
 					@endif
+					@if ( $item->key=='announcements' )
+						<i class="fa fa-bullhorn" title="Announcements Slide!"></i>
+					@endif
 				</td>
 
 

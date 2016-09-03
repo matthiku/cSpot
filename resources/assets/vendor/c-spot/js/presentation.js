@@ -1588,7 +1588,7 @@ function changeFontSize(selectorList, how) {
 function saveMainContentToLocalStorage(what) {    
 
     // only if activated ....
-    if ( !cSpot.presentation.sync ) {
+    if ( !cSpot.presentation.useOfflineMode ) {
         return;
     }
 
@@ -1621,7 +1621,7 @@ function saveMainContentToLocalStorage(what) {
 function checkLocalStorageForPresentation(plan_id) 
 {
     // only if activated ....
-    if ( !cSpot.presentation.sync ) {
+    if ( !cSpot.presentation.useOfflineMode ) {
         return;
     }
 

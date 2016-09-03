@@ -23,7 +23,7 @@ use App\Models\FileCategory;
 use DB;
 use Auth;
 use Log;
-
+use Carbon\Carbon;
 
 
 class ItemController extends Controller
@@ -306,11 +306,29 @@ class ItemController extends Controller
         $item = Item::find($id);
 
         if ($item) {
-            // default is to show chords
-            if ( ! $present) { $present = 'chords'; }
+
+            $events = [];
+            // is this the Announcements Slide?
+            if ( $item->key == 'announcements') {
+
+                $today = new Carbon( $item->plan->date );
+                $oneWeek = $today->addDays(7);
+                // get ALL future events incl today
+                $events = Plan::with(['type', 'leader', 'teacher'])
+                    ->whereDate('date', '>', $item->plan->date->subDay())
+                    ->whereDate('date', '<', $oneWeek)
+                    ->where('id', '!=', $item->plan_id) // excluding the current plan
+                    ->orderBy('date', 'asc')
+                    ->get();
+            }
+
+            // default presentation type is to show chords
+            if ( ! $present) { 
+                $present = 'chords'; }
 
             return view('cspot.'.$present, [
-                    'item'          => $item,          
+                    'item'          => $item,
+                    'events'        => $events,
                     'versionsEnum'  => json_decode(env('BIBLE_VERSIONS')),
                     'items'         => $item->plan->items->sortBy('seq_no')->all(),   // all items of the plan to which this item belongs      
                     'type'          => $present,                            // what kind of item presentation is requested
