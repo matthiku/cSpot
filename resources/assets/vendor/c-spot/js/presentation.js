@@ -10,17 +10,6 @@
 \*/
 
 
-// lyrics sequence data
-var sequence;
-
-// show blank lines between presentation items?
-var showBlankBetweenItems;
-var screenBlank = true;
-var howManyVersesPerSlide;
-
-var bibleBooks;
-var planCache;
-
 
 /*\
 |* >------------------------------------------ PREPARE IMAGE SLIDES
@@ -1501,6 +1490,18 @@ function applyLocallyDefinedTextFormatting()
         $('.text-song').css('font-size', parseInt(fontSize));
     }
 
+    // check if user has changed the default font size for chords/sheetmusic presentation
+    fontSize = localStorage.getItem('.announce-text-present_font-size');
+    if (fontSize) {
+        $('.announce-text-present').css('font-size', parseInt(fontSize));
+    }
+
+    // check if user has changed the default font size for chords/sheetmusic presentation
+    textAlign = localStorage.getItem('.announce-text-present_text-align');
+    if (textAlign) {
+        $('.announce-text-present').css('text-align', textAlign);
+    }
+
 }
 
 
@@ -1565,6 +1566,7 @@ function changeFontSize(selectorList, how) {
         factor = 0.9;
     selectorList.forEach( function(selector) {
         element = $(selector);
+        // only proceed if the element actually exists in the current document
         if (element.length>0) {
             fontSize = parseFloat($(element).css('font-size')) * factor;
             if (fontSize<8 || fontSize>150) return;

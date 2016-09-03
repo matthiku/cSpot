@@ -9505,7 +9505,7 @@ a[disabled] {
 .text-present-region2 {
     color: red !important;
 }
-.text-present {
+.text-present, .announce-text-present {
     color: yellow;
     font-size: xx-large;
     font-family: "Times New Roman", Georgia, Serif;

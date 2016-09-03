@@ -1,24 +1,28 @@
 
 <?php use Carbon\Carbon; ?>
 
-<div class="text-present">
+<div class="announce-text-present">
 
 
-	<h1 class="text-success font-weight-bold font-italic m-b-2">Announcements for this Week</h1>
+	<h1 class="text-success font-weight-bold font-italic display-3 m-b-2">
+		<img class="pull-xs-left" height="140px" src="{{ url($logoPath.env('CHURCH_LOGO_FILENAME')) }}">
+		<span style="line-height: 140px; vertical-align: middle;">This Week's Announcements</span>
+		<img class="pull-xs-right" height="140px" src="{{ url($logoPath.env('CHURCH_LOGO_FILENAME')) }}">
+	</h1>
 
 
 	<table class="table table-bordered">
 
 		<thead>
 			<tr>
-				<th class="center text-danger">Today</th>
-				<th class="center">Monday</th>
-				<th class="center">Tuesday</th>
-				<th class="center">Wed.</th>
-				<th class="center">Thurs.</th>
-				<th class="center">Friday</th>
-				<th class="center">Saturday</th>
-				<th class="center text-danger">Sunday</th>
+				<th class="announce-text-present text-danger">Today</th>
+				<th class="announce-text-present">Monday</th>
+				<th class="announce-text-present">Tuesday</th>
+				<th class="announce-text-present">Wed.</th>
+				<th class="announce-text-present">Thurs.</th>
+				<th class="announce-text-present">Friday</th>
+				<th class="announce-text-present">Saturday</th>
+				<th class="announce-text-present text-danger">Sunday</th>
 			</tr>
 		</thead>
 

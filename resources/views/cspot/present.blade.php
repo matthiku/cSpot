@@ -418,13 +418,17 @@
                         class="nav-item btn btn-sm btn-warning" role="button" id="go-previous-item">
                         <i class="fa fa-angle-double-left fa-lg"></i>
                     </a> 
-                    <a href="#" onclick="changeFontSize(['.text-present', '.bible-text-present', '.bible-text-present>h1', '.bible-text-present>p'], 'decrease');" 
-                            title="decrease font size" id="decr-font"
+                    <a href="#" title="decrease font size" id="decr-font"
+                        onclick="changeFontSize([
+                            '.announce-text-present', '.text-present', '.bible-text-present', '.bible-text-present>h1', '.bible-text-present>p'
+                                ], 'decrease');"                             
                             class="nav-item btn btn-sm btn-info" role="button">
                         A <i class="fa fa-minus fa-lg"></i>
                     </a>
-                    <a href="#" onclick="changeFontSize(['.text-present', '.bible-text-present', '.bible-text-present>h1', '.bible-text-present>p']);" 
-                            title="increase font size" id="incr-font"
+                    <a href="#" title="increase font size" id="incr-font"
+                        onclick="changeFontSize([
+                            '.announce-text-present', '.text-present', '.bible-text-present', '.bible-text-present>h1', '.bible-text-present>p'
+                            ]);"                             
                             class="m-l-0 nav-item btn btn-sm btn-info" role="button">
                         A <i class="fa fa-plus fa-lg"></i>
                     </a>
@@ -435,11 +439,11 @@
                 <button class="nav-link m-l-1 btn btn-sm btn-info dropdown-toggle" href="#" type="button" 
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Align</button>
                 <div class="dropdown-menu bg-info">
-                    <a onclick="changeTextAlign(['.text-present', '.bible-text-present'], 'left');" 
+                    <a onclick="changeTextAlign(['.announce-text-present', '.text-present', '.bible-text-present'], 'left');" 
                         class="dropdown-item" href="#"><i class="fa fa-align-left fa-lg"></i> Left</a>
-                    <a onclick="changeTextAlign(['.text-present', '.bible-text-present'], 'right');"
+                    <a onclick="changeTextAlign(['.announce-text-present', '.text-present', '.bible-text-present'], 'right');"
                         class="dropdown-item" href="#"><i class="fa fa-align-right fa-lg"></i> Right</a>
-                    <a onclick="changeTextAlign(['.text-present', '.bible-text-present'], 'center');"
+                    <a onclick="changeTextAlign(['.announce-text-present', '.text-present', '.bible-text-present'], 'center');"
                         class="dropdown-item" href="#"><i class="fa fa-align-center fa-lg"></i> Center</a>
                 </div>
             </div>
