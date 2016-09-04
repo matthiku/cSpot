@@ -385,20 +385,40 @@
                 
                 {{-- Form to add new (image) file --}}
                 <div id="col-2-file-add" style="display: none;" class="m-b-1 dropzone">
-                    <br>
-                    {!! Form::label('file', 'Add an image', ['class' => 'x']); !!}
-                        <small>(Max. Size: <?php echo ini_get("upload_max_filesize"); ?>)</small><br>
-                    {!! Form::file('file'); !!}
-                    <br>
-                    {!! Form::label('file_category_id', 'Select a Category for this file') !!}
-                    <select required="" name="file_category_id" id="file_category_id">
-                        <option selected="TRUE" value="">select ...</option>
-                        @foreach ( DB::table('file_categories')->get() as $fcat)
-                            <option value="{{ $fcat->id }}">{{ $fcat->name }}</option>
-                        @endforeach                        
-                    </select>
-                    <br>
-                    {!! Form::submit('Save') !!}
+
+                    <div class="card">
+
+                        <div class="card-block">
+                            <h4 class="card-title">Add an image</h4>
+                            <span class="card-text"><small>(Max. Size: <?php echo ini_get("upload_max_filesize"); ?>)</small></span>
+                        </div>
+
+                        <ul class="list-group list-group-flush">
+
+                            <li class="list-group-item">
+                                {!! Form::label('file_category_id', 'First, select a category for this file: ') !!}
+                                <br>
+                                <div class="btn-group" data-toggle="buttons" onclick="$('.show-file-add-button').show()">
+                                    @foreach ( DB::table('file_categories')->get() as $fcat)
+                                    <label class="btn btn-primary">
+                                        <input type="radio" name="file_category_id" id="option-{{ $fcat->id }}" autocomplete="off" value="{{ $fcat->id }}">{{ $fcat->name }}
+                                    </label>
+                                    @endforeach
+                                </div>
+                            </li>
+
+                            <li class="list-group-item show-file-add-button" style="display: none;">
+                                {!! Form::label('file_category_id', 'Next, select a file to be uploaded: ') !!}
+                                <br>
+                                {!! Form::file('file'); !!}    
+                                                            
+                                <span class="show-file-add-button pull-xs-right" style="display: none;">
+                                    {!! Form::submit('Submit') !!}                                
+                                </span>
+                            </li>
+
+                        </ul>
+                    </div>
                 </div>
             
             @else

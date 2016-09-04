@@ -286,8 +286,18 @@ class PlanController extends Controller
         flash('New Plan added with id '.$plan->id);
         // redirect back to the plan editor to create another plan
         if ($request->input('addAnother')=='Y') {
-            // send default values for another plan in 7 days
-            $newDate =  $plan->date->addDays(7);
+
+            // get repeat value for this plan type
+            $interval = $plan->type->repeat;
+
+            // send default values for another adding amount of days dpending on interval value
+            if ($interval == 'weekly')
+                $newDate =  $plan->date->addDays(7);
+            if ($interval == 'biweekly' || $interval == 'fortnightly')
+                $newDate =  $plan->date->addDays(14);
+            if ($interval == 'monthly')
+                $newDate =  $plan->date->addWeeks(4);
+
             $request->session()->flash('defaultValues', ['type_id' => $plan->type_id, 'date' => $newDate]);
 
             // get list of service types

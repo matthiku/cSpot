@@ -84,7 +84,7 @@
 
             @else
 
-                <h3>Add Service Plan</h3>
+                <h3>Add Event Plan</h3>
 
             @endif
 
@@ -158,7 +158,7 @@
                                 'class'          => 'form-submit text-help',
                                 'style'          => 'display: none',
                                 'disabled'       => 'disabled',
-                                'title'          => 'Click to save changes to notes, service type, date, leader or teacher',
+                                'title'          => 'Click to save changes to notes, event type, date, leader or teacher',
                             ]); !!}</span>
                         @endif
 
@@ -222,7 +222,7 @@
                         !!}
                     @endif
                     <div class="form-group" id="editPlanServiceTimes">
-                        {!! Form::label('start', 'Service Time:'); !!}
+                        {!! Form::label('start', 'Event Time:'); !!}
                         {!! Form::time( 'start'); !!}
                         {!! Form::label('end', ' - '); !!}
                         {!! Form::time( 'end');   !!}      
@@ -280,10 +280,10 @@
                     <select name="teacher_id" class="form-control text-help c-select" onchange="enableSaveButton(this)"
                             {{ Auth::user()->isEditor() ? '' : ' disabled' }}>
                         @if (! isset($plan))
-                            <option selected>
+                            <option>
                                 Select ...
                             </option>
-                            <option value="0">None</option>
+                            <option selected value="0">None</option>
                         @endif
                         @foreach ($users as $user)
                             @if( $user->hasRole('teacher'))
@@ -373,7 +373,7 @@
                 <input 
                 {{ isset($defaultValues) ? 'checked="checked"' : '' }}
                 type="checkbox" value="Y" name="addAnother">
-                Add another service plan after this one?
+                Add another Event Plan after this one?
             </label>
         </div>                
 
@@ -417,7 +417,7 @@
                 'class'       => 'form-submit text-help submit-button',
                 'style'       => 'display: none',
                 'disabled'    => 'disabled',
-                'title'       => 'Click to save changes to notes, service type, date, leader or teacher',
+                'title'       => 'Click to save changes to notes, event type, date, leader or teacher',
             ]) !!}
             </span>
             <script>
