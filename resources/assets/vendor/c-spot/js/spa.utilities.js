@@ -279,22 +279,148 @@ function showModalSelectionItems(what)
     // show all parts for selecting a song or entering a comment
     $('.modal-select-'+what).show();                
 
-    $('.modal-content').css('background-color', '#c2c2d6'); // different background color during song selection
+    // different background color during song selection
+    if (what=='song')
+        $('.modal-content').css('background-color', '#c2c2d6'); 
 
     $('#searchSongModalLabel').text('Insert '+what);
 
     $('.modal-input-'+what).focus();
 
-    // show submit button for comments or scripture
-    if (what!='song') $('#searchForSongsSubmit').show();
+    // show submit button for comments, scripture or file upload
+    if (what=='comment' || what=='scripture' || what=='file') 
+        $('#searchForSongsSubmit').show();
+
+    // make sure the FILE form is partially hidden initially
+    if (what=='file') {
+        $('.show-file-add-button').hide();
+        $('#song_id').val('add-file');
+        $('#comment').val('new image added');
+    }
 }
+
+                
+/*\
+|*|----------------------------------------------------------------------
+|*|    Insert NEW or update EXISTING ITEMS on the Plan Overview page
+|*|----------------------------------------------------------------------
+|*|
+|*| (this is called from document.ready.js!)
+|*|
+|*| The corresponding modal is included in plan.blade.php as a BLADE include, referring 'cspot.snippets.add_item_modal'
+|*|
+|*| The method below is called when the modal popup is activated (shown) by clicking on the respective buttons or links.
+|*| It populates the modal popup with the data provided by the launching button ....
+|*|
+|*| Initially, a menu with 3 buttons is shown for the selection of 'Song', 'Scripture' or 'Comment/Note'.
+|*| Each will un-hide a different list of input and selection elements.
+|*|
+|*| This same modal is also being used to update an existing song item (ie. to change the song)
+|*|
+|*| The new data is processed via the 'searchForSongs' js helper function above
+\*/
+function insertNewOrUpdateExistingItems( event )
+{
+    // first make sure the form is back in its initial state
+    resetSearchForSongs();
+
+    // get item-specific data from the triggering element
+    var button = $(event.relatedTarget);        // Button that triggered the modal
+    var plan_id  = button.data('plan-id');      // Extract info from data-* attributes
+    var item_id  = button.data('item-id');
+    var seq_no   = button.data('seq-no' );
+    var actionUrl= button.data('action-url' );
+
+    // prepare title text for popup dialog
+    var ar_seq = seq_no.split('-');
+    var titleText = 'before item No '+seq_no;
+
+    // was modal opened from existing item?
+    if (plan_id=="update-song" || location.pathname.search('chords') > 0) {
+        // directly activate the song selection
+        showModalSelectionItems('song');
+        $('#searchSongForm'      ).attr('data-action', actionUrl);
+        $('#searchSongModalLabel').text('Select song');
+
+        titleText = 'for item No '+seq_no;
+        if ( ar_seq[0] == 'after')
+            titleText = 'after item No '+ar_seq[1];
+    }
+
+    else if (plan_id=="update-scripture") {
+        // directly activate the scripture selection
+        showModalSelectionItems('scripture');
+        // use current comment text as initial value
+        var curCom = button.parent().children().first().text().trim();
+        $('#comment').val( curCom=='Click to edit' ? '' : curCom );
+        // URL needed to update the comment as derived from the calling element
+        $('#searchSongForm'      ).attr('data-action', actionUrl);
+        $('#searchSongModalLabel').text('Select a scripture');
+
+        titleText = 'for item No ' + seq_no;
+    } 
+
+    else if (plan_id=="add-file") {
+        // make sure the form is partially hidden initially
+        $('.show-file-add-button').hide()
+
+        // directly activate the file selection
+        showModalSelectionItems('file');
+
+        // let the form be submitted
+        $('#song_id').val('add-file');
+        $('#comment').val('new image added');
+
+        titleText = 'for item No ' + seq_no;
+    } 
+
+    // set title text for popup dialog
+    $('#modal-show-item-id').text( titleText+':' );
+
+
+    // Update the modal's content
+    $('#plan_id'      ).val(plan_id);
+    $('#beforeItem_id').val(item_id);
+    $('#seq-no'       ).val(seq_no);
+
+    $('#haystack').focus(); // make sure the search string input field has focus
+
+
+    // prevent the Song Search Form from being submitted when 
+    //      the ENTER key is used; instead, perform the actual search
+    $("#searchSongForm").submit(function(event){
+
+        // if a file upload was selectd, submit the form
+        if ($('#song_id').val()=='add-file') {
+            uploadNewFile(actionUrl);
+            return false; // form should NOT be submitted
+            //document.forms.searchSongForm.submit();
+        }
+
+        if (! $('#searchForSongsButton').is(':visible') ||  $('#song_id').val()=='')
+            event.preventDefault();
+    });
+
+
+    // intervene cancel button - reset form and close the popup
+    $("#searchSongForm").on('cancel', function(event){
+        event.preventDefault();
+        resetSearchForSongs();
+        $('#searchSongModal').modal('hide');
+    });
+
+}
+
 
 
 /* Reset the song search form
 */
 function resetSearchForSongs() 
 {
+    $('.modal-content').css('background-color', '#fff');    
     $('.modal-select-song').hide();
+    $('.modal-select-file').hide();
+    $('.modal-select-clips').hide();
     $('.modal-select-comment').hide();
     $('.modal-select-scripture').hide();
     $('.modal-pre-selection').show();
@@ -432,7 +558,7 @@ function searchForSongs(that)
         
         // write it into the form
         $('#song_id').val(song_id);
-        console.log('Writing the selected song_id as value of the hidden input element: '+song_id)
+        ;;;console.log('Writing the selected song_id as value of the hidden input element: '+song_id)
 
         // restore the original search form
         $('#searchSongModal').modal('hide');    // close the modal
@@ -507,6 +633,83 @@ function updateSong(song_id)
             myCell.children('.show-song-title').text('Failed! Press F12 for more');
             console.log("Update failed! Please notify admin! " + JSON.stringify(data));
         });
+}
+
+
+function uploadNewFile(url)
+{
+    var fd = new FormData(document.getElementById("searchSongForm"));
+
+    $.ajax({
+        url: url,
+        type: "POST",
+        data: fd,
+        processData: false,  // tell jQuery not to process the data
+        contentType: false   // tell jQuery not to set contentType
+    }).done(function( data ) {
+        console.log("PHP Output:");
+        console.log( data );
+    });
+}
+
+/* Upload a file via AJAX
+*/
+function uploadFile() {
+    $(':file').change(function(){
+        var file = this.files[0];
+        name = file.name;
+        size = file.size;
+        type = file.type;
+
+        if(file.name.length < 1) {
+        }
+        else if(file.size > 100000) {
+            alert("The file is too big");
+        }
+        else if(file.type != 'image/png' && file.type != 'image/jpg' && file.type != 'image/gif' && file.type != 'image/jpeg' ) {
+            alert("The file does not match png, jpg or gif");
+        }
+        else { 
+            $(':submit').click(function(){
+                var formData = new FormData($('*formId*')[0]);
+                $.ajax({
+                    url: 'script',  //server script to process data
+                    type: 'POST',
+                    xhr: function() {  // custom xhr
+                        myXhr = $.ajaxSettings.xhr();
+                        if(myXhr.upload){ // if upload property exists
+                            myXhr.upload.addEventListener('progress', progressHandlingFunction, false); // progressbar
+                        }
+                        return myXhr;
+                    },
+                    // Ajax events
+                    success: completeHandler = function(data) {
+                        /*
+                        * Workaround for Chrome browser // Delete the fake path
+                        */
+                        if(navigator.userAgent.indexOf('Chrome')) {
+                            var catchFile = $(":file").val().replace(/C:\\fakepath\\/i, '');
+                        }
+                        else {
+                            var catchFile = $(":file").val();
+                        }
+                        var writeFile = $(":file");
+                        writeFile.html(writer(catchFile));
+                        $("*setIdOfImageInHiddenInput*").val(data.logo_id);
+                    },
+                    error: errorHandler = function() {
+                        alert("Something went wrong!");
+                    },
+                    // Form data
+                    data: formData,
+                    // Options to tell jQuery not to process data or worry about the content-type
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                }, 'json');
+            });
+        }
+    });
 }
 
 

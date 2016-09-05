@@ -6,6 +6,15 @@
  * (C) M.Kuhs Ireland, 2016
  */
 
+
+
+/* buttons in the Insert/Add Item dialog */
+.modal-pre-selection {
+    min-width: 280px;
+}
+
+
+/* hide text that is outside the limited width of the element */
 .limited-width {
     -o-text-overflow: ellipsis;   /* Opera */
     text-overflow   : ellipsis;   /* IE, Safari (WebKit) */

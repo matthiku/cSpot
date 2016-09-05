@@ -90,7 +90,6 @@
 				</td>
 
 
-
 				<!-- COMMENT column - allow for inline editing -->
 				<td class="hidden-lg-down center comment-cell" title="click to change"
 					onmouseover="$(this).children('.add-scripture-ref').show()" onmouseout="$('.add-scripture-ref').hide()">
@@ -117,7 +116,6 @@
 					@endif
 
 				</td>
-
 
 
 				{{-- show combined song-title and comment column on small devices --}}
@@ -154,6 +152,7 @@
 				</td>
 
 
+				{{-- indicate if chords are available for this song --}}
 				<td class="hidden-sm-down center" title="Lyrics with chords for guitars">
 					@if ($item->song_id)
 						@if ( strlen($item->song->chords)>20 )
@@ -164,6 +163,7 @@
 				</td>
 				
 
+				{{-- indicate if sheet music is linked to this song --}}
 				<td class="hidden-sm-down center"  title="Sheet music attached to the song"
 					@if ( $item->song_id && count($item->song->files)>0 )
 						title="{{ $item->song->files[0]->filename }}" data-toggle="tooltip" data-placement="left"
@@ -190,7 +190,9 @@
 					@endif
 				</td>
 
-				<td {{$onclick}} class="hidden-sm-down center link"
+
+				{{-- show if files are attached to this item and show button --}}
+				<td class="hidden-sm-down center"
 					@if ( count($item->files)>0 )
 						title="{{ $item->files[0]->filename }}" data-toggle="tooltip" data-placement="left"
 						data-template='
@@ -212,11 +214,19 @@
 					@endif
 					@if ( $item->key=='announcements' )
 						<i class="fa fa-bullhorn" title="Announcements Slide!"></i>
+					@else
+						{{-- MODAL POPUP to attach file (image) to this item --}}
+						<a href="#" class="text-muted link" data-toggle="modal" data-target="#searchSongModal"
+							data-plan-id="add-file" data-item-id="{{$item->id}}" data-seq-no="{{$item->seq_no}}" 
+							data-action-url="{!! route('cspot.api.items.update', $item->id) !!}"
+							title="attach file (image) to this item">
+							<i class="fa fa-image"></i><sup>+</sup>
+						</a>
 					@endif
 				</td>
 
 
-
+				{{-- show various links if available, for song --}}
 				<td class="center hidden-xs-down dont-print show-youtube-links">
 					<big>
 					@if ($item->song_id)
@@ -262,21 +272,25 @@
 									&nbsp;<i class="fa fa-trash fa-lg"></i></a>
 							@endif
 						</span>
+
 						@if (! $item->deleted_at)
+
 
 							{{-- new MODAL POPUP to add song/scripture/comment --}}
 							<button type="button" class="btn btn-secondary btn-sm text-info" data-toggle="modal" data-target="#searchSongModal"
 								data-plan-id="{{$plan->id}}" data-item-id="{{$item->id}}" data-seq-no="{{$item->seq_no}}" 
 								href='#' title="insert song, scripture or comment before this item">
-								<i class="fa fa-music"></i><sup>+</sup>
+								<i class="fa fa-indent"></i><sup>+</sup>
 							</button>
+
 
 							{{-- new DROPDOWN MENU for editing or deleting items --}}
 							<div class="btn-group {{ count($plan->items)-3 < $key  &&  $key > 0 ? 'dropup' : '' }}">
 								<button type="button" class="btn btn-secondary btn-sm dropdown-toggle" 
 									data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-									<i class="fa fa-ellipsis-v"></i>
+									<i class="fa fa-ellipsis-v hidden-xs-down"></i>
 								</button>
+
 								<div class="dropdown-menu dropdown-menu-right">
 									@if ($item->song_id)
 					 				<a class="dropdown-item edit-song-link" href='{{ url('cspot/songs/'.$item->song->id) }}/edit/'>
