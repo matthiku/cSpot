@@ -40418,9 +40418,9 @@ function showModalSelectionItems(what)
 
     // make sure the FILE form is partially hidden initially
     if (what=='file') {
+        cSpot.item.item_type = 'insert-file-item';
         $('.show-file-add-button').hide();
-        $('#song_id').val('add-file');
-        $('#comment').val('new image added');
+        $('#comment').val(' ');
     }
 }
 
@@ -40451,41 +40451,45 @@ function insertNewOrUpdateExistingItems( event )
 
     // get item-specific data from the triggering element
     var button = $(event.relatedTarget);        // Button that triggered the modal
-    var plan_id  = button.data('plan-id');      // Extract info from data-* attributes
-    var item_id  = button.data('item-id');
-    var seq_no   = button.data('seq-no' );
-    var actionUrl= button.data('action-url' );
+    var item = [];
+    item.item_type= button.data('item-type');
+    item.plan_id  = button.data('plan-id');      // Extract info from data-* attributes
+    item.item_id  = button.data('item-id');
+    item.seq_no   = button.data('seq-no' );
+    item.actionUrl= button.data('action-url');
+    item.buttonID = button.attr('id');
+    cSpot.item = item;
 
     // prepare title text for popup dialog
-    var ar_seq = seq_no.split('-');
-    var titleText = 'before item No '+seq_no;
+    var ar_seq = item.seq_no.split('-');
+    var titleText = 'before item No '+item.seq_no;
 
     // was modal opened from existing item?
-    if (plan_id=="update-song" || location.pathname.search('chords') > 0) {
+    if (item.plan_id=="update-song" || location.pathname.search('chords') > 0) {
         // directly activate the song selection
         showModalSelectionItems('song');
-        $('#searchSongForm'      ).attr('data-action', actionUrl);
+        $('#searchSongForm'      ).attr('data-action', item.actionUrl);
         $('#searchSongModalLabel').text('Select song');
 
-        titleText = 'for item No '+seq_no;
+        titleText = 'for item No '+item.seq_no;
         if ( ar_seq[0] == 'after')
             titleText = 'after item No '+ar_seq[1];
     }
 
-    else if (plan_id=="update-scripture") {
+    else if (item.plan_id=="update-scripture") {
         // directly activate the scripture selection
         showModalSelectionItems('scripture');
         // use current comment text as initial value
         var curCom = button.parent().children().first().text().trim();
         $('#comment').val( curCom=='Click to edit' ? '' : curCom );
         // URL needed to update the comment as derived from the calling element
-        $('#searchSongForm'      ).attr('data-action', actionUrl);
+        $('#searchSongForm'      ).attr('data-action', item.actionUrl);
         $('#searchSongModalLabel').text('Select a scripture');
 
-        titleText = 'for item No ' + seq_no;
+        titleText = 'for item No ' + item.seq_no;
     } 
 
-    else if (plan_id=="add-file") {
+    else if (item.item_type=="add-file") {
         // make sure the form is partially hidden initially
         $('.show-file-add-button').hide()
 
@@ -40496,7 +40500,7 @@ function insertNewOrUpdateExistingItems( event )
         $('#song_id').val('add-file');
         $('#comment').val('new image added');
 
-        titleText = 'for item No ' + seq_no;
+        titleText = 'for item No ' + item.seq_no;
     } 
 
     // set title text for popup dialog
@@ -40504,9 +40508,9 @@ function insertNewOrUpdateExistingItems( event )
 
 
     // Update the modal's content
-    $('#plan_id'      ).val(plan_id);
-    $('#beforeItem_id').val(item_id);
-    $('#seq-no'       ).val(seq_no);
+    $('#plan_id'      ).val(item.plan_id);
+    $('#beforeItem_id').val(item.item_id);
+    $('#seq-no'       ).val(item.seq_no);
 
     $('#haystack').focus(); // make sure the search string input field has focus
 
@@ -40516,14 +40520,24 @@ function insertNewOrUpdateExistingItems( event )
     $("#searchSongForm").submit(function(event){
 
         // if a file upload was selectd, submit the form
-        if ($('#song_id').val()=='add-file') {
-            uploadNewFile(actionUrl);
+        if (cSpot.item.item_type=='insert-file-item') {
+            return true;
+        }
+
+        // if a file upload was selectd, submit the form
+        if (cSpot.item.item_type=='add-file') {
+
+            uploadNewFile();
+
+            resetSearchForSongs();
+            $('#searchSongModal').modal('hide');
             return false; // form should NOT be submitted
             //document.forms.searchSongForm.submit();
         }
 
         if (! $('#searchForSongsButton').is(':visible') ||  $('#song_id').val()=='')
-            event.preventDefault();
+            return false;
+            //event.preventDefault();
     });
 
 
@@ -40567,6 +40581,14 @@ function resetSearchForSongs()
    song history information; uses AJAX to do the full-text search */
 function searchForSongs(that)
 {    
+    // user chose to add a file to an existing item
+    if (cSpot.item.item_type=='add-file') {
+        return false;
+    }
+    if (cSpot.item.item_type=='insert-file-item') {
+        return true;
+    }
+
     // are we still searching or has the user already selected a song?
     var modus = 'selecting';
     if ( $('#searchForSongsButton').is(':visible') ) {
@@ -40761,79 +40783,29 @@ function updateSong(song_id)
 }
 
 
-function uploadNewFile(url)
+function uploadNewFile()
 {
     var fd = new FormData(document.getElementById("searchSongForm"));
 
     $.ajax({
-        url: url,
+        url: cSpot.item.actionUrl,
         type: "POST",
         data: fd,
         processData: false,  // tell jQuery not to process the data
         contentType: false   // tell jQuery not to set contentType
-    }).done(function( data ) {
-        console.log("PHP Output:");
+    })
+    .done(function( data ) {
+        ;;;console.log("PHP Output:");
+        ;;;console.log( data );
+        //TODO: show something in the UI
+        if (data=='add-file') {
+            // everything is ok....
+            $('#'+cSpot.item.buttonID).parent().prepend('<i class="fa fa-file-picture-o"></i>');
+        }
+    })
+    .fail(function( data ) {
+        console.log("AJAX Error Output:");
         console.log( data );
-    });
-}
-
-/* Upload a file via AJAX
-*/
-function uploadFile() {
-    $(':file').change(function(){
-        var file = this.files[0];
-        name = file.name;
-        size = file.size;
-        type = file.type;
-
-        if(file.name.length < 1) {
-        }
-        else if(file.size > 100000) {
-            alert("The file is too big");
-        }
-        else if(file.type != 'image/png' && file.type != 'image/jpg' && file.type != 'image/gif' && file.type != 'image/jpeg' ) {
-            alert("The file does not match png, jpg or gif");
-        }
-        else { 
-            $(':submit').click(function(){
-                var formData = new FormData($('*formId*')[0]);
-                $.ajax({
-                    url: 'script',  //server script to process data
-                    type: 'POST',
-                    xhr: function() {  // custom xhr
-                        myXhr = $.ajaxSettings.xhr();
-                        if(myXhr.upload){ // if upload property exists
-                            myXhr.upload.addEventListener('progress', progressHandlingFunction, false); // progressbar
-                        }
-                        return myXhr;
-                    },
-                    // Ajax events
-                    success: completeHandler = function(data) {
-                        /*
-                        * Workaround for Chrome browser // Delete the fake path
-                        */
-                        if(navigator.userAgent.indexOf('Chrome')) {
-                            var catchFile = $(":file").val().replace(/C:\\fakepath\\/i, '');
-                        }
-                        else {
-                            var catchFile = $(":file").val();
-                        }
-                        var writeFile = $(":file");
-                        writeFile.html(writer(catchFile));
-                        $("*setIdOfImageInHiddenInput*").val(data.logo_id);
-                    },
-                    error: errorHandler = function() {
-                        alert("Something went wrong!");
-                    },
-                    // Form data
-                    data: formData,
-                    // Options to tell jQuery not to process data or worry about the content-type
-                    cache: false,
-                    contentType: false,
-                    processData: false
-                }, 'json');
-            });
-        }
     });
 }
 

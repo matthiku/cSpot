@@ -25,6 +25,7 @@
             {!! Form::model( $plan, array(
                 'route'  => array('cspot.plans.update', $plan->id), 
                 'method' => 'put', 
+                'file'   => 'true',
                 'id'     => 'inputForm',
                 'class'  => 'form-horizontal'
                 )) !!}

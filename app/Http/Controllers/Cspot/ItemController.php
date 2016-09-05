@@ -623,6 +623,15 @@ class ItemController extends Controller
             if ($request->value == 'false')
                 $request->value = 0;
 
+            // check if a valid file was submitted
+            if ($request->hasFile('file') && $request->file('file')->isValid()) {
+                // use the helper function
+                $file = saveUploadedFile($request);
+                // add the file as a relationship to the song
+                $item->files()->save( $file );
+            }
+
+
             $item->update( [$field_name => $request->value] );
 
             // notify event listener that an item was updated

@@ -217,7 +217,8 @@
 					@else
 						{{-- MODAL POPUP to attach file (image) to this item --}}
 						<a href="#" class="text-muted link" data-toggle="modal" data-target="#searchSongModal"
-							data-plan-id="add-file" data-item-id="{{$item->id}}" data-seq-no="{{$item->seq_no}}" 
+						    id="add-file-button-item-{{ $item->id }}"
+							data-plan-id="{{$plan->id}}" data-item-type="add-file" data-item-id="{{$item->id}}" data-seq-no="{{$item->seq_no}}" 
 							data-action-url="{!! route('cspot.api.items.update', $item->id) !!}"
 							title="attach file (image) to this item">
 							<i class="fa fa-image"></i><sup>+</sup>

@@ -460,6 +460,7 @@ function insertItem( $request )
 
     // handle file uplaods
     if ($request->hasFile('file')) {
+        flash('file added!');
         if ($request->file('file')->isValid()) {
             // use the helper function
             $file = saveUploadedFile($request);

@@ -22,7 +22,7 @@
 
                 {{-- different selection modes depending on context --}}
                 @if (isset($modal))    
-                    <select required="" name="file_category_id" id="file_category_id" onchange="$('.show-file-add-button').show()">
+                    <select name="file_category_id" id="file_category_id" onchange="$('.show-file-add-button').show()">
                         <option selected="TRUE" value="">select ...</option>
                         @foreach ( DB::table('file_categories')->get() as $fcat)
                             <option value="{{ $fcat->id }}">{{ $fcat->name }}</option>
