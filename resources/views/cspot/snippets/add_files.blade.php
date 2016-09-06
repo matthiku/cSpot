@@ -65,8 +65,10 @@
                 onclick="$(this).parent().hide();$('.show-file-add-button').show()"
                     >Upload new image</button>
 
-            <button type="button" class="btn btn-secondary btn-sm"
-                onclick="$(this).parent().hide();showImagesSelection()">Select c-SPOT images</button>
+            <button type="button" class="btn btn-secondary btn-sm" 
+                data-ajax-url="{{ route('cspot.api.files') }}"
+                data-images-path="{{ url(config('files.uploads.webpath')) }}"
+                onclick="$(this).parent().hide();showImagesSelection(this)">Select c-SPOT images</button>
         </li>
 
 
@@ -75,7 +77,9 @@
         {{-- show file selection button 
         --}}
         <li class="list-group-item image-selection-slideshow" style="display: none;">
-            <span>images....</span>
+            <a href="#">&lt;</a>
+            <span id="show-images-for-selection"></span>
+            <a href="#">&gt;</a>
         </li>
 
 

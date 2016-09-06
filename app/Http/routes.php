@@ -199,7 +199,7 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
 
     // API
     // get files by category or all
-    Route::get('api/files/{category?}',                     'Cspot\FileController@APIindex');
+    Route::get('api/files/{category?}', ['as'=>'cspot.api.files', 'uses'=>'Cspot\FileController@APIindex']);
 
 
     /*

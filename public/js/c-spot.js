@@ -40581,6 +40581,7 @@ function resetSearchForSongs()
     $('#search-action-label').text('Full-text search incl. lyrics:');
     $('#txtHint').html('');
     $('#haystack').val('');
+    $('#show-images-for-selection').html('');
 }
 
 /* Called from the Modal popup on the PLAN details page, 
@@ -40796,20 +40797,63 @@ function updateSong(song_id)
 */
 function showImagesSelection(that)
 {
+    // path to the images
+    var img_path = that.dataset.imagesPath;
+    // url for the AJAX call
+    var ajax_url = that.dataset.ajaxUrl;
+
     // show the section that will hold the images
     $('.image-selection-slideshow').show();
 
-    // get category id from selection element
-    var cat = $('#file_category_id').val();
-
-    $.getJSON(__app_url+'/cspot/api/files/'+cat)
+    $.getJSON(
+        ajax_url + '/' + $('#file_category_id').val()
+    )
     .done(function(data) {
-        var files = JSON.parse(data.data);
+
+        ;;;console.log(data.total+' images found');
+
+        // add each image as an <img> element into the DOM, but only make the first 2 visible
+        var showit = true;
+        for (var nr = 0; nr < data.total; nr++) {
+
+            if (nr>1) { showit = false; }
+
+            insertNextSelectionImage(
+                data.data[nr], 
+                '#show-images-for-selection', 
+                img_path + '/thumb-'+data.data[nr].token, 
+                showit
+            );
+        }
     })
     .fail(function(data) {
         console.log('get failed!');
         console.log(data);
     });
+}
+/* append a new image into this element
+*/
+function insertNextSelectionImage(data, parentElem, path, visible)
+{
+    // create a new anchor element
+    var anchor = document.createElement('a');
+    anchor.href = '#';
+    $(anchor).attr('onclick', 'alert('+data.id+')');
+
+    // create a new img element
+    var image = document.createElement('img');
+    image.src = path;
+
+    // insert the image into the anchor
+    $(anchor).append(image);
+
+    // hide if requested
+    if (! visible) {
+       $(anchor).hide();
+    }
+
+    // now insert all into the DOM
+    $(parentElem).append(anchor);
 }
 
 
