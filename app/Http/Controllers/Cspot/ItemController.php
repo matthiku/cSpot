@@ -629,6 +629,8 @@ class ItemController extends Controller
                 $file = saveUploadedFile($request);
                 // add the file as a relationship to the song
                 $item->files()->save( $file );
+                // as we only attached a file to an existing item, we can return now
+                return $file->filename;
             }
 
 

@@ -77,6 +77,33 @@ class FileController extends Controller
     }
 
 
+
+    /**
+     * API - get list of files, optionally filtered by category
+     */
+    public function APIindex($category=null)
+    {
+        // get all files of this category
+        if ($category) {
+
+            if ($category == 'newest') {
+                // Recently added files
+                $files = File::orderBy('id', 'desc')->paginate(18);
+            } 
+            else {
+                $files = File::where('file_category_id', $category)->paginate(18);
+            }
+        }
+        // get all files
+        else {
+            $files = File::paginate(18);
+        }
+
+        return response()->json( $files );
+    }
+
+
+
     /**
      * Update information about an existing file
      */

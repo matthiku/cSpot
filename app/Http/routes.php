@@ -197,6 +197,10 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     // delete an attachment to a song or an item
     Route::delete('files/{id}/delete',                      'Cspot\FileController@delete');
 
+    // API
+    // get files by category or all
+    Route::get('api/files/{category?}',                     'Cspot\FileController@APIindex');
+
 
     /*
         SONGS

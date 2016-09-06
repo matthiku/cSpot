@@ -32,6 +32,8 @@
     <!-- composed JavaScript -->
     <script src="{{ url('js/c-spot.js') }}"></script>
 
+    
+
     <script>
         var __app_url = "{{ url('/') }}";
         var cSpot = {};

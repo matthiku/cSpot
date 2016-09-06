@@ -16,35 +16,36 @@
             </div>
             {!! Form::open(['route' => 'messages.store']) !!}
 
-            <div class="modal-body">
-                <!-- Subject Form Input -->
-                <div class="form-group">
-                    {!! Form::label('subject', 'Subject', ['class' => 'control-label']) !!}
-                    {!! Form::text('subject', 'Feedback on page '.url()->full(), ['class' => 'form-control' ]) !!}
+                <div class="modal-body">
+                    <!-- Subject Form Input -->
+                    <div class="form-group">
+                        {!! Form::label('subject', 'Subject', ['class' => 'control-label']) !!}
+                        {!! Form::text('subject', 'Feedback on page '.url()->full(), ['class' => 'form-control' ]) !!}
+                    </div>
+
+                    <!-- Message Form Input -->
+                    <div class="form-group">
+                        {!! Form::label('message', 'Message', ['class' => 'control-label']) !!}
+                        {!! Form::textarea('message', null, ['class' => 'form-control', 'id' => 'feedbackMessage']) !!}
+                    </div>
+                    
+                    @foreach ($administrators as $admin)
+                        <input type="hidden" name="recipients[]" value="{{ $admin }}">
+                    @endforeach
                 </div>
 
-                <!-- Message Form Input -->
-                <div class="form-group">
-                    {!! Form::label('message', 'Message', ['class' => 'control-label']) !!}
-                    {!! Form::textarea('message', null, ['class' => 'form-control', 'id' => 'feedbackMessage']) !!}
+
+                <div class="modal-footer">
+
+                    <!-- Submit Form Input -->
+                    <div class="form-group">
+                        <button type="button" class="btn btn-secondary m-r-2" data-dismiss="modal">Cancel</button>
+                        {!! Form::submit('Submit', ['class' => 'btn btn-primary']) !!}
+                    </div>
+
                 </div>
                 
-                @foreach ($administrators as $admin)
-                    <input type="hidden" name="recipients[]" value="{{ $admin }}"></input>
-                @endforeach
-            </div>
-
-
-            <div class="modal-footer">
-
-                <!-- Submit Form Input -->
-                <div class="form-group">
-                    <button type="button" class="btn btn-secondary m-r-2" data-dismiss="modal">Cancel</button>
-                    {!! Form::submit('Submit', ['class' => 'btn btn-primary']) !!}
-                </div>
-
-                {!! Form::close() !!} 
-            </div>
+            {!! Form::close() !!} 
 
 
         </div>

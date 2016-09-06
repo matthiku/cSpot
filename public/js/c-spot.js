@@ -40151,6 +40151,38 @@ function setCurrentPageAsStartupPage(that)
 
 
 
+/* Record a user's availability for a certain plan
+ * (called when user clicks on the 'available' icon on plans.blade.php) */
+function userAvailableForPlan(that, plan_id) {
+    // make sure the tooltip is hidden now
+    $(that).parent().parent().tooltip('hide')
+    $('#user-available-for-plan-id-'+plan_id).text( "wait..." );
+
+    var teamPage = false;
+    // was this function called from within the Team page?
+    if (that.checked == undefined) {
+        showSpinner();
+        teamPage = true;
+        // inverse the current available status
+        that.checked = ! $(that).data().available;
+    }
+
+    if ( $.isNumeric(plan_id) ) {
+        console.log('User wants his availability changed to '+that.checked);
+        // make AJAX call to 'plans/{plan_id}/team/{user_id}/available/'+that.checked
+        $.get( __app_url+'/cspot/plans/'+plan_id+'/team/available/'+that.checked)
+        .done(function() {
+            $('#user-available-for-plan-id-'+plan_id).text( that.checked ? 'yes' : 'no');
+            if (teamPage) { location.reload(); }
+        })
+        .fail(function() {
+            $('#user-available-for-plan-id-'+plan_id).text( "error" );
+        })        
+    }
+}
+
+
+
 /*\__________________________________________________________________________  ITEM  Details Page
 \*/
 
@@ -40362,42 +40394,12 @@ function changeForLeadersEyesOnly(that) {
 
 
 
-/* Record a user's availability for a certain plan
- * (called when user clicks on the 'available' icon on plans.blade.php) */
-function userAvailableForPlan(that, plan_id) {
-    // make sure the tooltip is hidden now
-    $(that).parent().parent().tooltip('hide')
-    $('#user-available-for-plan-id-'+plan_id).text( "wait..." );
-
-    var teamPage = false;
-    // was this function called from within the Team page?
-    if (that.checked == undefined) {
-        showSpinner();
-        teamPage = true;
-        // inverse the current available status
-        that.checked = ! $(that).data().available;
-    }
-
-    if ( $.isNumeric(plan_id) ) {
-        console.log('User wants his availability changed to '+that.checked);
-        // make AJAX call to 'plans/{plan_id}/team/{user_id}/available/'+that.checked
-        $.get( __app_url+'/cspot/plans/'+plan_id+'/team/available/'+that.checked)
-        .done(function() {
-            $('#user-available-for-plan-id-'+plan_id).text( that.checked ? 'yes' : 'no');
-            if (teamPage) { location.reload(); }
-        })
-        .fail(function() {
-            $('#user-available-for-plan-id-'+plan_id).text( "error" );
-        })        
-    }
-}
-
-
-
 /* User has selected WHAT he wants to insert, 
    now we present the appropriate input elements */
 function showModalSelectionItems(what)
 {
+    ;;;console.log('showing Selection Items for: '+what);
+
     // hide all pre-selection parts of the modal
     $('.modal-pre-selection').hide();               
 
@@ -40418,7 +40420,12 @@ function showModalSelectionItems(what)
 
     // make sure the FILE form is partially hidden initially
     if (what=='file') {
-        cSpot.item.item_type = 'insert-file-item';
+        // the user wants to insert a NEW item with a file
+        if ( cSpot.item.item_type==undefined ) {
+            ;;;console.log('user wants to insert a new item with the file attached');
+            cSpot.item.item_type = 'insert-file-item';
+        }
+
         $('.show-file-add-button').hide();
         $('#comment').val(' ');
     }
@@ -40446,6 +40453,8 @@ function showModalSelectionItems(what)
 \*/
 function insertNewOrUpdateExistingItems( event )
 {
+    ;;;console.log('preparing modal popup for inserting or adding items. ' + event.relatedTarget);
+
     // first make sure the form is back in its initial state
     resetSearchForSongs();
 
@@ -40455,6 +40464,7 @@ function insertNewOrUpdateExistingItems( event )
     item.item_type= button.data('item-type');
     item.plan_id  = button.data('plan-id');      // Extract info from data-* attributes
     item.item_id  = button.data('item-id');
+    item.song_id  = button.data('song-id');
     item.seq_no   = button.data('seq-no' );
     item.actionUrl= button.data('action-url');
     item.buttonID = button.attr('id');
@@ -40496,8 +40506,6 @@ function insertNewOrUpdateExistingItems( event )
         // directly activate the file selection
         showModalSelectionItems('file');
 
-        // let the form be submitted
-        $('#song_id').val('add-file');
         $('#comment').val('new image added');
 
         titleText = 'for item No ' + item.seq_no;
@@ -40519,25 +40527,22 @@ function insertNewOrUpdateExistingItems( event )
     //      the ENTER key is used; instead, perform the actual search
     $("#searchSongForm").submit(function(event){
 
-        // if a file upload was selectd, submit the form
+        // if a NEW item with a file was selectd, submit the form
         if (cSpot.item.item_type=='insert-file-item') {
             return true;
         }
 
-        // if a file upload was selectd, submit the form
+        // if a NEW file for an existing item was selectd, DON'T submit the form
         if (cSpot.item.item_type=='add-file') {
 
             uploadNewFile();
 
-            resetSearchForSongs();
-            $('#searchSongModal').modal('hide');
             return false; // form should NOT be submitted
-            //document.forms.searchSongForm.submit();
         }
 
         if (! $('#searchForSongsButton').is(':visible') ||  $('#song_id').val()=='')
             return false;
-            //event.preventDefault();
+
     });
 
 
@@ -40556,6 +40561,8 @@ function insertNewOrUpdateExistingItems( event )
 */
 function resetSearchForSongs() 
 {
+    ;;;console.log('resetting modal popup');
+
     $('.modal-content').css('background-color', '#fff');    
     $('.modal-select-song').hide();
     $('.modal-select-file').hide();
@@ -40580,7 +40587,9 @@ function resetSearchForSongs()
    this function searches for songs, presents a list and/or 
    song history information; uses AJAX to do the full-text search */
 function searchForSongs(that)
-{    
+{
+    ;;;console.log('searching for songs? ' + that + ' Item type is: '+cSpot.item.item_type );
+
     // user chose to add a file to an existing item
     if (cSpot.item.item_type=='add-file') {
         return false;
@@ -40783,8 +40792,36 @@ function updateSong(song_id)
 }
 
 
+/*  Show images from server for selection
+*/
+function showImagesSelection(that)
+{
+    // show the section that will hold the images
+    $('.image-selection-slideshow').show();
+
+    // get category id from selection element
+    var cat = $('#file_category_id').val();
+
+    $.getJSON(__app_url+'/cspot/api/files/'+cat)
+    .done(function(data) {
+        var files = JSON.parse(data.data);
+    })
+    .fail(function(data) {
+        console.log('get failed!');
+        console.log(data);
+    });
+}
+
+
 function uploadNewFile()
 {
+    ;;;console.log('Uploading new file via AJAX - Url: '+cSpot.item.actionUrl);
+
+    $('#search-result').html('<i class="fa fa-spinner fa-spin fa-fw"></i> uploading....');
+
+    // make sure the song_id (even empty) is not transmitted via the form element
+    $('#song_id').val(cSpot.item.song_id); // TODO: we have to insert it again later!
+
     var fd = new FormData(document.getElementById("searchSongForm"));
 
     $.ajax({
@@ -40797,15 +40834,20 @@ function uploadNewFile()
     .done(function( data ) {
         ;;;console.log("PHP Output:");
         ;;;console.log( data );
-        //TODO: show something in the UI
-        if (data=='add-file') {
-            // everything is ok....
-            $('#'+cSpot.item.buttonID).parent().prepend('<i class="fa fa-file-picture-o"></i>');
-        }
+
+        resetSearchForSongs();
+        $('#searchSongModal').modal('hide');
+
+        $('#'+cSpot.item.buttonID).parent().prepend('<i class="fa fa-file-picture-o" title="'+data+'"></i>');
     })
     .fail(function( data ) {
         console.log("AJAX Error Output:");
         console.log( data );
+        
+        $('#search-result').html('Error! '+data);
+
+        resetSearchForSongs();
+        $('#searchSongModal').modal('hide');
     });
 }
 
@@ -40814,6 +40856,8 @@ function uploadNewFile()
 */
 function insertNewItemIntoPlan( plan_id, seq_no, song_id, comment )
 {
+    ;;;console.log('Inserting new item into plan via AJAX - PlanID:'+plan_id+' SeqNo:'+seq_no );
+
     var url = __app_url + '/cspot/api/items';
 
     // determine new sequence number
