@@ -18,11 +18,11 @@
 
         {{-- select a category 
         --}}
-        <li class="list-group-item">
+        <li class="list-group-item modal-select-file center">
 
             {!! Form::label('file_category_id', 'First, select a category: ') !!}
 
-            <div class="btn-group modal-select-file" data-toggle="buttons"
+            <div class="btn-group modal-select-file m-l-1" data-toggle="buttons"
                 @if (! isset($modal)) onclick="$(this).hide();$('#show-location-selection').show()" @endif>
 
                 {{-- different selection modes depending on context --}}
@@ -55,17 +55,17 @@
 
         {{-- upload a new one or select an existing file? 
         --}}
-        <li id="show-location-selection" class="list-group-item" style="display: none;">
+        <li id="show-location-selection" class="list-group-item center" style="display: none;">
 
-            <label>
+            <label class="card-text">
                 Do you want to upload a new image from your device or<br>select an image already uploaded?
             </label>
 
-            <button type="button" class="btn btn-primary btn-sm" 
+            <button type="button" class="btn btn-primary btn-sm m-r-1"
                 onclick="$(this).parent().hide();$('.show-file-add-button').show()"
                     >Upload new image</button>
 
-            <button type="button" class="btn btn-secondary btn-sm" 
+            <button type="button" class="btn btn-secondary btn-sm m-l-1" 
                 data-ajax-url="{{ route('cspot.api.files') }}"
                 data-images-path="{{ url(config('files.uploads.webpath')) }}"
                 onclick="$(this).parent().hide();showImagesSelection(this)">Select c-SPOT images</button>
@@ -74,12 +74,21 @@
 
 
 
-        {{-- show file selection button 
+        {{-- show images 
         --}}
-        <li class="list-group-item image-selection-slideshow" style="display: none;">
-            <a href="#">&lt;</a>
+        <li class="list-group-item image-selection-slideshow center" style="display: none;">
+
+            <label class="card-text" id="images-for-selection-label"></label>
+            <br>
+
+            <a href="#" disabled="" class="show-next-image-arrows" onclick="showNextImages('back')"><i class="fa fa-caret-left fa-3x"></i></a>
+
             <span id="show-images-for-selection"></span>
-            <a href="#">&gt;</a>
+
+            <a href="#" disabled="" class="show-next-image-arrows" onclick="showNextImages('forw')"><i class="fa fa-caret-right fa-3x"></i></a>
+
+            <p class="card-text text-muted" id="link-to-more-images"></p>
+
         </li>
 
 

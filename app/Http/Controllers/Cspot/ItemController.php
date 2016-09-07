@@ -695,7 +695,7 @@ class ItemController extends Controller
         $plan = insertItem( $request );
 
         if ( $plan)
-            return response()->json(['status' => 200, 'data' => 'Item inserted.']);
+            return response()->json(['status' => 200, 'data' => $plan]);
 
         // something went wrong!
         return response()->json(['status' => 405, 'data' => 'Error! Item not inserted!']);

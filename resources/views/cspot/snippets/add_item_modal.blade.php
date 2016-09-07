@@ -21,7 +21,7 @@
                         </button>
 
                         <h4 class="modal-title m-b-1">
-                            <span id="searchSongModalLabel">Select what to insert:</span> <span id="modal-show-item-id"></span>
+                            <span id="searchSongModalLabel">Select what to insert</span> <span id="modal-show-item-id"></span>
                         </h4>
 
                         <a href="#" class="btn btn-lg btn-outline-primary modal-pre-selection m-b-1"

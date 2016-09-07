@@ -198,8 +198,11 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     Route::delete('files/{id}/delete',                      'Cspot\FileController@delete');
 
     // API
+
     // get files by category or all
-    Route::get('api/files/{category?}', ['as'=>'cspot.api.files', 'uses'=>'Cspot\FileController@APIindex']);
+    Route::get('api/files/{category?}', ['as'=>'cspot.api.files',   'uses'=>'Cspot\FileController@APIindex']);
+    // add a file to a plan item
+    Route::post('api/items/addfile',    ['as'=>'cspot.api.addfile', 'uses'=>'Cspot\FileController@add']);    
 
 
     /*

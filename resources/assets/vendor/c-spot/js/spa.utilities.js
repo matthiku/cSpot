@@ -269,41 +269,35 @@ function changeForLeadersEyesOnly(that) {
 
 
 
-/* User has selected WHAT he wants to insert, 
-   now we present the appropriate input elements */
-function showModalSelectionItems(what)
+/* Reset the song search form
+*/
+function resetSearchForSongs() 
 {
-    ;;;console.log('showing Selection Items for: '+what);
+    ;;;console.log('resetting modal popup');
 
-    // hide all pre-selection parts of the modal
-    $('.modal-pre-selection').hide();               
-
-    // show all parts for selecting a song or entering a comment
-    $('.modal-select-'+what).show();                
-
-    // different background color during song selection
-    if (what=='song')
-        $('.modal-content').css('background-color', '#c2c2d6'); 
-
-    $('#searchSongModalLabel').text('Insert '+what);
-
-    $('.modal-input-'+what).focus();
-
-    // show submit button for comments, scripture or file upload
-    if (what=='comment' || what=='scripture' || what=='file') 
-        $('#searchForSongsSubmit').show();
-
-    // make sure the FILE form is partially hidden initially
-    if (what=='file') {
-        // the user wants to insert a NEW item with a file
-        if ( cSpot.item.item_type==undefined ) {
-            ;;;console.log('user wants to insert a new item with the file attached');
-            cSpot.item.item_type = 'insert-file-item';
-        }
-
-        $('.show-file-add-button').hide();
-        $('#comment').val(' ');
-    }
+    $('.modal-content').css('background-color', '#fff');    
+    $('.modal-select-song').hide();
+    $('.modal-select-file').hide();
+    $('.modal-select-clips').hide();
+    $('.modal-select-comment').hide();
+    $('.modal-select-scripture').hide();
+    $('.modal-pre-selection').show();
+    $('#searching').hide();    
+    $('#search-result').html('');
+    $('#searchForSongsSubmit').hide();
+    $('.show-file-add-button').hide();
+    $('.image-selection-slideshow').hide();
+    $('.show-next-image-arrows').attr('disabled', '');
+    $('#link-to-more-images').html('');
+    $('#file_category_id').val('');
+    $('#MPselect').val(0);
+    $('#search-string').val('');
+    $('#haystack').focus();
+    $('#searchSongModalLabel').text('Select what to insert');
+    $('#search-action-label').text('Full-text search incl. lyrics:');
+    $('#txtHint').html('');
+    $('#haystack').val('');
+    $('#show-images-for-selection').html('');
 }
 
                 
@@ -386,6 +380,11 @@ function insertNewOrUpdateExistingItems( event )
         titleText = 'for item No ' + item.seq_no;
     } 
 
+    else if (item.item_type=="insert-item") {
+
+        titleText = 'after item No ' + ar_seq[1];
+    } 
+
     // set title text for popup dialog
     $('#modal-show-item-id').text( titleText+':' );
 
@@ -431,33 +430,43 @@ function insertNewOrUpdateExistingItems( event )
 }
 
 
-
-/* Reset the song search form
-*/
-function resetSearchForSongs() 
+/* User has selected WHAT he wants to insert, 
+   now we present the appropriate input elements */
+function showModalSelectionItems(what)
 {
-    ;;;console.log('resetting modal popup');
+    ;;;console.log('showing Selection Items for: '+what);
 
-    $('.modal-content').css('background-color', '#fff');    
-    $('.modal-select-song').hide();
-    $('.modal-select-file').hide();
-    $('.modal-select-clips').hide();
-    $('.modal-select-comment').hide();
-    $('.modal-select-scripture').hide();
-    $('.modal-pre-selection').show();
-    $('#modal-show-item-id').text('');
-    $('#searching').hide();    
-    $('#search-result').html('');
-    $('#searchForSongsSubmit').hide();
-    $('#MPselect').val(0);
-    $('#search-string').val('');
-    $('#haystack').focus();
-    $('#searchSongModalLabel').text('Select what to insert ...');
-    $('#search-action-label').text('Full-text search incl. lyrics:');
-    $('#txtHint').html('');
-    $('#haystack').val('');
-    $('#show-images-for-selection').html('');
+    // hide all pre-selection parts of the modal
+    $('.modal-pre-selection').hide();               
+
+    // show all parts for selecting a song or entering a comment
+    $('.modal-select-'+what).show();                
+
+    // different background color during song selection
+    if (what=='song')
+        $('.modal-content').css('background-color', '#c2c2d6'); 
+
+    $('#searchSongModalLabel').text('Insert '+ (what=='file' ? 'image' : what) );
+
+    $('.modal-input-'+what).focus();
+
+    // show submit button for comments, scripture or file upload
+    if (what=='comment' || what=='scripture' || what=='file') 
+        $('#searchForSongsSubmit').show();
+
+    // make sure the FILE form is partially hidden initially
+    if (what=='file') {
+        // the user wants to insert a NEW item with a file
+        if ( cSpot.item.item_type==undefined || cSpot.item.item_type=='insert-item' ) {
+            ;;;console.log('user wants to insert a new item with a file(image) attached');
+            cSpot.item.item_type = 'insert-file-item';
+        }
+
+        $('.show-file-add-button').hide();
+        $('#comment').val(' ');
+    }
 }
+
 
 /* Called from the Modal popup on the PLAN details page, 
    this function searches for songs, presents a list and/or 
@@ -670,56 +679,84 @@ function updateSong(song_id)
 
 /*  Show images from server for selection
 */
-function showImagesSelection(that)
+function showImagesSelection(that, ajax_url)
 {
     // path to the images
     var img_path = that.dataset.imagesPath;
+
     // url for the AJAX call
-    var ajax_url = that.dataset.ajaxUrl;
+    if (ajax_url==undefined)
+        var ajax_url = that.dataset.ajaxUrl + '/' + $('#file_category_id').val();
+
+    var maxVisible = 3;
+    if ( $('#searchSongModal').is(':visible') )
+        maxVisible = 2;
 
     // show the section that will hold the images
-    $('.image-selection-slideshow').show();
+    $('.image-selection-slideshow' ).show();
+    $('.show-next-image-arrows'    ).hide();
+    $('.show-next-image-arrows'    ).attr('disabled', '');
+    $('#images-for-selection-label').text('');
+    $('#link-to-more-images'       ).html('');
+    $('#show-images-for-selection' ).html( cSpot.const.waitspinner + ' loading...' );
 
-    $.getJSON(
-        ajax_url + '/' + $('#file_category_id').val()
-    )
-    .done(function(data) {
+    $.getJSON( ajax_url )
 
-        ;;;console.log(data.total+' images found');
+        .done(function(data) {
 
-        // add each image as an <img> element into the DOM, but only make the first 2 visible
-        var showit = true;
-        for (var nr = 0; nr < data.total; nr++) {
+            ;;;console.log(data.total+' images found');
 
-            if (nr>1) { showit = false; }
+            // fill label text
+            var lbl = 'Browse through the images and select one:';
+            if (data.total == 0) {
+                lbl = 'No images of this category found. Restart and select another one.';
+                $('.show-next-image-arrows').hide();
+            }
+            $('#images-for-selection-label').text(lbl);
 
-            // insert the images into the DOM
-            insertNextSelectionImage(
-                data.data[nr], 
-                '#show-images-for-selection', 
-                img_path + '/thumb-'+data.data[nr].token, 
-                showit
-            );
-        }
-    })
-    .fail(function(data) {
-        console.log('get failed!');
-        console.log(data);
-    });
+            // show bottom label
+            lbl = 'Showing images '+data.from+' - '+data.to;
+            if (data.total > data.to)
+                lbl += '. Total: '+data.total+'. <a href="#" data-images-path="'+img_path+'" onclick="showImagesSelection(this,'+"'"+data.next_page_url+"'"+')">Get more</a>';
+            $('#link-to-more-images').html(lbl);
+
+            // activate the 'show-next-images' button
+            $('.show-next-image-arrows').show();
+            $('.show-next-image-arrows').last().removeAttr('disabled');
+            $('#show-images-for-selection' ).html(''); // remove the wait spinner
+
+            // add each image as an <img> element into the DOM, but only make the first 2 visible
+            var showit = true;
+            for (var nr = 0; nr < data.to; nr++) {
+
+                if (nr>maxVisible-1) { showit = false; }
+
+                // insert the images into the DOM
+                insertNextSelectionImage( data.data[nr], '#show-images-for-selection', img_path, showit );
+            }
+        })
+
+        .fail(function(data) {
+            console.log('get failed!');
+            console.log(data);
+        });
 }
 
 /* append a new image into this element
 */
 function insertNextSelectionImage(data, parentElem, path, visible)
 {
+    if (data==undefined) return;
+
     // create a new anchor element
     var anchor = document.createElement('a');
     anchor.href = '#';
-    $(anchor).attr('onclick', 'alert('+data.id+')');
+    $(anchor).attr('onclick', 'addItemWithFileOrAddFileToItem('+data.id+')');
 
     // create a new img element
     var image = document.createElement('img');
-    image.src = path;
+    image.src = path + '/thumb-'+data.token;
+    image.classList.add('slideshow-images');
 
     // insert the image into the anchor
     $(anchor).append(image);
@@ -733,12 +770,112 @@ function insertNextSelectionImage(data, parentElem, path, visible)
     $(parentElem).append(anchor);
 }
 
+/*  hide the current and show the next (or previous) images in the images selection 
+*/
+function showNextImages(direction)
+{
+    // get list of all image elements
+    var all = $('#show-images-for-selection').children('a');
 
+    // how many can be visible at one time?
+    var showTogether = 2;
+    if (document.location.pathname.search('/edit') > 1)
+        showTogether = 3;
+    var visible = showTogether;
+
+    // iterate through the list
+    if (direction=='forw') {
+
+        for (var i = 0; i < all.length; i++) {
+
+            if ( $(all[i]).is(':visible') ) {
+                $(all[i]).hide();
+                visible--;
+            } else {
+
+                if (visible < showTogether) {
+                    $(all[i]).show();
+                    visible++;
+                    // disable the forward button if we just showed the last image(s)
+                    if (i+1 == all.length)
+                        $('.show-next-image-arrows').last().attr('disabled', '');
+                    else
+                        $('.show-next-image-arrows').first().removeAttr('disabled');
+                }
+            }
+        }
+    } 
+    else {
+        for (var i = all.length - 1; i >= 0; i--) {
+
+            if ( $(all[i]).is(':visible') ) {
+                $(all[i]).hide();
+                visible--;
+            } else {
+
+                if (visible < showTogether) {
+                    $(all[i]).show();
+                    visible++;
+                    // disable the forward button if we just showed the last image(s)
+                    if (i == 0)
+                        $('.show-next-image-arrows').first().attr('disabled', '');
+                    else
+                        $('.show-next-image-arrows').last().removeAttr('disabled');
+                }
+            }
+        }
+    }
+
+}
+
+/*  Add ne item to plan with a file or add a file to an existing plan item
+*/
+function addItemWithFileOrAddFileToItem(file_id)
+{
+    // we still need plan_id, seq_no, end perhaps item_id
+    var plan_id = cSpot.item.plan_id;
+    var item_id = cSpot.item.item_id;
+    var seq_no  = cSpot.item.seq_no;
+
+    // check if we are editing an item
+    if (cSpot.item.item_type==undefined && cSpot.item.id != undefined) {
+        item_id = cSpot.item.id;
+        cSpot.item.item_type = 'add-file';
+    }
+
+    ;;;console.log('Uploading new file via AJAX - Url: '+cSpot.item.item_type);
+
+    // file needs to be added to an existing item
+    if ( cSpot.item.item_type = 'add-file' ) {
+        $.post(
+            cSpot.routes.apiAddFiles, 
+            { 'item_id' : item_id, 'file_id' : file_id }
+        )
+        .done( function(data) {
+
+            ;;;console.log("PHP Output:");
+            ;;;console.log( data );
+            successfullyAddedFileToItem(data.data);
+        })
+        .fail(function( data ) {
+
+            console.log("AJAX Error Output:");
+            console.log( data );            
+            $('#search-result').html('Error! '+data);
+
+        });
+    }
+    // 'plan_id': plan_id
+}
+
+
+/*  upload nwe file via AJAX and show little icon when successful
+*/
 function uploadNewFile()
 {
     ;;;console.log('Uploading new file via AJAX - Url: '+cSpot.item.actionUrl);
 
-    $('#search-result').html('<i class="fa fa-spinner fa-spin fa-fw"></i> uploading....');
+    $('#search-result').html(cSpot.const.waitspinner + ' uploading....');
 
     // make sure the song_id (even empty) is not transmitted via the form element
     $('#song_id').val(cSpot.item.song_id); // TODO: we have to insert it again later!
@@ -755,21 +892,35 @@ function uploadNewFile()
     .done(function( data ) {
         ;;;console.log("PHP Output:");
         ;;;console.log( data );
-
-        resetSearchForSongs();
-        $('#searchSongModal').modal('hide');
-
-        $('#'+cSpot.item.buttonID).parent().prepend('<i class="fa fa-file-picture-o" title="'+data+'"></i>');
+        successfullyAddedFileToItem(data);
     })
     .fail(function( data ) {
-        console.log("AJAX Error Output:");
-        console.log( data );
-        
-        $('#search-result').html('Error! '+data);
 
-        resetSearchForSongs();
-        $('#searchSongModal').modal('hide');
+        console.log("AJAX Error Output:");
+        console.log( data );        
+        $('#search-result').html('Error! '+data);
     });
+}
+
+/*  show icon for the uploaded file
+*/
+function successfullyAddedFileToItem(data)
+{
+    resetSearchForSongs();
+    $('#searchSongModal').modal('hide');
+
+    $('#'+cSpot.item.buttonID).parent().prepend('<i class="fa fa-file-picture-o" title="'+data+'"></i>');
+
+    // was file added on the item detail page?
+    if (  $('#col-2-file-add').length) {
+
+        // reload the page until proper SPA code is written
+        window.location.reload;
+
+        // hide the elements
+        $('#col-2-file-add').hide();
+        $('#add-another-image-link').hide();
+    }
 }
 
 
@@ -802,6 +953,13 @@ function insertNewItemIntoPlan( plan_id, seq_no, song_id, comment )
         if (sno.length > 1) {
             // advance to next item (which now is the just inserted item!)
             document.getElementById('go-next-item').click();
+            // this won't work when we already show the last item, as the button is disabled
+            // so wee need another strategy - get the URL from the button and replace the 
+            // current item_id with the item_id that we jsut received!
+            var newPath = document.getElementById('go-next-item')
+                .pathname.replace(cSpot.item.item_id,data.data.newest_item_id);
+            ;;;console.log('now navigating to the new item: '+newPath);
+            document.location.href = newPath;
         }
 
     })

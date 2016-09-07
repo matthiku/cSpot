@@ -127,8 +127,13 @@ class FileController extends Controller
     /**
      * Add existing file to a plan item
      */
-    public function add(Request $request, $item_id, $file_id)
+    public function add(Request $request, $item_id=null, $file_id=null)
     {
+        if ($request->has('item_id'))
+            $item_id = $request->item_id;
+        if ($request->has('file_id'))
+            $file_id = $request->file_id;
+
         $item = Item::find($item_id);
 
         if ($item) {
@@ -137,11 +142,20 @@ class FileController extends Controller
             $item->files()->save($file);
             correctFileSequence($item_id);
 
+            if ($request->is('*/api/*')) { 
+                return response()->json(['status' => 200, 'data' => $file]); 
+            }
+
             // notify the view about the newly added file
             $request->session()->flash('newFileAdded', $file->id);
 
             return \Redirect::route( 'cspot.items.edit', [$item->plan_id, $item->id] );
         }
+
+        if ($request->is('*/api/*')) { 
+            return response()->json(['status' => 404, 'data' => 'Not found'], 404); 
+        }
+
         flash('Error! Item with ID "' . $id . '" not found');
         return \Redirect::back();
     }

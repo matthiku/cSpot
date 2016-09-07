@@ -377,12 +377,11 @@
 
                 </div>
                 <br>
-                <a href="#" onclick="$(this).hide();$('#col-2-file-add').show();">
-                    <i class="fa fa-file"></i>&nbsp;Add new file</a> &nbsp; &nbsp;
-
-                <a href="{{ url('cspot/files').'?item_id='.$item->id }}" style="white-space: nowrap">
-                    <i class="fa fa-file-picture-o"></i>&nbsp;Add&nbsp;existing&nbsp;file</a>
                 
+                {{-- link to open the Add File dialog --}}
+                <a href="#" onclick="$(this).hide();$('#col-2-file-add').show();" id="add-another-image-link" data-item-type="add-file">
+                    <i class="fa fa-file"></i>&nbsp;Add another image</a> &nbsp; &nbsp;
+
                 {{-- Form to add new (image) file --}}
                 <div id="col-2-file-add" style="display: none;" class="m-b-1 dropzone">
                     @include('cspot.snippets.add_files')
@@ -438,6 +437,9 @@
 
     {{-- activate the tabs --}}
     <script>
+
+        cSpot.item = {!! json_encode($item, JSON_HEX_APOS | JSON_HEX_QUOT ) !!};
+
         $( function() {
             $( "#tabs" ).tabs({
                 event: "mouseover",

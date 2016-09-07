@@ -9379,11 +9379,19 @@ a.ui-button:active,
 
 
 
+/* images slideshow */
+.slideshow-images {
+    max-width: 250px;
+}
+.image-selection-slideshow {
+    padding-left:  0.2rem;
+    padding-right: 0.2rem;
+}
+
 /* buttons in the Insert/Add Item dialog */
 .modal-pre-selection {
     min-width: 280px;
 }
-
 
 /* hide text that is outside the limited width of the element */
 .limited-width {
