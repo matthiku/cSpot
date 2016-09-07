@@ -40508,6 +40508,7 @@ function insertNewOrUpdateExistingItems( event )
     else if (item.item_type=="insert-item") {
 
         titleText = 'after item No ' + ar_seq[1];
+        item.item_id   = 'after-'+item.item_id;
     } 
 
     // set title text for popup dialog
@@ -40970,8 +40971,10 @@ function addItemWithFileOrAddFileToItem(file_id)
 
     ;;;console.log('Uploading new file via AJAX - Url: '+cSpot.item.item_type);
 
-    // file needs to be added to an existing item
-    if ( cSpot.item.item_type = 'add-file' ) {
+
+    // 1. File needs to be added to an existing item
+
+    if ( cSpot.item.item_type == 'add-file' ) {
         $.post(
             cSpot.routes.apiAddFiles, 
             { 'item_id' : item_id, 'file_id' : file_id }
@@ -40989,8 +40992,21 @@ function addItemWithFileOrAddFileToItem(file_id)
             $('#search-result').html('Error! '+data);
 
         });
+        return false;
     }
-    // 'plan_id': plan_id
+
+
+    // 2. Add new item with selected file attached
+
+    // set the value in the form
+    $('#file_id').val(file_id);
+    $('#beforeItem_id').val('after-'+item_id);
+
+    $('#searchSongModal').modal('hide');
+    showSpinner();
+
+    //submit the form
+    $('#searchForSongsSubmit').click();
 }
 
 
@@ -41031,10 +41047,21 @@ function uploadNewFile()
 */
 function successfullyAddedFileToItem(data)
 {
-        resetSearchForSongs();
-        $('#searchSongModal').modal('hide');
+    resetSearchForSongs();
+    $('#searchSongModal').modal('hide');
 
-        $('#'+cSpot.item.buttonID).parent().prepend('<i class="fa fa-file-picture-o" title="'+data+'"></i>');
+    $('#'+cSpot.item.buttonID).parent().prepend('<i class="fa fa-file-picture-o" title="'+data+'"></i>');
+
+    // was file added on the item detail page?
+    if (  $('#col-2-file-add').length) {
+
+        // reload the page until proper SPA code is written
+        window.location.reload;
+
+        // hide the elements
+        $('#col-2-file-add').hide();
+        $('#add-another-image-link').hide();
+    }
 }
 
 
