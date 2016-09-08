@@ -48,8 +48,8 @@
 
 				{{-- Song Details editable via popup dialog --}}
 				<td class="hidden-md-down center always-print link show-songbook-ref" 
-					data-toggle="modal" data-target="#searchSongModal" data-item-id="{{ $item->id }}"
-					data-plan-id="update-song" data-seq-no="{{ $item->seq_no }}" 
+					data-toggle="modal" data-target="#searchSongModal" data-item-id="before-{{ $item->id }}"
+					data-plan-id="update-song" data-seq-no="before-{{ $item->seq_no }}" 
 					data-action-url="{!! route('cspot.api.items.update', $item->id) !!}"
 					@if ($item->song_id) 
 						title="click to change"
@@ -218,7 +218,7 @@
 						{{-- MODAL POPUP to attach file (image) to this item --}}
 						<a href="#" class="text-muted link" data-toggle="modal" data-target="#searchSongModal"
 						    id="add-file-button-item-{{ $item->id }}" data-song-id="{{$item->song_id}}"
-							data-plan-id="{{$plan->id}}" data-item-type="add-file" data-item-id="{{$item->id}}" data-seq-no="{{$item->seq_no}}" 
+							data-plan-id="{{$plan->id}}" data-item-action="add-file" data-item-id="{{$item->id}}" data-seq-no="{{$item->seq_no}}" 
 							data-action-url="{!! route('cspot.api.items.update', $item->id) !!}"
 							title="attach file (image) to this item">
 							<i class="fa fa-image"></i><sup>+</sup>
@@ -351,8 +351,8 @@
 	<div class="pull-xs-left">
 		{{-- new MODAL POPUP to add song/scripture/comment --}}
 		<button     type="button" class="btn btn-outline-primary btn-sm" 
-			 data-toggle="modal" data-target="#searchSongModal" data-item-type="insert-item"
-			data-plan-id="{{$plan->id}}" data-item-id="{{ isset($item) ? $item->id : '0' }}" 
+			 data-toggle="modal" data-target="#searchSongModal" data-item-action="insert-item"
+			data-plan-id="{{$plan->id}}" data-item-id="after-{{ isset($item) ? $item->id : '0' }}" 
 			 data-seq-no="after-{{ isset($item) ? $item->seq_no : '0' }}"
 		           title="Append new Song, Scripture or Comment to this plan">
 			<i class="fa fa-plus"></i> &nbsp; Add item {{ isset($item) ? $item->seq_no+1 : 1 }}.0

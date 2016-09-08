@@ -9378,6 +9378,10 @@ a.ui-button:active,
  */
 
 
+/* jQuery UI draggable elements */
+.draggable {
+    cursor: move;
+}
 
 /* images slideshow */
 .slideshow-images {

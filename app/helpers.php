@@ -400,6 +400,7 @@ function getItemTitle($item, $direction='next')
 
 
 
+
 /**
  * Insert a new item into the list of items of a plan
  *
@@ -412,55 +413,88 @@ function getItemTitle($item, $direction='next')
 function insertItem( $request )
 {
     // get plan id from the hidden input field in the form
-    $plan_id = $request->plan_id;
+    $plan_id    = $request->plan_id;
+
     // get new seq no for this item
     $new_seq_no = $request->seq_no;
+
     // get the Plan model and find the plan
-    $plan  = Plan::find($plan_id);
-    // get all the items for this plan
-    $items = $plan->items()->orderBy('seq_no')->get();
+    $plan       = Plan::find($plan_id);
 
-    Log::info('INSERTITEM - newSeqNo old: '.$new_seq_no);
+    // get all the items for this plan, ordered by their seq_no
+    $items      = $plan->items()->orderBy('seq_no')->get();
 
-    // numbering the items, starting with 1.0
+    Log::debug('INSERTITEM - newSeqNo old: '.$new_seq_no);
+
+    // We are going to number all the items of this plan, starting with 1.0
     $counter = 1.0;
+
+    // if the new item already has a seq_no of 1 or smaller, we change it to one 
+    //    and increase the counter, so that all subsequent items have the correct seq_no
+
     if ($new_seq_no <= $counter) {
         $new_seq_no = 1;
         $counter = 2;
     }
+
+    // Loop through each item of the plan, making sure the 
+    //      seq_no of each item is always 1.0 bigger than the previous
+
     foreach ($items as $item) {
-        if ($new_seq_no <= $item->seq_no && $new_seq_no > $counter-1 ) {
+
+        Log::debug( '$counter - $item->seq_no - $new_seq_no --- '.$counter.' - '.$item->seq_no.' - '.$new_seq_no );
+
+        // Is this the position (seq_no) for the NEW ITEM?
+        if ( $new_seq_no <= $item->seq_no  &&  $new_seq_no > $counter-1 ) {
+
             $new_seq_no = $counter;
-            $counter += 1;
+            $counter   += 1;
         }
-        if ($item->seq_no <> $counter) {
-            $i = Item::find($item->id); # get the actual DB record
-            $item->seq_no = $counter;     # update the current selection
-            $i->seq_no = $counter;        # update the seq_no
-            $i->save();                 # save the record
+
+        // If we inserted the new item earlier, all subsequent items
+        //    need to have a new seq_no
+        if ( $item->seq_no <> $counter ) {
+
+            # update the current loop-item to correspond to the counter
+            $item->seq_no = $counter;
+
+            # Now get  the actual DB record
+            $i = Item::find($item->id); 
+
+            // update the item accordingly
+            $i->seq_no = $counter; $i->save();
         }
+
+        // increase the counter to reflect the current seq_no
         $counter += 1.0;
     }
+
     // change new seq_no if it's bigger than the current counter
-    if ($new_seq_no >= $counter) {
+    if ($new_seq_no >= $counter-1) {
         $new_seq_no  = $counter;
     }
+
+    Log::debug('INSERTITEM - newSeqNo new: '.$new_seq_no);
+
     // create a new Item using the input data from the request
-    $newItem = new Item( $request->except(['seq_no', 'moreItems', '_token']) );
+    $newItem         = new Item( $request->except(['seq_no', 'moreItems', '_token']) );
     $newItem->seq_no = $new_seq_no;
+
     // check if a song id was provided in the request
-    if (isset($request->song_id)) {
+    if ( isset($request->song_id) ) {
         $newItem->song_id = $request->song_id;
     }
+
     // saving the new Item via the relationship to the Plan
     $item = $plan->items()->save( $newItem );
-    $plan->new_seq_no = $new_seq_no;
+
+    $plan->new_seq_no     = $new_seq_no;
     $plan->newest_item_id = $item->id;
 
 
     // handle file uplaods
     if ($request->hasFile('file')) {
-        flash('file added!');
+        flash('Image file added!');
         if ($request->file('file')->isValid()) {
             // use the helper function
             $file = saveUploadedFile($request);
@@ -472,7 +506,20 @@ function insertItem( $request )
         }
     } 
 
-    Log::info('INSERTITEM - newSeqNo new: '.$new_seq_no);
+    // handle file linking
+    if ($request->has('file_id')) {
+        // get the file item
+        $file = File::find($request->file_id);
+        // and save it to the plan item
+        $item->files()->save($file);
+
+        // set item comment to filename
+        if ($item->comment==null || $item->comment==false || $item->comment=='' || $item->comment==' ' );
+            $item->update(['comment' => $file->filename]);
+
+        flash('Image file was added to the plan');
+    }
+
 
     if( isset($newItem->song_id) ) {
         $msg = $newItem->song->title;
@@ -561,7 +608,7 @@ function deleteItem($id)
             $counter += 1.0;        
         }
     }
-    return true;
+    return $moveItem;
 }
 
 
@@ -956,6 +1003,3 @@ function checkRights($plan) {
     flash('Only the leader or teacher or editors can modify this plan.');
     return false;
 }
-
-
-

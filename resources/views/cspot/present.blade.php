@@ -373,9 +373,9 @@
             @if (Auth::user()->ownsPlan($item->plan_id))
                 <div class="btn-group dropup hidden-xs-down m-l-1">
                     {{-- new MODAL POPUP to add song, scripture or comment --}}
-                    <button type="button" class="btn btn-sm btn-outline-info btn-sm" title="Add New Item (Song)" 
+                    <button type="button" class="btn btn-sm btn-outline-info btn-sm" title="Add New Item (Song etc)" 
                          data-toggle="modal" data-target="#searchSongModal"
-                        data-plan-id="{{$item->plan_id}}" data-item-id="{{$item->id}}" 
+                        data-plan-id="{{$item->plan_id}}" data-item-id="after-{{$item->id}}" 
                          data-seq-no="after-{{ $item->seq_no }}"
                                title="Select new Song, Scripture or Comment">
                         <i class="fa fa-plus"></i> song etc.
@@ -509,6 +509,9 @@
     <script>        
         // make type of presentation globally available
         cSpot.presentation.type = 'lyrics';
+
+        // control the activation of a blank screen
+        var screenBlank = true;
 
         {{-- load cached items from server - if there are any --}}
         @if ($item->plan->has('planCaches'))

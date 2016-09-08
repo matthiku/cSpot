@@ -322,15 +322,15 @@ function resetSearchForSongs()
 \*/
 function insertNewOrUpdateExistingItems( event )
 {
-    ;;;console.log('preparing modal popup for inserting or adding items. ' + event.relatedTarget);
+    ;;;console.log('preparing modal popup for inserting or adding items. ' + JSON.stringify(event.relatedTarget));
 
     // first make sure the form is back in its initial state
     resetSearchForSongs();
 
     // get item-specific data from the triggering element
     var button = $(event.relatedTarget);        // Button that triggered the modal
-    var item = [];
-    item.item_type= button.data('item-type');
+    var item = {};
+    item.item_action= button.data('item-action');
     item.plan_id  = button.data('plan-id');      // Extract info from data-* attributes
     item.item_id  = button.data('item-id');
     item.song_id  = button.data('song-id');
@@ -338,6 +338,8 @@ function insertNewOrUpdateExistingItems( event )
     item.actionUrl= button.data('action-url');
     item.buttonID = button.attr('id');
     cSpot.item = item;
+
+    ;;;console.log( JSON.stringify(item) );
 
     // prepare title text for popup dialog
     var ar_seq = item.seq_no.split('-');
@@ -368,7 +370,7 @@ function insertNewOrUpdateExistingItems( event )
         titleText = 'for item No ' + item.seq_no;
     } 
 
-    else if (item.item_type=="add-file") {
+    else if (item.item_action=="add-file") {
         // make sure the form is partially hidden initially
         $('.show-file-add-button').hide()
 
@@ -380,10 +382,9 @@ function insertNewOrUpdateExistingItems( event )
         titleText = 'for item No ' + item.seq_no;
     } 
 
-    else if (item.item_type=="insert-item") {
+    else if (item.item_action=="insert-item") {
 
         titleText = 'after item No ' + ar_seq[1];
-        item.item_id   = 'after-'+item.item_id;
     } 
 
     // set title text for popup dialog
@@ -403,12 +404,12 @@ function insertNewOrUpdateExistingItems( event )
     $("#searchSongForm").submit(function(event){
 
         // if a NEW item with a file was selectd, submit the form
-        if (cSpot.item.item_type=='insert-file-item') {
+        if (cSpot.item.item_action=='insert-file-item') {
             return true;
         }
 
         // if a NEW file for an existing item was selectd, DON'T submit the form
-        if (cSpot.item.item_type=='add-file') {
+        if (cSpot.item.item_action=='add-file') {
 
             uploadNewFile();
 
@@ -437,6 +438,8 @@ function showModalSelectionItems(what)
 {
     ;;;console.log('showing Selection Items for: '+what);
 
+    cSpot.item.item_type = what;
+
     // hide all pre-selection parts of the modal
     $('.modal-pre-selection').hide();               
 
@@ -458,13 +461,17 @@ function showModalSelectionItems(what)
     // make sure the FILE form is partially hidden initially
     if (what=='file') {
         // the user wants to insert a NEW item with a file
-        if ( cSpot.item.item_type==undefined || cSpot.item.item_type=='insert-item' ) {
+        if ( cSpot.item.item_action==undefined || cSpot.item.item_action=='insert-item' ) {
             ;;;console.log('user wants to insert a new item with a file(image) attached');
-            cSpot.item.item_type = 'insert-file-item';
+            cSpot.item.item_action = 'insert-file-item';
         }
 
         $('.show-file-add-button').hide();
         $('#comment').val(' ');
+    }
+
+    if (what=='clips') {
+        $('#searchForSongsButton').show();
     }
 }
 
@@ -474,19 +481,19 @@ function showModalSelectionItems(what)
    song history information; uses AJAX to do the full-text search */
 function searchForSongs(that)
 {
-    ;;;console.log('searching for songs? ' + that + ' Item type is: '+cSpot.item.item_type );
+    ;;;console.log('searching for songs? ' + that + ' Item type is: '+cSpot.item.item_action );
 
     // user chose to add a file to an existing item
-    if (cSpot.item.item_type=='add-file') {
+    if (cSpot.item.item_action=='add-file') {
         return false;
     }
-    if (cSpot.item.item_type=='insert-file-item') {
+    if (cSpot.item.item_action=='insert-file-item') {
         return true;
     }
 
     // are we still searching or has the user already selected a song?
     var modus = 'selecting';
-    if ( $('#searchForSongsButton').is(':visible') ) {
+    if ( $('#searchForSongsButton').is(':visible')  ) {
         var search       = $('#search-string').val();
         var mp_song_id   = $('#MPselect').val();
         var haystack_id  = $('input[name=haystack]:checked', '#searchSongForm').val();
@@ -527,7 +534,7 @@ function searchForSongs(that)
                     $('#haystack').focus();
                     return;
                 }
-                $('#search-action-label').text('Click the desired Song:');
+                $('#search-action-label').html('<span class="bg-info">Select the desired Song:</span>');
                 $('#searching').hide();
                 $('#searchForSongsSubmit').hide();
 
@@ -544,12 +551,12 @@ function searchForSongs(that)
                     html += '<div onclick="$(\'#searchForSongsSubmit\').click()" class="c-inputs-stacked'+ (i%2==0 ? ' even' : '') +'">';
                     html +=     '<label class="c-input c-radio" title="';
                     html +=         result[i].lyrics.replace(/"/g,"&quot;") + '"><input type="radio" name="searchRadios" value="';
-                    html +=         result[i].id +'"><span class="c-indicator"></span>';
+                    html +=         result[i].id +'"><span class="c-indicator"> </span>';
                     html +=         (result[i].book_ref ? '('+result[i].book_ref+') ' : ' ')  + result[i].title + ' ';
-                    html +=         '<small>'+result[i].title_2+'<br><span class="pull-xs-right">';
-                    html +=             '<b>Last used:</b> <span class="label label-default">'
+                    html +=         '<small>'+result[i].title_2+'<br><span class="pull-xs-left">';
+                    html +=             '<span class="label label-default"><b>Last used: '
                     html +=                 ( lastPlanDate ? moment(lastPlanDate, 'YYYY-MM-DD HH:mm:ss').fromNow() : 'never used!!');
-                    html +=             '</span> Total: <b'+ (count>25 ? ' class="red">' : '>') + count + '</b> times</span></small>';
+                    html +=             '</b> Total: <b'+ (count>25 ? ' class="text-danger">' : '>') + count + '</b> times</span></small>';
                     html +=     '</label></div>' ;
                 }
                 $('#search-result').html(html);
@@ -559,78 +566,81 @@ function searchForSongs(that)
                 console.log(data);
                 $('#search-result').text("Search failed! Please notify admin! " + JSON.stringify(data));
             });
-    } 
-    else {
-        // which song was selected?
-        var song_id = $('input[name=searchRadios]:checked', '#searchSongForm').val();
 
-        var plan_id = $('#plan_id').val();
-        var seq_no  = $('#seq-no' ).val();
+        return;
+    }
 
-        // check if user entered a comment
-        var comment = $('#comment' ).val();
+    // which song was selected?
+    var song_id = $('input[name=searchRadios]:checked', '#searchSongForm').val();
 
-        // was this called via 'showUpdateSongForm' function?
-        if (plan_id=="update-song") {
-            if (song_id!=undefined) {
-                // attach lyrics to song_id input field, so that when user selects this song, we can attach it as title to the table cell
-                // (we get this from the selection in the search results to whose parent element the lyrics were attached)
-                $('#song_id').attr(  'title',  $('input[name=searchRadios]:checked', '#searchSongForm').parent().attr('title')  );
-                updateSong(song_id);
-            }
-            return;
+    var plan_id = cSpot.item.plan_id;
+    var seq_no  = cSpot.item.seq_no;
+
+    // check if user entered a comment
+    var comment = $('#comment' ).val();
+
+    // was this called via 'showUpdateSongForm' function?
+    if (plan_id=="update-song") {
+        if (song_id!=undefined) {
+            // attach lyrics to song_id input field, so that when user selects this song, we can attach it as title to the table cell
+            // (we get this from the selection in the search results to whose parent element the lyrics were attached)
+            $('#song_id').attr(  'title',  $('input[name=searchRadios]:checked', '#searchSongForm').parent().attr('title')  );
+            updateSong(song_id);
         }
-        // was this called via 'AddScriptureRef' button?
-        if (plan_id=="update-scripture") {
-            addScriptureRef(that);
-            return;
-        }
+        return;
+    }
+    // was this called via 'AddScriptureRef' button?
+    if (plan_id=="update-scripture") {
+        addScriptureRef(that);
+        return;
+    }
 
-        // did user select a song? It should always be a string, even '0'....
-        if ( (! song_id  || song_id == '0') && ! comment )
-            // nothing selected and comment is empty
-            return false; // no
+    // did user select a song? It should always be a string, even '0'....
+    if ( (! song_id  || song_id == '0') && ! comment )
+        // nothing selected and comment is empty
+        return false; // no
 
-        // reset search form back to normal
-        resetSearchForSongs();
+    // reset search form back to normal
+    resetSearchForSongs();
 
-        showSpinner()
-        $('#searchForSongsButton').toggle();
-        $('#searchForSongsSubmit').toggle();
+    showSpinner()
+    $('#searchForSongsButton').toggle();
+    $('#searchForSongsSubmit').toggle();
+    
+    // write it into the form
+    $('#song_id').val(song_id);
+    ;;;console.log('Writing the selected song_id as value of the hidden input element: '+song_id)
+
+    // restore the original search form
+    $('#searchSongModal').modal('hide');    // close the modal
+    $('#search-result').html('');           // remove the search results
+    $('#search-string').val('');            // reset the search string
+    $('#searching').hide();                 // hide the spinner
+
+    // if this is called from the Presentation view, 
+    // we will make the insertion via an AJAX call
+    if (  location.pathname.indexOf('/present') > 0  ||  location.pathname.search('chords') > 0  ) {
         
-        // write it into the form
-        $('#song_id').val(song_id);
-        ;;;console.log('Writing the selected song_id as value of the hidden input element: '+song_id)
+        // this function inserts the new item via AJAX
+        insertNewItemIntoPlan( plan_id, seq_no, song_id, comment );
 
-        // restore the original search form
-        $('#searchSongModal').modal('hide');    // close the modal
-        $('#search-result').html('');           // remove the search results
-        $('#search-string').val('');            // reset the search string
-        $('#searching').hide();                 // hide the spinner
+        // we need return false to the form so that it doesn't submit!
+        return false;
+    }
 
-        // if this is called from the Presentation view, 
-        // we will make the insertion via an AJAX call
-        if (  location.pathname.indexOf('/present') > 0  ||  location.pathname.search('chords') > 0  ) {
-            
-            // this function inserts the new item via AJAX
-            insertNewItemIntoPlan( plan_id, seq_no, song_id, comment );
+    // Is this intended to be a new item at the end of the list of items?
+    // Then we can't use the 'insert-before-item-so-and-so' concept in the Item Controller
+    // and we need to change the beforeItem_ID accordingly ...
+    if (seq_no.substr(0,5) == 'after') {
+        $('#seq_no').val(seq_no);
+        $('#beforeItem_id').val(cSpot.item.item_id);
+    }
 
-            // we need return false to the form so that it doesn't submit!
-            return false;
-        }
 
-        // Is this intended to be a new item at the end of the list of items?
-        // Then we can't use the 'insert-before-item-so-and-so' concept in the Item Controller
-        // and we need to change the beforeItem_ID accordingly ...
-        if (seq_no.substr(0,5) == 'after')
-            $('#beforeItem_id').val(seq_no);
-
-        // for some reason, the form doesn't submit if only a comment was given...
-        if (comment) {
-
-            // submit the form - causes a POST http request to STORE a new item
-            document.getElementById('searchSongForm').submit();
-        }
+    // for some reason, the form doesn't submit if only a comment was given...
+    if (comment) {
+        // submit the form - causes a POST http request to STORE a new item
+        document.getElementById('searchSongForm').submit();
     }
 
 }
@@ -829,27 +839,30 @@ function showNextImages(direction)
 
 }
 
-/*  Add ne item to plan with a file or add a file to an existing plan item
+/*  Add NEW item to plan with a file -  OR:  add a file to an existing plan item
 */
 function addItemWithFileOrAddFileToItem(file_id)
 {
+    $('#show-images-for-selection' ).html( cSpot.const.waitspinner + ' one moment...' );
+    $('.show-next-image-arrows'    ).hide();
+
     // we still need plan_id, seq_no, end perhaps item_id
     var plan_id = cSpot.item.plan_id;
     var item_id = cSpot.item.item_id;
     var seq_no  = cSpot.item.seq_no;
 
     // check if we are editing an item
-    if (cSpot.item.item_type==undefined && cSpot.item.id != undefined) {
+    if (cSpot.item.item_action==undefined && cSpot.item.id != undefined) {
         item_id = cSpot.item.id;
-        cSpot.item.item_type = 'add-file';
+        cSpot.item.item_action = 'add-file';
     }
 
-    ;;;console.log('Uploading new file via AJAX - Url: '+cSpot.item.item_type);
+    ;;;console.log('Uploading new file via AJAX - type: '+cSpot.item.item_action);
 
 
     // 1. File needs to be added to an existing item
 
-    if ( cSpot.item.item_type == 'add-file' ) {
+    if ( cSpot.item.item_action == 'add-file' ) {
         $.post(
             cSpot.routes.apiAddFiles, 
             { 'item_id' : item_id, 'file_id' : file_id }
@@ -875,7 +888,7 @@ function addItemWithFileOrAddFileToItem(file_id)
 
     // set the value in the form
     $('#file_id').val(file_id);
-    $('#beforeItem_id').val('after-'+item_id);
+    $('#beforeItem_id').val(item_id);
 
     $('#searchSongModal').modal('hide');
     showSpinner();
@@ -925,7 +938,7 @@ function successfullyAddedFileToItem(data)
     resetSearchForSongs();
     $('#searchSongModal').modal('hide');
 
-    $('#'+cSpot.item.buttonID).parent().prepend('<i class="fa fa-file-picture-o" title="'+data+'"></i>');
+    $('#'+cSpot.item.buttonID).parent().prepend('<i class="fa fa-file-picture-o" title="'+data.filename+'"></i>');
 
     // was file added on the item detail page?
     if (  $('#col-2-file-add').length) {
@@ -944,7 +957,7 @@ function successfullyAddedFileToItem(data)
 */
 function insertNewItemIntoPlan( plan_id, seq_no, song_id, comment )
 {
-    ;;;console.log('Inserting new item into plan via AJAX - PlanID:'+plan_id+' SeqNo:'+seq_no );
+    ;;;console.log('Inserting new item into plan via AJAX - PlanID: '+plan_id+', SeqNo: '+seq_no );
 
     var url = __app_url + '/cspot/api/items';
 
@@ -967,15 +980,24 @@ function insertNewItemIntoPlan( plan_id, seq_no, song_id, comment )
 
         // only when we are in Presentation Mode
         if (sno.length > 1) {
+            var nextButton = document.getElementById('go-next-item');
             // advance to next item (which now is the just inserted item!)
-            document.getElementById('go-next-item').click();
+            nextButton.click();
+
             // this won't work when we already show the last item, as the button is disabled
             // so wee need another strategy - get the URL from the button and replace the 
             // current item_id with the item_id that we jsut received!
-            var newPath = document.getElementById('go-next-item')
-                .pathname.replace(cSpot.item.item_id,data.data.newest_item_id);
-            ;;;console.log('now navigating to the new item: '+newPath);
-            document.location.href = newPath;
+
+            // but first, clean up the item id....
+            if (cSpot.item.item_id.substr(0,6)=='after-')
+                cSpot.item.item_id = cSpot.item.item_id.split('-')[1]
+
+            if (nextButton.getAttribute('disabled')=='disabled') {
+                var newPath = document.getElementById('go-next-item')
+                    .pathname.replace(cSpot.item.item_id,data.data.newest_item_id);
+                ;;;console.log('now navigating to the new item: '+newPath);
+                document.location.href = newPath;
+            }
         }
 
     })

@@ -158,7 +158,7 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     Route::get('plans/{plan_id}/items/trashed/delete',      'Cspot\ItemController@deleteAllTrashed');
 
     // presentation view of a plan
-    Route::get('items/{item_id}/{present?}',                'Cspot\ItemController@show');
+    Route::get('items/{item_id}/{present?}',['as'=>'cspot.items.present', 'uses'=>'Cspot\ItemController@show']);
 
 
     // API: update item data using AJAX

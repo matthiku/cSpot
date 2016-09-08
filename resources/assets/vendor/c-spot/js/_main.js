@@ -273,7 +273,7 @@ function showScriptureText(version,book,chapter,fromVerse,toVerse)
     In the Song Search modal popup, show list of max 5 songs that 
     correspond to the entered search string (needle)
 */
-function showSongHints(that, needle)
+function showSongHints(that, needle, limit)
 {
     // get list of songs from global variable
     var haystackMP = cSpot.songList;
@@ -289,7 +289,14 @@ function showSongHints(that, needle)
         if ( haystackMP[i].title.toLowerCase().indexOf(needle)>=0 
           || haystackMP[i].title_2.toLowerCase().indexOf(needle)>=0 
           || haystackMP[i].book_ref.toLowerCase().indexOf(needle)>=0 ) {
+
+            // are we limited to only show videoclips or infoscreen items?
+            if (limit=='clips') {
+                if ( ! (haystackMP[i].title_2.toLowerCase() == 'video' || haystackMP[i].title_2.toLowerCase() == 'infoscreen') )
+                    continue;
+            }
             if (count==0) found='';
+            
             found+='<div class="radio"><label class="text-muted link"><input type="radio" onclick="$(\'#searchForSongsButton\').click();" name="haystack" id="needle-';
             found+=haystackMP[i].id + '" value="'+ haystackMP[i].id;
             found+='">' + haystackMP[i].book_ref + ' ' + haystackMP[i].title + '</label></div>';

@@ -23,6 +23,7 @@ use App\Models\FileCategory;
 use DB;
 use Auth;
 use Log;
+use URL;
 use Carbon\Carbon;
 
 
@@ -128,20 +129,31 @@ class ItemController extends Controller
         $beforeItem = null;
         if (isset($request->beforeItem_id)) {
 
+            Log::debug('Trying to add item '.$request->beforeItem_id);
+
             // is the new item to be added at the end of the sequence?
             $array = explode('-', $request->beforeItem_id);
 
             if ( substr($array[0], 0, 5) == 'after' ) {
 
-                $request->seq_no = $array[1] + 1;
-            }
+                $befItem = Item::find( $array[1] );
 
-            $befItem = Item::find( $request->beforeItem_id );
+                if ( $befItem ) {
 
-            if ( $befItem ) {
+                    $beforeItem = $befItem;
+                    $request->seq_no = ($beforeItem->seq_no) + 0.1;
+                } 
+            } 
 
-                $beforeItem = $befItem;
-                $request->seq_no = ($beforeItem->seq_no) - 0.1;
+            else {
+
+                $befItem = Item::find( $request->beforeItem_id );
+
+                if ( $befItem ) {
+
+                    $beforeItem = $befItem;
+                    $request->seq_no = ($beforeItem->seq_no) - 0.1;
+                }
             }
         }
 
@@ -149,7 +161,7 @@ class ItemController extends Controller
         $plan = insertItem( $request );
 
         $xfi = isset($beforeItem->id)  ?  $beforeItem->id.' seqNo:'.$beforeItem->seq_no  :  'missing!';
-        Log::info("STORE - Inserting new item (id=$plan->newest_item_id) into plan with seq.No ".$request->seq_no.' - befItemId? '.$xfi);
+        Log::debug("STORE - Inserting new item (id=$plan->newest_item_id) into plan with seq.No ".$request->seq_no.' - befItemId? '.$xfi);
 
         // see if user ticked the checkbox to add another item after this one
         if ($request->moreItems == "Y") {
@@ -176,6 +188,12 @@ class ItemController extends Controller
 
         // provide new item id to the view for highlighting
         session()->put('newest_item_id', $plan->newest_item_id);
+
+        // if the request came from a presentation view, 
+        // we now return the presentation view of the new item!
+        if ( strpos(URL::previous(), '/present') > 1 ) {
+            return \Redirect::route( 'cspot.items.present', ['item_id' => $plan->newest_item_id, 'present'=>'present'] );
+        }
 
         // back to full plan view
         //      but first, get plan id from the hidden input field in the form
