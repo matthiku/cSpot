@@ -41178,7 +41178,7 @@ function removeItem(that)
 function addScriptureRef(that)
 {
     // get handle to table row containing the original comment
-    var seq_no = $('#seq-no').val();
+    var seq_no = cSpot.item.seq_no;
     var TRid = 'tr-item-'+seq_no.replace('.','-');
 
     // get new comment value
