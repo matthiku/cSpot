@@ -28,7 +28,7 @@
                 {{-- different selection modes depending on context --}}
                 @if (isset($modal))    
 
-                    <select name="file_category_id" id="file_category_id" onchange="$(this).parent().parent().hide();$('#show-location-selection').show()">
+                    <select name="file_category_id" id="file_category_id" onchange="showLocalVersusRemoteButtons(this)">
                         <option selected="TRUE" value="">select ...</option>
                         <option value="newest">recently added</option>
                         @foreach ( DB::table('file_categories')->get() as $fcat)
@@ -61,14 +61,17 @@
                 Do you want to upload a new image from your device or<br>select an image already uploaded?
             </label>
 
-            <button type="button" class="btn btn-primary btn-sm m-r-1"
+            <button type="button" class="btn btn-primary btn-sm m-r-1" id="btn-upload-new-image"
                 onclick="$(this).parent().hide();$('.show-file-add-button').show()"
                     >Upload new image</button>
 
-            <button type="button" class="btn btn-secondary btn-sm m-l-1" 
+            <button type="button" class="btn btn-secondary btn-sm m-l-1" id="btn-select-cspot-images"
                 data-ajax-url="{{ route('cspot.api.files') }}"
                 data-images-path="{{ url(config('files.uploads.webpath')) }}"
                 onclick="$(this).parent().hide();showImagesSelection(this)">Select c-SPOT images</button>
+            
+            <p class="m-t-1">(Selected category: <span id="show-selected-category" class="text-info"></span>)</p>
+
         </li>
 
 

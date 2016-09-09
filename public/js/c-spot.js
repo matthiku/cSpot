@@ -39576,6 +39576,7 @@ $(document).ready(function() {
      */
     $('.editable').editable(__app_url + '/cspot/api/items/update', {
         onblur      : 'cancel',
+        cssclass    : 'editable-input-field',
         style       : 'display: inline',
         placeholder : '<span class="fa fa-pencil text-muted">&nbsp;</span>',
         data        : function(value, settings) {
@@ -39586,7 +39587,7 @@ $(document).ready(function() {
             return value;
         }
     });
-    
+
     // lyrics and chords textareas on the item details page
     $('.edit_area').editable(__app_url + '/cspot/api/songs/update', {
         type        : 'textarea',
@@ -40417,6 +40418,7 @@ function resetSearchForSongs()
     $('#searching').hide();    
     $('#search-result').html('');
     $('#searchForSongsSubmit').hide();
+    $('.show-location-selection').hide();
     $('.show-file-add-button').hide();
     $('.image-selection-slideshow').hide();
     $('.show-next-image-arrows').attr('disabled', '');
@@ -40430,6 +40432,7 @@ function resetSearchForSongs()
     $('#txtHint').html('');
     $('#haystack').val('');
     $('#show-images-for-selection').html('');
+    $('#comment').val('');
 }
 
                 
@@ -40462,7 +40465,7 @@ function insertNewOrUpdateExistingItems( event )
     // get item-specific data from the triggering element
     var button = $(event.relatedTarget);        // Button that triggered the modal
     var item = {};
-    item.item_action= button.data('item-action');
+    item.action   = button.data('item-action');
     item.plan_id  = button.data('plan-id');      // Extract info from data-* attributes
     item.item_id  = button.data('item-id');
     item.song_id  = button.data('song-id');
@@ -40502,19 +40505,19 @@ function insertNewOrUpdateExistingItems( event )
         titleText = 'for item No ' + item.seq_no;
     } 
 
-    else if (item.item_action=="add-file") {
+    else if (item.action=="add-file") {
         // make sure the form is partially hidden initially
         $('.show-file-add-button').hide()
 
         // directly activate the file selection
         showModalSelectionItems('file');
 
-        $('#comment').val('new image added');
+        //$('#comment').val('new image added');
 
         titleText = 'for item No ' + item.seq_no;
     } 
 
-    else if (item.item_action=="insert-item") {
+    else if (item.action=="insert-item") {
 
         titleText = 'after item No ' + ar_seq[1];
     } 
@@ -40536,12 +40539,12 @@ function insertNewOrUpdateExistingItems( event )
     $("#searchSongForm").submit(function(event){
 
         // if a NEW item with a file was selectd, submit the form
-        if (cSpot.item.item_action=='insert-file-item') {
+        if (cSpot.item.action=='insert-file-item') {
             return true;
         }
 
         // if a NEW file for an existing item was selectd, DON'T submit the form
-        if (cSpot.item.item_action=='add-file') {
+        if (cSpot.item.action=='add-file') {
 
             uploadNewFile();
 
@@ -40570,7 +40573,7 @@ function showModalSelectionItems(what)
 {
     ;;;console.log('showing Selection Items for: '+what);
 
-    cSpot.item.item_type = what;
+    cSpot.item.type = what;
 
     // hide all pre-selection parts of the modal
     $('.modal-pre-selection').hide();               
@@ -40593,9 +40596,9 @@ function showModalSelectionItems(what)
     // make sure the FILE form is partially hidden initially
     if (what=='file') {
         // the user wants to insert a NEW item with a file
-        if ( cSpot.item.item_action==undefined || cSpot.item.item_action=='insert-item' ) {
+        if ( cSpot.item.action==undefined || cSpot.item.action=='insert-item' ) {
             ;;;console.log('user wants to insert a new item with a file(image) attached');
-            cSpot.item.item_action = 'insert-file-item';
+            cSpot.item.action = 'insert-file-item';
         }
 
         $('.show-file-add-button').hide();
@@ -40611,16 +40614,25 @@ function showModalSelectionItems(what)
 /* Called from the Modal popup on the PLAN details page, 
    this function searches for songs, presents a list and/or 
    song history information; uses AJAX to do the full-text search */
-function searchForSongs(that)
+function searchForSongs()
 {
-    ;;;console.log('searching for songs? ' + that + ' Item type is: '+cSpot.item.item_action );
+    ;;;console.log('Searching for or selecting songs?' );
+    ;;;console.log('cSpot.item: '+JSON.stringify(cSpot.item) );
 
     // user chose to add a file to an existing item
-    if (cSpot.item.item_action=='add-file') {
+    if (cSpot.item.action=='add-file') {
         return false;
     }
-    if (cSpot.item.item_action=='insert-file-item') {
+    if (cSpot.item.action=='insert-file-item') {
         return true;
+    }
+    if (cSpot.item.type  =='scripture'|| cSpot.item.type  =='comment') {
+        if ($('#comment').val().length > 1) {
+            $('#searchSongModal').modal('hide');
+            showSpinner();
+            document.getElementById('searchSongForm').submit();
+        }
+        return;
     }
 
     // are we still searching or has the user already selected a song?
@@ -40723,7 +40735,7 @@ function searchForSongs(that)
     }
     // was this called via 'AddScriptureRef' button?
     if (plan_id=="update-scripture") {
-        addScriptureRef(that);
+        addScriptureRef();
         return;
     }
 
@@ -40774,7 +40786,6 @@ function searchForSongs(that)
         // submit the form - causes a POST http request to STORE a new item
         document.getElementById('searchSongForm').submit();
     }
-
 }
 
 /* execute the update via AJAX and show the new data on the page
@@ -40783,9 +40794,9 @@ function updateSong(song_id)
 {
     $('#searchSongModal').modal('hide');
     ;;;console.log('closing song form, got song id '+song_id);
-    var item_id   = $('#beforeItem_id').val();
-    var seq_no    = $('#seq-no').val();
-    var myCell    = $('#tr-item-'+seq_no.replace('.','-'));
+    var item_id   = cSpot.item.item_id;
+    var seq_no    = cSpot.item.seq_no;
+    var myCell    = $('#tr-item-'+seq_no.replace('before-','').replace('after-','').replace('.','-'));
     myCell.children('.show-songbook-ref').html('<i class="fa fa-spinner fa-spin fa-fw"></i>');
     myCell.children('.show-song-title').text('');
     myCell.children('.show-youtube-links').html('');
@@ -40819,6 +40830,36 @@ function updateSong(song_id)
         });
 }
 
+/*  hide File-Category selector; show local-vs-remote-files choice
+*/
+function showLocalVersusRemoteButtons(that)
+{
+    // hide the file-category selector
+    $(that).parent().parent().hide();
+    var cat = $(that).val();
+
+    // skip the next step (choice between upload and cspot images)
+    // as category 'newest' is only for c-spot images
+    if (cat == 'newest') {
+
+        // go directly to the images selection
+        // with a handle on that button as it contains important information....
+        showImagesSelection( document.getElementById('btn-select-cspot-images') );
+        return;
+    }
+
+    // get text-equivalent of the numeric value
+    var catText;
+    for (var i = 1; i < that.length; i++) {
+        if (that[i].value == cat)
+            catText = that[i].text;
+    }
+    // show selected category
+    $('#show-selected-category').text(catText);
+
+    // show the two buttons
+    $('#show-location-selection').show();
+}
 
 /*  Show images from server for selection
 */
@@ -40968,7 +41009,6 @@ function showNextImages(direction)
             }
         }
     }
-
 }
 
 /*  Add NEW item to plan with a file -  OR:  add a file to an existing plan item
@@ -40984,17 +41024,17 @@ function addItemWithFileOrAddFileToItem(file_id)
     var seq_no  = cSpot.item.seq_no;
 
     // check if we are editing an item
-    if (cSpot.item.item_action==undefined && cSpot.item.id != undefined) {
+    if (cSpot.item.action==undefined && cSpot.item.id != undefined) {
         item_id = cSpot.item.id;
-        cSpot.item.item_action = 'add-file';
+        cSpot.item.action = 'add-file';
     }
 
-    ;;;console.log('Uploading new file via AJAX - type: '+cSpot.item.item_action);
+    ;;;console.log('Uploading new file via AJAX - type: '+cSpot.item.action);
 
 
     // 1. File needs to be added to an existing item
 
-    if ( cSpot.item.item_action == 'add-file' ) {
+    if ( cSpot.item.action == 'add-file' ) {
         $.post(
             cSpot.routes.apiAddFiles, 
             { 'item_id' : item_id, 'file_id' : file_id }
@@ -41091,15 +41131,14 @@ function insertNewItemIntoPlan( plan_id, seq_no, song_id, comment )
 {
     ;;;console.log('Inserting new item into plan via AJAX - PlanID: '+plan_id+', SeqNo: '+seq_no );
 
-    var url = __app_url + '/cspot/api/items';
-
     // determine new sequence number
     sno = seq_no.split('-');
     if (sno[0]=='after') {
         seq_no = 1 * sno[1] + 0.1;
     }
 
-    $.post(url,{
+    $.post( cSpot.routes.apiItems, 
+    {
         'plan_id' : plan_id,
         'seq_no'  : seq_no,
         'song_id' : song_id,
@@ -41175,7 +41214,7 @@ function removeItem(that)
 }
 
 
-function addScriptureRef(that)
+function addScriptureRef()
 {
     // get handle to table row containing the original comment
     var seq_no = cSpot.item.seq_no;
@@ -41184,13 +41223,10 @@ function addScriptureRef(that)
     // get new comment value
     var newText = $('#comment').val();
 
-    // send update via AJAX
-    var actionURL = __app_url + '/cspot/api/items/update';
+    var that = $('#'+TRid).children(".comment-cell");                 // show spinner while updating
+    $(that).children(".comment-textcontent").html( cSpot.const.waitspinner );
 
-    that = $('#'+TRid).children(".comment-cell");                 // show spinner while updating
-    $(that).children(".comment-textcontent").html('<i class="fa fa-spinner fa-spin"></i>');
-
-    $.post( actionURL, { 
+    $.post( cSpot.routes.apiItemUpdate, { 
             value : newText,
             id    : $(that).children(".comment-textcontent").attr('id'),
         })
@@ -41208,7 +41244,8 @@ function addScriptureRef(that)
 
 /* show comment text again
 */
-function resetCommentText(id, newText) {
+function resetCommentText(id, newText) 
+{
     that = $('#'+id).children(".comment-cell");
     $(that).children(".comment-textcontent").text(newText);
     if (! newText)      // only show 'edit' icon when comment is empty
@@ -41216,6 +41253,12 @@ function resetCommentText(id, newText) {
 }
 
 
+/*  delete comment text
+*/
+function eraseThisComment(item_id)
+{
+    console.log('trying to erase comment for item id '+item_id);
+}
 
 
 /* Called from the Modal popup on the FILES LIST page, 

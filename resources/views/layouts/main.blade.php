@@ -39,11 +39,13 @@
         var cSpot = {};
         cSpot.user = JSON.parse('{!! json_encode(Auth::user(), JSON_HEX_APOS | JSON_HEX_QUOT ) !!}');
 
-        cSpot.const = [];
+        cSpot.const = {};
         cSpot.const.waitspinner = '<i class="fa fa-spinner fa-spin fa-fw"></i>';
 
-        cSpot.routes = [];
-        cSpot.routes.apiAddFiles = '{{ route('cspot.api.addfile') }}';
+        cSpot.routes = {};
+        cSpot.routes.apiAddFiles   = '{{ route('cspot.api.addfile'      ) }}';
+        cSpot.routes.apiItems      = '{{ route('cspot.api.item'         ) }}';
+        cSpot.routes.apiItemUpdate = '{{ route('cspot.api.item.update'  ) }}';
 
         cSpot.presentation = {};
         cSpot.presentation.sync = false;

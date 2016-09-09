@@ -4,7 +4,7 @@
     action="{{url('cspot/items')}}" 
     method="POST" accept-charset="UTF-8" 
    enctype="multipart/form-data"
-  onsubmit="return searchForSongs(this)">
+  onsubmit="return searchForSongs()">
 
     <div class="modal fade" id="searchSongModal" tabindex="-1" role="dialog" aria-labelledby="searchSongModalLabel" aria-hidden="true">
 

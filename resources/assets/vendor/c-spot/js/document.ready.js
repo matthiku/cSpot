@@ -24,6 +24,7 @@ $(document).ready(function() {
      */
     $('.editable').editable(__app_url + '/cspot/api/items/update', {
         onblur      : 'cancel',
+        cssclass    : 'editable-input-field',
         style       : 'display: inline',
         placeholder : '<span class="fa fa-pencil text-muted">&nbsp;</span>',
         data        : function(value, settings) {
@@ -34,7 +35,7 @@ $(document).ready(function() {
             return value;
         }
     });
-    
+
     // lyrics and chords textareas on the item details page
     $('.edit_area').editable(__app_url + '/cspot/api/songs/update', {
         type        : 'textarea',

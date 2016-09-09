@@ -103,7 +103,7 @@
 
 						{{-- show editing icon only when comment is not empty and when hovering over it --}}
 						@if ($item->comment)
-							<span class="hover-only fa fa-pencil text-muted"></span>
+							<span class="fa fa-eraser text-muted" onclick="eraseThisComment({{$item->id}})" title="Do you want to erase this comment?"></span>
 						@endif
 
 						{{-- icon to add scripture reference --}}
@@ -279,7 +279,7 @@
 
 							{{-- new MODAL POPUP to add song/scripture/comment --}}
 							<button type="button" class="btn btn-secondary btn-sm text-info" data-toggle="modal" data-target="#searchSongModal"
-								data-plan-id="{{$plan->id}}" data-item-id="{{$item->id}}" data-seq-no="{{$item->seq_no}}" 
+								data-plan-id="{{$plan->id}}" data-item-id="{{$item->id}}" data-seq-no="{{$item->seq_no}}" data-item-action="insert-item"
 								href='#' title="insert song, scripture or comment before this item">
 								<i class="fa fa-indent"></i><sup>+</sup>
 							</button>

@@ -16,6 +16,7 @@
 
     <figcaption class="figure-caption">
     	{{ $file->filename }}
+        <small class="text-muted">({{ $file->file_category->name }})</small>
         <br />
 
         @if (isset($item->id))        
