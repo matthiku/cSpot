@@ -39234,11 +39234,11 @@ function addOptionsToBookSelect()
 
 
 /*
-    Inserts default service start- and end-times 
+    Inserts default service start- and end-times and other default values
     when user selects a service type while creating a new service plan
     (plan.blade.php)
 */
-function fillDefaultServiceTimes(that)
+function fillPlanDefaultValues(that)
 {
     // get selected service type
     var selSerType = $(that).val();
@@ -39250,6 +39250,10 @@ function fillDefaultServiceTimes(that)
     // assign to times input fields
     $('#start').val(start);
     $('#end'  ).val(end);
+
+    if (cSpot.serviceTypes[selSerType].leader_id != null) {
+        $('#leader_id').val(cSpot.serviceTypes[selSerType].leader_id);
+    }
 
     //$($('#planServiceTimes').children('input')[1]).val( end );
 }
@@ -41255,9 +41259,28 @@ function resetCommentText(id, newText)
 
 /*  delete comment text
 */
-function eraseThisComment(item_id)
+function eraseThisComment(that, item_id)
 {
     console.log('trying to erase comment for item id '+item_id);
+
+    // get handle to table row containing the original comment
+    var TRid  = $(that).parent().parent().attr('id');
+
+    // compose id/value pair
+    var id    = 'comment-item-id-'+item_id;
+    var value = '_'; // underscore denotes an empty value in the ItemController
+
+    $.post( cSpot.routes.apiItemUpdate, { 
+            id    : id,
+            value : value,
+        })
+        .done(function(data) {
+            resetCommentText(TRid, data);
+        })
+        .fail(function(data) {
+            $(that).children(".comment-textcontent").text('Failed! Press F12 for more');
+            console.log("Update failed! Please notify admin! " + JSON.stringify(data));
+        });
 }
 
 

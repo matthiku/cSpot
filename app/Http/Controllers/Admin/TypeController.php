@@ -11,6 +11,8 @@ use App\Http\Requests\StoreTypeRequest;
 use App\Http\Controllers\Controller;
 
 use App\Models\Type;
+use App\Models\User;
+use App\Models\Resource;
 
 
 class TypeController extends Controller
@@ -109,13 +111,23 @@ class TypeController extends Controller
         // find a single resource by ID
         $output = Type::find($id);
         if ($output) {
-            return view( 'admin.type', array('type' => $output ) );
+
+            // get the resources table
+            $resources = Resource::get();
+
+            // also get the users table
+            $users = User::orderBy('first_name')->get();
+
+            // return the view with all the data
+            return view( 'admin.type', ['type' => $output, 'users' => $users , 'resources' => $resources ] );
         }
         //
         $message = 'Error! Type with id "' . $id . '" not found';
         return \Redirect::route('admin.types.index')
                         ->with(['status' => $message]);
     }
+
+
 
     /**
      * Update the specified resource in storage.
@@ -126,13 +138,26 @@ class TypeController extends Controller
      */
     public function update(StoreTypeRequest $request, $id)
     {
-        // was there any change?
+        // find a single resource by ID
         $output = Type::find($id);
-        // get this Type
-        Type::where('id', $id)
-                ->update($request->except(['_method','_token']));
+        if ($output) {
 
-        $message = 'Type with id "' . $id . '" updated';
+            // set default leader to NULL if value was not set
+            $output->update(['leader_id' => $request->leader_id=='null' ? null : $request->leader_id]);
+
+            // set default resource to NULL if value was not set
+            $output->update(['resource_id' => $request->resource_id=='null' ? null : $request->resource_id]);
+
+            // update the other fields
+            $output->update( $request->except([ '_method', '_token', 'leader_id', 'resource_id' ]) );
+
+            // feedback to user and return view with list of types
+            $message = 'Type with id "' . $id . '" updated';
+            return \Redirect::route('admin.types.index')
+                            ->with(['status' => $message]);
+        }
+
+        $message = 'Error! Type with id "' . $id . '" not found';
         return \Redirect::route('admin.types.index')
                         ->with(['status' => $message]);
     }

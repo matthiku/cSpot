@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddDatesToTypesTable extends Migration
+class AddFieldsToTypesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,11 @@ class AddDatesToTypesTable extends Migration
     public function up()
     {
         Schema::table('types', function (Blueprint $table) {
-            // add default start and end times for plan types
-            $table->time('start');
-            $table->time('end');
-            $table->text('repeat');
+            // default leader and resource for this plan
+            $table->integer('leader_id')->unsigned()->nullable();
+            $table->foreign('leader_id')->references('id')->on('users');
+            $table->integer('resource_id')->unsigned()->nullable();
+            $table->foreign('resource_id')->references('id')->on('resources');
         });
     }
 
@@ -29,9 +30,8 @@ class AddDatesToTypesTable extends Migration
     {
         Schema::table('types', function (Blueprint $table) {
             //
-            $table->dropColunmn('start');
-            $table->dropColunmn('end');
-            $table->dropColunmn('tinyText');
+            $table->dropColumn('leader_id');
+            $table->dropColumn('resource_id');
         });
     }
 }

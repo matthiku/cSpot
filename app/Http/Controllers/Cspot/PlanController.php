@@ -251,7 +251,7 @@ class PlanController extends Controller
 
         $planDate = Carbon::instance($plan->date);
         // insert default service TIMES if requested
-        if ($request->input('defaultTimes')=='Y') {
+        if ($request->input('defaultValues')=='Y') {
             $type = Type::find($plan->type_id);
             if (count($type)) {
                 // default end time is only the time of day. We need to combine this with the plan date
@@ -271,7 +271,7 @@ class PlanController extends Controller
 
         $plan->save();
 
-        addDefaultRolesToPlan($plan);
+        addDefaultRolesAndResourcesToPlan($plan);
 
         // insert default items if requested
         if ($request->input('defaultItems')=='Y') {

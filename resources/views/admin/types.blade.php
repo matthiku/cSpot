@@ -44,7 +44,9 @@
 					<th class="center">#</th>
 					<th class="center">Name</th>
 					<th class="center" colspan="2">Usual Begin and End</th>
-					<th class="center small">Repeating Event?</th>
+					<th class="center">Interval</th>
+					<th class="center small">Default Leader</th>
+					<th class="center small">Default Resource</th>
 					<th class="center">Total No. of Plans</th>
 					 @if( Auth::user()->id===1 || Auth::user()->isAdmin() )
 						<th class="center">Action</th>
@@ -66,6 +68,10 @@
 					<td class="center" scope="row">{{ substr($type->end,0,5) }}</td>
 
 					<td class="center" scope="row">{{ $type->repeat }}</td>
+
+					<td class="center" scope="row">{{ $type->default_leader ? $type->default_leader->name : '' }}</td>
+
+					<td class="center" scope="row">{{ $type->default_resource ? $type->default_resource->name : '' }}</td>
 
 					<td class="link center" onclick="location.href='{{ url('cspot/plans?filterby=type&filtervalue='.$type->id) }}&show=all'" 
 						title="Show all Plans of this Type of Service">{{ $type->plans->count() }}</td>

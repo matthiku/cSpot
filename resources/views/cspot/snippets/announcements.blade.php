@@ -82,6 +82,7 @@
 
 					<span class="d-block bg-info nowrap">{{ $event->date }}</span>
 					<span>{{ $event->type->name }}</span>
+					{!! $event->subtitle ? '<br><span class="small">'.$event->subtitle.'</span>' : '' !!}
 
 					<?php 
 						// reset date formatting

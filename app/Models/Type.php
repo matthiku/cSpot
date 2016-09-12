@@ -10,7 +10,14 @@ class Type extends Model
 {
     //
 
-    protected $fillable = ['name', 'start', 'end', 'repeat'];
+    protected $fillable = [
+    	'name',
+    	'start',
+    	'end',
+    	'repeat',
+    	'leader_id',
+    	'resource_id'
+	];
 
 
 
@@ -19,5 +26,16 @@ class Type extends Model
         return $this->hasMany('App\Models\Plan', 'type_id');
     }
 
+
+    public function default_leader()
+    {
+    	return $this->belongsTo('App\Models\User', 'leader_id');
+    }
+
+
+    public function default_resource()
+    {
+    	return $this->belongsTo('App\Models\Resource', 'resource_id');
+    }
 
 }

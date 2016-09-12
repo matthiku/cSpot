@@ -800,19 +800,26 @@ function listOfPlansForUser()
 
 
 
-function addDefaultRolesToPlan($plan)
+function addDefaultRolesAndResourcesToPlan($plan)
 {        
     // add leader/teacher roles to the team for this plan
     $team = $plan->teams()->create([
         'user_id' => $plan->leader_id, 
         'role_id' => env('LEADER_ID', 5)  // default is 4 if not set in .env
     ]);
+
     if ($plan->teacher_id) {
         $plan->teams()->create([
             'user_id' => $plan->teacher_id, 
             'role_id' => env('TEACHER_ID', 4)   // default is 5 if not set in .env
         ]);
     }
+
+    // add default resource to this plan
+    $default_res  = $plan->type->default_resource;
+
+    if ($default_res)
+        $resource = $plan->resources()->attach($default_res->id);
 }
 
 
@@ -847,7 +854,7 @@ function checkIfLeaderOrTeacherWasChanged($request, $plan)
             $leader->update(['user_id' => $request->leader_id ]); }
         else {                                // create a new team member...
             $plan->leader_id = $request->leader_id;
-            addDefaultRolesToPlan($plan);
+            addDefaultRolesAndResourcesToPlan($plan);
         }
     }
 
@@ -871,7 +878,7 @@ function checkIfLeaderOrTeacherWasChanged($request, $plan)
             $teacher->update(['user_id' => $request->teacher_id ]); }
         else {                                // create a new team member...
             $plan->teacher_id = $request->teacher_id;
-            addDefaultRolesToPlan($plan);
+            addDefaultRolesAndResourcesToPlan($plan);
         }
     }
 }

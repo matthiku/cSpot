@@ -49,6 +49,9 @@
 					 table-sm
 					@endif
 					 ">
+
+
+
 			<thead class="thead-default">
 				<tr>
 					<th class="hidden-md-down center">#</th>
@@ -57,6 +60,8 @@
 					
 					@include('cspot.snippets.theader', ['thfname' => 'type_id', 'thdisp' => 'Service Type', 'thsort'=>false, 'thclass'=>''])
 
+					<th class="hidden-lg-down center" title="Additional info that appears on the Announcements Slide">Info</th>
+
 					<th class="hidden-lg-down center">Times</th>
 
 					<th class="center" title="Check when you are available for that particular plan"
@@ -64,6 +69,8 @@
 						<small>Available?</small></th>
 
 					<th class="hidden-md-down center"># staff</th>
+
+					<th class="hidden-md-down center small">resources</th>
 
 					<th class="hidden-lg-down center"># items</th>
 
@@ -76,6 +83,7 @@
 					<th class="hidden-md-down">by</th>
 				</tr>
 			</thead>
+
 
 
 			<tbody>
@@ -91,7 +99,9 @@
 					<td {!! $editPlansHtml !!} class="link hidden-sm-down hidden-lg-up">{{ $plan->date->formatLocalized('%a, %d %B %Y') }}</td>
 					<td {!! $editPlansHtml !!} class="link hidden-md-up">{{ $plan->date->formatLocalized('%a, %d %b') }}</td>
 
-					<td {!! $editPlansHtml !!} class="link">{{ $plan->type->name }}</td>
+					<td {!! $editPlansHtml !!} class="link">{{ $plan->type->name }}<span class="hidden-md-up small text-muted">{!! $plan->subtitle ? ' '.$plan->subtitle : '' !!}</span></td>
+
+					<td {!! $editPlansHtml !!} class="link hidden-lg-down center">{{ $plan->subtitle }}</td>
 
 					<td {!! $editPlansHtml !!} class="link hidden-lg-down center" scope="row">
 						@if ($plan->date->hour==0 && $plan->date->minute==0 && ! $plan->date_end )
@@ -116,6 +126,11 @@
 					<td class="hidden-md-down center">
 						<a class="pull-xs-right" title="show team for this plan" href="{{ url('cspot/plans/'.$plan->id) }}/team"><small>(show)</small></a>
 						{{ $plan->teams->count() ? $plan->teams->count() : '' }}
+					</td>
+
+					<td class="hidden-md-down center">
+						<a class="pull-xs-right" title="show resources for this plan" href="{{ url('cspot/plans/'.$plan->id) }}/resource"><small>(show)</small></a>
+						{{ $plan->resources->count() ? $plan->resources->count() : '' }}
 					</td>
 
 					<td class="hidden-lg-down center">{{ $plan->items->count() }}</td>

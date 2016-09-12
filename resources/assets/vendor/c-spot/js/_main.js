@@ -364,11 +364,11 @@ function addOptionsToBookSelect()
 
 
 /*
-    Inserts default service start- and end-times 
+    Inserts default service start- and end-times and other default values
     when user selects a service type while creating a new service plan
     (plan.blade.php)
 */
-function fillDefaultServiceTimes(that)
+function fillPlanDefaultValues(that)
 {
     // get selected service type
     var selSerType = $(that).val();
@@ -381,7 +381,12 @@ function fillDefaultServiceTimes(that)
     $('#start').val(start);
     $('#end'  ).val(end);
 
-    //$($('#planServiceTimes').children('input')[1]).val( end );
+    // fill default leader name
+    if (cSpot.serviceTypes[selSerType].leader_id != null) {
+
+        $('#leader_id').val(cSpot.serviceTypes[selSerType].leader_id);
+        
+    }
 }
 
 

@@ -103,7 +103,7 @@
 
 						{{-- show editing icon only when comment is not empty and when hovering over it --}}
 						@if ($item->comment)
-							<span class="fa fa-eraser text-muted" onclick="eraseThisComment({{$item->id}})" title="Do you want to erase this comment?"></span>
+							<span class="fa fa-eraser text-muted" onclick="eraseThisComment(this, {{$item->id}})" title="Do you want to erase this comment?"></span>
 						@endif
 
 						{{-- icon to add scripture reference --}}

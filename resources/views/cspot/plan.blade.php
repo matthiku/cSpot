@@ -20,6 +20,8 @@
     @include('layouts.flashing')
 
 
+    {{-- html input form definition 
+    --}}
     @if (isset($plan))
         @if (Auth::user()->isEditor())
             {!! Form::model( $plan, array(
@@ -51,6 +53,8 @@
 
             @if ( isset($plan) && $plan->items()->count() )
 
+                {{-- show links to various plan presentation modes 
+                --}}
                 <div class="dont-print">
                     <div class="pull-xs-right">
                         <a title="Show sheetmusic (if available) for the songs on this plan"
@@ -81,6 +85,7 @@
 
                 <h4 class="hidden-md-down">Plan for "{{ $plan->type->name }}" on {{ $plan->date->formatLocalized('%A, %d %B %Y') }}</h4>
                 <h4 class="hidden-lg-up">"{{ $plan->type->name }}" on {{ $plan->date->formatLocalized('%a, %d %B') }}</h4>
+                <small class="hidden-lg-down">{{ $plan->subtitle }}</small>
 
 
             @else
@@ -138,7 +143,7 @@
 
 
             @if ( Auth::user()->isEditor() && isset($plan) && $plan->date >= \Carbon\Carbon::yesterday() ) 
-                <div class="pull-xs-right plan-details small">
+                <div class="pull-xs-right small">
                     &nbsp; <a href="#" onclick="$('.plan-details').toggle()">edit plan details</a>
                 </div>
                 <div class="pull-xs-right plan-details small" style="display: none;">
@@ -156,9 +161,8 @@
                             {!! Form::submit('Save changes', [
                                 'data-toggle'    => 'tooltip', 
                                 'data-placement' => 'left',
-                                'class'          => 'form-submit text-help',
+                                'class'          => 'form-submit plan-details text-help',
                                 'style'          => 'display: none',
-                                'disabled'       => 'disabled',
                                 'title'          => 'Click to save changes to notes, event type, date, leader or teacher',
                             ]); !!}</span>
                         @endif
@@ -178,12 +182,12 @@
 
         @if (Auth::user()->isEditor())
             <div class="col-xl-4 col-lg-6">
-                <div class="row form-group">
-                    <select name="type_id" class="form-control text-help plan-form-minw c-select" 
-                        onchange="fillDefaultServiceTimes(this)">
+                <div class="form-group">
+                    <select name="type_id" id="type_id" class="form-control text-help plan-form-minw c-select" 
+                        onchange="fillPlanDefaultValues(this)">
                         @if (! isset($plan) && ! isset($defaultValues['type_id'] ))
                             <option selected>
-                                Select ...
+                                Select event type...
                             </option>
                         @endif
                         @foreach ($types as $type)
@@ -200,6 +204,8 @@
                             <strong>{{ $errors->first('type_id') }}</strong>
                         </span>
                     @endif
+                    <span class="pull-xs-left">Subtitle: {!! Form::text('subtitle') !!}</span><br>
+                    <small class="pull-xs-left text-muted">(Used in the Announcements slide - e.g. a location!)</small>
                 </div>
             </div>
 
@@ -223,9 +229,9 @@
                         !!}
                     @endif
                     <div class="form-group" id="editPlanServiceTimes">
-                        {!! Form::label('start', 'Event Time:'); !!}
+                        {!! Form::label('start', 'Event from:'); !!}
                         {!! Form::time( 'start'); !!}
-                        {!! Form::label('end', ' - '); !!}
+                        {!! Form::label('end', ' to '); !!}
                         {!! Form::time( 'end');   !!}      
                     </div>
                     <script>
@@ -239,9 +245,9 @@
 
         <div class="col-xl-5 col-lg-12">
             <div class="col-sm-6">
-                <div class="row form-group nowrap">
+                <div class="row form-group nowrap" style="max-width: 150px;">
                     <label class="form-control-label">Leader </label>
-                    <select name="leader_id" class="form-control text-help c-select" onchange="enableSaveButton(this)"
+                    <select name="leader_id" id="leader_id" class="form-control text-help c-select" onchange="enableSaveButton(this)"
                             {{ Auth::user()->isEditor() ? '' : ' disabled' }}>
                         @if (! isset($plan))
                             <option selected>
@@ -352,12 +358,13 @@
             </label>
         </div>    
         <!-- Checkbox to add default TIMES into NEW plan -->
-        <input type="hidden" name="defaultTimes" value="false">
+        <input type="hidden" name="defaultValues" value="false">
         <div class="checkbox center">
             <label>
-                <input checked="checked" type="checkbox" value="Y" name="defaultTimes"
+                <input checked="checked" type="checkbox" value="Y" name="defaultValues"
                     onclick="$('#planServiceTimes').toggle()">
-                Insert default Start- and End-times for this plan?
+                Insert other default values (times, resources) for this plan?
+                <br><small class="text-muted">(see: <a href="{{ url('admin/types') }}">List of event types</a>)</small>
             </label>
             <div class="center" id="planServiceTimes" style="display: none">
                 {!! Form::label('start', 'New times:'); !!}
@@ -415,9 +422,8 @@
             <span class="has-warning" onclick="showSpinner()">
             {!! Form::submit('Save changes', [
                 'data-toggle' => 'tooltip', 
-                'class'       => 'form-submit text-help submit-button',
+                'class'       => 'form-submit text-help submit-button plan-details',
                 'style'       => 'display: none',
-                'disabled'    => 'disabled',
                 'title'       => 'Click to save changes to notes, event type, date, leader or teacher',
             ]) !!}
             </span>

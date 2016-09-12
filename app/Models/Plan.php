@@ -23,6 +23,7 @@ class Plan extends Model
 		'info',
 		'state',
 		'changer',
+		'subtitle',
 	];
 	protected $hidden = [
 		'created_at', 'updated_at'
