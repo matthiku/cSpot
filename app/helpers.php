@@ -278,7 +278,7 @@ function MPsongList()
     //   2.) inject the song stats into each song or do this with an extra AJAX request
     // removed: where('book_ref', 'like', 'MP%') as we do the filtering in the view
 
-    $mp_songs = Song::get(['id','title','book_ref', 'title_2']);
+    $mp_songs = Song::get(['id','title','book_ref', 'title_2', 'youtube_id']);
     foreach ($mp_songs as $song) {
         # convert book reference to real numbers (e.g. "MP123" to "123")
         $song->number = filter_var($song->book_ref, FILTER_SANITIZE_NUMBER_INT);

@@ -276,6 +276,9 @@ $(document).ready(function() {
 
         // not found in local storage, so get it from the server
         if (cSpot.songList==null) {
+            
+            ;;;console.log("Song list must be reloaded from server!");
+
             $.get(__app_url+'/cspot/api/songs/getsonglist', function(data, status) {
 
                 if ( status == 'success') {
@@ -565,6 +568,8 @@ $(document).ready(function() {
         $('#show-chords-or-music').css('display', 'inline');
     }
 
+
+    ;;;console.log('document fully loaded');
 });
 
 

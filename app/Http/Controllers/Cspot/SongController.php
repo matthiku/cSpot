@@ -318,11 +318,15 @@ class SongController extends Controller
     public function searchSong(Request $request)
     {
         $result = false;
+        // song was already selected
         if (isset($request->song_id) && intval($request->song_id)>0) {
             $found = Song::find($request->song_id);
-            $found->plans = $found->plansUsingThisSong();
-            $result[0] = $found;
+            if ($found) {
+                $found->plans = $found->plansUsingThisSong();
+                $result[0] = $found;
+            }
         }
+        // we are still searching....
         elseif (isset($request->search)) {
             // search
             $result = songSearch('%'.$request->search.'%');

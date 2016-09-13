@@ -104,7 +104,7 @@
             @if (isset($plan))
                 <div class="pull-xs-left plan-details">
                     <big>
-                        L.:&nbsp;<strong>{{ $plan->leader->name }}</strong> &nbsp;
+                        L.:&nbsp;<strong>{{ $plan->leader ? $plan->leader->name : $plan->leader_id }}</strong> &nbsp;
                         @if ( strtoupper($plan->teacher->name)<>'N/A' )
                             T.:&nbsp;<strong>{{ $plan->teacher->name }}</strong>
                         @endif

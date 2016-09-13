@@ -21,7 +21,8 @@
 			?>
 
 
-			{{-- check if this is a "FLEO" item - only visible to the leader --}}
+			{{-- check if this is a "FLEO" item - only visible to the leader 
+			--}}
 			@if ( (! $item->forLeadersEyesOnly) || Auth::user()->ownsPlan($plan->id) )
 
 			<tr id="tr-item-{{ str_replace('.', '-', $item->seq_no) }}" 
@@ -36,7 +37,8 @@
 					<i class="p-r-1 fa fa-bars">
 				</td>
 
-				{{-- for leader's eyes only? --}}
+				{{-- for leader's eyes only? 
+				--}}
 				@if( Auth::user()->ownsPlan($plan->id) )
 					<td 	class="hidden-sm-down link" onclick="changeForLeadersEyesOnly(this)" 
 							data-value="{{ $item->forLeadersEyesOnly }}"
@@ -46,7 +48,8 @@
 				@endif
 
 
-				{{-- Song Details editable via popup dialog --}}
+				{{-- Song Details editable via popup dialog 
+				--}}
 				<td class="hidden-md-down center always-print link show-songbook-ref" 
 					data-toggle="modal" data-target="#searchSongModal" data-item-id="before-{{ $item->id }}"
 					data-plan-id="update-song" data-seq-no="before-{{ $item->seq_no }}" 
@@ -67,7 +70,8 @@
 				</td>
 
 
-				{{-- show separate column for song title and comment on large devices --}}
+				{{-- show separate column for song title and comment on large devices 
+				--}}
 				<td class="hidden-lg-down link show-song-title" 
 					@if ($item->song_id)
 						title="{{ substr($item->song->lyrics,0,500) }}" data-toggle="tooltip" 
@@ -90,7 +94,8 @@
 				</td>
 
 
-				<!-- COMMENT column - allow for inline editing -->
+				<!-- COMMENT column - allow for inline editing 
+				-->
 				<td class="hidden-lg-down center comment-cell" title="click to change"
 					onmouseover="$(this).children('.add-scripture-ref').show()" onmouseout="$('.add-scripture-ref').hide()">
 
@@ -103,7 +108,7 @@
 
 						{{-- show editing icon only when comment is not empty and when hovering over it --}}
 						@if ($item->comment)
-							<span class="fa fa-eraser text-muted" onclick="eraseThisComment(this, {{$item->id}})" title="Do you want to erase this comment?"></span>
+							<span class="fa fa-eraser text-muted" onclick="eraseThisComment(this, {{$item->id}})" title="Discard this comment"></span>
 						@endif
 
 						{{-- icon to add scripture reference --}}
@@ -118,7 +123,8 @@
 				</td>
 
 
-				{{-- show combined song-title and comment column on small devices --}}
+				{{-- show combined song-title and comment column on small devices 
+				--}}
 				<td {{$onclick}} {{$tooltip}} class="hidden-xl-up link">
 					@if ($item->song_id)
 						<i class="fa fa-music"></i>
@@ -139,7 +145,8 @@
 				</td>
 
 
-				{{-- show personal notes as popup --}}
+				{{-- show personal notes as popup 
+				--}}
 				<td {{$onclick}} class="hidden-sm-down center link"
 					title="Your Private Notes:{!! $item->itemNotes->where('user_id', Auth::user()->id)->first() ? "\n".$item->itemNotes->where('user_id', Auth::user()->id)->first()->text."\n" : "\nyour private notes\n" !!}(Click to edit)"
 					data-toggle="tooltip" data-placement="bottom"
@@ -152,7 +159,8 @@
 				</td>
 
 
-				{{-- indicate if chords are available for this song --}}
+				{{-- indicate if chords are available for this song 
+				--}}
 				<td class="hidden-sm-down center" title="Lyrics with chords for guitars">
 					@if ($item->song_id)
 						@if ( strlen($item->song->chords)>20 )
@@ -163,7 +171,8 @@
 				</td>
 				
 
-				{{-- indicate if sheet music is linked to this song --}}
+				{{-- indicate if sheet music is linked to this song 
+				--}}
 				<td class="hidden-sm-down center"  title="Sheet music attached to the song"
 					@if ( $item->song_id && count($item->song->files)>0 )
 						title="{{ $item->song->files[0]->filename }}" data-toggle="tooltip" data-placement="left"
@@ -191,7 +200,8 @@
 				</td>
 
 
-				{{-- show if files are attached to this item and show button --}}
+				{{-- show if files are attached to this item and show button 
+				--}}
 				<td class="hidden-sm-down center"
 					@if ( count($item->files)>0 )
 						title="{{ $item->files[0]->filename }}" data-toggle="tooltip" data-placement="left"
@@ -227,7 +237,8 @@
 				</td>
 
 
-				{{-- show various links if available, for song --}}
+				{{-- show various links if available, for song 
+				--}}
 				<td class="center hidden-xs-down dont-print show-youtube-links">
 					<big>
 					@if ($item->song_id)
@@ -237,8 +248,8 @@
 	                            <i class="fa fa-music"></i> </a> &nbsp; 
 	                    @endif
 	                    @if ( strlen($item->song->youtube_id)>0 )
-	                        <a href="#" title="Play here" class="red" data-toggle="tooltip"
-	                        	onclick="showYTvideoInModal('{{ $item->song->youtube_id }}', '{{ $item->song->title }}')">
+	                        <a href="#" title="Play here" class="red" data-toggle="tooltip" data-song-title="{{ $item->song->title }}"
+	                        	onclick="showYTvideoInModal('{{ $item->song->youtube_id }}', this)">
 	                            <i class="fa fa-youtube-play"></i></a>
                             <a title="Play in new tab" data-toggle="tooltip" target="new" class="hidden-md-down pull-xs-right"
                             	href="https://www.youtube.com/watch?v={{ $item->song->youtube_id }}">
@@ -250,8 +261,8 @@
 
 				{{--  _______________________________________________
 
-							ACTION buttons 
-					________________________________________________
+									ACTION buttons 
+					  ________________________________________________
 				 --}}
 				<td class="text-xs-right text-nowrap dont-print">
 					{{-- 'start presentation' button visible for all --}}
@@ -279,7 +290,7 @@
 
 							{{-- new MODAL POPUP to add song/scripture/comment --}}
 							<button type="button" class="btn btn-secondary btn-sm text-info" data-toggle="modal" data-target="#searchSongModal"
-								data-plan-id="{{$plan->id}}" data-item-id="{{$item->id}}" data-seq-no="{{$item->seq_no}}" data-item-action="insert-item"
+								data-plan-id="{{$plan->id}}" data-item-id="{{$item->id}}" data-seq-no="before-{{$item->seq_no}}" data-item-action="insert-item"
 								href='#' title="insert song, scripture or comment before this item">
 								<i class="fa fa-indent"></i><sup>+</sup>
 							</button>

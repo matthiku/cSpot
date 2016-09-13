@@ -338,7 +338,7 @@ like "(repeat chorus!)"'>
                                 </td>
                                 <td class="link" title="click to see all plans by this user" 
                                     onclick="location.href='{{ url('cspot/plans/by_user/'.$plan->leader_id) }}/edit'">
-                                        {{ $plan->leader->first_name }}
+                                        {{ $plan->leader ? $plan->leader->first_name : $plan->leader_id }}
                                 </td>
                             </tr>
                         @endforeach

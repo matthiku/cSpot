@@ -106,8 +106,8 @@
 	                    @endif
 	                    @if ( strlen($song->youtube_id)>0 )
 						<!-- <a href="#" class="pull-xs-right" title="Show Lyrics" onclick=""><small>lyrics</small></a> -->
-	                        <a href="#" title="Show YouTube video of this song" class="red" data-toggle="tooltip"
-	                        	onclick="showYTvideoInModal('{{ $song->youtube_id }}')"><i class="fa fa-youtube-play"></i></a>
+	                        <a href="#" title="Show YouTube video of this song" class="red" data-toggle="tooltip" data-song-title="{{ $song->title }}"
+	                        	onclick="showYTvideoInModal('{{ $song->youtube_id }}', this)"><i class="fa fa-youtube-play"></i></a>
 	                    @endif
 					</td>
 

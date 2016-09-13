@@ -13,7 +13,8 @@
             <div class="modal-content draggable" id="makeMeDraggable">
 
 
-
+                {{-- M O D A L    H E A D E R - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+                --}}
                 <div class="modal-header center">
 
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -43,14 +44,18 @@
 
 
 
+                {{-- M O D A L    B O D Y - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+                --}}
                 <div class="modal-body modal-select-comment modal-select-song modal-select-scripture modal-select-clips modal-select-file" style="display: none;">
 
-                    {{-- comment --}}
+                    {{-- comment 
+                    --}}
                     <input type="text"   id="comment" name="comment"
                         class="center-block m-b-1 modal-select-comment modal-input-comment modal-select-scripture fully-width">
 
 
-                    {{-- scripture --}}
+                    {{-- scripture 
+                    --}}
                     <span class="modal-select-scripture">
                         @include( 'cspot.snippets.scripture_input', ['part' => 'one'] )
                         <br>
@@ -58,19 +63,27 @@
                     </span>
                     
 
-                    {{-- file/image --}}
+                    {{-- file/image 
+                    --}}
                     <span class="modal-select-file">
                         @include( 'cspot.snippets.add_files', ['modal' => 'modal'] )
                     </span>
 
 
-                    {{-- videoclip or infoscreen --}}
+                    {{-- videoclip or infoscreen 
+                    --}}
                     <label for="clips" class="search-form-item modal-select-clips m-b-0">Search for titles of InfoScreens or VideoClips:</label>
                     <input type="text" class="form-control search-form-item modal-select-clips modal-input-clips m-b-0" id="clips" onkeyup="showSongHints('#clipsHint', this.value, 'clips')">
                     <div class="search-form-item modal-select-clips" id="clipsHint"></div>
 
+                    <label class="search-form-item modal-select-clips m-t-1 m-b-0" for="MPselect">...or select from this list:</label>
+                    <select class="form-control m-b-1 search-form-item modal-select-clips" id="ClipSelect" onchange="$('#searchForSongsButton').click();">
+                        <option value="0">select....</option>
+                    </select>
 
-                    {{-- song --}}
+
+                    {{-- song 
+                    --}}
                     <label for="haystack" class="search-form-item modal-select-song m-b-0">Search Song title or number:</label>
                     <input type="text" class="form-control search-form-item modal-select-song modal-input-song m-b-0" id="haystack" onkeyup="showSongHints('#txtHint', this.value)">
                     <div class="search-form-item modal-select-song" id="txtHint"></div>
@@ -84,14 +97,24 @@
                     <input type="text"   id="search-string" class="search-input search-form-item center-block modal-select-song">
 
 
+
                     <div id="search-result"></div>
+
+
+                    <div id="show-video-clip" style="display: none;">
+                        <button type="button" class="close" aria-label="Close" onclick="$('#show-video-clip').hide();$('.search-result-items').toggle()">
+                            <span aria-hidden="true">&times;</span>
+                        </button>                        
+                    </div>
+
 
                     <div id="searching" style="display: none;">
                         <i class="fa fa-spinner fa-pulse fa-lg fa-fw"></i>&nbsp;<span>leafing through the pages ...</span>
                     </div>
 
 
-                    {{-- hidden data fields --}}
+                    {{-- hidden data fields 
+                    --}}
                     <input type="hidden" id="seq_no"        name="seq_no">
                     <input type="hidden" id="plan_id"       name="plan_id" data-search-url="{{ url('cspot/songs/search') }}">
                     <input type="hidden" id="beforeItem_id" name="beforeItem_id">

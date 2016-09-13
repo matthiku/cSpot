@@ -299,8 +299,9 @@ function showSongHints(that, needle, limit)
             
             found+='<div class="radio"><label class="text-muted link"><input type="radio" onclick="$(\'#searchForSongsButton\').click();" name="haystack" id="needle-';
             found+=haystackMP[i].id + '" value="'+ haystackMP[i].id;
-            found+='">' + haystackMP[i].book_ref + ' ' + haystackMP[i].title + '</label></div>';
+            found+='">' + haystackMP[i].book_ref + ' ' + haystackMP[i].title + (haystackMP[i].title_2 ? ' ('+haystackMP[i].title_2+')' : '') + '</label></div>';
             count++;
+            ;;;console.log('found song. Index: '+i+', id: '+haystackMP[i].id+', title:'+haystackMP[i].title);
         }
         if (count>5) break;
     };
@@ -311,11 +312,14 @@ function showSongHints(that, needle, limit)
     from the (locally cached) songlist, get all MP songs
     and add them as options to the dropdown-select box
     in the Song Search modal popup
+
+    Same for the list of video clips or infoscreens
 */
 function addOptionsToMPsongSelect()
 {
     // get handle on current html element
     var mps = document.getElementById('MPselect');
+    var clips = document.getElementById('ClipSelect');
 
     // ignore the rest if the element wasn't found
     if (! mps) return;
@@ -324,12 +328,19 @@ function addOptionsToMPsongSelect()
 
     // create new nodes with the data from each song and add it to the list of options
     for (var i in songs) {
-        // we only want MP songs....
+        // create a new HTML 'option' element
+        var opt = document.createElement('option');
+        // for the list of MP songs....
         if ( songs[i].book_ref.substr(0,2) == "MP" ) {
-            var opt = document.createElement('option');
             opt.value = songs[i].id;
             opt.text = songs[i].number + '-' + songs[i].title;
             mps.appendChild(opt);
+        }
+        // for the list of Clips....
+        if ( songs[i].title_2 == "video" || songs[i].title_2 == "infoscreen" ) {
+            opt.value = songs[i].id;
+            opt.text = songs[i].title + (songs[i].title_2 ? '('+songs[i].title_2+')' : '');
+            clips.appendChild(opt);
         }
     }
 
@@ -477,12 +488,19 @@ function submitDate(date)
 /**
     Open modal popup to show linked YT video
 */
-function showYTvideoInModal(ytid, title)
+function showYTvideoInModal(ytid, that)
 {
-    //https://www.youtube.com/"+ ytid.substr(0,2)=="PL" ? 'playlist?list=' : 'watch?v=' + ytid }}";
+    // get title from data attribute of the link (to avoid problems with special characters!)
+    var title = $(that).data('songTitle');
+
+    // write the modal title
     $('#snippet-modal-title').text(title);
+
+    // replace the modal content with the video iframe
     $('#snippet-modal-content')
         .html('<iframe width="560" height="315" src="https://www.youtube.com/embed/'+ytid+'" frameborder="0" allowfullscreen></iframe>');
+
+    // open the modal
     $('.help-modal').modal();
 }
 

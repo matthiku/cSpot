@@ -39169,8 +39169,9 @@ function showSongHints(that, needle, limit)
             
             found+='<div class="radio"><label class="text-muted link"><input type="radio" onclick="$(\'#searchForSongsButton\').click();" name="haystack" id="needle-';
             found+=haystackMP[i].id + '" value="'+ haystackMP[i].id;
-            found+='">' + haystackMP[i].book_ref + ' ' + haystackMP[i].title + '</label></div>';
+            found+='">' + haystackMP[i].book_ref + ' ' + haystackMP[i].title + (haystackMP[i].title_2 ? ' ('+haystackMP[i].title_2+')' : '') + '</label></div>';
             count++;
+            ;;;console.log('found song. Index: '+i+', id: '+haystackMP[i].id+', title:'+haystackMP[i].title);
         }
         if (count>5) break;
     };
@@ -39181,11 +39182,14 @@ function showSongHints(that, needle, limit)
     from the (locally cached) songlist, get all MP songs
     and add them as options to the dropdown-select box
     in the Song Search modal popup
+
+    Same for the list of video clips or infoscreens
 */
 function addOptionsToMPsongSelect()
 {
     // get handle on current html element
     var mps = document.getElementById('MPselect');
+    var clips = document.getElementById('ClipSelect');
 
     // ignore the rest if the element wasn't found
     if (! mps) return;
@@ -39194,12 +39198,19 @@ function addOptionsToMPsongSelect()
 
     // create new nodes with the data from each song and add it to the list of options
     for (var i in songs) {
-        // we only want MP songs....
+        // create a new HTML 'option' element
+        var opt = document.createElement('option');
+        // for the list of MP songs....
         if ( songs[i].book_ref.substr(0,2) == "MP" ) {
-            var opt = document.createElement('option');
             opt.value = songs[i].id;
             opt.text = songs[i].number + '-' + songs[i].title;
             mps.appendChild(opt);
+        }
+        // for the list of Clips....
+        if ( songs[i].title_2 == "video" || songs[i].title_2 == "infoscreen" ) {
+            opt.value = songs[i].id;
+            opt.text = songs[i].title + (songs[i].title_2 ? '('+songs[i].title_2+')' : '');
+            clips.appendChild(opt);
         }
     }
 
@@ -39251,11 +39262,12 @@ function fillPlanDefaultValues(that)
     $('#start').val(start);
     $('#end'  ).val(end);
 
+    // fill default leader name
     if (cSpot.serviceTypes[selSerType].leader_id != null) {
-        $('#leader_id').val(cSpot.serviceTypes[selSerType].leader_id);
-    }
 
-    //$($('#planServiceTimes').children('input')[1]).val( end );
+        $('#leader_id').val(cSpot.serviceTypes[selSerType].leader_id);
+        
+    }
 }
 
 
@@ -39346,12 +39358,19 @@ function submitDate(date)
 /**
     Open modal popup to show linked YT video
 */
-function showYTvideoInModal(ytid, title)
+function showYTvideoInModal(ytid, that)
 {
-    //https://www.youtube.com/"+ ytid.substr(0,2)=="PL" ? 'playlist?list=' : 'watch?v=' + ytid }}";
+    // get title from data attribute of the link (to avoid problems with special characters!)
+    var title = $(that).data('songTitle');
+
+    // write the modal title
     $('#snippet-modal-title').text(title);
+
+    // replace the modal content with the video iframe
     $('#snippet-modal-content')
         .html('<iframe width="560" height="315" src="https://www.youtube.com/embed/'+ytid+'" frameborder="0" allowfullscreen></iframe>');
+
+    // open the modal
     $('.help-modal').modal();
 }
 
@@ -39832,6 +39851,9 @@ $(document).ready(function() {
 
         // not found in local storage, so get it from the server
         if (cSpot.songList==null) {
+            
+            ;;;console.log("Song list must be reloaded from server!");
+
             $.get(__app_url+'/cspot/api/songs/getsonglist', function(data, status) {
 
                 if ( status == 'success') {
@@ -40121,6 +40143,8 @@ $(document).ready(function() {
         $('#show-chords-or-music').css('display', 'inline');
     }
 
+
+    ;;;console.log('document fully loaded');
 });
 
 
@@ -40430,6 +40454,8 @@ function resetSearchForSongs()
     $('#file_category_id').val('');
     $('#MPselect').val(0);
     $('#search-string').val('');
+    $('#clips').val('');
+    $('#clipsHint').html('');
     $('#haystack').focus();
     $('#searchSongModalLabel').text('Select what to insert');
     $('#search-action-label').text('Full-text search incl. lyrics:');
@@ -40644,16 +40670,20 @@ function searchForSongs()
     if ( $('#searchForSongsButton').is(':visible')  ) {
         var search       = $('#search-string').val();
         var mp_song_id   = $('#MPselect').val();
+        if (!mp_song_id || mp_song_id==0)    // perhaps it was a clip that was selected
+            mp_song_id = $('#ClipSelect').val();
         var haystack_id  = $('input[name=haystack]:checked', '#searchSongForm').val();
         if (search=='' && mp_song_id==0  && haystack_id==undefined) {
             return;         // search string was empty...
         }
         if (mp_song_id>0) {
             search = '(song id: '+mp_song_id+')';    // MP song selection is preferred
+            ;;;console.log('user is searching for this: '+mp_song_id);
         }
         if (haystack_id) {
             search = '(song id: '+mp_song_id+')'; 
             mp_song_id = haystack_id;
+            ;;;console.log('user selected this song id: '+mp_song_id);
         }
         modus = 'searching';
         $('.search-form-item').hide();  // hide search input fields and labels
@@ -40673,7 +40703,7 @@ function searchForSongs()
                 if (typeof(data)!='object')
                     data.data = "[]"; // simulate empty result
                 var result = JSON.parse(data.data);
-                if (result.length==0) {
+                if (result.length==0 || !result ) {
                     $('#search-action-label').text('Nothing found for "'+search+'", please try again:');
                     $('#searchForSongsButton').toggle();
                     $('#searchForSongsSubmit').toggle();
@@ -40683,31 +40713,13 @@ function searchForSongs()
                     return;
                 }
                 $('#search-action-label').html('<span class="bg-info">Select the desired Song:</span>');
+                $('#search-action-label').append('<span class="pull-xs-right small text-muted">Preview:</span>');
                 $('#searching').hide();
                 $('#searchForSongsSubmit').hide();
 
-                var html = '';  
-                // create the HTML to present the search result to the user for selection
-                for (var i = 0; i < result.length; i++) {
-                    if (result[i].id==0)
-                        continue;                       // ignore song with id # 0
-                    var count = result[i].plans.length; // number of plans that already used this song
-                    var lastPlanDate = false;           //date of last time this song was used ("2016-05-08 00:00:00")
-                    if (result[i].plans.length) {
-                        lastPlanDate = result[i].plans[0].date; 
-                    }
-                    html += '<div onclick="$(\'#searchForSongsSubmit\').click()" class="c-inputs-stacked'+ (i%2==0 ? ' even' : '') +'">';
-                    html +=     '<label class="c-input c-radio" title="';
-                    html +=         result[i].lyrics.replace(/"/g,"&quot;") + '"><input type="radio" name="searchRadios" value="';
-                    html +=         result[i].id +'"><span class="c-indicator"> </span>';
-                    html +=         (result[i].book_ref ? '('+result[i].book_ref+') ' : ' ')  + result[i].title + ' ';
-                    html +=         '<small>'+result[i].title_2+'<br><span class="pull-xs-left">';
-                    html +=             '<span class="label label-default"><b>Last used: '
-                    html +=                 ( lastPlanDate ? moment(lastPlanDate, 'YYYY-MM-DD HH:mm:ss').fromNow() : 'never used!!');
-                    html +=             '</b> Total: <b'+ (count>25 ? ' class="text-danger">' : '>') + count + '</b> times</span></small>';
-                    html +=     '</label></div>' ;
-                }
-                $('#search-result').html(html);
+                // call function to fill the search result element
+                createAndShowSearchResult('#search-result', result);
+
             })
             .fail(function(data) {
                 $('#searching').hide();
@@ -40790,6 +40802,103 @@ function searchForSongs()
         // submit the form - causes a POST http request to STORE a new item
         document.getElementById('searchSongForm').submit();
     }
+}
+
+/*  loop through each item in the search result and present it to the user for selection
+*/
+function createAndShowSearchResult(elem, result)
+{
+    ;;;console.log('building the search-result list now');
+
+    // make sure the place is empty at first
+    var html = '';  
+    $(elem).html(html);
+
+    // loop through each item
+    for (var i = 0; i < result.length; i++) {
+
+        if (result[i].id==0)                // ignore song with id # 0
+            continue;
+
+        var count = result[i].plans.length; // number of plans that already used this song
+
+        var lastPlanDate = false;           //date of last time this song was used ("2016-05-08 00:00:00")
+
+        if (result[i].plans.length) {
+            lastPlanDate = result[i].plans[0].date; 
+        }
+
+        // create a new DOM element 
+
+        // song Count indicator
+        var bold = document.createElement('b');
+        if (count>25)
+            bold.className="text-danger";
+        $(bold).append( count );
+
+        // innermost SPAN containing the song info
+        var spn2 = document.createElement('span');
+        spn2.className = "label label-default";
+        var lastUse = lastPlanDate ? moment(lastPlanDate, 'YYYY-MM-DD HH:mm:ss').fromNow() : 'never used!!';
+        spn2.innerHTML = '<b>Last used: '+lastUse+'</b> Total: ';
+        spn2.appendChild(bold);
+        $(spn2).append(' times');
+
+        // spn containing the youtube link
+        var spnYT = document.createElement('span');
+        if ( result[i].youtube_id.length>0 ) {
+            spnYT.className = "pull-xs-right";
+            spnYT.title     = "preview song";
+            var anchor = document.createElement('a');
+            anchor.href = '#';
+            $(anchor).attr('onclick', 'showYTvideoPreview("'+ result[i].youtube_id +'", this)');
+            anchor.innerHTML = '<i class="fa fa-youtube-play red"></i>';
+            spnYT.appendChild(anchor);
+        }
+
+        // the span that pulls it left...
+        var spnleft = document.createElement('span');
+        spnleft.className = "pull-xs-left";
+        spnleft.appendChild(spn2);
+
+        // 2. the <small> element containing Title 2 and the song info
+        var sml = document.createElement('small');
+        sml.className = 'hidden-sm-down';
+        $(sml).append(result[i].title_2); 
+        $(sml).append('<br>');      // make sure it starts on a new line
+        sml.appendChild(spnleft);
+
+        // 3. the Label element
+        var lbl = document.createElement('label');
+        lbl.className="c-input c-radio";
+        lbl.title = result[i].lyrics.replace(/"/g,"&quot;");
+        $(lbl).append('<input type="radio" name="searchRadios" value="'+result[i].id+'">');
+        $(lbl).append('<span class="c-indicator"> </span>');
+        $(lbl).append( (result[i].book_ref ? '('+result[i].book_ref+') ' : ' ' ) + result[i].title + ' ');
+        lbl.appendChild(sml);
+
+        // 1. The overall DIV
+        var div = document.createElement('div');
+        div.className="c-inputs-stacked search-result-items"+ (i%2!=0 ? ' even' : '');
+        $(div).attr('onclick', "$('#searchForSongsSubmit').click()");
+        div.appendChild(spnYT);
+        div.appendChild(lbl);
+
+        $(elem).append(div);
+    }
+}
+
+/*  show a preview of the selected song in the search area
+*/
+function showYTvideoPreview(ytid, that)
+{
+    // hide the search result for now
+    $('.search-result-items').toggle();
+    $(that).parent().parent().toggle();
+
+    // show the YT preview DIV and insert the player code
+    $('#show-video-clip').append('<iframe width="560" height="315" src="https://www.youtube.com/embed/'+ytid+'" frameborder="0" allowfullscreen></iframe>');
+    $('#show-video-clip').show();
 }
 
 /* execute the update via AJAX and show the new data on the page
