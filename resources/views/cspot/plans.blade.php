@@ -135,10 +135,10 @@
 
 					<td class="hidden-lg-down center">{{ $plan->items->count() }}</td>
 
-					<td class="hidden-sm-down center">{{ $plan->leader->name }}</td>
-					<td class="hidden-sm-down center">{{ $plan->teacher->name }}</td>
+					<td class="hidden-sm-down center">{{ $plan->leader ? $plan->leader->name : $plan->leader_id }}</td>
+					<td class="hidden-sm-down center">{{ $plan->teacher? $plan->teacher->name : $plan->teacher_id }}</td>
 					<td class="hidden-md-up center">
-						{{ $plan->leader->name }}{{ $plan->teacher_id<>0 ? ', '.$plan->teacher->name : '' }}
+						{{ $plan->leader ? $plan->leader->name : $plan->leader_id }}{{ $plan->teacher_id<>0 ? ', '.$plan->teacher->name : '' }}
 					</td>
 
 					<td class="hidden-md-down text-right">

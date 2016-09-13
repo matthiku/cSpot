@@ -56,8 +56,13 @@ class TypeController extends Controller
      */
     public function create()
     {
+        // get the resources table
+        $resources = Resource::get();
+
+        // also get the users table
+        $users = User::orderBy('first_name')->get();
         //
-        return view('admin.type');
+        return view('admin.type', ['users'=>$users, 'resources'=>$resources]);
     }
 
     /**
@@ -68,8 +73,13 @@ class TypeController extends Controller
      */
     public function store(StoreTypeRequest $request)
     {
-        //
-        Type::create( $request->except('_token') );
+        $exceptList = ['_token'];
+        if ( $request->leader_id=='null' ) array_push($exceptList, 'leader_id');
+        if ( $request->resource_id=='null' ) array_push($exceptList, 'resource_id');
+
+        // now create the new TYPE item
+        Type::create( $request->except($exceptList) );
+
         $status = 'New Type added.';
         return \Redirect::route('admin.types.index')
                         ->with(['status' => $status]);

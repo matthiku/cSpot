@@ -384,18 +384,25 @@ function fillPlanDefaultValues(that)
     // get selected service type
     var selSerType = $(that).val();
 
+    for (var i in cSpot.serviceTypes) {
+        if (cSpot.serviceTypes[i].id == selSerType) {
+            selSerType = cSpot.serviceTypes[i];
+            break;
+        }
+    }
+
     // read default times from global var
-    var start = cSpot.serviceTypes[selSerType].start;
-    var   end = cSpot.serviceTypes[selSerType].end;
+    var start = selSerType.start;
+    var   end = selSerType.end;
 
     // assign to times input fields
     $('#start').val(start);
     $('#end'  ).val(end);
 
     // fill default leader name
-    if (cSpot.serviceTypes[selSerType].leader_id != null) {
+    if (selSerType.leader_id != null) {
 
-        $('#leader_id').val(cSpot.serviceTypes[selSerType].leader_id);
+        $('#leader_id').val(selSerType.leader_id);
         
     }
 }
