@@ -12,9 +12,12 @@
 
 
 
+
 @section('content')
 
+
 	@include('layouts.flashing')
+
 
 	@if( Auth::user()->isEditor() && $plan_id==0 )
 	<span class="pull-sm-right">
@@ -24,18 +27,24 @@
 	</span>
 	@endif
 
+
     <h2 class="hidden-xs-down pull-xs-left">{{ $heading }}</h2>
     
+
     @include('cspot.snippets.fullTextSearch')
+
 	@if ($plan_id>0)
 		{{-- page was called from a plan in order to search for a song, so we open the serach box immediately --}}
 		<script>$('#fulltext-search').click();</script>
 	@endif
     
+
+
 	<center class="hidden-sm-down">
 		Page {{ $songs->currentPage() }} of {{ $songs->lastPage() }}<br>
 		<small>showing a total of {{ $songs->total() }} songs</small>
 	</center>
+
 
 
 	@if (count($songs))
@@ -44,16 +53,18 @@
 
 			<thead class="thead-default">
 				<tr>
-					<th class="hidden-md-down">#</th>
+					@include('cspot.snippets.theader', ['thfname' => 'id', 'thdisp' => '#', 'thsort'=>false, 'thclass'=>'center hidden-md-down'])
 
 					@include('cspot.snippets.theader', ['thfname' => 'title', 'thdisp' => 'Title', 'thsort'=>true, 'thclass'=>''])
 
 					@include('cspot.snippets.theader', ['thfname' => 'author', 'thdisp' => 'Author', 'thsort'=>true, 'thclass'=>'hidden-md-down'])
 
-					<th class="center hidden-xs-down link" onclick="reloadListOrderBy('book_ref')"
+					@include('cspot.snippets.theader', ['thfname' => 'book_ref', 'thdisp' => 'Book Ref', 'thsort'=>true, 'thclass'=>'small hidden-xs-down'])
+					{{-- <th class="center hidden-xs-down link nowrap {{ strpos(Request::fullUrl(), 'orderby=book_ref') ? 'text-primary' : '' }}" 
+						onclick="reloadListOrderBy('book_ref')"
 						data-toggle="tooltip" title="Sort list by Book Reference">
 						Book Ref
-						<i class="fa fa-sort {{ Request::is('*/sorted/book_ref*') ? 'text-primary' : '' }}"> </i></th>
+						<i class="fa fa-sort"> </i></th> --}}
 						
 					<th class="center hidden-sm-down"><small>Chords?</small></th>
 					<th class="center hidden-sm-down"><small>Sheets?</small></th>
@@ -79,7 +90,7 @@
 						{{ $song->title }} {{ $song->title_2<>'' ? '('. $song->title_2 .')' : '' }}
 					</td>
 
-					<td {!! $editLink !!} class="link hidden-md-down">{{ $song->author }}</td>
+					<td {!! $editLink !!} class="link hidden-md-down">{{ mb_strimwidth($song->author, 0, 35, "...") }}</td>
 
 					<td {!! $editLink !!} class="link center hidden-xs-down">{{ $song->book_ref }}</td>
 
@@ -119,7 +130,7 @@
 					<td class="link center hidden-md-down">
 						@if ($last) 
 							<a href="{{ url('cspot/plans/'.$last->id) }}" title="open this plan">
-							{{ $last->date->formatLocalized('%a, %d %b \'%y') }}</a>
+							<small>{{ $last->date->formatLocalized('%a, %d %b \'%y') }}</small></a>
 						@endif
 					</td>
 

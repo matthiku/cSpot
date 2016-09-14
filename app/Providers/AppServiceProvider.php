@@ -4,13 +4,11 @@ namespace App\Providers;
 
 
 use Auth;
-use Cache;
 use App\Models\Item;
 use App\Models\Plan;
 use App\Models\User;
+use App\Models\Song;
 
-use Cmgmyr\Messenger\Models\Message;
-use Cmgmyr\Messenger\Models\Thread;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -35,14 +33,11 @@ class AppServiceProvider extends ServiceProvider
 
 
 
-        /* runs when a new internal message was generated....
-        Message::created( function ($msg) {
-            $thread = Thread::find($msg->thread_id);
-            $thread->subject;
-            $msg->body;
-            $msg->user_id; // sender
-            //dd($msg);
-        });*/
+        /**
+         * Provide the data of the last update to the list of songs
+         */
+        $lastSongUpdated_at = Song::select('updated_at')->orderby('updated_at', 'desc')->first()->updated_at;
+        view()->share('lastSongUpdated_at', $lastSongUpdated_at);
 
 
 
@@ -58,12 +53,16 @@ class AppServiceProvider extends ServiceProvider
             view()->share('logoPath', 'images/'); 
         }
 
+
+
         // provide a list (array) of user-id's with Admin rights to all views (for page feedback messages)
         // (the condition is needed in order to avoid an error in artisan  when no migration has happened yet!)
         if (\Schema::hasTable('users'))
         {
             view()->share('administrators', findAdmins('id'));
         }
+
+
 
         // detect mobile users
         $isMobileUser=false;

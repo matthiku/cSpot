@@ -1,14 +1,21 @@
 
-<?php use Carbon\Carbon; ?>
+<?php 
+	use Carbon\Carbon; 
+	$hour  = 9;
+	$today = $item->plan->date; 
+	$nextWeek = $item->plan->date->addDays(7);
+?>
 
 <div class="announce-text-present">
 
 
-	<h1 class="text-success font-weight-bold font-italic display-3 m-b-2">
+	<div class="text-success font-weight-bold font-italic display-3 m-b-1">
 		<img class="pull-xs-left" height="140px" src="{{ url($logoPath.env('CHURCH_LOGO_FILENAME')) }}">
-		<span style="line-height: 140px; vertical-align: middle;">This Week's Announcements</span>
 		<img class="pull-xs-right" height="140px" src="{{ url($logoPath.env('CHURCH_LOGO_FILENAME')) }}">
-	</h1>
+		<div class="header m-b-0" style="line-height: 1.0; vertical-align: middle;">This Week's Announcements
+			<div class="small text-muted">Week from {{$today->formatLocalized('%d %b')}} to {{$nextWeek->formatLocalized('%d %b')}}</div>
+		</div>
+	</div>
 
 
 	<table class="table table-bordered">
@@ -29,11 +36,6 @@
 		<tbody>
 
 			<tr>
-				<?php 
-					$hour = 9;
-					$today = $item->plan->date; 
-				?>
-
 				<td style="vertical-align: initial;">
 				@foreach ($events as $event)
 

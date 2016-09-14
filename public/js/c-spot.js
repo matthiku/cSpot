@@ -39201,7 +39201,7 @@ function addOptionsToMPsongSelect()
         // create a new HTML 'option' element
         var opt = document.createElement('option');
         // for the list of MP songs....
-        if ( songs[i].book_ref.substr(0,2) == "MP" ) {
+        if ( songs[i].book_ref && songs[i].book_ref.substr(0,2) == "MP" ) {
             opt.value = songs[i].id;
             opt.text = songs[i].number + '-' + songs[i].title;
             mps.appendChild(opt);
@@ -39847,17 +39847,17 @@ $(document).ready(function() {
     if (window.location.pathname.indexOf('cspot/')>0) {
 
 
-        /*  check if songList exists in local cache,
+        /*  check if songList exists in local cache and if it is still up-to-date,
             otherwise grab an update from the server
-
-            TODO: make sure we always get an update when the songs table was changed!
         */
 
         // check local storage
         cSpot.songList = JSON.parse(localStorage.getItem('songList'));
+        cSpot.songList.updated_at = localStorage.getItem('songList.updated_at');
 
-        // not found in local storage, so get it from the server
-        if (cSpot.songList==null) {
+        // not found in local storage, or not up-to-date
+        // so get it from the server
+        if (cSpot.songList==null || cSpot.songList.updated_at != cSpot.lastSongUpdated_at) {
             
             ;;;console.log("Song list must be reloaded from server!");
 
@@ -39865,7 +39865,9 @@ $(document).ready(function() {
 
                 if ( status == 'success') {
                     cSpot.songList = JSON.parse(data);
+                    cSpot.songList.updated_at = cSpot.lastSongUpdated_at;
                     localStorage.setItem( 'songList', JSON.stringify(cSpot.songList) );
+                    localStorage.setItem( 'songList.updated_at', cSpot.lastSongUpdated_at );
                     ;;;console.log('Saving Song Titles List to LocalStorage');
                     addOptionsToMPsongSelect();
                 }

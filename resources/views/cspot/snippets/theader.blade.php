@@ -1,16 +1,14 @@
 
-    <th class="{{ $thclass }}">
+<th class="{{ $thclass . (Request::has('orderby') && Request::get('orderby')==$thfname ? ' text-info' : '') }}">
 
-        <span class="link" onclick="reloadListOrderBy('{{ $thfname }}')" data-toggle="tooltip" title="Sort list by {{ ucfirst($thdisp) }}">
+    <span class="link" onclick="reloadListOrderBy('{{ $thfname }}')" 
+        data-toggle="tooltip" title="Sort list by {{ ucfirst($thdisp) }}">
             {{ ucfirst($thdisp) }}
-            <i class="fa fa-sort 
-                @if ( Request::has('orderby') && Request::get('orderby')==$thfname )
-                    text-info
-                @endif
-                "> </i>
-        </span>
+            <i class="fa fa-sort"> </i>
+    </span>
 
-        @if ( $thsort )
+
+    @if ( $thsort )
         <span id="{{ $thfname }}-search" class="link m-l-1" onclick="showFilterField('{{ $thfname }}')" data-toggle="tooltip" 
             @if ( Request::has('filterby') && Request::get('filterby')==$thfname )
                     title="Clear filter">
@@ -21,6 +19,6 @@
                 <i id="filter-{{ $thfname }}-show" class="fa fa-search"> </i>
             @endif
         </span>
-        @endif
+    @endif
 
-    </th>
+</th>

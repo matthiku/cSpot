@@ -39,6 +39,8 @@
         var cSpot = {};
         cSpot.user = JSON.parse('{!! json_encode(Auth::user(), JSON_HEX_APOS | JSON_HEX_QUOT ) !!}');
 
+        cSpot.lastSongUpdated_at = "{{ $lastSongUpdated_at }}";
+
         cSpot.const = {};
         cSpot.const.waitspinner = '<i class="fa fa-spinner fa-spin fa-fw"></i>';
 

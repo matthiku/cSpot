@@ -331,7 +331,7 @@ function addOptionsToMPsongSelect()
         // create a new HTML 'option' element
         var opt = document.createElement('option');
         // for the list of MP songs....
-        if ( songs[i].book_ref.substr(0,2) == "MP" ) {
+        if ( songs[i].book_ref && songs[i].book_ref.substr(0,2) == "MP" ) {
             opt.value = songs[i].id;
             opt.text = songs[i].number + '-' + songs[i].title;
             mps.appendChild(opt);
