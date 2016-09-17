@@ -384,9 +384,9 @@
             @endif
 
 
-            {{-- link to show linked YT video --}}
-            @if ($item->song_id && $item->song->youtube_id)
-                <a href="https://www.youtube.com/watch?v={{ $item->song->youtube_id }}" 
+            {{-- link to song data on CCLI songselect --}}
+            @if ($item->song_id && $item->song->ccli_no)
+                <a href="https://songselect.ccli.com/Songs/{{ $item->song->ccli_no }}" 
                     target="new" class="pull-xs-right btn btn-sm btn-info hidden-sm-down m-l-1">
                 <i class="red fa fa-youtube-play fa-lg"></i>&nbsp;</a>
             @endif

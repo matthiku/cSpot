@@ -93,7 +93,7 @@
                <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width">{!! Form::text('title'); !!}</div>
                @if ( isset($song) )
                     &nbsp; <a class="btn btn-sm" type="button" target="new" 
-                        href="https://olr.ccli.com/search/results?SearchTerm={{ $song->title.' '.$song->title_2.' '.$song->author }}">
+                        href="https://songselect.ccli.com/search/results?SearchText={{ $song->title.' '.$song->title_2.' '.$song->author }}">
                         <i class="fa fa-search" > </i> CCLI search 
                     </a>
                     &nbsp; <a class="btn btn-sm" type="button" target="new" 
@@ -182,7 +182,7 @@
                 <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8">{!! Form::number('ccli_no'); !!}
                     @if ( isset($song)  && $song->ccli_no > 10000 )
                         <a class="btn btn-sm" type="button" target="new" 
-                            href="https://olr.ccli.com/search/results?SearchTerm={{ $song->ccli_no }}">
+                            href="https://songselect.ccli.com/Songs/{{ $song->ccli_no }}">
                             <i class="fa fa-search" > </i> CCLI look-up
                         </a>
                     @endif

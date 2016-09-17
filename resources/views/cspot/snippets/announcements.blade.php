@@ -22,21 +22,21 @@
 
 		<thead>
 			<tr>
-				<th class="announce-text-present text-danger">Today</th>
-				<th class="announce-text-present">Monday</th>
-				<th class="announce-text-present">Tuesday</th>
-				<th class="announce-text-present">Wed.</th>
-				<th class="announce-text-present">Thurs.</th>
-				<th class="announce-text-present">Friday</th>
-				<th class="announce-text-present">Saturday</th>
-				<th class="announce-text-present text-danger">Sunday</th>
+				<th class="announce-text-present p-b-0 p-t-0 text-danger">Today</th>
+				<th class="announce-text-present p-b-0 p-t-0">Monday</th>
+				<th class="announce-text-present p-b-0 p-t-0">Tuesday</th>
+				<th class="announce-text-present p-b-0 p-t-0">Wed.</th>
+				<th class="announce-text-present p-b-0 p-t-0">Thurs.</th>
+				<th class="announce-text-present p-b-0 p-t-0">Friday</th>
+				<th class="announce-text-present p-b-0 p-t-0">Saturday</th>
+				<th class="announce-text-present p-b-0 p-t-0 text-danger">Sunday</th>
 			</tr>
 		</thead>
 
 		<tbody>
 
 			<tr>
-				<td style="vertical-align: initial;">
+				<td style="vertical-align: initial; line-height: 1;">
 				@foreach ($events as $event)
 
 					<?php 
@@ -58,7 +58,7 @@
 						if ($event->date->dayOfYear > $today->dayOfYear) {
 							$today->addDay();
 							$hour = 9;
-							echo '</td><td style="vertical-align: initial;">';
+							echo '</td><td style="vertical-align: initial; line-height: 1;">';
 							// push down the event it's start time is later in the day
 							while ($event->date->hour - $hour > 1) {
 								echo '<br>';
@@ -68,7 +68,7 @@
 
 						// insert an empty column until we are at the event date
 						while ($event->date->dayOfYear > $today->dayOfYear ) {
-							echo '</td><td style="vertical-align: initial;">';
+							echo '</td><td style="vertical-align: initial; line-height: 1;">';
 							$today->addDay();
 							$hour = 9;
 							// push down the event it's start time is later in the day
@@ -82,7 +82,7 @@
 						Carbon::setToStringFormat('g:i a');
 					?>
 
-					<span class="d-block bg-info nowrap">{{ $event->date }}</span>
+					<span class="d-block bg-info nowrap m-t-1">{{ $event->date }}</span>
 					<span>{{ $event->type->name }}</span>
 					{!! $event->subtitle ? '<br><span class="small">'.$event->subtitle.'</span>' : '' !!}
 
