@@ -104,8 +104,8 @@ $modalContent = '
     <div class="btn-group pull-xs-right m-r-1">
         @if ($item->song_id && $item->song->ccli_no)
             <a href="https://songselect.ccli.com/Songs/{{ $item->song->ccli_no }}" 
-                target="new" class="pull-xs-right btn btn-sm btn-info hidden-sm-down ">
-            <i class="red fa fa-youtube-play fa-lg"></i>&nbsp;</a>
+                target="new" class="pull-xs-right btn btn-sm btn-info hidden-sm-down p-y-0">
+            <img src="/images/songselectlogo.png" width="25"></a>
         @else
             <a href="#" disabled="" 
                class="pull-xs-right btn btn-sm btn-outline-secondary hidden-lg-down">

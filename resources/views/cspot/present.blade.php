@@ -387,8 +387,8 @@
             {{-- link to song data on CCLI songselect --}}
             @if ($item->song_id && $item->song->ccli_no)
                 <a href="https://songselect.ccli.com/Songs/{{ $item->song->ccli_no }}" 
-                    target="new" class="pull-xs-right btn btn-sm btn-info hidden-sm-down m-l-1">
-                <i class="red fa fa-youtube-play fa-lg"></i>&nbsp;</a>
+                    target="new" class="pull-xs-right btn btn-sm btn-info hidden-sm-down m-l-1 p-y-0">
+                <img src="/images/songselectlogo.png" width="30"></a>
             @endif
 
             {{-- help button to show modal --}}
