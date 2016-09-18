@@ -265,12 +265,20 @@
 					  ________________________________________________
 				 --}}
 				<td class="text-xs-right text-nowrap dont-print">
+
+					@if ( $item->song_id && ! $item->song->license=='0' && Auth::user()->isAdmin() && $plan->date <= \Carbon\Carbon::today() )
+					<a class=" hidden-xs-down" data-toggle="tooltip" data-placement="left" title="Report Song Usage to CCLI" 
+						href='https://olr.ccli.com/search/results?SearchTerm={{ $item->song->ccli_no }}' target="new">
+						&nbsp;<i class="fa fa-copyright fa-lg"></i>&nbsp;</a>
+					@endif
+
 					{{-- 'start presentation' button visible for all --}}
 					@if (! $item->deleted_at)
 					<a class=" hidden-xs-down" data-toggle="tooltip" data-placement="left" title="Start presentation from here" 
 						href='{{ url('cspot/items/'.$item->id) }}/present'>
 						&nbsp;<i class="fa fa-tv fa-lg"></i>&nbsp;</a>
 					@endif
+
 					@if( Auth::user()->ownsPlan($plan->id) && $plan->date >= \Carbon\Carbon::yesterday() )
 						<span class="trashedButtons" style="display: {{ $item->deleted_at ? 'initial' : 'none' }}">
 							<a class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="left" title="Restore this item" 

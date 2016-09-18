@@ -255,7 +255,7 @@
 
                         <br>
 
-                        <div class="row">
+                        <div class="row m-b-1">                            
                             <div class="col-sm-12 col-md-3 full-btn">
                                 @if ($item->song->youtube_id)
                                     <a href="https://www.youtube.com/watch?v={{ $item->song->youtube_id }}" 
@@ -267,6 +267,20 @@
                                     <i class="red fa fa-youtube-play"></i><br><small>play</small></a>
                                 @endif
                             </div>
+                            <div class="col-sm-12 col-md-3 full-btn">
+                                @if ($item->song->ccli_no>9999)
+                                    <a href="https://songselect.ccli.com/Songs/{{ $item->song->ccli_no }}" 
+                                        target="new" class="fully-width btn btn-outline-primary btn-sm">
+                                    <img src="/images/songselectlogo.png" width="20"><br><small>show<span class="hidden-lg-down"> on SongSelect</span></small></a>
+                                @else
+                                    <a href="#" class="fully-width btn btn-outline-secondary btn-sm disabled"
+                                          title="Missing SongSelect Link!" data-toggle="tooltip">
+                                    <img src="/images/songselectlogo.png" width="20"><br><small>no CCLI</small></a>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="row">
                             @if ( Auth::user()->ownsPlan($item->plan_id) )
                                 <div class="col-sm-12 col-md-3 full-btn">
                                     <a href="#" class="fully-width btn btn-outline-primary btn-sm" 
