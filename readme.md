@@ -19,6 +19,7 @@ It allows the management of song lyrics, music scores, guitar chords, event reso
 - Allows for a _synchronised presentation_ of lyrics, chords or sheet music _accross all designated devices!_
 - Exchange email and/or internal messages between users
 - Allows fast addition of songs even during the actual presentation!
+- Helps and tracks reporting of song usage to CCLI and integrates with SongSelect
 
 As a free and open source project, you can download ('clone') the sources, modify (customize) them and run the tool from your own web site hoster.
 
