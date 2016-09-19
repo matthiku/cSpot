@@ -22,13 +22,17 @@ class Item extends Model
         'comment',
         'show_comment',
         'key',
-        'forLeadersEyesOnly'
+        'forLeadersEyesOnly',
+        'reported_at',
     ];
 
     protected $hidden = [
         'created_at', 'updated_at'
     ];
 
+    protected $dates = [
+        'reported_at', 'created_at', 'updated_at'
+    ];
 
 
     /**

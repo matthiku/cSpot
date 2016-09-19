@@ -601,8 +601,11 @@ class ItemController extends Controller
     {
         // Is this a generic item update (different field names) ?
         if ($request->has('id') && $request->has('value') ) {
-            $field_name = explode('-', $request->id)[0];
-            $item_id    = explode('-', $request->id)[3];
+            $arr_id = explode('-', $request->id);
+            $field_name = $arr_id[0];
+            if (count($arr_id)>2) {
+                $item_id    = explode('-', $request->id)[3];
+            }
         }
 
         // Is this a specific update of the song id?
@@ -624,6 +627,11 @@ class ItemController extends Controller
         if ($field_name == 'comment') {
             if ( $request->value == '_')
                 $request->value = '';
+        }
+
+        // make sure the value for this field is a correct date value
+        if ($field_name == 'reported_at') {
+            $request->value = Carbon::parse($request->value);
         }
 
         // find the single resource
@@ -651,6 +659,8 @@ class ItemController extends Controller
                 return $file->filename;
             }
 
+            // debug logging
+            Log::debug('API item update request - ID:'.$item_id.', FIELD:'.$field_name.', VALUE:'.$request->value);
 
             $item->update( [$field_name => $request->value] );
 

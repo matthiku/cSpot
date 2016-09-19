@@ -243,21 +243,29 @@
 					<big>
 					@if ($item->song_id)
 	                    @if ( $item->song->hymnaldotnet_id > 0 )
-	                        <a target="new" title="See on hymnal.net" data-toggle="tooltip"
-	                            href="https://www.hymnal.net/en/hymn/h/{{ $item->song->hymnaldotnet_id }}">
-	                            <i class="fa fa-music"></i> </a> &nbsp; 
+	                        <a target="new" title="Review song on hymnal.net" data-toggle="tooltip" class="m-r-1" 
+	                            href="{{ env('HYMNAL.NET_PLAY', 'https://www.hymnal.net/en/hymn/h/').$item->song->hymnaldotnet_id }}">
+	                            <i class="fa fa-music"></i> </a>
+	                    @endif
+	                    @if ( $item->song->ccli_no > 10000 )
+	                        <a target="new" title="Review song on SongSelect" data-toggle="tooltip" class="m-r-1" 
+	                            href="{{ env('SONGSELECT_URL', 'https://songselect.ccli.com/Songs/').$item->song->ccli_no }}">
+	                            <img src="/images/songselectlogo.png" width="20"></a>
 	                    @endif
 	                    @if ( strlen($item->song->youtube_id)>0 )
-	                        <a href="#" title="Play here" class="red" data-toggle="tooltip" data-song-title="{{ $item->song->title }}"
+                            <a title="Play in new tab" data-toggle="tooltip" target="new" class="hidden-md-down pull-xs-right"
+                            	href="{{ env('YOUTUBE_PLAY', 'https://www.youtube.com/watch?v=').$item->song->youtube_id }}">
+                            	<i class="fa fa-external-link"></i></a>
+	                        <a href="#" title="Play here" class="red pull-xs-right m-r-1" data-toggle="tooltip" data-song-title="{{ $item->song->title }}"
 	                        	onclick="showYTvideoInModal('{{ $item->song->youtube_id }}', this)">
 	                            <i class="fa fa-youtube-play"></i></a>
-                            <a title="Play in new tab" data-toggle="tooltip" target="new" class="hidden-md-down pull-xs-right"
-                            	href="https://www.youtube.com/watch?v={{ $item->song->youtube_id }}">
-                            	<i class="fa fa-external-link"></i></a>
 	                    @endif
 					@endif
 					</big>
 				</td>
+
+
+
 
 				{{--  _______________________________________________
 
@@ -266,13 +274,50 @@
 				 --}}
 				<td class="text-xs-right text-nowrap dont-print">
 
-					@if ( $item->song_id && ! $item->song->license=='0' && Auth::user()->isAdmin() && $plan->date <= \Carbon\Carbon::today() )
-					<a class=" hidden-xs-down" data-toggle="tooltip" data-placement="left" title="Report Song Usage to CCLI" 
-						href='https://olr.ccli.com/search/results?SearchTerm={{ $item->song->ccli_no }}' target="new">
-						&nbsp;<i class="fa fa-copyright fa-lg"></i>&nbsp;</a>
+
+					{{-- CCLI Song Usage Reporting 
+						 (link opens new browser tab of CCLI reporting page!)
+					--}}
+					@if (  $item->song_id 
+						&& $item->song -> ccli_no>10000 
+						&& Auth::user()-> isAdmin() 
+						&& $plan->date <= \Carbon\Carbon::today() )
+
+						{{-- show a different icon color depending on status of reporting 
+						 	 red    - no date in field 'reported_at'  - no action has taken place yet
+						 	 yellow - date present, but time is 00:00 - user started reporting, but hasn't confirmed it yet
+							 green  - date is set and time > 00:00 	  - user has confirmed that he finished the reporting
+						--}}
+						@if (! $item->reported_at)
+
+							<a class="btn btn-sm btn-outline-danger hidden-xs-down m-r-1" 
+								data-toggle="tooltip" data-placement="left" title="Report Song Usage to CCLI" 
+								onclick="reportSongUsageToCCLI(this, {{ $item->id }}, {{ $item->reported_at ? $item->reported_at : 'null' }})" 
+								href='{{ env('CCLI_REPORT_URL', 'https://olr.ccli.com/search/results?SearchTerm=').$item->song->ccli_no }}' target="new">
+								<i class="fa fa-copyright fa-lg"></i></a>
+
+						@else
+
+							@if ( $item->reported_at->hour==0 && $item->reported_at->minute==0 )
+								{{-- reporting process was started but not yet confirmed by the user --}}
+								<a class="btn btn-sm btn-outline-warning hidden-xs-down m-r-1" 
+									data-toggle="tooltip" data-placement="left" title="Please confirm here when Song Usage Report to CCLI has been completed!" 
+									onclick="reportSongUsageToCCLI(this, {{ $item->id }}, '{{ $item->reported_at ? $item->reported_at : 'null' }}')" 
+									href="#"><i class="fa fa-copyright fa-lg"></i></a>
+							@else
+								{{-- reporting process complete --}}
+								<a class="btn btn-sm btn-outline-success hidden-xs-down narrow"
+									data-toggle="tooltip" data-placement="left" title="Song Usage has already been reported to CCLI."
+									href="#"><i class="fa fa-copyright"></i><i class="fa fa-check"></i></a>
+
+							@endif
+
+						@endif
 					@endif
 
-					{{-- 'start presentation' button visible for all --}}
+
+					{{-- 'start presentation' button visible for all 
+					--}}
 					@if (! $item->deleted_at)
 					<a class=" hidden-xs-down" data-toggle="tooltip" data-placement="left" title="Start presentation from here" 
 						href='{{ url('cspot/items/'.$item->id) }}/present'>

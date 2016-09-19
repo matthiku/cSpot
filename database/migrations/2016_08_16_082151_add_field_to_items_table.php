@@ -16,6 +16,7 @@ class AddFieldToItemsTable extends Migration
             // add field to make item visible only for plan leader
             $table->boolean('forLeadersEyesOnly')->default(false);
             $table->boolean('show_comment')->default(false);
+            $table->dateTime('reported_at')->nullable();
         });
     }
 
@@ -30,6 +31,7 @@ class AddFieldToItemsTable extends Migration
             //
             $table->dropColumn('forLeadersEyesOnly');
             $table->dropColumn('show_comment');
+            $table->dropColumn('reported_at');
         });
     }
 }

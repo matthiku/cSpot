@@ -93,11 +93,11 @@
                <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width">{!! Form::text('title'); !!}</div>
                @if ( isset($song) )
                     &nbsp; <a class="btn btn-sm" type="button" target="new" 
-                        href="https://songselect.ccli.com/search/results?SearchText={{ $song->title.' '.$song->title_2.' '.$song->author }}">
+                        href="{{ env('SONGSELECT_SEARCH', 'https://songselect.ccli.com/search/results?SearchText=').$song->title.' '.$song->title_2.' '.$song->author }}">
                         <i class="fa fa-search" > </i> CCLI search 
                     </a>
                     &nbsp; <a class="btn btn-sm" type="button" target="new" 
-                        href="https://www.hymnal.net/en/search/all/all/{{ $song->title.' '.$song->title_2 }}">
+                        href="{{ env('HYMNAL.NET_SEARCH', 'https://www.hymnal.net/en/search/all/all/').$song->title.' '.$song->title_2 }}">
                         <i class="fa fa-search" > </i> hymnal.net search 
                     </a>
                 @endif
@@ -167,7 +167,7 @@
             <div class="row form-group">
                 {!! Form::label('hymnaldotnet_id', 'Hymnal.Net Link', ['class' => 'col-sm-4 col-md-3 col-lg-2 col-xl-4']); !!}
                 <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width">{!! Form::text('hymnaldotnet_id'); !!}
-                    @if ( isset($song->hymnaldotnet_id) )
+                    @if ( $song->hymnaldotnet_id>0  )
                         <a class="btn btn-sm" type="button" target="new" 
                             href="{{ $song->hymnaldotnet_id }}">
                             <i class="fa fa-music" > </i> See song on Hymnal.Net
@@ -182,11 +182,19 @@
                 <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8">{!! Form::number('ccli_no'); !!}
                     @if ( isset($song)  && $song->ccli_no > 10000 )
                         <a class="btn btn-sm" type="button" target="new" 
-                            href="https://songselect.ccli.com/Songs/{{ $song->ccli_no }}">
-                            <i class="fa fa-search" > </i> CCLI look-up
+                            href="{{ env('SONGSELECT_URL', 'https://songselect.ccli.com/Songs/').$song->ccli_no }}">
+                            <i class="fa fa-search" > </i> view on SongSelect
                         </a>
                     @endif
                 </div>
+                <script>
+                    if ($("input[name='ccli_no']").length) {
+                        $("input[name='ccli_no']").on('change', function() {
+                            // now select the CCLI radio button
+                            $("input[name='license']")[1].click()
+                        })
+                    }
+                </script>
             </div>
 
 
@@ -200,13 +208,13 @@
                 {!! Form::label('youtube_id', 'Youtube ID', ['class' => 'col-sm-4 col-md-3 col-lg-2 col-xl-4']); !!}
                 <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width">{!! Form::text('youtube_id'); !!}</div>
                 @if ( isset($song) )
-                    &nbsp; <a class="btn btn-sm" type="button" target="new" 
-                        href="https://www.youtube.com/results?search_query={{ $song->title }}">
+                    <a class="btn btn-sm m-l-2" type="button" target="new" 
+                        href="{{ env('YOUTUBE_SEARCH', 'https://www.youtube.com/results?search_query=').$song->title }}">
                         <big class="fa fa-youtube" > </big> YouTube search
                     </a>
                     @if ( strlen($song->youtube_id)>0 )
                         &nbsp; <a class="btn btn-sm" type="button" target="new" 
-                            href="https://www.youtube.com/watch?v={{ $song->youtube_id }}">
+                            href="{{ env('YOUTUBE_PLAY', 'https://www.youtube.com/watch?v=').$song->youtube_id }}">
                             <big class="fa fa-youtube-play"></big> Play on Youtube</a>
                     @endif
                 @endif

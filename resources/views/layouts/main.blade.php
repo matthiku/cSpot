@@ -41,6 +41,9 @@
 
         cSpot.lastSongUpdated_at = "{{ $lastSongUpdated_at }}";
 
+        cSpot.env = {};
+        cSpot.env.songSelectUrl = "{{ env("SONGSELECT_URL", 'https://songselect.ccli.com/Songs/') }}"
+
         cSpot.const = {};
         cSpot.const.waitspinner = '<i class="fa fa-spinner fa-spin fa-fw"></i>';
 

@@ -695,6 +695,18 @@ function createAndShowSearchResult(elem, result)
             spnYT.appendChild(anchor);
         }
 
+        // spn containing the CCLI SongSelect link
+        var spnSS = document.createElement('span');
+        if ( result[i].ccli_no>10000 ) {
+            spnSS.className = "pull-xs-right m-r-1";
+            spnSS.title     = "review song on SongSelect";
+            var anchor = document.createElement('a');
+            anchor.href = cSpot.env.songSelectUrl + result[i].ccli_no;
+            anchor.target = 'new';
+            anchor.innerHTML = '<i class="fa fa-music"></i>';
+            spnSS.appendChild(anchor);
+        }
+
         // the span that pulls it left...
         var spnleft = document.createElement('span');
         spnleft.className = "pull-xs-left";
@@ -721,6 +733,7 @@ function createAndShowSearchResult(elem, result)
         div.className="c-inputs-stacked search-result-items"+ (i%2!=0 ? ' even' : '');
         $(div).attr('onclick', "$('#searchForSongsSubmit').click()");
         div.appendChild(spnYT);
+        div.appendChild(spnSS);
         div.appendChild(lbl);
 
         $(elem).append(div);
@@ -1266,6 +1279,62 @@ function updateFileInformation()
     $('#fileEditModal').modal('hide');
 }
 
+
+
+/*  Report song to CCLI  and set field 'reported_at'
+*/
+function reportSongUsageToCCLI(that, item_id, reported_at)
+{
+    var currHtml = that.innerHTML;
+
+    // show spinner while updating
+    $(that).html(cSpot.const.waitspinner);
+
+    if (reported_at==null) {
+
+        // create midnight today
+        var dt = new Date();
+        dt.setHours(0,0,0,0);
+
+        // update reported_at to today with time = 00:00
+        $.post(
+            cSpot.routes.apiItemUpdate, 
+            {
+                'id'    : 'reported_at-item-id-'+item_id,
+                'value' : dt.toDateString(),
+            }
+        ).done( function(data) {
+            console.log(data);
+            $(that).html(currHtml);
+            $(that).removeClass('btn-outline-danger');
+            $(that).addClass('btn-outline-warning');
+            $(that).attr('title', 'Please confirm here when Song Usage Report to CCLI has been completed!');
+        }).fail( function(data) {
+            console.log('POST update failed! ');
+            console.log(data);
+        });
+    }
+    else {
+        var dt = new Date();
+        // update reported_at to today with time = 00:00
+        $.post(
+            cSpot.routes.apiItemUpdate, 
+            {
+                'id'    : 'reported_at-item-id-'+item_id,
+                'value' : dt.toJSON(),
+            }
+        ).done( function(data) {
+            console.log(data);
+            $(that).html(currHtml);
+            $(that).removeClass('btn-outline-warning');
+            $(that).addClass('btn-outline-success');
+            $(that).attr('title', 'Song Usage has already been reported to CCLI.');
+        }).fail( function(data) {
+            console.log('POST update failed! ');
+            console.log(data);
+        });
+    }
+}
 
 
 /*\
