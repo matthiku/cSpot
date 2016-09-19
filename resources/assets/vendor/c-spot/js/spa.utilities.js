@@ -1303,13 +1303,20 @@ function reportSongUsageToCCLI(that, item_id, reported_at)
                 'id'    : 'reported_at-item-id-'+item_id,
                 'value' : dt.toDateString(),
             }
-        ).done( function(data) {
+        )
+        .done( function(data) {
+
             console.log(data);
             $(that).html(currHtml);
             $(that).removeClass('btn-outline-danger');
             $(that).addClass('btn-outline-warning');
             $(that).attr('title', 'Please confirm here when Song Usage Report to CCLI has been completed!');
-        }).fail( function(data) {
+            // change last parameter in 'onclick' parameter of 'that' to 'data'(current date)
+            $(that).attr('onclick', 'reportSongUsageToCCLI(this, '+item_id+', "'+data+'")');
+            $(that).attr('href', '#');      // no more linking to CCLI...
+            $(that).removeAttr('target');
+        })
+        .fail( function(data) {
             console.log('POST update failed! ');
             console.log(data);
         });
@@ -1325,8 +1332,10 @@ function reportSongUsageToCCLI(that, item_id, reported_at)
             }
         ).done( function(data) {
             console.log(data);
-            $(that).html(currHtml);
+            $(that).html('<i class="fa fa-copyright"></i><i class="fa fa-check"></i>');
+            $(that).addClass('narrow');
             $(that).removeClass('btn-outline-warning');
+            $(that).removeClass('m-r-1');
             $(that).addClass('btn-outline-success');
             $(that).attr('title', 'Song Usage has already been reported to CCLI.');
         }).fail( function(data) {
