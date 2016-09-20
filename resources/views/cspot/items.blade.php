@@ -52,7 +52,7 @@
 				--}}
 				<td class="hidden-md-down center always-print link show-songbook-ref" 
 					data-toggle="modal" data-target="#searchSongModal" data-item-id="before-{{ $item->id }}"
-					data-plan-id="update-song" data-seq-no="before-{{ $item->seq_no }}" 
+					data-plan-id="{{ $plan->id }}" data-item-action="update-song" data-seq-no="before-{{ $item->seq_no }}" 
 					data-action-url="{!! route('cspot.api.items.update', $item->id) !!}"
 					@if ($item->song_id) 
 						title="click to change"
@@ -83,7 +83,7 @@
 					>
 					<span class="hover-show" 
 						data-toggle="modal" data-target="#searchSongModal" data-item-id="{{ $item->id }}"
-						data-plan-id="update-song" data-item-id="{{$item->id}}" data-seq-no="{{ $item->seq_no }}" 
+						data-plan-id="{{ $plan->id }}" data-item-action="update-song" data-seq-no="{{ $item->seq_no }}" 
 						data-action-url="{!! route('cspot.api.items.update', $item->id) !!}">
 						@if($item->song_id) 
 							{{ $item->song->title }} 
@@ -114,7 +114,7 @@
 						{{-- icon to add scripture reference --}}
 						<span class="text-muted add-scripture-ref" style="display: none" title="add scripture reference"
 							data-toggle="modal" data-target="#searchSongModal" data-item-id="{{ $item->id }}"
-							data-plan-id="update-scripture" data-seq-no="{{ $item->seq_no }}" 
+							data-plan-id="{{ $plan->id }}" data-item-action="update-scripture" data-seq-no="{{ $item->seq_no }}" 
 							data-action-url="{!! route('cspot.api.items.update', $item->id) !!}">
 							<i class="fa fa-book"></i><sup>+</sup>
 						</span>

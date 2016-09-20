@@ -1037,6 +1037,10 @@ function navigateTo(where)
     if ( document.baseURI.search('/present')<10 )
         showSpinner();
 
+    // no blankscreen when navigating to 'edit' or 'back' (exit)
+    if (where=='edit' || where=='back')
+        screenBlank = false;
+
     // in presentation Mode, do we want a blank slide between items?
     if ( cSpot.presentation.configBlankSlides  &&  screenBlank ) {
         screenBlank = false;
@@ -1177,25 +1181,6 @@ function modifyHRefOfJumpbutton(next_seq_no, prev_seq_no)
 
     // hide spinner, if present
     $('#show-spinner').modal('hide')    
-}
-
-// write cached data into the DOM
-function writeCachedDataIntoDOM(identifier) {
-
-    ;;;console.log('Next item comes cached from local storage! Identifier: '+identifier);
-
-    var type = cSpot.presentation.type;
-
-    if ( type == 'chords'  || type == 'sheetmusic' ) {
-        $('#main-content'       ).html(localStorage.getItem(identifier + '-mainContent-'+ type));
-        $('#present-navbar'     ).html(localStorage.getItem(identifier + '-present-navbar' ));
-        return;
-    }
-
-    $('#lyrics-parts-indicators').html(localStorage.getItem(identifier + '-seqIndicator'));
-    $('#main-content'           ).html(localStorage.getItem(identifier + '-mainContent'));
-    $('#lyrics-sequence-nav'    ).html(localStorage.getItem(identifier + '-sequenceNav'));
-    $('#item-navbar-label'      ).html(localStorage.getItem(identifier + '-itemNavBar' ));
 }
 
 
@@ -1586,6 +1571,29 @@ function changeFontSize(selectorList, how) {
 
 
 
+/* write cached data into the DOM -         called from         navigateTo()
+*/
+function writeCachedDataIntoDOM(identifier) {
+
+    ;;;console.log('Next item comes cached from local storage! Identifier: '+identifier);
+
+    var type = cSpot.presentation.type;
+
+    if ( type == 'chords'  || type == 'sheetmusic' ) {
+        $('#main-content'       ).html(localStorage.getItem(identifier + '-mainContent-'+ type));
+        $('#present-navbar'     ).html(localStorage.getItem(identifier + '-present-navbar' ));
+        return;
+    }
+
+    $('#main-content'           ).html(localStorage.getItem(identifier + '-mainContent'));
+    $('#lyrics-parts-indicators').html(localStorage.getItem(identifier + '-seqIndicator'));
+    $('#lyrics-sequence-nav'    ).html(localStorage.getItem(identifier + '-sequenceNav'));
+    $('#item-navbar-label'      ).html(localStorage.getItem(identifier + '-itemNavBar' ));
+    $('#item-navbar-next-label' ).html(localStorage.getItem(identifier + '-itemNavBarNext'));
+    // $('#next-item-button'       ).html(localStorage.getItem(identifier + '-itemNBNextItemBtn'));
+}
+
+
 // save main content html to local storage
 function saveMainContentToLocalStorage(what) {    
 
@@ -1613,6 +1621,8 @@ function saveMainContentToLocalStorage(what) {
     saveLocallyAndRemote(plan_id, itemIdentifier +'-sequenceNav',       $('#lyrics-sequence-nav').html());
     // item label 
     saveLocallyAndRemote(plan_id, itemIdentifier +'-itemNavBar',        $('#item-navbar-label').html());
+    saveLocallyAndRemote(plan_id, itemIdentifier +'-itemNavBarNext',    $('#item-navbar-next-label').html());
+    // saveLocallyAndRemote(plan_id, itemIdentifier +'-itemNBNextItemBtn', $('#next-item-button').html());
     // whole NavBar for chords and sheetmusic
     saveLocallyAndRemote(plan_id, itemIdentifier +'-present-navbar',    $('#present-navbar').html());
 
@@ -1705,7 +1715,7 @@ function saveLocallyAndRemote(plan_id, key, value)
             'key'       : key,
             'value'     : value.trim() + ' ',       // have at least one blank for server-side validation to work
         }, 
-        console.log(value.length + ' cache saved on server: ' + key)
+        console.log('Cached data saved on server: ' + key)
     );
 }
 

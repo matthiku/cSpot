@@ -32,7 +32,7 @@
                         onclick="showModalSelectionItems('scripture')"><strong><i class="fa fa-book"></i> Scripture Text</strong></a>
 
                     <a href="#" class="btn btn-lg btn-outline-warning modal-pre-selection m-b-1"
-                        onclick="showModalSelectionItems('clips')"><i class="fa fa-television"></i> VideoClip / InfoScreen</a>
+                        onclick="showModalSelectionItems('clips')"><i class="fa fa-television"></i> VideoClip / Slides</a>
 
                     <a href="#" class="btn btn-lg btn-outline-danger modal-pre-selection m-b-1"
                         onclick="showModalSelectionItems('file')"      ><i class="fa fa-file-picture-o"></i> &nbsp; Image</a>
@@ -70,9 +70,9 @@
                     </span>
 
 
-                    {{-- videoclip or infoscreen 
+                    {{-- videoclip or slides 
                     --}}
-                    <label for="clips" class="search-form-item modal-select-clips m-b-0">Search for titles of InfoScreens or VideoClips:</label>
+                    <label for="clips" class="search-form-item modal-select-clips m-b-0">Search for titles of Slides or VideoClips:</label>
                     <input type="text" class="form-control search-form-item modal-select-clips modal-input-clips m-b-0" id="clips" onkeyup="showSongHints('#clipsHint', this.value, 'clips')">
                     <div class="search-form-item modal-select-clips" id="clipsHint"></div>
 

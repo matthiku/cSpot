@@ -24,6 +24,7 @@ class Item extends Model
         'key',
         'forLeadersEyesOnly',
         'reported_at',
+        'hideTitle',
     ];
 
     protected $hidden = [
@@ -42,6 +43,21 @@ class Item extends Model
      */
     protected $touches = ['plan'];
 
+
+
+    /**
+     * determine which type of item we have
+     * (song, slide, image, scripture or comment)
+     * (slide = slide or video)
+     */
+    public function itemType()
+    {
+        if ($this->song_id)
+            if ($this->song->title_2=='slide' || $this->song->title_2=='video' )
+                return $this->song->title_2;
+            return 'song';
+        return 'other';
+    }
 
 
     public function plan() 

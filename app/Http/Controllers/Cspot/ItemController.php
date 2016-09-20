@@ -438,7 +438,7 @@ class ItemController extends Controller
         // array of books of the bible
         $bibleBooks = new BibleBooks();
         
-        // get list of items for this plan, each with a prober 'title'
+        // get list of items for this plan, each with a proper 'title'
         $items = $item->plan->items->sortBy('seq_no')->all();
 
         $songs = []; # send empty song array

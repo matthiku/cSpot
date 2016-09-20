@@ -170,6 +170,38 @@ function toggleShowComment(that, id, actionUrl)
 }
 
 
+/* toggle field 'show_comment'
+*/
+function toggleHideTitle(that, id, actionUrl) 
+{
+    var oldText = $('#'+id).text();
+
+    // replace current note with spinner while doing AJAX
+    $('#'+id).html('<i class="fa fa-spinner fa-spin fa-fw"></i>');
+
+    $.post( 
+        actionUrl, 
+        { 
+            'id'    : id, 
+            'value' : $(that).prop('checked'),
+        })
+    .done( 
+        function(data) {
+            // show result
+            if (data == '1' || data == '0')
+                $('#'+id).text(oldText);
+            else
+                $('#'+id).text( JSON.stringify(data) );
+        })
+    .fail(
+        function(data) {
+            // show result
+            $('#'+id).text( JSON.stringify(data) );
+        }
+    );
+}
+
+
 /* toggle field 'key' in order to use item as Announcements Slide
 */
 function toggleShowAnnouncement(that, id, actionUrl) 
@@ -343,14 +375,14 @@ function insertNewOrUpdateExistingItems( event )
     item.buttonID = button.attr('id');
     cSpot.item = item;
 
-    ;;;console.log( JSON.stringify(item) );
+    ;;;console.log( 'cSpot.item = ' + JSON.stringify(item) );
 
     // prepare title text for popup dialog
     var ar_seq = item.seq_no.split('-');
     var titleText = 'before item No '+item.seq_no;
 
     // was modal opened from existing item?
-    if (item.plan_id=="update-song" || location.pathname.search('chords') > 0) {
+    if (item.action=="update-song" || location.pathname.search('chords') > 0) {
         // directly activate the song selection
         showModalSelectionItems('song');
         $('#searchSongForm'      ).attr('data-action', item.actionUrl);
@@ -361,7 +393,7 @@ function insertNewOrUpdateExistingItems( event )
             titleText = 'after item No '+ar_seq[1];
     }
 
-    else if (item.plan_id=="update-scripture") {
+    else if (item.action=="update-scripture") {
         // directly activate the scripture selection
         showModalSelectionItems('scripture');
         // use current comment text as initial value
@@ -488,20 +520,29 @@ function searchForSongs()
     ;;;console.log('Searching for or selecting songs?' );
     ;;;console.log('cSpot.item: '+JSON.stringify(cSpot.item) );
 
+    var plan_id = cSpot.item.plan_id;
+    var action  = cSpot.item.action;
+    var seq_no  = cSpot.item.seq_no;
+    var type    = cSpot.item.type;
+
     // user chose to add a file to an existing item
-    if (cSpot.item.action=='add-file') {
+    if (action=='add-file') {
+        // do not SUBMIT the form
         return false;
     }
-    if (cSpot.item.action=='insert-file-item') {
+    // user added a new item with a file attached
+    if (action=='insert-file-item') {
+        // SUBMIT the form
         return true;
     }
-    if (cSpot.item.type  =='scripture'|| cSpot.item.type  =='comment') {
+    if (action != "update-scripture" && (type  =='scripture'|| type  =='comment') ) {
         if ($('#comment').val().length > 1) {
             $('#searchSongModal').modal('hide');
             showSpinner();
             document.getElementById('searchSongForm').submit();
         }
-        return;
+        // SUBMIT the form
+        return true;
     }
 
     // are we still searching or has the user already selected a song?
@@ -572,14 +613,11 @@ function searchForSongs()
     // which song was selected?
     var song_id = $('input[name=searchRadios]:checked', '#searchSongForm').val();
 
-    var plan_id = cSpot.item.plan_id;
-    var seq_no  = cSpot.item.seq_no;
-
     // check if user entered a comment
     var comment = $('#comment' ).val();
 
     // was this called via 'showUpdateSongForm' function?
-    if (plan_id=="update-song") {
+    if (action == "update-song") {
         if (song_id!=undefined) {
             // attach lyrics to song_id input field, so that when user selects this song, we can attach it as title to the table cell
             // (we get this from the selection in the search results to whose parent element the lyrics were attached)
@@ -589,7 +627,7 @@ function searchForSongs()
         return;
     }
     // was this called via 'AddScriptureRef' button?
-    if (plan_id=="update-scripture") {
+    if (action == "update-scripture") {
         addScriptureRef();
         return;
     }
@@ -1223,6 +1261,8 @@ function resetCommentText(id, newText)
 function eraseThisComment(that, item_id)
 {
     console.log('trying to erase comment for item id '+item_id);
+
+    $('#comment-item-id-'+item_id).html(cSpot.const.waitspinner);
 
     // get handle to table row containing the original comment
     var TRid  = $(that).parent().parent().attr('id');

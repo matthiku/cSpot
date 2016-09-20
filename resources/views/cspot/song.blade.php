@@ -89,17 +89,19 @@
 
             
             <div class="row form-group">
-               {!! Form::label('title', 'Song Title', ['class' => 'col-sm-4 col-md-3 col-lg-2 col-xl-4']); !!}
-               <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width">{!! Form::text('title'); !!}</div>
-               @if ( isset($song) )
-                    &nbsp; <a class="btn btn-sm" type="button" target="new" 
-                        href="{{ env('SONGSELECT_SEARCH', 'https://songselect.ccli.com/search/results?SearchText=').$song->title.' '.$song->title_2.' '.$song->author }}">
-                        <i class="fa fa-search" > </i> CCLI search 
-                    </a>
-                    &nbsp; <a class="btn btn-sm" type="button" target="new" 
-                        href="{{ env('HYMNAL.NET_SEARCH', 'https://www.hymnal.net/en/search/all/all/').$song->title.' '.$song->title_2 }}">
-                        <i class="fa fa-search" > </i> hymnal.net search 
-                    </a>
+                {!! Form::label('title', 'Song Title', ['class' => 'col-sm-4 col-md-3 col-lg-2 col-xl-4']); !!}
+                <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width">{!! Form::text('title'); !!}</div>
+                @if ( isset($song) )
+                    <div class="center">
+                        &nbsp; <a class="btn btn-sm" type="button" target="new" 
+                           href="{{ env('SONGSELECT_SEARCH', 'https://songselect.ccli.com/search/results?SearchText=').$song->title.' '.$song->title_2.' '.$song->author }}">
+                           <i class="fa fa-search" > </i> CCLI search 
+                        </a>
+                        &nbsp; <a class="btn btn-sm" type="button" target="new" 
+                           href="{{ env('HYMNAL.NET_SEARCH', 'https://www.hymnal.net/en/search/all/all/').$song->title.' '.$song->title_2 }}">
+                           <i class="fa fa-search" > </i> hymnal.net search 
+                        </a>
+                    </div>
                 @endif
             </div>
 
@@ -107,11 +109,11 @@
             <div class="row form-group">
                 <div class='col-sm-4 col-md-3 col-lg-2 col-xl-4'>                    
                     {!! Form::label('title_2', 'Subtitle'); !!}
-                    <small>(or use 'video' or 'infoscreen')</small>
+                    <small>(or use 'video' or 'slide')</small>
                     <big>
                         <a tabindex="0" href="#"
                             data-container="body" data-toggle="tooltip"
-                            title="Set subtitle to 'video' and the linked Youtube video can be shown on the presentation screen! Select 'infoscreen' in order to show Powerpoint-like slides!">
+                            title="Set subtitle to 'video' and the linked Youtube video can be shown on the presentation screen! Select 'slide' in order to show Powerpoint-like slides!">
                             <i class="fa fa-question-circle"></i></a>
                     </big>
                 </div>
@@ -208,15 +210,17 @@
                 {!! Form::label('youtube_id', 'Youtube ID', ['class' => 'col-sm-4 col-md-3 col-lg-2 col-xl-4']); !!}
                 <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width">{!! Form::text('youtube_id'); !!}</div>
                 @if ( isset($song) )
-                    <a class="btn btn-sm m-l-2" type="button" target="new" 
-                        href="{{ env('YOUTUBE_SEARCH', 'https://www.youtube.com/results?search_query=').$song->title }}">
-                        <big class="fa fa-youtube" > </big> YouTube search
-                    </a>
-                    @if ( strlen($song->youtube_id)>0 )
-                        &nbsp; <a class="btn btn-sm" type="button" target="new" 
-                            href="{{ env('YOUTUBE_PLAY', 'https://www.youtube.com/watch?v=').$song->youtube_id }}">
-                            <big class="fa fa-youtube-play"></big> Play on Youtube</a>
-                    @endif
+                    <div class="center">
+                        <a class="btn btn-sm" type="button" target="new" 
+                            href="{{ env('YOUTUBE_SEARCH', 'https://www.youtube.com/results?search_query=').$song->title }}">
+                            <big class="fa fa-youtube" > </big> YouTube search
+                        </a>
+                        @if ( strlen($song->youtube_id)>0 )
+                            &nbsp; <a class="btn btn-sm" type="button" target="new" 
+                                href="{{ env('YOUTUBE_PLAY', 'https://www.youtube.com/watch?v=').$song->youtube_id }}">
+                                <big class="fa fa-youtube-play"></big> Play on Youtube</a>
+                        @endif
+                    </div>
                 @endif
             </div>
 

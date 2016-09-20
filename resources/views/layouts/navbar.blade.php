@@ -70,7 +70,7 @@
                         <a class="dropdown-item" href="{{ url('admin/runjob/batch')  }}">
                             <i class="fa fa-btn fa-cubes"></i> &nbsp; Run Batch Job(s)</a>
                         <a class="dropdown-item" href="{{ url('admin/customize')  }}">
-                            <i class="fa fa-btn fa-cog fa-lg"></i> &nbsp; Customization</a>
+                            <i class="fa fa-btn fa-cog fa-lg"></i> &nbsp; Customisation</a>
                     @endif
                 </div>
             </li>
@@ -84,30 +84,37 @@
                     <span class="caret"></span>
                 </a>
 
+
                 <div class="dropdown-menu dropdown-menu-right" role="menu">
                     <a class="dropdown-item" href="{{ url('admin/users/'.Auth::user()->id) }}">
                         <i class="fa fa-btn fa-user fa-lg"></i>
                         Profile</a>
                     <hr>
+
                     <a  class="dropdown-item" href="#" onclick="setCurrentPageAsStartupPage(this)" 
                         data-action-URL="{{ route('user.setstartpage', Auth::user()->id) }}"
                         title="Set the current page as your personal startup page">
                         <i class="fa fa-btn fa-home fa-lg"></i>
-                        Set as Startup Page</a>
+                        Set as Startup Page {!! Auth::user()->startPage=='/'.Request::path() ? '<i class="fa fa-check"></i>' : '' !!}</a>
                     <hr>
+
                     <a class="dropdown-item" href="#" data-toggle="modal" data-target="#createMessage">
                         <i class="fa fa-btn fa-pencil-square-o fa-lg"></i>
                         Page Feedback</a>
+
                     <a class="dropdown-item" href="{{ URL::to('messages/create') }}">
                         <i class="fa fa-btn fa-pencil-square-o fa-lg"></i>
                         New Message</a>
+
                     <a class="dropdown-item" href="{{ URL::to('messages') }}">
                         <i class="fa fa-btn fa-inbox fa-lg"></i>
                         Messages @include('messenger.unread-count')</a>
                     <hr>
+
                     <a class="dropdown-item" href="{{ url('logout') }}">
                         <i class="fa fa-btn fa-sign-out fa-lg"></i>
                         Logout</a>
+
                 </div>
                 
             </li>

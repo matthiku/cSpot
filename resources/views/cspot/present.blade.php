@@ -39,11 +39,16 @@
                         @endforeach
                     @endif
 
-                    <div class="text-present m-b-3 lyrics-parts" id="lyrics-title"
-                         style="display: none; position: absolute; left: auto; top: 0px; width: 100%;">
-                        {{ $item->song->title }}
-                        {!! ($item->song->title_2 && $item->song->title_2 != 'video' && $item->song->title_2 != 'infoscreen') ? '<br>('.$item->song->title_2.')' : '' !!}
-                    </div>
+                    {{-- show song title --}}
+                    @if (! $item->hideTitle)
+                        <div class="text-present m-b-3 lyrics-parts" id="lyrics-title"
+                             style="display: none; position: absolute; left: auto; top: 0px; width: 100%; font-style: italic;">
+                            {{ $item->song->title }}
+                            <span style="font-size: 90%">
+                                {!! ($item->song->title_2 && $item->song->title_2 != 'video' && $item->song->title_2 != 'slide') ? '<br>('.$item->song->title_2.')' : '' !!}
+                            </span>
+                        </div>
+                    @endif
 
                     {{-- insert videoclip or lyrics --}}
                     @if ($item->song->title_2=='video')
@@ -219,7 +224,7 @@
 
 
         <!-- jump to next plan item -->
-        <ul class="nav navbar-nav pull-xs-right">
+        <ul class="nav navbar-nav pull-xs-right" id="next-item-button">
             <li>
                 <a 
                     @if ($item->id == $item->plan->lastItem()->id)
@@ -269,7 +274,7 @@
 
 
         {{-- what's coming next? (Show unless we are on the last item!) --}}
-        <span class="nav navbar-nav">
+        <span class="nav navbar-nav" id="item-navbar-next-label">
             @if ($item->id != $item->plan->lastItem()->id)
                 <small class="hidden-lg-up hidden-xs-down text-muted limited-width">(next: {{ substr(getItemTitle($item),0,15) }})</small>
                 <small class="hidden-md-down text-muted limited-width">(up next: {{ getItemTitle($item) }})</small>
@@ -311,7 +316,7 @@
                                 href="{{ url('cspot/items/').'/'.$menu_item->id.'/present' }}">
                                 <small class="hidden-md-down">{{ $menu_item->seq_no }}</small> &nbsp; 
                                 @if ($menu_item->song_id && $menu_item->song->title)
-                                    {!! $menu_item->song->title_2=='infoscreen'
+                                    {!! $menu_item->song->title_2=='slide'
                                         ? $menu_item->song->title
                                         : '<i class="fa fa-music">&nbsp;</i><strong>'.$menu_item->song->title.'</strong>' 
                                     !!}                                    
@@ -335,7 +340,7 @@
                         href="{{ url('cspot/plans/'.$item->plan_id) }}">
                         <i class="fa fa-undo"></i>
                         Back to plan overview
-                        <small class="pull-xs-right">(* = item in local cache)</small>
+                        <small class="pull-xs-right"><span class="font-weight-bold">*</span>item in local cache)</small>
                     </a>
                 </div>
 

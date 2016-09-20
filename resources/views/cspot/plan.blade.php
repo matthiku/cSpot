@@ -76,7 +76,7 @@
                     </div>
                     <div class="pull-xs-right m-r-1">
                         <a title="YouTube playlist of all songs" target="new" 
-                            href="https://www.youtube.com/playlist?list=PL4XL7HPBoyv9Pcf0ZFWfa2GLY2VKPfZqz">
+                            href="{{ env('YOUTUBE_PLAYLIST_URL', 'https://www.youtube.com/playlist?list=').env('CHURCH_YOUTUBE_PLAYLIST_ID', '') }}">
                             <i class="fa fa-youtube">&nbsp;</i>play all</a>
                     </div>
                 </div>

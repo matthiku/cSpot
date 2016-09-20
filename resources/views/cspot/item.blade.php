@@ -93,8 +93,12 @@
                                     onclick="showSpinner()" 
                                     href="{{ url('cspot/plans/'.$plan->id.'/items').'/'.$menu_item->id.'/edit' }}">
                                     <small class="hidden-xs-down">{{ $menu_item->seq_no }} &nbsp;</small> 
-                                    @if ($menu_item->song_id && $menu_item->song->title)
-                                        <i class="fa fa-music">&nbsp;</i><strong>{{ $menu_item->song->title }}</strong>
+                                    @if ($menu_item->song_id && $menu_item->song->title )
+                                        @if ( $menu_item->song->title_2=='slide' || $menu_item->song->title_2=='video' )
+                                            ({{ ucfirst($menu_item->song->title_2) }}) {{ $menu_item->song->title }}
+                                        @else
+                                            <i class="fa fa-music">&nbsp;</i><strong>{{ $menu_item->song->title }}</strong>
+                                        @endif
                                     @else
                                         {{ $menu_item->comment }}
                                     @endif
@@ -179,7 +183,9 @@
         <ul>
 
             @if ( $item->song_id )
-                <li><a href="#song-details-tab"><span class="hidden-sm-down">Song </span>Details</a></li>
+                <li><a href="#song-details-tab">
+                    <span class="hidden-sm-down">{{ ucfirst($item->itemType()) }} </span>Details
+                </a></li>
             @endif
 
             <li>
@@ -200,15 +206,17 @@
             </a></li>
 
             @if ( $item->song_id )
-                <li><a href="#lyrics-tab">Lyrics
+                <li><a href="#lyrics-tab">{{ $item->itemType()=='song' ? 'Lyrics' : ucfirst($item->itemType()) }}
                     <small class="text-muted">{!! $item->song->lyrics ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>' !!}</small>
                 </a></li>
-                <li><a href="#chords-tab">Chords
-                    <small class="text-muted">{!! $item->song->chords ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>' !!}</small>
-                </a></li>
-                <li><a href="#sheet-tab">Sheet Music
-                    <small class="text-muted">{!! $item->song->files->count() ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>' !!}</small>
-                </a></li>
+                @if ( $item->itemType()=='song')
+                    <li><a href="#chords-tab">Chords
+                        <small class="text-muted">{!! $item->song->chords ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>' !!}</small>
+                    </a></li>
+                    <li><a href="#sheet-tab">Sheet Music
+                        <small class="text-muted">{!! $item->song->files->count() ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>' !!}</small>
+                    </a></li>
+                @endif
             @endif
 
         </ul>
@@ -222,16 +230,21 @@
         --}}
 
         @if ( $item->song_id )
+
             {!! Form::hidden('song_id', $item->song_id) !!}
-            <div id="song-details-tab">
+
+            <div id = "song-details-tab">
+
                 <div class="card card-block text-xs-center p-b-1" style="max-width: 40rem; ">
 
                     <div class="row song-details form-group">
                         <h5 class="card-title">
-                            <i class="pull-xs-left fa fa-music"></i>
-                            <i class="pull-xs-right fa fa-music"></i>
+                            @if ( $item->itemType()=='song')
+                                <i class="pull-xs-left fa fa-music"></i>
+                                <i class="pull-xs-right fa fa-music"></i>
+                            @endif
                             {{ $item->song->title ? $item->song->title : '' }}
-                            @if ($item->song->title_2)
+                            @if ( $item->itemType()=='song' && $item->song->title_2)
                                 <br>({{ $item->song->title_2 }})
                             @endif
                         </h5>
@@ -242,16 +255,31 @@
 
                     <div class="card-text song-details">
 
-                        <div class="row">
-                            Note: 
-                            @if ( $usageCount )
-                                Song was used before in <strong>{{ $usageCount }}</strong> service(s) -
-                                lastly <strong title="{{ $newestUsage->date }}">
-                                    {{ Carbon::now()->diffForHumans( $newestUsage->date, true ) }} ago</strong>
-                            @else
-                                Song was never used before in a service
-                            @endif
-                        </div>
+                        @if ( $item->itemType()=='song')
+                            <div class="row">
+                                Note: 
+                                @if ( $usageCount )
+                                    Song was used before in <strong>{{ $usageCount }}</strong> service(s) -
+                                    lastly <strong title="{{ $newestUsage->date }}">
+                                        {{ Carbon::now()->diffForHumans( $newestUsage->date, true ) }} ago</strong>
+                                @else
+                                    Song was never used before in a service
+                                @endif
+                            </div>
+                        @else
+                            <span class="btn btn-secondary">
+                                <label class="custom-control custom-checkbox">
+                                    <input type="checkbox" id="toggle-show-hideTitle" 
+                                          class="custom-control-input" {{ $item->hideTitle ? 'checked="checked"' : '' }}
+                                        onclick="toggleHideTitle(this, 'hideTitle-item-id-{{ $item->id }}', '{{ route('cspot.api.item.update') }}')"
+                                        {{ Auth::user()->ownsPlan($plan->id) ? '' : ' disabled' }}>
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description" id="hideTitle-item-id-{{ $item->id }}"
+                                        >When checked, title of this item will not be shown in the presentation
+                                </label>
+                            </span>
+
+                        @endif
 
                         <br>
 
@@ -271,11 +299,11 @@
                                 @if ($item->song->ccli_no>9999)
                                     <a href="https://songselect.ccli.com/Songs/{{ $item->song->ccli_no }}" 
                                         target="new" class="fully-width btn btn-outline-primary btn-sm">
-                                    <img src="/images/songselectlogo.png" width="20"><br><small>show<span class="hidden-lg-down"> on SongSelect</span></small></a>
+                                    <img src="/images/songselectlogo.png" width="14"><br><small>show<span class="hidden-lg-down"> on SongSelect</span></small></a>
                                 @else
                                     <a href="#" class="fully-width btn btn-outline-secondary btn-sm disabled"
                                           title="Missing SongSelect Link!" data-toggle="tooltip">
-                                    <img src="/images/songselectlogo.png" width="20"><br><small>no CCLI</small></a>
+                                    <img src="/images/songselectlogo.png" width="14"><br><small>no CCLI</small></a>
                                 @endif
                             </div>
                         </div>
@@ -285,13 +313,13 @@
                                 <div class="col-sm-12 col-md-3 full-btn">
                                     <a href="#" class="fully-width btn btn-outline-primary btn-sm" 
                                         onclick="showSongSearchInput(this, '.song-search')" 
-                                    ><i class="fa fa-exchange"></i><br><small>change song</small></a>
+                                    ><i class="fa fa-exchange"></i><br><small>change song/slide</small></a>
                                 </div>
                                 <div class="col-sm-12 col-md-3 full-btn">
                                     <a href="#" class="fully-width btn btn-outline-primary btn-sm" 
                                         onclick="unlinkSong(this, {{ $item->id.', '.$item->song_id.', \''.route('cspot.plans.edit', $item->plan_id)."'" }})" 
                                         title="Detach song from this item" data-toggle="tooltip"
-                                    ><i class="fa fa-unlink"></i><br><small>unlink song</small></a>
+                                    ><i class="fa fa-unlink"></i><br><small>unlink song/slide</small></a>
                                 </div>
                             @endif
                             @if (Auth::user()->isEditor() )
@@ -299,7 +327,7 @@
                                     <a href="#" class="fully-width btn btn-outline-primary btn-sm" accesskey="69" id="go-edit"
                                         onclick="showSpinner();location.href='{{ route('cspot.songs.edit', $item->song_id) }}'" 
                                           title="Edit details of this song" data-toggle="tooltip"
-                                    ><i class="fa fa-edit"></i><br><small>edit song</small></a>
+                                    ><i class="fa fa-edit"></i><br><small>edit song/slide</small></a>
                                 </div>
                             @endif
                         </div>
@@ -309,7 +337,7 @@
 
                     <!-- show song search input field if requested -->
                     <div class="row form-group song-search" style="display: none">
-                        To search for another song,
+                        To search for another song/slide,
 
                         @include('cspot.snippets.song_search')
 
@@ -415,9 +443,10 @@
         @if ( $item->song_id )
 
             <div id="lyrics-tab">
-                @if ($item->song->title_2 != 'video')
+                @if ($item->itemType()=='song')
                     <span class="text-info">({{ $item->song->sequence ? 'Sequence: '.$item->song->sequence : 'No sequence predefined' }})</span>
-                @else
+                @endif
+                @if ($item->itemType()=='video')
                     <small>(possible time parameter was ignored!)</small>
                     <br>
                     <iframe width="560" height="315" 
@@ -426,25 +455,32 @@
                     </iframe>
                 @endif
                 <pre id="lyrics-song-id-{{ $item->song->id }}" {{ (Auth::user()->isEditor()) ? 'class=edit_area' : '' }}>{{ $item->song->lyrics }}</pre>
+                <small class="text-muted">(click to edit!)</small>
             </div>
 
 
-            <div id="chords-tab">
-                <pre id="chords-song-id-{{ $item->song->id }}" class="{{ (Auth::user()->isEditor()) ? 'edit_area' : '' }} show-chords">{{ $item->song->chords }}</pre>
-            </div>
-            
+            @if ( $item->itemType()=='song')
 
-            <div id="sheet-tab">
-                @foreach ($item->song->files as $file)
-                    @if ($item->song->license=='PD' || Auth::user()->isMusician() )
-                        @include ('cspot.snippets.show_files')
-                    @else
-                        <span>(copyrighted material)</span>
-                    @endif
-                @endforeach
-            </div>
+                <div id="chords-tab">
+                    <pre id="chords-song-id-{{ $item->song->id }}" class="{{ (Auth::user()->isEditor()) ? 'edit_area' : '' }} show-chords">{{ $item->song->chords }}</pre>
+                </div>
+                
+
+                <div id="sheet-tab">
+                    @foreach ($item->song->files as $file)
+                        @if ($item->song->license=='PD' || Auth::user()->isMusician() )
+                            @include ('cspot.snippets.show_files')
+                        @else
+                            <span>(copyrighted material)</span>
+                        @endif
+                    @endforeach
+                </div>
+
+            @endif
+
 
         @endif
+
 
 
     </div>

@@ -17,6 +17,7 @@ class AddFieldToItemsTable extends Migration
             $table->boolean('forLeadersEyesOnly')->default(false);
             $table->boolean('show_comment')->default(false);
             $table->dateTime('reported_at')->nullable();
+            $table->boolean('hideTitle')->nullable();
         });
     }
 
@@ -32,6 +33,7 @@ class AddFieldToItemsTable extends Migration
             $table->dropColumn('forLeadersEyesOnly');
             $table->dropColumn('show_comment');
             $table->dropColumn('reported_at');
+            $table->dropColumn('hideTitle');
         });
     }
 }

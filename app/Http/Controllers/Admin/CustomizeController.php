@@ -72,6 +72,37 @@ class CustomizeController extends Controller
         if ($request->has('church_ccli')) {
             $this->updateDotEnv('CHURCH_CCLI', $request->church_ccli);
         }
+        if ($request->has('church_youtube_playlist_id')) {
+            $this->updateDotEnv('CHURCH_YOUTUBE_PLAYLIST_ID', $request->church_youtube_playlist_id);
+        }
+
+        if ($request->has('songselect_url')) {
+            $this->updateDotEnv('SONGSELECT_URL', $request->songselect_url);
+        }
+        if ($request->has('songselect_search')) {
+            $this->updateDotEnv('SONGSELECT_SEARCH', $request->songselect_search);
+        }
+        if ($request->has('ccli_report_url')) {
+            $this->updateDotEnv('CCLI_REPORT_URL', $request->ccli_report_url);
+        }
+        if ($request->has('hymnal_net_play')) {
+            $this->updateDotEnv('HYMNAL.NET_PLAY', $request->hymnal_net_play);
+        }
+        if ($request->has('hymnal_net_search')) {
+            $this->updateDotEnv('HYMNAL.NET_SEARCH', $request->hymnal_net_search);
+        }
+        if ($request->has('youtube_play')) {
+            $this->updateDotEnv('YOUTUBE_PLAY', $request->youtube_play);
+        }
+        if ($request->has('youtube_search')) {
+            $this->updateDotEnv('YOUTUBE_SEARCH', $request->youtube_search);
+        }
+
+        if ($request->has('youtube_playlist_url')) {
+            $this->updateDotEnv('YOUTUBE_PLAYLIST_URL', $request->youtube_playlist_url);
+        }
+
+
         if ($request->has('enable_sync')) {
             $this->updateDotEnv('PRESENTATION_ENABLE_SYNC', $request->get('enable_sync'));
         } 

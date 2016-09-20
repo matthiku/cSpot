@@ -290,9 +290,9 @@ function showSongHints(that, needle, limit)
           || haystackMP[i].title_2.toLowerCase().indexOf(needle)>=0 
           || haystackMP[i].book_ref.toLowerCase().indexOf(needle)>=0 ) {
 
-            // are we limited to only show videoclips or infoscreen items?
+            // are we limited to only show videoclips or slide items?
             if (limit=='clips') {
-                if ( ! (haystackMP[i].title_2.toLowerCase() == 'video' || haystackMP[i].title_2.toLowerCase() == 'infoscreen') )
+                if ( ! (haystackMP[i].title_2.toLowerCase() == 'video' || haystackMP[i].title_2.toLowerCase() == 'slide') )
                     continue;
             }
             if (count==0) found='';
@@ -313,7 +313,7 @@ function showSongHints(that, needle, limit)
     and add them as options to the dropdown-select box
     in the Song Search modal popup
 
-    Same for the list of video clips or infoscreens
+    Same for the list of video clips or slides
 */
 function addOptionsToMPsongSelect()
 {
@@ -337,9 +337,9 @@ function addOptionsToMPsongSelect()
             mps.appendChild(opt);
         }
         // for the list of Clips....
-        if ( songs[i].title_2 == "video" || songs[i].title_2 == "infoscreen" ) {
+        if ( songs[i].title_2 == "video" || songs[i].title_2 == "slide" ) {
             opt.value = songs[i].id;
-            opt.text = songs[i].title + (songs[i].title_2 ? '('+songs[i].title_2+')' : '');
+            opt.text = songs[i].title + (songs[i].title_2 ? ' ('+songs[i].title_2+')' : '');
             clips.appendChild(opt);
         }
     }

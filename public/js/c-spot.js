@@ -39160,9 +39160,9 @@ function showSongHints(that, needle, limit)
           || haystackMP[i].title_2.toLowerCase().indexOf(needle)>=0 
           || haystackMP[i].book_ref.toLowerCase().indexOf(needle)>=0 ) {
 
-            // are we limited to only show videoclips or infoscreen items?
+            // are we limited to only show videoclips or slide items?
             if (limit=='clips') {
-                if ( ! (haystackMP[i].title_2.toLowerCase() == 'video' || haystackMP[i].title_2.toLowerCase() == 'infoscreen') )
+                if ( ! (haystackMP[i].title_2.toLowerCase() == 'video' || haystackMP[i].title_2.toLowerCase() == 'slide') )
                     continue;
             }
             if (count==0) found='';
@@ -39183,7 +39183,7 @@ function showSongHints(that, needle, limit)
     and add them as options to the dropdown-select box
     in the Song Search modal popup
 
-    Same for the list of video clips or infoscreens
+    Same for the list of video clips or slides
 */
 function addOptionsToMPsongSelect()
 {
@@ -39207,9 +39207,9 @@ function addOptionsToMPsongSelect()
             mps.appendChild(opt);
         }
         // for the list of Clips....
-        if ( songs[i].title_2 == "video" || songs[i].title_2 == "infoscreen" ) {
+        if ( songs[i].title_2 == "video" || songs[i].title_2 == "slide" ) {
             opt.value = songs[i].id;
-            opt.text = songs[i].title + (songs[i].title_2 ? '('+songs[i].title_2+')' : '');
+            opt.text = songs[i].title + (songs[i].title_2 ? ' ('+songs[i].title_2+')' : '');
             clips.appendChild(opt);
         }
     }
@@ -40340,6 +40340,38 @@ function toggleShowComment(that, id, actionUrl)
 }
 
 
+/* toggle field 'show_comment'
+*/
+function toggleHideTitle(that, id, actionUrl) 
+{
+    var oldText = $('#'+id).text();
+
+    // replace current note with spinner while doing AJAX
+    $('#'+id).html('<i class="fa fa-spinner fa-spin fa-fw"></i>');
+
+    $.post( 
+        actionUrl, 
+        { 
+            'id'    : id, 
+            'value' : $(that).prop('checked'),
+        })
+    .done( 
+        function(data) {
+            // show result
+            if (data == '1' || data == '0')
+                $('#'+id).text(oldText);
+            else
+                $('#'+id).text( JSON.stringify(data) );
+        })
+    .fail(
+        function(data) {
+            // show result
+            $('#'+id).text( JSON.stringify(data) );
+        }
+    );
+}
+
+
 /* toggle field 'key' in order to use item as Announcements Slide
 */
 function toggleShowAnnouncement(that, id, actionUrl) 
@@ -40513,14 +40545,14 @@ function insertNewOrUpdateExistingItems( event )
     item.buttonID = button.attr('id');
     cSpot.item = item;
 
-    ;;;console.log( JSON.stringify(item) );
+    ;;;console.log( 'cSpot.item = ' + JSON.stringify(item) );
 
     // prepare title text for popup dialog
     var ar_seq = item.seq_no.split('-');
     var titleText = 'before item No '+item.seq_no;
 
     // was modal opened from existing item?
-    if (item.plan_id=="update-song" || location.pathname.search('chords') > 0) {
+    if (item.action=="update-song" || location.pathname.search('chords') > 0) {
         // directly activate the song selection
         showModalSelectionItems('song');
         $('#searchSongForm'      ).attr('data-action', item.actionUrl);
@@ -40531,7 +40563,7 @@ function insertNewOrUpdateExistingItems( event )
             titleText = 'after item No '+ar_seq[1];
     }
 
-    else if (item.plan_id=="update-scripture") {
+    else if (item.action=="update-scripture") {
         // directly activate the scripture selection
         showModalSelectionItems('scripture');
         // use current comment text as initial value
@@ -40658,20 +40690,29 @@ function searchForSongs()
     ;;;console.log('Searching for or selecting songs?' );
     ;;;console.log('cSpot.item: '+JSON.stringify(cSpot.item) );
 
+    var plan_id = cSpot.item.plan_id;
+    var action  = cSpot.item.action;
+    var seq_no  = cSpot.item.seq_no;
+    var type    = cSpot.item.type;
+
     // user chose to add a file to an existing item
-    if (cSpot.item.action=='add-file') {
+    if (action=='add-file') {
+        // do not SUBMIT the form
         return false;
     }
-    if (cSpot.item.action=='insert-file-item') {
+    // user added a new item with a file attached
+    if (action=='insert-file-item') {
+        // SUBMIT the form
         return true;
     }
-    if (cSpot.item.type  =='scripture'|| cSpot.item.type  =='comment') {
+    if (action != "update-scripture" && (type  =='scripture'|| type  =='comment') ) {
         if ($('#comment').val().length > 1) {
             $('#searchSongModal').modal('hide');
             showSpinner();
             document.getElementById('searchSongForm').submit();
         }
-        return;
+        // SUBMIT the form
+        return true;
     }
 
     // are we still searching or has the user already selected a song?
@@ -40742,14 +40783,11 @@ function searchForSongs()
     // which song was selected?
     var song_id = $('input[name=searchRadios]:checked', '#searchSongForm').val();
 
-    var plan_id = cSpot.item.plan_id;
-    var seq_no  = cSpot.item.seq_no;
-
     // check if user entered a comment
     var comment = $('#comment' ).val();
 
     // was this called via 'showUpdateSongForm' function?
-    if (plan_id=="update-song") {
+    if (action == "update-song") {
         if (song_id!=undefined) {
             // attach lyrics to song_id input field, so that when user selects this song, we can attach it as title to the table cell
             // (we get this from the selection in the search results to whose parent element the lyrics were attached)
@@ -40759,7 +40797,7 @@ function searchForSongs()
         return;
     }
     // was this called via 'AddScriptureRef' button?
-    if (plan_id=="update-scripture") {
+    if (action == "update-scripture") {
         addScriptureRef();
         return;
     }
@@ -41393,6 +41431,8 @@ function resetCommentText(id, newText)
 function eraseThisComment(that, item_id)
 {
     console.log('trying to erase comment for item id '+item_id);
+
+    $('#comment-item-id-'+item_id).html(cSpot.const.waitspinner);
 
     // get handle to table row containing the original comment
     var TRid  = $(that).parent().parent().attr('id');
@@ -42575,6 +42615,10 @@ function navigateTo(where)
     if ( document.baseURI.search('/present')<10 )
         showSpinner();
 
+    // no blankscreen when navigating to 'edit' or 'back' (exit)
+    if (where=='edit' || where=='back')
+        screenBlank = false;
+
     // in presentation Mode, do we want a blank slide between items?
     if ( cSpot.presentation.configBlankSlides  &&  screenBlank ) {
         screenBlank = false;
@@ -42715,25 +42759,6 @@ function modifyHRefOfJumpbutton(next_seq_no, prev_seq_no)
 
     // hide spinner, if present
     $('#show-spinner').modal('hide')    
-}
-
-// write cached data into the DOM
-function writeCachedDataIntoDOM(identifier) {
-
-    ;;;console.log('Next item comes cached from local storage! Identifier: '+identifier);
-
-    var type = cSpot.presentation.type;
-
-    if ( type == 'chords'  || type == 'sheetmusic' ) {
-        $('#main-content'       ).html(localStorage.getItem(identifier + '-mainContent-'+ type));
-        $('#present-navbar'     ).html(localStorage.getItem(identifier + '-present-navbar' ));
-        return;
-    }
-
-    $('#lyrics-parts-indicators').html(localStorage.getItem(identifier + '-seqIndicator'));
-    $('#main-content'           ).html(localStorage.getItem(identifier + '-mainContent'));
-    $('#lyrics-sequence-nav'    ).html(localStorage.getItem(identifier + '-sequenceNav'));
-    $('#item-navbar-label'      ).html(localStorage.getItem(identifier + '-itemNavBar' ));
 }
 
 
@@ -43124,6 +43149,29 @@ function changeFontSize(selectorList, how) {
 
 
 
+/* write cached data into the DOM -         called from         navigateTo()
+*/
+function writeCachedDataIntoDOM(identifier) {
+
+    ;;;console.log('Next item comes cached from local storage! Identifier: '+identifier);
+
+    var type = cSpot.presentation.type;
+
+    if ( type == 'chords'  || type == 'sheetmusic' ) {
+        $('#main-content'       ).html(localStorage.getItem(identifier + '-mainContent-'+ type));
+        $('#present-navbar'     ).html(localStorage.getItem(identifier + '-present-navbar' ));
+        return;
+    }
+
+    $('#main-content'           ).html(localStorage.getItem(identifier + '-mainContent'));
+    $('#lyrics-parts-indicators').html(localStorage.getItem(identifier + '-seqIndicator'));
+    $('#lyrics-sequence-nav'    ).html(localStorage.getItem(identifier + '-sequenceNav'));
+    $('#item-navbar-label'      ).html(localStorage.getItem(identifier + '-itemNavBar' ));
+    $('#item-navbar-next-label' ).html(localStorage.getItem(identifier + '-itemNavBarNext'));
+    // $('#next-item-button'       ).html(localStorage.getItem(identifier + '-itemNBNextItemBtn'));
+}
+
+
 // save main content html to local storage
 function saveMainContentToLocalStorage(what) {    
 
@@ -43151,6 +43199,8 @@ function saveMainContentToLocalStorage(what) {
     saveLocallyAndRemote(plan_id, itemIdentifier +'-sequenceNav',       $('#lyrics-sequence-nav').html());
     // item label 
     saveLocallyAndRemote(plan_id, itemIdentifier +'-itemNavBar',        $('#item-navbar-label').html());
+    saveLocallyAndRemote(plan_id, itemIdentifier +'-itemNavBarNext',    $('#item-navbar-next-label').html());
+    // saveLocallyAndRemote(plan_id, itemIdentifier +'-itemNBNextItemBtn', $('#next-item-button').html());
     // whole NavBar for chords and sheetmusic
     saveLocallyAndRemote(plan_id, itemIdentifier +'-present-navbar',    $('#present-navbar').html());
 
@@ -43243,7 +43293,7 @@ function saveLocallyAndRemote(plan_id, key, value)
             'key'       : key,
             'value'     : value.trim() + ' ',       // have at least one blank for server-side validation to work
         }, 
-        console.log(value.length + ' cache saved on server: ' + key)
+        console.log('Cached data saved on server: ' + key)
     );
 }
 
