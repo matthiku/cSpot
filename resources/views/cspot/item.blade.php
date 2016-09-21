@@ -440,12 +440,23 @@
         </div>
 
 
+
         @if ( $item->song_id )
 
             <div id="lyrics-tab">
+
                 @if ($item->itemType()=='song')
-                    <span class="text-info">({{ $item->song->sequence ? 'Sequence: '.$item->song->sequence : 'No sequence predefined' }})</span>
+                    <span class="text-info">
+                        @if (Auth::user()->isEditor())
+                            Sequence:
+                            <span id="sequence-song-id-{{ $item->song->id }}" class="editable-song-field">{{ $item->song->sequence }}</span>
+                            <i class="fa fa-pencil text-muted"> </i>
+                        @else
+                            ({{ $item->song->sequence ? 'Sequence: '.$item->song->sequence : 'No sequence predefined' }})
+                        @endif
+                    </span>
                 @endif
+
                 @if ($item->itemType()=='video')
                     <small>(possible time parameter was ignored!)</small>
                     <br>
@@ -454,7 +465,9 @@
                         frameborder="0" allowfullscreen>                                    
                     </iframe>
                 @endif
+
                 <pre id="lyrics-song-id-{{ $item->song->id }}" {{ (Auth::user()->isEditor()) ? 'class=edit_area' : '' }}>{{ $item->song->lyrics }}</pre>
+
                 <small class="text-muted">(click to edit!)</small>
             </div>
 

@@ -18,6 +18,7 @@ use App\Models\File;
 
 use Storage;
 use Auth;
+use DB;
 
 
 class SongController extends Controller
@@ -57,7 +58,8 @@ class SongController extends Controller
         // with filtering?
         if (isset($request->filterby) and isset($request->filtervalue)) {
             if ($request->filterby=='fulltext') {
-                $songs = Song::orderBy($orderBy, $order)
+                $songs = Song::withCount('items')
+                    ->orderBy($orderBy, $order)
                     ->where(  'title',    'like', '%'.$request->filtervalue.'%')
                     ->orWhere('title_2',  'like', '%'.$request->filtervalue.'%')
                     ->orWhere('author',   'like', '%'.$request->filtervalue.'%')
@@ -65,17 +67,22 @@ class SongController extends Controller
                     ->orWhere('lyrics',   'like', '%'.$request->filtervalue.'%');
             } 
             elseif ($request->filterby=='title') {
-                $songs = Song::orderBy($orderBy, $order)
+                $songs = Song::withCount('items')
+                    ->orderBy($orderBy, $order)
                     ->where(  'title',    'like', '%'.$request->filtervalue.'%')
                     ->orWhere('title_2',  'like', '%'.$request->filtervalue.'%');
             }
             else {
-                $songs = Song::orderBy($orderBy, $order)
+                $songs = Song::withCount('items')
+                    ->orderBy($orderBy, $order)
                     ->where($request->filterby, 'like', '%'.$request->filtervalue.'%');
             }
         } 
         else {
-            $songs = Song::orderBy($orderBy, $order);
+            // the where clause is needed since the 'withCount' would bring in all items with song_id = 0
+            $songs = Song::withCount('items')
+                ->where('id', '>', 0)
+                ->orderBy($orderBy, $order);
         }
 
         $heading = 'Manage Songs';
@@ -96,8 +103,6 @@ class SongController extends Controller
             'currentPage' => $songs->currentPage(),
         ));
     }
-
-
 
 
 

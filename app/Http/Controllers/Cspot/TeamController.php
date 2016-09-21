@@ -37,7 +37,6 @@ class TeamController extends Controller
         // get list of users
         $users = User::where('name', '<>', 'n/a')->orderBy('first_name')->get();
 
-
         // return view
         if ($plan) {
             return view('cspot.teams', [

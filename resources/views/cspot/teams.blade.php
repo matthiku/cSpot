@@ -59,81 +59,85 @@
 
         <tbody>
         @foreach( $plan->teams as $team )
-            <tr class="{{ ($team->confirmed) ? 'bg-success' : 'bg-info' }}">
+            @if ($team->user)
+                <tr class="{{ ($team->confirmed) ? 'bg-success' : 'bg-info' }}">
 
-                <!-- row NAME -->
-                <td scope="row">{{ $team->user->name }}</td>
+                    <!-- row NAME -->
+                    <td scope="row">{{ $team->user->name }}</td>
 
-                <!-- row ROLE -->
-                <td
+                    <!-- row ROLE -->
+                    <td
+                        @if( $userIsAuthorized )
+                            class="link" onclick="location.href='{{ url('cspot/plans/'.$team->plan_id.'/team/'.$team->id) }}/edit'"
+                        @endif
+                        >
+                        {{ $team->role ? ucfirst($team->role->name) : '(tbd)' }}</td>
+
+                    <!-- row COMMENT -->
+                    <td 
+                        @if( $userIsAuthorized )
+                            class="link hidden-sm-down" onclick="location.href='{{ url('cspot/plans/'.$team->plan_id.'/team/'.$team->id) }}/edit'"
+                        @endif
+                        class="hidden-sm-down">{{ $team->comment }}
+                        @if ($team->user->instruments->count())
+                            @foreach ($team->user->instruments as $key => $instrument)
+                                {{  $instrument->name }}{{ ($key==$team->user->instruments->count()-1) ? '' : ', ' }}
+                            @endforeach
+                        @endif
+                    </td>
+
+                    <!-- row AVAILABLE? -->
+                    <td>
+                        @if ( Auth::user()->id == $team->user_id  &&  ! $team->confirmed )
+                            <a class="btn btn-secondary btn-sm pull-sm-right" data-available="{{ $team->available ? 'true' : 'false' }}"
+                               title="Click if you are {{ $team->available ? 'NOT' : '' }} available for this Service" 
+                                href="#" onclick='userAvailableForPlan(this, {{ $team->plan_id }})'>
+                                {!! ($team->available) ? '<i class="fa fa-frown-o"></i> I\'m unavailable' : '<i class="fa fa-smile-o"></i> I\'m available' !!}
+                                <i class="fa fa-square-o"></i></a>
+                        @endif
+                        <i class="fa fa-{{ ($team->available) ? 'check-square' : 'minus-square-o' }} fa-big"> </i>
+                        {{ ($team->available) ? '(available)' : '(unavailable)' }}
+                    </td>
+
+                    <!-- row REQUESTED? -->
                     @if( $userIsAuthorized )
-                        class="link" onclick="location.href='{{ url('cspot/plans/'.$team->plan_id.'/team/'.$team->id) }}/edit'"
+                    <td>
+                            <a class="btn btn-secondary btn-sm pull-sm-right" title="Send request to user" 
+                                onclick="$('#show-spinner').modal({keyboard: false});" 
+                                href='{{ url('cspot/plans/'.$team->plan_id.'/team/'.$team->id) }}/sendrequest'><i class="fa fa-envelope-o"></i></a>
+                        <i class="fa fa-{{ ($team->requested) ? 'check-square' : 'minus-square-o' }}"> </i> 
+                    </td>
                     @endif
-                    >
-                    {{ $team->role ? ucfirst($team->role->name) : '(tbd)' }}</td>
 
-                <!-- row COMMENT -->
-                <td 
+                    <!-- row CONFIRMED? -->
+                    <td>
+                        @if ( Auth::user()->id == $team->user_id )
+                            <a class="btn btn-secondary btn-sm pull-sm-right" title="Confirm/Decline" 
+                                onclick="$('#show-spinner').modal({keyboard: false});" 
+                                href='{{ url('cspot/plans/'.$team->plan_id.'/team/'.$team->id) }}/confirm'>
+                                {{ ($team->confirmed) ? 'Decline' : 'Confirm' }}:
+                                <i class="fa fa-square-o"></i></a>
+                        @endif
+                        <i class="fa fa-{{ ($team->confirmed) ? 'check-square' : 'minus-square-o' }} fa-big"> </i>
+                        {{ ($team->confirmed) ? '(confirmed)' : '(unconfirmed)' }}
+                    </td>
+
+                    <!-- row ACTIONS -->
                     @if( $userIsAuthorized )
-                        class="link hidden-sm-down" onclick="location.href='{{ url('cspot/plans/'.$team->plan_id.'/team/'.$team->id) }}/edit'"
+                    <td class="nowrap">
+                            <a class="btn btn-outline-primary btn-sm" title="Edit" 
+                                onclick="$('#show-spinner').modal({keyboard: false});" 
+                                href='{{ url('cspot/plans/'.$team->plan_id.'/team/'.$team->id) }}/edit'><i class="fa fa-pencil"></i></a>
+                            <a class="btn btn-danger btn-sm" title="Delete!" 
+                                onclick="$('#show-spinner').modal({keyboard: false});" 
+                                href='{{ url('cspot/plans/'.$team->plan_id.'/team/'.$team->id) }}/delete'><i class="fa fa-trash"></i></a>
+                    </td>
                     @endif
-                    class="hidden-sm-down">{{ $team->comment }}
-                    @if ($team->user->instruments->count())
-                        @foreach ($team->user->instruments as $key => $instrument)
-                            {{  $instrument->name }}{{ ($key==$team->user->instruments->count()-1) ? '' : ', ' }}
-                        @endforeach
-                    @endif
-                </td>
 
-                <!-- row AVAILABLE? -->
-                <td>
-                    @if ( Auth::user()->id == $team->user_id  &&  ! $team->confirmed )
-                        <a class="btn btn-secondary btn-sm pull-sm-right" data-available="{{ $team->available ? 'true' : 'false' }}"
-                           title="Click if you are {{ $team->available ? 'NOT' : '' }} available for this Service" 
-                            href="#" onclick='userAvailableForPlan(this, {{ $team->plan_id }})'>
-                            {!! ($team->available) ? '<i class="fa fa-frown-o"></i> I\'m unavailable' : '<i class="fa fa-smile-o"></i> I\'m available' !!}
-                            <i class="fa fa-square-o"></i></a>
-                    @endif
-                    <i class="fa fa-{{ ($team->available) ? 'check-square' : 'minus-square-o' }} fa-big"> </i>
-                    {{ ($team->available) ? '(available)' : '(unavailable)' }}
-                </td>
-
-                <!-- row REQUESTED? -->
-                @if( $userIsAuthorized )
-                <td>
-                        <a class="btn btn-secondary btn-sm pull-sm-right" title="Send request to user" 
-                            onclick="$('#show-spinner').modal({keyboard: false});" 
-                            href='{{ url('cspot/plans/'.$team->plan_id.'/team/'.$team->id) }}/sendrequest'><i class="fa fa-envelope-o"></i></a>
-                    <i class="fa fa-{{ ($team->requested) ? 'check-square' : 'minus-square-o' }}"> </i> 
-                </td>
-                @endif
-
-                <!-- row CONFIRMED? -->
-                <td>
-                    @if ( Auth::user()->id == $team->user_id )
-                        <a class="btn btn-secondary btn-sm pull-sm-right" title="Confirm/Decline" 
-                            onclick="$('#show-spinner').modal({keyboard: false});" 
-                            href='{{ url('cspot/plans/'.$team->plan_id.'/team/'.$team->id) }}/confirm'>
-                            {{ ($team->confirmed) ? 'Decline' : 'Confirm' }}:
-                            <i class="fa fa-square-o"></i></a>
-                    @endif
-                    <i class="fa fa-{{ ($team->confirmed) ? 'check-square' : 'minus-square-o' }} fa-big"> </i>
-                    {{ ($team->confirmed) ? '(confirmed)' : '(unconfirmed)' }}
-                </td>
-
-                <!-- row ACTIONS -->
-                @if( $userIsAuthorized )
-                <td class="nowrap">
-                        <a class="btn btn-outline-primary btn-sm" title="Edit" 
-                            onclick="$('#show-spinner').modal({keyboard: false});" 
-                            href='{{ url('cspot/plans/'.$team->plan_id.'/team/'.$team->id) }}/edit'><i class="fa fa-pencil"></i></a>
-                        <a class="btn btn-danger btn-sm" title="Delete!" 
-                            onclick="$('#show-spinner').modal({keyboard: false});" 
-                            href='{{ url('cspot/plans/'.$team->plan_id.'/team/'.$team->id) }}/delete'><i class="fa fa-trash"></i></a>
-                </td>
-                @endif
-
-            </tr>
+                </tr>
+            @else
+                <tr><td colspan="7">User with id {{$team->user_id }} is lost!</td></tr>
+            @endif
 
         @endforeach
         </tbody>

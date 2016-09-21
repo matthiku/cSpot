@@ -40,11 +40,12 @@
     
 
 
-	<center class="hidden-sm-down">
-		Page {{ $songs->currentPage() }} of {{ $songs->lastPage() }}<br>
-		<small>showing a total of {{ $songs->total() }} songs</small>
-	</center>
-
+	@if ($currentPage!=0)
+		<center class="hidden-sm-down">
+			Page {{ $songs->currentPage() }} of {{ $songs->lastPage() }}<br>
+			<small>showing a total of {{ $songs->total() }} songs</small>
+		</center>
+	@endif
 
 
 	@if (count($songs))
@@ -60,16 +61,13 @@
 					@include('cspot.snippets.theader', ['thfname' => 'author', 'thdisp' => 'Author', 'thsort'=>true, 'thclass'=>'hidden-md-down'])
 
 					@include('cspot.snippets.theader', ['thfname' => 'book_ref', 'thdisp' => 'Book Ref', 'thsort'=>true, 'thclass'=>'small hidden-xs-down'])
-					{{-- <th class="center hidden-xs-down link nowrap {{ strpos(Request::fullUrl(), 'orderby=book_ref') ? 'text-primary' : '' }}" 
-						onclick="reloadListOrderBy('book_ref')"
-						data-toggle="tooltip" title="Sort list by Book Reference">
-						Book Ref
-						<i class="fa fa-sort"> </i></th> --}}
 						
 					<th class="center hidden-sm-down"><small>Chords?</small></th>
 					<th class="center hidden-sm-down"><small>Sheets?</small></th>
 					<th class="center">Media</th>
-					<th class="center hidden-md-down">Usage</th>
+
+					@include('cspot.snippets.theader', ['thfname' => 'items_count', 'thdisp' => 'Usage', 'thsort'=>true, 'thclass'=>'center hidden-md-down'])
+
 					<th class="center hidden-md-down">Last Use</th>
 					<th class="center hidden-lg-down">CCLI No.</th>
 					<th class="center hidden-lg-down">License</th>
@@ -123,7 +121,7 @@
 					</td>
 
 
-					<td class="center hidden-md-down">{{ $song->items->count() }}</td>
+					<td class="center hidden-md-down">{{ $song->items_count }}</td>
 
 
 					<?php $last = $song->lastPlanUsingThisSong(); ?>
@@ -169,9 +167,11 @@
 
 		</table>
 
-		<center>
-			{!! $songs->links() !!}
-		</center>
+		@if ($currentPage!=0)
+			<center>
+				{!! $songs->links() !!}
+			</center>
+		@endif
 
     @else
 

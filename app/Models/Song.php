@@ -168,6 +168,25 @@ class Song extends Model
 
 
 
+    /**
+     * Check if the CCLI NO contains the full URL -
+     * we only want to save the ID part
+     *
+     * @param  string  $value
+     * @return string
+     */
+    public function setCcliNoAttribute( $value )
+    {
+        $link = explode('/', $value);
+        if (isset($link[4]) && is_numeric($link[4])) {
+            $value = $link[4];
+        }
+        $this->attributes['ccli_no'] = $value;
+    }
+
+
+
+
 
     /**
      * Take the hymnald.net link and just use the last 2 sections

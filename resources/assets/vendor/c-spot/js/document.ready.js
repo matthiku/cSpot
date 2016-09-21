@@ -36,6 +36,16 @@ $(document).ready(function() {
         }
     });
 
+    // song sequence field on the item details page
+    $('.editable-song-field').editable(__app_url + '/cspot/api/songs/update', {
+        style       : 'display: inline',
+        cancel      : 'Cancel',
+        submit      : 'Update',
+        onblur      : 'ignore',
+        indicator   : '<span class="fa fa-refresh fa-spin"> </span> saving...',
+        placeholder : '<span class="fa fa-pencil text-muted">&nbsp;</span>',
+    });
+
     // lyrics and chords textareas on the item details page
     $('.edit_area').editable(__app_url + '/cspot/api/songs/update', {
         type        : 'textarea',

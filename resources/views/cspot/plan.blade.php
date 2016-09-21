@@ -111,11 +111,13 @@
                         <?php
                             $teamList = ''; // create the list of team members and their roles for this plan
                             foreach ( $plan->teams as $key => $team ) {
-                                $teamList .= $team->user->name . ' as ';
-                                $teamList .= $team->role ? ucfirst($team->role->name) : '(tbd)';
-                                $teamList .= $team->confirmed ? ' (confirmed)' : ' (unconfirmed)';
-                                if ($key+1 < $plan->teams->count())
-                                    $teamList .= ",\n";
+                                if ($team->user) {
+                                    $teamList .= $team->user->name . ' as ';
+                                    $teamList .= $team->role ? ucfirst($team->role->name) : '(tbd)';
+                                    $teamList .= $team->confirmed ? ' (confirmed)' : ' (unconfirmed)';
+                                    if ($key+1 < $plan->teams->count())
+                                        $teamList .= ",\n";
+                                }
                             }
                         ?>
                         <a href="{{ url('cspot/plans/'.$plan->id.'/team') }}" class="m-l-2 nowrap" 

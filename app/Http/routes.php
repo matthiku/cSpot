@@ -208,8 +208,8 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     /*
         SONGS
     */
-        
     Route::get('songs/search',             'Cspot\SongController@searchSong');
+
     // basic songs processing
     Route::resource('songs',               'Cspot\SongController');
         

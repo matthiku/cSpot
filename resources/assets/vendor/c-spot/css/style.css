@@ -7,6 +7,12 @@
  */
 
 
+/* editable input field: space before submit button */
+.editable-song-field>form>input {
+    margin-right: 1rem;
+    min-width: 150px;
+}
+
 /* jQuery UI draggable elements */
 .draggable {
     cursor: move;

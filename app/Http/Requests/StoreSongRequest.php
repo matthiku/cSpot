@@ -32,7 +32,6 @@ class StoreSongRequest extends Request
             // validation rules
             'title' => 'required|min:5',
             'lyrics' => 'required|min:15',
-            'ccli_no'  => 'numeric',
         ];
     }
 
