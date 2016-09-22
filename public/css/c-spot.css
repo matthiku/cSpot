@@ -9378,6 +9378,10 @@ a.ui-button:active,
  */
 
 
+.smaller {
+    font-size: 66%;
+}
+
 /* editable input field: space before submit button */
 .editable-song-field>form>input {
     margin-right: 1rem;

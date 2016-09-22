@@ -41417,7 +41417,7 @@ function addScriptureRef()
             resetCommentText(TRid, newText);
         })
         .fail(function(data) {
-            $(that).children(".comment-textcontent").text('Failed! Press F12 for more');
+            resetCommentText(TRid, data.responseJSON.data);
             console.log("Update failed! Please notify admin! " + JSON.stringify(data));
         });
 
@@ -41459,7 +41459,7 @@ function eraseThisComment(that, item_id)
             resetCommentText(TRid, data);
         })
         .fail(function(data) {
-            $(that).children(".comment-textcontent").text('Failed! Press F12 for more');
+            resetCommentText(TRid, data.responseJSON.data);
             console.log("Update failed! Please notify admin! " + JSON.stringify(data));
         });
 }

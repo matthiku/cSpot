@@ -87,7 +87,9 @@
 
 					@include('cspot.snippets.theader', ['thfname' => 'created_at', 'thdisp' => 'Created', 'thsort'=>false, 'thclass'=>'center hidden-lg-down'])
 
-					<th class="hidden-xs-down">Action</th>
+					@if( Auth::user()->isUser() )
+						<th class="hidden-xs-down">Action</th>
+					@endif
 				</tr>
 			</thead>
 
@@ -167,20 +169,24 @@
 					<td class="center hidden-lg-down">{{ $song->created_at ? $song->created_at->formatLocalized('%d %b \'%y') : $song->created_at }}</td>
 
 
-					<td class="hidden-xs-down nowrap center">
-						@if ($plan_id>0)
-							<a class="btn btn-secondary btn-sm" title="Add this song to selected Service plan" 
-								href='/cspot/plans/{{$plan_id}}/addsong/{{$song->id}}'><i class="fa fa-plus"></i></a>
-						@endif
+					@if( Auth::user()->isUser() )
+						<td class="hidden-xs-down nowrap center">
+							@if ($plan_id>0)
+								<a class="btn btn-secondary btn-sm" title="Add this song to selected Service plan" 
+									href='/cspot/plans/{{$plan_id}}/addsong/{{$song->id}}'><i class="fa fa-plus"></i></a>
+							@endif
 
-						<a class="btn btn-outline-primary btn-sm" title="Edit song details" 
-							href='/cspot/songs/{{$song->id}}/edit'><i class="fa fa-edit"></i></a>
+							@if( Auth::user()->isAuthor() )
+								<a class="btn btn-outline-primary btn-sm" title="Edit song details" 
+									href='/cspot/songs/{{$song->id}}/edit'><i class="fa fa-edit"></i></a>
+							@endif
 
-						@if( Auth::user()->isEditor() && $song->items->count()==0)
-							<a class="btn btn-danger btn-sm" title="Delete!" 
-								href='{{ url('cspot/songs/'.$song->id) }}/delete'><i class="fa fa-trash"></i></a>
-						@endif
-					</td>
+							@if( Auth::user()->isEditor() && $song->items->count()==0)
+								<a class="btn btn-danger btn-sm" title="Delete!" 
+									href='{{ url('cspot/songs/'.$song->id) }}/delete'><i class="fa fa-trash"></i></a>
+							@endif
+						</td>
+					@endif
 
 				</tr>
 	        @endforeach

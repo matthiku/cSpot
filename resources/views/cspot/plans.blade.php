@@ -64,9 +64,11 @@
 
 					<th class="hidden-lg-down center">Times</th>
 
-					<th class="center" title="Check when you are available for that particular plan"
-						data-toggle="tooltip" title="Check when you are available for that particular plan">
-						<small>Available?</small></th>
+					@if( Auth::user()->isUser() )
+						<th class="center" title="Check when you are available for that particular plan"
+							data-toggle="tooltip" title="Check when you are available for that particular plan">
+							<small>Available?</small></th>
+					@endif
 
 					<th class="hidden-md-down center"># staff</th>
 
@@ -111,17 +113,21 @@
 						@endif
 					</td>
 
-					<td class="center">
-						<a class="hidden-lg-up pull-xs-right" title="show team for this plan" href="{{ url('cspot/plans/'.$plan->id) }}/team">staff</a>
-						<label class="c-input c-checkbox">
-							<input type="checkbox" {{ isset($userIsPlanMember[$plan->id]) ? 'checked' : '' }}
-								onclick="userAvailableForPlan(this, {{ $plan->id }}, {{ Auth::user()->id }})">
-							<span class="c-indicator"></span>
-						</label>
-						<span class="hidden-sm-down text-muted" id="user-available-for-plan-id-{{ $plan->id }}">
-							{{ isset($userIsPlanMember[$plan->id]) ? 'yes' : 'no' }}
-						</span>
-					</td>
+					@if( Auth::user()->isUser())
+						<td class="center">
+							@if( $plan->date > \Carbon\Carbon::yesterday() )
+								<a class="hidden-lg-up pull-xs-right" title="show team for this plan" href="{{ url('cspot/plans/'.$plan->id) }}/team">staff</a>
+								<label class="c-input c-checkbox">
+									<input type="checkbox" {{ isset($userIsPlanMember[$plan->id]) ? 'checked' : '' }}
+										onclick="userAvailableForPlan(this, {{ $plan->id }}, {{ Auth::user()->id }})">
+									<span class="c-indicator"></span>
+								</label>
+								<span class="hidden-sm-down text-muted" id="user-available-for-plan-id-{{ $plan->id }}">
+									{{ isset($userIsPlanMember[$plan->id]) ? 'yes' : 'no' }}
+								</span>
+							@endif
+						</td>
+					@endif
 
 					<td class="hidden-md-down center">
 						<a class="pull-xs-right" title="show team for this plan" href="{{ url('cspot/plans/'.$plan->id) }}/team"><small>(show)</small></a>

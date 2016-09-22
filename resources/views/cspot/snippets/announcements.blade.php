@@ -13,7 +13,7 @@
 		<img class="pull-xs-left" height="140px" src="{{ url($logoPath.env('CHURCH_LOGO_FILENAME')) }}">
 		<img class="pull-xs-right" height="140px" src="{{ url($logoPath.env('CHURCH_LOGO_FILENAME')) }}">
 		<div class="header m-b-0" style="line-height: 1.0; vertical-align: middle;">This Week's Announcements
-			<div class="small text-muted">Week from {{$today->formatLocalized('%d %b')}} to {{$nextWeek->formatLocalized('%d %b')}}</div>
+			<div class="smaller text-muted">Week from {{$today->formatLocalized('%d %b')}} to {{$nextWeek->formatLocalized('%d %b')}}</div>
 		</div>
 	</div>
 
@@ -84,7 +84,7 @@
 
 					<span class="d-block bg-info nowrap m-t-1">{{ $event->date }}</span>
 					<span>{{ $event->type->name }}</span>
-					{!! $event->subtitle ? '<br><span class="small">'.$event->subtitle.'</span>' : '' !!}
+					{!! $event->subtitle ? '<br><span class="small text-muted">'.$event->subtitle.'</span>' : '' !!}
 
 					<?php 
 						// reset date formatting

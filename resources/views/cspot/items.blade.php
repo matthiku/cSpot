@@ -32,9 +32,9 @@
 					   {{ $newest_item_id==$item->id ? 'bg-khaki newest-item' : '' }}">
 
 
-				<td class="drag-item dont-print" scope="row" title="drag item into the new position">
+				<td class="{{ Auth::user()->isUser() ? 'drag-item ' : ''}}dont-print" scope="row" title="drag item into the new position">
 					<span class="hidden-sm-down pull-xs-right text-success">{{ $item->seq_no }}</span>
-					<i class="p-r-1 fa fa-bars">
+					<i class="p-r-1 fa fa-arrows-v">
 				</td>
 
 				{{-- for leader's eyes only? 
@@ -51,15 +51,17 @@
 				{{-- Song Details editable via popup dialog 
 				--}}
 				<td class="hidden-md-down center always-print link show-songbook-ref" 
-					data-toggle="modal" data-target="#searchSongModal" data-item-id="before-{{ $item->id }}"
-					data-plan-id="{{ $plan->id }}" data-item-action="update-song" data-seq-no="before-{{ $item->seq_no }}" 
-					data-action-url="{!! route('cspot.api.items.update', $item->id) !!}"
-					@if ($item->song_id) 
-						title="click to change"
-					@else
-						title="select a song for this item" 
-						onmouseover="$(this).children('.add-song-button').toggleClass('text-muted')" 
-						onmouseout="$( this).children('.add-song-button').toggleClass('text-muted')" 
+					@if( Auth::user()->isUser() )
+						data-toggle="modal" data-target="#searchSongModal" data-item-id="before-{{ $item->id }}"
+						data-plan-id="{{ $plan->id }}" data-item-action="update-song" data-seq-no="before-{{ $item->seq_no }}" 
+						data-action-url="{!! route('cspot.api.items.update', $item->id) !!}"
+						@if ($item->song_id) 
+							title="click to change"
+						@else
+							title="select a song for this item" 
+							onmouseover="$(this).children('.add-song-button').toggleClass('text-muted')" 
+							onmouseout="$( this).children('.add-song-button').toggleClass('text-muted')" 
+						@endif
 					@endif
 					>
 					@if ($item->song_id) 
@@ -82,8 +84,10 @@
 					@endif
 					>
 					<span class="hover-show" 
-						data-toggle="modal" data-target="#searchSongModal" data-item-id="{{ $item->id }}"
-						data-plan-id="{{ $plan->id }}" data-item-action="update-song" data-seq-no="{{ $item->seq_no }}" 
+						@if( Auth::user()->isUser() )
+							data-toggle="modal" data-target="#searchSongModal" data-item-id="{{ $item->id }}"
+							data-plan-id="{{ $plan->id }}" data-item-action="update-song" data-seq-no="{{ $item->seq_no }}" 
+						@endif
 						data-action-url="{!! route('cspot.api.items.update', $item->id) !!}">
 						@if($item->song_id) 
 							{{ $item->song->title }} 
@@ -224,7 +228,7 @@
 					@endif
 					@if ( $item->key=='announcements' )
 						<i class="fa fa-bullhorn" title="Announcements Slide!"></i>
-					@else
+					@elseif( Auth::user()->isUser() )
 						{{-- MODAL POPUP to attach file (image) to this item --}}
 						<a href="#" class="text-muted link" data-toggle="modal" data-target="#searchSongModal"
 						    id="add-file-button-item-{{ $item->id }}" data-song-id="{{$item->song_id}}"
