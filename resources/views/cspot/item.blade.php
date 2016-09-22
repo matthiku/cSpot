@@ -206,7 +206,7 @@
             </a></li>
 
             @if ( $item->song_id )
-                <li><a href="#lyrics-tab">{{ $item->itemType()=='song' ? 'Lyrics' : ucfirst($item->itemType()) }}
+                <li><a href="#lyrics-tab">{{ $item->itemType()=='song' ? 'Lyrics' : ucfirst($item->itemType()).'(s)' }}
                     <small class="text-muted">{!! $item->song->lyrics ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>' !!}</small>
                 </a></li>
                 @if ( $item->itemType()=='song')
@@ -267,7 +267,7 @@
                                 @endif
                             </div>
                         @else
-                            <span class="btn btn-secondary">
+                            <span class="btn btn-secondary m-b-1">
                                 <label class="custom-control custom-checkbox">
                                     <input type="checkbox" id="toggle-show-hideTitle" 
                                           class="custom-control-input" {{ $item->hideTitle ? 'checked="checked"' : '' }}
@@ -275,7 +275,7 @@
                                         {{ Auth::user()->ownsPlan($plan->id) ? '' : ' disabled' }}>
                                     <span class="custom-control-indicator"></span>
                                     <span class="custom-control-description" id="hideTitle-item-id-{{ $item->id }}"
-                                        >When checked, title of this item will not be shown in the presentation
+                                        >title of this item will not be shown in the presentation</span>
                                 </label>
                             </span>
 

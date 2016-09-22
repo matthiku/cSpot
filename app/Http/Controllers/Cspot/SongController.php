@@ -364,10 +364,10 @@ class SongController extends Controller
         if ($output) {
             $output->delete();
             flash( 'Song "'.$request->title.'" deleted.' );
-            return \Redirect::route( $this->view_idx );
+            return \Redirect::back();
         }
         //
         flash('Error! Song with ID "' . $id . '" not found');
-        return \Redirect::route($this->view_idx);
+        return \Redirect::back();
     }
 }

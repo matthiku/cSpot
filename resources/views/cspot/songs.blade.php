@@ -20,12 +20,25 @@
 
 
 	@if( Auth::user()->isEditor() && $plan_id==0 )
-	<span class="pull-sm-right">
-		<a class="btn btn-outline-primary" href={{ url('cspot/songs/create') }}>
-			<i class="fa fa-plus"> </i> &nbsp; Add a new song
+		<span class="pull-sm-right">
+			<a class="btn btn-outline-primary" href="{{ url('cspot/songs/create') }}">
+				<i class="fa fa-plus"> </i> &nbsp; Add a new one
+			</a>
+		</span>
+	@endif
+
+	<span class="pull-sm-right m-r-2">
+		Show only:
+		<a class="btn btn-sm btn-outline-primary" href="{{ url('cspot/songs') }}?filterby=title_2&filtervalue=video">
+			<i class="fa fa-tv"> </i> &nbsp; Videoclips
+		</a>
+		<a class="btn btn-sm btn-outline-primary" href="{{ url('cspot/songs') }}?filterby=title_2&filtervalue=slide">
+			<i class="fa fa-clone"> </i> &nbsp; Slides
+		</a>
+		<a class="btn btn-sm btn-outline-primary" href="{{ url('cspot/songs') }}">
+			<i class="fa fa-asterisk"> </i> &nbsp; All
 		</a>
 	</span>
-	@endif
 
 
     <h2 class="hidden-xs-down pull-xs-left">{{ $heading }}</h2>
@@ -66,11 +79,14 @@
 					<th class="center hidden-sm-down"><small>Sheets?</small></th>
 					<th class="center">Media</th>
 
-					@include('cspot.snippets.theader', ['thfname' => 'items_count', 'thdisp' => 'Usage', 'thsort'=>true, 'thclass'=>'center hidden-md-down'])
+					@include('cspot.snippets.theader', ['thfname' => 'items_count', 'thdisp' => 'Usage', 'thsort'=>false, 'thclass'=>'center hidden-md-down'])
 
 					<th class="center hidden-md-down">Last Use</th>
 					<th class="center hidden-lg-down">CCLI No.</th>
-					<th class="center hidden-lg-down">License</th>
+					<th class="center hidden-lg-down"><small>License</small></th>
+
+					@include('cspot.snippets.theader', ['thfname' => 'created_at', 'thdisp' => 'Created', 'thsort'=>false, 'thclass'=>'center hidden-lg-down'])
+
 					<th class="hidden-xs-down">Action</th>
 				</tr>
 			</thead>
@@ -136,7 +152,7 @@
 					<td class="center hidden-lg-down">
 	                    @if ( $song->ccli_no > 10000 )
 	                        <a class="btn btn-sm" type="button" target="new" 
-	                            href="https://olr.ccli.com/search/results?SearchTerm={{ $song->ccli_no }}">
+	                            href="{{ env('SONGSELECT_URL').$song->ccli_no }}">
                          	{{ $song->ccli_no }}
                         	</a>
 	                    @else
@@ -148,13 +164,19 @@
 					<td class="center hidden-lg-down">{{ $song->license }}</td>
 
 
+					<td class="center hidden-lg-down">{{ $song->created_at->formatLocalized('%d %b \'%y') }}</td>
+
+
 					<td class="hidden-xs-down nowrap center">
 						@if ($plan_id>0)
 							<a class="btn btn-secondary btn-sm" title="Add this song to selected Service plan" 
 								href='/cspot/plans/{{$plan_id}}/addsong/{{$song->id}}'><i class="fa fa-plus"></i></a>
 						@endif
 
-						 @if( Auth::user()->isEditor() && $song->items->count()==0)
+						<a class="btn btn-outline-primary btn-sm" title="Edit song details" 
+							href='/cspot/songs/{{$song->id}}/edit'><i class="fa fa-edit"></i></a>
+
+						@if( Auth::user()->isEditor() && $song->items->count()==0)
 							<a class="btn btn-danger btn-sm" title="Delete!" 
 								href='{{ url('cspot/songs/'.$song->id) }}/delete'><i class="fa fa-trash"></i></a>
 						@endif

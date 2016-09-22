@@ -41,7 +41,22 @@
                 <h2 class="hidden-xs-down">Song Details</h2>
                 <small>Last updated: {{ isset($song->updated_at) ? $song->updated_at->formatLocalized('%a, %d %b %Y, %H:%M') : 'unknown' }}</small>
             @else
-                <h2 class="hidden-xs-down">Add Song</h2>
+                <h2 class="hidden-xs-down">Add New
+                    <span class="song-only">Song</span>
+                    <span class="video-only" style="display: none;">Videoclip</span>
+                </h2>
+                Change to:
+                <span class="btn-group btn-group-sm" role="group" aria-label="choose type of new song">
+                    <button type="button" class="btn btn-secondary" onclick="showVideoForm()">Videoclip</button>
+                    <button type="button" class="btn btn-secondary" onclick="showSlidesForm()">Text Slides</button>
+                </span>
+                <big>
+                    <a tabindex="0" href="#"
+                        data-container="body" data-toggle="tooltip" data-placement="bottom"
+                        title="Select 'Videoclip' and the linked Youtube video can be shown on the presentation screen!
+Select 'Text slides' in order to show Powerpoint-like slides using the text in the lyrics field!">
+                        <i class="fa fa-info-circle"></i></a>
+                </big>
             @endif
         </div>
 
@@ -89,33 +104,26 @@
 
             
             <div class="row form-group m-b-0">
-                {!! Form::label('title', 'Song Title', ['class' => 'col-sm-4 col-md-3 col-lg-2 col-xl-4']); !!}
+                {!! Form::label('title', 'Title', ['class' => 'col-sm-4 col-md-3 col-lg-2 col-xl-4']); !!}
                 <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width">{!! Form::text('title'); !!}</div>
             </div>
 
 
-            <div class="row form-group">
+            <div class="row form-group song-only">
                 <div class='col-sm-4 col-md-3 col-lg-2 col-xl-4'>                    
                     {!! Form::label('title_2', 'Subtitle'); !!}
-                    <small>(or use 'video' or 'slide')</small>
-                    <big>
-                        <a tabindex="0" href="#"
-                            data-container="body" data-toggle="tooltip"
-                            title="Set subtitle to 'video' and the linked Youtube video can be shown on the presentation screen! Select 'slide' in order to show Powerpoint-like slides using the text in the lyrics field!">
-                            <i class="fa fa-question-circle"></i></a>
-                    </big>
                 </div>
                 <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width">{!! Form::text('title_2'); !!}</div>
             </div>
 
 
-            <div class="row form-group">
+            <div class="row form-group song-only">
                 {!! Form::label('author', 'Author or Copyright statement', ['class' => 'col-sm-4 col-md-3 col-lg-2 col-xl-4']); !!}
                 <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width">{!! Form::text('author'); !!}</div>
             </div>
 
 
-            <div class="row form-group">
+            <div class="row form-group song-only">
                 <div class='col-sm-4 col-md-3 col-lg-2 col-xl-4'>                    
                     {!! Form::label('book_ref', 'Book Ref.'); !!}
                     <small>(e.g. Mission Praise='MP'</small>
@@ -124,7 +132,7 @@
             </div>
 
 
-            <div class="row form-group">
+            <div class="row form-group song-only">
                 <div class="col-sm-4 col-md-3 col-lg-2 col-xl-4">                    
                     {!! Form::label('license', 'Select a license:'); !!}
                     <big>
@@ -157,7 +165,7 @@
             </div>
 
 
-            <div class="row form-group">
+            <div class="row form-group song-only">
                 <div class='col-sm-4 col-md-3 col-lg-2 col-xl-4'>
                     {!! Form::label('hymnaldotnet_id', 'Hymnal.Net ID or URL'); !!}
                     <big>
@@ -186,7 +194,7 @@
             </div>
 
 
-            <div class="row form-group">
+            <div class="row form-group song-only">
                 <div class='col-sm-4 col-md-3 col-lg-2 col-xl-4'>
                     {!! Form::label('ccli_no', 'CCLI Song No or URL'); !!}
                     <big>
@@ -224,7 +232,7 @@
             </div>
 
 
-            <div class="row form-group">
+            <div class="row form-group song-or-video-only">
                 <div class='col-sm-4 col-md-3 col-lg-2 col-xl-4'>
                     {!! Form::label('youtube_id', 'Youtube ID or URL'); !!}
                     <big>
@@ -251,7 +259,7 @@
             </div>
 
 
-            <div class="row form-group">
+            <div class="row form-group song-or-video-only">
                 <div class='col-sm-4 col-md-3 col-lg-2 col-xl-4'>
                     {!! Form::label('link', '(other) link(s)'); !!}
                     <big>
@@ -286,18 +294,18 @@
         <div class="col-xl-6">
 
 
-            <div class="form-group m-b-0">
+            <div class="form-group m-b-0 song-only">
                 {!! Form::label('sequence', 'Sequence: '); !!}
                 {!! Form::text('sequence'); !!}
             </div>
 
 
             <div id="accordion" role="tablist" aria-multiselectable="true">
-              <div class="panel panel-default">
+              <div class="panel panel-default song-or-slides-only">
                 <div class="panel-heading" role="tab" id="headingOne">
                   <h4 class="panel-title">
                     <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                        Lyrics:<a
+                        <span class="song-only">Lyrics</span><span class="slide-only" style="display: none;">Slides</span>:<a
                                 tabindex="0" href="#" data-container="body" data-toggle="tooltip"
                                 data-template='<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><pre class="tooltip-inner tooltip-wide"></pre></div>'
                                 title="(Click 'Lyrics' to open!)
@@ -310,39 +318,19 @@ when the song is presented.">
                     </a>
                   </h4>
                 </div>
-                <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                <div id="collapseOne" class="panel-collapse collapse{{!isset($song) ? ' in' : ''}}" role="tabpanel" aria-labelledby="headingOne">
                     {!! Form::textarea('lyrics'); !!}
                     <button id="lyrics-copy-btn" class="pull-xs-right"><i class="fa fa-copy"></i>&nbsp;copy lyrics</button>
 
                     {{-- reset size of textarea --}}
-                    <small><a href="#" id="reset-lyrics-textarea" onclick="$('#lyrics').attr('rows',6);$(this).hide()" style="display:none">resize textbox</a></small>
-
-                    {{-- Add ability to copy textarea content to the clipboard --}}
-                    <script>
-                        var copyTextareaBtn = document.querySelector('#lyrics-copy-btn');
-                        copyTextareaBtn.addEventListener('click', function(event) {
-                          var copyTextarea = $('#lyrics');
-                          copyTextarea.select();
-                          try {
-                            var successful = document.execCommand('copy');
-                            var msg = successful ? 'successful' : 'unsuccessful';
-                          } catch (err) {
-                          }
-                          event.preventDefault();
-                        });
-                        $("#lyrics").click(function() {
-                            {{-- get number of lines of lyrics and set size of textarea accordingly --}}
-                            $("#lyrics").attr( 'rows', Math.max($("#lyrics").val().split('\n').length, 4) );
-                            $('#reset-lyrics-textarea').show();
-                            $('#reset-lyrics-textarea').position({my: 'right bottom', at: 'right top', of: '#lyrics'});
-                        });
-                    </script>          
+                    <small><a href="#" id="reset-lyrics-textarea" onclick="resizeTextArea(this, 'lyrics')" style="display:none">resize textbox</a></small>
+  
                 </div>
               </div>
 
 
 
-              <div class="panel panel-default">
+              <div class="panel panel-default song-only">
                 <div class="panel-heading" role="tab" id="headingTwo">
                   <h4 class="panel-title">
                     <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
@@ -362,34 +350,13 @@ like "(repeat chorus!)"'>
                   </h4>
                 </div>
 
-                <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                <div id="collapseTwo" class="panel-collapse collapse{{!isset($song) ? ' in' : ''}}" role="tabpanel" aria-labelledby="headingTwo">
                     {!! Form::textarea('chords'); !!}
                     <button id="chords-copy-btn" class="pull-xs-right"><i class="fa fa-copy"></i>&nbsp;copy chords</button>
                     <br>
 
                     {{-- reset size of textarea --}}
-                    <small><a href="#" id="reset-chords-textarea" onclick="$('#chords').attr('rows',6);$(this).hide()" style="display:none">resize textbox</a></small>
-
-                    <!-- Add ability to copy textarea content to the clipboard -->
-                    <script>
-                        var copyTextareaBtn = document.querySelector('#chords-copy-btn');
-                        copyTextareaBtn.addEventListener('click', function(event) {
-                          var copyTextarea = $('#chords');
-                          copyTextarea.select();
-                          try {
-                            var successful = document.execCommand('copy');
-                            var msg = successful ? 'successful' : 'unsuccessful';
-                          } catch (err) {
-                          }
-                          event.preventDefault();
-                        });
-                        $("#chords").click(function() {
-                            {{-- get number of lines of text and set size of textarea accordingly --}}
-                            $("#chords").attr('rows', Math.max($("#chords").val().split('\n').length, 4) );
-                            $('#reset-chords-textarea').show();
-                            $('#reset-chords-textarea').position({my: 'right bottom', at: 'right top', of: '#chords'});
-                        });
-                    </script>                  
+                    <small><a href="#" id="reset-chords-textarea" onclick="resizeTextArea(this, 'chords')" style="display:none">resize textbox</a></small>
                 </div>
               </div>
 
@@ -406,7 +373,7 @@ like "(repeat chorus!)"'>
                     </div>
 
 
-                    <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                    <div id="collapseThree" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingThree">
                         @if ( count($plansUsingThisSong) )
                             <table class="table table-striped table-normal table-hover table-sm">
                                 <thead class="thead-default"><tr>
@@ -443,9 +410,72 @@ like "(repeat chorus!)"'>
 
 
     <script>
+
         // define field that should always get input focus
         document.forms.inputForm.title.focus()
         document.forms.inputForm.title.setAttribute('class', 'main-input');
+
+
+        // Add ability to copy textarea content to the clipboard
+        var copyTextareaBtn = document.querySelector('#chords-copy-btn');
+        copyTextareaBtn.addEventListener('click', function(event) {
+            var copyTextarea = $('textarea[name="chords"]');
+            copyTextarea.select();
+            try {
+                var successful = document.execCommand('copy');
+                var msg = successful ? 'successful' : 'unsuccessful';
+            } catch (err) {
+            }
+            event.preventDefault();
+        });
+        $("textarea[name='chords']").click(function() {
+            {{-- get number of lines of text and set size of textarea accordingly --}}
+            $("textarea[name='chords']").attr('rows', Math.max($("textarea[name='chords']").val().split('\n').length, 4) );
+            $('#reset-chords-textarea').show();
+            $('#reset-chords-textarea').position({my: 'right bottom', at: 'right top', of: 'textarea[name="chords"]'});
+        });
+
+
+        {{-- Add ability to copy textarea content to the clipboard --}}
+        var copyTextareaBtn = document.querySelector('#lyrics-copy-btn');
+        copyTextareaBtn.addEventListener('click', function(event) {
+            var copyTextarea = $('textarea[name="lyrics"]');
+            copyTextarea.select();
+            try {
+                var successful = document.execCommand('copy');
+                var msg = successful ? 'successful' : 'unsuccessful';
+            } catch (err) {
+            }
+            event.preventDefault();
+        });
+        $("textarea[name='lyrics']").click(function() {
+            {{-- get number of lines of lyrics and set size of textarea accordingly --}}
+            $("textarea[name='lyrics']").attr( 'rows', Math.max($("textarea[name='lyrics']").val().split('\n').length, 4) );
+            $('#reset-lyrics-textarea').show();
+            $('#reset-lyrics-textarea').position({my: 'right bottom', at: 'right top', of: 'textarea[name="lyrics"]'});
+        });
+
+        function resizeTextArea(that, name) {
+            $('textarea[name='+name+']').attr('rows',6);
+            $(that).hide();
+        }
+
+        function showSlidesForm() {
+            $('.song-only').hide();
+            $('.song-or-video-only').hide();
+            $('.song-or-slides-only').show();
+            $('.slide-only').show();
+            $("input[name='title_2']").val('slide');
+        }
+
+        function showVideoForm() {
+            $('.song-only').hide();
+            $('.song-or-slides-only').hide();
+            $('.song-or-video-only').show();
+            $('.video-only').show();
+            $("input[name='title_2']").val('video');
+        }
+
     </script>
 
     
