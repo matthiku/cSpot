@@ -38,7 +38,7 @@
 
         <div class="col-md-6 col-lg-7 col-xl-8 md-center">
             @if (isset($song))
-                <h2 class="hidden-xs-down">Song Details</h2>
+                <h2 class="hidden-xs-down">Song/Item Details</h2>
                 <small>Last updated: {{ isset($song->updated_at) ? $song->updated_at->formatLocalized('%a, %d %b %Y, %H:%M') : 'unknown' }}</small>
             @else
                 <h2 class="hidden-xs-down">Add New
@@ -47,8 +47,8 @@
                 </h2>
                 Change to:
                 <span class="btn-group btn-group-sm" role="group" aria-label="choose type of new song">
-                    <button type="button" class="btn btn-secondary" onclick="showVideoForm()">Videoclip</button>
-                    <button type="button" class="btn btn-secondary" onclick="showSlidesForm()">Text Slides</button>
+                    <button type="button" class="btn btn-secondary" onclick="showVideoForm('video')">Videoclip</button>
+                    <button type="button" class="btn btn-secondary" onclick="showSlidesForm('slide')">Text Slides</button>
                 </span>
                 <big>
                     <a tabindex="0" href="#"
@@ -70,9 +70,10 @@ Select 'Text slides' in order to show Powerpoint-like slides using the text in t
                         
                         @if (Auth::user()->isAdmin() && count($plansUsingThisSong)==0 )
                             </div>
-                            <div class="col-xs-4">
-                            <a class="btn btn-danger" type="button" href="{{ url('cspot/songs/'.$song->id) }}/delete">
-                                <i class="fa fa-trash" > </i> Delete Song
+                            <div class="small col-xs-4">
+                            Item is not used in any plan, so you can<br> 
+                            <a href="{{ url('cspot/songs/'.$song->id) }}/delete">
+                                <i class="fa fa-trash text-danger" > </i> delete this song
                             </a>
                         @endif
                     @else
@@ -139,7 +140,7 @@ Select 'Text slides' in order to show Powerpoint-like slides using the text in t
                         <a tabindex="0" href="#"
                             data-container="body" data-toggle="tooltip"
                             title="The type of license can be retrieved from the CCLI database (see link above). &nbsp; PD = Public Domain.">
-                            <i class="fa fa-question-circle"></i></a>
+                            <i class="fa fa-info-circle"></i></a>
                     </big>
                 </div>
                 <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8">
@@ -171,7 +172,7 @@ Select 'Text slides' in order to show Powerpoint-like slides using the text in t
                     <big>
                         <a tabindex="0" href="#" data-container="body" data-toggle="tooltip"
                             title="Search opens in new tab. Once song is found, copy the URL (the address) and paste it into this field.">
-                            <i class="fa fa-question-circle"></i></a>
+                            <i class="fa fa-info-circle"></i></a>
                     </big>
                 </div>
                 <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width">
@@ -200,7 +201,7 @@ Select 'Text slides' in order to show Powerpoint-like slides using the text in t
                     <big>
                         <a tabindex="0" href="#" data-container="body" data-toggle="tooltip"
                             title="Search opens in new tab. Once song is found, copy the URL (the address) and paste it into this field.">
-                            <i class="fa fa-question-circle"></i></a>
+                            <i class="fa fa-info-circle"></i></a>
                     </big>
                 </div>
                 <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width">
@@ -232,13 +233,13 @@ Select 'Text slides' in order to show Powerpoint-like slides using the text in t
             </div>
 
 
-            <div class="row form-group song-or-video-only">
+            <div class="row form-group song-or-video-only m-t-1">
                 <div class='col-sm-4 col-md-3 col-lg-2 col-xl-4'>
                     {!! Form::label('youtube_id', 'Youtube ID or URL'); !!}
                     <big>
                         <a tabindex="0" href="#" data-container="body" data-toggle="tooltip"
                             title="Search opens in new tab. Once song is found, copy the URL (the address) and paste it into this field.">
-                            <i class="fa fa-question-circle"></i></a>
+                            <i class="fa fa-info-circle"></i></a>
                     </big>
                 </div>
                 <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width">{!! Form::text('youtube_id'); !!}</div>
@@ -265,16 +266,18 @@ Select 'Text slides' in order to show Powerpoint-like slides using the text in t
                     <big>
                         <a tabindex="0" href="#" data-container="body" data-toggle="tooltip"
                             title="Paste the full URL (or link or address, usually starts with http://...) into this field. For more than one, just separate them by ';'">
-                            <i class="fa fa-question-circle"></i></a>
+                            <i class="fa fa-info-circle"></i></a>
                     </big>
                 </div>
                 <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width">{!! Form::text('link'); !!}</div>
             </div>
 
 
-            <div class="row form-group">
-                {!! Form::label('file', 'Attach an image (e.g. sheet music)', ['class' => 'col-sm-4 col-md-3 col-lg-2 col-xl-4']); !!}
-                <small>(Max. Size: <?php echo ini_get("upload_max_filesize"); ?>)</small>
+            <div class="row form-group m-t-1">
+                <div class="col-sm-4 col-md-3 col-lg-2 col-xl-4">
+                    {!! Form::label('file', 'Attach an image'); !!}
+                    <small>(Max. Size: <?php echo ini_get("upload_max_filesize"); ?>)</small>
+                </div>
                 <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width">
                     {!! Form::file('file'); !!}
                     {!! Form::hidden('file_category_id','1') !!}
@@ -305,7 +308,11 @@ Select 'Text slides' in order to show Powerpoint-like slides using the text in t
                 <div class="panel-heading" role="tab" id="headingOne">
                   <h4 class="panel-title">
                     <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                        <span class="song-only">Lyrics</span><span class="slide-only" style="display: none;">Slides</span>:<a
+
+                        <span class="song-only">Lyrics</span><span class="slide-only" style="display: none;">Slides</span>:
+
+                        @if ( !isset($song) || (isset($song) && $song->title_2!='slide') )
+                            <a
                                 tabindex="0" href="#" data-container="body" data-toggle="tooltip"
                                 data-template='<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><pre class="tooltip-inner tooltip-wide"></pre></div>'
                                 title="(Click 'Lyrics' to open!)
@@ -314,11 +321,12 @@ like [1] for verse 1 or [chorus] for a chorus.
 
 Blank lines force a new slide 
 when the song is presented.">
-                        <i class="fa fa-question-circle m-l-2"></i></a>
-                    </a>
+                                <i class="fa fa-info-circle m-l-2"></i></a>
+                            </a>
+                        @endif
                   </h4>
                 </div>
-                <div id="collapseOne" class="panel-collapse collapse{{!isset($song) ? ' in' : ''}}" role="tabpanel" aria-labelledby="headingOne">
+                <div id="collapseOne" class="panel-collapse collapse{{ ( !isset($song) || (isset($song) && $song->title_2=='slide') ) ? ' in' : '' }}" role="tabpanel" aria-labelledby="headingOne">
                     {!! Form::textarea('lyrics'); !!}
                     <button id="lyrics-copy-btn" class="pull-xs-right"><i class="fa fa-copy"></i>&nbsp;copy lyrics</button>
 
@@ -345,7 +353,7 @@ Blank lines will be ignored.
 Put instructions on separate lines and
 enclose them in brackets,
 like "(repeat chorus!)"'>
-                        <i class="fa fa-question-circle m-l-2"></i></a>
+                        <i class="fa fa-info-circle m-l-2"></i></a>
                     </a>
                   </h4>
                 </div>
@@ -367,7 +375,7 @@ like "(repeat chorus!)"'>
                     <div class="panel-heading" role="tab" id="headingThree">
                       <h4 class="panel-title">
                         <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                            Song Usage History: <small>(used <strong>{{ count($plansUsingThisSong) }}</strong> times)</small>
+                            Usage History: <small>(used <strong>{{ count($plansUsingThisSong) }}</strong> times)</small>
                         </a>
                       </h4>
                     </div>
@@ -460,21 +468,30 @@ like "(repeat chorus!)"'>
             $(that).hide();
         }
 
-        function showSlidesForm() {
+        function showSlidesForm(what) {
             $('.song-only').hide();
             $('.song-or-video-only').hide();
             $('.song-or-slides-only').show();
             $('.slide-only').show();
-            $("input[name='title_2']").val('slide');
+            if (what)
+                $("input[name='title_2']").val(what);
         }
 
-        function showVideoForm() {
+        function showVideoForm(what) {
             $('.song-only').hide();
             $('.song-or-slides-only').hide();
             $('.song-or-video-only').show();
             $('.video-only').show();
-            $("input[name='title_2']").val('video');
+            if (what)
+                $("input[name='title_2']").val(what);
         }
+
+        @if (isset($song) && $song->title_2=='video')
+            showVideoForm();
+        @endif
+        @if (isset($song) && $song->title_2=='slide' )
+            showSlidesForm();
+        @endif
 
     </script>
 

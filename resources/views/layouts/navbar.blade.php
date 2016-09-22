@@ -191,7 +191,7 @@
                     <i class="fa fa-btn fa-tasks fa-lg"></i> &nbsp; Event Types</a>
                 <hr>
                 <a class="dropdown-item" href="{{ url('cspot/songs') }}">
-                <i class="fa fa-btn fa-music fa-lg"></i> &nbsp; Songs</a>
+                <i class="fa fa-btn fa-music fa-lg"></i> &nbsp; Songs etc.</a>
             </div>
         </li>
         <li class="nav-item hidden-sm-down">

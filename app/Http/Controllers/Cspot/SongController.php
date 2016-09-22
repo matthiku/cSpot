@@ -85,7 +85,7 @@ class SongController extends Controller
                 ->orderBy($orderBy, $order);
         }
 
-        $heading = 'Manage Songs';
+        $heading = 'Manage Songs etc.';
         // URL contains ...?plan_id=xxx (needed in order to add a song to that plan)
         $plan_id = 0;
         if ($request->has('plan_id')) {
@@ -133,7 +133,7 @@ class SongController extends Controller
     {
         //
         Song::create($request->all());
-        flash('New Song added: '.$request->title );
+        flash('New Song or Item added: '.$request->title );
         return \Redirect::route($this->view_idx);
     }
 

@@ -39328,7 +39328,7 @@ function reloadListOrderBy(field)
                     orderbyFound = true;
                 }
                 if (parms[0]=='order') {
-                    parms[1]=='desc'  ?  parms[1]='asc'  :  parms[1]='desc';
+                    parms[1]=='asc'  ?  parms[1]='desc'  :  parms[1]='asc';
                     queryStr[i] = 'order='+parms[1];
                 }                
                 newUrl += queryStr[i];

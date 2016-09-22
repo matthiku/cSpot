@@ -29,13 +29,13 @@
 
 	<span class="pull-sm-right m-r-2">
 		Show only:
-		<a class="btn btn-sm btn-outline-primary" href="{{ url('cspot/songs') }}?filterby=title_2&filtervalue=video">
+		<a class="btn btn-sm btn-outline-danger" href="{{ url('cspot/songs') }}?filterby=title_2&filtervalue=video">
 			<i class="fa fa-tv"> </i> &nbsp; Videoclips
 		</a>
-		<a class="btn btn-sm btn-outline-primary" href="{{ url('cspot/songs') }}?filterby=title_2&filtervalue=slide">
+		<a class="btn btn-sm btn-outline-warning" href="{{ url('cspot/songs') }}?filterby=title_2&filtervalue=slide">
 			<i class="fa fa-clone"> </i> &nbsp; Slides
 		</a>
-		<a class="btn btn-sm btn-outline-primary" href="{{ url('cspot/songs') }}">
+		<a class="btn btn-sm btn-outline-success" href="{{ url('cspot/songs') }}">
 			<i class="fa fa-asterisk"> </i> &nbsp; All
 		</a>
 	</span>
@@ -164,7 +164,7 @@
 					<td class="center hidden-lg-down">{{ $song->license }}</td>
 
 
-					<td class="center hidden-lg-down">{{ $song->created_at->formatLocalized('%d %b \'%y') }}</td>
+					<td class="center hidden-lg-down">{{ $song->created_at ? $song->created_at->formatLocalized('%d %b \'%y') : $song->created_at }}</td>
 
 
 					<td class="hidden-xs-down nowrap center">
