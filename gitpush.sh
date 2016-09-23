@@ -60,11 +60,24 @@ git push
 echo ----
 
 
+# push to the staging (or test) server
+git push staging master
+
+
 if [ "$GITPULL" = "n" ]; then
     echo 'Aborting...'
     exit
 fi
 
+# push the current master branch to our production server
+git push production master
+
+exit
+
+
+
+
+#### outdated as we use direct push to remote!
 
 # call the pull command script on the server via SSH (using PPK)
 echo

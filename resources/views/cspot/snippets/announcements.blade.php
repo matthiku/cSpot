@@ -3,7 +3,8 @@
 	use Carbon\Carbon; 
 	$hour  = 9;
 	$today = $item->plan->date; 
-	$nextWeek = $item->plan->date->addDays(7);
+	$firstThisDay = true;
+	$nextWeek 	  = $item->plan->date->addDays(7);
 ?>
 
 <div class="announce-text-present">
@@ -58,6 +59,7 @@
 						if ($event->date->dayOfYear > $today->dayOfYear) {
 							$today->addDay();
 							$hour = 9;
+							$firstThisDay = true;
 							echo '</td><td style="vertical-align: initial; line-height: 1;">';
 							// push down the event it's start time is later in the day
 							while ($event->date->hour - $hour > 1) {
@@ -71,6 +73,7 @@
 							echo '</td><td style="vertical-align: initial; line-height: 1;">';
 							$today->addDay();
 							$hour = 9;
+							$firstThisDay = true;
 							// push down the event it's start time is later in the day
 							while ($event->date->hour - $hour > 1) {
 								echo '<br>';
@@ -82,11 +85,13 @@
 						Carbon::setToStringFormat('g:i a');
 					?>
 
-					<span class="d-block bg-info nowrap m-t-1">{{ $event->date }}</span>
-					<span>{{ $event->type->name }}</span>
-					{!! $event->subtitle ? '<br><span class="small text-muted">'.$event->subtitle.'</span>' : '' !!}
+					<div class="{{ $firstThisDay ? '' : 'm-t-2'}}">
+						<span class="d-block bg-info nowrap">{{ $event->date }}</span>
+						<div>{{ $event->type->name }}{!! $event->subtitle ? '<br><span class="text-muted">'.$event->subtitle.'</span>' : '' !!}</div>
+					</div>
 
 					<?php 
+						$firstThisDay = false;
 						// reset date formatting
 						Carbon::resetToStringFormat(); 
 					?>
