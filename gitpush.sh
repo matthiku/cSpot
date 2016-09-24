@@ -43,7 +43,7 @@ echo
 read -p 'Need to add a new package via composer? Then enter the full package name: ' "PACKAGE"
 
 echo
-read -p 'Execute GIT PULL on the server as well? (Y/n) ' "GITPULL"
+read -p 'Commit will be pushed to staging. Push to Production as well? (Y/n) ' "PRODUCTION"
 
 
 
@@ -61,10 +61,13 @@ echo ----
 
 
 # push to the staging (or test) server
+# 	needs to be defined first!
+#		'git remote add staging ssh://root@example.com/var/repo/site.git'
+# 		see: http://devmarketer.io/learn/deploy-laravel-5-app-lemp-stack-ubuntu-nginx
 git push staging master
 
 
-if [ "$GITPULL" = "n" ]; then
+if [ "$PRODUCTION" = "n" ]; then
     echo 'Aborting...'
     exit
 fi
