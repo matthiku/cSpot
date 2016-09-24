@@ -81,6 +81,8 @@ function deleteFile(id)
     })
     .done(function(data) {
         $('#file-'+id).html(data.data);
+        // different id on Song Details page
+        $('#file-figure-'+id).html(data.data);
     })
     .fail(function(data) {
         if (data.responseJSON) {

@@ -20,6 +20,11 @@
 		</a>
 	@endif
 
+    <a class="btn btn-outline-primary pull-xs-right" href='{{ url('admin/files/list') }}'>
+        <i class="fa fa-list"> </i> &nbsp; Show as File List
+    </a>
+
+
     <h2 class="hidden-xs-down pull-xs-left m-r-2">{{ $heading }}</h2>
     <h5 class="hidden-sm-up pull-xs-left m-r-2">{{ $heading }}</h5>
 

@@ -386,7 +386,7 @@ $(document).ready(function() {
     /**
      * On the Songs List page, allow some key codes
      */
-    if (window.location.pathname.indexOf('cspot/songs')>1) {
+    if (window.location.pathname.indexOf('cspot/songs')>0) {
 
         $(document).keydown(function( event ) {
             ;;;console.log('pressed key code: '+event.keyCode);

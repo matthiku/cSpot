@@ -177,20 +177,21 @@ Select 'Text slides' in order to show Powerpoint-like slides using the text in t
                 </div>
                 <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width">
                     {!! Form::text('hymnaldotnet_id'); !!}
-                    <div class="center small">
-                        @if ( isset($song) )
+
+                    @if ( isset($song) )
+                        <div class="small">
                             <a target="new" 
                                href="{{ env('HYMNAL.NET_SEARCH', 'https://www.hymnal.net/en/search/all/all/').$song->title.' '.$song->title_2 }}">
                                <i class="fa fa-search"></i> hymnal.net search <i class="fa fa-external-link"></i>
                             </a>
                             @if ( $song->hymnaldotnet_id )
-                                <a class="m-l-2" target="new" 
+                                <a class="small pull-xs-right m-r-3" target="new" 
                                     href="{{ $song->hymnaldotnet_id }}">
                                     <i class="fa fa-music" > </i> see song on hymnal.net <i class="fa fa-external-link"></i>
                                 </a>
                             @endif
-                        @endif
-                    </div>
+                        </div>
+                    @endif
                 </div>
             </div>
 
@@ -207,13 +208,13 @@ Select 'Text slides' in order to show Powerpoint-like slides using the text in t
                 <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width">
                     {!! Form::text('ccli_no'); !!}
                     @if ( isset($song) )
-                        <div class="center small">
+                        <div class=" small">
                             <a target="new" 
                                href="{{ env('SONGSELECT_SEARCH', 'https://songselect.ccli.com/search/results?SearchText=').$song->title.' '.$song->title_2.' '.$song->author }}">
                                <i class="fa fa-search"></i><img src="/images/songselectlogo.png" width="15"> CCLI search <i class="fa fa-external-link"></i>
                             </a>
                             @if ($song->ccli_no > 10000 )
-                                <a class="m-l-2" target="new" 
+                                <a class="pull-xs-right m-r-3" target="new" 
                                     href="{{ env('SONGSELECT_URL', 'https://songselect.ccli.com/Songs/').$song->ccli_no }}">
                                     <img src="/images/songselectlogo.png" width="15"> view on SongSelect <i class="fa fa-external-link"></i>
                                 </a>
@@ -233,7 +234,9 @@ Select 'Text slides' in order to show Powerpoint-like slides using the text in t
             </div>
 
 
+
             <div class="row form-group song-or-video-only m-t-1">
+
                 <div class='col-sm-4 col-md-3 col-lg-2 col-xl-4'>
                     {!! Form::label('youtube_id', 'Youtube ID or URL'); !!}
                     <big>
@@ -242,21 +245,26 @@ Select 'Text slides' in order to show Powerpoint-like slides using the text in t
                             <i class="fa fa-info-circle"></i></a>
                     </big>
                 </div>
-                <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width">{!! Form::text('youtube_id'); !!}</div>
-                @if ( isset($song) )
-                    <div class="center small">
-                        <a target="new" 
-                            href="{{ env('YOUTUBE_SEARCH', 'https://www.youtube.com/results?search_query=').$song->title }}">
-                            <i class="fa fa-search"></i><i class="fa fa-youtube"></i> YouTube search <i class="fa fa-external-link"></i>
-                        </a>
-                        @if ( strlen($song->youtube_id)>0 )
-                            <a class="m-l-2" target="new" 
-                                href="{{ env('YOUTUBE_PLAY', 'https://www.youtube.com/watch?v=').$song->youtube_id }}">
-                                <i class="fa fa-youtube-play"></i> play on Youtube <i class="fa fa-external-link"></i>
+
+                <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width">
+                    {!! Form::text('youtube_id'); !!}
+
+                    @if ( isset($song) )
+                        <div class="small">
+                            <a target="new" 
+                                href="{{ env('YOUTUBE_SEARCH', 'https://www.youtube.com/results?search_query=').$song->title }}">
+                                <i class="fa fa-search"></i><i class="fa fa-youtube"></i> YouTube search <i class="fa fa-external-link"></i>
                             </a>
-                        @endif
-                    </div>
-                @endif
+                            @if ( strlen($song->youtube_id)>0 )
+                                <a class="m-l-2 pull-xs-right m-r-3" target="new" 
+                                    href="{{ env('YOUTUBE_PLAY', 'https://www.youtube.com/watch?v=').$song->youtube_id }}">
+                                    <i class="fa fa-youtube-play"></i> play on Youtube <i class="fa fa-external-link"></i>
+                                </a>
+                            @endif
+                        </div>
+                    @endif
+
+                </div>
             </div>
 
 
@@ -280,7 +288,9 @@ Select 'Text slides' in order to show Powerpoint-like slides using the text in t
                 </div>
                 <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width">
                     {!! Form::file('file'); !!}
+                    <!-- file category will be '1' (songs) -->
                     {!! Form::hidden('file_category_id','1') !!}
+                    <br>(Image name will be book ref. + song title)
                 </div>
             </div>
             @if ( isset($song) && $song->files)

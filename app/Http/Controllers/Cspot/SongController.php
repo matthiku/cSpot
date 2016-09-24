@@ -228,6 +228,8 @@ class SongController extends Controller
             if ($request->file('file')->isValid()) {
                 // user helper function, save attached file and assign a file category of id 1 (song)
                 $file = saveUploadedFile($request);
+                // set filename as Book Ref plus Song Title
+                $file->filename = ($song->book_ref ? $song->book_ref : '') . ' - ' . $song->title;
                 // add the file as a relationship to the song
                 $song->files()->save($file);
             }
