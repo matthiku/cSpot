@@ -56,6 +56,10 @@ git commit -a -m "$DESC"
 echo ----
 
 # push the commit (all files) to GitHub
+echo
+echo ----
+echo "pushing to GitHub"
+echo ----
 git push
 echo ----
 
@@ -73,6 +77,10 @@ if [ "$PRODUCTION" = "n" ]; then
 fi
 
 # push the current master branch to our production server
+echo
+echo ----
+echo "pushing to the PRODUCTION server"
+echo ----
 git push production master
 
 exit
@@ -83,10 +91,6 @@ exit
 #### outdated as we use direct push to remote!
 
 # call the pull command script on the server via SSH (using PPK)
-echo
-echo ----
-echo "Calling pull command on the server"
-echo ----
 ssh $HOSTNAME ./gitpull.sh plan $PACKAGE
 echo ----
 

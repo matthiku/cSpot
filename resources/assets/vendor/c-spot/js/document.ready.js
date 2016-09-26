@@ -280,7 +280,8 @@ $(document).ready(function() {
         */
 
         // check local storage
-        cSpot.songList = JSON.parse(localStorage.getItem('songList'));
+        //  (provide empty array just in case when localStorage doesn't contain this item)
+        cSpot.songList = JSON.parse(localStorage.getItem('songList')) || [];
         cSpot.songList.updated_at = localStorage.getItem('songList.updated_at');
 
         // not found in local storage, or not up-to-date

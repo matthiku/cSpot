@@ -7,6 +7,10 @@
  */
 
 
+.help-block {
+    color: red;    
+}
+
 .smaller {
     font-size: 66%;
 }

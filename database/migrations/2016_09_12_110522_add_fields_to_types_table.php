@@ -18,6 +18,8 @@ class AddFieldsToTypesTable extends Migration
             $table->foreign('leader_id')->references('id')->on('users');
             $table->integer('resource_id')->unsigned()->nullable();
             $table->foreign('resource_id')->references('id')->on('resources');
+            $table->integer('weekday')->nullable();
+            $table->text('subtitle')->nullable();
         });
     }
 

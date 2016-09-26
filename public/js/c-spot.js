@@ -39862,7 +39862,8 @@ $(document).ready(function() {
         */
 
         // check local storage
-        cSpot.songList = JSON.parse(localStorage.getItem('songList'));
+        //  (provide empty array just in case when localStorage doesn't contain this item)
+        cSpot.songList = JSON.parse(localStorage.getItem('songList')) || [];
         cSpot.songList.updated_at = localStorage.getItem('songList.updated_at');
 
         // not found in local storage, or not up-to-date
@@ -43041,10 +43042,12 @@ function applyLocallyDefinedTextFormatting()
     
     // check if we have changed the default font size and text alignment for the presentation
     textAlign = localStorage.getItem('.text-present_text-align');
-    $('.text-present').css('text-align', textAlign);
-    $('.bible-text-present').css('text-align', textAlign);
-    $('.bible-text-present>p').css('text-align', textAlign);
-    $('.bible-text-present>h1').css('text-align', textAlign);
+    if (textAlign) {
+        $('.text-present').css('text-align', textAlign);
+        $('.bible-text-present').css('text-align', textAlign);
+        $('.bible-text-present>p').css('text-align', textAlign);
+        $('.bible-text-present>h1').css('text-align', textAlign);
+    }
 
     fontSize = localStorage.getItem('.text-present_font-size');
     if ($.isNumeric(fontSize)) {

@@ -16,7 +16,9 @@ class Type extends Model
     	'end',
     	'repeat',
     	'leader_id',
-    	'resource_id'
+        'resource_id',
+        'weekday',
+    	'subtitle',
 	];
 
 
@@ -36,6 +38,18 @@ class Type extends Model
     public function default_resource()
     {
     	return $this->belongsTo('App\Models\Resource', 'resource_id');
+    }
+
+
+    public function getWeekdayNameAttribute()
+    {
+        $value = $this->weekday;
+        $weekdays = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+        if ( is_numeric($value) && $value >= 0 && $value < 7)
+            return $weekdays[$value];
+
+        return '-';
     }
 
 }

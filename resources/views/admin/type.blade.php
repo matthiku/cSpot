@@ -24,20 +24,78 @@
     @endif
 
 
+
     <p>{!! Form::label('name', 'Type Name'); !!}<br>
-       {!! Form::text('name'); !!}</p>
+       {!! Form::text('name'); !!}
+        @if ($errors->has('name'))
+            <br><span class="help-block">
+                <strong>{{ $errors->first('name') }}</strong>
+            </span>
+        @endif
+    </p>
+
+    <p>{!! Form::label('subtitle', 'Subtitle or Info or Location'); !!}<br>
+       {!! Form::text('subtitle'); !!}</p>
+
 
     <p>{!! Form::label('start', 'Usual start'); !!}<br>
        {!! Form::time('start'); !!}</p>
 
+
     <p>{!! Form::label('end', 'Usual end'); !!}<br>
        {!! Form::time('end'); !!}</p>
 
-    <p>{!! Form::label('repeat', 'Interval'); !!}<br>
-       {!! Form::text('repeat'); !!}</p>
+
+    <p>{!! Form::label('repeat', 'Interval (repeat)'); !!}<br>
+        <select name="repeat" class="form-control text-help c-select"
+                {{ Auth::user()->isEditor() ? '' : ' disabled' }}>
+            <option {{ (isset($type) && !$type->repeat) ? '' : 'selected'}} value="null">
+                Select ...
+            </option>
+            @foreach (array('daily','weekly','biweekly','fortnightly','monthly','quarterly','half-yearly','yearly') as $val)
+                <option 
+                    @if(   ( ''<>old('repeat') && $val==old('repeat') )  
+                        || ( isset($type) && $type->repeat===$val ) )
+                            selected
+                    @endif
+                    value="{{ $val }}">{{ $val }}
+                </option>
+            @endforeach
+        </select>
+        @if ($errors->has('repeat'))
+            <span class="help-block">
+                <strong>{{ $errors->first('repeat') }}</strong>
+            </span>
+        @endif
+    </p>
+
+
+    <p>{!! Form::label('weekday', 'Weekday'); !!}<br>
+        <select name="weekday" class="form-control text-help c-select"
+                {{ Auth::user()->isEditor() ? '' : ' disabled' }}>
+            <option {{ (isset($type) && !$type->weekday) ? '' : 'selected'}} value="null">
+                Select ...
+            </option>
+            @foreach (array('Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday') as $key => $day)
+                <option 
+                    @if(   ( ''<>old('weekday') && $key==old('weekday') )  
+                        || ( isset($type) && $type->weekday===$key ) )
+                            selected
+                    @endif
+                    value="{{ $key }}">{{ $day }}
+                </option>
+            @endforeach
+        </select>
+        @if ($errors->has('weekday'))
+            <span class="help-block">
+                <strong>{{ $errors->first('weekday') }}</strong>
+            </span>
+        @endif
+    </p>
+
 
     <p>{!! Form::label('leader_id', 'Default Leader'); !!}<br>
-        <select name="leader_id" class="form-control text-help c-select" onchange="enableSaveButton(this)"
+        <select name="leader_id" class="form-control text-help c-select"
                 {{ Auth::user()->isEditor() ? '' : ' disabled' }}>
             <option selected value="null">
                 Select ...
@@ -56,8 +114,9 @@
         </select>
     </p>
 
+
     <p>{!! Form::label('resource_id', 'Default Resource'); !!}<br>
-        <select name="resource_id" class="form-control text-help c-select" onchange="enableSaveButton(this)"
+        <select name="resource_id" class="form-control text-help c-select"
                 {{ Auth::user()->isEditor() ? '' : ' disabled' }}>
             <option selected value="null">
                 Select ...
@@ -74,6 +133,7 @@
         </select>
 
 
+
     @if (isset($type))
         <p>{!! Form::submit('Update'); !!}</p>
         <hr>
@@ -83,6 +143,7 @@
     @else
         <p>{!! Form::submit('Submit'); !!}
     @endif
+
 
 
     <a href="{{url('admin/types')}}">{!! Form::button('Cancel'); !!}</a></p>

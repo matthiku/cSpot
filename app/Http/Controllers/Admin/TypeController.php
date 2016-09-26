@@ -41,7 +41,7 @@ class TypeController extends Controller
         //
         $types = Type::get();
 
-        $heading = 'Manage list with Types of Services or Events';
+        $heading = 'Types of Services / Events';
         return view( 'admin.types', array('types' => $types, 'heading' => $heading) );
     }
 
@@ -74,8 +74,10 @@ class TypeController extends Controller
     public function store(StoreTypeRequest $request)
     {
         $exceptList = ['_token'];
-        if ( $request->leader_id=='null' ) array_push($exceptList, 'leader_id');
+        if ( $request->leader_id  =='null' ) array_push($exceptList, 'leader_id');
         if ( $request->resource_id=='null' ) array_push($exceptList, 'resource_id');
+        if ( $request->weekday    =='null' ) array_push($exceptList, 'weekday');
+        if ( $request->repeat     =='null' ) array_push($exceptList, 'repeat');
 
         // now create the new TYPE item
         Type::create( $request->except($exceptList) );
@@ -101,7 +103,7 @@ class TypeController extends Controller
     {
         // get all service plans of this specific type id
         $type    = Type::find($id);
-        $heading = 'Show  Service Plans of Type '.$type->name;
+        $heading = 'Show Events of Type '.$type->name;
         return view( 'cspot.plans', array('plans' => $type->plans()->get(), 'heading' => $heading) );
     }
 
@@ -119,8 +121,8 @@ class TypeController extends Controller
     public function edit($id)
     {
         // find a single resource by ID
-        $output = Type::find($id);
-        if ($output) {
+        $type = Type::find($id);
+        if ($type) {
 
             // get the resources table
             $resources = Resource::get();
@@ -129,7 +131,7 @@ class TypeController extends Controller
             $users = User::orderBy('first_name')->get();
 
             // return the view with all the data
-            return view( 'admin.type', ['type' => $output, 'users' => $users , 'resources' => $resources ] );
+            return view( 'admin.type', ['type' => $type, 'users' => $users , 'resources' => $resources ] );
         }
         //
         $message = 'Error! Type with id "' . $id . '" not found';
@@ -158,8 +160,14 @@ class TypeController extends Controller
             // set default resource to NULL if value was not set
             $output->update(['resource_id' => $request->resource_id=='null' ? null : $request->resource_id]);
 
+            // set value to NULL if value was not set
+            $output->update(['weekday' => $request->weekday=='null' ? null : $request->weekday]);
+
+            // set value to NULL if value was not set
+            $output->update(['repeat' => $request->repeat=='null' ? null : $request->repeat]);
+
             // update the other fields
-            $output->update( $request->except([ '_method', '_token', 'leader_id', 'resource_id' ]) );
+            $output->update( $request->except([ '_method', '_token', 'leader_id', 'resource_id', 'weekday', 'repeat' ]) );
 
             // feedback to user and return view with list of types
             $message = 'Type with id "' . $id . '" updated';

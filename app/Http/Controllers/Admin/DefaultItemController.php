@@ -43,16 +43,18 @@ class DefaultItemController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         // eager loading of related table
         $default_items = DefaultItem::with('type')
             ->orderBy('type_id')
-            ->orderBy('seq_no')
-            ->get();
+            ->orderBy('seq_no');
+
+        if ($request->has('filterby') && $request->has('filtervalue') && $request->filterby=='type')
+            $default_items->where('type_id', $request->filtervalue );
 
         $heading = 'Manage Default Service Items';
-        return view( $this->view_all, array('default_items' => $default_items, 'heading' => $heading) );
+        return view( $this->view_all, array('default_items' => $default_items->get(), 'heading' => $heading) );
     }
 
 

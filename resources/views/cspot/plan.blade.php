@@ -230,12 +230,25 @@
                             ['class' => 'plan-form-minw center', 'onchange' => 'enableSaveButton(this)' ] )
                         !!}
                     @endif
+
                     <div class="form-group" id="editPlanServiceTimes">
+
                         {!! Form::label('start', 'Event from:'); !!}
-                        {!! Form::time( 'start'); !!}
+                        @if (isset($defaultValues))
+                            {!! Form::time( 'start', $defaultValues['start']); !!}
+                        @else
+                            {!! Form::time( 'start'); !!}
+                        @endif
+
                         {!! Form::label('end', ' to '); !!}
-                        {!! Form::time( 'end');   !!}      
+                        @if (isset($defaultValues))
+                            {!! Form::time( 'end', $defaultValues['end']); !!}
+                        @else
+                            {!! Form::time( 'end'); !!}
+                        @endif
+
                     </div>
+
                     <script>
                         $($('#editPlanServiceTimes').children('input')[0]).attr('onchange', 'enableSaveButton(this)');
                         $($('#editPlanServiceTimes').children('input')[1]).attr('onchange', 'enableSaveButton(this)');
@@ -251,7 +264,7 @@
                     <label class="form-control-label">Leader </label>
                     <select name="leader_id" id="leader_id" class="form-control text-help c-select" onchange="enableSaveButton(this)"
                             {{ Auth::user()->isEditor() ? '' : ' disabled' }}>
-                        @if (! isset($plan))
+                        @if (! isset($plan) && ! isset($defaultValues['leader_id']) )
                             <option selected>
                                 Select ...
                             </option>
@@ -260,7 +273,8 @@
                             @if( $user->hasRole('leader'))
                                 <option 
                                     @if(   ( ''<>old('leader_id') && $user->id==old('leader_id') )  
-                                        || ( isset($plan) && $plan->leader_id==$user->id ) )
+                                        || ( isset($plan) && $plan->leader_id==$user->id ) 
+                                        || ( isset($defaultValues['leader_id']) && $defaultValues['leader_id']==$user->id ) )
                                             selected
                                     @endif
                                     value="{{ $user->id }}">{{ $user->name }}

@@ -20,7 +20,7 @@
 		</a>
 	@endif
 
-    <a class="btn btn-outline-primary pull-xs-right" href='{{ url('admin/files/list') }}'>
+    <a class="btn btn-outline-primary pull-xs-right" href='{{ url('cspot/files/list') }}'>
         <i class="fa fa-list"> </i> &nbsp; Show as File List
     </a>
 

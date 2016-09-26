@@ -31,6 +31,8 @@ class StoreTypeRequest extends Request
         return [
             // validation rules
             'name'        => 'required',
+            'weekday'     => 'between:0,6',
+            'repeat'      => 'in:null,daily,weekly,biweekly,fortnightly,monthly,yearly,quarterly,half-yearly',
         ];
     }
 }

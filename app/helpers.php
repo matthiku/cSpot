@@ -1010,3 +1010,55 @@ function checkRights($plan) {
     flash('Only the leader or teacher or editors can modify this plan.');
     return false;
 }
+
+
+
+
+/**
+ * Get next Plan Date
+ *
+ * Calculates the next date for an event according to the default values of the event type
+ *
+ * @param object $plan
+ * @return date $nextDate
+ */
+function getNextPlanDate( $plan )
+{
+    // get repeat value for this plan type
+    $interval = $plan->type->repeat;
+
+    // get default weekday for this plan type
+    $weekday = $plan->type->weekday;
+
+    // send default values for another adding amount of days dpending on interval value
+    //if ($interval == 'weekly') -> this is the default...
+    $newDate =  $plan->date->addDays(7);
+
+    // valid intervals are: daily,weekly,biweekly,fortnightly,monthly,quarterly,half-yearly,yearly
+    if ($interval == 'daily')
+        $newDate =  $plan->date->addDays(-6);
+
+    if ($interval == 'biweekly' || $interval == 'fortnightly')
+        $newDate =  $plan->date->addDays(14);
+
+    if ($interval == 'monthly') {
+        $newDate =  $plan->date->addWeeks(4);
+        // sometimes we need to add 5 weeks ...
+        if ($newDate->month() == $plan->date->month())
+            $newDate->addWeek();
+    }
+
+    if ($interval == 'quarterly')
+        $newDate =  $plan->date->addMonths(3);
+
+    if ($interval == 'half-yearly')
+        $newDate =  $plan->date->addWeeks(26);
+
+    if ($interval == 'yearly')
+        $newDate =  $plan->date->addWeeks(52);
+
+    return $newDate;
+}
+
+
+

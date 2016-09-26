@@ -1451,10 +1451,12 @@ function applyLocallyDefinedTextFormatting()
     
     // check if we have changed the default font size and text alignment for the presentation
     textAlign = localStorage.getItem('.text-present_text-align');
-    $('.text-present').css('text-align', textAlign);
-    $('.bible-text-present').css('text-align', textAlign);
-    $('.bible-text-present>p').css('text-align', textAlign);
-    $('.bible-text-present>h1').css('text-align', textAlign);
+    if (textAlign) {
+        $('.text-present').css('text-align', textAlign);
+        $('.bible-text-present').css('text-align', textAlign);
+        $('.bible-text-present>p').css('text-align', textAlign);
+        $('.bible-text-present>h1').css('text-align', textAlign);
+    }
 
     fontSize = localStorage.getItem('.text-present_font-size');
     if ($.isNumeric(fontSize)) {

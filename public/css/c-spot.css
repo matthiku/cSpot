@@ -9378,6 +9378,10 @@ a.ui-button:active,
  */
 
 
+.help-block {
+    color: red;    
+}
+
 .smaller {
     font-size: 66%;
 }

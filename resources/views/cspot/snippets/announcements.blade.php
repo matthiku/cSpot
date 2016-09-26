@@ -61,7 +61,7 @@
 							$hour = 9;
 							$firstThisDay = true;
 							echo '</td><td style="vertical-align: initial; line-height: 1;">';
-							// push down the event it's start time is later in the day
+							// push down the event's start time if it is later in the day
 							while ($event->date->hour - $hour > 1) {
 								echo '<br>';
 								$hour += 1;
@@ -74,12 +74,22 @@
 							$today->addDay();
 							$hour = 9;
 							$firstThisDay = true;
-							// push down the event it's start time is later in the day
+							// push down the event's start time if it is later in the day
 							while ($event->date->hour - $hour > 1) {
 								echo '<br>';
 								$hour += 1;
 							}
 						}
+
+						// for the 2nd event in a day, make sure it is pushed down if it is later in the day
+						if (! $firstThisDay) {
+
+							while ($event->date->hour - $hour > 1) {
+								echo '<br>';
+								$hour += 1;
+							}
+						}
+
 
 						// show times in hh:mm am format
 						Carbon::setToStringFormat('g:i a');
@@ -92,6 +102,7 @@
 
 					<?php 
 						$firstThisDay = false;
+						$hour += 3;
 						// reset date formatting
 						Carbon::resetToStringFormat(); 
 					?>

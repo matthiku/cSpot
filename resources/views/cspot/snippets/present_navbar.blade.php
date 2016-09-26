@@ -125,7 +125,7 @@ $modalContent = '
     <!-- 
         Personal Notes 
     -->
-    <div class="dropup hidden-xs-down pull-xs-right m-r-1">
+    <div class="dropup hidden-xs-down pull-xs-right m-r-1{{ $item->itemNotes->where('user_id', Auth::user()->id)->first() ? ' open' : '' }}">
         <button    type="button" title="Your Private Notes" 
                   class="btn btn-sm btn{{ $item->itemNotes->where('user_id', Auth::user()->id)->first() ? '' : '-outline' }}-success dropdown-toggle" 
             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
