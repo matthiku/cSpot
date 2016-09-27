@@ -251,10 +251,10 @@
 	                            href="{{ env('HYMNAL.NET_PLAY', 'https://www.hymnal.net/en/hymn/h/').$item->song->hymnaldotnet_id }}">
 	                            <i class="fa fa-music"></i> </a>
 	                    @endif
-	                    @if ( $item->song->ccli_no > 10000 )
+	                    @if ( $item->song->ccli_no > 1000 && 'MP'.$item->song->ccli_no != $item->song->book_ref )
 	                        <a target="new" title="Review song on SongSelect" data-toggle="tooltip" class="m-r-1" 
 	                            href="{{ env('SONGSELECT_URL', 'https://songselect.ccli.com/Songs/').$item->song->ccli_no }}">
-	                            <img src="/images/songselectlogo.png" width="20"></a>
+	                            <img src="{{ url($logoPath.'songselectlogo.png') }}" width="20"></a>
 	                    @endif
 	                    @if ( strlen($item->song->youtube_id)>0 )
                             <a title="Play in new tab" data-toggle="tooltip" target="new" class="hidden-md-down pull-xs-right"
@@ -283,7 +283,7 @@
 						 (link opens new browser tab of CCLI reporting page!)
 					--}}
 					@if (  $item->song_id 
-						&& $item->song -> ccli_no>10000 
+						&& $item->song->ccli_no > 1000 && 'MP'.$item->song->ccli_no != $item->song->book_ref 
 						&& Auth::user()-> isAdmin() 
 						&& $plan->date <= \Carbon\Carbon::today() )
 

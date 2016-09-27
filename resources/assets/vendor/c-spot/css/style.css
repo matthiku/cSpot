@@ -7,6 +7,12 @@
  */
 
 
+/* for external links to be aligned beneath input fields  */
+.right-align-input {
+    display: none;
+}
+
+/* for error messages below input fields */
 .help-block {
     color: red;    
 }
@@ -362,8 +368,10 @@ pre.text-present {
     text-align: right;
 }
 
+
 label {
-    font-weight: 700;    
+    font-weight: 700;
+    vertical-align: sub;
 }
 
 

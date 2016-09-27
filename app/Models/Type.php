@@ -29,6 +29,12 @@ class Type extends Model
     }
 
 
+    public function defaultItems()
+    {
+        return $this->hasMany('App\Models\DefaultItem', 'type_id');
+    }
+
+
     public function default_leader()
     {
     	return $this->belongsTo('App\Models\User', 'leader_id');

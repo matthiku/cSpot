@@ -177,11 +177,16 @@ class Song extends Model
      */
     public function setCcliNoAttribute( $value )
     {
-        $link = explode('/', $value);
-        if (isset($link[4]) && is_numeric($link[4])) {
-            $value = $link[4];
+        if ($value) {
+            $link = explode('/', $value);
+            if (isset($link[4]) && is_numeric($link[4])) {
+                $value = $link[4];
+            }
+            $this->attributes['ccli_no'] = $value;
         }
-        $this->attributes['ccli_no'] = $value;
+        // special treatment if value is empty -> null
+        else 
+            $this->attributes['ccli_no'] = null;
     }
 
 

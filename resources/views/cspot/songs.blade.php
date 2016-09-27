@@ -88,7 +88,7 @@
 					@include('cspot.snippets.theader', ['thfname' => 'created_at', 'thdisp' => 'Created', 'thsort'=>false, 'thclass'=>'center hidden-lg-down'])
 
 					@if( Auth::user()->isUser() )
-						<th class="hidden-xs-down">Action</th>
+						<th class="hidden-xs-down">Modify</th>
 					@endif
 				</tr>
 			</thead>
@@ -152,7 +152,7 @@
 
 
 					<td class="center hidden-lg-down">
-	                    @if ( $song->ccli_no > 10000 )
+	                    @if ( $song->ccli_no > 1000 && 'MP'.$song->ccli_no!=$song->book_ref )
 	                        <a class="btn btn-sm" type="button" target="new" 
 	                            href="{{ env('SONGSELECT_URL').$song->ccli_no }}">
                          	{{ $song->ccli_no }}

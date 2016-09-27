@@ -50,11 +50,17 @@ class DefaultItemController extends Controller
             ->orderBy('type_id')
             ->orderBy('seq_no');
 
-        if ($request->has('filterby') && $request->has('filtervalue') && $request->filterby=='type')
+        if (   $request->has('filterby' ) 
+            && $request->has('filtervalue') 
+            && $request->filterby=='type'   )
             $default_items->where('type_id', $request->filtervalue );
 
-        $heading = 'Manage Default Service Items';
-        return view( $this->view_all, array('default_items' => $default_items->get(), 'heading' => $heading) );
+        // get list of Event Types
+        $types = Type::get();
+
+        $heading = 'Manage Default Event Items';
+
+        return view( $this->view_all, array('heading' => $heading, 'default_items' => $default_items->get(), 'types' => $types) );
     }
 
 
