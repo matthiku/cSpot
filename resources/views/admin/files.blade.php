@@ -20,8 +20,8 @@
 		</a>
 	@endif
 
-    <a class="btn btn-outline-primary pull-xs-right" href='{{ url('cspot/files/list') }}'>
-        <i class="fa fa-list"> </i> &nbsp; Show as File List
+    <a class="btn btn-outline-primary pull-xs-right" href='#' onclick="$('#show-as-large-icons').toggle();$('#show-as-filelist').toggle();">
+        <i class="fa fa-list"> </i> &nbsp; Filelist / Icons
     </a>
 
 
@@ -30,7 +30,7 @@
 
 	
     <select class="c-select pull-xs-left" id="fdf" onchange="selectCategory(this)">
-        <option selected>Select Filter</option>
+        <option selected>Filter</option>
         <option value="newest">Show Newest</option>
         @foreach ($file_categories as $cat)
             <option value="{{ $cat->id}}">Category: {{ ucfirst($cat->name) }}</option>
@@ -53,29 +53,35 @@
                 }
             }
             if ( $.isNumeric($(that).val()) ) {
-                location.href = "{{url('cspot/files')}}" + newQueryStr + "bycategory="+$(that).val();
+                location.href = currUrl.href.split('?')[0] + newQueryStr + "bycategory="+$(that).val();
                 return;
             }
             if ($(that).val()=='newest') {
-                location.href = "{{url('cspot/files')}}" + newQueryStr + "newest=yes";
+                location.href = currUrl.href.split('?')[0] + newQueryStr + "newest=yes";
                 return;
             }
             if (newQueryStr=='?') newQueryStr='';
-            location.href = "{{url('cspot/files')}}" + newQueryStr;
+            location.href = currUrl.href.split('?')[0] + newQueryStr;
         }
     </script>
 
     <div class="clearfix"></div>
 
 
+
+
 	@if (count($files))
 		
 
-		<div class="row">
+		<div class="row" id="show-as-large-icons">
+
 
 	        @foreach( $files as $key => $file )
+
     			<div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
+
                     <div class="card" id="file-{{$file->id}}" data-content="{{$file}}">
+
                         <div class="card-block card-block-files">
                             @if ( ! $item_id==0 )
                                 <a href="{{ url('cspot/items').'/'.$item_id.'/addfile/'.$file->id }}" class="btn btn-sm btn-primary">
@@ -87,14 +93,15 @@
                                 <button type="button" class="btn btn-info btn-sm pull-xs-right" data-toggle="modal" data-target="#fileEditModal"
                                     data-id="{{ $file->id }}" data-cat="{{ $file->file_category_id }}" data-filename="{{ $file->filename }}" 
                                     data-token="{{ url(config('files.uploads.webpath')).'/mini-'.$file->token }}">
-                                    <i class="fa fa-pencil"></i></a>
+                                    <i class="fa fa-pencil"></i>
                                 </button>
                             @endif
                             <small class="card-title">
-                                <span class="fileshow-filename">{{ $file->filename }}</span><br>
-                                <label>Cat.:</label> <span class="fileshow-category">{{ $file->file_category->name }}</span>
+                                <span class="fileshow-filename-{{ $file->id }}">{{ $file->filename }}</span><br>
+                                <label>Cat.:</label> <span class="fileshow-category-{{ $file->id }}">{{ $file->file_category->name }}</span>
                             </small>
                         </div>
+
                         <a href="{{ url(config('files.uploads.webpath')).'/'.$file->token }}">
                             <img class="card-img-top"  alt="{{ $file->filename }}" width="100%"
                                 @if ( $isMobileUser )
@@ -103,22 +110,98 @@
                                     src="{{ url(config('files.uploads.webpath')).'/thumb-'.$file->token }}">
                                 @endif
                         </a>
-                    </div>                
+
+                    </div>
+
     			</div>
+
+
 				@if ( ($key+1) % 6 == 0)
 					<div class="clearfix hidden-lg-down"></div>
 				@endif
+
 				@if ( ($key+1) % 3 == 0)
 					<div class="clearfix hidden-xl-up"></div>
 				@endif
+
 				@if ( ($key+1) % 2 == 0)
 					<div class="clearfix hidden-md-up"></div>
 				@endif
+
+
 	        @endforeach
 
+
 		</div><!-- row -->
+
         
+
+        <div id="show-as-filelist" style="display: none;">
+
+            <table class="table table-striped
+                    @if(count($files)>15)
+                     table-sm
+                    @endif
+                ">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th class="hidden-xs-down">Category</th>
+                        <th>Size</th>
+                        @if( Auth::user()->isEditor() )
+                            <th>Modify</th>
+                        @endif
+                    </tr>
+                </thead>
+
+
+                <tbody>
+
+                    @foreach( $files as $key => $file )
+
+                        <tr>
+
+                            <td><span onclick="$('#edit-button-{{ $file->id }}').click()" class="link fileshow-filename-{{ $file->id }}"
+                                title="Preview" data-toggle="tooltip" data-placement="right" data-template='
+                                    <div class="tooltip" role="tooltip">
+                                        <div class="tooltip-arrow"></div>
+                                        <pre class="tooltip-inner"></pre>
+                                        <img src="{{ url(config('files.uploads.webpath')).'/thumb-'.$file->token }}">
+                                    </div>'>
+                                {{ $file->filename }} <i class="fa fa-edit"> </i></span></td>
+
+                            <td onclick="$('#edit-button-{{ $file->id }}').click()" class="link fileshow-category-{{ $file->id }} hidden-xs-down">
+                                {{ $file->file_category->name }} <i class="fa fa-edit"> </i></td>
+
+                            <td>{{ humanFileSize($file->filesize) }}</td>
+
+                            @if( Auth::user()->isEditor() )
+                                <td>
+                                    <a href="#" onclick="deleteFile({{ $file->id }})" title="delete this file" 
+                                        class="btn btn-sm btn-danger">
+                                        <i class="fa fa-trash"></i></a>
+                                    <button type="button" id="edit-button-{{ $file->id }}" class="btn btn-info btn-sm" data-toggle="modal" data-target="#fileEditModal"
+                                        data-id="{{ $file->id }}" data-cat="{{ $file->file_category_id }}" data-filename="{{ $file->filename }}" 
+                                        data-token="{{ url(config('files.uploads.webpath')).'/mini-'.$file->token }}">
+                                        <i class="fa fa-pencil"></i>
+                                    </button>
+                                </td>
+                            @endif
+                        </tr>
+
+                    @endforeach
+
+                </tbody>
+
+            </table>
+
+        </div>{{-- show-as-filelist --}}
+
+
+
         <center>{!! $files->links() !!}</center>
+
+
 
 
     @else
@@ -126,6 +209,8 @@
     	No files found!
 
 	@endif
+
+
 
 <script>
     /* 

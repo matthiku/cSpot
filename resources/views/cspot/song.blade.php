@@ -48,7 +48,7 @@
                 Change to:
                 <span class="btn-group btn-group-sm" role="group" aria-label="choose type of new song">
                     <button type="button" class="btn btn-secondary" onclick="showVideoForm('video')">Videoclip</button>
-                    <button type="button" class="btn btn-secondary" onclick="showSlidesForm('slide')">Text Slides</button>
+                    <button type="button" class="btn btn-secondary" onclick="showSlidesForm('slides')">Text Slides</button>
                 </span>
                 <big>
                     <a tabindex="0" href="#"
@@ -342,7 +342,7 @@ Select 'Text slides' in order to show Powerpoint-like slides using the text in t
 
                         <span class="song-only">Lyrics</span><span class="slide-only" style="display: none;">Slides</span>:
 
-                        @if ( !isset($song) || (isset($song) && $song->title_2!='slide') )
+                        @if ( !isset($song) || (isset($song) && $song->title_2!='slides') )
                             <a
                                 tabindex="0" href="#" data-container="body" data-toggle="tooltip"
                                 data-template='<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><pre class="tooltip-inner tooltip-wide"></pre></div>'
@@ -357,7 +357,7 @@ when the song is presented.">
                         @endif
                   </h4>
                 </div>
-                <div id="collapseOne" class="panel-collapse collapse{{ ( !isset($song) || (isset($song) && $song->title_2=='slide') ) ? ' in' : '' }}" role="tabpanel" aria-labelledby="headingOne">
+                <div id="collapseOne" class="panel-collapse collapse{{ ( !isset($song) || (isset($song) && $song->title_2=='slides') ) ? ' in' : '' }}" role="tabpanel" aria-labelledby="headingOne">
                     {!! Form::textarea('lyrics'); !!}
                     <button id="lyrics-copy-btn" class="pull-xs-right"><i class="fa fa-copy"></i>&nbsp;copy lyrics</button>
 
@@ -562,7 +562,7 @@ like "(repeat chorus!)"'>
         @if (isset($song) && $song->title_2=='video')
             showVideoForm();
         @endif
-        @if (isset($song) && $song->title_2=='slide' )
+        @if (isset($song) && $song->title_2=='slides' )
             showSlidesForm();
         @endif
 

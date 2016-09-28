@@ -354,7 +354,7 @@ class SongController extends Controller
 
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified resource from storage. Note: SoftDeletes !!
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -366,7 +366,7 @@ class SongController extends Controller
         $output = Song::find($id);
         if ($output) {
             $output->delete();
-            flash( 'Song "'.$request->title.'" deleted.' );
+            flash( 'Song "'.$output->title.'" deleted.' );
             return \Redirect::back();
         }
         //

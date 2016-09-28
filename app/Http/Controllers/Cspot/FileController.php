@@ -116,7 +116,8 @@ class FileController extends Controller
             $file->filename = $request->filename;
             $file->file_category_id = $request->file_category_id;
             $file->save();
-            return 'done!';
+            return response()->json(['status' => 200, 'data' => $file ]);
+            //return addslashes( json_encode($file, JSON_HEX_APOS | JSON_HEX_QUOT) );
         }
         return 'file not found!';
     }

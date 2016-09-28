@@ -94,7 +94,7 @@
                                     href="{{ url('cspot/plans/'.$plan->id.'/items').'/'.$menu_item->id.'/edit' }}">
                                     <small class="hidden-xs-down">{{ $menu_item->seq_no }} &nbsp;</small> 
                                     @if ($menu_item->song_id && $menu_item->song->title )
-                                        @if ( $menu_item->song->title_2=='slide' || $menu_item->song->title_2=='video' )
+                                        @if ( $menu_item->song->title_2=='slides' || $menu_item->song->title_2=='video' )
                                             ({{ ucfirst($menu_item->song->title_2) }}) {{ $menu_item->song->title }}
                                         @else
                                             <i class="fa fa-music">&nbsp;</i><strong>{{ $menu_item->song->title }}</strong>

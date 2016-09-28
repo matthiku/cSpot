@@ -477,7 +477,7 @@
         }
         
         @if (isset($types))
-            cSpot.serviceTypes = JSON.parse('{!! json_encode($types, JSON_HEX_APOS | JSON_HEX_QUOT) !!}');
+            cSpot.serviceTypes = JSON.parse('{!! addslashes( json_encode($types, JSON_HEX_APOS | JSON_HEX_QUOT) ) !!}');
         @endif
 
     </script>   

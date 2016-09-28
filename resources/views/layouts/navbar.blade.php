@@ -1,5 +1,5 @@
 
-<nav id="main-navbar" class="tek-nav navbar navbar-dark bg-inverse navbar-full">
+<nav id="main-navbar" class="tek-nav navbar navbar-dark bg-primary navbar-full">
 
 
     {{--___________________________________________________________

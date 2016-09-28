@@ -20,10 +20,13 @@
         --}}
         <li class="list-group-item modal-select-file center">
 
-            {!! Form::label('file_category_id', 'First, select a category: ') !!}
+            {!! Form::label('file_category_id', 'Select a category: ') !!}
 
             <div class="btn-group modal-select-file m-l-1" data-toggle="buttons"
-                @if (! isset($modal)) onclick="$(this).hide();$('#show-location-selection').show()" @endif>
+                @if (! isset($modal)) 
+                    onclick="$('.show-selected-category').hide();$('#show-location-selection').show()" 
+                @endif
+                >
 
                 {{-- different selection modes depending on context --}}
                 @if (isset($modal))    
@@ -58,7 +61,7 @@
         <li id="show-location-selection" class="list-group-item center" style="display: none;">
 
             <label class="card-text">
-                Do you want to upload a new image from your device or<br>select an image already uploaded?
+                Do you want to upload a new image from your device or<br>select an image that was already uploaded?
             </label>
 
             <button type="button" class="btn btn-primary btn-sm m-r-1" id="btn-upload-new-image"
@@ -70,7 +73,7 @@
                 data-images-path="{{ url(config('files.uploads.webpath')) }}"
                 onclick="$(this).parent().hide();showImagesSelection(this)">Select c-SPOT images</button>
             
-            <p class="m-t-1">(Selected category: <span id="show-selected-category" class="text-info"></span>)</p>
+            <p class="m-t-1 show-selected-category">(Selected category: <span id="show-selected-category" class="text-info"></span>)</p>
 
         </li>
 
@@ -97,7 +100,7 @@
 
 
 
-        {{-- show file selection button 
+        {{-- show file  UPLOAD  button 
         --}}
         <li class="list-group-item show-file-add-button" style="display: none;">
 

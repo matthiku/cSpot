@@ -9,7 +9,7 @@
 
 
     @if ( $thsort )
-        <span id="{{ $thfname }}-search" class="link m-l-1" onclick="showFilterField('{{ $thfname }}')" data-toggle="tooltip" 
+        <span id="{{ $thfname }}-search" class="link" onclick="showFilterField('{{ $thfname }}')" data-toggle="tooltip" 
             @if ( Request::has('filterby') && Request::get('filterby')==$thfname )
                     title="Clear filter">
                 Filter: <span class="bg-info">&nbsp;{{ Request::get('filtervalue') }} </span>

@@ -1,5 +1,5 @@
 
-<span id="fulltext-search" class="link m-l-1 pull-xs-left" onclick="showFilterField('fulltext')" data-toggle="tooltip" 
+<span id="fulltext-search" class="link" onclick="showFilterField('fulltext')" data-toggle="tooltip" 
 
 
     @if ( Request::has('filterby') && Request::get('filterby')=='fulltext' )

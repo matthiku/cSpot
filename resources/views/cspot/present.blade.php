@@ -45,7 +45,7 @@
                              style="display: none; position: absolute; left: auto; top: 0px; width: 100%; font-style: italic;">
                             {{ $item->song->title }}
                             <span style="font-size: 90%">
-                                {!! ($item->song->title_2 && $item->song->title_2 != 'video' && $item->song->title_2 != 'slide') ? '<br>('.$item->song->title_2.')' : '' !!}
+                                {!! ($item->song->title_2 && $item->song->title_2 != 'video' && $item->song->title_2 != 'slides') ? '<br>('.$item->song->title_2.')' : '' !!}
                             </span>
                         </div>
                     @endif
@@ -316,7 +316,7 @@
                                 href="{{ url('cspot/items/').'/'.$menu_item->id.'/present' }}">
                                 <small class="hidden-md-down">{{ $menu_item->seq_no }}</small> &nbsp; 
                                 @if ($menu_item->song_id && $menu_item->song->title)
-                                    {!! $menu_item->song->title_2=='slide'
+                                    {!! $menu_item->song->title_2=='slides'
                                         ? $menu_item->song->title
                                         : '<i class="fa fa-music">&nbsp;</i><strong>'.$menu_item->song->title.'</strong>' 
                                     !!}                                    

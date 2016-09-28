@@ -19,32 +19,74 @@
 	@include('layouts.flashing')
 
 
-	@if( Auth::user()->isEditor() && $plan_id==0 )
-		<span class="pull-sm-right">
-			<a class="btn btn-outline-primary" href="{{ url('cspot/songs/create') }}">
-				<i class="fa fa-plus"> </i> &nbsp; Add a new one
-			</a>
-		</span>
-	@endif
 
-	<span class="pull-sm-right m-r-2">
-		Show only:
-		<a class="btn btn-sm btn-outline-danger" href="{{ url('cspot/songs') }}?filterby=title_2&filtervalue=video">
-			<i class="fa fa-tv"> </i> &nbsp; Videoclips
-		</a>
-		<a class="btn btn-sm btn-outline-warning" href="{{ url('cspot/songs') }}?filterby=title_2&filtervalue=slide">
-			<i class="fa fa-clone"> </i> &nbsp; Slides
-		</a>
-		<a class="btn btn-sm btn-outline-success" href="{{ url('cspot/songs') }}">
-			<i class="fa fa-asterisk"> </i> &nbsp; All
-		</a>
-	</span>
+	{{-- 	-	-	-	-	Navigation Bar 
+	--}}
+
+	<nav class="navbar navbar-light bg-faded">
+
+		<button class="navbar-toggler hidden-sm-up" type="button" 
+			data-toggle="collapse" data-target="#exCollapsingNavbar2" aria-controls="exCollapsingNavbar2" aria-expanded="false" aria-label="Toggle navigation">
+			&#9776;
+		</button>
 
 
-    <h2 class="hidden-xs-down pull-xs-left">{{ $heading }}</h2>
-    
+		<div class="collapse navbar-toggleable-xs" id="exCollapsingNavbar2">
 
-    @include('cspot.snippets.fullTextSearch')
+
+			<a class="navbar-brand big hidden-md-down" href="#">{{ $heading }}</a>
+			<a class="navbar-brand hidden-sm-down hidden-lg-up" href="#">{{ $heading }}</a>
+
+
+			<ul class="nav navbar-nav pull-xs-right">
+				@if ($currentPage!=0)
+					<li class="nav-item hidden-sm-down small text-xs-right">
+						Page {{ $songs->currentPage() }} of {{ $songs->lastPage() }}<br>
+						<small class="hidden-md-down">showing a total of {{ $songs->total() }} songs</small>
+					</li>
+				@endif
+			</ul>
+
+
+			<ul class="nav navbar-nav">
+
+				<li class="nav-item m-r-3">@include('cspot.snippets.fullTextSearch')</li>
+
+				<li class="nav-item active">
+					<a class="nav-link text-success" href="{{ url('cspot/songs') }}">
+						<i class="fa fa-asterisk"> </i> &nbsp;Show All
+						<span class="sr-only">(current)</span>
+					</a>
+				</li>
+
+				<li class="nav-item">
+					<a class="nav-link text-danger" href="{{ url('cspot/songs') }}?filterby=title_2&filtervalue=video">
+						<i class="fa fa-tv"> </i> &nbsp;Videoclips
+					</a>
+				</li>
+
+				<li class="nav-item">
+					<a class="nav-link text-warning" href="{{ url('cspot/songs') }}?filterby=title_2&filtervalue=slide">
+						<i class="fa fa-clone"> </i> &nbsp;Slides
+					</a>
+				</li>
+
+				@if( Auth::user()->isEditor() && $plan_id==0 )
+					<li class="nav-item">
+						<a class="nav-link text-primary" href="{{ url('cspot/songs/create') }}">
+							<i class="fa fa-plus"> </i> &nbsp;Add new one
+						</a>
+					</li>
+				@endif
+
+			</ul>
+
+		</div>
+
+	</nav>
+
+
+
 
 	@if ($plan_id>0)
 		{{-- page was called from a plan in order to search for a song, so we open the serach box immediately --}}
@@ -52,13 +94,6 @@
 	@endif
     
 
-
-	@if ($currentPage!=0)
-		<center class="hidden-sm-down">
-			Page {{ $songs->currentPage() }} of {{ $songs->lastPage() }}<br>
-			<small>showing a total of {{ $songs->total() }} songs</small>
-		</center>
-	@endif
 
 
 	@if (count($songs))
@@ -103,7 +138,9 @@
 					<td {!! $editLink !!} scope="row" class="link hidden-md-down text-xs-center">{{ $song->id }}</td>
 
 					<td {!! $editLink !!} class="link" title="{{ $song->lyrics }}">
-						{{ $song->title }} {{ $song->title_2<>'' ? '('. $song->title_2 .')' : '' }}
+						{!! $song->title_2=='video' ? '<i class="fa fa-tv"> </i>' : '' !!}
+						{!! $song->title_2=='slides' ? '<i class="fa fa-clone"> </i>' : '' !!}
+						{{ $song->title }} {{ ($song->title_2<>'' && $song->title_2<>'video' && $song->title_2<>'slides') ? '('. $song->title_2 .')' : '' }}
 					</td>
 
 					<td {!! $editLink !!} class="link hidden-md-down">{{ mb_strimwidth($song->author, 0, 35, "...") }}</td>
@@ -203,7 +240,7 @@
 
     @else
 
-    	<p>No songs found!</p>
+    	<p>No songs/videos/slides found!</p>
 
 	@endif
 

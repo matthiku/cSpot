@@ -1121,7 +1121,8 @@ function successfullyAddedFileToItem(data)
     if (  $('#col-2-file-add').length) {
 
         // reload the page until proper SPA code is written
-        window.location.reload;
+        showSpinner();
+        window.location.reload();
 
         // hide the elements
         $('#col-2-file-add').hide();
@@ -1300,9 +1301,15 @@ function updateFileInformation()
     var newFn = $('#filename').val()
     var newFC = $('#file_category_id').val()
 
-    // compare
+    // ignore and close dialog if nothing was changed
     if (oldData.file_category_id == newFC 
              && oldData.filename == newFn) return;
+
+    // show spinner
+    if ( oldData.file_category_id != newFC )
+        $('.fileshow-category-'+fileID).html(cSpot.const.waitspinner);
+    if ( oldData.filename != newFn )
+        $('.fileshow-filename-'+fileID).html(cSpot.const.waitspinner);
 
     // get the action URL
     var actionURL = $('#file-id').data('action-url')+fileID;
@@ -1310,11 +1317,16 @@ function updateFileInformation()
     // update via AJAX 
     $.post( actionURL, { id: fileID, filename: newFn, file_category_id: newFC })
         .done(function(data) {
-            dispElem.find('.fileshow-filename').text(newFn);
-            dispElem.find('.fileshow-category').text($('#file_category_id option:selected').text());
+            ;;;console.log('update successful:');
+            ;;;console.log(data);
+            var file = data.data;
+            $('.fileshow-filename-'+fileID).text(file.filename);
+            $('.fileshow-category-'+fileID).text($('#file_category_id option:selected').text());
         })
         .fail(function(data) {
-            dispElem.find('.fileshow-filename').text("Update failed! Please notify admin! " + JSON.stringify(data));
+            console.log('update failed!');
+            console.log(data);
+            $('.fileshow-filename-'+fileID).text("Update failed! Please notify admin! Press F12 for more details." + JSON.stringify(data));
         });
     
     // close the modal and update the data on the screen

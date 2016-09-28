@@ -37,7 +37,7 @@
     <script>
         var __app_url = "{{ url('/') }}";
         var cSpot = {};
-        cSpot.user = JSON.parse('{!! json_encode(Auth::user(), JSON_HEX_APOS | JSON_HEX_QUOT ) !!}');
+        cSpot.user = JSON.parse('{!! addslashes( json_encode(Auth::user(), JSON_HEX_APOS | JSON_HEX_QUOT ) ) !!}');
 
         cSpot.lastSongUpdated_at = "{{ $lastSongUpdated_at }}";
 
