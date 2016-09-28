@@ -873,9 +873,12 @@ function showImagesSelection(that, ajax_url)
     // path to the images
     var img_path = that.dataset.imagesPath;
 
+    // was file category set?
+    var cat = $('#file_category_id').val() || $('input[name="file_category_id"]:checked').val();
+
     // url for the AJAX call
     if (ajax_url==undefined)
-        var ajax_url = that.dataset.ajaxUrl + '/' + $('#file_category_id').val();
+        var ajax_url = that.dataset.ajaxUrl + '/' + cat;
 
     var maxVisible = 3;
     if ( $('#searchSongModal').is(':visible') )

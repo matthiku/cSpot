@@ -34,6 +34,8 @@ class AddFieldsToTypesTable extends Migration
             //
             $table->dropColumn('leader_id');
             $table->dropColumn('resource_id');
+            $table->dropColumn('weekday');
+            $table->dropColumn('subtitle');
         });
     }
 }

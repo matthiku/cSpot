@@ -15,12 +15,14 @@
 	@include('layouts.flashing')
 
 	@if( Auth::user()->isEditor() )
-		<a class="hidden-xs-up btn btn-outline-primary pull-xs-right" href='{{ url('admin/files/create') }}'>
+		<a class="btn btn-outline-primary pull-xs-right m-l-2" href='#'
+                data-toggle="modal" data-target="#fileUploadModal">
 			<i class="fa fa-plus"> </i> &nbsp; Add a new file
 		</a>
 	@endif
 
-    <a class="btn btn-outline-primary pull-xs-right" href='#' onclick="$('#show-as-large-icons').toggle();$('#show-as-filelist').toggle();">
+    <a class="btn btn-outline-success pull-xs-right" href='#' 
+            onclick="$('#show-as-large-icons').toggle();$('#show-as-filelist').toggle();">
         <i class="fa fa-list"> </i> &nbsp; Filelist / Icons
     </a>
 
@@ -229,8 +231,14 @@
         modal.find('#filename').val(filename);
         modal.find('img').attr('src',token);
         modal.find('#file_category_id').val(cat);
-    })
-</script>	
+    });
+
+    $('#fileUploadModal').on('show.bs.modal', function (event) {
+        var modal = $(this);
+        modal.find('.card-title').text('');
+    });
+
+</script>
 
 
 @stop
@@ -265,6 +273,26 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary" onclick="updateFileInformation()">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal to ADD (upload) new file -->
+<div class="modal fade" id="fileUploadModal" tabindex="-1" role="dialog" aria-labelledby="fileUploadModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="fileUploadModalLabel">Upload File</h4>
+            </div>
+            <div class="modal-body">
+                @include ('cspot.snippets.add_files')
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
