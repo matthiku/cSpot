@@ -105,7 +105,7 @@ $modalContent = '
         @if ($item->song_id && $item->song->ccli_no)
             <a href="https://songselect.ccli.com/Songs/{{ $item->song->ccli_no }}" 
                 target="new" class="pull-xs-right btn btn-sm btn-info hidden-sm-down p-y-0">
-            <img src="/images/songselectlogo.png" width="25"></a>
+            <img src="{{ url('/') }}/images/songselectlogo.png" width="25"></a>
         @else
             <a href="#" disabled="" 
                class="pull-xs-right btn btn-sm btn-outline-secondary hidden-lg-down">

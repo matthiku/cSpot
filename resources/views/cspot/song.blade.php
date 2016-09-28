@@ -223,12 +223,12 @@ Select 'Text slides' in order to show Powerpoint-like slides using the text in t
                         <div class=" small">
                             <a target="new"  onclick="$('#ccli-link-input-field').hide();$('#ccli-drop-target').show()"
                                href="{{ env('SONGSELECT_SEARCH', 'https://songselect.ccli.com/search/results?SearchText=').$song->title.' '.$song->title_2.' '.$song->author }}">
-                               <i class="fa fa-search"></i><img src="{{ url($logoPath.'songselectlogo.png') }}" width="15"> search CCLI <i class="fa fa-external-link"></i>
+                               <i class="fa fa-search"></i><img src="{{ url('/') }}/images/songselectlogo.png" width="15"> search CCLI <i class="fa fa-external-link"></i>
                             </a>
                             @if ( $song->ccli_no > 1000 && 'MP'.$song->ccli_no!=$song->book_ref )
                                 <a class="right-align-input" target="new" 
                                     href="{{ env('SONGSELECT_URL', 'https://songselect.ccli.com/Songs/').$song->ccli_no }}">
-                                    <img src="{{ url($logoPath.'songselectlogo.png') }}" width="15"> show <i class="fa fa-external-link"></i>
+                                    <img src="{{ url('/') }}/images/songselectlogo.png" width="15"> show <i class="fa fa-external-link"></i>
                                 </a>
                             @endif
                         </div>

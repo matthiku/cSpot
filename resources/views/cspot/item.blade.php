@@ -299,11 +299,11 @@
                                 @if ( $item->song->ccli_no > 1000 && 'MP'.$item->song->ccli_no != $item->song->book_ref )
                                     <a href="https://songselect.ccli.com/Songs/{{ $item->song->ccli_no }}" 
                                         target="new" class="fully-width btn btn-outline-primary btn-sm">
-                                    <img src="{{ url($logoPath.'songselectlogo.png') }}" width="14"><br><small>show<span class="hidden-lg-down"> on SongSelect</span></small></a>
+                                    <img src="{{ url('/') }}/images/songselectlogo.png" width="14"><br><small>show<span class="hidden-lg-down"> on SongSelect</span></small></a>
                                 @else
                                     <a href="#" class="fully-width btn btn-outline-secondary btn-sm disabled"
                                           title="Missing SongSelect Link!" data-toggle="tooltip">
-                                    <img src="{{ url($logoPath.'songselectlogo.png') }}" width="14"><br><small>CCLI N<sup>o</sup>. missing!</small></a>
+                                    <img src="{{ url('/') }}/images/songselectlogo.png" width="14"><br><small>CCLI N<sup>o</sup>. missing!</small></a>
                                 @endif
                             </div>
                         </div>
