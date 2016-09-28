@@ -20,7 +20,7 @@ class RedirectIfAuthenticated
     {
         if (Auth::guard($guard)->check()) {
 
-            Log::info('User logged in successfully: '.Auth::user()->getFullName() );
+            Log::info('User logged in successfully: '.Auth::user()->fullName );
 
             return redirect('/');
         }

@@ -93,7 +93,7 @@ class AuthController extends Controller
         if (Auth::guard($this->getGuard())->attempt($credentials, $request->has('remember'))) {
             $user = Auth::user();
             // notify admin 
-            $mailer->notifyAdmin( $user, $user->getFullName() .' logged in on IP '.$request->ip() );
+            $mailer->notifyAdmin( $user, $user->fullName .' logged in on IP '.$request->ip() );
             // write last login field in users table
             $user->last_login = Carbon::now();
             $user->save();

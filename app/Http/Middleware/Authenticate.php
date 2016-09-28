@@ -31,7 +31,7 @@ class Authenticate
             return redirect('home');
         }
 
-        Log::info($request->ip().' handling an incoming request for '.Auth::user()->getFullName . ' to path '.$request->path());
+        Log::info($request->ip().' handling an incoming request for '.Auth::user()->fullName . ' to path '.$request->path());
 
         return $next( $request );
 

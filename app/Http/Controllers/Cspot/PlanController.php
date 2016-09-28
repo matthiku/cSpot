@@ -474,7 +474,7 @@ class PlanController extends Controller
 
             $mailer->planReminder( $recipient, $plan );
 
-            flash( 'Email sent to '.$recipient->getFullName() );
+            flash( 'Email sent to '.$recipient->fullName );
             return redirect()->back();
         }
 

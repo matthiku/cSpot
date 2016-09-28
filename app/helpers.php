@@ -965,7 +965,7 @@ function sendEmailNotification(Message $message)
                 ['user'=>$user, 'subject'=>$subject, 'messi'=>$message],
                 function ($msg) use ($user, $subject) {
                     $msg->from(findAdmins()[0]->email, 'c-SPOT Admin');
-                    $msg->to($user->email, $user->getFullName());
+                    $msg->to($user->email, $user->fullName);
                     $msg->subject($subject);
                 }
             );

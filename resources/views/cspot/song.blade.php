@@ -126,10 +126,12 @@ Select 'Text slides' in order to show Powerpoint-like slides using the text in t
 
             <div class="row form-group song-only">
                 <div class='col-sm-4 col-md-3 col-lg-2 col-xl-4'>                    
-                    {!! Form::label('book_ref', 'Book Ref.'); !!}
-                    <small>(e.g. Mission Praise='MP'</small>
+                    {!! Form::label('book_ref', 'Book Ref.'); !!}                    
                 </div>
-                <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8">{!! Form::text('book_ref'); !!}</div>
+                <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8">
+                    {!! Form::text('book_ref'); !!}
+                    <small>(e.g. Mission Praise='MPnnn')</small>
+                </div>
             </div>
 
 
@@ -139,7 +141,7 @@ Select 'Text slides' in order to show Powerpoint-like slides using the text in t
                     <big>
                         <a tabindex="0" href="#"
                             data-container="body" data-toggle="tooltip"
-                            title="The type of license can be retrieved from the CCLI database (see link above). &nbsp; PD = Public Domain.">
+                            title="The type of license can be retrieved from the CCLI database - see link below. &nbsp; PD = Public Domain.">
                             <i class="fa fa-info-circle"></i></a>
                     </big>
                 </div>
@@ -168,19 +170,20 @@ Select 'Text slides' in order to show Powerpoint-like slides using the text in t
 
             <div class="row form-group song-only">
                 <div class='col-sm-4 col-md-3 col-lg-2 col-xl-4'>
-                    {!! Form::label('hymnaldotnet_id', 'Hymnal.Net ID or URL'); !!}
+                    {!! Form::label('hymnaldotnet_id', 'Hymnal.Net URL (link)'); !!}
                     <big>
                         <a tabindex="0" href="#" data-container="body" data-toggle="tooltip"
                             title="Search opens in new tab. Once song is found, copy the URL (the address) and paste it into this field.">
                             <i class="fa fa-info-circle"></i></a>
                     </big>
                 </div>
-                <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width">
+
+                <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width link-input-field" id="hdn-link-input-field">
                     {!! Form::text('hymnaldotnet_id'); !!}
 
                     @if ( isset($song) )
                         <div class="small">
-                            <a target="new" 
+                            <a target="new"  onclick="$('#hdn-link-input-field').hide();$('#hdn-drop-target').show()"
                                href="{{ env('HYMNAL.NET_SEARCH', 'https://www.hymnal.net/en/search/all/all/').$song->title.' '.$song->title_2 }}">
                                <i class="fa fa-search"></i> search hymnal.net <i class="fa fa-external-link"></i>
                             </a>
@@ -192,24 +195,33 @@ Select 'Text slides' in order to show Powerpoint-like slides using the text in t
                             @endif
                         </div>
                     @endif
+
                 </div>
+                <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8" id="hdn-drop-target" style="display: none;">
+                    <textarea class="bg-warning drop-target">drop Hymnal.Net link address here ....</textarea>
+                    <a href="#" onclick="$('#hdn-link-input-field').show();$('#hdn-drop-target').hide()">Cancel</a>
+                </div>
+
             </div>
+
 
 
             <div class="row form-group song-only">
                 <div class='col-sm-4 col-md-3 col-lg-2 col-xl-4'>
-                    {!! Form::label('ccli_no', 'CCLI Song No or URL'); !!}
+                    <label for="ccli_no">CCLI Song N<sup>o</sup></label>
                     <big>
                         <a tabindex="0" href="#" data-container="body" data-toggle="tooltip"
                             title="Search opens in new tab. Once song is found, copy the URL (the address) and paste it into this field.">
                             <i class="fa fa-info-circle"></i></a>
                     </big>
                 </div>
-                <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width">
+
+                <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width link-input-field" id="ccli-link-input-field">
                     {!! Form::text('ccli_no'); !!}
+
                     @if ( isset($song) )
                         <div class=" small">
-                            <a target="new" 
+                            <a target="new"  onclick="$('#ccli-link-input-field').hide();$('#ccli-drop-target').show()"
                                href="{{ env('SONGSELECT_SEARCH', 'https://songselect.ccli.com/search/results?SearchText=').$song->title.' '.$song->title_2.' '.$song->author }}">
                                <i class="fa fa-search"></i><img src="{{ url($logoPath.'songselectlogo.png') }}" width="15"> search CCLI <i class="fa fa-external-link"></i>
                             </a>
@@ -221,7 +233,13 @@ Select 'Text slides' in order to show Powerpoint-like slides using the text in t
                             @endif
                         </div>
                     @endif
+
                 </div>
+                <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8" id="ccli-drop-target" style="display: none;">
+                    <textarea class="bg-warning drop-target">drop CCLI link address here ....</textarea>
+                    <a href="#" onclick="$('#ccli-link-input-field').show();$('#ccli-drop-target').hide()">Cancel</a>
+                </div>
+
                 <script>
                     // when the user enters a CCLI No, we can safely assume that the license type is 'CCLI'
                     if ($("input[name='ccli_no']").length) {
@@ -246,12 +264,12 @@ Select 'Text slides' in order to show Powerpoint-like slides using the text in t
                     </big>
                 </div>
 
-                <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width" id="yt-link-input-field">
+                <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width link-input-field" id="yt-link-input-field">
                     {!! Form::text('youtube_id'); !!}
 
                     @if ( isset($song) )
                         <div class="small">
-                            <a target="new" {{-- onclick="$('#yt-link-input-field').hide();$('#yt-drop-target').show()" --}}
+                            <a target="new" onclick="$('#yt-link-input-field').hide();$('#yt-drop-target').show()"
                                 href="{{ env('YOUTUBE_SEARCH', 'https://www.youtube.com/results?search_query=').$song->title }}">
                                 <i class="fa fa-search"></i><i class="fa fa-youtube"></i> search YouTube <i class="fa fa-external-link"></i>
                             </a>
@@ -264,8 +282,8 @@ Select 'Text slides' in order to show Powerpoint-like slides using the text in t
                         </div>
                     @endif
                 </div>
-                <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 bg-inverse drop-target" id="yt-drop-target" style="display: none;">
-                    <p class="text-danger">drop YouTube address here ....</p>
+                <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8" id="yt-drop-target" style="display: none;">
+                    <textarea class="bg-warning drop-target">drop YouTube link address here ....</textarea>
                     <a href="#" onclick="$('#yt-link-input-field').show();$('#yt-drop-target').hide()">Cancel</a>
                 </div>
             </div>
@@ -502,16 +520,23 @@ like "(repeat chorus!)"'>
 
         /* Provide drop-targets for URL strings like YouTube links, CCLI numbers, hymnal.net URLs
         */
-        document.addEventListener("drop", function(event) {
-            event.preventDefault();
-            if ( event.target.className == "drop-target" ) {
-                document.getElementById("yt-drop-target").style.color = "red";
-                event.target.style.border = "3px dotted red";
-                var data = event.dataTransfer.getData("Text");
-                event.target.appendChild(document.getElementById(data));
-            }
-        });
+        $(".drop-target")
+            .bind("dragover", false)
+            .bind("dragenter", false)
+            .bind("drop", function(e) {
+                this.value = e.originalEvent.dataTransfer.getData("text") ||
+                    e.originalEvent.dataTransfer.getData("text/plain");
 
+                // hide drop target and show input field again
+                $('.drop-target').hide()
+                $('.link-input-field').show();
+                // find the corresponding input field and fill it with the dropped link string
+                $( $(e.target.parentNode.parentNode).children('.link-input-field').children('input')[0] ).val(this.value);
+                // submit the form to save the new data
+                $('#inputForm').submit();
+
+            return false;
+        });
 
         /* position external links underneath the input elements
         */

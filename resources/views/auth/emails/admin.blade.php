@@ -8,7 +8,7 @@
 
 <body>
 
-    <p>Name: {{ $user->getFullName() }}</p>
+    <p>Name: {{ $user->fullName }}</p>
 
     <p>Email address: {{ $user->email }}</p>
 
