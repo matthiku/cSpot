@@ -411,13 +411,17 @@ class ItemController extends Controller
     public function edit($plan_id, $id)
     {
         // get current item
-        $plan = Plan::find( $plan_id );
-
         $item = Item::find($id);
         if (!$item) { 
             flashError('Error! Item with ID "' . $id . '" not found! (F:edit)');
             return redirect()->back();
         }
+        
+        // get plan to which this item belongs to
+        if ($plan_id==0)
+            $plan_id=$item->plan->id;
+        $plan = Plan::find( $plan_id );
+
         $seq_no = $item->seq_no;
 
         $versionsEnum = json_decode(env('BIBLE_VERSIONS'));

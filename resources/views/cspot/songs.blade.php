@@ -42,7 +42,7 @@
 				@if ($currentPage!=0)
 					<li class="nav-item hidden-sm-down small text-xs-right">
 						Page {{ $songs->currentPage() }} of {{ $songs->lastPage() }}<br>
-						<small class="hidden-md-down">showing a total of {{ $songs->total() }} songs</small>
+						<small class="hidden-md-down">showing {{ $songs->perPage() }} of a total of {{ $songs->total() }} songs</small>
 					</li>
 				@endif
 			</ul>
@@ -88,8 +88,9 @@
 
 
 
+	{{-- if page was called from a plan in order to search for a song, 
+		 then we open the search box immediately --}}
 	@if ($plan_id>0)
-		{{-- page was called from a plan in order to search for a song, so we open the serach box immediately --}}
 		<script>$('#fulltext-search').click();</script>
 	@endif
     
@@ -176,14 +177,24 @@
 					</td>
 
 
-					<td class="center hidden-md-down">{{ $song->items_count }}</td>
-
-
 					<?php $last = $song->lastPlanUsingThisSong(); ?>
+
+
+					<td class="center hidden-md-down">
+						@if ($song->items_count>1)
+							<a title="Show list of plans using this song" href="{{ route('cspot.songs.show', $song->id) }}">{{ $song->items_count }}</a>
+						@endif
+						@if ($song->items_count==1)
+							<a href="{{ url('cspot/plans/'.$last->id) }}" title="open this plan">
+						@endif
+					</td>
+
+
 					<td class="link center hidden-md-down">
 						@if ($last) 
 							<a href="{{ url('cspot/plans/'.$last->id) }}" title="open this plan">
-							<small>{{ $last->date->formatLocalized('%a, %d %b \'%y') }}</small></a>
+							<small>{{ $song->last_time_used->formatLocalized('%a, %d %b \'%y') }}</small></a>
+							{{-- <small>{{ $last->date->formatLocalized('%a, %d %b \'%y') }}</small></a> --}}
 						@endif
 					</td>
 

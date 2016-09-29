@@ -53,7 +53,7 @@ class SongController extends Controller
         $querystringArray = $request->input();
         // set default values
         $orderBy = isset($request->orderby) ? $request->orderby : 'title';
-        $order   = isset($request->order)   ? $request->order   : 'asc';
+        $order   = isset($request->order)   ? $request->order   : 'ASC';
 
         // with filtering?
         if (isset($request->filterby) and isset($request->filtervalue)) {
@@ -81,8 +81,8 @@ class SongController extends Controller
         else {
             // the where clause is needed since the 'withCount' would bring in all items with song_id = 0
             $songs = Song::withCount('items')
-                ->where('id', '>', 0)
-                ->orderBy($orderBy, $order);
+                ->where('id', '>', 0);
+        //        ->orderBy($orderBy, $order);
         }
 
         $heading = 'Manage Songs etc.';
@@ -153,8 +153,17 @@ class SongController extends Controller
     {
         // get all -- PLANS -- with this specific song id
         $song    = Song::find($id);
-        $heading = 'Show Plans using the Song '.$song->name;
-        return view( 'cspot.plans.index', array('plans' => $song->plans, 'heading' => $heading) );
+
+        // find plans using this song
+        $plans = $song->plansUsingThisSong();
+
+        if ($plans) {
+            $heading = 'Show Plans using the Song "'.$song->title.'"';
+            return view( 'cspot.plans', array('plans' => $plans, 'heading' => $heading) );
+        }
+
+        flash('No plans for this song found!');
+        return \Redirect::back();        
     }
 
 

@@ -106,6 +106,21 @@ class Song extends Model
         return $plan;
     }
 
+    /**
+     * get date of last time this song was used in a plan
+     */
+    public function getLastTimeUsedAttribute( $value ) {
+
+        $id = $this->id;
+
+        // get list of plans using this song
+        $plan = Plan::whereHas('items', function ($query) use ($id) {
+            $query->where('song_id', $id) 
+                  ->where('date', '<', Carbon::now());
+        })->orderBy('date', 'desc')->first();
+
+        return $plan->date;
+    }
 
 
     /**

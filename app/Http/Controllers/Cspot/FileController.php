@@ -164,6 +164,26 @@ class FileController extends Controller
 
 
     /**
+     * Upload single file via AJAX
+     */
+    public function upload(Request $request)
+    {
+        // check if a valid file was submitted
+        if (   $request->hasFile('file') 
+            && $request->file('file')->isValid()
+            && $request->has('file_category_id')  )
+        {
+            // use the helper function
+            $file = saveUploadedFile($request);
+            $file->save();
+            return response()->json(['status' => 200, 'data' => $file]); 
+        }
+        return response()->json(['status' => 404, 'data' => 'Incomplete request'], 404); 
+    }
+
+
+
+    /**
      * Remove a file attachment
      *
      * - - RESTful API request - -

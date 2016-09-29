@@ -41016,12 +41016,25 @@ function updateSong(song_id)
         });
 }
 
+
+/* reset the file selection facility
+*/
+function resetAddFilesElement() {
+    $('#show-location-selection').hide();
+    $('.image-selection-slideshow').hide();
+    $('.show-file-add-button').hide();
+    $('.modal-select-file').show();
+}
+
 /*  hide File-Category selector; show local-vs-remote-files choice
 */
-function showLocalVersusRemoteButtons(that)
+function showLocalVersusRemoteButtons(that, modus)
 {
     // hide the file-category selector
-    $(that).parent().parent().hide();
+    if (modus != 'files_upload')
+        $(that).parent().parent().hide();
+
+    // get category id from selected value
     var cat = $(that).val();
 
     // skip the next step (choice between upload and cspot images)
@@ -41041,10 +41054,49 @@ function showLocalVersusRemoteButtons(that)
             catText = that[i].text;
     }
     // show selected category
-    $('#show-selected-category').text(catText);
+    $('.show-selected-category').text(catText);
 
-    // show the two buttons
+    // if only file uploads are requested:
+    if (modus == 'files_upload') {
+        $('.show-file-add-button').show();
+        $('#file').on('change', function() {
+            uploadSingleFile('#file', cat);
+        })
+        return;
+    }
+
+    // show the two buttons 'upload' or 'select existing'
     $('#show-location-selection').show();
+}
+
+function uploadSingleFile(selector, category)
+{
+    // create a 'virtual' form with the filename
+    var formData = new FormData();
+    formData.append('file', $(selector)[0].files[0]);
+    formData.append('file_category_id', category);
+
+    // show spinner while uploading
+    $('.show-file-add-button').html(cSpot.const.waitspinner + ' uploading ....');
+
+    $.ajax({
+            url : cSpot.routes.apiUpload,
+            type : 'POST',
+            data : formData,
+            processData: false,  // tell jQuery not to process the data
+            contentType: false,  // tell jQuery not to set contentType
+        }).done( 
+            function( data ) {
+                console.log(data.data);
+                $('.show-file-add-button').html('Success! Reloading page ...'+cSpot.const.waitspinner);
+                // reload page and show latest upload
+                location.href = "http://c-spot.app/cspot/files?newest=yes";
+            
+        }).fail( function( data ) {
+            $('.show-file-add-button').text('Error, pres F12 to see more!');
+            console.log("File Upload Error Output:");
+            console.log( data );        
+        })
 }
 
 /*  Show images from server for selection
@@ -41259,7 +41311,7 @@ function addItemWithFileOrAddFileToItem(file_id)
 }
 
 
-/*  upload nwe file via AJAX and show little icon when successful
+/*  upload new file via AJAX and show little icon when successful
 */
 function uploadNewFile()
 {

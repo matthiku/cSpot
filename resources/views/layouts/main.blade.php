@@ -49,6 +49,7 @@
 
         cSpot.routes = {};
         cSpot.routes.apiAddFiles   = '{{ route('cspot.api.addfile'      ) }}';
+        cSpot.routes.apiUpload     = '{{ route('cspot.api.upload'       ) }}';
         cSpot.routes.apiItems      = '{{ route('cspot.api.item'         ) }}';
         cSpot.routes.apiItemUpdate = '{{ route('cspot.api.item.update'  ) }}';
 

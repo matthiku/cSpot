@@ -20,9 +20,9 @@
 
 
 	@if( Auth::user()->isEditor() )
-	<a class="btn btn-outline-primary pull-xs-right" href="{{ url('cspot/plans/create') }}">
-		<i class="fa fa-plus"> </i> &nbsp; Add a new Service/Event
-	</a>
+		<a class="btn btn-outline-primary pull-xs-right" href="{{ url('cspot/plans/create') }}">
+			<i class="fa fa-plus"> </i> &nbsp; Add a new Service/Event
+		</a>
 	@endif
 
     <h2 class="pull-xs-left">
@@ -37,12 +37,16 @@
 		@endif
     </h2>
 
-	<center>Page {{ $plans->currentPage() }} of {{ $plans->lastPage() }}</center>
+	@if (get_class($plans)=='Illuminate\Pagination\LengthAwarePaginator')
+		<center>Page {{ $plans->currentPage() }} of {{ $plans->lastPage() }}</center>
+	@endif
 
 
 
 	@if ( isset($plans) && count($plans) )
-		<center><small>(Total: {{ $plans->total() }} Events)</small></center>
+		@if (get_class($plans)=='Illuminate\Pagination\LengthAwarePaginator')
+			<center><small>(Total: {{ $plans->total() }} Events)</small></center>
+		@endif
 
 		<table class="table table-striped table-bordered table-hover
 					@if(count($plans)>15)
@@ -160,9 +164,11 @@
 
 		</table>
 
-		<center>
-			{!! $plans->links() !!}
-		</center>
+		@if (get_class($plans)=='Illuminate\Pagination\LengthAwarePaginator')
+			<center>
+				{!! $plans->links() !!}
+			</center>
+		@endif
 
     @else
 

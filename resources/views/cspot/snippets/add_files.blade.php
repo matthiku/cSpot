@@ -24,16 +24,18 @@
 
             <div class="btn-group modal-select-file m-l-1" data-toggle="buttons"
                 @if (! isset($modal)) 
-                    onclick="$('.show-selected-category').hide();$('#show-location-selection').show()" 
+                    onclick="$('#show-location-selection').show()" 
                 @endif
                 >
 
                 {{-- different selection modes depending on context --}}
                 @if (isset($modal))    
 
-                    <select name="file_category_id" id="file_category_id" onchange="showLocalVersusRemoteButtons(this)">
+                    <select name="file_category_id" id="file_category_id" onchange="showLocalVersusRemoteButtons(this, '{{ $modal }}')">
                         <option selected="TRUE" value="">select ...</option>
-                        <option value="newest">recently added</option>
+                        @if ($modal != 'files_upload')
+                            <option value="newest">recently added</option>
+                        @endif
                         @foreach ( DB::table('file_categories')->get() as $fcat)
                             <option value="{{ $fcat->id }}">{{ $fcat->name }}</option>
                         @endforeach                        
@@ -50,6 +52,8 @@
                 @endif
 
             </div>
+            
+            <p class="m-t-1">Selected category: <span class="text-info show-selected-category"></span></p>
 
         </li>
 
@@ -72,8 +76,6 @@
                 data-ajax-url="{{ route('cspot.api.files') }}"
                 data-images-path="{{ url(config('files.uploads.webpath')) }}"
                 onclick="$(this).parent().hide();showImagesSelection(this)">Select c-SPOT images</button>
-            
-            <p class="m-t-1 show-selected-category">(Selected category: <span id="show-selected-category" class="text-info"></span>)</p>
 
         </li>
 
@@ -83,6 +85,8 @@
         {{-- show images 
         --}}
         <li class="list-group-item image-selection-slideshow center" style="display: none;">
+
+            <p class="m-t-1">Selected category: <span class="text-info show-selected-category"></span></p>
 
             <label class="card-text" id="images-for-selection-label"></label>
             <br>
@@ -103,8 +107,8 @@
         {{-- show file  UPLOAD  button 
         --}}
         <li class="list-group-item show-file-add-button" style="display: none;">
-
-            {!! Form::label('file', 'Now, select a file to be uploaded: ') !!}
+            
+            {!! Form::label('file', 'Select a file to be uploaded: ') !!}
             <br>
             {!! Form::file('file'); !!}    
 

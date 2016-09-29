@@ -55,15 +55,15 @@
                 }
             }
             if ( $.isNumeric($(that).val()) ) {
-                location.href = currUrl.href.split('?')[0] + newQueryStr + "bycategory="+$(that).val();
+                location.href = currUrl.pathname + newQueryStr + "bycategory="+$(that).val();
                 return;
             }
             if ($(that).val()=='newest') {
-                location.href = currUrl.href.split('?')[0] + newQueryStr + "newest=yes";
+                location.href = currUrl.pathname + newQueryStr + "newest=yes";
                 return;
             }
             if (newQueryStr=='?') newQueryStr='';
-            location.href = currUrl.href.split('?')[0] + newQueryStr;
+            location.href = currUrl.pathname + newQueryStr;
         }
     </script>
 
@@ -149,7 +149,8 @@
                     <tr>
                         <th>Name</th>
                         <th class="hidden-xs-down">Category</th>
-                        <th>Size</th>
+                        <th colspan="2" class="center p-r-2">Linked to<br><span class="pull-xs-left">Song</span> or <span class="pull-xs-right">Event Item</span></th>
+                        <th class="center">Size</th>
                         @if( Auth::user()->isEditor() )
                             <th>Modify</th>
                         @endif
@@ -175,7 +176,17 @@
                             <td onclick="$('#edit-button-{{ $file->id }}').click()" class="link fileshow-category-{{ $file->id }} hidden-xs-down">
                                 {{ $file->file_category->name }} <i class="fa fa-edit"> </i></td>
 
-                            <td>{{ humanFileSize($file->filesize) }}</td>
+                            <td>
+                                <a title="Song Details" href="{{ route('cspot.songs.edit', $file->song_id) }}">{{ $file->song_id }}</a>
+                            </td>
+
+                            <td class="pull-xs-right p-r-2">
+                                @if ($file->item_id)
+                                    <a title="Item Details" href="{{ route('cspot.items.edit',[ 0, $file->item_id]) }}">{{ $file->item_id }}</a>
+                                @endif
+                            </td>
+
+                            <td class="center">{{ humanFileSize($file->filesize) }}</td>
 
                             @if( Auth::user()->isEditor() )
                                 <td>
@@ -234,8 +245,7 @@
     });
 
     $('#fileUploadModal').on('show.bs.modal', function (event) {
-        var modal = $(this);
-        modal.find('.card-title').text('');
+        resetAddFilesElement();
     });
 
 </script>
@@ -278,6 +288,7 @@
     </div>
 </div>
 
+
 <!-- Modal to ADD (upload) new file -->
 <div class="modal fade" id="fileUploadModal" tabindex="-1" role="dialog" aria-labelledby="fileUploadModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -289,7 +300,7 @@
                 <h4 class="modal-title" id="fileUploadModalLabel">Upload File</h4>
             </div>
             <div class="modal-body">
-                @include ('cspot.snippets.add_files')
+                @include ('cspot.snippets.add_files', ['modal' => 'files_upload'])
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

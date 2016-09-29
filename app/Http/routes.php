@@ -180,6 +180,7 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
 
 
 
+
     /**
      * FILES
      */
@@ -203,6 +204,10 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     Route::get('api/files/{category?}', ['as'=>'cspot.api.files',   'uses'=>'Cspot\FileController@APIindex']);
     // add a file to a plan item
     Route::post('api/items/addfile',    ['as'=>'cspot.api.addfile', 'uses'=>'Cspot\FileController@add']);    
+    // add a file 
+    Route::post('api/files/upload',     ['as'=>'cspot.api.upload',  'uses'=>'Cspot\FileController@upload']);    
+
+
 
 
     /*
