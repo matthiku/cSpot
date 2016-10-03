@@ -17,7 +17,7 @@
 
     @if (isset($resource))
         <h2>Update Resource</h2>
-        {!! Form::model( $resource, array('route' => array('admin.resources.update', $resource->id), 'method' => 'put', 'id' => 'inputForm') ) !!}
+        {!! Form::model( $resource, array('route' => array('resources.update', $resource->id), 'method' => 'put', 'id' => 'inputForm') ) !!}
     @else
         <h2>Create Resource</h2>
         {!! Form::open(array('action' => 'Admin\ResourceController@store', 'id' => 'inputForm') ) !!}

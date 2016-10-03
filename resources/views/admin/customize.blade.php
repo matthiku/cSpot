@@ -20,7 +20,7 @@
             <div class="row">
 
                 <div class="col-md-6">
-                    <h3>Application Customisaztion</h3>
+                    <h3>Application Customization</h3>
                     <h5>Customise this App for your Organisation</h5>
 
                     <div class="form-group full-width">
@@ -45,23 +45,35 @@
                    </div>
 
 
-                    <div class="form-group">Current Favicon: 
-                        <img src="{{ url($logoPath.'favicon.ico') }}">
-                        <br>
-                        {!! Form::label('favicon_file', 'Upload a new one:'); !!}
-                        {!! Form::file('favicon_file'); !!}<br>
-                        <small>This must be a valid icon file! See <a target="_new" href="https://en.wikipedia.org/wiki/Favicon">Wikipedia article</a></small>
+                    <div class="card card-block">
+                        <h5 class="card-title">
+                            Current Favicon (Browser Icon): 
+                            <img src="{{ url($logoPath.'favicon.ico') }}">
+                        </h5>
+                        <p class="card-text">
+                            {!! Form::label('favicon_file', 'Upload a new one:'); !!} &nbsp; &nbsp;
+                            {!! Form::file('favicon_file'); !!}
+                            <br>
+                            <small>This must be a valid icon file! See <a class="card-link" target="_new" href="https://en.wikipedia.org/wiki/Favicon">Wikipedia article</a></small>
+                        </p>
                     </div>
 
-                    <div class="form-group">Your Church Logo: 
-                        <img src="{{ url($logoPath.env('CHURCH_LOGO_FILENAME')) }}" height="30px">
-                        <br>
-                        {!! Form::label('logo_file', 'Upload a new one:'); !!}
-                        {!! Form::file('logo_file'); !!}
+                    <div class="card card-block">
+                        <h5 class="card-title">
+                            Your Church Logo: 
+                            <img src="{{ url($logoPath.env('CHURCH_LOGO_FILENAME')) }}" height="30px">
+                        </h5>
+                        <p class="card-text">
+                            {!! Form::label('logo_file', 'Upload a new one:'); !!}
+                            {!! Form::file('logo_file'); !!}
+                        </p>
                     </div>
+
                 </div>
 
+
                 <hr class="hidden-md-up hr-big">
+
 
                 <div class="col-md-6">
                     <h3>System Configuration</h3>

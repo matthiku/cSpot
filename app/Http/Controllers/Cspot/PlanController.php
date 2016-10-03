@@ -31,7 +31,7 @@ class PlanController extends Controller
      * define view names
      */
     protected $view_all = 'cspot.plans';
-    protected $view_idx = 'cspot.plans.index';
+    protected $view_idx = 'plans.index';
     protected $view_one = 'cspot.plan';
 
 

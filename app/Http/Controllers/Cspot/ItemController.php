@@ -197,7 +197,7 @@ class ItemController extends Controller
 
         // back to full plan view
         //      but first, get plan id from the hidden input field in the form
-        return \Redirect::route( 'cspot.plans.edit', [ 'id' => $request->input('plan_id') ]);
+        return \Redirect::route( 'plans.edit', [ 'id' => $request->input('plan_id') ]);
     }
 
 
@@ -236,7 +236,7 @@ class ItemController extends Controller
             // provide new item id to the view for highlighting
             session()->put('newest_item_id', $newItem->id);
 
-            return \Redirect::route( 'cspot.plans.edit', $plan_id );
+            return \Redirect::route( 'plans.edit', $plan_id );
         }
 
         flashError('Error! Plan with ID "' . $plan_id . '" not found! (F:addSong)');
@@ -301,7 +301,7 @@ class ItemController extends Controller
         // provide new item id to the view for highlighting
         session()->put('newest_item_id', $newItem->id);
 
-        return \Redirect::route( 'cspot.plans.edit', $plan_id );
+        return \Redirect::route( 'plans.edit', $plan_id );
     }
 
 
@@ -557,7 +557,7 @@ class ItemController extends Controller
             $newItem = moveItem( $item->id, 'static');
 
             // back to full plan view 
-            return \Redirect::route('cspot.plans.edit', $plan_id);        
+            return \Redirect::route('plans.edit', $plan_id);        
         }
 
         // notify event listener that an item was updated
@@ -592,7 +592,7 @@ class ItemController extends Controller
         // send confirmation to view
         flash('New item No '.$item->seq_no.' inserted with song '.$item->song->title);
 
-        return \Redirect::route( 'cspot.plans.edit', $plan_id );
+        return \Redirect::route( 'plans.edit', $plan_id );
     }
 
 
@@ -875,7 +875,7 @@ class ItemController extends Controller
             
             // back to full plan view 
             //flash('Item deleted.');
-            return \Redirect::route('cspot.plans.edit', $plan_id);
+            return \Redirect::route('plans.edit', $plan_id);
         }
         flashError('Error! Problem trying to delete item with ID "' . $id . '"');
         return \Redirect::back();

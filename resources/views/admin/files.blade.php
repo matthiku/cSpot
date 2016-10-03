@@ -177,7 +177,7 @@
                                 {{ $file->file_category->name }} <i class="fa fa-edit"> </i></td>
 
                             <td>
-                                <a title="Song Details" href="{{ route('cspot.songs.edit', $file->song_id) }}">{{ $file->song_id }}</a>
+                                <a title="Song Details" href="{{ route('songs.edit', $file->song_id) }}">{{ $file->song_id }}</a>
                             </td>
 
                             <td class="pull-xs-right p-r-2">

@@ -6,9 +6,9 @@
     "type": "project",
     "require": {
         "php": ">=5.5.9",
-        "laravel/framework": "5.2.*",
+        "laravel/framework": "5.3.*",
         "laravel/socialite": "^2.0",
-        "laravelcollective/html": "5.2.*",
+        "laravelcollective/html": "5.3.*",
         "doctrine/dbal": "^2.5",
         "snap/bible-books": "0.1.*@dev",
         "cmgmyr/messenger": "~2.0",

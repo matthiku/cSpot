@@ -17,7 +17,7 @@
 
     @if (isset($song))
         {!! Form::model( $song, array(
-            'route'  => array('cspot.songs.update', $song->id), 
+            'route'  => array('songs.update', $song->id), 
             'method' => 'put', 
             'id'     => 'inputForm',
             'class'  => 'form-horizontal',

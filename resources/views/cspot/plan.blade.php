@@ -25,7 +25,7 @@
     @if (isset($plan))
         @if (Auth::user()->isEditor())
             {!! Form::model( $plan, array(
-                'route'  => array('cspot.plans.update', $plan->id), 
+                'route'  => array('plans.update', $plan->id), 
                 'method' => 'put', 
                 'file'   => 'true',
                 'id'     => 'inputForm',

@@ -17,7 +17,7 @@
 
     @if (isset($role))
         <h2>Update Role</h2>
-        {!! Form::model( $role, array('route' => array('admin.roles.update', $role->id), 'method' => 'put', 'id' => 'inputForm') ) !!}
+        {!! Form::model( $role, array('route' => array('roles.update', $role->id), 'method' => 'put', 'id' => 'inputForm') ) !!}
     @else
         <h2>Create Role</h2>
         {!! Form::open(array('action' => 'Admin\RoleController@store', 'id' => 'inputForm') ) !!}

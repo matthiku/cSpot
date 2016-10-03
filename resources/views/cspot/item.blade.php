@@ -317,7 +317,7 @@
                                 </div>
                                 <div class="col-sm-12 col-md-3 full-btn">
                                     <a href="#" class="fully-width btn btn-outline-primary btn-sm" 
-                                        onclick="unlinkSong(this, {{ $item->id.', '.$item->song_id.', \''.route('cspot.plans.edit', $item->plan_id)."'" }})" 
+                                        onclick="unlinkSong(this, {{ $item->id.', '.$item->song_id.', \''.route('plans.edit', $item->plan_id)."'" }})" 
                                         title="Detach song from this item" data-toggle="tooltip"
                                     ><i class="fa fa-unlink"></i><br><small>unlink song/slide</small></a>
                                 </div>
@@ -325,7 +325,7 @@
                             @if (Auth::user()->isEditor() )
                                 <div class="col-sm-12 col-md-3 full-btn">
                                     <a href="#" class="fully-width btn btn-outline-primary btn-sm" accesskey="69" id="go-edit"
-                                        onclick="showSpinner();location.href='{{ route('cspot.songs.edit', $item->song_id) }}'" 
+                                        onclick="showSpinner();location.href='{{ route('songs.edit', $item->song_id) }}'" 
                                           title="Edit details of this song" data-toggle="tooltip"
                                     ><i class="fa fa-edit"></i><br><small>edit song/slide</small></a>
                                 </div>

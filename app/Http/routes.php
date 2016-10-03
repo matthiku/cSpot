@@ -18,15 +18,20 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/home', ['as'=>'home', 'uses'=>'HomeController@index']);
 
     // all authorization routes
-    Route::auth();
+    //Route::auth();  (old 5.2 way)
+    Auth::routes();
+
+    // allow get-method for logout again
+    Route::get('/logout', 'Auth\LoginController@logout');
+
     // confirm registration route from registration email
-    Route::get('register/confirm/{token}', 'Auth\AuthController@confirmEmail');
+    Route::get('register/confirm/{token}', 'Auth\RegisterController@confirmEmail');
 
 
     // Social (OAuth) authorization
     $s = 'social.';
-    Route::get('/social/redirect/{provider}',   ['as' => $s . 'redirect',   'uses' => 'Auth\AuthController@getSocialRedirect']);
-    Route::get('/social/handle/{provider}',     ['as' => $s . 'handle',     'uses' => 'Auth\AuthController@getSocialHandle']);
+    Route::get('/social/redirect/{provider}',   ['as' => $s . 'redirect',   'uses' => 'Auth\RegisterController@getSocialRedirect']);
+    Route::get('/social/handle/{provider}',     ['as' => $s . 'handle',     'uses' => 'Auth\RegisterController@getSocialHandle']);
 
 
     // API route to compile bible references

@@ -17,7 +17,7 @@
 
     @if (isset($user))
         <h2>Update User</h2>
-        {!! Form::model( $user, array('route' => array('admin.users.update', $user->id), 'method' => 'put', 'id' => 'inputForm') ) !!}
+        {!! Form::model( $user, array('route' => array('users.update', $user->id), 'method' => 'put', 'id' => 'inputForm') ) !!}
     @else
         <h2>Create User</h2>
         {!! Form::open(array('action' => 'Admin\UserController@store', 'id' => 'inputForm')) !!}

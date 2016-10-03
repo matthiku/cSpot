@@ -9,18 +9,20 @@ use Auth;
 
 use Cmgmyr\Messenger\Traits\Messagable;
 
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-use Illuminate\Auth\Authenticatable;
+//use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Auth\Passwords\CanResetPassword;
-use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
-use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+//use Illuminate\Auth\Passwords\CanResetPassword;
+//use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+//use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 
 
-class User extends Model implements AuthenticatableContract, CanResetPasswordContract
+class User extends Authenticatable //implements Authenticatable //, Contract, CanResetPasswordContract
 {
 
-    use Authenticatable, CanResetPassword, Messagable;
+    use Notifiable, Messagable; // Authenticatable; //, CanResetPassword;
 
 
     /**

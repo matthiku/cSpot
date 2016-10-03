@@ -17,7 +17,7 @@
 
     @if (isset($instrument))
         <h2>Update Instrument</h2>
-        {!! Form::model( $instrument, array('route' => array('admin.instruments.update', $instrument->id), 'method' => 'put', 'id' => 'inputForm') ) !!}
+        {!! Form::model( $instrument, array('route' => array('instruments.update', $instrument->id), 'method' => 'put', 'id' => 'inputForm') ) !!}
     @else
         <h2>Create Instrument</h2>
         {!! Form::open(array('action' => 'Admin\InstrumentController@store', 'id' => 'inputForm') ) !!}
