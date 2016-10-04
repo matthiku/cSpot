@@ -11,7 +11,7 @@
 
 
 @if (session()->has('defaultValues'))
-    <?php $defaultValues = session('defaultValues') ?>
+    <?php $defaultValues = session('defaultValues'); ?>
 @endif
 
 @section('content')
@@ -20,9 +20,11 @@
     @include('layouts.flashing')
 
 
+
     {{-- html input form definition 
     --}}
     @if (isset($plan))
+
         @if (Auth::user()->isEditor())
             {!! Form::model( $plan, array(
                 'route'  => array('plans.update', $plan->id), 
@@ -31,23 +33,20 @@
                 'id'     => 'inputForm',
                 'class'  => 'form-horizontal'
                 )) !!}
-        @else
-            {!! Form::model( $plan, array(
-                'route'  => array('addNote', $plan->id), 
-                'method' => 'put', 
-                'id'     => 'inputForm',
-                'class'  => 'form-horizontal'
-                )) !!}
         @endif
+
+
     @else
+
         {!! Form::open(array('action' => 'Cspot\PlanController@store', 'id' => 'inputForm')) !!}
+
     @endif
 
 
-
-    <!-- 
-        page header 
-    -->
+    
+    {{--  page header  
+    --}}
+    
     <div class="row">
         <div class="col-md-9 col-xl-8 md-center">
 
@@ -406,29 +405,41 @@
 
 
 
+    {{-- =================   Plan Notes 
+    --}}
+    <div style="clear:both; max-width: 50rem;" class="card">
 
-    <div style="clear:both" class="form-group
-        @if (! isset($plan))
-            center
-        @endif
-        ">
-        @if (Auth::user()->isEditor())
-            {!! Form::label('info', 'Notes:', ['class' => 'form-control-label', 'onclick'=>'showSpinner()']); !!}
-            <br/>
-            {!! Form::textarea('info') !!}
-            <script>
-                document.forms.inputForm.info.rows=5;
-                $('#info').attr('onchange',"enableSaveButton(this)");
-            </script>
-        @else
-            @if (isset($plan) && $plan->info)
-                <h5>Notes for this Plan:</h5>
-                <pre>{!! $plan->info !!}</pre>
+        <div class="card-block narrower">
+            <h5 class="card-title">Notes for this Plan:</h5>
+        </div>
+        <div class="card-block narrower">
+            @if (isset($plan))
+                @if ( Auth::user()->isEditor() )
+
+                    <p title="Click to edit!" class="card-text narrow editable-plan-info white-space-pre-wrap"
+                        id="info-plan-id-{{ $plan->id }}">{!! $plan->info !!}</p>
+    
+                @else
+            
+                    <p class="card-text narrower white-space-pre-wrap">{!! $plan->info !!}</p>
+                    <p class="card-text narrower white-space-pre-wrap" id="showAddedPlanNote"></p>
+                    
+                    @include ('cspot.snippets.addnote')
+
+                    <a href="#" data-toggle="modal" data-target="#addPlanNoteModal" class="card-link">Add Note</a>
+                    <script>
+                        cSpot.plan = {id: {{ $plan->id }} };
+                        $('#addPlanNoteModal').css('top','inherit');
+                    </script>
+                @endif
+            @else
+                <p class="card-text">{!! Form::textarea('info') !!}</p>
             @endif
-            <br>Add note:<br>
-            <textarea name="info"></textarea>
-        @endif
+        </div>
+
     </div>
+
+
 
 
 
@@ -449,8 +460,6 @@
                 document.forms.inputForm.date.setAttribute('class', 'main-input');
             </script>
 
-        @else
-            &nbsp; {!! Form::submit('Save Note'); !!}
         @endif
 
         @if ( Auth::user()->isAdmin()  &&  $plan->items->count()==0 ) &nbsp; 
@@ -486,8 +495,7 @@
 
     @if (isset($plan))
 
-        {{-- 
-                provide popup to add/insert new item 
+        {{--  provide popup to add/insert new item 
         --}}
         @include('cspot.snippets.add_item_modal')
 

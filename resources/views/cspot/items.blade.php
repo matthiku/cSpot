@@ -25,17 +25,22 @@
 			--}}
 			@if ( (! $item->forLeadersEyesOnly) || Auth::user()->ownsPlan($plan->id) )
 
-			<tr id="tr-item-{{ str_replace('.', '-', $item->seq_no) }}" 
+			<tr id="tr-item-{{ str_replace('.', '-', $item->seq_no).($item->deleted_at ? 'trashed' : '') }}" 
 				data-item-id="{{ $item->id }}" data-item-update-action="{{ route('cspot.api.items.update', $item->id) }}"
 				data-old-song-id="{{ $item->song_id  ?  $item->song->id 	  : 'NULL' }}"
 				class="{{ 		   $item->deleted_at ? 'trashed text-muted'   : '' }} 
-					   {{ $newest_item_id==$item->id ? 'bg-khaki newest-item' : '' }}">
+					   @if ($newest_item_id == $item->id) bg-khaki newest-item
+					   		<?php $newest_item_seq_no = str_replace('.', '-', $item->seq_no); ?>
+					   @endif
+			    ">
 
 
-				<td class="{{ Auth::user()->isUser() ? 'drag-item ' : ''}}dont-print" scope="row" title="drag item into the new position">
+				<th class="{{ Auth::user()->isUser() ? 'drag-item ' : ''}}dont-print" scope="row" title="drag item into the new position">
 					<span class="hidden-sm-down pull-xs-right text-success">{{ $item->seq_no }}</span>
-					<i class="p-r-1 fa fa-arrows-v">
-				</td>
+					@if (Auth::user()->ownsPlan($plan->id) && $plan->date <= \Carbon\Carbon::today() )
+						<i class="p-r-1 fa fa-arrows-v">
+					@endif
+				</th>
 
 				{{-- for leader's eyes only? 
 				--}}
@@ -427,6 +432,20 @@
 		</button>
 	</div>
 
+@endif
+
+
+@if ( isset($newest_item_seq_no) )
+	<script>
+		// go to the just inserted new item
+		$(document).ready( function() {
+			console.log('scrolling down to #tr-item-{{ $newest_item_seq_no }}');
+			console.log( $('#tr-item-{{ $newest_item_seq_no }}') );
+			window.location.href = "#tr-item-{{ $newest_item_seq_no }}";
+			// alternative scroll solution, see http://stackoverflow.com/a/13736194/3202115
+			// document.getElementById('tr-item-{{ $newest_item_seq_no }}').scrollIntoView();
+		});
+	</script>
 @endif
 
 

@@ -22,6 +22,7 @@ use App\Mailers\AppMailer;
 
 use Carbon\Carbon;
 use Auth;
+use Log;
 
 
 class PlanController extends Controller
@@ -306,7 +307,7 @@ class PlanController extends Controller
             return view( $this->view_one, array('types' => $types, 'users' => $users) );
         }
 
-        return \Redirect::route('cspot.plans.edit', $plan->id);
+        return \Redirect::route('plans.edit', $plan->id);
     }
 
 
@@ -442,26 +443,6 @@ class PlanController extends Controller
     }
 
 
-    public function addNote(Request $request, $id)
-    {
-        if (! $request->input('info')) {
-            flashError('Note was empty, nothing saved...');
-            return redirect()->back();
-        }
-        // update this Plan
-        $plan = Plan::find($id);
-
-        $changer = Auth::user()->first_name;
-        $note = $plan->info . chr(0x0d) . 'Note from '. $changer.':'.chr(0x0d). $request->input('info');
-
-        $plan->info = $note;
-        $plan->save();
-
-        flash('Note added.');
-        return redirect()->back();
-    }
-
-
 
     public function sendReminder(Request $request, $id, $user_id, AppMailer $mailer)
     {
@@ -483,6 +464,59 @@ class PlanController extends Controller
     }
 
 
+    public function APIaddNote(Request $request)
+    {
+        if (! Auth::user()->isUser() )
+            return response()->json(['status' => 401, 'data' => 'Not authorized'], 401);
+
+        if ($request->has('id') && $request->has('note') ) {
+            // update this Plan
+            $plan = Plan::find($request->id);
+
+            $changer = Auth::user()->first_name;
+            $note = 'Note from '. $changer.':'.chr(0x0a). $request->note;
+
+            $plan->info = $plan->info . chr(0x0a) . chr(0x0a) . $note;
+            $plan->save();
+
+            return $note;
+        }
+
+        return response()->json(['status' => 405, 'data' => 'APIupdate: : incorrect parameters!']);
+    }
+
+
+
+    public function APIupdate(Request $request)
+    {
+        if (! Auth::user()->isEditor() )
+            return response()->json(['status' => 401, 'data' => 'Not authorized'], 401);
+
+        if ($request->has('id') && $request->has('value') ) {
+            $arr_id = explode('-', $request->id);
+            $field_name = $arr_id[0];
+            $value = $request->value;
+
+            if (count($arr_id)>2) {
+
+                $plan_id    = $arr_id[3];
+
+                // debug logging
+                Log::debug('API Plan Update request - ID:'.$plan_id.', FIELD:'.$field_name.', VALUE:'.$value);
+
+                // get plan object
+                $plan = Plan::find($plan_id);
+                if ($plan->count()) {
+                    // update plan data and return new field value
+                    $plan->update([$field_name => $value]);
+                    return $plan[$field_name];
+                }
+                return response()->json(['status' => 404, 'data' => "APIupdate: plan $plan_id not found!"], 404);
+            }
+        }
+        return response()->json(['status' => 405, 'data' => 'APIupdate: : incorrect parameters!']);
+
+    }
 
 
 

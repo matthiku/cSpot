@@ -7,7 +7,6 @@
     @if (! isset($modal)) 
         <div class="card-block">
             <h4 class="card-title">Add an image</h4> 
-            <span class="card-text"><small>(Maximum file size: <?php echo ini_get("upload_max_filesize"); ?>)!</small></span>
         </div>
     @endif
 
@@ -111,6 +110,7 @@
             {!! Form::label('file', 'Select a file to be uploaded: ') !!}
             <br>
             {!! Form::file('file'); !!}    
+            <span class="card-text"><small>(Maximum file size: <?php echo ini_get("upload_max_filesize"); ?>)!</small></span>
 
             {{-- don't show the submit button on the popup modal form as we handle the upload via AJAX --}}
             @if (! isset($modal)) 

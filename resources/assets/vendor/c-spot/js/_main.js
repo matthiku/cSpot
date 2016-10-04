@@ -399,6 +399,15 @@ function fillPlanDefaultValues(that)
     $('#start').val(start);
     $('#end'  ).val(end);
 
+    // propose a date for this event based on the weekday property of the default values
+    if (selSerType.weekday != null) {
+        var newDate = moment();
+        var diff = selSerType.weekday - newDate.weekday();
+        if (diff < 0) diff += 7;
+        newDate = newDate.add(diff, 'day');
+        $('input[name="date"]').val(newDate.format("YYYY-MM-DD"));
+    }
+
     // fill default leader name
     if (selSerType.leader_id != null) {
 

@@ -28,7 +28,7 @@ class SongController extends Controller
      * define view names
      */
     protected $view_all = 'cspot.songs';
-    protected $view_idx = 'cspot.songs.index';
+    protected $view_idx = 'songs.index';
     protected $view_one = 'cspot.song';
 
 

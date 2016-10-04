@@ -83,7 +83,7 @@ class TypeController extends Controller
         Type::create( $request->except($exceptList) );
 
         $status = 'New Type added.';
-        return \Redirect::route('admin.types.index')
+        return \Redirect::route('types.index')
                         ->with(['status' => $status]);
     }
 
@@ -135,7 +135,7 @@ class TypeController extends Controller
         }
         //
         $message = 'Error! Type with id "' . $id . '" not found';
-        return \Redirect::route('admin.types.index')
+        return \Redirect::route('types.index')
                         ->with(['status' => $message]);
     }
 
@@ -171,12 +171,12 @@ class TypeController extends Controller
 
             // feedback to user and return view with list of types
             $message = 'Type with id "' . $id . '" updated';
-            return \Redirect::route('admin.types.index')
+            return \Redirect::route('types.index')
                             ->with(['status' => $message]);
         }
 
         $message = 'Error! Type with id "' . $id . '" not found';
-        return \Redirect::route('admin.types.index')
+        return \Redirect::route('types.index')
                         ->with(['status' => $message]);
     }
 
@@ -202,12 +202,12 @@ class TypeController extends Controller
             }
             $output->delete();
             $message = 'Type with id "' . $id . '" deleted.';
-            return \Redirect::route('admin.types.index')
+            return \Redirect::route('types.index')
                             ->with(['status' => $message]);
         }
         //
         $message = 'Error! Type with ID "' . $id . '" not found';
-        return \Redirect::route('admin.types.index')
+        return \Redirect::route('types.index')
                         ->with(['status' => $message]);
     }
 }

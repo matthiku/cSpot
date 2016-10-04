@@ -39269,6 +39269,15 @@ function fillPlanDefaultValues(that)
     $('#start').val(start);
     $('#end'  ).val(end);
 
+    // propose a date for this event based on the weekday property of the default values
+    if (selSerType.weekday != null) {
+        var newDate = moment();
+        var diff = selSerType.weekday - newDate.weekday();
+        if (diff < 0) diff += 7;
+        newDate = newDate.add(diff, 'day');
+        $('input[name="date"]').val(newDate.format("YYYY-MM-DD"));
+    }
+
     // fill default leader name
     if (selSerType.leader_id != null) {
 
@@ -39668,7 +39677,15 @@ $(document).ready(function() {
         placeholder : '<span class="fa fa-edit">&nbsp;</span>',
     });
 
-
+    // Plan Detail page - update Plan Note
+    $('.editable-plan-info').editable(__app_url + '/cspot/api/plan/update', {
+        type        : 'textarea',
+        cancel      : 'Cancel',
+        submit      : 'Save',
+        onblur      : 'cancel',
+        indicator   : '<span class="fa fa-refresh fa-spin"> </span> saving...',
+        placeholder : '<span class="fa fa-edit">&nbsp;</span>',
+    });
 
 
     /**
@@ -39784,6 +39801,13 @@ $(document).ready(function() {
     */
     $('#searchSongForm').on('show.bs.modal', function (event) {
         insertNewOrUpdateExistingItems( event);
+    })
+
+
+    /*  Start SPA utility once the modal popup is being launched
+    */
+    $('#addPlanNoteModal').on('shown.bs.modal', function (event) {
+        addNoteToPlan( event );
     })
 
 
@@ -40164,6 +40188,10 @@ $(document).ready(function() {
     }
 
 
+    // now we can allow the Modal to work fully
+    $('.modal-header').toggle();
+    $('.modal-footer').show();
+
     ;;;console.log('document fully loaded');
 });
 
@@ -40478,7 +40506,6 @@ function changeForLeadersEyesOnly(that) {
 
 
 
-
 /*\____________________________________________________________________________  PLAN  Details Page
 \*/
 
@@ -40674,8 +40701,17 @@ function showModalSelectionItems(what)
     $('.modal-input-'+what).focus();
 
     // show submit button for comments, scripture or file upload
-    if (what=='comment' || what=='scripture' || what=='file') 
+    if (what=='comment' || what=='scripture' || what=='file') {
+        // show submit button
         $('#searchForSongsSubmit').show();
+        // set focus appropriately
+        if (what=='comment')
+            $('#comment').focus();
+        if (what=='scripture')
+            $('#from-book').focus();
+        if (what=='file')
+            $('#file_category_id').focus();
+    }
 
     // make sure the FILE form is partially hidden initially
     if (what=='file') {
@@ -41311,39 +41347,6 @@ function addItemWithFileOrAddFileToItem(file_id)
 }
 
 
-/*  upload new file via AJAX and show little icon when successful
-*/
-function uploadNewFile()
-{
-    ;;;console.log('Uploading new file via AJAX - Url: '+cSpot.item.actionUrl);
-
-    $('#search-result').html(cSpot.const.waitspinner + ' uploading....');
-
-    // make sure the song_id (even empty) is not transmitted via the form element
-    $('#song_id').val(cSpot.item.song_id); // TODO: we have to insert it again later!
-
-    var fd = new FormData(document.getElementById("searchSongForm"));
-
-    $.ajax({
-        url: cSpot.item.actionUrl,
-        type: "POST",
-        data: fd,
-        processData: false,  // tell jQuery not to process the data
-        contentType: false   // tell jQuery not to set contentType
-    })
-    .done(function( data ) {
-        ;;;console.log("PHP Output:");
-        ;;;console.log( data );
-        successfullyAddedFileToItem(data);
-    })
-    .fail(function( data ) {
-
-        console.log("AJAX Error Output:");
-        console.log( data );        
-        $('#search-result').html('Error! '+data);
-    });
-}
-
 /*  show icon for the uploaded file
 */
 function successfullyAddedFileToItem(data)
@@ -41524,53 +41527,6 @@ function eraseThisComment(that, item_id)
 }
 
 
-/* Called from the Modal popup on the FILES LIST page, 
-   this function will save the updated file information via AJAX */
-function updateFileInformation()
-{
-    // get the old data
-    var fileID   = $('#file-id').val();
-    var dispElem = $('#file-'+fileID);
-    var oldData  = $(dispElem).data('content');
-
-    // get the new data
-    var newFn = $('#filename').val()
-    var newFC = $('#file_category_id').val()
-
-    // ignore and close dialog if nothing was changed
-    if (oldData.file_category_id == newFC 
-             && oldData.filename == newFn) return;
-
-    // show spinner
-    if ( oldData.file_category_id != newFC )
-        $('.fileshow-category-'+fileID).html(cSpot.const.waitspinner);
-    if ( oldData.filename != newFn )
-        $('.fileshow-filename-'+fileID).html(cSpot.const.waitspinner);
-
-    // get the action URL
-    var actionURL = $('#file-id').data('action-url')+fileID;
-
-    // update via AJAX 
-    $.post( actionURL, { id: fileID, filename: newFn, file_category_id: newFC })
-        .done(function(data) {
-            ;;;console.log('update successful:');
-            ;;;console.log(data);
-            var file = data.data;
-            $('.fileshow-filename-'+fileID).text(file.filename);
-            $('.fileshow-category-'+fileID).text($('#file_category_id option:selected').text());
-        })
-        .fail(function(data) {
-            console.log('update failed!');
-            console.log(data);
-            $('.fileshow-filename-'+fileID).text("Update failed! Please notify admin! Press F12 for more details." + JSON.stringify(data));
-        });
-    
-    // close the modal and update the data on the screen
-    $('#fileEditModal').modal('hide');
-}
-
-
-
 /*  Report song to CCLI  and set field 'reported_at'
 */
 function reportSongUsageToCCLI(that, item_id, reported_at)
@@ -41646,6 +41602,137 @@ function reportSongUsageToCCLI(that, item_id, reported_at)
         });
     }
 }
+
+
+
+/* Even 'normal' users can add a note to a plan
+*/
+function addNoteToPlan( event )
+{
+    if (event != undefined) {
+        $('#showAddedPlanNote').text('');
+        $('#textareaAddPlanNote').focus();
+        return;
+    }
+
+    // get note from modal
+    var note = $('#textareaAddPlanNote').val();
+    
+    // user should click close if he doesn't want to a dd a note...
+    if (note=='') return;
+
+    $('#showAddedPlanNote').html(cSpot.const.waitspinner);
+    $('#addPlanNoteModal').modal('hide');        
+
+    // 
+    // send new note to controller
+    $.post( cSpot.routes.apiAddNote, {
+        note: note,
+        id  : cSpot.plan.id,
+    })
+    .done( function(data) {
+        // on success, add note to existing <p> in plan view
+        $('#showAddedPlanNote').text(data);
+        // close modal again
+    })
+    .fail( function(data) {
+        console.log(data);
+        console.log('Failed to add new note to plan!');
+        $('#showAddedPlanNote').text('Failed to add new note to plan! Press F12 to see more and notify Admin!');
+    });
+
+
+}
+
+
+
+/*  upload new file via AJAX and show little icon when successful
+*/
+function uploadNewFile()
+{
+    ;;;console.log('Uploading new file via AJAX - Url: '+cSpot.item.actionUrl);
+
+    $('#search-result').html(cSpot.const.waitspinner + ' uploading....');
+
+    // make sure the song_id (even empty) is not transmitted via the form element
+    $('#song_id').val(cSpot.item.song_id); // TODO: we have to insert it again later!
+
+    var fd = new FormData(document.getElementById("searchSongForm"));
+
+    $.ajax({
+        url: cSpot.item.actionUrl,
+        type: "POST",
+        data: fd,
+        processData: false,  // tell jQuery not to process the data
+        contentType: false   // tell jQuery not to set contentType
+    })
+    .done(function( data ) {
+        ;;;console.log("PHP Output:");
+        ;;;console.log( data );
+        successfullyAddedFileToItem(data);
+    })
+    .fail(function( data ) {
+
+        console.log("AJAX Error Output:");
+        console.log( data );        
+        $('#search-result').html('Error! '+data);
+    });
+}
+
+
+/*\____________________________________________________________________________  FILES  List  Page
+\*/
+
+
+
+/* Called from the Modal popup on the FILES LIST page, 
+   this function will save the updated file information via AJAX */
+function updateFileInformation()
+{
+    // get the old data
+    var fileID   = $('#file-id').val();
+    var dispElem = $('#file-'+fileID);
+    var oldData  = $(dispElem).data('content');
+
+    // get the new data
+    var newFn = $('#filename').val()
+    var newFC = $('#file_category_id').val()
+
+    // ignore and close dialog if nothing was changed
+    if (oldData.file_category_id == newFC 
+             && oldData.filename == newFn) return;
+
+    // show spinner
+    if ( oldData.file_category_id != newFC )
+        $('.fileshow-category-'+fileID).html(cSpot.const.waitspinner);
+    if ( oldData.filename != newFn )
+        $('.fileshow-filename-'+fileID).html(cSpot.const.waitspinner);
+
+    // get the action URL
+    var actionURL = $('#file-id').data('action-url')+fileID;
+
+    // update via AJAX 
+    $.post( actionURL, { id: fileID, filename: newFn, file_category_id: newFC })
+        .done(function(data) {
+            ;;;console.log('update successful:');
+            ;;;console.log(data);
+            var file = data.data;
+            $('.fileshow-filename-'+fileID).text(file.filename);
+            $('.fileshow-category-'+fileID).text($('#file_category_id option:selected').text());
+            // also reset the data on the EDIT button
+            $('#edit-button-'+fileID).attr('data-filename', file.filename);
+            $('#edit-button-'+fileID).attr('data-cat', file.file_category_id);
+        })
+        .fail(function(data) {
+            console.log('update failed!');
+            console.log(data);
+            $('.fileshow-filename-'+fileID).text("Update failed! Please notify admin! Press F12 for more details." + JSON.stringify(data));
+        });
+    
+    // close the modal and update the data on the screen
+    $('#fileEditModal').modal('hide');
+}
+
 
 
 /*\

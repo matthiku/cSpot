@@ -26,7 +26,7 @@ class UserController extends Controller
      * define view names
      */
     protected $view_all     = 'admin.users';
-    protected $view_all_idx = 'admin.users.index';
+    protected $view_all_idx = 'users.index';
     protected $view_one     = 'admin.user';
 
     /**
@@ -257,7 +257,7 @@ class UserController extends Controller
                         ->with(['error'  => $alert]);
         }
         // send 'normal' users back to profile view
-        return redirect()->route('admin.users.show', [$user->id]);
+        return redirect()->route('users.show', [$user->id]);
     }
 
 

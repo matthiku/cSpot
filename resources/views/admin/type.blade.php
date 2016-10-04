@@ -17,7 +17,7 @@
 
     @if (isset($type))
         <h2>Update Type</h2>
-        {!! Form::model( $type, array('route' => array('admin.types.update', $type->id), 'method' => 'put', 'id' => 'inputForm') ) !!}
+        {!! Form::model( $type, array('route' => array('types.update', $type->id), 'method' => 'put', 'id' => 'inputForm') ) !!}
     @else
         <h2>Create Type</h2>
         {!! Form::open(array('action' => 'Admin\TypeController@store', 'id' => 'inputForm')) !!}

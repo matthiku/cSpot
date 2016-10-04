@@ -85,6 +85,7 @@ class AppMailer
     public function sendEmailConfirmationTo(User $user)
     {
         $this->to      = $user->email;
+        $this->cc      = 'church.ennis@gmail.com';
         $this->subject = "Email address confirmation for c-SPOT app";
         $this->view    = 'auth.emails.confirm';
         $this->data    = compact('user');

@@ -9378,6 +9378,16 @@ a.ui-button:active,
  */
 
 
+/* limit column widht in file list table */
+.limit-td-width {
+    width: 1rem;
+}
+
+/* Don't ignore new line chars in html elements */
+.white-space-pre-wrap {
+    white-space: pre-wrap;
+}
+
 /* for external links to be aligned beneath input fields  */
 .right-align-input {
     display: none;
@@ -9595,6 +9605,11 @@ pre.text-present {
 .narrow {
     margin: 0;
     padding: 0;
+    line-height: 1;
+}
+.narrower {
+    margin: 0.25rem;
+    padding: 0.25rem;
     line-height: 1;
 }
 .hr-big {

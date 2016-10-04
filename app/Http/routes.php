@@ -77,8 +77,6 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
 
     // allow DELETE via the GET method
     Route::get('plans/delete/{plan_id}',                                           'Cspot\PlanController@destroy');    
-    // update (append) the note for a plan
-    Route::put('plans/{plan_id}/addNote', ['as'=>'addNote',               'uses'=> 'Cspot\PlanController@addNote']);
 
     // send an email reminder to a leader or teacher for a plan
     Route::get('plans/{plan_id}/remind/{user_id}', ['as'=>'sendReminder', 'uses'=> 'Cspot\PlanController@sendReminder']);
@@ -87,7 +85,12 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     Route::post( 'plan/{plan_id}/cache',                                            'Cspot\PlanController@postCache');
     Route::get(  'plan/{plan_id}/cache',                                            'Cspot\PlanController@getCache');
     Route::post( 'plan/{plan_id}/cache/delete',                                     'Cspot\PlanController@deleteCache');
-    
+
+    // API update    
+    Route::post('api/plan/update',              ['as'=>'api.plan.update',   'uses'=>'Cspot\PlanController@APIupdate']);
+    // update (append) the note for a plan
+    Route::post('plans/addNote',                ['as'=>'api.addNote',       'uses'=> 'Cspot\PlanController@APIaddNote']);
+
 
     /*
         PLAN TEAMS

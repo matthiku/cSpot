@@ -147,6 +147,7 @@
                 ">
                 <thead>
                     <tr>
+                        <th>ID</th>
                         <th>Name</th>
                         <th class="hidden-xs-down">Category</th>
                         <th colspan="2" class="center p-r-2">Linked to<br><span class="pull-xs-left">Song</span> or <span class="pull-xs-right">Event Item</span></th>
@@ -164,23 +165,47 @@
 
                         <tr>
 
-                            <td><span onclick="$('#edit-button-{{ $file->id }}').click()" class="link fileshow-filename-{{ $file->id }}"
-                                title="Preview" data-toggle="tooltip" data-placement="right" data-template='
+                            <th>{{ $file->id }}</th>
+
+                            {{-- file name 
+                            --}}
+                            <td><span onclick="$('#edit-button-{{ $file->id }}').click()" 
+                                class="link fileshow-filename-{{ $file->id }}" title="Preview" 
+                                data-toggle="tooltip" data-placement="right" data-template='
                                     <div class="tooltip" role="tooltip">
                                         <div class="tooltip-arrow"></div>
                                         <pre class="tooltip-inner"></pre>
                                         <img src="{{ url(config('files.uploads.webpath')).'/thumb-'.$file->token }}">
                                     </div>'>
-                                {{ $file->filename }} <i class="fa fa-edit"> </i></span></td>
+                                {{ $file->filename }}
+                                @if (Auth::user()->isEditor())
+                                    <i class="fa fa-edit"> </i>
+                                @endif
+                            </span></td>
 
-                            <td onclick="$('#edit-button-{{ $file->id }}').click()" class="link fileshow-category-{{ $file->id }} hidden-xs-down">
-                                {{ $file->file_category->name }} <i class="fa fa-edit"> </i></td>
-
-                            <td>
-                                <a title="Song Details" href="{{ route('songs.edit', $file->song_id) }}">{{ $file->song_id }}</a>
+                            {{-- file category 
+                            --}}
+                            <td onclick="cSpot.focus='category';$('#edit-button-{{ $file->id }}').click()" 
+                                class="link fileshow-category-{{ $file->id }} hidden-xs-down">
+                                {{ $file->file_category->name }}
+                                @if (Auth::user()->isEditor())
+                                    <i class="fa fa-edit"> </i>
+                                @endif
                             </td>
 
-                            <td class="pull-xs-right p-r-2">
+                            {{-- linked song id 
+                            --}}
+                            <td class="limit-td-width">
+                                @if (Auth::user()->isEditor())
+                                    <a title="Song Details" href="{{ route('songs.edit', $file->song_id) }}">{{ $file->song_id }}</a>
+                                @else
+                                    {{ $file->song_id }}
+                                @endif
+                            </td>
+
+                            {{-- linked event item 
+                            --}}
+                            <td class="limit-td-width pull-xs-right p-r-2">
                                 @if ($file->item_id)
                                     <a title="Item Details" href="{{ route('cspot.items.edit',[ 0, $file->item_id]) }}">{{ $file->item_id }}</a>
                                 @endif
@@ -229,21 +254,33 @@
     /* 
         populate the modal popup when it's launched, with the data provided by the launching button ....
     */
-    $('#fileEditModal').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget); // Button that triggered the modal
-        var id       = button.data('id');    // Extract info from data-* attributes
-        var cat      = button.data('cat');
-        var filename = button.data('filename');
-        var token    = button.data('token');
+    $('#fileEditModal').on('shown.bs.modal', function (event) {
+        // var button = $(event.relatedTarget); // Button that triggered the modal
+        button = event.relatedTarget;
+        var id       = button.dataset.id;    // Extract info from data-* attributes
+        var cat      = button.dataset.cat;
+        var filename = button.dataset.filename;
+        var token    = button.dataset.token;
         // Update the modal's content
         var modal = $(this);
         modal.find('.modal-title').text('Edit File Information for ' + filename);
-        modal.find('#file-id').val(id);
-        modal.find('#filename').val(filename);
         modal.find('img').attr('src',token);
-        modal.find('#file_category_id').val(cat);
+        $('#file-id').val(id);
+        $('#filename').val(filename);
+        $('#filename').focus();
+        $('#file_category_id').val(cat);
+        if (cSpot.focus=='category') {
+            $('#file_category_id').focus();
+            cSpot.focus='';
+        }
+        // enter key submits form
+        $(".modal-body").keyup(function(event){
+            if(event.keyCode == 13){
+                $("#submitfileEditModal").click();
+            }
+        });
     });
-
+    
     $('#fileUploadModal').on('show.bs.modal', function (event) {
         resetAddFilesElement();
     });
@@ -282,7 +319,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" onclick="updateFileInformation()">Save changes</button>
+                <button type="button" class="btn btn-primary" id="submitfileEditModal" onclick="updateFileInformation()">Save changes</button>
             </div>
         </div>
     </div>

@@ -16,6 +16,9 @@
                 {{-- M O D A L    H E A D E R - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
                 --}}
                 <div class="modal-header center">
+                    One moment please....
+                </div>
+                <div class="modal-header center" style="display: none;">
 
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
@@ -126,7 +129,7 @@
 
 
 
-                <div class="modal-footer">
+                <div class="modal-footer" style="display: none;">
 
                     <button class="btn btn-secondary modal-select-song modal-select-comment modal-select-scripture modal-select-clips modal-select-file"
                         type="button" onclick="resetSearchForSongs()">Restart</button>

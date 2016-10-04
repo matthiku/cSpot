@@ -10,7 +10,7 @@ echo ----
 git status
 echo ----
 echo
-echo 'This script runs "git add .", "git commit ...." and "git push", then calls the pull script on the server'
+echo 'This script runs "git add .", "git commit ...." and "git push" (to the master) but also pushes to the test server (staging) and optionally, to the production server'
 echo
 
 # you also need to have a working a SSH connection to your server 
@@ -20,7 +20,7 @@ echo
 
 echo
 echo 
-read -r -p 'Enter the description of this Commit: ' "DESC"
+read -r -p 'Enter the description of this Commit: (leave empyt to cancel) ' "DESC"
 if [ -z "$DESC" ]; then
     exit
 fi

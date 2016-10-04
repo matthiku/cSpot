@@ -177,15 +177,15 @@
 					</td>
 
 
-					<?php $last = $song->lastPlanUsingThisSong(); ?>
+					<?php $last = $song->lastPlanUsingThisSong();?>
 
 
 					<td class="center hidden-md-down">
-						@if ($song->items_count>1)
+						@if ($song->items_count>1 || !$last)
 							<a title="Show list of plans using this song" href="{{ route('songs.show', $song->id) }}">{{ $song->items_count }}</a>
 						@endif
-						@if ($song->items_count==1)
-							<a href="{{ url('cspot/plans/'.$last->id) }}" title="open this plan">
+						@if ($last && $song->items_count==1)
+							<a href="{{ url('cspot/plans/'.$last->id) }}" title="open this plan">1</a>
 						@endif
 					</td>
 

@@ -86,7 +86,15 @@ $(document).ready(function() {
         placeholder : '<span class="fa fa-edit">&nbsp;</span>',
     });
 
-
+    // Plan Detail page - update Plan Note
+    $('.editable-plan-info').editable(__app_url + '/cspot/api/plan/update', {
+        type        : 'textarea',
+        cancel      : 'Cancel',
+        submit      : 'Save',
+        onblur      : 'cancel',
+        indicator   : '<span class="fa fa-refresh fa-spin"> </span> saving...',
+        placeholder : '<span class="fa fa-edit">&nbsp;</span>',
+    });
 
 
     /**
@@ -202,6 +210,13 @@ $(document).ready(function() {
     */
     $('#searchSongForm').on('show.bs.modal', function (event) {
         insertNewOrUpdateExistingItems( event);
+    })
+
+
+    /*  Start SPA utility once the modal popup is being launched
+    */
+    $('#addPlanNoteModal').on('shown.bs.modal', function (event) {
+        addNoteToPlan( event );
     })
 
 
@@ -581,6 +596,10 @@ $(document).ready(function() {
         $('#show-chords-or-music').css('display', 'inline');
     }
 
+
+    // now we can allow the Modal to work fully
+    $('.modal-header').toggle();
+    $('.modal-footer').show();
 
     ;;;console.log('document fully loaded');
 });

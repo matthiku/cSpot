@@ -20,10 +20,12 @@
 
 
 
+        {{-- ========================== SONG  or videoclip or slides ====================
+        --}}
         @if ( $item->song_id )
 
 
-            @if ($item->song->lyrics )
+            @if ($item->song->title )
 
                 <div style="position: relative; width: 100%; height: 100%;">
 
@@ -77,6 +79,8 @@
 
 
 
+        {{-- ========================== Images ====================
+        --}}
         @elseif ($item->files->count())
         
             {{-- prepare div as background for overlaying the comment text --}}
@@ -116,12 +120,16 @@
 
 
 
+        {{-- ========================== Comments/Notes ====================
+        --}}
         @elseif ( $item->show_comment )
 
             <pre class="text-present">{{ $item->comment }}</pre>
 
 
 
+        {{-- ========================== Bibletexts ====================
+        --}}
         @elseif ( $bibleTexts )
 
             <div class="bible-text-present" id="bible-text-present-all" style="display: none;" >
@@ -136,6 +144,8 @@
             </div>
 
 
+        {{-- ========================== Announcements Slide ====================
+        --}}
         @elseif ( $item->key=='announcements' )
 
             @include('cspot.snippets.announcements')
@@ -507,6 +517,7 @@
     {{-- 
             provide popup to add/insert new item 
     --}}
+    {{-- modal will be re-positioned to the bottom in document.ready.js! --}}
     @include('cspot.snippets.add_item_modal')
 
 
