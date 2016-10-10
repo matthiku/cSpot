@@ -212,7 +212,7 @@ class FileController extends Controller
             // delete the database record
             $file->delete();
             // return to sender
-            return response()->json(['status' => 200, 'data' => $file->token.' deleted.']);
+            return response()->json(['status' => 200, 'data' => $file->filename.' deleted.']);
         }
         return response()->json(['status' => 404, 'data' => 'Not found'], 404);
     }
@@ -235,16 +235,15 @@ class FileController extends Controller
         // find the single resource
         $item = Item::find($item_id);
         if ($item) {
-            $file = File::find($file_id);
-            if ($file->item_id==$item_id) {
-                $file->item_id = 0;
-                $file->save();
-                correctFileSequence($item_id);
-                // return to sender
-                return response()->json(['status' => 200, 'data' => 'File unlinked.']);
-            }
-            return response()->json(['status' => 406, 'data' => 'File with id '.$file_id.' not found being linked to item ('.$file->item_id.')!'], 406);
+
+            $item->files()->detach($file_id);
+
+            correctFileSequence($item_id);
+
+            // return to sender
+            return response()->json(['status' => 200, 'data' => 'File unlinked.']);            
         }
+
         return response()->json(['status' => 404, 'data' => 'Item with id '.$item_id.' not found!'], 404);
     }
 
@@ -256,25 +255,31 @@ class FileController extends Controller
      */
     public function move($item_id, $file_id, $direction)
     {
-        $item = Item::find($item_id);
+        $item = Item::with('files')->find($item_id);
         if ($item) {
-            $file = File::find($file_id);
-            if ($file) {
-                if ($direction=='up') {
-                    $file->seq_no = $file->seq_no-1.1;
+            foreach ($item->files as $file) {
+
+                if ($file->id == $file_id) {
+                    $k = $file->pivot->seq_no;
+                    if ($direction=='up') {
+                        $file->pivot->update(['seq_no' => $k - 1.1]);
+                    }
+                    if ($direction=='down') {
+                        $file->pivot->update(['seq_no' => $k + 1.1]);
+                    }
                 }
-                if ($direction=='down') {
-                    $file->seq_no = $file->seq_no+1.1;
-                }
-                $file->save();
-                // make sure all files atteched to this item have the correct seq no now
-                correctFileSequence($item_id);
-                return \Redirect::route( 'cspot.items.edit', [$item->plan_id, $item->id] );
             }
-            flash('Error! File with ID "' . $file_id . '" not found');
-        } else {
+            $item->save();
+
+            // make sure all files atteched to this item have the correct seq no now
+            correctFileSequence($item_id);
+
+            return \Redirect::route( 'cspot.items.edit', [$item->plan_id, $item->id] );
+        } 
+        else {
             flash('Error! Item with ID "' . $item_id . '" not found');
         }
+
         return \Redirect::back();
     }
 

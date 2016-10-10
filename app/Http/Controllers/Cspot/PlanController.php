@@ -14,6 +14,7 @@ use App\Models\Plan;
 use App\Models\PlanCache;
 use App\Models\Team;
 use App\Models\Item;
+use App\Models\File;
 use App\Models\Type;
 use App\Models\User;
 use App\Models\DefaultItem;
@@ -209,7 +210,13 @@ class PlanController extends Controller
         }
 
         // push plan date to session
-        $request->session()->flash('defaultValues', ['date' => $date]);
+        $request->session()->flash('defaultValues', [
+            'type_id'   => null,
+            'date'      => $date,
+            'start'     => '00:00',
+            'end'       => '00:00',
+            'leader_id' => null
+        ]);
         // call plan creation method
         return $this->create();
     }
@@ -224,8 +231,27 @@ class PlanController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
+        // Event Type is already defined in the request
+        if ($request->has('type_id')) {
+
+            // get the Event Type 
+            $type = Type::find($request->type_id);
+
+            // use heper function to calculate next date for this plan
+            $newDate =  getTypeBasedPlanData($type);
+
+            // send the default values to the View
+            $request->session()->flash('defaultValues', [
+                'type_id'   => $type->id,
+                'date'      => $newDate,
+                'start'     => $type->start,
+                'end'       => $type->end,
+                'leader_id' => $type->leader_id
+            ]);
+        }
+
         // get list of service types
         $types = Type::get();
         // get list of users
@@ -277,11 +303,19 @@ class PlanController extends Controller
         // insert default items if requested
         if ($request->input('defaultItems')=='Y') {
             $dItems = DefaultItem::where('type_id', $plan->type_id)->get();
-            $newItems = [];
+            // $newItems = [];
             foreach ($dItems as $dItem) {
-                array_push( $newItems, new Item(['seq_no'=>$dItem->seq_no, 'comment'=>$dItem->text]) );
+                // get single default item to create a nwe Item object
+                $iNew = new Item(['seq_no'=>$dItem->seq_no, 'comment'=>$dItem->text]);
+                // save the new item to the new plan
+                $plan->items()->save($iNew);
+                // if default item contains a default image, link the new Plan item to the image
+                if ($dItem->file_id) {
+                    $file = File::find($dItem->file_id);
+                    $iNew->files()->save( $file );
+                }
+                // array_push( $newItems, $iNew );
             }
-            $plan->items()->saveMany($newItems);
         }
 
         flash('New Plan added with id '.$plan->id);
@@ -474,7 +508,7 @@ class PlanController extends Controller
             $plan = Plan::find($request->id);
 
             $changer = Auth::user()->first_name;
-            $note = 'Note from '. $changer.':'.chr(0x0a). $request->note;
+            $note = 'Note from '. $changer.': ('.Carbon::now()->formatLocalized('%e-%m-%g %H:%M').')'.chr(0x0a). $request->note;
 
             $plan->info = $plan->info . chr(0x0a) . chr(0x0a) . $note;
             $plan->save();
@@ -507,6 +541,8 @@ class PlanController extends Controller
                 // get plan object
                 $plan = Plan::find($plan_id);
                 if ($plan->count()) {
+                    // allow for discarding the whole note
+                    if ($value=='_') $value='';
                     // update plan data and return new field value
                     $plan->update([$field_name => $value]);
                     return $plan[$field_name];

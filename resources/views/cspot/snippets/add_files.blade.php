@@ -23,7 +23,7 @@
 
             <div class="btn-group modal-select-file m-l-1" data-toggle="buttons"
                 @if (! isset($modal)) 
-                    onclick="$('#show-location-selection').show()" 
+                        onclick="$('#show-location-selection').show()" 
                 @endif
                 >
 

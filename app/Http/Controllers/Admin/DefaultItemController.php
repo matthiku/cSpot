@@ -22,7 +22,7 @@ class DefaultItemController extends Controller
      * define view names
      */
     protected $view_all = 'admin.default_items';
-    protected $view_idx = 'admin.default_items.index';
+    protected $view_idx = 'default_items.index';
     protected $view_one = 'admin.default_item';
 
 
@@ -72,12 +72,18 @@ class DefaultItemController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
         // get list of possible service types
         $types = Type::all();
+
+        // Get full list of default items
+        $default_items = DefaultItem::with('type')
+            ->orderBy('type_id')
+            ->orderBy('seq_no');
+
         // show form
-        return view( $this->view_one, array('types' => $types));
+        return view( $this->view_one, array('types' => $types, 'default_items' => $default_items->get()));
     }
 
     /**
@@ -88,10 +94,15 @@ class DefaultItemController extends Controller
      */
     public function store(StoreDefaultItemRequest $request)
     {
-        //
-        DefaultItem::create( $request->all() );
+        // create new item, but omit field file_id if not set
+        if (! $request->file_id)
+            $new = DefaultItem::create( $request->except('file_id') );
+        else 
+            $new = DefaultItem::create( $request->all() );
+
         $status = 'New DefaultItem added.';
-        return \Redirect::route($this->view_idx)
+
+        return \Redirect::route($this->view_idx, ['filterby'=>'type', 'filtervalue'=>$new->type_id])
                         ->with(['status' => $status]);
     }
 
@@ -124,14 +135,20 @@ class DefaultItemController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
         // find a single resource by ID
         $output = DefaultItem::find($id);
         if ($output) {
             // get list of possible service types
             $types = Type::all();            
-            return view( $this->view_one, array('default_item' => $output, 'types' => $types ) );
+
+            // Get full list of default items
+            $default_items = DefaultItem::with('type')
+                ->orderBy('type_id')
+                ->orderBy('seq_no');
+
+            return view( $this->view_one, array('default_item' => $output, 'types' => $types, 'default_items' => $default_items->get() ) );
         }
         //
         $message = 'Error! DefaultItem with id "' . $id . '" not found';
@@ -150,7 +167,10 @@ class DefaultItemController extends Controller
     {
         // was there any change?
         $output = DefaultItem::find($id);
-        if ($request->input('text') == $output->text && $request->input('seq_no') == $output->seq_no && $request->input('type_id') == $output->type_id ) 
+        if (   $request->input('text') == $output->text 
+            && $request->input('seq_no') == $output->seq_no 
+            && $request->input('type_id') == $output->type_id 
+            && $request->input('file_id') == $output->file_id ) 
         {
             return \Redirect::route($this->view_idx)
                         ->with(['status' => 'no change']);
@@ -160,7 +180,7 @@ class DefaultItemController extends Controller
                 ->update($request->except(['_method','_token']));
 
         $message = 'DefaultItem with id "' . $id . '" updated';
-        return \Redirect::route($this->view_idx)
+        return \Redirect::route($this->view_idx, ['filterby'=>'type', 'filtervalue'=>$output->type_id])
                         ->with(['status' => $message]);
     }
 
@@ -178,7 +198,7 @@ class DefaultItemController extends Controller
         if ($output) {
             $output->delete();
             $message = 'DefaultItem with id "' . $id . '" deleted.';
-            return \Redirect::route($this->view_idx)
+            return \Redirect::route($this->view_idx, ['filterby'=>'type', 'filtervalue'=>$output->type_id])
                             ->with(['status' => $message]);
         }
         //

@@ -39270,7 +39270,10 @@ function fillPlanDefaultValues(that)
     $('#end'  ).val(end);
 
     // propose a date for this event based on the weekday property of the default values
-    if (selSerType.weekday != null) {
+    var n = moment();
+    // first check if the plan still has the default date value of today!
+    var p = moment($('input[name="date"]').val());     
+    if (selSerType.weekday != null && n.dayOfYear()==p.dayOfYear()) {
         var newDate = moment();
         var diff = selSerType.weekday - newDate.weekday();
         if (diff < 0) diff += 7;
@@ -39681,8 +39684,10 @@ $(document).ready(function() {
     $('.editable-plan-info').editable(__app_url + '/cspot/api/plan/update', {
         type        : 'textarea',
         cancel      : 'Cancel',
+        width       : '90%',
+        rows        : '3',
         submit      : 'Save',
-        onblur      : 'cancel',
+        onblur      : 'ignore',
         indicator   : '<span class="fa fa-refresh fa-spin"> </span> saving...',
         placeholder : '<span class="fa fa-edit">&nbsp;</span>',
     });
@@ -40592,7 +40597,8 @@ function insertNewOrUpdateExistingItems( event )
     var titleText = 'before item No '+item.seq_no;
 
     // was modal opened from existing item?
-    if (item.action=="update-song" || location.pathname.search('chords') > 0) {
+    // if (item.action=="update-song" || location.pathname.search('chords') > 0) {
+    if ( item.action=="update-song" ) {
         // directly activate the song selection
         showModalSelectionItems('song');
         $('#searchSongForm'      ).attr('data-action', item.actionUrl);
@@ -41067,11 +41073,28 @@ function resetAddFilesElement() {
 function showLocalVersusRemoteButtons(that, modus)
 {
     // hide the file-category selector
-    if (modus != 'files_upload')
+    if (modus != 'files_upload' && modus != 'default_items')
         $(that).parent().parent().hide();
 
     // get category id from selected value
     var cat = $(that).val();
+
+    // get text-equivalent of the numeric value
+    var catText;
+    for (var i = 1; i < that.length; i++) {
+        if (that[i].value == cat)
+            catText = that[i].text;
+    }
+    // show selected category
+    $('.show-selected-category').text(catText);
+
+    // for the selection of images for default items
+    if (modus == 'default_items') {
+        $('.modal-select-file>p').hide();
+        $('#btn-select-cspot-images').click();
+        $('.image-selection-slideshow').show();
+        return;
+    }
 
     // skip the next step (choice between upload and cspot images)
     // as category 'newest' is only for c-spot images
@@ -41082,15 +41105,6 @@ function showLocalVersusRemoteButtons(that, modus)
         showImagesSelection( document.getElementById('btn-select-cspot-images') );
         return;
     }
-
-    // get text-equivalent of the numeric value
-    var catText;
-    for (var i = 1; i < that.length; i++) {
-        if (that[i].value == cat)
-            catText = that[i].text;
-    }
-    // show selected category
-    $('.show-selected-category').text(catText);
 
     // if only file uploads are requested:
     if (modus == 'files_upload') {
@@ -41212,7 +41226,7 @@ function insertNextSelectionImage(data, parentElem, path, visible)
     // create a new anchor element
     var anchor = document.createElement('a');
     anchor.href = '#';
-    $(anchor).attr('onclick', 'addItemWithFileOrAddFileToItem('+data.id+')');
+    $(anchor).attr('onclick', 'addItemWithFileOrAddFileToItem('+data.id+', this)');
 
     // create a new img element
     var image = document.createElement('img');
@@ -41290,8 +41304,15 @@ function showNextImages(direction)
 
 /*  Add NEW item to plan with a file -  OR:  add a file to an existing plan item
 */
-function addItemWithFileOrAddFileToItem(file_id)
+function addItemWithFileOrAddFileToItem(file_id, that)
 {
+    // for default items, just set the hidden input field value
+    if (cSpot.item=='default_items'){
+        $('#file_id').val(file_id);         // write file id into input field
+        $('.add-files-card' ).html(that);   // show selected image instead of the file selection
+        return;
+    }
+
     $('#show-images-for-selection' ).html( cSpot.const.waitspinner + ' one moment...' );
     $('.show-next-image-arrows'    ).hide();
 
@@ -41522,6 +41543,32 @@ function eraseThisComment(that, item_id)
         })
         .fail(function(data) {
             resetCommentText(TRid, data.responseJSON.data);
+            console.log("Update failed! Please notify admin! " + JSON.stringify(data));
+        });
+}
+
+
+/*  delete Plan Note
+*/
+function erasePlanNote(plan_id)
+{
+    console.log('trying to erase note for plan id '+plan_id);
+
+    $('#info-plan-id-'+plan_id).html(cSpot.const.waitspinner);
+
+    // compose id/value pair
+    var id    = 'info-plan-id-'+plan_id;
+    var value = '_'; // underscore denotes an empty value in the ItemController
+
+    $.post( cSpot.routes.apiPlanUpdate, { 
+            id    : id,
+            value : value,
+        })
+        .done(function(data) {
+            $('#info-plan-id-'+plan_id).text('');
+        })
+        .fail(function(data) {
+            $('#info-plan-id-'+plan_id).text(data.responseJSON.data);
             console.log("Update failed! Please notify admin! " + JSON.stringify(data));
         });
 }

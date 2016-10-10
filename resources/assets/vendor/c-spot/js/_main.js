@@ -400,7 +400,10 @@ function fillPlanDefaultValues(that)
     $('#end'  ).val(end);
 
     // propose a date for this event based on the weekday property of the default values
-    if (selSerType.weekday != null) {
+    var n = moment();
+    // first check if the plan still has the default date value of today!
+    var p = moment($('input[name="date"]').val());     
+    if (selSerType.weekday != null && n.dayOfYear()==p.dayOfYear()) {
         var newDate = moment();
         var diff = selSerType.weekday - newDate.weekday();
         if (diff < 0) diff += 7;

@@ -143,7 +143,7 @@
 						{{ $plan->resources->count() ? $plan->resources->count() : '' }}
 					</td>
 
-					<td class="hidden-lg-down center">{{ $plan->items->count() }}</td>
+					<td {!! $editPlansHtml !!} class="link hidden-lg-down center">{{ $plan->items->count() }}</td>
 
 					<td class="hidden-sm-down center">{{ $plan->leader ? $plan->leader->name : $plan->leader_id }}</td>
 					<td class="hidden-sm-down center">{{ $plan->teacher? $plan->teacher->name : $plan->teacher_id }}</td>

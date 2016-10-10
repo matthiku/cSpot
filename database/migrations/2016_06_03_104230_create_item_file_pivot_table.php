@@ -12,12 +12,16 @@ class CreateItemFilePivotTable extends Migration
      */
     public function up()
     {
-        Schema::create('item_file', function (Blueprint $table) {
+        Schema::create('file_item', function (Blueprint $table) {
             $table->increments('id');
+            
             $table->integer('item_id')->unsigned()->index();
-            $table->foreign('item_id')->references('id')->on('users')->onDelete('restrict');
+            $table->foreign('item_id')->references('id')->on('items')->onDelete('restrict');
             $table->integer('file_id')->unsigned()->index();
-            $table->foreign('file_id')->references('id')->on('roles')->onDelete('no action');
+            $table->foreign('file_id')->references('id')->on('files')->onDelete('no action');
+            // add sequence no for enabling ordering of images
+            $table->decimal('seq_no', 3, 1);
+
             $table->timestamps();
         });
     }
@@ -29,6 +33,6 @@ class CreateItemFilePivotTable extends Migration
      */
     public function down()
     {
-        Schema::drop('item_file');
+        Schema::drop('file_item');
     }
 }

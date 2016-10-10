@@ -407,18 +407,21 @@
 
     {{-- =================   Plan Notes 
     --}}
-    <div style="clear:both; max-width: 50rem;" class="card">
+    <div style="clear:both; max-width: 50rem;" class="card m-t-3">
 
         <div class="card-block narrower">
             <h5 class="card-title">Notes for this Plan:</h5>
-        </div>
-        <div class="card-block narrower">
-            @if (isset($plan))
-                @if ( Auth::user()->isEditor() )
 
-                    <p title="Click to edit!" class="card-text narrow editable-plan-info white-space-pre-wrap"
-                        id="info-plan-id-{{ $plan->id }}">{!! $plan->info !!}</p>
-    
+            @if (isset($plan))
+                {{-- allow editor to change the whole note for upcoming events --}}
+                @if ( Auth::user()->isEditor() && $plan->date >= \Carbon\Carbon::today() )
+
+                    <p title="Click to edit!" class="editable-plan-info card-text narrow white-space-pre-wrap"
+                            onclick="location.href='#bottom';" 
+                            id="info-plan-id-{{ $plan->id }}">{!! $plan->info !!}</p>
+                    @if ( strlen($plan->info) > 0 )
+                        <span class="fa fa-eraser text-muted" onclick="erasePlanNote('{{ $plan->id }}')" title="Discard the whole note"></span>
+                    @endif
                 @else
             
                     <p class="card-text narrower white-space-pre-wrap">{!! $plan->info !!}</p>
@@ -433,8 +436,11 @@
                     </script>
                 @endif
             @else
+
                 <p class="card-text">{!! Form::textarea('info') !!}</p>
+                
             @endif
+
         </div>
 
     </div>
@@ -502,5 +508,6 @@
     @endif
 
 
-    
+    <div id="bottom">&nbsp;</div>
+
 @stop

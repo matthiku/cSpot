@@ -11,6 +11,7 @@ use App\Http\Requests\StoreSongRequest;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Response;
+use Illuminate\Pagination\Paginator;
 
 use App\Models\Song;
 use App\Models\Plan;
@@ -57,6 +58,16 @@ class SongController extends Controller
 
         // with filtering?
         if (isset($request->filterby) and isset($request->filtervalue)) {
+            // we need to set the Pagination currentPage to 0,
+            // otherwise we would not see the search results
+            if (isset($request->page)) {
+                $currentPage = 0;
+                Paginator::currentPageResolver(function() use ($currentPage) {
+                    return $currentPage;
+                });
+                $querystringArray = [];
+            }
+
             if ($request->filterby=='fulltext') {
                 $songs = Song::withCount('items')
                     ->orderBy($orderBy, $order)
@@ -78,21 +89,37 @@ class SongController extends Controller
                     ->where($request->filterby, 'like', '%'.$request->filtervalue.'%');
             }
         } 
+
+        // no filter requested
         else {
-            // the where clause is needed since the 'withCount' would bring in all items with song_id = 0
+            // (the where clause is needed since the 'withCount' would bring in all items with song_id = 0)
             $songs = Song::withCount('items')
-                ->where('id', '>', 0);
-        //        ->orderBy($orderBy, $order);
+                ->where('id', '>', 0)
+                ->orderBy($orderBy, $order);
         }
 
+        // if orderBy is 'book_ref', then exclude all songs without a book_ref!
+        if ($request->orderby == 'book_ref')
+            $songs = $songs->where('book_ref', '<>', '');
+        if ($request->orderby == 'author')
+            $songs = $songs->where('author', '<>', '');
+
+
         $heading = 'Manage Songs etc.';
+
+        if ( isset($request->filterby) && $request->filtervalue=='video' ) 
+            $heading = 'Manage Videoclips';
+
+        if ( isset($request->filterby) && $request->filtervalue=='slides' )
+            $heading = 'Manage Slides';
+
+
         // URL contains ...?plan_id=xxx (needed in order to add a song to that plan)
         $plan_id = 0;
         if ($request->has('plan_id')) {
             $plan_id = $request->plan_id;
             $heading = 'Select A Song For Your Plan';
         }
-
         // for pagination, always append the original query string
         $songs = $songs->paginate(20)->appends($querystringArray);
 
@@ -131,8 +158,13 @@ class SongController extends Controller
      */
     public function store(StoreSongRequest $request)
     {
-        //
-        Song::create($request->all());
+        $song = Song::create($request->all());
+
+        // is this a videoclip or slideshow?
+        if ( $request->has('title_2') && ($request->title_2=='video' || $request->title_2=='slides') ) {
+            $song->update(['license' => 'PD']);
+        }
+
         flash('New Song or Item added: '.$request->title );
         return \Redirect::route($this->view_idx);
     }
@@ -202,7 +234,7 @@ class SongController extends Controller
                 'song'         => $song, 
                 'licensesEnum'   => $licensesEnum,
                 'currentPage'      => $currentPage,
-                'plansUsingThisSong' => $song->plansUsingThisSong(),
+                'plansUsingThisSong' => $song->allPlansUsingThisSong(),
             ));
         }
         //

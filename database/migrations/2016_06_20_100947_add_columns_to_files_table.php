@@ -13,8 +13,6 @@ class AddColumnsToFilesTable extends Migration
     public function up()
     {
         Schema::table('files', function (Blueprint $table) {
-            // add sequence no for enabling ordering of images
-            $table->decimal('seq_no', 2, 1);
             // add file size in bytes
             $table->bigInteger('filesize')->unsigned();
             // add reference to file category
@@ -31,7 +29,6 @@ class AddColumnsToFilesTable extends Migration
     {
         Schema::table('files', function (Blueprint $table) {
             // remove new column
-            $table->dropColumn('seq_no');
             $table->dropColumn('filesize');
             $table->dropColumn('file_category_id');
         });

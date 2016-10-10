@@ -55,7 +55,8 @@ class ItemController extends Controller
             $beforeItem = Item::find( $seq_no );
             // Make sure we always insert the new item right BEOFRE the current item
             $seq_no = ($beforeItem->seq_no) - 0.1;
-            Log::info( 'CREATE-Showing form to create new item to be inserted before '.$beforeItem->seq_no.' '.$beforeItem->id.' - '.$beforeItem->comment );
+            Log::info( 'CREATE-Showing form to create new item to be inserted before '
+                .$beforeItem->seq_no.' '.$beforeItem->id.' - '.$beforeItem->comment );
         }
 
         // show the form
@@ -120,10 +121,15 @@ class ItemController extends Controller
 
         // check if the new item contains at least one of the following:
         //       Song, Bible reference or Comment
-        if ($request->comment=='' && $request->version=='' && (!isset($request->song_id) || (isset($request->song_id)&&$request->song_id==0)) ) {
+        if (   $request->comment=='' 
+            && $request->version=='' 
+            &&  ( ! isset($request->song_id) 
+                || (isset($request->song_id) && $request->song_id==0) )
+            ) {
             flashError('item was empty! Please add a comment, select a bible verse or add a song.');
             return redirect()->back();
         }        
+
 
         // find out what the correct sequnce number for this new item is supposed to be
         $beforeItem = null;
@@ -156,6 +162,7 @@ class ItemController extends Controller
                 }
             }
         }
+        
 
         // review numbering of current items for this plan and insert the new item
         $plan = insertItem( $request );
@@ -186,14 +193,19 @@ class ItemController extends Controller
         // all went well and the user sees the result anyway, so no flash message needed:
         unFlash();
 
-        // provide new item id to the view for highlighting
-        session()->put('newest_item_id', $plan->newest_item_id);
 
         // if the request came from a presentation view, 
         // we now return the presentation view of the new item!
-        if ( strpos(URL::previous(), '/present') > 1 ) {
+        if ( strpos(URL::previous(), '/present') > 1 )
             return \Redirect::route( 'cspot.items.present', ['item_id' => $plan->newest_item_id, 'present'=>'present'] );
-        }
+        if ( strpos(URL::previous(), '/chords') > 1 ) 
+            return \Redirect::route( 'cspot.items.present', ['item_id' => $plan->newest_item_id, 'present'=>'chords'] );
+        if ( strpos(URL::previous(), '/sheetmusic') > 1 )
+            return \Redirect::route( 'cspot.items.present', ['item_id' => $plan->newest_item_id, 'present'=>'sheetmusic'] );
+        
+
+        // provide new item id to the view for highlighting
+        session()->put('newest_item_id', $plan->newest_item_id);
 
         // back to full plan view
         //      but first, get plan id from the hidden input field in the form
@@ -513,14 +525,14 @@ class ItemController extends Controller
             // file category is mandatory
             if ( ! $request->has('file_category_id')  ){
                 flashError('You must select a category for this file!');
-                return \Redirect::route('cspot.items.edit', [$plan_id, $id]);
+                return \Redirect::route('items.edit', [$plan_id, $id]);
             }
 
             // only accept valid categories
             $cats = DB::table('file_categories')->find($request->file_category_id);
             if (!$cats) {
                 flashError('No valid category selected for this file!');
-                return \Redirect::route('cspot.items.edit', [$plan_id, $id]);
+                return \Redirect::route('items.edit', [$plan_id, $id]);
             }
 
             // check if it is a valid file
@@ -536,7 +548,7 @@ class ItemController extends Controller
             }
             else {
                 flashError('Uploaded file could not be validated!');
-                return \Redirect::route('cspot.items.edit', [$plan_id, $id]);
+                return \Redirect::route('items.edit', [$plan_id, $id]);
             }
         }
 
@@ -953,8 +965,9 @@ class ItemController extends Controller
             return redirect()->back();
         }
         // this item should be restored
-        $items = Item::onlyTrashed()->where('plan_id', $plan_id);
+        $items = Item::with('files')->onlyTrashed()->where('plan_id', $plan_id);
         if (!$items) return false;
+
 
         $items->forceDelete();
 

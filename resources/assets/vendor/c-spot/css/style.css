@@ -36,6 +36,9 @@
     margin-right: 1rem;
     min-width: 150px;
 }
+.editable-plan-info>form>textarea {
+    display: block;
+}
 
 /* jQuery UI draggable elements */
 .draggable {

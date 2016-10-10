@@ -15,6 +15,11 @@
 	@include('layouts.flashing')
 
 	@if( Auth::user()->isEditor() )
+	<a class="btn btn-outline-warning pull-xs-right m-l-1" href="{{ url('cspot/plans/create') }}
+			{{ Request::has('filtervalue') ? '?type_id='.Request::get('filtervalue') : '' }}"
+			title="Create a new Event of this type">
+		<i class="fa fa-plus"> </i> &nbsp; Create Event
+	</a>
 	<a class="btn btn-outline-primary pull-xs-right m-l-1" href="{{ url('admin/default_items/create') }}">
 		<i class="fa fa-plus"> </i> &nbsp; Add item
 	</a>
@@ -64,6 +69,7 @@
 					<th>Service Type</th>
 					<th>Sequence No.</th>
 					<th>Text</th>
+					<th>Default Image</th>
 					<th class="center">Action</th>
 				</tr>
 			</thead>
@@ -80,6 +86,18 @@
 					<td>{{ $default_item->seq_no }}</td>
 
 					<td>{{ $default_item->text }}</td>
+
+					<td 
+						@if ($default_item->file)
+							title="Default Image" data-toggle="tooltip" data-placement="left"
+							data-template='
+								<div class="tooltip" role="tooltip">
+									<div class="tooltip-arrow"></div>
+									<pre class="tooltip-inner"></pre>
+									<img src="{{ url(config('files.uploads.webpath')).'/thumb-'.$default_item->file->token }}">
+								</div>'
+						@endif
+						>{{ $default_item->file ? $default_item->file->filename : '' }}</td>
 
 					<td class="nowrap center">
 						 @if( Auth::user()->isEditor() )

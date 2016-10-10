@@ -90,8 +90,10 @@ $(document).ready(function() {
     $('.editable-plan-info').editable(__app_url + '/cspot/api/plan/update', {
         type        : 'textarea',
         cancel      : 'Cancel',
+        width       : '90%',
+        rows        : '3',
         submit      : 'Save',
-        onblur      : 'cancel',
+        onblur      : 'ignore',
         indicator   : '<span class="fa fa-refresh fa-spin"> </span> saving...',
         placeholder : '<span class="fa fa-edit">&nbsp;</span>',
     });

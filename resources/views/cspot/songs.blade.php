@@ -53,28 +53,39 @@
 				<li class="nav-item m-r-3">@include('cspot.snippets.fullTextSearch')</li>
 
 				<li class="nav-item active">
-					<a class="nav-link text-success" href="{{ url('cspot/songs') }}">
-						<i class="fa fa-asterisk"> </i> &nbsp;Show All
-						<span class="sr-only">(current)</span>
-					</a>
+					@if ( Request::has('filterby') )
+						<a class="nav-link btn btn-outline-success"
+								href="{{ url('cspot/songs') }}">
+							<i class="fa fa-asterisk"> </i> &nbsp;Show Songs
+							<span class="sr-only">(current)</span>
+						</a>
+					@else
+						<span>Show instead:</span>
+					@endif
 				</li>
 
-				<li class="nav-item">
-					<a class="nav-link text-danger" href="{{ url('cspot/songs') }}?filterby=title_2&filtervalue=video">
-						<i class="fa fa-tv"> </i> &nbsp;Videoclips
-					</a>
+				<li class="nav-item active">
+					@if ( ! (Request::has('filtervalue') && Request::input('filtervalue')=='video') )
+						<a class="nav-link btn btn-outline-danger"
+								href="{{ url('cspot/songs') }}?filterby=title_2&filtervalue=video">
+							<i class="fa fa-tv"> </i> &nbsp;Videoclips
+						</a>
+					@endif
 				</li>
 
-				<li class="nav-item">
-					<a class="nav-link text-warning" href="{{ url('cspot/songs') }}?filterby=title_2&filtervalue=slide">
-						<i class="fa fa-clone"> </i> &nbsp;Slides
-					</a>
+				<li class="nav-item active">
+					@if ( ! (Request::has('filtervalue') && Request::input('filtervalue')=='slides') )
+						<a class="nav-link btn btn-outline-warning"
+								href="{{ url('cspot/songs') }}?filterby=title_2&filtervalue=slides">
+							<i class="fa fa-clone"> </i> &nbsp;Slides
+						</a>
+					@endif
 				</li>
 
 				@if( Auth::user()->isEditor() && $plan_id==0 )
-					<li class="nav-item">
-						<a class="nav-link text-primary" href="{{ url('cspot/songs/create') }}">
-							<i class="fa fa-plus"> </i> &nbsp;Add new one
+					<li class="nav-item active">
+						<a class="nav-link btn btn-outline-primary" href="{{ url('cspot/songs/create') }}">
+							<i class="fa fa-plus"> </i> &nbsp;Add New
 						</a>
 					</li>
 				@endif
@@ -111,7 +122,8 @@
 
 					@include('cspot.snippets.theader', ['thfname' => 'book_ref', 'thdisp' => 'Book Ref', 'thsort'=>true, 'thclass'=>'small hidden-xs-down'])
 						
-					<th class="center hidden-sm-down"><small>Chords?</small></th>
+					@include('cspot.snippets.theader', ['thfname' => 'chords', 'thdisp' => 'Chords?', 'thsort'=>false, 'thclass'=>'center small hidden-sm-down'])
+					{{-- <th class="center hidden-sm-down"><small>Chords?</small></th> --}}
 					<th class="center hidden-sm-down"><small>Sheets?</small></th>
 					<th class="center">Media</th>
 
@@ -136,7 +148,7 @@
 	        	<?php $editLink = Auth::user()->isEditor() ? 'onclick=\'location.href="'.url('cspot/songs/'.$song->id).'/edit"\'' : ''; ?>
 
 				<tr>
-					<td {!! $editLink !!} scope="row" class="link hidden-md-down text-xs-center">{{ $song->id }}</td>
+					<th {!! $editLink !!} scope="row" class="link hidden-md-down text-xs-center">{{ $song->id }}</th>
 
 					<td {!! $editLink !!} class="link" title="{{ $song->lyrics }}">
 						{!! $song->title_2=='video' ? '<i class="fa fa-tv"> </i>' : '' !!}
@@ -170,7 +182,6 @@
 	                            <i class="fa fa-music"></i> </a> &nbsp; 
 	                    @endif
 	                    @if ( strlen($song->youtube_id)>0 )
-						<!-- <a href="#" class="pull-xs-right" title="Show Lyrics" onclick=""><small>lyrics</small></a> -->
 	                        <a href="#" title="Show YouTube video of this song" class="red" data-toggle="tooltip" data-song-title="{{ $song->title }}"
 	                        	onclick="showYTvideoInModal('{{ $song->youtube_id }}', this)"><i class="fa fa-youtube-play"></i></a>
 	                    @endif

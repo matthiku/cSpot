@@ -60,41 +60,45 @@ Select 'Text slides' in order to show Powerpoint-like slides using the text in t
             @endif
         </div>
 
+
+        {{-- Song/Item List Navigation Buttons 
+        --}}
         <div class="col-md-6 col-lg-5 col-xl-4">
-            <div class="row">
 
-                <div class="col-xs-4">
-                    @if (isset($song))
-
-                        <big class="submit-button" onclick="showSpinner()" style="display: none;">{!! Form::submit('Save changes', ['class'=>'full-width']); !!}</big>
-                        
-                        @if (Auth::user()->isAdmin() && count($plansUsingThisSong)==0 )
-                            </div>
-                            <div class="small col-xs-4">
-                            Item is not used in any plan, so you can<br> 
-                            <a href="{{ url('cspot/songs/'.$song->id) }}/delete">
-                                <i class="fa fa-trash text-danger" > </i> delete this song
-                            </a>
-                        @endif
-                    @else
-                        <big class="submit-button" style="display: none;">{!! Form::submit('Submit', ['class'=>'fully-width']); !!}</big>
+            {{-- SAVE or SUBMIT button --}}
+            @if (isset($song))
+                <big class="submit-button" onclick="showSpinner()" style="display: none;">{!! Form::submit('Save changes'); !!}</big>
+                    @if (Auth::user()->isAdmin() && count($plansUsingThisSong)==0 )
+                        </div>
+                        <div class="small col-xs-4">
+                        Item is not used in any plan, so you can<br> 
+                        <a href="{{ url('cspot/songs/'.$song->id) }}/delete">
+                            <i class="fa fa-trash text-danger" > </i> delete this song
+                        </a>
                     @endif
-                </div>
+                </big>
+            @else
+                <big class="submit-button" style="display: none;">{!! Form::submit('Submit'); !!}
+                </big>
+            @endif
 
-                <div class="col-xs-4 pull-xs-right">
-                    <big><a href="
-                        @if (session()->has('currentPage'))
-                            {{ url('cspot/songs?page='.session('currentPage')) }}
-                        @else
-                            {{ url('cspot/songs?page='.$currentPage) }}
-                        @endif
-                        ">{!! Form::button('All Songs', ['class'=>'fully-width']); !!}</a></big>
-                </div>
-
-            </div>
+            <a class="pull-xs-right btn btn-outline-success" href="{{ url('cspot/songs?page=') .
+                    ( session()->has('currentPage') ? session('currentPage') : $currentPage ) }}">
+                All Songs
+            </a>
+            <a class="pull-xs-right btn btn-outline-warning m-r-1"
+                    href="{{ url('cspot/songs?filterby=title_2&filtervalue=slides') }}">
+                All Slideshows
+            </a>
+            <a class="pull-xs-right btn btn-outline-danger m-r-1"
+                    href="{{ url('cspot/songs?filterby=title_2&filtervalue=video') }}">
+                All Videoclips
+            </a>
         </div>
 
     </div>
+
+
 
     <hr>
 
@@ -311,7 +315,7 @@ Select 'Text slides' in order to show Powerpoint-like slides using the text in t
                     {!! Form::file('file'); !!}
                     <!-- file category will be '1' (songs) -->
                     {!! Form::hidden('file_category_id','1') !!}
-                    <br>(Image name will be book ref. + song title)
+                    <br>(Image name will be book ref. + title)
                 </div>
             </div>
             @if ( isset($song) && $song->files)
@@ -504,7 +508,8 @@ like "(repeat chorus!)"'>
             $('.song-or-video-only').hide();
             $('.song-or-slides-only').show();
             $('.slide-only').show();
-            if (what)
+            $('#all-items-button').text('Slides');
+            if (what) 
                 $("input[name='title_2']").val(what);
         }
 
@@ -513,7 +518,8 @@ like "(repeat chorus!)"'>
             $('.song-or-slides-only').hide();
             $('.song-or-video-only').show();
             $('.video-only').show();
-            if (what)
+            $('#all-items-button').text('Videoclips');
+            if (what) 
                 $("input[name='title_2']").val(what);
         }
 

@@ -376,7 +376,7 @@
             @if( Auth::user()->ownsPlan($plan->id) )
                 <?php 
                     // make sure the files are sorted by seq no
-                    $files  = $item->files->sortBy('seq_no')->all(); 
+                    $files  = $item->files->all(); 
                     $fcount = count($files);
                     $key    = 0; // we can't use a $key in the foreach statement as it's a re-sorted collection!
                 ?>
@@ -407,7 +407,7 @@
                                 @endif
                             </div>
                             @if ( $fcount>1)
-                                <div class="center pull-xs-right">Order:<br>{{ $file->seq_no }}</div>
+                                <div class="center pull-xs-right">Order:<br>{{ $file->pivot->seq_no }}</div>
                             @endif
 
                             @include ('cspot.snippets.show_files')

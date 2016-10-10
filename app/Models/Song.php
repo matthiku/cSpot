@@ -89,6 +89,21 @@ class Song extends Model
         return $plans;
     }
 
+    /**
+     * Get collection of plans using this song - INCLUDING future plans
+     */
+    public function allPlansUsingThisSong() {
+
+        $id = $this->id;
+
+        // get list of plans using this song
+        $plans = Plan::whereHas('items', function ($query) use ($id) {
+            $query->where('song_id', $id);
+        })->orderBy('date', 'desc')->get();
+
+        return $plans;
+    }
+
 
     /**
      * Get last date of plans this song was being used

@@ -13,8 +13,8 @@ class UpdateFilesTable extends Migration
     public function up()
     {
         Schema::table('files', function (Blueprint $table) {
-            //
-            $table->integer('item_id')->unsigned()->nullable();
+            // not needed!
+            // $table->integer('item_id')->unsigned()->nullable();
         });
     }
 
@@ -27,7 +27,7 @@ class UpdateFilesTable extends Migration
     {
         Schema::table('files', function (Blueprint $table) {
             //
-            $table->dropColumn('item_id');
+            // $table->dropColumn('item_id');
         });
     }
 }

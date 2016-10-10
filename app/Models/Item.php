@@ -78,7 +78,10 @@ class Item extends Model
      */
     public function files() 
     {
-        return $this->hasMany('App\Models\File');
+        return $this
+            ->belongsToMany('App\Models\File')
+            ->withPivot('seq_no')
+            ->orderBy('seq_no');
     }
 
 

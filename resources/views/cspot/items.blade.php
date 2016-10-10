@@ -4,7 +4,7 @@
 
 <div class="table-responsive">
 	<table class="table table-items
-		{{ count($plan->items)>5 ? 'table-sm' : 'm-t-3 m-b-4'}} {{ count($plan->items)>10 ? 'table-xs' : ''}}">
+		{{ count($plan->items)>5 ? 'table-sm m-b-0' : 'm-t-3 p-b-3'}} {{ count($plan->items)>10 ? 'table-xs' : ''}}">
 
 		<tbody id="tbody-items">
 	    @foreach( $plan->items as $key => $item )
@@ -37,7 +37,7 @@
 
 				<th class="{{ Auth::user()->isUser() ? 'drag-item ' : ''}}dont-print" scope="row" title="drag item into the new position">
 					<span class="hidden-sm-down pull-xs-right text-success">{{ $item->seq_no }}</span>
-					@if (Auth::user()->ownsPlan($plan->id) && $plan->date <= \Carbon\Carbon::today() )
+					@if ( Auth::user()->ownsPlan($plan->id) && $plan->date >= \Carbon\Carbon::today() )
 						<i class="p-r-1 fa fa-arrows-v">
 					@endif
 				</th>
@@ -389,6 +389,12 @@
 
 	    @endforeach
 
+		@if (count($plan->items) < 6)
+			<tr><td>
+				@include ('cspot.snippets.add_item_button')
+			</td></tr>
+		@endif
+
 		</tbody>
 
 	</table>
@@ -421,16 +427,9 @@
 		@endif
 	</div>
 
-	<div class="pull-xs-left">
-		{{-- new MODAL POPUP to add song/scripture/comment --}}
-		<button     type="button" class="btn btn-outline-primary btn-sm" 
-			 data-toggle="modal" data-target="#searchSongModal" data-item-action="insert-item"
-			data-plan-id="{{$plan->id}}" data-item-id="after-{{ isset($item) ? $item->id : '0' }}" 
-			 data-seq-no="after-{{ isset($item) ? $item->seq_no : '0' }}"
-		           title="Append new Song, Scripture or Comment to this plan">
-			<i class="fa fa-plus"></i> &nbsp; Add item {{ isset($item) ? $item->seq_no+1 : 1 }}.0
-		</button>
-	</div>
+	@if (count($plan->items) > 5)
+		@include ('cspot.snippets.add_item_button')
+	@endif
 
 @endif
 
@@ -439,8 +438,6 @@
 	<script>
 		// go to the just inserted new item
 		$(document).ready( function() {
-			console.log('scrolling down to #tr-item-{{ $newest_item_seq_no }}');
-			console.log( $('#tr-item-{{ $newest_item_seq_no }}') );
 			window.location.href = "#tr-item-{{ $newest_item_seq_no }}";
 			// alternative scroll solution, see http://stackoverflow.com/a/13736194/3202115
 			// document.getElementById('tr-item-{{ $newest_item_seq_no }}').scrollIntoView();

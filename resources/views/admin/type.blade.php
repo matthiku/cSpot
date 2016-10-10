@@ -15,6 +15,14 @@
     @include('layouts.flashing')
 
 
+    <a class="btn btn-outline-warning pull-xs-right" 
+            href="{{ url('cspot/plans/create') }}?type_id={{ $type->id }}"
+            title="Create a new Event of this type">
+        <i class="fa fa-plus"> </i> Create Event
+    </a>
+
+
+
     @if (isset($type))
         <h2>Update Type</h2>
         {!! Form::model( $type, array('route' => array('types.update', $type->id), 'method' => 'put', 'id' => 'inputForm') ) !!}
@@ -33,6 +41,7 @@
             </span>
         @endif
     </p>
+
 
     <p>{!! Form::label('subtitle', 'Subtitle or Info or Location'); !!}<br>
        {!! Form::text('subtitle'); !!}</p>

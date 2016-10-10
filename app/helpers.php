@@ -92,20 +92,19 @@ function findAdmins( $field='all' )
  */
 function correctFileSequence($item_id)
 {
-    $item = Item::find($item_id);
+    $item = Item::with('files')->find($item_id);
     if ($item) {
         // get all files attached to this item
-        $files = $item->files->sortBy('seq_no')->all();
+        $files = $item->files()->get();
 
-        $seq = 0;
+        $seq = 1;
         // update the sequence nomber on each file
         foreach ($files as $file) {
             // get the actual file DB object and update it
-            DB::table('files')
-                ->where('id', $file->id)
-                ->update(['seq_no' => $seq]);
+            $file->pivot->update(['seq_no' => $seq]);
             $seq += 1;
         }
+        $item->save();
     }
 }
 
@@ -508,7 +507,7 @@ function insertItem( $request )
 
     // handle file linking
     if ($request->has('file_id')) {
-        // get the file item
+        // get the requested file as object
         $file = File::find($request->file_id);
         // and save it to the plan item
         $item->files()->save($file);
@@ -926,7 +925,7 @@ function sendInternalMessage($subject, $message, $recipient_id, $email=true)
     );
 
     // Add Recipients
-    $thread->addParticipants([$recipient_id]);
+    $thread->addParticipant([$recipient_id]);
 
     if ($email)
         sendEmailNotification($message);
@@ -1030,35 +1029,66 @@ function getNextPlanDate( $plan )
     // get default weekday for this plan type
     $weekday = $plan->type->weekday;
 
+    // date of previous plan
+    $planDate = $plan->date;
+
+    return newPlanDate($planDate, $interval, $weekday);
+}
+
+/**
+ * Calculate new date based on internval and Weekday
+ */
+function newPlanDate( $planDate, $interval, $weekday)
+{
     // send default values for another adding amount of days dpending on interval value
     //if ($interval == 'weekly') -> this is the default...
-    $newDate =  $plan->date->addDays(7);
+    $newDate =  $planDate->addDays(7);
 
     // valid intervals are: daily,weekly,biweekly,fortnightly,monthly,quarterly,half-yearly,yearly
     if ($interval == 'daily')
-        $newDate =  $plan->date->addDays(-6);
+        $newDate =  $planDate->addDays(-6);
 
     if ($interval == 'biweekly' || $interval == 'fortnightly')
-        $newDate =  $plan->date->addDays(14);
+        $newDate =  $planDate->addDays(14);
 
     if ($interval == 'monthly') {
-        $newDate =  $plan->date->addWeeks(4);
+        $newDate =  $planDate->addWeeks(4);
         // sometimes we need to add 5 weeks ...
-        if ($newDate->month() == $plan->date->month())
+        if ($newDate->month == $planDate->month)
             $newDate->addWeek();
     }
 
     if ($interval == 'quarterly')
-        $newDate =  $plan->date->addMonths(3);
+        $newDate =  $planDate->addMonths(3);
 
     if ($interval == 'half-yearly')
-        $newDate =  $plan->date->addWeeks(26);
+        $newDate =  $planDate->addWeeks(26);
 
     if ($interval == 'yearly')
-        $newDate =  $plan->date->addWeeks(52);
+        $newDate =  $planDate->addWeeks(52);
 
     return $newDate;
 }
 
 
+/**
+ * Define default values for a new Plan of a certain type
+ */
+function getTypeBasedPlanData($type)
+{
+    // get repeat value for this plan type
+    $interval = $type->repeat;
 
+    // get default weekday for this plan type
+    $weekday = $type->weekday;
+
+    $planDate = Carbon::now();
+
+    // set default date according to weekday
+    $weekdayNames = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
+    if ($weekday>=0) {
+        $planDate = new Carbon('last '.$weekdayNames[$weekday]);
+    }
+
+    return newPlanDate($planDate, $interval, $weekday);
+}

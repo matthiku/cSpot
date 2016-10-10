@@ -12,7 +12,8 @@
 @section('content')
 
 
-    @include('layouts.flashing')
+    {{-- for now we do not want to show flash messages here --}}
+    {{-- @include('layouts.flashing') --}}
 
 
 
@@ -64,7 +65,7 @@
                 @endforeach
             </div>
         @else
-            <div class="jumbotron" id="comment">
+            <div class="jumbotron" id="item-comment">
                 <h1 class="display-3 center">
                     <span class="text-muted">{{ $item->comment ? '('.$item->comment.')' : '' }}</span>
                 </h1>

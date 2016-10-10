@@ -102,6 +102,11 @@
                                     href='{{ url('admin/types/'.$type->id) }}/delete'>
                                         <i class="fa fa-trash"></i></a>
                             @endif
+                            <a class="btn btn-outline-warning btn-sm pull-xs-right" 
+                                    href="{{ url('cspot/plans/create') }}?type_id={{ $type->id }}"
+                                    title="Create a new Event of this type">
+                                <i class="fa fa-plus"> </i>
+                            </a>
                         @endif
                     </td>
 

@@ -53,6 +53,7 @@
         cSpot.routes.apiUpload     = '{{ route('cspot.api.upload'       ) }}';
         cSpot.routes.apiItems      = '{{ route('cspot.api.item'         ) }}';
         cSpot.routes.apiItemUpdate = '{{ route('cspot.api.item.update'  ) }}';
+        cSpot.routes.apiPlanUpdate = '{{ route('api.plan.update'  ) }}';
 
         cSpot.presentation = {};
         cSpot.presentation.sync = false;

@@ -27,7 +27,13 @@ class File extends Model
 
     public function items() 
     {
-        return $this->belongsToMany('App\Models\Item');
+        return $this->belongsToMany('App\Models\Item')->withPivot('seq_no');
+    }
+
+
+    public function defaultItems() 
+    {
+        return $this->belongsToMany('App\Models\DefaultItem');
     }
 
 

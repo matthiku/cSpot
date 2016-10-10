@@ -10,7 +10,12 @@ class DefaultItem extends Model
 {
     //
 
-    protected $fillable = ['type_id', 'seq_no', 'text'];
+    protected $fillable = [
+        'type_id',
+        'file_id',
+        'seq_no',
+        'text',
+    ];
 
     protected $hidden = [
         'created_at', 'updated_at'
@@ -20,6 +25,12 @@ class DefaultItem extends Model
     public function type()
     {
         return $this->belongsTo('App\Models\Type');
+    }
+
+
+    public function file()
+    {
+        return $this->belongsTo('App\Models\File');
     }
 
 }
