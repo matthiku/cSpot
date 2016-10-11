@@ -140,7 +140,7 @@ class FileController extends Controller
         if ($item) {
             
             $file = File::find($file_id);
-            $item->files()->save($file);
+            $item->files()->attach($file_id);
             correctFileSequence($item_id);
 
             if ($request->is('*/api/*')) { 
@@ -230,8 +230,14 @@ class FileController extends Controller
      * @param int $id
      *
      */
-    public function unlink($item_id, $file_id)
+    public function APIunlink(Request $request)
     {
+        $item_id = $request->has('item_id') ? $request->item_id : 0;
+        $file_id = $request->has('file_id') ? $request->file_id : 0;
+
+        if (!$item_id || !$file_id)
+            return response()->json(['status' => 404, 'data' => 'API: songId or fileId missing!'], 404);
+        
         // find the single resource
         $item = Item::find($item_id);
         if ($item) {

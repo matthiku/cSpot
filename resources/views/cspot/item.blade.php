@@ -482,7 +482,7 @@
                 <div id="sheet-tab">
                     @foreach ($item->song->files as $file)
                         @if ($item->song->license=='PD' || Auth::user()->isMusician() )
-                            @include ('cspot.snippets.show_files')
+                            @include ('cspot.snippets.show_files', ['edit' => false])
                         @else
                             <span>(copyrighted material)</span>
                         @endif

@@ -36,51 +36,49 @@
 
     <div class="row">
 
-        <div class="col-md-6 col-lg-7 col-xl-8 md-center">
+        <div class="col-md-6 md-center">
+
             @if (isset($song))
+                {{-- SAVE or SUBMIT button --}}
+                <big class="submit-button pull-xs-right" onclick="showSpinner()" style="display: none;">{!! Form::submit('Save changes'); !!}</big>
+                </big>
+
                 <h2 class="hidden-xs-down">Song/Item Details</h2>
+
                 <small>Last updated: {{ isset($song->updated_at) ? $song->updated_at->formatLocalized('%a, %d %b %Y, %H:%M') : 'unknown' }}</small>
-            @else
+
+            @else            
+                <big class="submit-button pull-xs-right" style="display: none;">{!! Form::submit('Submit'); !!}
+                </big>
+
                 <h2 class="hidden-xs-down">Add New
                     <span class="song-only">Song</span>
                     <span class="video-only" style="display: none;">Videoclip</span>
+                    <span class="slides-only" style="display: none;">Set of Slides</span>
                 </h2>
-                Change to:
-                <span class="btn-group btn-group-sm" role="group" aria-label="choose type of new song">
-                    <button type="button" class="btn btn-secondary" onclick="showVideoForm('video')">Videoclip</button>
-                    <button type="button" class="btn btn-secondary" onclick="showSlidesForm('slides')">Text Slides</button>
-                </span>
-                <big>
-                    <a tabindex="0" href="#"
-                        data-container="body" data-toggle="tooltip" data-placement="bottom"
-                        title="Select 'Videoclip' and the linked Youtube video can be shown on the presentation screen!
-Select 'Text slides' in order to show Powerpoint-like slides using the text in the lyrics field!">
-                        <i class="fa fa-info-circle"></i></a>
-                </big>
+
+                <div class="song-only">
+                    Change to:
+                    <span class="btn-group btn-group-sm" role="group" aria-label="choose type of new song">
+                        <button type="button" class="btn btn-secondary" onclick="showVideoForm('video')">Videoclip</button>
+                        <button type="button" class="btn btn-secondary" onclick="showSlidesForm('slides')">Text Slides</button>
+                    </span>
+                    <big>
+                        <a tabindex="0" href="#"
+                            data-container="body" data-toggle="tooltip" data-placement="bottom"
+                            title="Select 'Videoclip' and the linked Youtube video can be shown on the presentation screen!
+    Select 'Text slides' in order to show Powerpoint-like slides using the text in the lyrics field!">
+                            <i class="fa fa-info-circle"></i></a>
+                    </big>
+                </div>
+
             @endif
         </div>
 
 
         {{-- Song/Item List Navigation Buttons 
         --}}
-        <div class="col-md-6 col-lg-5 col-xl-4">
-
-            {{-- SAVE or SUBMIT button --}}
-            @if (isset($song))
-                <big class="submit-button" onclick="showSpinner()" style="display: none;">{!! Form::submit('Save changes'); !!}</big>
-                    @if (Auth::user()->isAdmin() && count($plansUsingThisSong)==0 )
-                        </div>
-                        <div class="small col-xs-4">
-                        Item is not used in any plan, so you can<br> 
-                        <a href="{{ url('cspot/songs/'.$song->id) }}/delete">
-                            <i class="fa fa-trash text-danger" > </i> delete this song
-                        </a>
-                    @endif
-                </big>
-            @else
-                <big class="submit-button" style="display: none;">{!! Form::submit('Submit'); !!}
-                </big>
-            @endif
+        <div class="col-md-6">
 
             <a class="pull-xs-right btn btn-outline-success" href="{{ url('cspot/songs?page=') .
                     ( session()->has('currentPage') ? session('currentPage') : $currentPage ) }}">
@@ -94,6 +92,12 @@ Select 'Text slides' in order to show Powerpoint-like slides using the text in t
                     href="{{ url('cspot/songs?filterby=title_2&filtervalue=video') }}">
                 All Videoclips
             </a>
+
+            @if ( isset($song) && Auth::user()->isAdmin() && count($plansUsingThisSong)==0 )
+                <a href="{{ url('cspot/songs/'.$song->id) }}/delete">
+                    <i class="fa fa-trash text-danger" > </i> delete this item
+                </a><br><small>(as it's not used anywhere)</small>
+            @endif
         </div>
 
     </div>
@@ -106,6 +110,28 @@ Select 'Text slides' in order to show Powerpoint-like slides using the text in t
 
     <div class="row">
         <div class="col-xl-6">
+
+            <div class="slides-only m-b-2" style="display: none;">
+                <p><strong>Slides</strong> (or sets of slides) are like songs, but with your own, free text.</p>
+                <p>Insert empty lines between text to force a new slide. But in order to be able to navigate beween your slides, use slide 
+                    indicators like <i>[1], [2]</i> on a single line between your slides.</p>
+                <p>You can also use some <a target="new" href="https://en.wikipedia.org/wiki/Cascading_Style_Sheets">CSS</a> rules 
+                    (like <i>&lt;color: red;&gt;</i> or <i>&lt;font-weight: bolder&gt;</i>, even combined) to format your text
+                    by putting these rules at the beginning of your text line.</p>
+                <hr>
+            </div>
+
+            <div class="video-only m-b-2" style="display: none;">
+                <p><strong>Videoclips</strong> are YouTube videos embedded into the presentation in a single slide.</p>
+                <p>Search for your clip on YouTube and copy the YouTube-URL (or <i>address</i> 
+                    or just the ID) into the appropriate field.</p>
+                <p>If you want to show only parts of the video click on the "Share" link underneath the video 
+                    on YouTube and check the "Start at:" setting underneath the provided link. 
+                    This will add a <strong>start time</strong> ("<i>&t=NmNs</i>") to the URL.</p>
+                <p>You can enter the title of your clip and then click on "<i class="text-primary">search YouTube</i>" 
+                    to directly start searching for the desired videoclip.</p>
+                <hr>
+            </div>
 
             
             <div class="row form-group m-b-0">
@@ -271,20 +297,20 @@ Select 'Text slides' in order to show Powerpoint-like slides using the text in t
                 <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width link-input-field" id="yt-link-input-field">
                     {!! Form::text('youtube_id'); !!}
 
-                    @if ( isset($song) )
-                        <div class="small">
-                            <a target="new" onclick="$('#yt-link-input-field').hide();$('#yt-drop-target').show()"
-                                href="{{ env('YOUTUBE_SEARCH', 'https://www.youtube.com/results?search_query=').$song->title }}">
-                                <i class="fa fa-search"></i><i class="fa fa-youtube"></i> search YouTube <i class="fa fa-external-link"></i>
-                            </a>
+                    <div class="small">
+                        <a target="new" onclick="$('#yt-link-input-field').hide();$('#yt-drop-target').show()" id="youtube-search-link"
+                            href="{{ env('YOUTUBE_SEARCH', 'https://www.youtube.com/results?search_query='). (isset($song) ? $song->title : '') }}">
+                            <i class="fa fa-search"></i>&nbsp;<i class="fa fa-youtube"></i> search YouTube <i class="fa fa-external-link"></i>
+                        </a>
+                        @if ( isset($song) )
                             @if ( strlen($song->youtube_id)>0 )
-                                <a class="right-align-input" target="new" 
+                                <a class="right-align-input" target="new"
                                     href="{{ env('YOUTUBE_PLAY', 'https://www.youtube.com/watch?v=').$song->youtube_id }}">
                                     <i class="fa fa-youtube-play"></i> play <i class="fa fa-external-link"></i>
                                 </a>
                             @endif
-                        </div>
-                    @endif
+                        @endif
+                    </div>
                 </div>
                 <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8" id="yt-drop-target" style="display: none;">
                     <textarea class="bg-warning drop-target">drop YouTube link address here ....</textarea>
@@ -341,10 +367,11 @@ Select 'Text slides' in order to show Powerpoint-like slides using the text in t
             <div id="accordion" role="tablist" aria-multiselectable="true">
               <div class="panel panel-default song-or-slides-only">
                 <div class="panel-heading" role="tab" id="headingOne">
-                  <h4 class="panel-title">
-                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    <h4 class="panel-title">
 
-                        <span class="song-only">Lyrics</span><span class="slide-only" style="display: none;">Slides</span>:
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            <span class="song-only">Lyrics</span><span class="slides-only" style="display: none;">Slides</span>:
+                        </a>
 
                         @if ( !isset($song) || (isset($song) && $song->title_2!='slides') )
                             <a
@@ -359,11 +386,11 @@ when the song is presented.">
                                 <i class="fa fa-info-circle m-l-2"></i></a>
                             </a>
                         @endif
-                  </h4>
+                    </h4>
                 </div>
                 <div id="collapseOne" class="panel-collapse collapse{{ ( !isset($song) || (isset($song) && $song->title_2=='slides') ) ? ' in' : '' }}" role="tabpanel" aria-labelledby="headingOne">
                     {!! Form::textarea('lyrics'); !!}
-                    <button id="lyrics-copy-btn" class="pull-xs-right"><i class="fa fa-copy"></i>&nbsp;copy lyrics</button>
+                    <button id="lyrics-copy-btn" class="pull-xs-right"><i class="fa fa-copy"></i>&nbsp;copy text</button>
 
                     {{-- reset size of textarea --}}
                     <small><a href="#" id="reset-lyrics-textarea" onclick="resizeTextArea(this, 'lyrics')" style="display:none">resize textbox</a></small>
@@ -377,7 +404,8 @@ when the song is presented.">
                 <div class="panel-heading" role="tab" id="headingTwo">
                   <h4 class="panel-title">
                     <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                        Chords:<a 
+                        Chords:</a>
+                        <a 
                             tabindex="0" href="#" data-container="body" data-toggle="tooltip"
                             data-template='<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><pre class="tooltip-inner tooltip-wide"></pre></div>'
                             title='(Click on title "Chords" to open!)
@@ -505,9 +533,10 @@ like "(repeat chorus!)"'>
 
         function showSlidesForm(what) {
             $('.song-only').hide();
+            $('.video-only').hide();
             $('.song-or-video-only').hide();
+            $('.slides-only').show();
             $('.song-or-slides-only').show();
-            $('.slide-only').show();
             $('#all-items-button').text('Slides');
             if (what) 
                 $("input[name='title_2']").val(what);
@@ -515,9 +544,10 @@ like "(repeat chorus!)"'>
 
         function showVideoForm(what) {
             $('.song-only').hide();
+            $('.slides-only').hide();
             $('.song-or-slides-only').hide();
-            $('.song-or-video-only').show();
             $('.video-only').show();
+            $('.song-or-video-only').show();
             $('#all-items-button').text('Videoclips');
             if (what) 
                 $("input[name='title_2']").val(what);
@@ -563,13 +593,35 @@ like "(repeat chorus!)"'>
         });
 
 
-        /* change form content depending on tyep of song
+        /* change form content depending on type of song
         */
-        @if (isset($song) && $song->title_2=='video')
-            showVideoForm();
+        @if (isset($song))
+            @if ($song->title_2=='video')
+                showVideoForm();
+            @elseif ($song->title_2=='slides' )
+                showSlidesForm();
+            @endif
         @endif
-        @if (isset($song) && $song->title_2=='slides' )
-            showSlidesForm();
+
+        /* For new items, change form according to querystring
+        */
+        @if (Request::has('type'))
+            @if (Request::input('type')=='video')
+                showVideoForm('video');
+            @elseif (Request::input('type')=='slides')
+                showSlidesForm('slides');
+            @endif
+        @endif
+
+        /* Set YouTube search according to content of title input field
+        */
+        @if (! isset($song))
+            var oldYtLinkHref = $('#youtube-search-link').attr('href');
+            $('#title').on('blur', 
+            function() {
+                var title = $('#title').val();
+                $('#youtube-search-link').attr('href', oldYtLinkHref+title)
+            });
         @endif
 
     </script>

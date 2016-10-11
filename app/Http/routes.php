@@ -201,7 +201,7 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     // change seq_no of a file
     Route::get('items/{item_id}/movefile/{file_id}/{dir}',  'Cspot\FileController@move');    
     // unlink an attachment from an item
-    Route::put('items/{item_id}/unlink/{file_id}',          'Cspot\FileController@unlink');
+    Route::put('api/items/file/unlink/',                    'Cspot\FileController@APIunlink')->name('api.items.file.unlink');
 
     // delete an attachment to a song or an item
     Route::delete('files/{id}/delete',                      'Cspot\FileController@delete');
@@ -221,22 +221,25 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     /*
         SONGS
     */
-    Route::get('songs/search',             'Cspot\SongController@searchSong');
+    Route::get('songs/search',          'Cspot\SongController@searchSong');
 
     // basic songs processing
-    Route::resource('songs',               'Cspot\SongController');
+    Route::resource('songs',            'Cspot\SongController');
         
     // song search
-    Route::post('songs/search',            'Cspot\SongController@searchSong');
+    Route::post('songs/search',         'Cspot\SongController@searchSong');
 
     // specific delete route using 'get' method
-    Route::get('songs/{songs}/delete',     'Cspot\SongController@destroy');
+    Route::get('songs/{songs}/delete',  'Cspot\SongController@destroy');
 
-    // SPA API
-    Route::post('api/songs/update',           [ 'uses'=>'Cspot\SongController@APIupdate']);
+    // SONGS API
+
+    Route::post('api/songs/update',     'Cspot\SongController@APIupdate');
+    // Unlink file
+    Route::put('api/songs/file/unlink', 'Cspot\SongController@APIunlink')->name('api.songs.file.unlink');
 
     // song list
-    Route::get('api/songs/getsonglist', ['as'=>'getsonglist', 'uses'=>'Cspot\SongController@APIgetSongList']);
+    Route::get('api/songs/getsonglist', 'Cspot\SongController@APIgetSongList')->name('getsonglist');
 
 
     /*

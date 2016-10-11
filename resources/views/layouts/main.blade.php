@@ -48,12 +48,14 @@
         cSpot.const.waitspinner = '<i class="fa fa-spinner fa-spin fa-fw"></i>';
 
         cSpot.routes = {};
-        cSpot.routes.apiAddFiles   = '{{ route('cspot.api.addfile'      ) }}';
-        cSpot.routes.apiAddNote    = '{{ route('api.addNote'            ) }}';
-        cSpot.routes.apiUpload     = '{{ route('cspot.api.upload'       ) }}';
-        cSpot.routes.apiItems      = '{{ route('cspot.api.item'         ) }}';
-        cSpot.routes.apiItemUpdate = '{{ route('cspot.api.item.update'  ) }}';
-        cSpot.routes.apiPlanUpdate = '{{ route('api.plan.update'  ) }}';
+        cSpot.routes.apiAddFiles   = '{{ route('cspot.api.addfile'     ) }}';
+        cSpot.routes.apiAddNote    = '{{ route('api.addNote'           ) }}';
+        cSpot.routes.apiUpload     = '{{ route('cspot.api.upload'      ) }}';
+        cSpot.routes.apiItems      = '{{ route('cspot.api.item'        ) }}';
+        cSpot.routes.apiItemUpdate = '{{ route('cspot.api.item.update' ) }}';
+        cSpot.routes.apiPlanUpdate = '{{ route('api.plan.update'       ) }}';
+        cSpot.routes.apiItemsFileUnlink = '{{ route('api.items.file.unlink' ) }}';
+        cSpot.routes.apiSongsFileUnlink = '{{ route('api.songs.file.unlink' ) }}';
 
         cSpot.presentation = {};
         cSpot.presentation.sync = false;

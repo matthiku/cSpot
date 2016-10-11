@@ -40287,6 +40287,7 @@ function deleteFile(id)
 
     // show wait spinner
     $('#file-'+id).html('<i class="fa fa-spinner fa-spin fa-fw"></i>');
+    $('#file-figure-'+id).html('<i class="fa fa-spinner fa-spin fa-fw"></i>');
 
     // get token from form field
     $.ajax({
@@ -40308,18 +40309,21 @@ function deleteFile(id)
     });
 }
 
-/* unlink FILE from its item
+/* unlink FILE (bg image) from Plan Item
 */
 function unlinkFile(item_id, file_id)
 {
     // show wait spinner
     $('#file-'+file_id).html('<i class="fa fa-spinner fa-spin fa-fw"></i>');
+    $('#file-figure-'+file_id).html('<i class="fa fa-spinner fa-spin fa-fw"></i>');
 
     $.ajax({
-        url:    '/cspot/items/'+item_id+'/unlink/'+file_id+'', 
+        url:    cSpot.routes.apiItemsFileUnlink,
+        data:   {'item_id': item_id, 'file_id': file_id}, 
         method: 'PUT',
     }).done(function(data) {
         $('#file-'+file_id).html(data.data);
+        $('#file-figure-'+file_id).html(data.data);
     }).fail(function(data) {
         if (data.responseJSON) {
             alert("image unlinking failed! Error: "+data.responseJSON.data+'.  Code:'+data.responseJSON.status);
@@ -40331,7 +40335,31 @@ function unlinkFile(item_id, file_id)
 }
 
 
-/* unlink SONG from its item
+/* unlink FILE from Song item
+*/
+function unlinkSongFile(song_id, file_id)
+{
+    // show wait spinner
+    $('#file-figure-'+file_id).html('<i class="fa fa-spinner fa-spin fa-fw"></i>');
+
+    $.ajax({
+        url:    cSpot.routes.apiSongsFileUnlink,
+        data:   {'song_id': song_id, 'file_id': file_id}, 
+        method: 'PUT',
+    }).done(function(data) {
+        $('#file-figure-'+file_id).html(data.data);
+    }).fail(function(data) {
+        if (data.responseJSON) {
+            alert("image unlinking failed! Error: "+data.responseJSON.data+'.  Code:'+data.responseJSON.status);
+        }
+        else {
+            alert("image unlinking failed! "+JSON.stringify(data));
+        }
+    });
+}
+
+
+/* unlink SONG from Plan Item
 */
 function unlinkSong(that, item_id, song_id, plan_url)
 {

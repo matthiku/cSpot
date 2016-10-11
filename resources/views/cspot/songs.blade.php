@@ -84,7 +84,14 @@
 
 				@if( Auth::user()->isEditor() && $plan_id==0 )
 					<li class="nav-item active">
-						<a class="nav-link btn btn-outline-primary" href="{{ url('cspot/songs/create') }}">
+						<a class="nav-link btn btn-outline-primary" 
+							@if (Request::has('filtervalue'))
+								@if (Request::input('filtervalue')=='slides'))
+									href="{{ url('cspot/songs/create') }}?type=slides">
+								@elseif (Request::input('filtervalue')=='video')
+									href="{{ url('cspot/songs/create') }}?type=video">
+								@endif
+							@endif
 							<i class="fa fa-plus"> </i> &nbsp;Add New
 						</a>
 					</li>

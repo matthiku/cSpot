@@ -1,6 +1,8 @@
 
 <!-- needs a '$file' value from the parent view -->
 
+<?php if (!isset($edit)) $edit=true; ?>
+
 <figure class="figure" id="file-figure-{{ $file->id }}">
 
     <!-- show thumbnail, but link to full image -->
@@ -17,22 +19,34 @@
     <figcaption class="figure-caption">
     	{{ $file->filename }}
         <small class="text-muted">({{ $file->file_category->name }})</small>
-        <br />
 
-        @if (isset($item->id))        
-            {{-- check if user is leader of the corresponding plan or author/admin --}}
-            @if ( $item->plan->leader_id==Auth::user()->id || Auth::user()->isAuthor() )
-                <a class="small m-r-1" href="#" onclick="unlinkFile({{ $item->id }},{{ $file->id }})">
-                    <i class="fa fa-unlink" title="Unlink this file from this item"></i>
-                    Unlink</a>
+        @if ($edit)
+            <br />
+
+            @if (isset($item->id))        
+                {{-- check if user is leader of the corresponding plan or author/admin --}}
+                @if ( $item->plan->leader_id==Auth::user()->id || Auth::user()->isAuthor() )
+                    <a class="small m-r-1" href="#" onclick="unlinkFile({{ $item->id }},{{ $file->id }})">
+                        <i class="fa fa-unlink" title="Unlink this file from this item"></i>
+                        Unlink</a>
+                @endif
             @endif
-        @endif
 
-        {{-- check if user is leader of the corresponding plan or author/admin --}}
-        @if ( ! isset($item->id) || Auth::user()->isAuthor()  ||  (isset($item->id) && $item->plan->leader_id==Auth::user()->id) )        
-            <a class="small" href="#" onclick="deleteFile({{ $file->id }})">
-                <i class="fa fa-trash red" title="Delete this file from the database"></i>
-                Delete</a>
+            @if (isset($song->id))        
+                {{-- check if user is leader of the corresponding plan or author/admin --}}
+                @if ( Auth::user()->isAuthor() )
+                    <a class="small m-r-1" href="#" onclick="unlinkSongFile({{ $song->id }},{{ $file->id }})">
+                        <i class="fa fa-unlink" title="Unlink this file from this song"></i>
+                        Unlink</a>
+                @endif
+            @endif
+
+            {{-- check if user is leader of the corresponding plan or author/admin --}}
+            @if ( ! isset($item->id) || Auth::user()->isAuthor()  ||  (isset($item->id) && $item->plan->leader_id==Auth::user()->id) )        
+                <a class="small" href="#" onclick="deleteFile({{ $file->id }})">
+                    <i class="fa fa-trash red" title="Delete this file from the database"></i>
+                    Delete</a>
+            @endif
         @endif
 
         <div class="pull-xs-right">Size: {{ humanFileSize($file->filesize) }}</div>

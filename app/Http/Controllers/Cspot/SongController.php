@@ -160,13 +160,26 @@ class SongController extends Controller
     {
         $song = Song::create($request->all());
 
+
+        $type = 'song';
         // is this a videoclip or slideshow?
-        if ( $request->has('title_2') && ($request->title_2=='video' || $request->title_2=='slides') ) {
+        if ( $song->title_2=='video' || $song->title_2=='slides' ) {
             $song->update(['license' => 'PD']);
+            $type = $song->title_2;
         }
 
-        flash('New Song or Item added: '.$request->title );
-        return \Redirect::route($this->view_idx);
+        if ($type=='song') {
+            flash('New Song or Item added: '.$request->title );
+            return \Redirect::route( $this->view_idx );
+        }
+
+        // since we just create a new slide or clip, we go back to the list of slides or clips!
+        flash('New '.$song->title_2.' added, titled: '.$request->title );
+        return redirect()->route(
+            $this->view_idx, [
+                'filterby' => 'title_2',
+                'filtervalue' => $song->title_2
+            ]);
     }
 
 
@@ -297,7 +310,7 @@ class SongController extends Controller
         } 
 
         // instead of flashing, maybe show the field 'updated_at' in the form?
-        flash( 'Song "'.$request->title.'" updated.' );
+        flash( 'Song or item "'.$request->title.'" updated.' );
         return redirect()->back()->with('currentPage', $currentPage);
     }
 
@@ -345,6 +358,39 @@ class SongController extends Controller
             return $song[$field_name];
         }
     }
+
+
+    /**
+     * Unlink a file attachment
+     *
+     * - - RESTful API request - -
+     *
+     * @param int $id
+     *
+     */
+    public function APIunlink(Request $request)
+    {
+        $song_id = $request->has('song_id') ? $request->song_id : 0;
+        $file_id = $request->has('file_id') ? $request->file_id : 0;
+
+        if (!$song_id || !$file_id)
+            return response()->json(['status' => 404, 'data' => 'API: songId or fileId missing!'], 404);
+
+        // find the single resource
+        $file = File::find($file_id);
+        if ($file && $file->song_id == $song_id) {
+
+            $file->song_id = null;
+            $file->save();
+
+            // return to sender
+            return response()->json(['status' => 200, 'data' => 'File unlinked!']);
+        }
+
+        return response()->json(['status' => 404, 'data' => 'File with id '.$file_id.' not found or song is not linked to this file!'], 404);
+    }
+
+
 
 
     /**
