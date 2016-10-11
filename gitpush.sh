@@ -73,7 +73,7 @@ git push staging master
 
 if [ "$PRODUCTION" = "n" ]; then
 	echo ----
-    echo 'Aborting... No push to production'
+    echo 'Aborting... Not pushing to production'
     exit
 fi
 

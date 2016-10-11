@@ -76,7 +76,8 @@
                     {{-- videoclip or slides 
                     --}}
                     <label for="clips" class="search-form-item modal-select-clips m-b-0">Search for titles of Slides or VideoClips:</label>
-                    <input type="text" class="form-control search-form-item modal-select-clips modal-input-clips m-b-0" id="clips" onkeyup="showSongHints('#clipsHint', this.value, 'clips')">
+                    <input type="text" class="form-control search-form-item modal-select-clips modal-input-clips m-b-0" 
+                             id="clips" onkeyup="showSongHints('#clipsHint', this.value, 'clips')">
                     <div class="search-form-item modal-select-clips" id="clipsHint"></div>
 
                     <label class="search-form-item modal-select-clips m-t-1 m-b-0" for="MPselect">...or select from this list:</label>
@@ -88,7 +89,8 @@
                     {{-- song 
                     --}}
                     <label for="haystack" class="search-form-item modal-select-song m-b-0">Search Song title or number:</label>
-                    <input type="text" class="form-control search-form-item modal-select-song modal-input-song m-b-0" id="haystack" onkeyup="showSongHints('#txtHint', this.value)">
+                    <input type="text" class="form-control search-form-item modal-select-song modal-input-song m-b-0"
+                             id="haystack" onkeyup="showSongHints('#txtHint', this.value)">
                     <div class="search-form-item modal-select-song" id="txtHint"></div>
 
                     <label class="search-form-item modal-select-song m-t-1 m-b-0" for="MPselect">...or select Mission Praise number:</label>

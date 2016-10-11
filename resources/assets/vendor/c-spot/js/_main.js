@@ -337,7 +337,7 @@ function addOptionsToMPsongSelect()
             mps.appendChild(opt);
         }
         // for the list of Clips....
-        if ( songs[i].title_2 == "video" || songs[i].title_2 == "slide" ) {
+        if ( songs[i].title_2 == "video" || songs[i].title_2 == "slides" ) {
             opt.value = songs[i].id;
             opt.text = songs[i].title + (songs[i].title_2 ? ' ('+songs[i].title_2+')' : '');
             clips.appendChild(opt);

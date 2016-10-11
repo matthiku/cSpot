@@ -239,12 +239,12 @@
 						<td class="hidden-xs-down nowrap center">
 							@if ($plan_id>0)
 								<a class="btn btn-secondary btn-sm" title="Add this song to selected Service plan" 
-									href='/cspot/plans/{{$plan_id}}/addsong/{{$song->id}}'><i class="fa fa-plus"></i></a>
+									href='{{ url('cspot/plans/'.$plan_id) }}/addsong/{{$song->id}}'><i class="fa fa-plus"></i></a>
 							@endif
 
 							@if( Auth::user()->isAuthor() )
 								<a class="btn btn-outline-primary btn-sm" title="Edit song details" 
-									href='/cspot/songs/{{$song->id}}/edit'><i class="fa fa-edit"></i></a>
+									href='{{ url('cspot/songs/'.$song->id) }}/edit'><i class="fa fa-edit"></i></a>
 							@endif
 
 							@if( Auth::user()->isEditor() && $song->items->count()==0)
