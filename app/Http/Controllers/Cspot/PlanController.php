@@ -26,7 +26,8 @@ use Auth;
 use Log;
 
 
-class PlanController extends Controller
+class 
+PlanController extends Controller
 {
 
     /**
@@ -53,16 +54,36 @@ class PlanController extends Controller
      *
      * WARNING: this depends on service type ids 0 and 1 to be Sunday Services!
      *
+     * @param bool $any return any type of plan or only sunday services
+     * @param bool $api return plan data as JSON string
+     *
      * @return \Illuminate\Http\Response
      */
-    public function nextSunday()
+    public function nextSunday($any=false, $api=false)
     {
-        //
-        $plan = Plan::with('type')
-            ->whereDate('date', '>', Carbon::yesterday())
-            ->whereBetween('type_id', [0,1])
+        // perapre query builder statement
+        $plan = Plan::with('type', 'resources');
+
+        // all plans or just type 0 and 1?
+        if (! $any) {
+            $plan = $plan
+                ->whereBetween('type_id', [0,1])
+                ->whereDate('date', '>', Carbon::yesterday());
+        } 
+        // when all plans, then only thosw which haven't started yet
+        else {
+            $plan = $plan
+                ->whereDate('date', '>', Carbon::now());
+        }
+
+        // from that list, git the oldest
+        $plan = $plan
             ->orderBy('date')
             ->first();
+
+        if ($api) {
+            return $plan;
+        }
 
         // issue #27 (error when no plan was found)
         if ($plan) {            
@@ -73,6 +94,16 @@ class PlanController extends Controller
         return redirect()->back();
     }
 
+
+    /**
+     * API: return next event of any type
+     */
+    public function APInextEvent()
+    {
+        $plan = $this->nextSunday(true, true);
+
+        return response()->json($plan);
+    }
 
 
 

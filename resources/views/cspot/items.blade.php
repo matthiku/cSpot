@@ -390,8 +390,14 @@
 	    @endforeach
 
 		@if (count($plan->items) < 6)
-			<tr><td>
+			<tr><td class="pull-xs-right">
+			
+				@if (count($plan->items) == 0 ) 
+					Plan has no items yet:</td><td>
+				@endif
+
 				@include ('cspot.snippets.add_item_button')
+
 			</td></tr>
 		@endif
 

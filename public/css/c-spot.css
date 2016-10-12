@@ -9377,6 +9377,11 @@ a.ui-button:active,
  * (C) M.Kuhs Ireland, 2016
  */
 
+/* always use fixed font in textarea input field */
+textarea {
+    font-family: monospace !important;
+}
+
 
 /* limit column widht in file list table */
 .limit-td-width {

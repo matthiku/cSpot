@@ -67,29 +67,31 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     */
 
     // show next Sunday's Service plan
-    Route::get('plans/next',                              ['as'=>'next',   'uses'=>'Cspot\PlanController@nextSunday']);
+    Route::get('plans/next',                       'Cspot\PlanController@nextSunday'  )->name('next');
+    // get next event of any type
+    Route::get('api/plans/next',                   'Cspot\PlanController@APInextEvent')->name('api.next.event');
 
     // basic CRUD resources for plans, but without the simple GET method
-    Route::resource('plans',                                                       'Cspot\PlanController');
+    Route::resource('plans',                       'Cspot\PlanController');
 
     // show one plan for the selected date
-    Route::get('plans/by_date/{date}',                                             'Cspot\PlanController@by_date');    
+    Route::get('plans/by_date/{date}',             'Cspot\PlanController@by_date');    
 
     // allow DELETE via the GET method
-    Route::get('plans/delete/{plan_id}',                                           'Cspot\PlanController@destroy');    
+    Route::get('plans/delete/{plan_id}',           'Cspot\PlanController@destroy');    
 
     // send an email reminder to a leader or teacher for a plan
-    Route::get('plans/{plan_id}/remind/{user_id}', ['as'=>'sendReminder', 'uses'=> 'Cspot\PlanController@sendReminder']);
+    Route::get('plans/{plan_id}/remind/{user_id}', 'Cspot\PlanController@sendReminder')->name('sendReminder');
 
     // store client-rendered presentation slides locally for other users to download
-    Route::post( 'plan/{plan_id}/cache',                                            'Cspot\PlanController@postCache');
-    Route::get(  'plan/{plan_id}/cache',                                            'Cspot\PlanController@getCache');
-    Route::post( 'plan/{plan_id}/cache/delete',                                     'Cspot\PlanController@deleteCache');
+    Route::post( 'plan/{plan_id}/cache',           'Cspot\PlanController@postCache');
+    Route::get(  'plan/{plan_id}/cache',           'Cspot\PlanController@getCache');
+    Route::post( 'plan/{plan_id}/cache/delete',    'Cspot\PlanController@deleteCache');
 
     // API update    
-    Route::post('api/plan/update',              ['as'=>'api.plan.update',   'uses'=>'Cspot\PlanController@APIupdate']);
+    Route::post('api/plan/update',                 'Cspot\PlanController@APIupdate' )->name('api.plan.update');
     // update (append) the note for a plan
-    Route::post('plans/addNote',                ['as'=>'api.addNote',       'uses'=> 'Cspot\PlanController@APIaddNote']);
+    Route::post('plans/addNote',                   'Cspot\PlanController@APIaddNote')->name('api.addNote');
 
 
     /*

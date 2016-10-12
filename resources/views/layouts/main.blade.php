@@ -48,6 +48,7 @@
         cSpot.const.waitspinner = '<i class="fa fa-spinner fa-spin fa-fw"></i>';
 
         cSpot.routes = {};
+        cSpot.routes.apiNextEvent  = '{{ route('api.next.event'        ) }}';
         cSpot.routes.apiAddFiles   = '{{ route('cspot.api.addfile'     ) }}';
         cSpot.routes.apiAddNote    = '{{ route('api.addNote'           ) }}';
         cSpot.routes.apiUpload     = '{{ route('cspot.api.upload'      ) }}';

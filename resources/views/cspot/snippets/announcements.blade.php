@@ -1,9 +1,10 @@
 
 <?php 
-	use Carbon\Carbon; 
-	$hour  = 9;
+	use Carbon\Carbon;
+	$day   = 0; // we start the table with Sunday and we need a total of 8 days
+	$hour  = 9; // the day starts at 9 a.m.
 	$today = $item->plan->date; 
-	$firstThisDay = true;
+	$firstThisDay = true;	// first event of the day?
 	$nextWeek 	  = $item->plan->date->addDays(7);
 ?>
 
@@ -43,7 +44,7 @@
 					<?php 
 						// extra treatment for the first event
 						if ( $event->date->dayOfYear == $item->plan->date->dayOfYear ) {
-							// push down the event it's start time is later in the day
+							// push down the event when it's start time is later in the day
 							while ($event->date->hour - $hour > 1) {
 								echo '<br>';
 								$hour += 1;
@@ -59,6 +60,7 @@
 						if ($event->date->dayOfYear > $today->dayOfYear) {
 							$today->addDay();
 							$hour = 9;
+							$day += 1;
 							$firstThisDay = true;
 							echo '</td><td style="vertical-align: initial; line-height: 1;">';
 							// push down the event's start time if it is later in the day
@@ -72,6 +74,7 @@
 						while ($event->date->dayOfYear > $today->dayOfYear ) {
 							echo '</td><td style="vertical-align: initial; line-height: 1;">';
 							$today->addDay();
+							$day += 1;
 							$hour = 9;
 							$firstThisDay = true;
 							// push down the event's start time if it is later in the day
@@ -93,8 +96,9 @@
 
 						// show times in hh:mm am format
 						Carbon::setToStringFormat('g:i a');
-					?>
 
+						// now show the actual event data
+					?>
 					<div class="{{ $firstThisDay ? '' : 'm-t-2'}}">
 						<span class="d-block bg-info nowrap">{{ $event->date }}</span>
 						<div>{{ $event->type->name }}{!! $event->subtitle ? '<br><span class="text-muted">'.$event->subtitle.'</span>' : '' !!}</div>
@@ -108,7 +112,14 @@
 					?>
 
 
-				@endforeach					
+				@endforeach
+				@while ( $day < 7 )
+					<td>
+						<br><br><br><br><br><br><br><br><br>
+					</td>
+					<?php $day += 1; ?>
+				@endwhile
+
 				</td>
 			</tr>
 
