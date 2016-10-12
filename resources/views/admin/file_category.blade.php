@@ -17,12 +17,12 @@
 
     @if (isset($file_category))
         <h2>Update File Category</h2>
-        {!! Form::model( $file_category, array('route' => array('admin.file_categories.update', $file_category->id), 'method' => 'put', 'id' => 'inputForm') ) !!}
+        {!! Form::model( $file_category, array('route' => array('file_categories.update', $file_category->id), 'method' => 'put', 'id' => 'inputForm') ) !!}
     @else
         <h2>Create new File Category</h2>
         {!! Form::open(array('action' => 'Admin\FileCategoryController@store', 'id' => 'inputForm') ) !!}
     @endif
-        <p>{!! Form::label('name', 'File Category Name'); !!}<br>
+        <p>{!! Form::label('name', 'File Category Name'); !!} <i class="red">*</i><br>
            {!! Form::text('name'); !!}</p>
 
     @if (isset($file_category))
@@ -39,5 +39,7 @@
 
     <a href="{{ url('admin/file_categories/') }}">{!! Form::button('Cancel'); !!}</a></p>
     {!! Form::close() !!}
+    
+    <span><i class="red">*</i> = mandatory field(s) &nbsp;</span>
     
 @stop

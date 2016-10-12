@@ -65,7 +65,7 @@
                         <a title="Show guitar chords (if available) for the songs on this plan" 
                             onclick="$('#show-spinner').modal({keyboard: false});" 
                             href="{{ url('cspot/items/').'/'.$plan->firstItem()->id }}/chords">
-                            <i class="fa fa-file-code-o">&nbsp;</i>Chords</a>
+                            &#127928;&nbsp;</i>Chords</a>
                     </div>
                     <div class="pull-xs-right m-r-1">
                         <a title="Start projector-enabled presentation of each song and scripture reading in this plan" 

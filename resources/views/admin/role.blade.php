@@ -22,7 +22,7 @@
         <h2>Create Role</h2>
         {!! Form::open(array('action' => 'Admin\RoleController@store', 'id' => 'inputForm') ) !!}
     @endif
-        <p>{!! Form::label('name', 'Role Name'); !!}<br>
+        <p>{!! Form::label('name', 'Role Name'); !!} <i class="red">*</i><br>
            {!! Form::text('name'); !!}</p>
 
     @if (isset($role))
@@ -39,5 +39,7 @@
 
     <a href="{{ url('admin/roles/') }}">{!! Form::button('Cancel'); !!}</a></p>
     {!! Form::close() !!}
+
+    <span><i class="red">*</i> = mandatory field(s) &nbsp;</span>
     
 @stop

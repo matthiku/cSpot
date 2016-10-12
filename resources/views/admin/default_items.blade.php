@@ -17,7 +17,7 @@
 	@if( Auth::user()->isEditor() )
 	<a class="btn btn-outline-warning pull-xs-right m-l-1" href="{{ url('cspot/plans/create') }}
 			{{ Request::has('filtervalue') ? '?type_id='.Request::get('filtervalue') : '' }}"
-			title="Create a new Event of this type">
+			title="Create a new Event of selected type (if any)">
 		<i class="fa fa-plus"> </i> &nbsp; Create Event
 	</a>
 	<a class="btn btn-outline-primary pull-xs-right m-l-1" href="{{ url('admin/default_items/create') }}">
@@ -48,7 +48,7 @@
     	<small class="text-muted">
     		<a tabindex="0" href="#"
     			data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="focus"
-    			data-content="Default items are parts of a service that are always the same. They can be inserted into new plans.">
+    			data-content="Default items are parts of a service or event that are always the same. They will be automatically inserted into new event plans.">
     			<i class="fa fa-question-circle"></i></a>
 		</small>
 	</h2>

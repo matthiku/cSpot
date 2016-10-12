@@ -185,7 +185,7 @@
                     <i class="fa fa-btn fa-calendar-check-o fa-lg"></i> &nbsp; Your Events</a>
                 @if( Auth::user()->isEditor() )
                 <a class="dropdown-item" href="{{ url('cspot/plans/create') }}">
-                    <i class="fa fa-btn fa-calendar-plus-o fa-lg"></i> &nbsp; Add New Event</a>
+                    <i class="fa fa-btn fa-calendar-plus-o fa-lg"></i> &nbsp; Create New Event</a>
                 @endif
                 <a class="dropdown-item" href="{{ url('admin/types') }}">
                     <i class="fa fa-btn fa-tasks fa-lg"></i> &nbsp; Event Types</a>

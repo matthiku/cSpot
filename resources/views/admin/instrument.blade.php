@@ -22,7 +22,7 @@
         <h2>Create Instrument</h2>
         {!! Form::open(array('action' => 'Admin\InstrumentController@store', 'id' => 'inputForm') ) !!}
     @endif
-        <p>{!! Form::label('name', 'Instrument Name'); !!}<br>
+        <p>{!! Form::label('name', 'Instrument Name'); !!} <i class="red">*</i><br>
            {!! Form::text('name'); !!}</p>
 
     @if (isset($instrument))
@@ -39,5 +39,7 @@
 
     <a href="{{ url('admin/instruments/') }}">{!! Form::button('Cancel'); !!}</a></p>
     {!! Form::close() !!}
+    
+    <span><i class="red">*</i> = mandatory field(s) &nbsp;</span>
     
 @stop

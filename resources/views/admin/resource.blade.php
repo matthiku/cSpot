@@ -22,7 +22,7 @@
         <h2>Create Resource</h2>
         {!! Form::open(array('action' => 'Admin\ResourceController@store', 'id' => 'inputForm') ) !!}
     @endif
-        <p>{!! Form::label('name', 'Resource Name'); !!}<br>
+        <p>{!! Form::label('name', 'Resource Name'); !!} <i class="red">*</i><br>
            {!! Form::text('name'); !!}</p>
         <p>{!! Form::label('type', 'Type information (optional'); !!}<br>
            {!! Form::text('type'); !!}</p>
@@ -43,5 +43,7 @@
 
     <a href="{{ url('admin/resources/') }}">{!! Form::button('Cancel'); !!}</a></p>
     {!! Form::close() !!}
+    
+    <span><i class="red">*</i> = mandatory field(s) &nbsp;</span>
     
 @stop

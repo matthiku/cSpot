@@ -50,10 +50,10 @@
                     <th class="center">Interval</th>
                     <th class="center hidden-sm-down small">Default Leader</th>
                     <th class="center hidden-sm-down small">Default Resource</th>
-                    <th class="center small">Default Items</th>
+                    <th class="center small" title="Shows number of default items defined for this type of plan">Default Items</th>
                     <th class="center small">Total No. of Plans</th>
-                    @if( Auth::user()->id===1 || Auth::user()->isAdmin() )
-                        <th class="center">Show/Modify</th>
+                    @if( Auth::user()->id===1 || Auth::user()->isEditor() )
+                        <th class="center small">Modify</th>
                     @endif
                 </tr>
             </thead>
@@ -87,28 +87,37 @@
                         title="Show Default Items for this Event Type">{{ $type->defaultItems->count() }} <sup><small><small><i class="text-muted fa fa-search"></i></small></small></sup></td>
 
                     <td class="link center" onclick="location.href='{{ url('cspot/plans?filterby=type&filtervalue='.$type->id) }}&show=all'" 
-                        title="Show all Plans of this Type of Service">{{ $type->plans->count() }} <sup><small><small><i class="text-muted fa fa-search"></i></small></small></sup></td>
+                        title="Show all Plans of this Type of Service">{{ $type->plans->count() }} <sup><small><small><i class="text-muted fa fa-search"></i></small></small></sup>
+                        <a class="btn btn-secondary btn-sm m-l-1" title="Show all future Plans" 
+                                href='{{ url('cspot/plans?show=future&filterby=type&filtervalue='.$type->id ) }}'>
+                            <i class="fa fa-filter"></i></a>
+                    </td>
 
 
-                    <td class="nowrap center">
-                        <a class="btn btn-secondary btn-sm" title="Show all future Plans" href='{{ url('cspot/plans?show=future&filterby=type&filtervalue='.$type->id ) }}'><i class="fa fa-filter"></i></a>
 
-                         @if( Auth::user()->isEditor() )
-                            <a class="btn btn-outline-primary btn-sm pull-xs-right" title="Edit" 
-                                href='{{ url('admin/types/'.$type->id) }}/edit'>
-                                    <i class="fa fa-pencil"></i></a>
+                    @if( Auth::user()->isEditor() )
+                        <td class="center">
+
                             @if (! $type->plans->count())
-                                <a class="btn btn-danger btn-sm pull-xs-right" title="Delete!" 
-                                    href='{{ url('admin/types/'.$type->id) }}/delete'>
-                                        <i class="fa fa-trash"></i></a>
+                                <a class="btn btn-danger btn-sm" title="Delete!" 
+                                        href='{{ url('admin/types/'.$type->id) }}/delete'>
+                                    <i class="fa fa-trash"></i></a>
                             @endif
-                            <a class="btn btn-outline-warning btn-sm pull-xs-right" 
+
+                            <a class="btn btn-outline-primary btn-sm" title="Edit" 
+                                    href='{{ url('admin/types/'.$type->id) }}/edit'>
+                                <i class="fa fa-pencil"></i></a>
+
+                            <a class="btn btn-outline-warning btn-sm" 
                                     href="{{ url('cspot/plans/create') }}?type_id={{ $type->id }}"
                                     title="Create a new Event of this type">
                                 <i class="fa fa-plus"> </i>
                             </a>
-                        @endif
-                    </td>
+
+                        </td>
+                    @endif
+
+
 
                 </tr>
             @endforeach
