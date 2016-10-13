@@ -36,7 +36,7 @@
                 </div>
             </div>
 
-            <div class="col-sm-4 pull-sm-right">
+            <div class="col-sm-4">
                 <span><i class="red">*</i> = mandatory field(s) &nbsp;</span>
            </div>
 
@@ -89,7 +89,8 @@
         </div>
         <div class="row">
             <div class="col-sm-6 col-xs-12 text-sm-right">
-                <small>(Make sure the sequence number hasn't been used already in this service type - See below list of items!)</small>
+                <p class="pull-sm-right" style="max-width: 20rem; line-height: 1;">
+                    <small>(Make sure the sequence number hasn't been used already in this service type - See below list of items!)</small></p>
             </div>
         </div>
 
@@ -194,11 +195,13 @@
 
         <hr>
         <div class="row">
-            <div class="col-xs-12 m-x-auto">
+            <div class="col-xs-12">
 
                 @if (isset($default_items))
-                    <h5 class="text-muted">Currently defined Default Items for this type of event:</h5 class="text-muted">
-                    <table class="table table-sm table-striped m-x-auto">
+
+                    <h5 class="text-muted text-sm-center">Currently defined Default Items for this type of event:</h5>
+
+                    <table class="table table-sm table-striped m-x-auto" style="width: initial;">
                         <thead>
                             <tr>
                                 <th>ID</th>
@@ -210,8 +213,8 @@
                             @foreach ($default_items as $item)
                                 <tr class="link show-all-default-items show-existing-{{ $item->type_id }}" style="display: none;"
                                     onclick="location.href ='{{ url('admin/default_items/' . $item->id) }}/edit'">
-                                    <td>{{ $item->id }}</td>
-                                    <td>{{ $item->seq_no }}</td>
+                                    <td class="text-xs-center">{{ $item->id }}</td>
+                                    <td class="text-xs-center">{{ $item->seq_no }}</td>
                                     <td>{{ $item->text }}</td>
                                 </tr>
                             @endforeach

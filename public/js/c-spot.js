@@ -43623,7 +43623,7 @@ function clearServerCache(plan_id)
 
 
 // dummy method which will only be called if Sync Presentation is disabled
-// the actual (working) function is found in main.blade.php!
+// the actual (working) function is found in views/layouts/main.blade.php!
 function sendShowPosition() {
     return;
 }
@@ -43683,7 +43683,7 @@ function setMainPresenter(trueOrFalse) {
                 // Hide the Sync checkbox as the Main Presenter can't sync with another presenter...
                 $('#configSyncPresentation').parent().parent().parent().hide();
                 // tick the Main Presenter checkbox
-                changeCheckboxIcon( '#configMainPresenter', true);
+                changeCheckboxIcon( '#setMainPresenterItem', true);
                 ;;;console.log('User was accepted as "Main Presenter"' );
                 localStorage.setItem('configMainPresenter', 'true');
                 // show presenter name 
@@ -43715,7 +43715,7 @@ function setMainPresenter(trueOrFalse) {
 function syncPresentation(syncData) {
 
     // initially, we might not have any syncData....
-    if (syncData==undefined) return;
+    if (syncData==undefined || syncData.plan_id==0 || syncData.item_id==0 || syncData.slide=='none' ) return;
 
     ;;;console.log('tyring to sync show for: ' + JSON.stringify(syncData));
 
@@ -43736,7 +43736,7 @@ function syncPresentation(syncData) {
 
     // are we still on the same plan and item?
     if ( cSpot.presentation.plan_id != syncData.plan_id  ||  cSpot.presentation.item_id != syncData.item_id ) {
-        // ;;;console.log('we have to load a new page:'+myurl.pathname);
+        ;;;console.log('we have to load a new page:'+myurl.pathname);
         if (showType == 'present' || showType == 'chords' || showType == 'sheetmusic')
             window.location.href = __app_url + '/cspot/items/' + syncData.item_id + '/' + showType;
         return;

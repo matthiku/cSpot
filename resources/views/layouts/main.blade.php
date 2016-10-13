@@ -103,10 +103,10 @@
             // handle advetisements of new Show Positions
             es.addEventListener("syncPresentation", function(e) {
                 cSpot.presentation.syncData = JSON.parse(e.data);
-                //;;;console.log('New sync request received: ' + JSON.stringify(syncData));
+                ;;;console.log('New sync request received: ' + e.data);
                 // has user requested a syncchronisation?
                 if (cSpot.presentation.sync) {
-                    // TODO: call function to sync 
+                    // call function to sync 
                     syncPresentation(cSpot.presentation.syncData);
                 }
             });

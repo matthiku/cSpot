@@ -35,13 +35,13 @@
                 </div>
             </div>
 
-            <div class="col-sm-4 pull-sm-right">
+            <div class="col-sm-4 ">
                 <span><i class="red">*</i> = mandatory field(s)</span>
            </div>
 
             <div class="col-sm-2">
                 @if (isset($type))
-                    <a class="btn btn-outline-primary pull-xs-right" 
+                    <a class="btn btn-outline-primary pull-sm-right" 
                             href="{{ url('cspot/plans/create') }}?type_id={{ $type->id }}"
                             title="Create a new Event of this type">
                         <i class="fa fa-plus"> </i> Create Event
@@ -224,7 +224,7 @@
 
 
 
-        <div class="row">
+        <div class="row m-b-1">
             <div class="col-sm-6">
                 <div class="pull-sm-right">
 
@@ -255,7 +255,7 @@
 
 
 
-
+        <hr>
 
         <div class="row">
             <div class="col-sm-6">

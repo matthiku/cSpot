@@ -55,6 +55,8 @@ echo ----
 git commit -a -m "$DESC"
 echo ----
 
+
+
 # push the commit (all files) to GitHub
 echo
 echo ----
@@ -64,11 +66,19 @@ git push
 echo ----
 
 
+
 # push to the staging (or test) server
 # 	needs to be defined first:
 #									'git remote add staging ssh://root@example.com/var/repo/site.git'
 # (see: http://devmarketer.io/learn/deploy-laravel-5-app-lemp-stack-ubuntu-nginx)
+echo
+echo ----
+echo "pushing to the PRODUCTION server"
+echo ----
 git push staging master
+
+
+
 
 
 if [ "$PRODUCTION" = "n" ]; then
