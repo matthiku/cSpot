@@ -38,7 +38,7 @@ class SongController extends Controller
      * Authentication
      */
     public function __construct() {
-        $this->middleware('role:editor', ['except' => ['index', 'show']]);
+        $this->middleware('role:editor', ['except' => ['index', 'show', 'APIgetSongList', 'searchSong']]);
     }
 
 
@@ -293,6 +293,12 @@ class SongController extends Controller
             }
         }
 
+        // set license type to CCLI if not set but CCLI_NO was given
+        if (  $request->has('ccli_no') 
+        && ( !$request->has('license') || ($request->has('license') && $request->license=='') )  ) {
+            $song->license = 'CCLI';
+        }
+
         // update from request
         $song->update($request->except(['_method','_token','youtube_id']));
         
@@ -398,7 +404,7 @@ class SongController extends Controller
      */
     public function APIgetSongList()
     {
-        return json_encode(MPsongList(), JSON_HEX_APOS | JSON_HEX_QUOT);
+        return json_encode( MPsongList(), JSON_HEX_APOS | JSON_HEX_QUOT );
     }
 
 

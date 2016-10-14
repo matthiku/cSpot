@@ -37,7 +37,7 @@ Route::group(['middleware' => 'web'], function () {
     // API route to compile bible references
     Route::get('bible/books',                           'Cspot\BibleController@books'); // get all books
     Route::get('bible/books/all/chapters',              'Cspot\BibleController@allChapters'); // get chapter numbers of ALL books
-    Route::get('bible/books/all/verses',                'Cspot\BibleController@allVerses'); // get chapter numbers of ALL books
+    Route::get('bible/books/all/verses',                'Cspot\BibleController@allVerses')->name('bible.books.all.verses'); // get chapter and verse numbers of ALL books
     Route::get('bible/books/{book}',                    'Cspot\BibleController@chapters'); // get chapter numbers of a book
     Route::get('bible/books/{book}/chapters/{chapter}', 'Cspot\BibleController@verses'); // get verse numbers of a chapter
     // get bible texts

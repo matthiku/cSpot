@@ -465,15 +465,16 @@
                 </div>
             </div>
 
-            {{-- configuration menu --}}
+            {{-- configuration menu 
+            --}}
             <div class="nav-item btn-group dropup pull-xs-left m-l-1">
 
                 <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
-                     id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                     id="presentConfigDropUpMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <span class="text-muted hidden-sm-down">Config </span><i class="fa fa-cog"></i>
                 </button>
 
-                <div class="dropdown-menu dropdown-menu-right dropdown-menu-presentation" aria-labelledby="dropdownMenuButton">
+                <div class="dropdown-menu dropdown-menu-right dropdown-menu-presentation" aria-labelledby="presentConfigDropUpMenu">
 
                     <h6 class="dropdown-header">Show Configuration</h6>
 

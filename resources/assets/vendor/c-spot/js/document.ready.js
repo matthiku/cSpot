@@ -307,7 +307,7 @@ $(document).ready(function() {
             
             ;;;console.log("Song list must be reloaded from server!");
 
-            $.get(__app_url+'/cspot/api/songs/getsonglist', function(data, status) {
+            $.get(cSpot.routes.apiGetSongList, function(data, status) {
 
                 if ( status == 'success') {
                     cSpot.songList = JSON.parse(data);
@@ -333,7 +333,7 @@ $(document).ready(function() {
         cSpot.bibleBooks = JSON.parse(localStorage.getItem('bibleBooks'));
 
         if (cSpot.bibleBooks==null) {
-            $.get(__app_url+'/bible/books/all/verses', function(data, status) {
+            $.get( cSpot.routes.apiBibleBooksAllVerses, function(data, status) {
 
                 if ( status == 'success') {
                     cSpot.bibleBooks = data;

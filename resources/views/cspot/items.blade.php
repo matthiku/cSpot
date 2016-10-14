@@ -71,7 +71,7 @@
 					>
 					@if ($item->song_id) 
 						{{ $item->song->book_ref }}
-					@else
+					@elseif (Auth::user()->ownsPlan( $plan->id ))
 						<span class="add-song-button link text-muted"><i class="fa fa-plus"></i><sup><i class="fa fa-music"></i></sup></span> &nbsp;
 					@endif
 				</td>
@@ -106,13 +106,16 @@
 				<!-- COMMENT column - allow for inline editing 
 				-->
 				<td class="hidden-lg-down center comment-cell" title="click to change"
-					onmouseover="$(this).children('.add-scripture-ref').show()" onmouseout="$('.add-scripture-ref').hide()">
+					@if (Auth::user()->ownsPlan( $plan->id ))
+						onmouseover="$(this).children('.add-scripture-ref').show()" onmouseout="$('.add-scripture-ref').hide()"
+					@endif
+					>
 
 					{{-- is the comment text a link? --}}
 					@if ( substr($item->comment, 0,4 )=='http' )
 						<a href="{{ $item->comment }}" target="new">{{ $item->comment }}<i class="fa fa-globe"></i></a>
 
-					@else
+					@elseif (Auth::user()->ownsPlan( $plan->id ))
 						<span id="comment-item-id-{{ $item->id }}" class="editable comment-textcontent hover-show">{{ $item->comment }}</span>
 
 						{{-- show editing icon only when comment is not empty and when hovering over it --}}
@@ -127,6 +130,8 @@
 							data-action-url="{!! route('cspot.api.items.update', $item->id) !!}">
 							<i class="fa fa-book"></i><sup>+</sup>
 						</span>
+					@else
+						{{ $item->comment }}
 					@endif
 
 				</td>
@@ -168,45 +173,55 @@
 				</td>
 
 
-				{{-- indicate if chords are available for this song 
-				--}}
-				<td class="hidden-sm-down center" title="Lyrics with chords for guitars">
-					@if ($item->song_id)
-						@if ( strlen($item->song->chords)>20 )
-							<a href="{{ url('cspot/items').'/'.$item->id }}/chords">
-								<i class="fa fa-file-code-o"></i></a>
+				@if (Auth::user()->hasMusician())
+					{{-- indicate if chords are available for this song 
+					--}}
+					<td class="hidden-sm-down center" title="Lyrics with chords for guitars">
+						@if ($item->song_id)
+							@if ( strlen($item->song->chords)>20 )
+								<a href="{{ url('cspot/items').'/'.$item->id }}/chords">
+									<i class="fa fa-file-code-o"></i></a>
+							@endif
 						@endif
-					@endif
-				</td>
+					</td>
+				
+					{{-- indicate if leader added instructions for this song 
+					--}}
+					<td class="hidden-sm-down center red" title="Musical Instructions for this song? Click to see">
+						@if ($item->song_id && $item->key )
+							<a href="{{ url('cspot/plans/'.$plan->id) }}/items/{{$item->id}}/edit/">&#10071;</a>
+						@endif
+					</td>
 				
 
-				{{-- indicate if sheet music is linked to this song 
-				--}}
-				<td class="hidden-sm-down center"  title="Sheet music attached to the song"
-					@if ( $item->song_id && count($item->song->files)>0 )
-						title="{{ $item->song->files[0]->filename }}" data-toggle="tooltip" data-placement="left"
-						data-template='
-							<div class="tooltip" role="tooltip">
-								<div class="tooltip-arrow"></div>
-								<pre class="tooltip-inner tooltip-wide"></pre>
-								<img src="{{ url(config('files.uploads.webpath')).'/thumb-'.$item->song->files[0]->token }}">
-								@if ( count($item->song->files)>1 )
-									<img src="{{ url(config('files.uploads.webpath')).'/thumb-'.$item->song->files[1]->token }}">
-								@endif
-							</div>'
-					@endif
-					>
-					@if ($item->song_id)
-						<a href="{{ url('cspot/items').'/'.$item->id }}/sheetmusic">
-						@if ( count($item->song->files)>1 )
-							{{ count($item->song->files) }}
+					{{-- indicate if sheet music is linked to this song 
+					--}}
+					<td class="hidden-sm-down center"  title="Sheet music attached to the song"
+						@if ( $item->song_id && count($item->song->files)>0 )
+							title="{{ $item->song->files[0]->filename }}" data-toggle="tooltip" data-placement="left"
+							data-template='
+								<div class="tooltip" role="tooltip">
+									<div class="tooltip-arrow"></div>
+									<pre class="tooltip-inner tooltip-wide"></pre>
+									<img src="{{ url(config('files.uploads.webpath')).'/thumb-'.$item->song->files[0]->token }}">
+									@if ( count($item->song->files)>1 )
+										<img src="{{ url(config('files.uploads.webpath')).'/thumb-'.$item->song->files[1]->token }}">
+									@endif
+								</div>'
 						@endif
-						@if ( count($item->song->files)==1 )
-							<i class="fa fa-music"></i>
+						>
+						@if ($item->song_id)
+							<a href="{{ url('cspot/items').'/'.$item->id }}/sheetmusic">
+							@if ( count($item->song->files)>1 )
+								{{ count($item->song->files) }}
+							@endif
+							@if ( count($item->song->files)==1 )
+								<i class="fa fa-music"></i>
+							@endif
+							</a>
 						@endif
-						</a>
-					@endif
-				</td>
+					</td>
+				@endif
 
 
 				{{-- show if files are attached to this item and show button 
@@ -233,7 +248,7 @@
 					@endif
 					@if ( $item->key=='announcements' )
 						<i class="fa fa-bullhorn" title="Announcements Slide!"></i>
-					@elseif( Auth::user()->isUser() )
+					@elseif (Auth::user()->ownsPlan( $plan->id ))
 						{{-- MODAL POPUP to attach file (image) to this item --}}
 						<a href="#" class="text-muted link" data-toggle="modal" data-target="#searchSongModal"
 						    id="add-file-button-item-{{ $item->id }}" data-song-id="{{$item->song_id}}"
@@ -256,15 +271,17 @@
 	                            href="{{ env('HYMNAL.NET_PLAY', 'https://www.hymnal.net/en/hymn/h/').$item->song->hymnaldotnet_id }}">
 	                            <i class="fa fa-music"></i> </a>
 	                    @endif
-	                    @if ( $item->song->ccli_no > 1000 && 'MP'.$item->song->ccli_no != $item->song->book_ref )
+	                    @if ( $item->song->ccli_no > 1000 && 'MP'.$item->song->ccli_no != $item->song->book_ref && Auth::user()->hasMusician() )
 	                        <a target="new" title="Review song on SongSelect" data-toggle="tooltip" class="m-r-1" 
 	                            href="{{ env('SONGSELECT_URL', 'https://songselect.ccli.com/Songs/').$item->song->ccli_no }}">
 	                            <img src="{{ url('/') }}/images/songselectlogo.png" width="20"></a>
 	                    @endif
 	                    @if ( strlen($item->song->youtube_id)>0 )
-                            <a title="Play in new tab" data-toggle="tooltip" target="new" class="hidden-md-down pull-xs-right"
-                            	href="{{ env('YOUTUBE_PLAY', 'https://www.youtube.com/watch?v=').$item->song->youtube_id }}">
-                            	<i class="fa fa-external-link"></i></a>
+	                    	@if (Auth::user()->ownsPlan( $plan->id ))
+	                            <a title="Play in new tab" data-toggle="tooltip" target="new" class="hidden-md-down pull-xs-right"
+	                            	href="{{ env('YOUTUBE_PLAY', 'https://www.youtube.com/watch?v=').$item->song->youtube_id }}">
+	                            	<i class="fa fa-external-link"></i></a>
+                        	@endif
 	                        <a href="#" title="Play here" class="red pull-xs-right m-r-1" data-toggle="tooltip" data-song-title="{{ $item->song->title }}"
 	                        	onclick="showYTvideoInModal('{{ $item->song->youtube_id }}', this)">
 	                            <i class="fa fa-youtube-play"></i></a>

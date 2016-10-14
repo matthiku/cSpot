@@ -39901,7 +39901,7 @@ $(document).ready(function() {
             
             ;;;console.log("Song list must be reloaded from server!");
 
-            $.get(__app_url+'/cspot/api/songs/getsonglist', function(data, status) {
+            $.get(cSpot.routes.apiGetSongList, function(data, status) {
 
                 if ( status == 'success') {
                     cSpot.songList = JSON.parse(data);
@@ -39927,7 +39927,7 @@ $(document).ready(function() {
         cSpot.bibleBooks = JSON.parse(localStorage.getItem('bibleBooks'));
 
         if (cSpot.bibleBooks==null) {
-            $.get(__app_url+'/bible/books/all/verses', function(data, status) {
+            $.get( cSpot.routes.apiBibleBooksAllVerses, function(data, status) {
 
                 if ( status == 'success') {
                     cSpot.bibleBooks = data;
@@ -43641,8 +43641,9 @@ function sendShowPosition() {
 
 // User becomes Main presenter (if no other is yet)
 function changeMainPresenter() {
-    var sett = ! $('#configMainPresenter').prop( "checked" );
-    console.log('User tries to change setting for "Become Main Presenter" to ' + sett );
+
+    var sett = ! (cSpot.presentation.mainPresenter.id == cSpot.user.id);
+    ;;;console.log('User tries to change setting for "Become Main Presenter" to ' + sett );
 
     if (sett==false) {
         // User is no longer the Main Presenter, so make sure he can sync 
@@ -43689,6 +43690,10 @@ function setMainPresenter(trueOrFalse) {
         type: 'PUT',
         data: {switch: sett},
         success: function(data, status) {
+
+            // show the dropup menu again so that the user can see the changed setting
+            $('#presentConfigDropUpMenu').dropdown('toggle')
+            
             // user was accepted     or  was already the active Main Presenter
             if (data.status == '201' || (data.status == '202' && data.data.id == cSpot.user.id) ) {
                 // Hide the Sync checkbox as the Main Presenter can't sync with another presenter...
@@ -43702,10 +43707,12 @@ function setMainPresenter(trueOrFalse) {
             }
             else {
                 if (data.status == '205') {
+                    changeCheckboxIcon( '#setMainPresenterItem', false);
                     ;;;console.log(data.status + ' User removed as Main Presenter');
                     $('.showPresenterName').text(' ('+data.data.name+')')
                 }
                 else {
+                    changeCheckboxIcon( '#setMainPresenterItem', false);
                     console.log(data.status + ' User was NOT accepted as "Main Presenter"' + data.data );
                     $('.showPresenterName').text(' ('+data.data.name+')')
                 }

@@ -78,12 +78,16 @@
 
 
 				<td class="hidden-md-down small center">{{ 
-					$user->last_login && $user->last_login->ne(Carbon\Carbon::create(0,0,0,0,0,0))
+					( $user->last_login && $user->last_login->ne(Carbon\Carbon::create(0,0,0,0,0,0)) )
 						? $user->last_login->diffForHumans() 
 						: 'never'
 					}}</td>
 
-				<td class="hidden-lg-down small center">{{ $user->created_at->formatLocalized('%d-%b-%y %H:%M') }}</td>
+				<td class="hidden-lg-down small center">{{ 
+					( $user->created_at && $user->created_at->ne(Carbon\Carbon::create(0,0,0,0,0,0)) )
+						? $user->created_at->formatLocalized('%d-%b-%y %H:%M') 
+						: 'n/a'
+					}}</td>
 
 
 				<td class="nowrap">

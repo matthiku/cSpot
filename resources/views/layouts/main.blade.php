@@ -55,8 +55,10 @@
         cSpot.routes.apiItems      = '{{ route('cspot.api.item'        ) }}';
         cSpot.routes.apiItemUpdate = '{{ route('cspot.api.item.update' ) }}';
         cSpot.routes.apiPlanUpdate = '{{ route('api.plan.update'       ) }}';
+        cSpot.routes.apiGetSongList = '{{ route('getsonglist'          ) }}';
         cSpot.routes.apiItemsFileUnlink = '{{ route('api.items.file.unlink' ) }}';
         cSpot.routes.apiSongsFileUnlink = '{{ route('api.songs.file.unlink' ) }}';
+        cSpot.routes.apiBibleBooksAllVerses = '{{ route('bible.books.all.verses' ) }}';
 
         cSpot.presentation = {};
         cSpot.presentation.sync = false;

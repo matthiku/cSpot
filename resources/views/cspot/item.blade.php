@@ -249,13 +249,15 @@
                             @endif
                         </h5>
                         @if ($item->song->book_ref)
-                            <h6>{{ $item->song->book_ref }}</h6>
+                            <h6>({{ $item->song->book_ref }})</h6>
                         @endif
                     </div>
 
                     <div class="card-text song-details">
 
+
                         @if ( $item->itemType()=='song')
+
                             <div class="row">
                                 Note: 
                                 @if ( $usageCount )
@@ -266,7 +268,34 @@
                                     Song was never used before in a service
                                 @endif
                             </div>
+
+                            <div class="row">
+                                                            
+                                <div class="card">
+                                    <div class="card-block text-xs-left">
+                                        <h5 class="card-title">&#127896; Instructions for Music Team</h5>
+                                        <h6 class="card-subtitle text-muted">(for e.g. having a verse without music)</h6>
+                                        <p class="card-text">
+                                            @if (Auth::user()->ownsPlan( $plan->id ))
+                                                <pre id="key-item-id-{{ $item->id }}" class="editable-item-field form-control form-control-success">{{ $item->key }}</pre>
+                                            @else
+                                                 <pre class="w-100">{{ $item->key }}</pre>
+                                            @endif
+                                        </p>
+                                        @if (Auth::user()->ownsPlan( $plan->id ))
+                                            <a      href="#" class="card-link pull-xs-right form-control" id="key-notes-erase-link"  
+                                                    onclick="deleteItemNote('key', 'key-item-id-{{ $item->id }}', '{{ route('cspot.api.item.update') }}')" 
+                                                    style="max-width: 150px; display: {{ $item->key ? 'initial' : 'none' }}">
+                                                <small><i class="fa fa-remove text-muted"></i> clear note</small>
+                                            </a>
+                                        @endif
+                                    </div>
+                                </div>
+
+                            </div>
+
                         @else
+
                             <span class="btn btn-secondary m-b-1">
                                 <label class="custom-control custom-checkbox">
                                     <input type="checkbox" id="toggle-show-hideTitle" 
@@ -280,6 +309,7 @@
                             </span>
 
                         @endif
+
 
                         <br>
 

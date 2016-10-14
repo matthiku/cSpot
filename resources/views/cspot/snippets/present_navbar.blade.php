@@ -7,7 +7,10 @@ $modalContent = '
     <p><kbd>1</kbd>, <kbd>2</kbd>, <kbd>3</kbd>... jump to verse 1...n</p>
     <p><kbd>c</kbd> jump to chorus</p>
     <p><kbd>b</kbd> jump to bridge</p>
-    On <strong>tablets</strong> or <strong>phones</strong>, you should instead use the buttons provided at the bottom of this screen!';
+    <p class="pull-xs-right">On <strong>tablets</strong> or <strong>phones</strong>, you should instead use the buttons provided at the bottom of this screen!</p>
+    <hr>
+    <h5>Capo Usage:</h5>
+    <p><img width="100%" src="'. url('/') .'/images/transpose.png"></p>';
 ?>
 
 @include( 'cspot/snippets/modal', ['modalContent' => $modalContent, 'modalTitle' => 'Use your keyboard to:' ] )
@@ -232,11 +235,11 @@ $modalContent = '
         <div class="nav-item btn-group dropup pull-xs-left m-l-1">
 
             <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
-                 id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                 id="presentConfigDropUpMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <span class="text-muted hidden-sm-down">Config </span><i class="fa fa-cog"></i>
             </button>
 
-            <div class="dropdown-menu dropdown-menu-presentation" aria-labelledby="dropdownMenuButton">
+            <div class="dropdown-menu dropdown-menu-presentation" aria-labelledby="presentConfigDropUpMenu">
 
                 <h6 class="dropdown-header">Synchronisation Settings</h6>
 

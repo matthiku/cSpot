@@ -642,7 +642,7 @@ class ItemController extends Controller
 
         // As AJAX doesn't allow to send an 'empty' value, we send a 
         // placeholder ('_') instead, which indicates that the field should be cleared
-        if ($field_name == 'comment') {
+        if ($field_name == 'comment' || $field_name == 'key') {
             if ( $request->value == '_')
                 $request->value = '';
         }

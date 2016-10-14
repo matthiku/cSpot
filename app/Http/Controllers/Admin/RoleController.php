@@ -22,7 +22,7 @@ class RoleController extends Controller
      * define view names
      */
     protected $view_all = 'admin.roles';
-    protected $view_idx = 'admin.roles.index';
+    protected $view_idx = 'roles.index';
     protected $view_one = 'admin.role';
 
 

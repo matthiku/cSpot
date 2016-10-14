@@ -52,40 +52,51 @@
 
             @if ( isset($plan) && $plan->items()->count() )
 
+
                 {{-- show links to various plan presentation modes 
                 --}}
                 <div class="dont-print">
-                    <div class="pull-xs-right">
-                        <a title="Show sheetmusic (if available) for the songs on this plan"
-                            onclick="$('#show-spinner').modal({keyboard: false});" 
-                            href="{{ url('cspot/items/'.$plan->firstItem()->id.'/sheetmusic/') }}">
-                            <i class="fa fa-music">&nbsp;</i>Music</a>
-                    </div>
-                    <div class="pull-xs-right m-r-1">
-                        <a title="Show guitar chords (if available) for the songs on this plan" 
-                            onclick="$('#show-spinner').modal({keyboard: false});" 
-                            href="{{ url('cspot/items/').'/'.$plan->firstItem()->id }}/chords">
-                            &#127928;&nbsp;</i>Chords</a>
-                    </div>
+
+                    @if (Auth::user()->isMusician())
+                        <div class="pull-xs-right">
+                            <a title="Show sheetmusic (if available) for the songs on this plan"
+                                onclick="$('#show-spinner').modal({keyboard: false});" 
+                                href="{{ url('cspot/items/'.$plan->firstItem()->id.'/sheetmusic/') }}">
+                                <i class="fa fa-music">&nbsp;</i>Music</a>
+                        </div>
+                        <div class="pull-xs-right m-r-1">
+                            <a title="Show guitar chords (if available) for the songs on this plan" 
+                                onclick="$('#show-spinner').modal({keyboard: false});" 
+                                href="{{ url('cspot/items/').'/'.$plan->firstItem()->id }}/chords">
+                                &#127928;&nbsp;</i>Chords</a>
+                        </div>
+                    @endif
+
                     <div class="pull-xs-right m-r-1">
                         <a title="Start projector-enabled presentation of each song and scripture reading in this plan" 
                             onclick="$('#show-spinner').modal({keyboard: false});" 
                             href="{{ url('cspot/items/'.$plan->firstItem()->id.'/present/') }}">
                             &#127909;&nbsp;</i>Present</a>
                     </div>
-                    <div class="pull-xs-right m-r-1">
-                        <a title="Start projector-enabled presentation of each song and scripture reading in this plan" 
-                            onclick="$('#show-spinner').modal({keyboard: false});" 
-                            href="{{ url('cspot/items/'.$plan->firstItem()->id.'/leader/') }}">
-                            &#128483;&nbsp;</i>Lead</a>
-                    </div>
+
+                    @if (Auth::user()->ownsPlan( $plan->id ))
+                        <div class="pull-xs-right m-r-1">
+                            <a title="Start projector-enabled presentation of each song and scripture reading in this plan" 
+                                onclick="$('#show-spinner').modal({keyboard: false});" 
+                                href="{{ url('cspot/items/'.$plan->firstItem()->id.'/leader/') }}">
+                                &#128483;&nbsp;</i>Lead</a>
+                        </div>
+                    @endif
+
                     <div class="pull-xs-right m-r-1">
                         <a title="YouTube playlist of all songs" target="new" 
                             href="{{ env('YOUTUBE_PLAYLIST_URL', 'https://www.youtube.com/playlist?list=').env('CHURCH_YOUTUBE_PLAYLIST_ID', '') }}">
                             <i class="fa fa-youtube">&nbsp;</i>play all</a>
                     </div>
+
                 </div>
             @endif
+
             @if ( isset($plan) )
 
                 <h4 class="hidden-md-down">Plan for "{{ $plan->type->name }}" on {{ $plan->date->formatLocalized('%A, %d %B %Y') }}</h4>
