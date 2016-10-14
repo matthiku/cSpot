@@ -266,6 +266,9 @@ class RegisterController extends Controller
         // $this->auth->login($socialUser, true);
         Auth::login($socialUser, true);
 
+        // write last login field in users table
+        Auth::user()->update(['last_login' => Carbon::now()]);
+
         return redirect()->intended($this->redirectPath());
 
     }

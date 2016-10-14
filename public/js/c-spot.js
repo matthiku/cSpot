@@ -40038,7 +40038,8 @@ $(document).ready(function() {
      */
     if ( window.location.pathname.indexOf('/present' ) > 10
       || window.location.pathname.indexOf('/chords'   ) > 10
-      || window.location.pathname.indexOf('/sheetmusic') > 10 ) {
+      || window.location.pathname.indexOf('/leaser'    ) > 10
+      || window.location.pathname.indexOf('/sheetmusic' ) > 10 ) {
 
         // handle keyboard events
         $(document).keydown(function( event ) {
@@ -40103,6 +40104,16 @@ $(document).ready(function() {
     }
 
 
+
+    /**
+     * Check some user-defined settings in the Local Storage of the browser
+     */
+    if ( window.location.pathname.indexOf('/leader')>10 ) {
+        getLocalConfiguration()
+    }
+
+
+    
 
     /**
      * prepare lyrics or bible texts or image slides for presentation

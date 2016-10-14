@@ -73,7 +73,7 @@ echo ----
 # (see: http://devmarketer.io/learn/deploy-laravel-5-app-lemp-stack-ubuntu-nginx)
 echo
 echo ----
-echo "pushing to the PRODUCTION server"
+echo "pushing to the TEST (staging) server"
 echo ----
 git push staging master
 

@@ -59,7 +59,7 @@
                         <a title="Show sheetmusic (if available) for the songs on this plan"
                             onclick="$('#show-spinner').modal({keyboard: false});" 
                             href="{{ url('cspot/items/'.$plan->firstItem()->id.'/sheetmusic/') }}">
-                            <i class="fa fa-music">&nbsp;</i>Sheetmusic</a>
+                            <i class="fa fa-music">&nbsp;</i>Music</a>
                     </div>
                     <div class="pull-xs-right m-r-1">
                         <a title="Show guitar chords (if available) for the songs on this plan" 
@@ -71,7 +71,13 @@
                         <a title="Start projector-enabled presentation of each song and scripture reading in this plan" 
                             onclick="$('#show-spinner').modal({keyboard: false});" 
                             href="{{ url('cspot/items/'.$plan->firstItem()->id.'/present/') }}">
-                            <i class="fa fa-tv">&nbsp;</i>Present</a>
+                            &#127909;&nbsp;</i>Present</a>
+                    </div>
+                    <div class="pull-xs-right m-r-1">
+                        <a title="Start projector-enabled presentation of each song and scripture reading in this plan" 
+                            onclick="$('#show-spinner').modal({keyboard: false});" 
+                            href="{{ url('cspot/items/'.$plan->firstItem()->id.'/leader/') }}">
+                            &#128483;&nbsp;</i>Lead</a>
                     </div>
                     <div class="pull-xs-right m-r-1">
                         <a title="YouTube playlist of all songs" target="new" 

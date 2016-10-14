@@ -42,6 +42,9 @@ class HomeController extends Controller
         if (Auth::user()->startPage != '') {
             return redirect( Auth::user()->startPage );
         }
+        elseif (Auth::user()->hasRole('musician')) {
+            return redirect( route('next') );
+        }
         return view('welcome');
     }
 }

@@ -62,7 +62,7 @@
         cSpot.presentation.sync = false;
         cSpot.presentation.mainPresenterSetURL = '{{ route('presentation.mainPresenter.set') }}';
 
-        @if( Request::is('*/present') || Request::is('*/chords') || Request::is('*/sheetmusic') )
+        @if( Request::is('*/present') || Request::is('*/chords') || Request::is('*/sheetmusic') || Request::is('*/leader') )
 
             // keep track of current background image
             cSpot.presentation.currentBGimage = 0;
@@ -79,7 +79,8 @@
         @endif
 
         {{-- only on presentation pages --}}
-        @if( env('PRESENTATION_ENABLE_SYNC', 'false') && (Request::is('*/present') || Request::is('*/chords') || Request::is('*/sheetmusic')) )
+        @if( env('PRESENTATION_ENABLE_SYNC', 'false') 
+            && (Request::is('*/present') || Request::is('*/chords') || Request::is('*/sheetmusic') || Request::is('*/leader')) )
 
             cSpot.presentation.slide = 'start';     // the initial SLIDE name
             cSpot.presentation.mainPresenter = JSON.parse('{!! json_encode($serverSideMainPresenter, JSON_HEX_APOS | JSON_HEX_QUOT ) !!}');

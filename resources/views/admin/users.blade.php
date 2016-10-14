@@ -45,30 +45,47 @@
 				@endif
 				<th>Role(s)</th>
 				<th>Instrument(s)</th>
-				<th class="hidden-md-down">Joined</th>
+				<th class="hidden-md-down center">Last Login</th>
+				<th class="hidden-lg-down center">Joined</th>
 				<th> </th>
 			</tr>
 		</thead>
 		<tbody>
         @foreach( $users as $user )
-				<tr @if(Auth::user()->isAdmin())
+			<tr @if(Auth::user()->isAdmin())
 						class="link" onclick="location.href ='{{ url('admin/users/'.$user->id) }}/edit'"
 					@endif
 					>					
 				<td scope="row">{{ $user->id }}</td>
+
 				<td>{{ $user->first_name }}</td>
+
 				<td class="hidden-lg-down">{{ $user->last_name }}</td>
+
 				<td class="hidden-md-down">{{ $user->name  }}</td>
+
 				@if ( Auth::user()->isEditor() )
-					<td class="hidden-sm-down">{{ $user->email }}</td>
+					<td class="hidden-sm-down small">{{ $user->email }}</td>
 				@endif
-				<td>@foreach ($user->roles as $key => $role)
+
+				<td class="small">@foreach ($user->roles as $key => $role)
                 	{{ ucfirst($role->name) }}{{ $key+1<$user->roles->count() ? ',' : '' }}
 					@endforeach</td>
-				<td>@foreach ($user->instruments as $key => $instrument)
+
+				<td class="small">@foreach ($user->instruments as $key => $instrument)
                 	{{ ucfirst($instrument->name) }}{{ $key+1<$user->instruments->count() ? ',' : '' }}
 					@endforeach</td>
-				<td class="hidden-md-down">{{ $user->created_at }}</td>
+
+
+				<td class="hidden-md-down small center">{{ 
+					$user->last_login && $user->last_login->ne(Carbon\Carbon::create(0,0,0,0,0,0))
+						? $user->last_login->diffForHumans() 
+						: 'never'
+					}}</td>
+
+				<td class="hidden-lg-down small center">{{ $user->created_at->formatLocalized('%d-%b-%y %H:%M') }}</td>
+
+
 				<td class="nowrap">
 					@if( Auth::user()->isAdmin() || (Auth::user()->isEditor() && $user->id > 1) )
 						<a class="btn btn-outline-primary btn-sm hidden-lg-down" title="Edit" href='{{ url('admin/users/'. $user->id) }}/edit'  ><i class="fa fa-pencil"></i></a>

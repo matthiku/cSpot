@@ -58,10 +58,12 @@ $modalContent = '
                         href="{{ url('cspot/items/').'/'.$menu_item->id.'/'.$type }}">
                         <small class="hidden-xs-down">{{ $menu_item->seq_no }} &nbsp;</small> 
                         @if ( $menu_item->song_id && $menu_item->song->title )
-                            {!! $menu_item->song->title_2=='slide'
-                                ? $menu_item->song->title
-                                : '<i class="fa fa-music">&nbsp;</i><strong>'.$menu_item->song->title.'</strong>' 
-                            !!}
+                            {!! $menu_item->song->title_2=='slides'
+                                ? '&#128464;'.$menu_item->song->title
+                                : ( $menu_item->song->title_2=='video'
+                                    ? '<i class="fa fa-youtube">&nbsp;</i>'.$menu_item->song->title
+                                    : '<i class="fa fa-music">&nbsp;</i><strong>'.$menu_item->song->title.'</strong>' )
+                                !!}
                         @else
                             {{ $menu_item->comment }}
                         @endif
@@ -205,17 +207,18 @@ $modalContent = '
                 <i class="fa fa-file-text"></i> <i class="fa fa-refresh fa-lg"></i> <i class="fa fa-music"></i>
             </a>
 
-            @if( env('PRESENTATION_ENABLE_SYNC', 'false') )
+            @if( env('PRESENTATION_ENABLE_SYNC', 'false') && ! Auth::user()->ownsPlan($item->plan_id))
                 {{-- synchronise this presentation with the Main Presenter --}}
                 <form class="form-inline nav-item m-l-1 label label-info">
-                    <div class="checkbox" style="line-height: 2" onmouseup="configSyncPresentation()">
-                        <label class="checkbox-inline c-input c-checkbox" title="Synchronise this presentation with Main Presenter">
+                    <div class="checkbox" onmouseup="changeSyncPresentation()">
+                        <label class="checkbox-inline c-input c-checkbox m-b-0" style="" 
+                                title="Synchronise this presentation with Main Presenter">
                             <input type="checkbox" id="configSyncPresentation">
                                 <span class="c-indicator"></span>&nbsp;Sync Presentation
                         </label>
+                        <span class="small">(with </span>
+                        <span class="small showPresenterName">{{ $serverSideMainPresenter ? $serverSideMainPresenter['name'] : 'none' }}</span>
                     </div>
-                    <span class="small">&nbsp;with:</span>
-                    <span class="small showPresenterName"> ({{ $serverSideMainPresenter ? $serverSideMainPresenter['name'] : 'none' }})</span>
                 </form>
             @endif
 
@@ -223,43 +226,76 @@ $modalContent = '
     </ul>
 
 
-    <!-- 
-        DropUP Menu "Show"
-    -->
-    <div class="btn-group dropup pull-xs-left m-l-1" id="jumplist">
 
-        <button type="button" class="btn btn-sm btn-info dropdown-toggle" 
-            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Show
-        </button>
+    @if (Auth::user()->ownsPlan($item->plan_id))
+        {{-- configuration menu --}}
+        <div class="nav-item btn-group dropup pull-xs-left m-l-1">
 
-        <div class="dropdown-menu dropdown-menu-left bg-faded">
-            @foreach (range(1,7) as $num)
-                <a class="dropdown-item" href="#verse{{ $num }}" 
-                        id="jump-verse{{ $num }}" style="display: none">
-                    Verse {{ $num }}</a>
-            @endforeach
-            <a class="dropdown-item" href="#chorus" id="jump-chorus" style="display: none">Chorus</a>
-            <a class="dropdown-item" href="#bridge" id="jump-bridge" style="display: none">Bridge</a>
-            <div class="hidden-md-up dropdown-divider"></div>                
-            <a class="dropdown-item hidden-md-up edit-show-buttons" 
-                    href="#" style="display: none"
-                    onclick="decFontSize('.text-song');" >
-                A <i class="fa fa-minus"></i> decrease font
-            </a>
-            <a class="dropdown-item hidden-md-up edit-show-buttons" 
-                    href="#" style="display: none"
-                    onclick="incFontSize('.text-song');" >
-                A <i class="fa fa-plus"></i> increase font
-            </a>
-            <a class="dropdown-item hidden-md-up edit-show-buttons" id="goswap-dropup"
-                    href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/go/swap/'.$type) }}">
-                <i class="fa fa-file-text"></i> <i class="fa fa-refresh fa-lg"></i> <i class="fa fa-music"></i>
-                sheetmusic/chords
+            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                 id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="text-muted hidden-sm-down">Config </span><i class="fa fa-cog"></i>
+            </button>
+
+            <div class="dropdown-menu dropdown-menu-presentation" aria-labelledby="dropdownMenuButton">
+
+                <h6 class="dropdown-header">Synchronisation Settings</h6>
+
+                <a      href="#" class="dropdown-item{{ env('PRESENTATION_ENABLE_SYNC', 'false') ? '' : ' disabled' }}" 
+                        onclick="changeSyncPresentation()" title="Synchronise this presentation with Main Presenter">
+                    <i id="syncPresentationIndicator" class="fa fa-square-o">&nbsp;</i>Sync presentation?
+                    <span class="small">&nbsp;with:</span>
+                    <span class="small showPresenterName"> ({{ $serverSideMainPresenter ? $serverSideMainPresenter['name'] : 'none' }})</span>
+                </a>
+
+                <a      href="#" class="dropdown-item{{ env('PRESENTATION_ENABLE_SYNC', 'false') ? '' : ' disabled' }}" 
+                        onclick="changeMainPresenter()" title="Become Main Presenter controlling other presentations">
+                    <i id="setMainPresenterItem" class="fa fa-square-o">&nbsp;</i>Be Main Presenter?
+                    <span class="small showPresenterName"> ({{ $serverSideMainPresenter ? $serverSideMainPresenter['name'] : 'none' }})</span>
+                </a>
+
+            </div>
         </div>
 
-    </div>
+    @else 
 
+        <!-- 
+            DropUP Menu "Show"
+        -->
+        <div class="btn-group dropup pull-xs-left m-l-1" id="jumplist">
+
+            <button type="button" class="btn btn-sm btn-info dropdown-toggle" 
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Show
+            </button>
+
+            <div class="dropdown-menu dropdown-menu-left bg-faded">
+                @foreach (range(1,7) as $num)
+                    <a class="dropdown-item" href="#verse{{ $num }}" 
+                            id="jump-verse{{ $num }}" style="display: none">
+                        Verse {{ $num }}</a>
+                @endforeach
+                <a class="dropdown-item" href="#chorus" id="jump-chorus" style="display: none">Chorus</a>
+                <a class="dropdown-item" href="#bridge" id="jump-bridge" style="display: none">Bridge</a>
+                <div class="hidden-md-up dropdown-divider"></div>                
+                <a class="dropdown-item hidden-md-up edit-show-buttons" 
+                        href="#" style="display: none"
+                        onclick="decFontSize('.text-song');" >
+                    A <i class="fa fa-minus"></i> decrease font
+                </a>
+                <a class="dropdown-item hidden-md-up edit-show-buttons" 
+                        href="#" style="display: none"
+                        onclick="incFontSize('.text-song');" >
+                    A <i class="fa fa-plus"></i> increase font
+                </a>
+                <a class="dropdown-item hidden-md-up edit-show-buttons" id="goswap-dropup"
+                        href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/go/swap/'.$type) }}">
+                    <i class="fa fa-file-text"></i> <i class="fa fa-refresh fa-lg"></i> <i class="fa fa-music"></i>
+                    sheetmusic/chords
+            </div>
+
+        </div>
+
+    @endif
 
 </nav>
 

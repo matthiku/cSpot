@@ -58,7 +58,7 @@ class LoginController extends Controller
 
 
 
-    public function login(Request $request, AppMailer $mailer)
+    public function login(Request $request)
     {
         $this->validateLogin($request);
 
@@ -87,12 +87,6 @@ class LoginController extends Controller
 
 
         if (Auth::guard()->attempt($credentials, $request->has('remember'))) {
-            $user = Auth::user();
-            // notify admin 
-            $mailer->notifyAdmin( $user, $user->fullName .' logged in on IP '.$request->ip() );
-            // write last login field in users table
-            $user->last_login = Carbon::now();
-            $user->save();
             
             //return $this->handleUserWasAuthenticated($request);  // old 5.2
             return $this->sendLoginResponse($request);      // new 5.3
@@ -115,6 +109,12 @@ class LoginController extends Controller
      */
     protected function authenticated(Request $request, User $user)
     {
+        // notify admin 
+        // $mailer->notifyAdmin( $user, $user->fullName .' logged in on IP '.$request->ip() );
+
+        // write last login field in users table
+        $user->update(['last_login' => Carbon::now()]);
+
         //
         broadcast(new UserLogin($user));
     }
@@ -138,8 +138,6 @@ class LoginController extends Controller
     public function handleProviderCallback($provider)
     {
         $user = Socialite::driver($provider)->user();
-
-        // $user->token;
     }
 
 }

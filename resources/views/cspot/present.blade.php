@@ -327,8 +327,10 @@
                                 <small class="hidden-md-down">{{ $menu_item->seq_no }}</small> &nbsp; 
                                 @if ($menu_item->song_id && $menu_item->song->title)
                                     {!! $menu_item->song->title_2=='slides'
-                                        ? $menu_item->song->title
-                                        : '<i class="fa fa-music">&nbsp;</i><strong>'.$menu_item->song->title.'</strong>' 
+                                        ? '&#128464;'.$menu_item->song->title
+                                        : ( $menu_item->song->title_2=='video'
+                                            ? '<i class="fa fa-youtube">&nbsp;</i>'.$menu_item->song->title
+                                            : '<i class="fa fa-music">&nbsp;</i><strong>'.$menu_item->song->title.'</strong>' )
                                     !!}                                    
                                 @else
                                     {{ substr($menu_item->comment, 0, 45) }}

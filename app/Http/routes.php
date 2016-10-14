@@ -15,7 +15,7 @@
 Route::group(['middleware' => 'web'], function () {
 
     Route::get('/', 'HomeController@welcome');
-    Route::get('/home', ['as'=>'home', 'uses'=>'HomeController@index']);
+    Route::get('/home', 'HomeController@index')->name('home');
 
     // all authorization routes
     //Route::auth();  (old 5.2 way)
@@ -25,13 +25,13 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/logout', 'Auth\LoginController@logout');
 
     // confirm registration route from registration email
-    Route::get('register/confirm/{token}', 'Auth\RegisterController@confirmEmail');
+    Route::get('register/confirm/{token}',    'Auth\RegisterController@confirmEmail');
 
 
     // Social (OAuth) authorization
-    $s = 'social.';
-    Route::get('/social/redirect/{provider}',   ['as' => $s . 'redirect',   'uses' => 'Auth\RegisterController@getSocialRedirect']);
-    Route::get('/social/handle/{provider}',     ['as' => $s . 'handle',     'uses' => 'Auth\RegisterController@getSocialHandle']);
+    $s = '';
+    Route::get('/social/redirect/{provider}', 'Auth\RegisterController@getSocialRedirect')->name('social.redirect');
+    Route::get('/social/handle/{provider}',   'Auth\RegisterController@getSocialHandle'  )->name('social.handle');
 
 
     // API route to compile bible references
@@ -98,36 +98,36 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
         PLAN TEAMS
     */
     // Manage team for a service plan
-    Route::get( 'plans/{plan_id}/team', ['as' => 'team.index', 'uses' => 'Cspot\TeamController@index']);
-    Route::post('plans/{plan_id}/team', ['as' => 'team.store', 'uses' => 'Cspot\TeamController@store']);
+    Route::get( 'plans/{plan_id}/team',                     'Cspot\TeamController@index')->name('team.index');
+    Route::post('plans/{plan_id}/team',                     'Cspot\TeamController@store')->name('team.store');
     // user announces his availability for a certain plan
-    Route::get( 'plans/{plan_id}/team/available/{bool}',                 'Cspot\TeamController@available');
+    Route::get( 'plans/{plan_id}/team/available/{bool}',    'Cspot\TeamController@available');
     // shortcut to add all musicians to a plan
-    Route::get( 'plans/{plan_id}/team/addAllMusicians',                  'Cspot\TeamController@addAllMusicians');
+    Route::get( 'plans/{plan_id}/team/addAllMusicians',     'Cspot\TeamController@addAllMusicians');
     // show the form to edit an existing team member
-    Route::get( 'plans/{plan_id}/team/{team_id}/edit',                   'Cspot\TeamController@edit');
+    Route::get( 'plans/{plan_id}/team/{team_id}/edit',      'Cspot\TeamController@edit');
     // update an existing team member
-    Route::post('plans/{plan_id}/team/{team_id}/update',                 'Cspot\TeamController@update');
+    Route::post('plans/{plan_id}/team/{team_id}/update',    'Cspot\TeamController@update');
     // delete an existing team member
-    Route::get( 'plans/{plan_id}/team/{team_id}/delete',                 'Cspot\TeamController@destroy');
+    Route::get( 'plans/{plan_id}/team/{team_id}/delete',    'Cspot\TeamController@destroy');
     // send email to user to request his partizipation
-    Route::get( 'plans/{plan_id}/team/{team_id}/sendrequest',            'Cspot\TeamController@sendrequest');
+    Route::get( 'plans/{plan_id}/team/{team_id}/sendrequest', 'Cspot\TeamController@sendrequest');
     // user confirms his partizipation
-    Route::get( 'plans/{plan_id}/team/{team_id}/confirm',                'Cspot\TeamController@confirm');
+    Route::get( 'plans/{plan_id}/team/{team_id}/confirm',   'Cspot\TeamController@confirm');
 
 
     /*
         RESOURCES
     */
     // Manage resources for a service plan
-    Route::get( 'plans/{plan_id}/resource', ['as' => 'resource.index', 'uses' => 'Cspot\ResourceController@index']);
-    Route::post('plans/{plan_id}/resource', ['as' => 'resource.store', 'uses' => 'Cspot\ResourceController@store']);
+    Route::get( 'plans/{plan_id}/resource',                     'Cspot\ResourceController@index')->name('resource.index');
+    Route::post('plans/{plan_id}/resource',                     'Cspot\ResourceController@store')->name('resource.store');
     // show the form to edit an existing resource
-    //Route::get( 'plans/{plan_id}/resource/{resource_id}/edit',                   'Cspot\ResourceController@edit');
+    //Route::get( 'plans/{plan_id}/resource/{resource_id}/edit','Cspot\ResourceController@edit');
     // update an existing resource
-    Route::post('api/plans/resource/update',                                     'Cspot\ResourceController@APIupdate');
+    Route::post('api/plans/resource/update',                    'Cspot\ResourceController@APIupdate');
     // delete an existing resource
-    Route::get( 'plans/{plan_id}/resource/{resource_id}/delete',                 'Cspot\ResourceController@destroy');
+    Route::get( 'plans/{plan_id}/resource/{resource_id}/delete','Cspot\ResourceController@destroy');
 
 
     /*
@@ -135,22 +135,22 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
      */
 
     // update a specific item (this is usually called from a form)
-    Route::put('items/{item_id}',       ['as'=>'cspot.items.update', 'uses'=>'Cspot\ItemController@update']);
-    Route::post('items',                ['as'=>'cspot.items.store',  'uses'=>'Cspot\ItemController@store']);
+    Route::put('items/{item_id}',                                           'Cspot\ItemController@update')->name('cspot.items.update');
+    Route::post('items',                                                    'Cspot\ItemController@store')->name('cspot.items.store');
     // add song directly from the song list to a plan
-    Route::get('plans/{plan_id}/addsong/{song_id}',                          'Cspot\ItemController@addSong');
+    Route::get('plans/{plan_id}/addsong/{song_id}',                         'Cspot\ItemController@addSong');
     // show form of next or previous item for a plan
-    Route::get('plans/{plan_id}/items/{item_id}/go/{direction}/{chords?}',    'Cspot\ItemController@next');
+    Route::get('plans/{plan_id}/items/{item_id}/go/{direction}/{chords?}',  'Cspot\ItemController@next');
     // show form to create a new item for a plan
-    Route::get('plans/{plan_id}/items/create/before/{item_id}',               'Cspot\ItemController@create');
+    Route::get('plans/{plan_id}/items/create/before/{item_id}',             'Cspot\ItemController@create');
     // insert new item with song_id 
     Route::get('plans/{plan_id}/items/store/seq_no/{seq_no}/song/{song_id}/{moreItems?}/{beforeItem?}',     'Cspot\ItemController@insertSong');    
     // update item with new song_id 
-    Route::get('plans/{plan_id}/items/update/item/{item_id}/song/{song_id}',  'Cspot\ItemController@updateSong');
+    Route::get('plans/{plan_id}/items/update/item/{item_id}/song/{song_id}', 'Cspot\ItemController@updateSong');
     // show form to create a new item for a plan
-    Route::get('plans/{plan_id}/items/create/{seq_no}',                        'Cspot\ItemController@create');
+    Route::get('plans/{plan_id}/items/create/{seq_no}',                      'Cspot\ItemController@create');
     // show form to update a new item for a plan
-    Route::get('plans/{plan_id}/items/{item_id}/edit', ['as'=>'cspot.items.edit', 'uses'=>'Cspot\ItemController@edit']);
+    Route::get('plans/{plan_id}/items/{item_id}/edit',      'Cspot\ItemController@edit')->name('cspot.items.edit');
     // MOVE the specified resource up or down in the list of items related to a plan
     Route::get('items/{item_id}/move/{direction}',          'Cspot\ItemController@move');
     // change the seq no of an item
@@ -168,25 +168,25 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     Route::get('plans/{plan_id}/items/trashed/delete',      'Cspot\ItemController@deleteAllTrashed');
 
     // presentation view of a plan
-    Route::get('items/{item_id}/{present?}',['as'=>'cspot.items.present', 'uses'=>'Cspot\ItemController@show']);
+    Route::get('items/{item_id}/{present?}',                'Cspot\ItemController@show')->name('cspot.items.present');
 
 
     // API: update item data using AJAX
     // this route gets the item id via form field
-    Route::post('api/items/update',           ['as'=>'cspot.api.item.update',   'uses'=>'Cspot\ItemController@APIupdate']);
+    Route::post('api/items/update',                         'Cspot\ItemController@APIupdate')->name('cspot.api.item.update');
     // insert new item
-    Route::post('api/items',                  ['as'=>'cspot.api.item',          'uses'=>'Cspot\ItemController@APIinsert']);
+    Route::post('api/items',                                'Cspot\ItemController@APIinsert')->name('cspot.api.item');
     // item id via URL
-    Route::post('api/items/{item_id}/update', ['as'=>'cspot.api.items.update',  'uses'=>'Cspot\ItemController@APIupdate']);
-    Route::post('api/items/{item_id}/delete', ['as'=>'cspot.api.items.delete',  'uses'=>'Cspot\ItemController@APIdelete']);
+    Route::post('api/items/{item_id}/update',               'Cspot\ItemController@APIupdate')->name('cspot.api.items.update');
+    Route::post('api/items/{item_id}/delete',               'Cspot\ItemController@APIdelete')->name('cspot.api.items.delete');
 
 
     // unlink a song from an item
-    Route::put('items/{item_id}/unlinkSong/{song_id}',                                  'Cspot\ItemController@unlinkSong');
+    Route::put('items/{item_id}/unlinkSong/{song_id}',      'Cspot\ItemController@unlinkSong');
 
     // Item NOTES (add, update, delete controlled via )
-    Route::get( 'api/items/{item_id}/note',                                             'Cspot\ItemController@APIgetItemNotes');
-    Route::post('api/items/{item_id}/note',   ['as'=>'cspot.api.items.note',    'uses'=>'Cspot\ItemController@APIitemNotes']);
+    Route::get( 'api/items/{item_id}/note',                 'Cspot\ItemController@APIgetItemNotes');
+    Route::post('api/items/{item_id}/note',                 'Cspot\ItemController@APIitemNotes')->name('cspot.api.items.note');
 
 
 
@@ -195,7 +195,7 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
      * FILES
      */
     // list all current files
-    Route::get('files/',     ['as'=> 'cspot.files', 'uses'=>'Cspot\FileController@index']);
+    Route::get('files/',                                    'Cspot\FileController@index')->name('cspot.files');
     // updata file information
     Route::post('files/{id}',                               'Cspot\FileController@update');
     // add a file to a plan item
@@ -211,11 +211,11 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     // API
 
     // get files by category or all
-    Route::get('api/files/{category?}', ['as'=>'cspot.api.files',   'uses'=>'Cspot\FileController@APIindex']);
+    Route::get('api/files/{category?}', 'Cspot\FileController@APIindex')->name('cspot.api.files');
     // add a file to a plan item
-    Route::post('api/items/addfile',    ['as'=>'cspot.api.addfile', 'uses'=>'Cspot\FileController@add']);    
+    Route::post('api/items/addfile',    'Cspot\FileController@add'    )->name('cspot.api.addfile');    
     // add a file 
-    Route::post('api/files/upload',     ['as'=>'cspot.api.upload',  'uses'=>'Cspot\FileController@upload']);    
+    Route::post('api/files/upload',     'Cspot\FileController@upload')->name('cspot.api.upload');    
 
 
 
@@ -248,11 +248,11 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
         SYNC PRESENTATION
     */
     // Manage Main Presenter
-    Route::put('presentation/mainPresenter', ['as'=>'presentation.mainPresenter.set', 'uses'=>'Cspot\PresentationController@setMainPresenter']);
+    Route::put('presentation/mainPresenter', 'Cspot\PresentationController@setMainPresenter')->name('presentation.mainPresenter.set');
     // Send current show position
-    Route::put('presentation/setPositon',    ['as'=>'presentation.position.set',      'uses'=>'Cspot\PresentationController@setPosition']);
+    Route::put('presentation/setPositon',    'Cspot\PresentationController@setPosition'     )->name('presentation.position.set');
     // define sync stream
-    Route::get('presentation/sync',          ['as'=>'presentation.sync',              'uses'=>'Cspot\PresentationController@syncPresentation']);
+    Route::get('presentation/sync',          'Cspot\PresentationController@syncPresentation')->name('presentation.sync');
 
 });
 
@@ -264,12 +264,12 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
 |--------------------------------------------------------------------------
 */
 Route::group(['prefix' => 'messages', 'middleware' => ['web', 'auth']], function () {
-    Route::get('/',       ['as' => 'messages',        'uses' => 'MessagesController@index' ]);
-    Route::get('create',  ['as' => 'messages.create', 'uses' => 'MessagesController@create']);
-    Route::post('/',      ['as' => 'messages.store',  'uses' => 'MessagesController@store' ]);
-    Route::get('{id}',    ['as' => 'messages.show',   'uses' => 'MessagesController@show'  ]);
-    Route::put('{id}',    ['as' => 'messages.update', 'uses' => 'MessagesController@update']);
-    Route::get('{id}/delete', ['as' => 'messages.delete', 'uses' => 'MessagesController@delete']);
+    Route::get('/',           'MessagesController@index' )->name('messages');
+    Route::get('create',      'MessagesController@create')->name('messages.create');
+    Route::post('/',          'MessagesController@store' )->name('messages.store');
+    Route::get('{id}',        'MessagesController@show'  )->name('messages.show');
+    Route::put('{id}',        'MessagesController@update')->name('messages.update');
+    Route::get('{id}/delete', 'MessagesController@delete')->name('messages.delete');
 });
 
 
@@ -299,7 +299,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['web']], function() {
     Route::get('default_items/{default_items}/delete',  'Admin\DefaultItemController@destroy');    
 
     // user wants to set current page as their homepage
-    Route::post('users/{user_id}/setstartpage', ['as'=>'user.setstartpage', 'uses' => 'Admin\UserController@setStartPage']);
+    Route::post('users/{user_id}/setstartpage',         'Admin\UserController@setStartPage')->name('user.setstartpage');
 
     // run a specific job
     Route::get('runjob/batch', function() {

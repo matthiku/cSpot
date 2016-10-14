@@ -196,6 +196,8 @@ class ItemController extends Controller
 
         // if the request came from a presentation view, 
         // we now return the presentation view of the new item!
+        if ( strpos(URL::previous(), '/leader') > 1 )
+            return \Redirect::route( 'cspot.items.present', ['item_id' => $plan->newest_item_id, 'present'=>'leader'] );
         if ( strpos(URL::previous(), '/present') > 1 )
             return \Redirect::route( 'cspot.items.present', ['item_id' => $plan->newest_item_id, 'present'=>'present'] );
         if ( strpos(URL::previous(), '/chords') > 1 ) 
@@ -324,10 +326,10 @@ class ItemController extends Controller
     /**
      * Display single items of a plan with options to move to the next or previous item on this plan
      *
-     * This is used for the presentation views (lyrics, chords, sheetmusic)
+     * This is used for the presentation views (lyrics, chords, sheetmusic or leader)
      *
      * @param  int     $id      item id
-     * @param  string  $present (optional) chords (default), sheetmusic or present (for overhead presentations)
+     * @param  string  $present (optional) chords (default), sheetmusic or present (for overhead presentations) or leader for the Leader's Event Script
      *
      * @return \Illuminate\Http\Response
      */
