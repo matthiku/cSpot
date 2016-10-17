@@ -39300,22 +39300,34 @@ function toogleAllorFuturePlans()
     // get current url and query string
     var currUrl = window.location.href.split('?');
     var newUrl  = currUrl[0];
+    // does the URL contain a query string?
     if (currUrl.length > 1) 
     {
+        // modify existing query string
+        var show=false;
         var queryStr = currUrl[1].split('&');
         if (queryStr.length > 1) {
             newUrl += '?';
             for (var i = queryStr.length - 1; i >= 0; i--) {
                 parms = queryStr[i].split('=');
                 if (parms[0]=='show') {
+                    show=true;
                     parms[1]=='all'  ?  parms[1]='future'  :  parms[1]='all';
                     queryStr[i] = 'show='+parms[1];
                 }                
                 newUrl += queryStr[i];
                 if (i > 0) newUrl += '&';
             }
+            if (!show) {
+                newUrl += '&show=all';
+            }
         }
     } 
+    else
+    {
+        // add new query string 
+        newUrl += '?show=all';
+    }
     window.location.href = newUrl;
 }
 
@@ -40536,6 +40548,11 @@ function changeForLeadersEyesOnly(that) {
             $(that).children('i').addClass( data==1 ? 'fa-eye-slash': 'fa-eye');
             // reflect new setting also in the data attribute
             $(that).attr('data-value', data); $(that).data('value', data);
+            // reflect new setting also in the data attribute
+            $(that).attr('title', data==1 
+                ? "Item visible for leader's eyes only. Click to change!"
+                : "Item is visible for all users. Click to change!" );
+            $(that).tooltip(); // refresh the tooltip...
             // on the Item Detail page, also show the right text for the new setting
             $(that).children('small').toggle();
         })

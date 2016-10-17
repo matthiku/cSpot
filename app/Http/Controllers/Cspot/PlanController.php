@@ -185,14 +185,21 @@ PlanController extends Controller
         // show only plans of the current user (or all plans if it's an admin)
         else
         {
-            // show all plans for Admins and only their own for non-Admins
-            if (Auth::user()->isAdmin()) {
-                $plans = Plan::with('type')
-                          ->orderBy($orderBy, $order);
-            } else {
+            // show only the user's own plans 
+            if ($show  =='all') {
+                // past and future plans
                 $plans = Plan::where('leader_id', Auth::user()->id)
-                          ->orWhere('teacher_id', Auth::user()->id)
-                          ->with('type')
+                           ->orWhere('teacher_id', Auth::user()->id)
+                              ->with('type')
+                           ->orderBy($orderBy, $order);
+            } else {
+                // only future plans
+                $plans = Plan::with('type')
+                        ->whereDate('date', '>', Carbon::yesterday())
+                            ->where(function ($query) {
+                                $query->where('leader_id', Auth::user()->id)
+                                    ->orWhere('teacher_id', Auth::user()->id);
+                                })
                           ->orderBy($orderBy, $order);
             }
             $heading = 'Your Services/Events';
@@ -337,7 +344,11 @@ PlanController extends Controller
             // $newItems = [];
             foreach ($dItems as $dItem) {
                 // get single default item to create a nwe Item object
-                $iNew = new Item(['seq_no'=>$dItem->seq_no, 'comment'=>$dItem->text]);
+                $iNew = new Item([
+                    'seq_no'=>$dItem->seq_no, 
+                    'comment'=>$dItem->text,
+                    'forLeadersEyesOnly'=>$dItem->forLeadersEyesOnly
+                ]);
                 // save the new item to the new plan
                 $plan->items()->save($iNew);
                 // if default item contains a default image, link the new Plan item to the image

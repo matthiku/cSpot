@@ -1086,8 +1086,8 @@ function getTypeBasedPlanData($type)
 
     // set default date according to weekday
     $weekdayNames = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
-    if ($weekday && $weekday>=0 && $weekday<7) {
-        $planDate = new Carbon('last '.$weekdayNames[$weekday]);
+    if ($weekday!==null && $weekday>=0 && $weekday<7) {
+        $planDate = new Carbon( 'last '.$weekdayNames[$weekday] );
     }
 
     return newPlanDate($planDate, $interval, $weekday);

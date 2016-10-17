@@ -88,7 +88,7 @@
                         @endif
                         <hr>
                         @foreach ($items as $menu_item)
-                            @if (! $menu_item->forLeadersEyesOnly)
+                            @if ( Auth::user()->ownsPlan($plan->id) || ! $menu_item->forLeadersEyesOnly )
                                 <a class="dropdown-item nowrap {{ $item->id==$menu_item->id ? 'bg-info' : '' }}"
                                     onclick="showSpinner()" 
                                     href="{{ url('cspot/plans/'.$plan->id.'/items').'/'.$menu_item->id.'/edit' }}">
@@ -135,19 +135,6 @@
                 <span class="save-buttons submit-button" onclick="showSpinner()" style="display: none;">
                     {{-- {!! Form::submit('Save changes'); !!} --}}
                 </span>
-
-                {{-- is this item for leader's eyes only? --}}
-                <a      href="#" class="hidden-sm-down link" onclick="changeForLeadersEyesOnly(this)" 
-                        data-value="{{ $item->forLeadersEyesOnly }}"
-                        title="Make item visible for {{ $item->forLeadersEyesOnly ? 'everyone': "leader's eyes only (useful for personal notes etc.)" }}">
-                    @if ($item->forLeadersEyesOnly)
-                        <i class="fa fa-eye-slash"></i>
-                    @else
-                        <i class="fa fa-eye"></i>
-                    @endif
-                    <small style="display: {{ $item->forLeadersEyesOnly ? 'initial' : 'none' }}">(for your eyes only)</small>
-                    <small style="display: {{ $item->forLeadersEyesOnly ? 'none' : 'initial' }}">(item visible to all)</small>
-                </a>
             @endif
 
             @if ($item->updated_at)

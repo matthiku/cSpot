@@ -146,67 +146,71 @@
 
 
 
-    <!-- 
-        show form to enter a new team member 
-    -->
-    @if ( $plan->teams->count() == 0 )
-        <h5>Add a new team member:</h5>
-    @endif
+    @if ( $plan->date > \Carbon\Carbon::yesterday() )
 
-    <form id="new-member-form" method="POST" 
-        @if ( $plan->teams->count() > 0 )
-            style="display: none"
+        <!-- 
+            show form to enter a new team member 
+        -->
+        @if ( $plan->teams->count() == 0 )
+            <h5>Add a new team member:</h5>
         @endif
-        >
 
-        <input type="hidden" name="_method" value="POST">
-        {{ csrf_field() }}
+        <form id="new-member-form" method="POST" 
+            @if ( $plan->teams->count() > 0 )
+                style="display: none"
+            @endif
+            >
 
-        <label class="form-control-label">1. Select a User:</label>
-        <select name="user_id" class="form-control text-help c-select" onchange="showRoleSelect(this)">
-            <option selected>
-                Select ...
-            </option>
-            @foreach ($users as $user)
-                @if ( ! $user->hasRole('retired') && $user->roles->count() > 0  )
-                <option 
-                    @if(  ''<>old('user_id') && $user->id==old('user_id') )  
-                            selected
-                    @endif
-                    value="{{ $user->id }}">{{ $user->name }}
+            <input type="hidden" name="_method" value="POST">
+            {{ csrf_field() }}
+
+            <label class="form-control-label">1. Select a User:</label>
+            <select name="user_id" class="form-control text-help c-select" onchange="showRoleSelect(this)">
+                <option selected>
+                    Select ...
                 </option>
-                @endif
-            @endforeach
-        </select>
-        @if ($errors->has('user_id'))
-            <br><span class="help-block">
-                <strong>{{ $errors->first('user_id') }}</strong>
-            </span>
-        @endif
+                @foreach ($users as $user)
+                    @if ( ! $user->hasRole('retired') && $user->roles->count() > 0  )
+                    <option 
+                        @if(  ''<>old('user_id') && $user->id==old('user_id') )  
+                                selected
+                        @endif
+                        value="{{ $user->id }}">{{ $user->name }}
+                    </option>
+                    @endif
+                @endforeach
+            </select>
+            @if ($errors->has('user_id'))
+                <br><span class="help-block">
+                    <strong>{{ $errors->first('user_id') }}</strong>
+                </span>
+            @endif
 
-        <div class="m-l-2" id="show-instruments"></div>
+            <div class="m-l-2" id="show-instruments"></div>
 
-        <div id="select-team-role" style="display: none">
-            <label class="form-control-label">2. Select a role (one at a time):
-                <div class="c-inputs-stacked m-l-1" id="select-role-box"></div>
+            <div id="select-team-role" style="display: none">
+                <label class="form-control-label">2. Select a role (one at a time):
+                    <div class="c-inputs-stacked m-l-1" id="select-role-box"></div>
+                </label>
+            </div>
+
+            <label class="form-control-label" id="comment-input" style="display: none">
+                3. Add a comment (optional):
+                <input type="text" name="comment">
             </label>
-        </div>
+            
+            <div class="form-control-label">
+                <button type="submit" id="submit-button" style="display: none">Submit</button>
+            </div>
 
-        <label class="form-control-label" id="comment-input" style="display: none">
-            3. Add a comment (optional):
-            <input type="text" name="comment">
-        </label>
-        
-        <div class="form-control-label">
-            <button type="submit" id="submit-button" style="display: none">Submit</button>
-        </div>
+        </form>
 
-    </form>
-
+    @endif
 
     <script>
         var userRolesJSON  = '{!! $userRoles !!}';
         var userRolesArray = JSON.parse(userRolesJSON);
     </script>
+
 
 @stop

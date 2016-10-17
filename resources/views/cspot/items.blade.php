@@ -46,9 +46,14 @@
 				--}}
 				@if( Auth::user()->ownsPlan($plan->id) )
 					<td 	class="hidden-sm-down link" onclick="changeForLeadersEyesOnly(this)" 
-							data-value="{{ $item->forLeadersEyesOnly }}"
-							title="Make item visible for leader's eyes only (useful for personal notes etc.)">
-						{!! $item->forLeadersEyesOnly ? '<i class="fa fa-eye-slash"></i>' : '<i class="fa fa-eye"></i>' !!}
+							data-value="{{ $item->forLeadersEyesOnly }}"  data-toggle="tooltip" 
+							title="{{ $item->forLeadersEyesOnly 
+								? "Item visible for leader's eyes only. Click to change!"
+								: "Item is visible for all users. Click to change!"
+								}}">
+						{!! $item->forLeadersEyesOnly 
+							? '<i class="fa fa-eye-slash red"></i>' 
+							: '<i class="fa fa-eye"></i>' !!}
 					</td>
 				@endif
 
@@ -115,7 +120,7 @@
 					@if ( substr($item->comment, 0,4 )=='http' )
 						<a href="{{ $item->comment }}" target="new">{{ $item->comment }}<i class="fa fa-globe"></i></a>
 
-					@elseif (Auth::user()->ownsPlan( $plan->id ))
+					@elseif ( $plan->date > \Carbon\Carbon::yesterday() && Auth::user()->ownsPlan( $plan->id ))
 						<span id="comment-item-id-{{ $item->id }}" class="editable comment-textcontent hover-show">{{ $item->comment }}</span>
 
 						{{-- show editing icon only when comment is not empty and when hovering over it --}}
@@ -248,7 +253,7 @@
 					@endif
 					@if ( $item->key=='announcements' )
 						<i class="fa fa-bullhorn" title="Announcements Slide!"></i>
-					@elseif (Auth::user()->ownsPlan( $plan->id ))
+					@elseif ( $plan->date > \Carbon\Carbon::yesterday() && Auth::user()->ownsPlan($plan->id) )
 						{{-- MODAL POPUP to attach file (image) to this item --}}
 						<a href="#" class="text-muted link" data-toggle="modal" data-target="#searchSongModal"
 						    id="add-file-button-item-{{ $item->id }}" data-song-id="{{$item->song_id}}"
@@ -306,38 +311,43 @@
 					--}}
 					@if (  $item->song_id 
 						&& $item->song->ccli_no > 1000 && 'MP'.$item->song->ccli_no != $item->song->book_ref 
-						&& Auth::user()-> isAdmin() 
-						&& $plan->date <= \Carbon\Carbon::today() )
+						&& Auth::user()-> isEditor() 
+						&& $plan->date < \Carbon\Carbon::tomorrow() )
 
-						{{-- show a different icon color depending on status of reporting 
-						 	 red    - no date in field 'reported_at'  - no action has taken place yet
-						 	 yellow - date present, but time is 00:00 - user started reporting, but hasn't confirmed it yet
-							 green  - date is set and time > 00:00 	  - user has confirmed that he finished the reporting
-						--}}
-						@if (! $item->reported_at)
+						@if ( $item->song->license == 'CCLI' )
 
-							<a class="btn btn-sm btn-outline-danger hidden-xs-down m-r-1" 
-								data-toggle="tooltip" data-placement="left" title="Report Song Usage to CCLI" 
-								onclick="reportSongUsageToCCLI(this, {{ $item->id }}, {{ $item->reported_at ? $item->reported_at : 'null' }})" 
-								href='{{ env('CCLI_REPORT_URL', 'https://olr.ccli.com/search/results?SearchTerm=').$item->song->ccli_no }}' target="new">
-								<i class="fa fa-copyright fa-lg"></i></a>
+							{{-- show a different icon color depending on status of reporting 
+							 	 red    - no date in field 'reported_at'  - no action has taken place yet
+							 	 yellow - date present, but time is 00:00 - user started reporting, but hasn't confirmed it yet
+								 green  - date is set and time > 00:00 	  - user has confirmed that he finished the reporting
+							--}}
+							@if (! $item->reported_at)
 
-						@else
+								<a class="btn btn-sm btn-outline-danger hidden-xs-down m-r-1" 
+									data-toggle="tooltip" data-placement="left" title="Report Song Usage to CCLI" 
+									onclick="reportSongUsageToCCLI(this, {{ $item->id }}, {{ $item->reported_at ? $item->reported_at : 'null' }})" 
+									href='{{ env('CCLI_REPORT_URL', 'https://olr.ccli.com/search/results?SearchTerm=').$item->song->ccli_no }}' target="new">
+									<i class="fa fa-copyright fa-lg"></i></a>
 
-							@if ( $item->reported_at->hour==0 && $item->reported_at->minute==0 )
-								{{-- reporting process was started but not yet confirmed by the user --}}
-								<a class="btn btn-sm btn-outline-warning hidden-xs-down m-r-1" 
-									data-toggle="tooltip" data-placement="left" title="Please confirm here when Song Usage Report to CCLI has been completed!" 
-									onclick="reportSongUsageToCCLI(this, {{ $item->id }}, '{{ $item->reported_at ? $item->reported_at : 'null' }}')" 
-									href="#"><i class="fa fa-copyright fa-lg"></i></a>
 							@else
-								{{-- reporting process complete --}}
-								<a class="btn btn-sm btn-outline-success hidden-xs-down narrow"
-									data-toggle="tooltip" data-placement="left" title="Song Usage has already been reported to CCLI."
-									href="#"><i class="fa fa-copyright"></i><i class="fa fa-check"></i></a>
+
+								@if ( $item->reported_at->hour==0 && $item->reported_at->minute==0 )
+									{{-- reporting process was started but not yet confirmed by the user --}}
+									<a class="btn btn-sm btn-outline-warning hidden-xs-down m-r-1" 
+										data-toggle="tooltip" data-placement="left" title="Please confirm here when Song Usage Report to CCLI has been completed!" 
+										onclick="reportSongUsageToCCLI(this, {{ $item->id }}, '{{ $item->reported_at ? $item->reported_at : 'null' }}')" 
+										href="#"><i class="fa fa-copyright fa-lg"></i></a>
+								@else
+									{{-- reporting process complete --}}
+									<a class="btn btn-sm btn-outline-success hidden-xs-down narrow"
+										data-toggle="tooltip" data-placement="left" title="Song Usage has already been reported to CCLI."
+										href="#"><i class="fa fa-copyright"></i><i class="fa fa-check"></i></a>
+
+								@endif
 
 							@endif
-
+						@else
+							<small>({{ $item->song->license }})</small>
 						@endif
 					@endif
 

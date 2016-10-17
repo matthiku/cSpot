@@ -77,7 +77,7 @@
 					@endforeach</td>
 
 
-				<td class="hidden-md-down small center">{{ 
+				<td class="hidden-md-down small center" title = "{{ $user->last_login }}">{{ 
 					( $user->last_login && $user->last_login->ne(Carbon\Carbon::create(0,0,0,0,0,0)) )
 						? $user->last_login->diffForHumans() 
 						: 'never'

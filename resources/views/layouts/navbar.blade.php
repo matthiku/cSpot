@@ -201,7 +201,7 @@
             <a class="nav-link" href="{{ url('cspot/plans?filterby=future') }}">Upcoming Events</a>
         </li>
         <li class="nav-item hidden-lg-down">
-            <a class="nav-link {{ Request::is('cspot/plans') ? 'active' : '' }}" href="{{ url('cspot/plans') }}">Your Events</a>
+            <a class="nav-link {{ Request::is('cspot/plans') ? 'active' : '' }}" href="{{ url('cspot/plans') }}">My Events</a>
         </li>
         @endif
 

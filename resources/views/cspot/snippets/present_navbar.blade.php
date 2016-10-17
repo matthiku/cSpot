@@ -52,7 +52,7 @@ $modalContent = '
         </button>
         <div class="dropdown-menu dropdown-menu-right bg-faded">
             @foreach ($items as $menu_item)
-                @if (! $menu_item->forLeadersEyesOnly)
+                @if ( Auth::user()->ownsPlan($plan->id)  ||  ! $menu_item->forLeadersEyesOnly )
                     <a class="dropdown-item nowrap 
                         {{ $item->id == $menu_item->id ? 'bg-info' : '' }}
                         {{ ! $menu_item->song_id || $menu_item->song->title_2=='slide' ? 'hidden-md-down' : '' }}

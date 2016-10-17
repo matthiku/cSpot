@@ -311,6 +311,11 @@ function changeForLeadersEyesOnly(that) {
             $(that).children('i').addClass( data==1 ? 'fa-eye-slash': 'fa-eye');
             // reflect new setting also in the data attribute
             $(that).attr('data-value', data); $(that).data('value', data);
+            // reflect new setting also in the data attribute
+            $(that).attr('title', data==1 
+                ? "Item visible for leader's eyes only. Click to change!"
+                : "Item is visible for all users. Click to change!" );
+            $(that).tooltip(); // refresh the tooltip...
             // on the Item Detail page, also show the right text for the new setting
             $(that).children('small').toggle();
         })

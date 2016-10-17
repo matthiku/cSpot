@@ -89,8 +89,8 @@
         </div>
         <div class="row">
             <div class="col-sm-6 col-xs-12 text-sm-right">
-                <p class="pull-sm-right" style="max-width: 20rem; line-height: 1;">
-                    <small>(Make sure the sequence number hasn't been used already in this service type - See below list of items!)</small></p>
+                <p class="pull-sm-right" style="max-width: 23rem; line-height: 1;">
+                    <small>(Make sure the sequence number hasn't been used already in this service type - See list of existing items below!)</small></p>
             </div>
         </div>
 
@@ -112,8 +112,35 @@
         </div>
 
 
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="pull-sm-right">
 
-        <div class="row m-b-1">
+                    {!! Form::label('text', 'Item always visible for all?'); !!} 
+
+                </div>
+            </div>
+            <div class="col-sm-6">
+
+                <label class="custom-control custom-radio">
+                    <input id="radio1" name="forLeadersEyesOnly" type="radio" class="custom-control-input"
+                        {{ isset($default_item) ? ($default_item->forLeadersEyesOnly ? '' : 'checked="checked"') : '' }}>
+                    <span class="custom-control-indicator"></span>
+                    <span class="custom-control-description"><i class="fa fa-eye"></i> visible for everyone</span>
+                </label>
+                <label class="custom-control custom-radio">
+                    <input id="radio2" name="forLeadersEyesOnly" type="radio" class="custom-control-input"
+                        {{ isset($default_item) ? ($default_item->forLeadersEyesOnly ? 'checked="checked"' : '') : '' }}>
+                    <span class="custom-control-indicator"></span>
+                    <span class="custom-control-description"><i class="fa fa-eye-slash"></i> for Leader's eyes only!</span>
+                </label>
+
+           </div>
+        </div>
+
+
+
+        <div class="row m-b-1" style="background: lightgray;">
             <div class="col-sm-6">
                 <div class="pull-sm-right">
                     @if (isset($default_item))
@@ -133,9 +160,17 @@
                     
                     @if ($file)
                         <div class="show-one-file-figure">                    
-                            <label class="m-r-2" style="vertical-align: top;">Default<br>Image<br>for this<br>item:</label>
+                            <label class="m-r-2" style="vertical-align: top;">Default<br>Image<br>for this<br>item:
+                                <br>
+                                <span>
+                                    <a class="small" href="#" title="Unlink this file from this item"
+                                        onclick="$('#file_id').val('');$('.show-one-file-figure').hide();$('.figure').remove();">
+                                    <i class="fa fa-unlink"></i> Unlink</a>
+                                </span>
+                            </label>
                             @include ('cspot.snippets.show_files')
                         </div>
+
                     @endif
 
                 @endif
@@ -155,7 +190,8 @@
                     @include ('cspot.snippets.add_files')
                 </div>
 
-                <input type="hidden" id="file_id" name="file_id">
+                <input type="hidden" id="file_id" name="file_id"
+                    {{ isset($default_item) ? 'value='.$default_item->file_id : '' }}>
 
             </div>
         </div>

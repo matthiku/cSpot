@@ -14,6 +14,7 @@ class DefaultItem extends Model
         'type_id',
         'file_id',
         'seq_no',
+        'forLeadersEyesOnly',
         'text',
     ];
 

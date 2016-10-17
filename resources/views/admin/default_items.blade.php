@@ -70,6 +70,7 @@
 					<th>Sequence No.</th>
 					<th>Text</th>
 					<th>Default Image</th>
+					<th title="Is this item to be visible only for the Leader?">FLEO?</th>
 					<th class="center">Action</th>
 				</tr>
 			</thead>
@@ -98,6 +99,10 @@
 								</div>'
 						@endif
 						>{{ $default_item->file ? $default_item->file->filename : '' }}</td>
+
+					<td>{!! $default_item->forLeadersEyesOnly 
+							? '&#10004;'
+							: '' !!}</td>
 
 					<td class="nowrap center">
 						 @if( Auth::user()->isEditor() )

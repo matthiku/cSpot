@@ -27,14 +27,12 @@
 
     <h2 class="pull-xs-left">
     	{{ $heading }}
-		@if( Request::has('show') )
-			<br>
-			<small class="pull-xs-left" style="font-size: 50%">
-				<a href="#" onclick="toogleAllorFuturePlans()">
-					<input type="checkbox" {{Request::get('show')=='all' ? '' : 'checked'}}>
-					show only upcoming events</a>
-			</small>
-		@endif
+		<br>
+		<small class="pull-xs-left" style="font-size: 50%">
+			<a href="#" onclick="toogleAllorFuturePlans()">
+				<input type="checkbox" {{Request::get('show')=='all' ? '' : 'checked'}}>
+				show only upcoming events</a>
+		</small>
     </h2>
 
 	@if (get_class($plans)=='Illuminate\Pagination\LengthAwarePaginator')

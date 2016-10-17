@@ -32,13 +32,11 @@
                 @endif
             @endif
 
-            @if (isset($song->id))        
-                {{-- check if user is leader of the corresponding plan or author/admin --}}
-                @if ( Auth::user()->isAuthor() )
+            {{-- show unlink button if user is leader of the corresponding plan or author/admin --}}
+            @if ( isset($song->id)  &&  Auth::user()->isAuthor() )
                     <a class="small m-r-1" href="#" onclick="unlinkSongFile({{ $song->id }},{{ $file->id }})">
                         <i class="fa fa-unlink" title="Unlink this file from this song"></i>
                         Unlink</a>
-                @endif
             @endif
 
             {{-- check if user is leader of the corresponding plan or author/admin --}}

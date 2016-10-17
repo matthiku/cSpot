@@ -20,6 +20,7 @@ class CreateDefaultItemsTable extends Migration
             $table->foreign('file_id')->references('id')->on('files')->onDelete('set null');
             $table->integer('seq_no');
             $table->string('text', 250);
+            $table->boolean('forLeadersEyesOnly')->default(false);
             $table->timestamps();
         });
     }

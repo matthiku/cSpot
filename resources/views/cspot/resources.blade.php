@@ -100,53 +100,57 @@
 
 
 
-    <!-- 
-        show form to enter a new resource 
-    -->
-    @if ( $plan->resources->count() == 0 )
-        <h5>Add a new resource to this plan:</h5>
+    @if ( $plan->date > \Carbon\Carbon::yesterday() )
+
+        <!-- 
+            show form to enter a new resource 
+        -->
+        @if ( $plan->resources->count() == 0 )
+            <h5>Add a new resource to this plan:</h5>
+        @endif
+
+        <form id="new-resource-form" method="POST" 
+            @if ( $plan->resources->count() > 0 )
+                style="display: none"
+            @endif
+            >
+
+            <input type="hidden" name="_method" value="POST">
+            {{ csrf_field() }}
+
+            <label class="form-control-label">Select a Resource:</label>
+            <select name="resource_id" class="form-control text-help c-select">
+                <option selected>
+                    Select ...
+                </option>
+                @foreach ($resources as $resource)
+                    <option 
+                        @if(  ''<>old('resource_id') && $resource->id==old('resource_id') )  
+                                selected
+                        @endif
+                        value="{{ $resource->id }}">{{ $resource->name }}
+                    </option>
+                @endforeach
+            </select>
+            @if ($errors->has('resource_id'))
+                <br><span class="help-block">
+                    <strong>{{ $errors->first('resource_id') }}</strong>
+                </span>
+            @endif
+
+            <br>
+            <label class="form-control-label" id="comment-input">
+                Add a comment (optional):
+                <input type="text" name="comment">
+            </label>
+            
+            <div class="form-control-label">
+                <button type="submit" id="submit-button">Submit</button>
+            </div>
+
+        </form>
+
     @endif
 
-    <form id="new-resource-form" method="POST" 
-        @if ( $plan->resources->count() > 0 )
-            style="display: none"
-        @endif
-        >
-
-        <input type="hidden" name="_method" value="POST">
-        {{ csrf_field() }}
-
-        <label class="form-control-label">Select a Resource:</label>
-        <select name="resource_id" class="form-control text-help c-select">
-            <option selected>
-                Select ...
-            </option>
-            @foreach ($resources as $resource)
-                <option 
-                    @if(  ''<>old('resource_id') && $resource->id==old('resource_id') )  
-                            selected
-                    @endif
-                    value="{{ $resource->id }}">{{ $resource->name }}
-                </option>
-            @endforeach
-        </select>
-        @if ($errors->has('resource_id'))
-            <br><span class="help-block">
-                <strong>{{ $errors->first('resource_id') }}</strong>
-            </span>
-        @endif
-
-        <br>
-        <label class="form-control-label" id="comment-input">
-            Add a comment (optional):
-            <input type="text" name="comment">
-        </label>
-        
-        <div class="form-control-label">
-            <button type="submit" id="submit-button">Submit</button>
-        </div>
-
-    </form>
-
-
+    
 @stop

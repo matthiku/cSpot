@@ -170,14 +170,21 @@ class DefaultItemController extends Controller
         if (   $request->input('text') == $output->text 
             && $request->input('seq_no') == $output->seq_no 
             && $request->input('type_id') == $output->type_id 
-            && $request->input('file_id') == $output->file_id ) 
+            && $request->input('forLeadersEyesOnly') == $output->forLeadersEyesOnly 
+            && ($request->input('file_id') == $output->file_id || $request->input('file_id') == '' )) 
         {
             return \Redirect::route($this->view_idx)
                         ->with(['status' => 'no change']);
         }
+
+        // ignore empty file_id
+        $ignore = ['_method', '_token', 'file_category_id', 'file'];
+        if ($request->input('file_id')=='')
+            array_push( $ignore, 'file_id');
+
         // get this DefaultItem
         DefaultItem::where('id', $id)
-                ->update($request->except(['_method','_token']));
+                ->update($request->except($ignore));
 
         $message = 'DefaultItem with id "' . $id . '" updated';
         return \Redirect::route($this->view_idx, ['filterby'=>'type', 'filtervalue'=>$output->type_id])

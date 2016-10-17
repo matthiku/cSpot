@@ -12,7 +12,23 @@
 
         <div class="card-block">
 
-            <h5 class="card-title"><i class="fa fa-sticky-note"> </i> Public Notes</h5>
+            <h5 data-item-update-action="{{ route('cspot.api.items.update', $item->id) }}"
+                data-item-id="{{ $item->id }}" 
+                class="card-title"><i class="fa fa-sticky-note"> </i> 
+
+            {{-- is this item for leader's eyes only? --}}
+            <a      href="#" class="pull-xs-right link small" onclick="changeForLeadersEyesOnly(this)" 
+                    data-value="{{ $item->forLeadersEyesOnly }}"
+                    title="Click to make item visible for {{ $item->forLeadersEyesOnly ? 'everyone': "leader's eyes only (useful for personal notes etc.)" }}">
+                @if ($item->forLeadersEyesOnly)
+                    <i class="fa fa-eye-slash"></i>
+                @else
+                    <i class="fa fa-eye"></i>
+                @endif
+                <small style="display: {{ $item->forLeadersEyesOnly ? 'initial' : 'none' }}">(for your eyes only)</small>
+                <small style="display: {{ $item->forLeadersEyesOnly ? 'none' : 'initial' }}">(visible to all)</small>
+            </a>
+            Public Notes</h5>
 
             <p class="card-text">
 
