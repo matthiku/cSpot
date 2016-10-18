@@ -135,13 +135,13 @@
 
             
             <div class="row form-group m-b-0">
-                {!! Form::label('title', 'Title', ['class' => 'col-sm-4 col-md-3 col-lg-2 col-xl-4']); !!}
+                {!! Form::label('title', 'Title', ['class' => 'col-sm-4 col-md-3 col-lg-2 col-xl-4 text-sm-right']); !!}
                 <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width">{!! Form::text('title'); !!}</div>
             </div>
 
 
             <div class="row form-group song-only">
-                <div class='col-sm-4 col-md-3 col-lg-2 col-xl-4'>                    
+                <div class='col-sm-4 col-md-3 col-lg-2 col-xl-4 text-sm-right'>                    
                     {!! Form::label('title_2', 'Subtitle'); !!}
                 </div>
                 <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width">{!! Form::text('title_2'); !!}</div>
@@ -149,13 +149,13 @@
 
 
             <div class="row form-group song-only">
-                {!! Form::label('author', 'Author or Copyright statement', ['class' => 'col-sm-4 col-md-3 col-lg-2 col-xl-4']); !!}
+                {!! Form::label('author', 'Author or Copyright statement', ['class' => 'col-sm-4 col-md-3 col-lg-2 col-xl-4 text-sm-right']); !!}
                 <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width">{!! Form::text('author'); !!}</div>
             </div>
 
 
-            <div class="row form-group song-only">
-                <div class='col-sm-4 col-md-3 col-lg-2 col-xl-4'>                    
+            <div class="row form-group song-only bg-muted">
+                <div class='col-sm-4 col-md-3 col-lg-2 col-xl-4 text-sm-right'>                    
                     {!! Form::label('book_ref', 'Book Ref.'); !!}                    
                 </div>
                 <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8">
@@ -166,7 +166,7 @@
 
 
             <div class="row form-group song-only">
-                <div class="col-sm-4 col-md-3 col-lg-2 col-xl-4">                    
+                <div class="col-sm-4 col-md-3 col-lg-2 col-xl-4 text-sm-right">                    
                     {!! Form::label('license', 'Select a license:'); !!}
                     <big>
                         <a tabindex="0" href="#"
@@ -198,8 +198,8 @@
             </div>
 
 
-            <div class="row form-group song-only">
-                <div class='col-sm-4 col-md-3 col-lg-2 col-xl-4'>
+            <div class="row form-group song-only bg-muted">
+                <div class='col-sm-4 col-md-3 col-lg-2 col-xl-4 text-sm-right'>
                     {!! Form::label('hymnaldotnet_id', 'Hymnal.Net URL (link)'); !!}
                     <big>
                         <a tabindex="0" href="#" data-container="body" data-toggle="tooltip"
@@ -237,7 +237,7 @@
 
 
             <div class="row form-group song-only">
-                <div class='col-sm-4 col-md-3 col-lg-2 col-xl-4'>
+                <div class='col-sm-4 col-md-3 col-lg-2 col-xl-4 text-sm-right'>
                     <label for="ccli_no">CCLI Song N<sup>o</sup></label>
                     <big>
                         <a tabindex="0" href="#" data-container="body" data-toggle="tooltip"
@@ -283,9 +283,9 @@
 
 
 
-            <div class="row form-group song-or-video-only m-t-1">
+            <div class="row form-group song-or-video-only m-t-1 bg-muted">
 
-                <div class='col-sm-4 col-md-3 col-lg-2 col-xl-4'>
+                <div class='col-sm-4 col-md-3 col-lg-2 col-xl-4 text-sm-right'>
                     {!! Form::label('youtube_id', 'Youtube ID or URL'); !!}
                     <big>
                         <a tabindex="0" href="#" data-container="body" data-toggle="tooltip"
@@ -320,7 +320,7 @@
 
 
             <div class="row form-group song-or-video-only">
-                <div class='col-sm-4 col-md-3 col-lg-2 col-xl-4'>
+                <div class='col-sm-4 col-md-3 col-lg-2 col-xl-4 text-sm-right'>
                     {!! Form::label('link', '(other) link(s)'); !!}
                     <big>
                         <a tabindex="0" href="#" data-container="body" data-toggle="tooltip"
@@ -332,16 +332,17 @@
             </div>
 
 
-            <div class="row form-group m-t-1">
-                <div class="col-sm-4 col-md-3 col-lg-2 col-xl-4">
+            <div class="row form-group m-t-1 bg-muted">
+                <div class="col-sm-4 col-md-3 col-lg-2 col-xl-4 text-sm-right l-h-1">
                     {!! Form::label('file', 'Attach an image'); !!}
-                    <small>(Max. Size: <?php echo ini_get("upload_max_filesize"); ?>)</small>
+                    <br>
+                    <small>(Maximum file size: <?php echo ini_get("upload_max_filesize"); ?>)</small>
                 </div>
                 <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width">
                     {!! Form::file('file'); !!}
                     <!-- file category will be '1' (songs) -->
                     {!! Form::hidden('file_category_id','1') !!}
-                    <br>(Image name will be book ref. + title)
+                    <br><small>(<strong>Note: </strong>Image name will be book ref. + title)</small>
                 </div>
             </div>
             @if ( isset($song) && $song->files)
@@ -359,8 +360,8 @@
 
 
             <div class="form-group m-b-0 song-only">
-                {!! Form::label('sequence', 'Sequence: '); !!}
-                {!! Form::text('sequence'); !!}
+                {!! Form::label('sequence', 'Sequence: ', ['class' => 'baseline']); !!}
+                {!! Form::text('sequence'); !!} <small> (The sequence determines how the lyrics are presented)</small>
             </div>
 
 

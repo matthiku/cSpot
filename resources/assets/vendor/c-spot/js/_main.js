@@ -509,7 +509,7 @@ function reloadListOrderBy(field)
  * Function to open plan selected via date picker
  * better name: "openPlanByDate"
  */
-function submitDate(date) 
+function openPlanByDate(date) 
 {
     $('#show-spinner').modal({keyboard: false});
     window.location.href = __app_url + '/cspot/plans/by_date/' + date.value;

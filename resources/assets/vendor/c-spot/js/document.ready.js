@@ -153,11 +153,17 @@ $(document).ready(function() {
         $.getJSON( __app_url + '/cspot/plans?filterby=future&api=api',
             function(result){
                 $.each(result, function(i, field) {
+                    // map each resulting event to the appropriate DAY element of the datepicker
                     hint = field.type.name+' led by '+field.leader.first_name; 
                     if ( field.teacher.first_name != "n/a" ) {
-                        hint +=', teacher is ' + field.teacher.first_name; }
+                        hint +='(teacher: ' + field.teacher.first_name +')'; }
                     dt = new Date(field.date.split(' ')[0]).toLocaleDateString();
-                    SelectedDates[dt] = hint;
+                    if (SelectedDates[dt]==undefined)
+                        SelectedDates[dt] = hint;
+                    else if (SelectedDates[dt]=="Today")
+                        SelectedDates[dt] = "Today: " + hint;
+                    else 
+                        SelectedDates[dt] = SelectedDates[dt]+'; '+hint;
                 });
                 // get the current browser window dimension (width)
                 browserWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;

@@ -11,6 +11,7 @@ use App\Http\Requests\StoreInstrumentRequest;
 use App\Http\Controllers\Controller;
 
 use App\Models\Instrument;
+use App\Models\Role;
 use App\Models\User;
 
 
@@ -99,8 +100,13 @@ class InstrumentController extends Controller
         // get all -- USERS -- with this specific instrument id
         $instrument    = Instrument::find($id);
         if ($instrument) {
-            $heading = 'User Management - Show '.$instrument->name;
-            return view( 'admin.users', array('users' => $instrument->users()->get(), 'heading' => $heading) );
+            $heading = 'User Management - Users playing '.ucfirst($instrument->name);
+            return view( 'admin.users', [
+                'users'   => $instrument->users()->get(), 
+                'heading' => $heading,
+                'roles'   => Role::get(),
+                'instruments' => Instrument::get()
+            ]);
         }
         $message = 'Error! Instrument with ID "' . $id . '" not found';
         return \Redirect::route($this->view_idx)

@@ -27,11 +27,8 @@
 
     <h2 class="pull-xs-left">
     	{{ $heading }}
-		<br>
-		<small class="pull-xs-left" style="font-size: 50%">
-			<a href="#" onclick="toogleAllorFuturePlans()">
-				<input type="checkbox" {{Request::get('show')=='all' ? '' : 'checked'}}>
-				show only upcoming events</a>
+		<small class="small" style="font-size: 50%">
+			<a href="#" onclick="toogleAllorFuturePlans()">show {{Request::get('show')!='all' ? 'all' : 'only upcoming'}}</a>
 		</small>
     </h2>
 
@@ -58,9 +55,9 @@
 				<tr>
 					<th class="hidden-md-down center">#</th>
 
-					@include('cspot.snippets.theader', ['thfname' => 'date', 'thdisp' => 'Date', 'thsort'=>false, 'thclass'=>''])
+					@include('cspot.snippets.theader', ['thfname' => 'date', 'thdisp' => 'Date', 'thsearch'=>false, 'thclass'=>''])
 					
-					@include('cspot.snippets.theader', ['thfname' => 'type_id', 'thdisp' => 'Service Type', 'thsort'=>false, 'thclass'=>''])
+					@include('cspot.snippets.theader', ['thfname' => 'type_id', 'thdisp' => 'Service Type', 'thsearch'=>false, 'thclass'=>''])
 
 					<th class="hidden-lg-down center" title="Additional info that appears on the Announcements Slide">Info</th>
 
@@ -78,9 +75,9 @@
 
 					<th class="hidden-lg-down center"># items</th>
 
-					@include('cspot.snippets.theader', ['thfname' => 'leader_id', 'thdisp' => 'Leader', 'thsort'=>false, 'thclass'=>'hidden-sm-down center'])
+					@include('cspot.snippets.theader', ['thfname' => 'leader_id', 'thdisp' => 'Leader', 'thsearch'=>false, 'thclass'=>'hidden-sm-down center'])
 
-					@include('cspot.snippets.theader', ['thfname' => 'teacher_id', 'thdisp' => 'Teacher', 'thsort'=>false, 'thclass'=>'hidden-sm-down center'])
+					@include('cspot.snippets.theader', ['thfname' => 'teacher_id', 'thdisp' => 'Teacher', 'thsearch'=>false, 'thclass'=>'hidden-sm-down center'])
 
 					<th class="hidden-md-up center">Leader, Teacher</th>
 					<th class="text-right hidden-md-down">Last updated on</th>

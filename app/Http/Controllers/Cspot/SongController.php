@@ -83,10 +83,16 @@ class SongController extends Controller
                     ->where(  'title',    'like', '%'.$request->filtervalue.'%')
                     ->orWhere('title_2',  'like', '%'.$request->filtervalue.'%');
             }
+            elseif ($request->filtervalue=='_') {
+                $songs = Song::withCount('items')
+                    ->orderBy($orderBy, $order)
+                    ->where(  $request->filterby, null)
+                    ->orWhere($request->filterby, '');
+            }
             else {
                 $songs = Song::withCount('items')
                     ->orderBy($orderBy, $order)
-                    ->where($request->filterby, 'like', '%'.$request->filtervalue.'%');
+                    ->where(  $request->filterby, 'like', '%'.$request->filtervalue.'%');
             }
         } 
 
@@ -297,6 +303,12 @@ class SongController extends Controller
         if (  $request->has('ccli_no') 
         && ( !$request->has('license') || ($request->has('license') && $request->license=='') )  ) {
             $song->license = 'CCLI';
+        }
+
+        // set license type to PD if not set but hymnaldotnet_id was given
+        if (  $request->has('hymnaldotnet_id') 
+        && ( !$request->has('license') || ($request->has('license') && $request->license=='') )  ) {
+            $song->license = 'PD';
         }
 
         // update from request

@@ -245,7 +245,7 @@
 
                         @if ( $item->itemType()=='song')
 
-                            <div class="row">
+                            <div class="row text-muted">
                                 Note: 
                                 @if ( $usageCount )
                                     Song was used before in <strong>{{ $usageCount }}</strong> service(s) -
@@ -256,26 +256,28 @@
                                 @endif
                             </div>
 
-                            <div class="row">
+                            <div class="row m-t-1">
                                                             
-                                <div class="card">
+                                <div class="card m-b-0">
                                     <div class="card-block text-xs-left">
-                                        <h5 class="card-title">&#127896; Instructions for Music Team</h5>
-                                        <h6 class="card-subtitle text-muted">(for e.g. having a verse without music)</h6>
-                                        <p class="card-text">
+                                        <h5 class="card-title">&#127896; Instructions for Music Team:</h5>
+                                        <h6 class="card-subtitle text-muted">(e.g. for having a verse without music)</h6>
+                                        <div class="card-text">
                                             @if (Auth::user()->ownsPlan( $plan->id ))
-                                                <pre id="key-item-id-{{ $item->id }}" class="editable-item-field form-control form-control-success">{{ $item->key }}</pre>
+                                                <pre id="key-item-id-{{ $item->id }}" class="editable-item-field form-control form-control-success m-b-0">{{ $item->key }}</pre>
                                             @else
-                                                 <pre class="w-100">{{ $item->key }}</pre>
+                                                 <pre class="w-100 m-b-0">{{ $item->key }}</pre>
                                             @endif
-                                        </p>
-                                        @if (Auth::user()->ownsPlan( $plan->id ))
-                                            <a      href="#" class="card-link pull-xs-right form-control" id="key-notes-erase-link"  
-                                                    onclick="deleteItemNote('key', 'key-item-id-{{ $item->id }}', '{{ route('cspot.api.item.update') }}')" 
-                                                    style="max-width: 150px; display: {{ $item->key ? 'initial' : 'none' }}">
-                                                <small><i class="fa fa-remove text-muted"></i> clear note</small>
-                                            </a>
-                                        @endif
+                                        </div>
+                                        <div class="card-text">
+                                            @if (Auth::user()->ownsPlan( $plan->id ))
+                                                <a      href="#" class="card-link pull-xs-right form-control" id="key-notes-erase-link"  
+                                                        onclick="deleteItemNote('key', 'key-item-id-{{ $item->id }}', '{{ route('cspot.api.item.update') }}')" 
+                                                        style="max-width: 150px; display: {{ $item->key ? 'initial' : 'none' }}">
+                                                    <small><i class="fa fa-remove text-muted"></i> clear note</small>
+                                                </a>
+                                            @endif
+                                        </div>
                                     </div>
                                 </div>
 
@@ -309,7 +311,7 @@
                                 @else
                                     <a href="#" class="fully-width btn btn-outline-secondary btn-sm disabled"
                                           title="Missing YouTube Video" data-toggle="tooltip">
-                                    <i class="red fa fa-youtube-play"></i><br><small>play</small></a>
+                                    <i class="red fa fa-youtube-play"></i><br><small>no link found</small></a>
                                 @endif
                             </div>
                             <div class="col-sm-12 col-md-3 full-btn">
@@ -320,7 +322,18 @@
                                 @else
                                     <a href="#" class="fully-width btn btn-outline-secondary btn-sm disabled"
                                           title="Missing SongSelect Link!" data-toggle="tooltip">
-                                    <img src="{{ url('/') }}/images/songselectlogo.png" width="14"><br><small>CCLI N<sup>o</sup>. missing!</small></a>
+                                    <img src="{{ url('/') }}/images/songselectlogo.png" width="14"><br><small>CCLI N<sup>o</sup>. missing</small></a>
+                                @endif
+                            </div>
+                            <div class="col-sm-12 col-md-3 full-btn">
+                                @if ($item->song->hymnaldotnet_id!='')
+                                    <a href="{{ $item->song->hymnaldotnet_id }}" 
+                                        target="new" class="fully-width btn btn-outline-primary btn-sm">
+                                    &#127929;<br><small>play<span class="hidden-lg-down"> on Hymnal.Net</span></small></a>
+                                @else
+                                    <a href="#" class="fully-width btn btn-outline-secondary btn-sm disabled"
+                                          title="No Hymnal.Net Link" data-toggle="tooltip">
+                                    &#127929;<br><small>no link found</small></a>
                                 @endif
                             </div>
                         </div>

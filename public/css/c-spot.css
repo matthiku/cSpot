@@ -9377,6 +9377,16 @@ a.ui-button:active,
  * (C) M.Kuhs Ireland, 2016
  */
 
+
+/*  */
+.baseline {
+    vertical-align: baseline;
+}
+
+.l-h-1 {
+    line-height: 1;
+}
+
 /* always use fixed font in textarea input field */
 textarea {
     font-family: monospace !important;
@@ -9535,6 +9545,9 @@ a[disabled] {
 .ui-datepicker-inline {
     margin: auto;
 }
+.ui-datepicker-today {
+    border: 2px solid blue !important;
+}
 .ui-datepicker-sunday>a {
     color: red !important;
 }
@@ -9629,7 +9642,7 @@ pre.text-present {
 .bg-khaki {
     background-color: rgb(240, 230, 140);
 }
-.bg-grey {
+.bg-grey, .bg-muted {
     background-color: #eee;
 }
 

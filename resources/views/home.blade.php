@@ -68,7 +68,7 @@
 
                     </p>
                     <hr>
-                    <div id="inpDate" onchange="submitDate(this)"></div>
+                    <div id="inpDate" onchange="openPlanByDate(this)"></div>
 
                 </div>
 

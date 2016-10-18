@@ -10,6 +10,7 @@ use App\Http\Requests;
 use App\Http\Requests\StoreRoleRequest;
 use App\Http\Controllers\Controller;
 
+use App\Models\Instrument;
 use App\Models\Role;
 use App\Models\User;
 
@@ -98,8 +99,15 @@ class RoleController extends Controller
     {
         // get all -- USERS -- with this specific role id
         $role    = Role::find($id);
-        $heading = 'User Management - Show '.$role->name;
-        return view( 'admin.users', array('users' => $role->users()->get(), 'heading' => $heading) );
+        $heading = 'User Management - Show '.ucfirst($role->name).'s';
+
+        return view( 
+            'admin.users', [
+                'users'   => $role->users()->get(), 
+                'heading' => $heading,
+                'roles'   => Role::get(),
+                'instruments' => Instrument::get()
+            ]);
     }
 
 

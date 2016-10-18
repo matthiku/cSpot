@@ -48,7 +48,7 @@
 
 
 
-        <div class="row m-b-1">
+        <div class="row m-b-1 bg-muted">
             <div class="col-sm-6">
                 <div class="pull-sm-right">
                     <label>Event/Service Type</label> <i class="red">*</i>
@@ -96,7 +96,7 @@
 
 
 
-        <div class="row m-b-1">
+        <div class="row m-b-1 bg-muted">
             <div class="col-sm-6">
                 <div class="pull-sm-right">
 
@@ -140,7 +140,7 @@
 
 
 
-        <div class="row m-b-1" style="background: lightgray;">
+        <div class="row m-b-1 bg-muted">
             <div class="col-sm-6">
                 <div class="pull-sm-right">
                     @if (isset($default_item))
@@ -230,7 +230,7 @@
 
 
         <hr>
-        <div class="row">
+        <div class="row bg-muted">
             <div class="col-xs-12">
 
                 @if (isset($default_items))
@@ -250,7 +250,7 @@
                                 <tr class="link show-all-default-items show-existing-{{ $item->type_id }}" style="display: none;"
                                     onclick="location.href ='{{ url('admin/default_items/' . $item->id) }}/edit'">
                                     <td class="text-xs-center">{{ $item->id }}</td>
-                                    <td class="text-xs-center">{{ $item->seq_no }}</td>
+                                    <td class="text-xs-center red">{{ $item->seq_no }}</td>
                                     <td>{{ $item->text }}</td>
                                 </tr>
                             @endforeach

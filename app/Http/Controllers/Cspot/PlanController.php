@@ -107,6 +107,8 @@ PlanController extends Controller
 
 
 
+
+
     /**
      * Display a listing of Service Plans 
      *    filtered by user (leader/teacher) or by plan type
@@ -129,6 +131,7 @@ PlanController extends Controller
 
         $userIsPlanMember = [];
     
+
         // show only plans for certain user ids
         if ($filterby=='user') 
         {
@@ -150,6 +153,7 @@ PlanController extends Controller
             }
             $heading .= User::find($filtervalue)->first_name;
         }
+
         // show only plans of certain type
         elseif ($filterby=='type') 
         {
@@ -167,6 +171,7 @@ PlanController extends Controller
             }
             $heading .= Type::find($filtervalue)->name.'s';
         }
+
         // show all future plans
         elseif ($filterby=='future') {
             // get ALL future plans incl today
@@ -182,6 +187,15 @@ PlanController extends Controller
             // get list of plans of which the current user is member
             $userIsPlanMember = listOfPlansForUser();
         }
+
+        elseif ($filterby=='date') {
+            // list only plans of a certain date
+            $plans = Plan::with(['type', 'leader', 'teacher'])
+                ->whereDate('date', 'like', '%'.$filtervalue.'%')
+                ->orderBy($orderBy, $order);
+            $heading = 'Events for '.Carbon::parse($filtervalue)->formatLocalized('%A, %d %B %Y');
+        }
+
         // show only plans of the current user (or all plans if it's an admin)
         else
         {
@@ -192,6 +206,7 @@ PlanController extends Controller
                            ->orWhere('teacher_id', Auth::user()->id)
                               ->with('type')
                            ->orderBy($orderBy, $order);
+                $heading = 'All Your Services/Events';
             } else {
                 // only future plans
                 $plans = Plan::with('type')
@@ -201,8 +216,8 @@ PlanController extends Controller
                                     ->orWhere('teacher_id', Auth::user()->id);
                                 })
                           ->orderBy($orderBy, $order);
+                $heading = 'Your Upcoming Services/Events';
             }
-            $heading = 'Your Services/Events';
         }
 
         // for pagination, always append the original query string
@@ -231,12 +246,19 @@ PlanController extends Controller
         // get plan with items ordered by seq no
         $plan = Plan::with([
                 'items' => function ($query) { $query->orderBy('seq_no'); }])
-            ->where('date', 'like', $date.'%')->first();
+            ->where('date', 'like', $date.'%')->get();
 
-        if ($plan) {
-            
-            // call the edit action for a single plan
-            return $this->edit($plan->id);
+        if ($plan->count()) {
+
+            if ($plan->count()==1) {
+                // call the edit action for a single plan
+                return $this->edit($plan[0]->id);
+            }
+
+            $request->filterby = 'date';
+            $request->filtervalue = $date;
+
+            return $this->index($request);
         }
 
         // No plan found for this day, let the user create a new one
@@ -256,7 +278,7 @@ PlanController extends Controller
             'leader_id' => null
         ]);
         // call plan creation method
-        return $this->create();
+        return $this->create($request);
     }
 
 

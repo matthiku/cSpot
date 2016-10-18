@@ -45,13 +45,43 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-        $users = User::get();
+        // get all users in the requested order (default by id)
+        $users = User::
+            orderBy(
+                isset($request->orderby)     ? $request->orderby     : 'id', 
+                isset($request->order)       ? $request->order       : 'asc'
+            );
 
         $heading = 'User Management';
-        return view( $this->view_all, array('users' => $users, 'heading' => $heading) );
+
+        // check if user selected a filter
+        if ($request->has('filterby') && $request->has('filtervalue') && $request->filtervalue!='all') {
+
+            if ($request->filterby=='role') {
+                // get all -- USERS -- with this specific role id
+                $role       = Role::find($request->filtervalue);
+                $users      = $role->users();
+                $heading    = 'User Management - Show '.ucfirst($role->name).'s';
+            } 
+            else if ($request->filterby=='instrument') {
+                // get all -- USERS -- with this specific instrument id
+                $instrument = Instrument::find($request->filtervalue);
+                $users      = $instrument->users();
+                $heading    = 'User Management - Show users playing '.ucfirst($instrument->name);
+            } else {
+                $users = $users->where($request->filterby, $request->filtervalue);
+            }
+        }
+
+        return view( 
+            $this->view_all, [
+                'users' => $users->get(),
+                'heading' => $heading,
+                'roles' => Role::get(),
+                'instruments' => Instrument::get()
+            ]);
     }
 
 

@@ -119,34 +119,39 @@
 
 		<table class="table table-striped table-bordered {{ count($songs)>15 ? 'table-sm' : '' }}">
 
+
 			<thead class="thead-default">
 				<tr>
-					@include('cspot.snippets.theader', ['thfname' => 'id', 'thdisp' => '#', 'thsort'=>false, 'thclass'=>'center hidden-md-down'])
+					@include('cspot.snippets.theader', ['thfname' => 'id', 'thdisp' => '#', 'thsearch'=>false, 'thclass'=>'center hidden-md-down'])
 
-					@include('cspot.snippets.theader', ['thfname' => 'title', 'thdisp' => 'Title', 'thsort'=>true, 'thclass'=>''])
+					@include('cspot.snippets.theader', ['thfname' => 'title', 'thdisp' => 'Title', 'thsearch'=>true, 'thclass'=>''])
 
-					@include('cspot.snippets.theader', ['thfname' => 'author', 'thdisp' => 'Author', 'thsort'=>true, 'thclass'=>'hidden-md-down'])
+					@include('cspot.snippets.theader', ['thfname' => 'author', 'thdisp' => 'Author', 'thsearch'=>true, 'thclass'=>'hidden-md-down'])
 
-					@include('cspot.snippets.theader', ['thfname' => 'book_ref', 'thdisp' => 'Book Ref', 'thsort'=>true, 'thclass'=>'small hidden-xs-down'])
+					@include('cspot.snippets.theader', ['thfname' => 'book_ref', 'thdisp' => 'Book Ref', 'thsearch'=>true, 'thclass'=>'small hidden-xs-down'])
 						
-					@include('cspot.snippets.theader', ['thfname' => 'chords', 'thdisp' => 'Chords?', 'thsort'=>false, 'thclass'=>'center small hidden-sm-down'])
-					{{-- <th class="center hidden-sm-down"><small>Chords?</small></th> --}}
+					@include('cspot.snippets.theader', ['thfname' => 'chords', 'thdisp' => 'Chords?', 'thsearch'=>true, 'thclass'=>'center small hidden-sm-down'])
+
 					<th class="center hidden-sm-down"><small>Sheets?</small></th>
+
 					<th class="center">Media</th>
 
-					@include('cspot.snippets.theader', ['thfname' => 'items_count', 'thdisp' => 'Usage', 'thsort'=>false, 'thclass'=>'center hidden-md-down'])
+					@include('cspot.snippets.theader', ['thfname' => 'items_count', 'thdisp' => 'Usage', 'thsearch'=>true, 'thclass'=>'small center hidden-md-down'])
 
 					<th class="center hidden-md-down">Last Use</th>
-					<th class="center hidden-lg-down">CCLI No.</th>
-					<th class="center hidden-lg-down"><small>License</small></th>
 
-					@include('cspot.snippets.theader', ['thfname' => 'created_at', 'thdisp' => 'Created', 'thsort'=>false, 'thclass'=>'center hidden-lg-down'])
+					<th class="center hidden-lg-down">CCLI No.</th>
+
+					@include('cspot.snippets.theader', ['thfname' => 'license', 'thdisp' => 'License', 'thsearch'=>true, 'thclass'=>'small center hidden-lg-down'])
+
+					@include('cspot.snippets.theader', ['thfname' => 'created_at', 'thdisp' => 'Created', 'thsearch'=>false, 'thclass'=>'small center hidden-lg-down'])
 
 					@if( Auth::user()->isUser() )
-						<th class="hidden-xs-down">Modify</th>
+						<th class="center hidden-xs-down">Modify</th>
 					@endif
 				</tr>
 			</thead>
+
 
 
 			<tbody>

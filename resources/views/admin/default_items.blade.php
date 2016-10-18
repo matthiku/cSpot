@@ -67,7 +67,7 @@
 				<tr>
 					<th>#</th>
 					<th>Service Type</th>
-					<th>Sequence No.</th>
+					<th class="red">Sequence No.</th>
 					<th>Text</th>
 					<th>Default Image</th>
 					<th title="Is this item to be visible only for the Leader?">FLEO?</th>
@@ -84,7 +84,7 @@
 
 					<td>{{ $default_item->type_id.' ('.$default_item->type->name.')'  }}</td>
 
-					<td>{{ $default_item->seq_no }}</td>
+					<td class="red">{{ $default_item->seq_no }}</td>
 
 					<td>{{ $default_item->text }}</td>
 

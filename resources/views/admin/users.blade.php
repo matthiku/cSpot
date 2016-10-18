@@ -16,12 +16,45 @@
 
 
 	@if( Auth::user()->isAdmin() )
-		<a class="btn btn-outline-primary pull-xs-right" href="{{ url('admin/users/create') }}">
+		<a class="btn btn-outline-primary pull-xs-right m-l-1" href="{{ url('admin/users/create') }}">
 			<i class="fa fa-user-plus"> </i> &nbsp; Add a user
 		</a>
 	@endif
 
+
+
+	<form class="form-inline pull-xs-right m-l-1">
+		<div class="form-group">
+			<label for="rolefilter">Show only</label>
+			<select class="custom-select" id="rolefilter" onchange="location.href='{{url('admin/users')}}?filterby=role&filtervalue='+$(this).val()">
+				<option {{ Request::has('filterby') && Request::get('filterby')=='role' ? '' : 'selected' }} value="all">(select role)</option>
+				@foreach ($roles as $role)
+					<option 
+						{{ (Request::has('filterby') && Request::get('filterby')=='role' && Request::get('filtervalue')==$role->id) ? 'selected' : '' }} 
+						value="{{$role->id}}">{{$role->name}}</option>
+				@endforeach
+			</select>
+		</div>
+	</form>
+
+	<form class="form-inline pull-xs-right">
+		<div class="form-group">
+			<label for="instrumentfilter">Users playing</label>
+			<select class="custom-select" id="instrumentfilter" onchange="location.href='{{url('admin/users')}}?filterby=instrument&filtervalue='+$(this).val()">
+				<option {{ Request::has('filterby') && Request::get('filterby')=='instrument' ? '' : 'selected' }} value="all">instrument</option>
+				@foreach ($instruments as $instrument)
+					<option 
+						{{ (Request::has('filterby') && Request::get('filterby')=='instrument' && Request::get('filtervalue')==$instrument->id) ? 'selected' : '' }} 
+						value="{{$instrument->id}}">{{$instrument->name}}</option>
+				@endforeach
+			</select>
+		</div>
+	</form>
+
+
     <h2>{{ $heading }}</h2>
+
+
 
 	<p>
 		<a href="{{ url('/admin/users' . (Request::is('*/active') ? '' : '/active')) }}">
@@ -29,28 +62,47 @@
 		Show only active users</a>
 	</p>
 
+
+
+
+
 	<table class="table table-striped table-bordered 
 				@if(count($users)>15)
 				 table-sm
 				@endif
 				 ">
+
+
 		<thead class="thead-default">
 			<tr>
-				<th>#</th>
+
+				@include('cspot.snippets.theader', ['thfname' => 'id', 'thdisp' => '#', 'thsearch'=>false, 'thclass'=>''])
+
 				<th>First Name</th>
+
 				<th class="hidden-lg-down">Last Name</th>
-				<th class="hidden-md-down">Display Name</th>
+
+				@include('cspot.snippets.theader', ['thfname' => 'name', 'thdisp' => 'Display Name', 'thsearch'=>false, 'thclass'=>'hidden-md-down'])
+
 				@if ( Auth::user()->isEditor() )
 					<th class="hidden-sm-down">Email</th>
 				@endif
 				<th>Role(s)</th>
+
 				<th>Instrument(s)</th>
-				<th class="hidden-md-down center">Last Login</th>
-				<th class="hidden-lg-down center">Joined</th>
+
+				@include('cspot.snippets.theader', ['thfname' => 'last_login', 'thdisp' => 'Last Login', 'thsearch'=>false, 'thclass'=>'hidden-md-down center'])
+
+				@include('cspot.snippets.theader', ['thfname' => 'created_at', 'thdisp' => 'Joined', 'thsearch'=>false, 'thclass'=>'hidden-lg-down center'])
+
 				<th> </th>
 			</tr>
 		</thead>
+
+
+
 		<tbody>
+
         @foreach( $users as $user )
 			<tr @if(Auth::user()->isAdmin())
 						class="link" onclick="location.href ='{{ url('admin/users/'.$user->id) }}/edit'"
