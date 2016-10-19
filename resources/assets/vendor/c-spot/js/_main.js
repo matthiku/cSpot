@@ -159,7 +159,7 @@ function showNextSelect(fromOrTo, what)
         $('#'+fromOrTo+'-'+what).show();
 
         // minimum value for the 'to' verse is the 'from' verse
-        minNumber = 1
+        minNumber = 1;
         if (fromOrTo=='to' && what=='verse') {
             minNumber = $('#from-verse').val();
         }
@@ -190,7 +190,7 @@ function showNextSelect(fromOrTo, what)
 }
 function populateComment() {
     // ignore if nothing was selected
-    if ($('#from-book').val()==null || $('#from-book').val()==' ') { 
+    if ($('#from-book').val()===null || $('#from-book').val()==' ') { 
         return; }
 
     // check existing comment
@@ -200,17 +200,17 @@ function populateComment() {
     }
 
     // set default and minimum value identical with 'from' value
-    $('#comment').val( oldComment
-        + $('#from-book').val()+' '
-        + $('#from-chapter').val()+':'
-        + $('#from-verse').val() 
-        +($('#to-verse').val() != $('#from-verse').val() ? '-'+$('#to-verse').val() : '') + ' ('
-        + $('#version').val() + ')'
-        );
+    $('#comment').val( oldComment +
+        $('#from-book').val()+' ' +
+        $('#from-chapter').val()+':' +
+        $('#from-verse').val() + 
+        ($('#to-verse').val() != $('#from-verse').val() ? '-'+$('#to-verse').val() : '') + ' (' +
+        $('#version').val() + ')'
+    );
 
     $('#waiting').show();
     // now get the bible text via API and display it on the page
-    showScriptureText($('#version').val(), $('#from-book').val(), $('#from-chapter').val(), $('#from-verse').val(), $('#to-verse').val())
+    showScriptureText($('#version').val(), $('#from-book').val(), $('#from-chapter').val(), $('#from-verse').val(), $('#to-verse').val());
 
     $('#from-book').val('');
     emptyRefSelect('from', 'chapter');
@@ -278,7 +278,7 @@ function showSongHints(that, needle, limit)
     // get list of songs from global variable
     var haystackMP = cSpot.songList;
 
-    if (needle.length == 0) {
+    if (needle.length === 0) {
         $(that).html('');
         return;
     }
@@ -286,16 +286,16 @@ function showSongHints(that, needle, limit)
     var found = 'no match';
     needle = needle.toLowerCase();
     for (var i=0; i<haystackMP.length; i++) {
-        if ( haystackMP[i].title.toLowerCase().indexOf(needle)>=0 
-          || haystackMP[i].title_2.toLowerCase().indexOf(needle)>=0 
-          || haystackMP[i].book_ref.toLowerCase().indexOf(needle)>=0 ) {
+        if ( haystackMP[i].title.toLowerCase().indexOf(needle) >= 0 
+          || haystackMP[i].title_2.toLowerCase().indexOf(needle) >= 0 
+          || haystackMP[i].book_ref.toLowerCase().indexOf(needle) >= 0 ) {
 
             // are we limited to only show videoclips or slide items?
             if (limit=='clips') {
                 if ( ! (haystackMP[i].title_2.toLowerCase() == 'video' || haystackMP[i].title_2.toLowerCase() == 'slide') )
                     continue;
             }
-            if (count==0) found='';
+            if (count===0) found='';
             
             found+='<div class="radio"><label class="text-muted link"><input type="radio" onclick="$(\'#searchForSongsButton\').click();" name="haystack" id="needle-';
             found+=haystackMP[i].id + '" value="'+ haystackMP[i].id;
@@ -403,7 +403,7 @@ function fillPlanDefaultValues(that)
     var n = moment();
     // first check if the plan still has the default date value of today!
     var p = moment($('input[name="date"]').val());     
-    if (selSerType.weekday != null && n.dayOfYear()==p.dayOfYear()) {
+    if (selSerType.weekday !== null && n.dayOfYear()==p.dayOfYear()) {
         var newDate = moment();
         var diff = selSerType.weekday - newDate.weekday();
         if (diff < 0) diff += 7;
@@ -412,7 +412,7 @@ function fillPlanDefaultValues(that)
     }
 
     // fill default leader name
-    if (selSerType.leader_id != null) {
+    if (selSerType.leader_id !== null) {
 
         $('#leader_id').val(selSerType.leader_id);
         
@@ -470,10 +470,11 @@ function reloadListOrderBy(field)
     // get current url and query string
     var currUrl = window.location.href.split('?');
     var newUrl  = currUrl[0] + '?';
+    var orderbyFound;
     if (currUrl.length > 1) 
     {
         var queryStr = currUrl[1].split('&');
-        var orderbyFound = false;
+        orderbyFound = false;
         if (queryStr.length > 1) {
             for (var i = queryStr.length - 1; i >= 0; i--) {
                 parms = queryStr[i].split('=');
@@ -703,16 +704,16 @@ function showRoleSelect(who, role_id)
             $('#show-instruments').html('(plays: '); }
         else {
             $('#show-instruments').html(); }
-        for (var i in instruments) {
-            var text = instruments[i].name;
-            if (i < instruments.length-1) {
+        for (var j in instruments) {
+            var text = instruments[j].name;
+            if (j < instruments.length-1) {
                 text += ', '; } 
             else {
                 text += ')'; }
             $('#show-instruments').append(text);
         }
     }
-    if (role_id==undefined) {
+    if (role_id===undefined) {
         // select the first item, so that the user MUST make a choice
         $('.role-selector-items').first().click();
     }
@@ -733,4 +734,4 @@ function toggleTrashed() {
 }
 
 
-/* ---------------------------------- END of main.js ------------------------------------------------##############################
+/* ---------------------------------- END of main.js ------------------------------------------------##############################*/

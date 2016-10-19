@@ -1,13 +1,13 @@
-# The *C*hurch *S*ervice *P*lanning *O*nline *T*ool
+# The *C*hurch *S*ervices *P*lanning *O*nline *T*ool
 
 c-SPOT was designed to help (small) churches plan their Sunday and Midweek services as well as other events.
 
-c-SPOT provides the tools to manage all event information - the order of services, resources, worship song lists for worship leaders, musicians and every other person involved in the service or event and allows all participants to use, add or modify information accordingly using the platform or device of their choice!
+c-SPOT is a collaboration tool which helps to manage all event information and processes - the Order of Service, staff, resources, worship song lists for worship leaders, musicians and every other person involved in the service or event and allows all participants to use, add or modify their relevant information - using the platform or device of their choice!
 
 It allows the management of song lyrics, music scores, guitar chords, event resources and teams in a user-friendly web application.
 
-- Frontend: Responsive design, runs on *any* device that supports a browser with javascript!
-- Create Order of Services with all relevant data (team (leaders, musicians, other functions), resources, songs, free slides, embedded videoclips etc)
+- Frontend: Responsive design, runs on *any* device that supports a browser with JavaScript!
+- Create Order of Service with all relevant data (team (leaders, musicians, other functions), resources, songs, free slides, embedded videoclips etc)
 - Can be customized for your church with logos and external links
 - Manage your team (staff) with their roles; also manage the resources needed for a service (rooms, devices etc.)
 - Present your songs in a slideshow fashion via a projector 
@@ -26,6 +26,19 @@ As a free and open source project, you can download ('clone') the sources, modif
 **Developers**, please feel free to contribute and make pull requests! **Testers**, please send your bug reports and enhancement suggestions!
 
 Check the [Installation instructions](#installation)
+
+### Tutorials
+
+In order to ease the familiarisation of users with the tool, a number of instructional videos will be recorded and published on YouTube on various topics:
+
+###### List of planned videos
+
+1. Generic User Interface and Login
+2. Event Planning and Leading
+3. Musicians
+4. Presenting Events
+5. Authors and Admins
+
 
 ### Why c-SPOT?
 
