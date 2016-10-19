@@ -84,8 +84,8 @@ $modalContent = '
                 </a>
             @endif
             @if ($item->song_id && $item->song->youtube_id)
-                <a class="dropdown-item hidden-md-up" target="new" 
-                    href="https://www.youtube.com/watch?v={{ $item->song->youtube_id }}">
+                <a class="dropdown-item" target="new" 
+                    href="{{ env('YOUTUBE_PLAY', 'https://www.youtube.com/watch?v=').$item->song->youtube_id }}">
                     <i class="red fa fa-youtube-play fa-lg"></i>Play on Youtube
                 </a>
             @endif
@@ -108,9 +108,14 @@ $modalContent = '
     -->
     <div class="btn-group pull-xs-right m-r-1">
         @if ($item->song_id && $item->song->ccli_no)
-            <a href="https://songselect.ccli.com/Songs/{{ $item->song->ccli_no }}" 
+            <a href="{{ env('SONGSELECT_URL', 'https://songselect.ccli.com/Songs/').$item->song->ccli_no }}" 
                 target="new" class="pull-xs-right btn btn-sm btn-info hidden-sm-down p-y-0">
             <img src="{{ url('/') }}/images/songselectlogo.png" width="25"></a>
+        @elseif ($item->song_id && $item->song->youtube_id)
+            <a class="pull-xs-right btn btn-sm btn-info hidden-sm-down" target="new" 
+                href="{{ env('YOUTUBE_PLAY', 'https://www.youtube.com/watch?v=').$item->song->youtube_id }}">
+                <i class="red fa fa-youtube-play fa-lg"></i>
+            </a>
         @else
             <a href="#" disabled="" 
                class="pull-xs-right btn btn-sm btn-outline-secondary hidden-lg-down">

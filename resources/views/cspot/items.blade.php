@@ -360,7 +360,7 @@
 						&nbsp;<i class="fa fa-tv fa-lg"></i>&nbsp;</a>
 					@endif
 
-					@if( (Auth::user()->ownsPlan($plan->id) && $plan->date >= \Carbon\Carbon::yesterday()) || Auth::user()->isAdmin() )
+					@if( (Auth::user()->ownsPlan($plan->id) && $plan->date >= \Carbon\Carbon::yesterday()){{--  || Auth::user()->isAdmin() --}} )
 						<span class="trashedButtons" style="display: {{ $item->deleted_at ? 'initial' : 'none' }}">
 							<a class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="left" title="Restore this item" 
 								href='{{ url('cspot/items/'.$item->id) }}/restore'>

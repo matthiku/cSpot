@@ -22,6 +22,7 @@
     <div id="main-content">
     <!-- ================================================================================ -->
 
+
         @if ($item->song_id )
             @if ($item->key)
                 <h4 class="red">{{ $item->key }}</h4>
@@ -48,6 +49,7 @@
                 </div>
             @endif
 
+
         
         @elseif ($item->files)
             @foreach ($item->files as $file)
@@ -57,6 +59,7 @@
                 </figure>
             @endforeach
         @endif
+
 
 
         @if ($bibleTexts)
@@ -79,7 +82,10 @@
     </div>
     <!-- ================================================================================ -->
 
+
+
     @include('cspot.snippets.present_navbar')
+
 
 
 @stop
