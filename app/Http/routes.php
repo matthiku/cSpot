@@ -35,13 +35,13 @@ Route::group(['middleware' => 'web'], function () {
 
 
     // API route to compile bible references
-    Route::get('bible/books',                           'Cspot\BibleController@books'); // get all books
-    Route::get('bible/books/all/chapters',              'Cspot\BibleController@allChapters'); // get chapter numbers of ALL books
+    Route::get('bible/books',                           'Cspot\BibleController@books');         // get all books
+    Route::get('bible/books/all/chapters',              'Cspot\BibleController@allChapters');   // get chapter numbers of ALL books
     Route::get('bible/books/all/verses',                'Cspot\BibleController@allVerses')->name('bible.books.all.verses'); // get chapter and verse numbers of ALL books
-    Route::get('bible/books/{book}',                    'Cspot\BibleController@chapters'); // get chapter numbers of a book
-    Route::get('bible/books/{book}/chapters/{chapter}', 'Cspot\BibleController@verses'); // get verse numbers of a chapter
+    Route::get('bible/books/{book}',                    'Cspot\BibleController@chapters');      // get chapter numbers of a book
+    Route::get('bible/books/{book}/chapters/{chapter}', 'Cspot\BibleController@verses');        // get verse numbers of a chapter
     // get bible texts
-    Route::get('bible/text/{version}/{book}/{chapter}/','Cspot\BibleController@getChapter'); // get bible text
+    Route::get('bible/text/{version}/{book}/{chapter}/','Cspot\BibleController@getChapter')->name('bible.chapter');     // get bible text
     Route::get('bible/passage/{version}/{book}/{chapter}/{verseFrom}/{verseTo}/','Cspot\BibleController@getBibleText'); // get bible passage
 
     // user confirms his partizipation with TOKEN (no login needed!)

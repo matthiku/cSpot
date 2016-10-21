@@ -171,8 +171,9 @@
         <p><kbd>PgDn</kbd> &nbsp; go to next item (skip remaining slides)</p>
         <p><kbd>PgUp</kbd> &nbsp; go to previous item (skip remaining slides)</p>
         <p><kbd>+</kbd> &nbsp; increase font size</p>
-        <p><kbd>+</kbd> &nbsp; decrease font size</p>
-        On <strong class="bg-warning">tablets</strong> or <strong class="bg-warning">phones</strong>, you should instead use the buttons provided at the bottom of this screen!'; 
+        <p><kbd>-</kbd> &nbsp; decrease font size</p>
+        <p><kbd>.</kbd> &nbsp; go to next bible verse (if not included in the initial reference!)</p>
+        On <strong class="bg-warning"> tablets </strong> or <strong class="bg-warning"> phones </strong>, you should instead use the buttons provided at the bottom of this screen!'; 
     ?>
 
     @include( 'cspot/snippets/modal', ['modalContent' => $modalContent, 'modalTitle' => $modalTitle ] )

@@ -39029,7 +39029,7 @@ function showNextSelect(fromOrTo, what)
         $('#'+fromOrTo+'-'+what).show();
 
         // minimum value for the 'to' verse is the 'from' verse
-        minNumber = 1
+        minNumber = 1;
         if (fromOrTo=='to' && what=='verse') {
             minNumber = $('#from-verse').val();
         }
@@ -39060,7 +39060,7 @@ function showNextSelect(fromOrTo, what)
 }
 function populateComment() {
     // ignore if nothing was selected
-    if ($('#from-book').val()==null || $('#from-book').val()==' ') { 
+    if ($('#from-book').val()===null || $('#from-book').val()==' ') { 
         return; }
 
     // check existing comment
@@ -39070,17 +39070,17 @@ function populateComment() {
     }
 
     // set default and minimum value identical with 'from' value
-    $('#comment').val( oldComment
-        + $('#from-book').val()+' '
-        + $('#from-chapter').val()+':'
-        + $('#from-verse').val() 
-        +($('#to-verse').val() != $('#from-verse').val() ? '-'+$('#to-verse').val() : '') + ' ('
-        + $('#version').val() + ')'
-        );
+    $('#comment').val( oldComment +
+        $('#from-book').val()+' ' +
+        $('#from-chapter').val()+':' +
+        $('#from-verse').val() + 
+        ($('#to-verse').val() != $('#from-verse').val() ? '-'+$('#to-verse').val() : '') + ' (' +
+        $('#version').val() + ')'
+    );
 
     $('#waiting').show();
     // now get the bible text via API and display it on the page
-    showScriptureText($('#version').val(), $('#from-book').val(), $('#from-chapter').val(), $('#from-verse').val(), $('#to-verse').val())
+    showScriptureText($('#version').val(), $('#from-book').val(), $('#from-chapter').val(), $('#from-verse').val(), $('#to-verse').val());
 
     $('#from-book').val('');
     emptyRefSelect('from', 'chapter');
@@ -39148,7 +39148,7 @@ function showSongHints(that, needle, limit)
     // get list of songs from global variable
     var haystackMP = cSpot.songList;
 
-    if (needle.length == 0) {
+    if (needle.length === 0) {
         $(that).html('');
         return;
     }
@@ -39156,16 +39156,16 @@ function showSongHints(that, needle, limit)
     var found = 'no match';
     needle = needle.toLowerCase();
     for (var i=0; i<haystackMP.length; i++) {
-        if ( haystackMP[i].title.toLowerCase().indexOf(needle)>=0 
-          || haystackMP[i].title_2.toLowerCase().indexOf(needle)>=0 
-          || haystackMP[i].book_ref.toLowerCase().indexOf(needle)>=0 ) {
+        if ( haystackMP[i].title.toLowerCase().indexOf(needle) >= 0 
+          || haystackMP[i].title_2.toLowerCase().indexOf(needle) >= 0 
+          || haystackMP[i].book_ref.toLowerCase().indexOf(needle) >= 0 ) {
 
             // are we limited to only show videoclips or slide items?
             if (limit=='clips') {
                 if ( ! (haystackMP[i].title_2.toLowerCase() == 'video' || haystackMP[i].title_2.toLowerCase() == 'slide') )
                     continue;
             }
-            if (count==0) found='';
+            if (count===0) found='';
             
             found+='<div class="radio"><label class="text-muted link"><input type="radio" onclick="$(\'#searchForSongsButton\').click();" name="haystack" id="needle-';
             found+=haystackMP[i].id + '" value="'+ haystackMP[i].id;
@@ -39273,7 +39273,7 @@ function fillPlanDefaultValues(that)
     var n = moment();
     // first check if the plan still has the default date value of today!
     var p = moment($('input[name="date"]').val());     
-    if (selSerType.weekday != null && n.dayOfYear()==p.dayOfYear()) {
+    if (selSerType.weekday !== null && n.dayOfYear()==p.dayOfYear()) {
         var newDate = moment();
         var diff = selSerType.weekday - newDate.weekday();
         if (diff < 0) diff += 7;
@@ -39282,7 +39282,7 @@ function fillPlanDefaultValues(that)
     }
 
     // fill default leader name
-    if (selSerType.leader_id != null) {
+    if (selSerType.leader_id !== null) {
 
         $('#leader_id').val(selSerType.leader_id);
         
@@ -39340,10 +39340,11 @@ function reloadListOrderBy(field)
     // get current url and query string
     var currUrl = window.location.href.split('?');
     var newUrl  = currUrl[0] + '?';
+    var orderbyFound;
     if (currUrl.length > 1) 
     {
         var queryStr = currUrl[1].split('&');
-        var orderbyFound = false;
+        orderbyFound = false;
         if (queryStr.length > 1) {
             for (var i = queryStr.length - 1; i >= 0; i--) {
                 parms = queryStr[i].split('=');
@@ -39573,16 +39574,16 @@ function showRoleSelect(who, role_id)
             $('#show-instruments').html('(plays: '); }
         else {
             $('#show-instruments').html(); }
-        for (var i in instruments) {
-            var text = instruments[i].name;
-            if (i < instruments.length-1) {
+        for (var j in instruments) {
+            var text = instruments[j].name;
+            if (j < instruments.length-1) {
                 text += ', '; } 
             else {
                 text += ')'; }
             $('#show-instruments').append(text);
         }
     }
-    if (role_id==undefined) {
+    if (role_id===undefined) {
         // select the first item, so that the user MUST make a choice
         $('.role-selector-items').first().click();
     }
@@ -39603,7 +39604,8 @@ function toggleTrashed() {
 }
 
 
-/* ---------------------------------- END of main.js ------------------------------------------------##############################
+/* ---------------------------------- END of main.js ------------------------------------------------##############################*/
+
 
 /*\
 |  \
@@ -40068,35 +40070,37 @@ $(document).ready(function() {
             // key codes: 37=left arrow, 39=right, 38=up, 40=down, 34=PgDown, 33=pgUp, 
             //            36=home, 35=End, 32=space, 27=Esc, 66=e
             //
-            ;;;console.log('pressed key code: '+event.keyCode);
+            // ;;;console.log('pressed key code: '+event.keyCode);
             switch (event.keyCode) {
                 case 37: advancePresentation('back'); break; // left arrow
                 case 33: navigateTo('previous-item'); break; // left PgUp
-                case 36: navigateTo('first-item');   break; // key 'home'
-                case 39: advancePresentation();     break; // key right arrow
+                case 36: navigateTo('first-item');   break; // 'home'
+                case 39: advancePresentation();     break; // right arrow
                 case 32: advancePresentation();    break; // spacebar
-                case 34: navigateTo('next-item'); break; // key 'PgDown'
-                case 35: navigateTo('last-item'); break; // key 'end'
-                case 27: navigateTo('back');     break; // key 'Esc'
-                case 68: navigateTo('edit');    break; // key 'd'
-                case 83: jumpTo('start-lyrics');break; // key 's'
-                case 80: jumpTo('prechorus'); break; // key 'p'
-                case 49: jumpTo('verse1'); break; // key '1'
-                case 50: jumpTo('verse2'); break; // key '2'
-                case 51: jumpTo('verse3'); break; // key '3'
-                case 52: jumpTo('verse4'); break; // key '4'
-                case 53: jumpTo('verse5'); break; // key '5'
-                case 53: jumpTo('verse6'); break; // key '6'
-                case 53: jumpTo('verse6'); break; // key '6'
-                case 53: jumpTo('verse7'); break; // key '7'
-                case 67: jumpTo('chorus1'); break; // key 'c'
-                case 75: jumpTo('chorus2');  break; // key 'k'
-                case 66: jumpTo('bridge');     break; // key 'b'
-                case 69: jumpTo('ending');       break; // key 'e'
-                case 76: $('.lyrics-parts').toggle();break; // key 'l', (letter l) show all lyrics
-                case 96: showBlankScreen();          break; // key '0'
-                case 109: $('#decr-font').click();   break; // key '-'
-                case 107: $('#incr-font').click();   break; // key '+'
+                case 34: navigateTo('next-item'); break; // 'PgDown'
+                case 35: navigateTo('last-item'); break; // 'end'
+                case 27: navigateTo('back');     break; // 'Esc'
+                case 68: navigateTo('edit');    break; // 'd'
+                case 83: jumpTo('start-lyrics');break; // 's'
+                case 80: jumpTo('prechorus'); break; // 'p'
+                case 49: jumpTo('verse1'); break; // '1'
+                case 50: jumpTo('verse2'); break; // '2'
+                case 51: jumpTo('verse3'); break; // '3'
+                case 52: jumpTo('verse4'); break; // '4'
+                case 53: jumpTo('verse5'); break; // '5'
+                case 53: jumpTo('verse6'); break; // '6'
+                case 53: jumpTo('verse6'); break; // '6'
+                case 53: jumpTo('verse7'); break; // '7'
+                case 67: jumpTo('chorus1'); break; // 'c'
+                case 75: jumpTo('chorus2');  break; // 'k'
+                case 66: jumpTo('bridge');     break; // 'b'
+                case 69: jumpTo('ending');       break; // 'e'
+                case 76: $('.lyrics-parts').toggle();break; // 'l', (letter l) show all lyrics
+                case 96: showBlankScreen();          break; // '0'
+                case 109: $('#decr-font').click();   break; // '-'
+                case 107: $('#incr-font').click();   break; // '+'
+                case 188: recallPrevBibleverse();   break; // '.'  - jumpt to next bible verse
+                case 190: recallNextBibleverse();  break; // '.'  - jumpt to next bible verse
                 default: break;
             }
         });
@@ -41864,6 +41868,9 @@ function updateFileInformation()
 \*/
 
 
+if (typeof($)===undefined)
+    var $=function() { alert('no jQuery!'); };
+ 
 
 /*\
 |* >------------------------------------------ PREPARE IMAGE SLIDES
@@ -41894,7 +41901,7 @@ function prepareImages()
     });
 
     // activate (show) the first image
-    todo = $('#slides-progress-0').attr('onclick');
+    var todo = $('#slides-progress-0').attr('onclick');
     eval(todo);
 }
 
@@ -41938,10 +41945,10 @@ function reFormatBibleText()
     var verse_from=0, verse_to=199, verse, verno=1;
 
     // Now analyze each paragraph, reformat the bible text and add it back into the container
-    $(p).each( function(entry) {
-        text = $(this).text();
-        clas = $(this).attr('class')
-        ;;;console.log( 'CLASS: ' + clas + ' CONTENT: ' + $(this).html() );
+    $(p).each( function() {
+        var text = $(this).text();
+        var clas = $(this).attr('class')
+        // ;;;console.log( 'CLASS: ' + clas + ' CONTENT: ' + $(this).html() );
 
         // write the bible ref as title
         if (clas=='bible-text-present-ref') {
@@ -41955,7 +41962,7 @@ function reFormatBibleText()
                 // is the bible text in the html source the same as in the reference?
                 if (ref.book+ref.chapter == rfc.book+rfc.chapter ) {
                     // check if there was a vers unprinted from the previous Ref
-                    if (verse != undefined && verse.length>2) { 
+                    if (verse !== undefined && verse.length>2) { 
                         appendBibleText('p',verse,verno); verse = ''; }
                     // print the new Ref
                     if (refNo == index) {
@@ -41964,23 +41971,26 @@ function reFormatBibleText()
                     }
                     verse_from = rfc.verse_from;
                     // if verse_to is ommitted, we use verse_from
-                    if (rfc.verse_to != undefined)
+                    if (rfc.verse_to !== undefined)
                         verse_to   = rfc.verse_to;
                     else 
                         verse_to   = rfc.verse_from;
                 }
+                // request whole chapter and write it into local cache for later reference
+                localCacheBibleText( rfc );
             });
         }
 
         // Identify and disect NIV texts
         var cl4=clas.substr(0,4);
         var cl1=clas.substr(0,1);
+        var elem;
         if (cl4=='line' || cl4=='pcon' || cl4=='reg' ) {
             // get all elements in one array
             elem = $(this).contents();
             // analyze each element and separate verse numbers and bible text
             $(elem).each( function() {
-                eltext = $(this).text();
+                var eltext = $(this).text();
                 // if (eltext=='13') {debugger;}
                 var thisCls = $(this).attr('class');
                 if (thisCls=='reftext') {
@@ -42004,7 +42014,7 @@ function reFormatBibleText()
             elem = $(this).contents();
             // analyze each elements and separate verse numbers and bible text
             $(elem).each( function() {
-                eltext = $(this).text();
+                var eltext = $(this).text();
                 if ($(this).attr('class')=='v') {
                     if (verse && verno != eltext) {
                         appendBibleText('p',verse,verno); }
@@ -42017,13 +42027,17 @@ function reFormatBibleText()
         }
 
         // if the verse is incomplete, it is because we need a mew line
-        if ( verse != undefined && verse.length>2 ) { verse += '<br>'; }
+        if ( verse !== undefined && verse.length>2 ) { verse += '<br>'; }
 
 
     });
     // write remaining verse if not empty or beyond scope
-    if ( verse != undefined  &&  verse.length > 2  &&  (1*verno <= 1*verse_to || !$.isNumeric(verno)) ) {
-        appendBibleText('p',verse,verno) }
+    if ( verse !== undefined  &&  verse.length > 2  &&  (1*verno <= 1*verse_to || !$.isNumeric(verno)) ) {
+        appendBibleText( 'p', verse, verno ) 
+    }
+
+    // pull whole chapter from backend and write it to the Local Storage
+    // TODO
 
     // all is set and we can show the first verse
     advancePresentation();
@@ -42036,9 +42050,9 @@ function splitBref(text)
 {
     if (!text) {return;}
 
-    arr = new Array;
-    ref = text.split(' ');
-    nr = 0
+    var arr = {};
+    var ref = text.split(' ');
+    var nr = 0
     // check if book name starts with a number
     if ($.isNumeric(ref[0])) { 
         arr.book = ref[nr++] +' '+ ref[nr++]; }
@@ -42047,17 +42061,17 @@ function splitBref(text)
     else { 
         arr.book = ref[nr++]; }
     // detect chapter and verse
-    chve = ref[nr++].split(':');
+    var chve = ref[nr++].split(':');
     arr.chapter = chve[0];
     // is there a verse reference?
     if (chve.length>1) {
         // detect verse_from and verse_to
-        vrs = chve[1].split('-');
+        var vrs = chve[1].split('-');
         arr.verse_from = vrs[0];
         // analyze verse_to
         if (vrs.length>1) {
             // there could be another reference being attached...
-            vto = vrs[1].split(/[,;]/);
+            var vto = vrs[1].split(/[,;]/);
             arr.verse_to = vto[0];
         }
     } 
@@ -42067,22 +42081,149 @@ function splitBref(text)
         arr.verse_to = 199;
     }
 
-    // name of the bible version
-    arr.version = ref[nr];
+    // name of the bible version (without brackets!)
+    arr.version = ref[nr]
+    if (arr.version)
+        arr.version = arr.version.replace(/(\(|\))/g,'');
 
     // problem with differing naming conventions for Psalm in NIV vs others
-    if (arr.book=='Psalms') { arr.book='Psalm' };
+    if (arr.book=='Psalms') 
+        arr.book='Psalm';
     return arr;
 }
+/* save a chapter to the local storage for later reference
+    if it's not already cached...
+*/
+function localCacheBibleText( bRef ) 
+{
+    // body...
+    var refName = bRef.version+'.'+bRef.book+'.'+bRef.chapter;
+    ;;;console.log('trying to get full chapter of '+refName+' from local storage or the server');
+    var x = localStorage.getItem( refName );
+    if (x===null) {
+        ;;;console.log('Not found locally - getting it from server: '+refName);
+        // get chapter via AJAX
+        $.get( __app_url+'/bible/text/'+bRef.version+'/'+bRef.book+'/'+bRef.chapter )
+            .done( function(data) {
+                ;;;console.log('storing ' + refName + ' to LocalStorage');
+                if (data.verses!==undefined)
+                    localStorage.setItem( refName, JSON.stringify(data) );
+                if (data.response!==undefined)
+                    localStorage.setItem( refName, JSON.stringify(data.response.search.result.passages) );
+            });
+    }
+}
+/* get next bible verse from local storage (or server) and present it now
+*/
+function recallNextBibleverse()
+{
+    // first, get the last verse of the original bible ref
+    var hdr = $('#bible-text-ref-header');
+    var bRef = $(hdr).text();
+    if (bRef) 
+        bRef = splitBref(bRef);
+    else
+        return; // no bible reference found!
+
+    // get handle on last shown verse
+    var lastVerse = $('#'+bRef.verse_to);
+
+    // now check if we already have the last verse in a chapter
+    if ( $(lastVerse).css('display')=='none'  ||  
+         $(lastVerse).css('display')===undefined ) {
+        // make sure we have the current chapter in local storage
+        localCacheBibleText( bRef );
+
+        advancePresentation(); // go to the next, original verse
+        return; // user has not yet advanced to the last verse of the original reference
+    }
+
+    // now clone the last shown verse, so that we can use it for the next verse
+    var nextVerse = lastVerse.clone();
+
+    // get the next verse from local storage / compose the key
+    // but we can't advance yet unless we have the text in local storage!
+    var stor = getLocalStoreBref(bRef);
+    if (stor) stor = JSON.parse(stor);
+    else return;
+
+
+    // start putting the next chapter also into local storage
+    var cRef = JSON.parse( JSON.stringify(bRef) );  // clone the object
+    cRef.chapter = 1.0*cRef.chapter + 1;
+    if (cRef.chapter <= Object.keys(cSpot.bibleBooks[bRef.book]).length) {
+        localCacheBibleText( cRef );
+    }
+
+    // check if the next verse still is in the same chapter
+    if (bRef.verse_to < cSpot.bibleBooks[bRef.book][bRef.chapter]) {
+        bRef.verse_to = 1.0 * bRef.verse_to + 1;
+    }
+    // or in the next chapter of the same book
+    else if (bRef.chapter <= Object.keys(cSpot.bibleBooks[bRef.book]).length) {
+        bRef.verse_to = 1;
+        bRef.verse_from = 1;
+        bRef.chapter = 1.0 * bRef.chapter + 1;
+        // get the new chapter now
+        stor = getLocalStoreBref(bRef);
+        if (stor) stor = JSON.parse(stor);
+        else return;
+        // we also need to remove from the DOM all verses from the previous chapter, 
+        // as their IDs are the actual verse number and would be duplicates!
+        $('.bible-text-present-parts').remove();
+    }
+    // we do not cross book boundaries
+    else return;
+
+
+    // find the next verse in the array of verses
+    var a = stor.verses.find(findVerse, bRef.verse_to);
+    if (a===undefined) 
+        return;
+
+    // hide the previous verses
+    $('.bible-text-present-parts').hide();
+
+    // reformat the verse and insert it into the presentation
+    if (a.text) {
+        $(nextVerse).html(a.text);
+        $(hdr).after(nextVerse);
+    }
+    else return;
+
+    // modify the new verse paragraph accordingly
+    $(nextVerse).children('h3').remove();        // remove a possible paragraph header
+    $(nextVerse).attr('id', bRef.verse_to);                // add the usual id 
+    // correct the bible text reference header:
+    $('#bible-text-ref-header').text(bRef.book+' '+bRef.chapter+':'+bRef.verse_from+'-'+bRef.verse_to+' '+bRef.version.toUpperCase());
+    // we should also remove the Progress Indicators:
+    $('#lyrics-sequence-nav').remove();
+
+}
+
+function getLocalStoreBref(bRef)
+{
+    var stor = localStorage.getItem( bRef.version+'.'+bRef.book+'.'+bRef.chapter );
+    if (stor)
+        return stor;
+    // as it's not yet in local storage, get it from the server
+    localCacheBibleText( bRef );    
+}
+
+function findVerse(element, index, array)
+{
+    return element.verse == this;
+}
+
 /*
     Append the reformatted bible text to the presentation and add a reference
     into the Sequence Indicator list in the Navbar (bottom right)
 */
 function appendBibleText(type, text, verno)
 {
-    style = '';
-    parts = '" ';
-    id    = ' id="'+verno+'">';  // name of the SLIDE
+    var style = '';
+    var parts = '" ';
+    var id    = ' id="'+verno+'">';  // name of the SLIDE
 
     // actual bible text is inserted as <p> element, and hidden at first
     if (type=='p') {
@@ -42094,7 +42235,7 @@ function appendBibleText(type, text, verno)
     if (type=='h1') {
         // if there are multiple bible references in one item, we only 
         // want to have one H1 element, so we attach the next bible ref to the existing H1
-        hText = $('#bible-text-ref-header').text();
+        var hText = $('#bible-text-ref-header').text();
         if (hText != '') {
             formatBibleRefHeader(hText, text);
             return;
@@ -42111,12 +42252,12 @@ function appendBibleText(type, text, verno)
 */
 function formatBibleRefHeader( exisText, newText) {
     // split the references into a bRef array
-    rfc = splitBref(exisText); // existing header
-    bRef = splitBref(newText); // next header
+    var rfc = splitBref(exisText); // existing header
+    var bRef = splitBref(newText); // next header
 
     if (rfc.version==bRef.version) {
-        et = exisText.split(' ');
-        exisRef = et[0]+' '+et[1];
+        var et = exisText.split(' ');
+        var exisRef = et[0]+' '+et[1];
         // are we still in the same book with the new text?
         if (rfc.book==bRef.book) {
             // same chapter
@@ -42152,22 +42293,22 @@ function formatBibleRefHeader( exisText, newText) {
 function compareLyricPartsWithSequence()
 {
     // get the predefined sequence
-    sequenceDiv= $('#sequence').text();
+    var sequenceDiv= $('#sequence').text();
     //console.log('found predefined sequence: ' + sequenceDiv);
-    sequence = ( $('#sequence').text() ).split(',');
+    var sequence = ( $('#sequence').text() ).split(',');
 
-    newSequence = '';
-    nr = 0;
+    var newSequence = '';
+    var nr = 0;
     // walk through the pre-defined sequence
     for (var i in sequence) {
         // what kind of lyric parts do we have (verse or chorus etc)
-        type = identifyLyricsHeadings('['+sequence[i]+']');
+        var type = identifyLyricsHeadings('['+sequence[i]+']');
         console.log('looking for part of type ' + type);
         // for each item in the sequence, find the corresponding lyric part(s)
-        parts = $('[id^='+type+']');
+        var parts = $('[id^='+type+']');
         // for each part, add an indicator into the new sequence
         $(parts).each( function(entry){
-            headerCode = $(this).data('header-code');
+            var headerCode = $(this).data('header-code');
             newSequence += headerCode + ',' ;
             insertSeqNavInd(headerCode, nr);
             nr += 1;
@@ -42198,14 +42339,15 @@ function createDefaultLyricSequence()
     var verseNumInt = 0 // 
     var insChorus = 1; // indicates verse number afer which we have to insert a chorus
     var chorusSeq=[]; // contains CSV list of chorus parts
+    var sequence;
 
     // go through the list of lyric parts (as generated in function "reDisplayLyrics()")
     $(lyrList).each(function(entry) 
     {
-        id = $(this).attr('id');  // get name of that lyric part
+        var id = $(this).attr('id');  // get name of that lyric part
         var pname = id.substr(0,5);
         if ( pname == 'verse' ) {
-            verseNum = id.substr(5);
+            var verseNum = id.substr(5);
             verseNumInt = 1*id.substr(5,1);
             if (chorus && verseNumInt > insChorus) {
                 for (var i in chorusSeq) {
@@ -42225,8 +42367,7 @@ function createDefaultLyricSequence()
         // collect all chorus parts until we insert them before the next verse or at the end
         if (pname == 'choru') {
             chorus = true;
-            chPart = 'c1'+id.substr(7);
-            chorusSeq.push( chPart );  
+            chorusSeq.push( 'c1'+id.substr(7) );  
         }
     });
     // insert remaining chorus, if needed
@@ -42640,8 +42781,8 @@ function insertSeqNavInd(what, nr, where)
 // special formatting for sequence indicators of lyric parts
 function formatSeqInd(code){
     code  = code.toString();
-    char1 = code.substr(0,1);
-    char2 = code.substr(1,1);
+    var char1 = code.substr(0,1);
+    var char2 = code.substr(1,1);
     if ($.isNumeric(char1)) {
         if ( code.length==1  ||  $.isNumeric(char2) ) 
             return code;
@@ -42677,13 +42818,15 @@ function advancePresentation(direction)
     // make sure the list of indicators doesn't get too long
     checkSequenceIndicatorLength();
 
+    var seq, found;
+
     if ($('#present-lyrics').length > 0) {
 
         // make sure the main lyrics div is visible
         $('#present-lyrics').show(); 
 
         // do we have a specific sequence provided?
-        var seq = $('.lyrics-progress-indicator');
+        seq = $('.lyrics-progress-indicator');
 
         // no sequence indicators found! Hopefully the default lyrics block was created...
         if (seq.length < 1) {
@@ -42708,7 +42851,7 @@ function advancePresentation(direction)
                     $(this).data().showStatus = 'done';
                     $('.lyrics-progress-indicator').removeClass('bg-danger');
                     $(this).addClass('bg-danger');
-                    todo = $(this).attr('onclick');
+                    var todo = $(this).attr('onclick');
                     eval( todo );
                     return false;
                 }
@@ -42733,7 +42876,7 @@ function advancePresentation(direction)
                     $(seq[i]).data().showStatus = 'unshown';
                     $('.lyrics-progress-indicator').removeClass('bg-danger');
                     $(seq[i-1]).addClass('bg-danger');
-                    todo = $(seq[i-1]).attr('onclick');
+                    var todo = $(seq[i-1]).attr('onclick');
                     eval( todo );
                     return;
                 } 
@@ -42748,7 +42891,13 @@ function advancePresentation(direction)
 
     // we are showing a bible text
     else if ($('.bible-text-present').length>0) {
-        var seq = $('.bible-progress-indicator');
+        seq = $('.bible-progress-indicator');
+        // check if there is a bible text
+        if (seq.length===0) {
+            // missing bible text, so we stay on this slide
+            return;
+        }
+
         // loop through all sequence items and find the next that wasn't shown yet
         found = false;
         if (direction=='forward') {
@@ -42790,16 +42939,15 @@ function advancePresentation(direction)
 
     // we are showing images
     else if ($('.slide-background-image').length>0) {
-        var seq = $('.slides-progress-indicator');
+        seq = $('.slides-progress-indicator');
         // loop through all sequence items and find the next that wasn't shown yet
         found = false;
         if (direction=='forward') {
             $(seq).each(function(entry){
                 if ( $(this).data().showStatus  == 'unshown' ) {
                     found = true;
-                    var thisID = $(this).attr('id')
                     $(this).data().showStatus = 'done';
-                    showNextSlide(thisID,'.slides');
+                    showNextSlide( $(this).attr('id'), '.slides' );
                     return false; // escape the each loop...
                 }
             });
@@ -42815,8 +42963,7 @@ function advancePresentation(direction)
                     if (i<1) {break;} // we can't move any further back....
                     found=true;
                     $(seq[i]).data().showStatus = 'unshown';  // make this part 'unshown'
-                    var thisID = $(seq[i-1]).attr('id')
-                    showNextSlide(thisID,'.slides','back');
+                    showNextSlide( $(seq[i-1]).attr('id'), '.slides','back' );
                     break; // escape the for loop...
                 }
             }

@@ -22,6 +22,78 @@ class BibleController extends Controller
 {
 
 
+    protected $booksShort = array(
+        'genesis' => 'gen',
+        'exodus' => 'ex',
+        'leviticus' => 'lev',
+        'numbers' => 'num',
+        'deuteronomy' => 'deut',
+        'joshua' => 'josh',
+        'judges' => 'jdug',
+        'ruth' => 'ruth',
+        '1samuel' => '1sam',
+        '2samuel' => '2sam',
+        '1kings' => '1king',
+        '2kings' => '2king',
+        '1chronicles' => '1chron',
+        '2chronicles' => '2chron',
+        'ezra' => 'ezra',
+        'nehemiah' => 'neh',
+        'esther' => 'est',
+        'job' => 'job',
+        'psalm' => 'ps',
+        'proverbs' => 'prov',
+        'ecclesiastes' => 'eccles',
+        'song of solomon' => 'song',
+        'isaiah' => 'isa',
+        'jeremiah' => 'jer',
+        'lamentations' => 'lam',
+        'ezekiel' => 'ezek',
+        'daniel' => 'dan',
+        'hosea' => 'hos',
+        'joel' => 'joel',
+        'amos' => 'amos',
+        'obadiah' => 'obad',
+        'jonah' => 'jonah',
+        'micah' => 'mic',
+        'nahum' => 'nah',
+        'habakkuk' => 'hab',
+        'zephaniah' => 'zeph',
+        'haggai' => 'hag',
+        'zechariah' => 'zech',
+        'malachi' => 'mal',
+        'matthew' => 'matt',
+        'mark' => 'mark',
+        'luke' => 'luke',
+        'john' => 'john',
+        'acts' => 'acts',
+        'romans' => 'rom',
+        '1corinthians' => '1cor',
+        '2corinthians' => '2cor',
+        'galatians' => 'gal',
+        'ephesians' => 'eph',
+        'philippians' => 'phil',
+        'colossians' => 'col',
+        '1thessalonians' => '1thess',
+        '2thessalonians' => '2thess',
+        '1timothy' => '1tim',
+        '2timothy' => '2tim',
+        'titus' => 'titus',
+        'philemon' => 'philem',
+        'hebrews' => 'heb',
+        'james' => 'james',
+        '1peter' => '1pet',
+        '2peter' => '2pet',
+        '1john' => '1john',
+        '2john' => '2john',
+        '3john' => '3john',
+        'jude' => 'jude',
+        'revelation' => 'rev',
+    );
+    
+
+
+
     protected function getBible()
     {
     	$bibleBooks = new BibleBooks();
@@ -123,10 +195,7 @@ class BibleController extends Controller
         curl_close($ch);
 
         // save passages in cache with an expiration date
-        $expiresAt = Carbon::now()->addDays( env('BIBLE_PASSAGES_EXPIRATION_DAYS', 15) );
-        Cache::put( $query, $response, $expiresAt );
-
-        Log::info('retrieving bible passage from remote and saving to cache: '.$query);
+        $this->saveToCache($query, $response);
 
         return $response;
     }
@@ -171,6 +240,10 @@ class BibleController extends Controller
         libxml_use_internal_errors(true);
         $dom->loadHTML($html);
         $btext = $dom->getElementById('leftbox');
+
+        // unexpected response, return the html code
+        if (! $btext) return $html;
+
         foreach ($btext->getElementsByTagName('div') as $ch) {
             if ($ch->getAttribute('class')=='chap') {
                 $p[0]->text = $ch->ownerDocument->saveHTML($ch);
@@ -184,14 +257,23 @@ class BibleController extends Controller
         }
 
         // save passages in cache with an expiration date
-        $expiresAt = Carbon::now()->addDays( env('BIBLE_PASSAGES_EXPIRATION_DAYS', 15) );
-        Cache::put( $url, $rr, $expiresAt );
-
-        Log::info('retrieving bible passage from remote and saving to cache: '.$url);
+        $this->saveToCache( $url, $rr);
 
         return $rr;
     }
 
+
+    /**
+     * save data to cache
+     * 
+     * param $key string key to identify the data
+     * param $data string data to be cached
+     */
+    protected function saveToCache($key, $data)
+    {
+        $expiresAt = Carbon::now()->addDays( env('BIBLE_PASSAGES_EXPIRATION_DAYS', 15) );
+        Cache::put( $key, $data, $expiresAt );
+    }
 
     /**
      * Get bible text (whole chapters) via API from bibles.org
@@ -199,16 +281,47 @@ class BibleController extends Controller
     public function getChapter($version, $book, $chapter)
     {
         // only certain versions are accessible via the API
-        $versions = array( 'NASB', 'ESV', 'MSG', 'AMP', 'CEVUK', 'KJVA');
-        if ( ! in_array($version, $versions) ) {
-            $version = "ESV";
+        $versions = array('NASB', 'ESV', 'MSG', 'AMP', 'CEVUK', 'KJV');
+        if ( in_array(strtoupper($version), $versions) ) {
+
+            // Need to get the abbrev of the book - so change to lowercase and ignore all blanks 
+            $book = preg_replace( '/\s/', '', strtolower($book) );
+            if (isset($this->booksShort[$book]))
+                $book = $this->booksShort[$book];
+            else
+                return response()->json("request failed, incorrect book name!", 404);
+
+            $url   = "https://bibles.org/v2/chapters/eng-$version:$book.$chapter/verses.js";
+            $query = "$version+$book+$chapter";
+
+            if ( Cache::has($query) )
+                $text = Cache::get( $query );
+            else {
+                $text = $this->getWebsite( $url );
+                if ($text)
+                    $this->saveToCache($query, $text);
+            }
+
+            if ($text)
+                return response()->json( $text->response );
         } 
 
-        $url = "https://bibles.org/v2/chapters/eng-$version:$book.$chapter.js";
+        // try biblehub for other translations/versions
+        $url  = 'http://biblehub.com/'.strtolower($version).'/'.strtolower($book).'/'.$chapter.'.htm';
 
-        return response()->json( $this->getWebsite($url) );
+        if (Cache::has($url)) {
+            $result = Cache::get($url);
+        } else {
+            $result = $this->getBibleHubText( $url, $book, $chapter );
+        }
 
+        if ($result) {
+            return response()->json( $result );
+        }
+
+        return response()->json("request failed, no bible text fetched!", 404);
     }
+
 
     /**
      * Get bible text (whole passages or single verses) via API from bibles.org
@@ -224,7 +337,7 @@ class BibleController extends Controller
             $url   = "https://bibles.org/v2/passages.js?q[]=";
             $query = "$book+$chapter:$verseFrom-$verseTo&version=eng-$version";
 
-            // restrieve the passage from the cache, if it exists, otherwise rquest it again
+            // restrieve the passage from the cache, if it exists, otherwise request it again
             if ( Cache::has( $query ) ) {
                 $result = Cache::get( $query );
             } else {
@@ -236,7 +349,7 @@ class BibleController extends Controller
             }                
         } 
 
-        // needs to be correct of biblehub.com
+        // book name needs to be corrected for use on biblehub.com
         if ($book=='Psalm') $book = 'Psalms';
         $book = str_replace(' ', '_', $book);
 

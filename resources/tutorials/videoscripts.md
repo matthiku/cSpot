@@ -1,6 +1,8 @@
-# Outline of the educational videos for c-SPOT
+# Outline for the Educational Videos for c-SPOT
 
-As most people are unwilling to read instructions, the best form to educate people to use a tool are instructional videos.
+As most people are unwilling to read instructions, the best form to educate people on how to use a tool are instructional videos.
+
+They will be delivered in the form of screen recordings where the various concepts are visible demonstrated and explained.
 
 ## List of planned videos
 
@@ -45,3 +47,12 @@ This is also the sequence in which they will be created.
 5. Using keyboard shortcuts
 6. Adding items 'on-the-fly'
 7. Re-arranging lyrics for better presentation
+
+#### 5. Authors and Admins
+1. Installation
+2. configuration and customisation
+3. User Management incl. user roles and musicians
+4. Database overview
+5. Supplements: Event Types, Default Items, Files and resources
+6. Songs, videoclips and slideshows
+7. License Management

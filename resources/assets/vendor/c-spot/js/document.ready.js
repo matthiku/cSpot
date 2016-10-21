@@ -462,35 +462,37 @@ $(document).ready(function() {
             // key codes: 37=left arrow, 39=right, 38=up, 40=down, 34=PgDown, 33=pgUp, 
             //            36=home, 35=End, 32=space, 27=Esc, 66=e
             //
-            ;;;console.log('pressed key code: '+event.keyCode);
+            // ;;;console.log('pressed key code: '+event.keyCode);
             switch (event.keyCode) {
                 case 37: advancePresentation('back'); break; // left arrow
                 case 33: navigateTo('previous-item'); break; // left PgUp
-                case 36: navigateTo('first-item');   break; // key 'home'
-                case 39: advancePresentation();     break; // key right arrow
+                case 36: navigateTo('first-item');   break; // 'home'
+                case 39: advancePresentation();     break; // right arrow
                 case 32: advancePresentation();    break; // spacebar
-                case 34: navigateTo('next-item'); break; // key 'PgDown'
-                case 35: navigateTo('last-item'); break; // key 'end'
-                case 27: navigateTo('back');     break; // key 'Esc'
-                case 68: navigateTo('edit');    break; // key 'd'
-                case 83: jumpTo('start-lyrics');break; // key 's'
-                case 80: jumpTo('prechorus'); break; // key 'p'
-                case 49: jumpTo('verse1'); break; // key '1'
-                case 50: jumpTo('verse2'); break; // key '2'
-                case 51: jumpTo('verse3'); break; // key '3'
-                case 52: jumpTo('verse4'); break; // key '4'
-                case 53: jumpTo('verse5'); break; // key '5'
-                case 53: jumpTo('verse6'); break; // key '6'
-                case 53: jumpTo('verse6'); break; // key '6'
-                case 53: jumpTo('verse7'); break; // key '7'
-                case 67: jumpTo('chorus1'); break; // key 'c'
-                case 75: jumpTo('chorus2');  break; // key 'k'
-                case 66: jumpTo('bridge');     break; // key 'b'
-                case 69: jumpTo('ending');       break; // key 'e'
-                case 76: $('.lyrics-parts').toggle();break; // key 'l', (letter l) show all lyrics
-                case 96: showBlankScreen();          break; // key '0'
-                case 109: $('#decr-font').click();   break; // key '-'
-                case 107: $('#incr-font').click();   break; // key '+'
+                case 34: navigateTo('next-item'); break; // 'PgDown'
+                case 35: navigateTo('last-item'); break; // 'end'
+                case 27: navigateTo('back');     break; // 'Esc'
+                case 68: navigateTo('edit');    break; // 'd'
+                case 83: jumpTo('start-lyrics');break; // 's'
+                case 80: jumpTo('prechorus'); break; // 'p'
+                case 49: jumpTo('verse1'); break; // '1'
+                case 50: jumpTo('verse2'); break; // '2'
+                case 51: jumpTo('verse3'); break; // '3'
+                case 52: jumpTo('verse4'); break; // '4'
+                case 53: jumpTo('verse5'); break; // '5'
+                case 53: jumpTo('verse6'); break; // '6'
+                case 53: jumpTo('verse6'); break; // '6'
+                case 53: jumpTo('verse7'); break; // '7'
+                case 67: jumpTo('chorus1'); break; // 'c'
+                case 75: jumpTo('chorus2');  break; // 'k'
+                case 66: jumpTo('bridge');     break; // 'b'
+                case 69: jumpTo('ending');       break; // 'e'
+                case 76: $('.lyrics-parts').toggle();break; // 'l', (letter l) show all lyrics
+                case 96: showBlankScreen();          break; // '0'
+                case 109: $('#decr-font').click();   break; // '-'
+                case 107: $('#incr-font').click();   break; // '+'
+                case 188: recallPrevBibleverse();   break; // '.'  - jumpt to next bible verse
+                case 190: recallNextBibleverse();  break; // '.'  - jumpt to next bible verse
                 default: break;
             }
         });
