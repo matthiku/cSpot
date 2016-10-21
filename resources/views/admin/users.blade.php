@@ -25,20 +25,6 @@
 
 	<form class="form-inline pull-xs-right m-l-1">
 		<div class="form-group">
-			<label for="rolefilter">Show only</label>
-			<select class="custom-select" id="rolefilter" onchange="location.href='{{url('admin/users')}}?filterby=role&filtervalue='+$(this).val()">
-				<option {{ Request::has('filterby') && Request::get('filterby')=='role' ? '' : 'selected' }} value="all">(select role)</option>
-				@foreach ($roles as $role)
-					<option 
-						{{ (Request::has('filterby') && Request::get('filterby')=='role' && Request::get('filtervalue')==$role->id) ? 'selected' : '' }} 
-						value="{{$role->id}}">{{$role->name}}</option>
-				@endforeach
-			</select>
-		</div>
-	</form>
-
-	<form class="form-inline pull-xs-right">
-		<div class="form-group">
 			<label for="instrumentfilter">Users playing</label>
 			<select class="custom-select" id="instrumentfilter" onchange="location.href='{{url('admin/users')}}?filterby=instrument&filtervalue='+$(this).val()">
 				<option {{ Request::has('filterby') && Request::get('filterby')=='instrument' ? '' : 'selected' }} value="all">instrument</option>
@@ -51,6 +37,20 @@
 		</div>
 	</form>
 
+
+	<form class="form-inline pull-xs-right">
+		<div class="form-group">
+			<label for="rolefilter">Show only</label>
+			<select class="custom-select" id="rolefilter" onchange="location.href='{{url('admin/users')}}?filterby=role&filtervalue='+$(this).val()">
+				<option {{ Request::has('filterby') && Request::get('filterby')=='role' ? '' : 'selected' }} value="all">(select role)</option>
+				@foreach ($roles as $role)
+					<option 
+						{{ (Request::has('filterby') && Request::get('filterby')=='role' && Request::get('filtervalue')==$role->id) ? 'selected' : '' }} 
+						value="{{$role->id}}">{{$role->name}}</option>
+				@endforeach
+			</select>
+		</div>
+	</form>
 
     <h2>{{ $heading }}</h2>
 
@@ -87,9 +87,9 @@
 				@if ( Auth::user()->isEditor() )
 					<th class="hidden-sm-down">Email</th>
 				@endif
-				<th>Role(s)</th>
+				<th>Role(s)&nbsp; <a href="{{ route('roles.index') }}" title="Manage Roles"> &#128393; </a></th>
 
-				<th>Instrument(s)</th>
+				<th>Instrument(s)&nbsp; <a href="{{ route('instruments.index') }}" title="Manage Instruments"> &#128393; </a></th>
 
 				@include('cspot.snippets.theader', ['thfname' => 'last_login', 'thdisp' => 'Last Login', 'thsearch'=>false, 'thclass'=>'hidden-md-down center'])
 

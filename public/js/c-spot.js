@@ -41868,8 +41868,10 @@ function updateFileInformation()
 \*/
 
 
-if (typeof($)===undefined)
-    var $=function() { alert('no jQuery!'); };
+/* eslint */
+if (typeof($)===undefined) {
+    var $, cSpot, __app_url;
+}
  
 
 /*\
@@ -42416,6 +42418,7 @@ function reDisplayLyrics()
     var curPart= '';
     var region2= false;
     var apdxNam= 97; // char cod 97 = 'a' - indicates sub-parts of verses or chorusses etc
+    var lyricsLine;
 
     // analyse each line and put it back into single pre tags
     for (var i = 0; i <= lyrics.length - 1; i++) {
@@ -42447,7 +42450,7 @@ function reDisplayLyrics()
             if (hdr.length>0) { 
                 // verse indicator was found!
                 curPart = hdr; 
-                var apdxNam= 97; // = 'a': reset appendix indicator (for forced lyric parts)
+                apdxNam= 97; // = 'a': reset appendix indicator (for forced lyric parts)
                 // use 2nd part of initial lyricsline as actualy lyrics
                 lyricsLine = lyricsLine.split('] ')[1]; // this will be 'undefined' if line was just the indicator!
             }
@@ -42471,8 +42474,8 @@ function reDisplayLyrics()
                 newLyr += '<hr class="hr-big">';
                 region2 = true;
             } else {
-                cls = 'text-present ';
-                stl = '';
+                var cls = 'text-present ';
+                var stl = '';
                 if (region2) cls = 'text-present text-present-region2';
                 // check if line contains style codes:
                 var styles = getStylesFromLyricsLine(lyricsLine);
@@ -42549,7 +42552,7 @@ function prepareChordsPresentation(what)
     cSpot.presentation.type = what;
 
     // check if user has changed the default font size for the presentation
-    fontSize = localStorage.getItem('.text-song_font-size');
+    var fontSize = localStorage.getItem('.text-song_font-size');
     if (fontSize) {
         $('.text-song').css('font-size', parseInt(fontSize));
     }
@@ -42592,7 +42595,7 @@ function reDisplayChords()
     // selector of the chords element is different on the Item Detail page or in a presentation
     var selectorName = '#chords';
     // get the chords text and split it into lines
-    chords = $(selectorName).text().split('\n');
+    var chords = $(selectorName).text().split('\n');
 
     // Are we on the Item Detail page?
     //                                       TODO!! (Currently not implemented)
@@ -42600,10 +42603,10 @@ function reDisplayChords()
     // as this is an editable field we have to get the original chords text from somewhere else, maybe from a hidden div?
     if (chords.length==1) {
         return;
-        selectorName = '.show-chords';
+        /*selectorName = '.show-chords';
         chords = $(selectorName);
         if (chords.length) 
-            chords = $(chords[0]).text().split('\n');
+            chords = $(chords[0]).text().split('\n');*/
     }
 
     // empty the exisint pre tag
@@ -42616,8 +42619,8 @@ function reDisplayChords()
             $(selectorName).append('<pre class="red m-b-0">'+chords[i]+'</pre>');
         }
         else {
-            hdr = identifyHeadings(chords[i]).split('$');
-            anchor = '';
+            var hdr = identifyHeadings(chords[i]).split('$');
+            var anchor = '';
             if (hdr.length>1 && hdr[1].length>0)
                 anchor = '<a name="'+hdr[1]+'"></a>';
             $(selectorName).append(anchor+'<pre class="m-b-0 '+hdr[0]+'">'+chords[i]+'</pre>');
@@ -42628,13 +42631,13 @@ function identifyHeadings(str)
 {
     // identify headers by the first word in a line, case-insensitive
 
-    patt = /^(coda|end)/i;
+    var patt = /^(coda|end)/i;
     if ( patt.test(str) ) 
         return ' p-l-3 bg-info$';
 
     patt = /^(Verse)/i;
     if ( patt.test(str) ) {
-        nm=''; n=str.split(' '); 
+        var nm=''; var n=str.split(' '); 
         if (n.length>1) {
             nm=n[1].substr(0,1); 
             $('#jumplist').show();
@@ -42677,10 +42680,10 @@ function identifyChords(str)
     var patt = /[klopqrtvwxyz1368]/g;
     if ( patt.test(str) ) return false;
     
-    var patt = /\b[CDEFGAB](?:#{1,2}|b{1,2})?(?:maj7?|min7?|sus2?|sus4?|m?)\b/g;
+    patt = /\b[CDEFGAB](?:#{1,2}|b{1,2})?(?:maj7?|min7?|sus2?|sus4?|m?)\b/g;
     if ( patt.test(str) ) return true;
     
-    var patt = /\b[CDEFGB]\b/g;
+    patt = /\b[CDEFGB]\b/g;
     if ( patt.test(str) ) return true;
 
     return false;
@@ -42723,7 +42726,7 @@ function checkSequenceIndicatorLength()
     // no lyrics found so we might have bible texts
     if (seq.length == 0) {
         what = '.bible';
-        var seq = $(what+'-progress-indicator');
+        seq = $(what+'-progress-indicator');
         if (seq.length < 9) {return;}
     }
 
@@ -42772,7 +42775,7 @@ function insertSeqNavInd(what, nr, where)
 
     console.log('inserting sequence NavBar indicator for '+ what + ' as '+where+' part # ' + nr);
 
-    data = '<span id="'+where+'-progress-' + nr + '" class="'+where+'-progress-indicator" ' +
+    var data = '<span id="'+where+'-progress-' + nr + '" class="'+where+'-progress-indicator" ' +
            'data-show-status="unshown" onclick="'+where+'Show(' + "'" + what + "'" + ');">';
     data += formatSeqInd(what)+'&nbsp;</span>';
 
@@ -42818,7 +42821,7 @@ function advancePresentation(direction)
     // make sure the list of indicators doesn't get too long
     checkSequenceIndicatorLength();
 
-    var seq, found;
+    var seq, found, todo, i, thisID;
 
     if ($('#present-lyrics').length > 0) {
 
@@ -42851,7 +42854,7 @@ function advancePresentation(direction)
                     $(this).data().showStatus = 'done';
                     $('.lyrics-progress-indicator').removeClass('bg-danger');
                     $(this).addClass('bg-danger');
-                    var todo = $(this).attr('onclick');
+                    todo = $(this).attr('onclick');
                     eval( todo );
                     return false;
                 }
@@ -42866,7 +42869,7 @@ function advancePresentation(direction)
         }
         // no, we try to move backwards in the sequence of song parts
         else {
-            for (var i = seq.length - 1; i >= 0; i--) {
+            for (i = seq.length - 1; i >= 0; i--) {
                 if ($(seq[i]).hasClass('bg-danger')) {
                     ;;;console.log('currently active part is # '+i+' with text: '+$(seq[i]).text() );
                     // we have reached the first part, going further back means previous plan item!
@@ -42876,7 +42879,7 @@ function advancePresentation(direction)
                     $(seq[i]).data().showStatus = 'unshown';
                     $('.lyrics-progress-indicator').removeClass('bg-danger');
                     $(seq[i-1]).addClass('bg-danger');
-                    var todo = $(seq[i-1]).attr('onclick');
+                    todo = $(seq[i-1]).attr('onclick');
                     eval( todo );
                     return;
                 } 
@@ -42904,7 +42907,7 @@ function advancePresentation(direction)
             $(seq).each(function(entry){
                 if ( $(this).data().showStatus  == 'unshown' ) {
                     found = true;
-                    var thisID = $(this).attr('id')
+                    thisID = $(this).attr('id')
                     $(this).data().showStatus = 'done';
                     showNextSlide(thisID,'.bible');
                     return false; // escape the each loop...
@@ -42918,13 +42921,13 @@ function advancePresentation(direction)
         } 
         else {
             found=false;
-            for (var i = seq.length - 1; i >= 0; i--) {
+            for (i = seq.length - 1; i >= 0; i--) {
                 if ( $(seq[i]).data().showStatus == 'done') {
-                    var thisID = $(seq[i]).attr('id')
+                    thisID = $(seq[i]).attr('id')
                     if (i<1) {break;} // we can't move any further back....
                     found=true;
                     $(seq[i]).data().showStatus = 'unshown';  // make this part 'unshown'
-                    var thisID = $(seq[i-1]).attr('id')
+                    thisID = $(seq[i-1]).attr('id')
                     showNextSlide(thisID,'.bible');
                     break; // escape the for loop...
                 }
@@ -42958,7 +42961,7 @@ function advancePresentation(direction)
         } 
         else {
             found=false;
-            for (var i = seq.length - 1; i >= 0; i--) {
+            for (i = seq.length - 1; i >= 0; i--) {
                 if ( $(seq[i]).data().showStatus == 'done') {
                     if (i<1) {break;} // we can't move any further back....
                     found=true;
@@ -43003,7 +43006,7 @@ function showNextSlide(thisID,what,direction)
     $('#'+thisID).addClass('bg-danger');
 
     // get the click-event of the progress-indicator button
-    todo = $('#'+thisID).attr('onclick');
+    var todo = $('#'+thisID).attr('onclick');
 
     // for sending positons, we have special case for bible verse slides
     var snp = thisID.split('-');
@@ -43030,7 +43033,7 @@ function navigateTo(where)
     if (document.activeElement.tagName != "BODY") return;
 
     // get the element that contains the proper link
-    goWhereButton = document.getElementById('go-'+where);
+    var goWhereButton = document.getElementById('go-'+where);
     // link doesn't exist:
     if (goWhereButton==null) return;
 
@@ -43039,6 +43042,7 @@ function navigateTo(where)
         showSpinner();
 
     // no blankscreen when navigating to 'edit' or 'back' (exit)
+    var screenBlank;
     if (where=='edit' || where=='back')
         screenBlank = false;
 
@@ -43072,17 +43076,18 @@ function navigateTo(where)
         var cur_seq_no  = cSpot.presentation.seq_no;        // dynamic value (will be changed below or on reload)
         var max_seq_no  = cSpot.presentation.max_seq_no;    // static value
         var cur_plan_id = 'offline-'+cSpot.presentation.plan_id;       // static value
+        var next_seq_no, prev_seq_no;
 
         // calculate the identifiers for the next or previous item in local storage
         if (cur_seq_no >= max_seq_no) {
-            var next_seq_no = cur_plan_id + '-' + 1;
+            next_seq_no = cur_plan_id + '-' + 1;
         } else {
-            var next_seq_no = cur_plan_id + '-' + (1*cur_seq_no+1);
+            next_seq_no = cur_plan_id + '-' + (1*cur_seq_no+1);
         }
         if (cur_seq_no >= 1) {
-            var prev_seq_no = cur_plan_id + '-' + (1*cur_seq_no-1);
+            prev_seq_no = cur_plan_id + '-' + (1*cur_seq_no-1);
         } else {
-            var prev_seq_no = cur_plan_id + '-' + max_seq_no;
+            prev_seq_no = cur_plan_id + '-' + max_seq_no;
         }
 
         // Rewrite the page content with the cached data from Local Storage (LS)
@@ -43162,10 +43167,10 @@ function modifyHRefOfJumpbutton(next_seq_no, prev_seq_no)
     var btn_seq_no = {'next-item': next_seq_no, 'previous-item': prev_seq_no};
 
     // modify both buttons
-    for (where in btn_seq_no) {
+    for (var where in btn_seq_no) {
 
         // get handle on the button element
-        goWhereButton = document.getElementById('go-'+where);
+        var goWhereButton = document.getElementById('go-'+where);
 
         // if link doesn't exist, ignore the rest
         if (goWhereButton==null) continue;
@@ -43269,9 +43274,9 @@ function lyricsShow(what)
             if (! gefunden) {
                 // try to recompile the action for this button into the name of the song part
                 // e.g. if the action is onclick="showLyrics('1')" then the song part is 'verse1' etc
-                indic = ( $(this).attr('onclick') ).split("'");
+                var indic = ( $(this).attr('onclick') ).split("'");
                 if (indic.length>1) {indic=indic[1]} else {return false;}
-                gesucht = decompPartCode(indic); // 'gesucht' is the song part for the current sequence indicator
+                var gesucht = decompPartCode(indic); // 'gesucht' is the song part for the current sequence indicator
                 if (gesucht==indic) {return false;}
             }
             // now we can see if the song part the parent function whats to show is the same
@@ -43310,8 +43315,8 @@ function lyricsShow(what)
     $('#btn-show-'+what).addClass('btn-danger');            // add warning class for this button
 }
 function decompPartCode(what) {
-    apdx = '';
-    fc = what.substr(0,1);
+    var apdx = '';
+    var fc = what.substr(0,1);
     if ( $.isNumeric(fc) || fc != 'c' ) {
         apdx = what.substr(1);   
         what = identifyLyricsHeadings('['+fc+']')+apdx;
@@ -43364,7 +43369,7 @@ function showNextBGimage()
 
     // activate (show) the first image
     ;;;console.log('showing next BG image: '+nr);
-    todo = $('#slides-progress-'+nr).attr('onclick');
+    var todo = $('#slides-progress-'+nr).attr('onclick');
     eval(todo);
 
 }
@@ -43384,7 +43389,7 @@ function getLocalConfiguration()
     // if the value in LocalStorage was set to 'true', then we activate the checkbox:
     if ( getLocalStorageItem('configMainPresenter', 'false') == 'true' ) {
         // Check if there already is a presenter
-        if ( cSpot.presentation.mainPresenter && ! isPresenter ) {
+        if ( cSpot.presentation.mainPresenter ) {
             // someone else is already ....
             localStorage.setItem('configMainPresenter', 'false');
         } 
@@ -43436,7 +43441,7 @@ function getLocalConfiguration()
 
 
     // how many bible verses per slide?
-    howManyVersesPerSlide = localStorage.getItem('configShowVersCount');
+    var howManyVersesPerSlide = localStorage.getItem('configShowVersCount');
     // if the value in LocalStorage was set to 'true', then we activate the checkbox:
     if (howManyVersesPerSlide>0 && howManyVersesPerSlide<6) {
         $('#configShowVersCount').val( howManyVersesPerSlide );
@@ -43451,7 +43456,7 @@ function applyLocallyDefinedTextFormatting()
 {
     
     // check if we have changed the default font size and text alignment for the presentation
-    textAlign = localStorage.getItem('.text-present_text-align');
+    var textAlign = localStorage.getItem('.text-present_text-align');
     if (textAlign) {
         $('.text-present').css('text-align', textAlign);
         $('.bible-text-present').css('text-align', textAlign);
@@ -43459,7 +43464,7 @@ function applyLocallyDefinedTextFormatting()
         $('.bible-text-present>h1').css('text-align', textAlign);
     }
 
-    fontSize = localStorage.getItem('.text-present_font-size');
+    var fontSize = localStorage.getItem('.text-present_font-size');
     if ($.isNumeric(fontSize)) {
         $('.text-present').css('font-size', parseInt(fontSize));
     }
@@ -43528,7 +43533,7 @@ function changeTextAlign(selectorList, how) {
         selectorList = [selectorList];
     }
     selectorList.forEach( function(selector) {
-        element = $(selector);
+        var element = $(selector);
         if (element.length>0) {
             $(element).css('text-align', how);
             localStorage.setItem(selector+'_text-align', how);
@@ -43553,10 +43558,10 @@ function changeFontSize(selectorList, how) {
     if (how=='decrease')
         factor = 0.9;
     selectorList.forEach( function(selector) {
-        element = $(selector);
+        var element = $(selector);
         // only proceed if the element actually exists in the current document
         if (element.length>0) {
-            fontSize = parseFloat($(element).css('font-size')) * factor;
+            var fontSize = parseFloat($(element).css('font-size')) * factor;
             if (fontSize<8 || fontSize>150) return;
             $(element).css('font-size', fontSize);
             localStorage.setItem(selector+'_font-size', fontSize);
@@ -43705,7 +43710,7 @@ function saveLocallyAndRemote(plan_id, key, value)
     }
 
     // remove excess blanks from the string
-    value = value.replace(/  /g,' ')
+    value = value.replace(/ {2,}/g,' ')
 
     // save locally
     localStorage.setItem(key, value);
@@ -43739,7 +43744,7 @@ function loadCachedPresentation(plan_id)
 
         if ( status == 'success') {
             // save to LocalStorage
-            planCache = JSON.parse(data.data);
+            var planCache = JSON.parse(data.data);
 
             // make sure we have only one plan locally in cache!
             checkLocalStorageForPresentation(plan_id);
@@ -43789,8 +43794,7 @@ function clearServerCache(plan_id)
 
         if ( status == 'success') {
             // show result in UI
-            result = data.data;
-            $('#showCachedItems').text(result);
+            $('#showCachedItems').text(data.data);
         }
 
     });
@@ -43932,7 +43936,7 @@ function syncPresentation(syncData) {
 
     ;;;console.log('Showtype is '+showType+'. We have to jump to a new slide: ' + syncData.slide);
 
-    slideNameParts = syncData.slide.split('-');
+    var slideNameParts = syncData.slide.split('-');
 
     // go to the new slide
     if (showType == 'present')
