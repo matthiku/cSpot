@@ -138,7 +138,7 @@
 
 					@include('cspot.snippets.theader', ['thfname' => 'items_count', 'thdisp' => 'Usage', 'thsearch'=>true, 'thclass'=>'small center hidden-md-down'])
 
-					<th class="center hidden-md-down">Last Use</th>
+					@include('cspot.snippets.theader', ['thfname' => 'last_used', 'thdisp' => 'Last Use', 'thsearch'=>false, 'thclass'=>'center hidden-md-down'])
 
 					<th class="center hidden-lg-down">CCLI No.</th>
 

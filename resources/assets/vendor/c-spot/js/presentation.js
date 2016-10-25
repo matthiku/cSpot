@@ -10,7 +10,7 @@
 \*/
 
 
-/* eslint */
+/* for eslint */
 if (typeof($)===undefined) {
     var $, cSpot, __app_url;
 }
@@ -77,13 +77,17 @@ function reFormatBibleText()
     var refList = $('#item-comment').text().split(';');
     var refNo = 0;
 
+    // remove unneeded parts of NIV code
+    $('.sectionhead').remove();
+    $('.nivfootnote').remove();
+
     // get all the paragraphs (<p> elements) with bible text
-    var p = $('.bible-text-present p');
+    var p = $('.bible-text-present p, .bible-text-present div');
 
     // empty the pre-formatted bible text containter and make it visible
     $('#bible-text-present-all').html('');
-    $('#bible-text-present-all').show(); 
     // (the container initially was hidden by the backend. That way we avoid flickering!)
+    $('#bible-text-present-all').show(); 
     
     // helper vars
     var verse_from=0, verse_to=199, verse, verno=1;
@@ -129,7 +133,7 @@ function reFormatBibleText()
         var cl4=clas.substr(0,4);
         var cl1=clas.substr(0,1);
         var elem;
-        if (cl4=='line' || cl4=='pcon' || cl4=='reg' ) {
+        if (cl4=='line' || cl4=='pcon' || cl4=='reg' || cl4=='open' || cl4=='chap' || cl4=='emb' || cl4=='red' ) {
             // get all elements in one array
             elem = $(this).contents();
             // analyze each element and separate verse numbers and bible text
@@ -141,7 +145,15 @@ function reFormatBibleText()
                     if (verse && verno != eltext) {
                         // only append text that is within the reference
                         if ( 1*verno >= 1*verse_from && 1*verno <= 1*verse_to ) {
-                            appendBibleText('p',verse,verno); verse = ''; }
+                            appendBibleText('p', verse, verno); 
+                            verse = ''; 
+                        }
+                        // format subsequent verses in this chapter, but 
+                        //      do not show them - unless requested by the presenter!
+                        else if ( 1*verno > 1*verse_to ) {
+                            appendBibleText('p', verse, verno, false); 
+                            verse = ''; 
+                        }
                         verno = eltext;
                     }
                     verse = '('+eltext+') '; } // add verse indicator at the front
@@ -179,9 +191,11 @@ function reFormatBibleText()
     if ( verse !== undefined  &&  verse.length > 2  &&  (1*verno <= 1*verse_to || !$.isNumeric(verno)) ) {
         appendBibleText( 'p', verse, verno ) 
     }
+    // also write remaining verse (if any), but hide it (only for NIV texts)
+    else if ( verse !== undefined  &&  verse.length > 2  &&  $.isNumeric(verno) ) {
+        appendBibleText( 'p', verse, verno, false ) 
+    }
 
-    // pull whole chapter from backend and write it to the Local Storage
-    // TODO
 
     // all is set and we can show the first verse
     advancePresentation();
@@ -242,10 +256,9 @@ function localCacheBibleText( bRef )
 {
     // body...
     var refName = bRef.version+'.'+bRef.book+'.'+bRef.chapter;
-    ;;;console.log('trying to get full chapter of '+refName+' from local storage or the server');
     var x = localStorage.getItem( refName );
     if (x===null) {
-        ;;;console.log('Not found locally - getting it from server: '+refName);
+        ;;;console.log('Not found locally - getting '+refName+' from the server');
         // get chapter via AJAX
         $.get( __app_url+'/bible/text/'+bRef.version+'/'+bRef.book+'/'+bRef.chapter )
             .done( function(data) {
@@ -255,6 +268,8 @@ function localCacheBibleText( bRef )
                 if (data.response!==undefined)
                     localStorage.setItem( refName, JSON.stringify(data.response.search.result.passages) );
             });
+    } else {
+        ;;;console.log('Full chapter of '+refName+' found in local storage');
     }
 }
 /* get next bible verse from local storage (or server) and present it now
@@ -271,6 +286,7 @@ function recallNextBibleverse()
 
     // get handle on last shown verse
     var lastVerse = $('#'+bRef.verse_to);
+    // is it an existing element?? "lastVerse" ??
 
     // now check if we already have the last verse in a chapter
     if ( $(lastVerse).css('display')=='none'  ||  
@@ -320,28 +336,74 @@ function recallNextBibleverse()
     else return;
 
 
-    // find the next verse in the array of verses
-    var a = stor.verses.find(findVerse, bRef.verse_to);
-    if (a===undefined) 
-        return;
-
-    // hide the previous verses
-    $('.bible-text-present-parts').hide();
-
-    // reformat the verse and insert it into the presentation
-    if (a.text) {
-        $(nextVerse).html(a.text);
-        $(hdr).after(nextVerse);
+    // check version
+    var newChapter = false;
+    var nivText;
+    if (bRef.version=='NIV') {
+        nivText = stor[0].text;
+        if (nivText===undefined) 
+            return;
+        $(lastVerse).hide();
+        var nextID = $(lastVerse).attr('id');
+        if (nextID <= bRef.verse_to) {
+            $('#'+(1.0*nextID+1)).show();
+        } else {
+            // go to next chapter
+            ;;;console.log('go to next chapter...');
+            newChapter = true;
+        }
     }
-    else return;
+    else {
 
-    // modify the new verse paragraph accordingly
-    $(nextVerse).children('h3').remove();        // remove a possible paragraph header
-    $(nextVerse).attr('id', bRef.verse_to);                // add the usual id 
+        // find the next verse in the array of verses
+        var a = stor.verses.find(findVerse, bRef.verse_to);
+        if (a===undefined) 
+            return;
+
+        // hide the previous verses
+        $('.bible-text-present-parts').hide();
+
+        // reformat the verse and insert it into the presentation
+        if (a.text) {
+            $(nextVerse).html(a.text);
+            $(hdr).after(nextVerse);
+        }
+        else return;
+
+        // modify the new verse paragraph accordingly
+        $(nextVerse).children('h3').remove();        // remove a possible paragraph header
+        $(nextVerse).attr('id', bRef.verse_to);                // add the usual id 
+
+    }
+    // new bible text ref header
+    bRef.header = bRef.book+' '+bRef.chapter+':'+bRef.verse_from+'-'+bRef.verse_to+' '+bRef.version.toUpperCase();
+
     // correct the bible text reference header:
-    $('#bible-text-ref-header').text(bRef.book+' '+bRef.chapter+':'+bRef.verse_from+'-'+bRef.verse_to+' '+bRef.version.toUpperCase());
+    $('#bible-text-ref-header').text(bRef.header);
     // we should also remove the Progress Indicators:
     $('#lyrics-sequence-nav').remove();
+
+    // write new chapter into the DIV
+    if (newChapter) {
+        $('#bible-text-present-all').html('');
+        var div = document.createElement('div');
+        $(div).addClass('bible-text-present');
+        var p = document.createElement('p');
+        $(p).addClass('item-comment');
+        $(p).attr('id','item-comment');
+        $(p).text(bRef.header);
+        $('#bible-text-present-all').append(p);
+        p = document.createElement('p');
+        $(p).addClass('bible-text-present-ref');
+        $(p).text(bRef.header);
+        $('#bible-text-present-all').append(p);
+        $('#bible-text-present-all').append(div);
+        $('#bible-text-present-all').append(nivText);
+        // run the pre-formatter again
+        reFormatBibleText();
+        // make the first verse visible
+        $('#1').show();
+    }
 
 }
 
@@ -363,15 +425,16 @@ function findVerse(element, index, array)
     Append the reformatted bible text to the presentation and add a reference
     into the Sequence Indicator list in the Navbar (bottom right)
 */
-function appendBibleText(type, text, verno)
+function appendBibleText(type, text, verno, show)
 {
     var style = '';
     var parts = '" ';
     var id    = ' id="'+verno+'">';  // name of the SLIDE
+    if (show===undefined) show = true; // by default, show this verse in the presentation
 
     // actual bible text is inserted as <p> element, and hidden at first
     if (type=='p') {
-        insertSeqNavInd( verno, verno, 'bible' ); 
+        if (show) insertSeqNavInd( verno, verno, 'bible' ); 
         style=' style="display: none"';
         parts='-parts" ';
     }
@@ -1298,7 +1361,7 @@ function navigateTo(where)
         window.location.href = goWhereButton.href;
         return;
     }    
-    // try to simulate a click on this element
+    // otherwise, try to simulate a click on this element
     goWhereButton.click();
 }
 
@@ -1383,7 +1446,8 @@ function bibleShow(what)
             $(indic[i]).data().showStatus = 'done';
         } 
         else if ( found>=0 ) {
-            $(indic[i]).data().showStatus = 'unshown';
+            if ($(indic[i]).data())
+                $(indic[i]).data().showStatus = 'unshown';
             $(parts[i]).hide();
         }
         else 

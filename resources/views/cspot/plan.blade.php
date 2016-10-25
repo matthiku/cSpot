@@ -81,7 +81,7 @@
 
                     @if (Auth::user()->ownsPlan( $plan->id ))
                         <div class="pull-xs-right m-r-1">
-                            <a title="Event script with all items, slides and details" 
+                            <a title="for the Leader: Event script with all items, slides and details" 
                                 onclick="$('#show-spinner').modal({keyboard: false});" 
                                 href="{{ url('cspot/items/'.$plan->firstItem()->id.'/leader/') }}">
                                 &#128483;&nbsp;</i>Lead</a>

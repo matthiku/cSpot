@@ -7,6 +7,12 @@
 |*|
 \*/
 
+/* for eslint */
+if (typeof($)===undefined) {
+    var $, cSpot, __app_url;
+}
+ 
+
 
 function setCurrentPageAsStartupPage(that)
 {
@@ -291,9 +297,13 @@ function changeForLeadersEyesOnly(that) {
 
     // construct values for the AJAX call
     var actionURL = data.itemUpdateAction;
-    var value     = $(that).data('value') ? '0' : '1'; // reverse the current value
+    // desired value is the reverse of the current value
+    var value     = $(that).data('value')=='1' ? '0' : '1'; 
     var id        = 'forLeadersEyesOnly-item-id-' + data.itemId;
 
+    ;;;console.log('Changing visibility of this item. Desired value: '+value);
+
+    $(that).children('i').removeClass('red');
     $(that).children('i').removeClass('fa-eye');
     $(that).children('i').removeClass('fa-eye-slash');
     $(that).children('i').addClass('fa-spin fa-spinner');
@@ -306,18 +316,26 @@ function changeForLeadersEyesOnly(that) {
         })
         .done( function(data) 
         {
+            ;;;console.log('Result from change request. New value: '+data);
             $(that).children('i').removeClass('fa-spin fa-spinner');
             // show correct icon according to new setting
-            $(that).children('i').addClass( data==1 ? 'fa-eye-slash': 'fa-eye');
+            $(that).children('i').addClass( data==0 
+                ? 'fa-eye'
+                : 'fa-eye-slash red');
             // reflect new setting also in the data attribute
-            $(that).attr('data-value', data); $(that).data('value', data);
+            $(that).attr('data-value', data); 
+            $(that).data('value', data);
             // reflect new setting also in the data attribute
-            $(that).attr('title', data==1 
-                ? "Item visible for leader's eyes only. Click to change!"
-                : "Item is visible for all users. Click to change!" );
+            $(that).attr('title', data==0 
+                ? "Item is visible for all users. Click to change!" 
+                : "Item visible for leader's eyes only. Click to change!");
             $(that).tooltip(); // refresh the tooltip...
             // on the Item Detail page, also show the right text for the new setting
             $(that).children('small').toggle();
+            if (data==0)
+                $('.item-comment-public').show();
+            else
+                $('.item-comment-public').hide();
         })
         .fail( function(data) 
         {
@@ -325,6 +343,7 @@ function changeForLeadersEyesOnly(that) {
             $(that).children('i').removeClass('fa-eye-slash');
             $(that).children('i').addClass('fa-exclamation-triangle');
             console.log('update of forLeadresEyesOnly failed!!');
+            console.log(JSON.stringify(data));
         });
 }
 

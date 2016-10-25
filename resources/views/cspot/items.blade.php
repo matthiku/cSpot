@@ -36,7 +36,7 @@
 
 
 				<th class="{{ Auth::user()->isUser() ? 'drag-item ' : ''}}dont-print" scope="row" title="drag item into the new position">
-					<span class="hidden-sm-down pull-xs-right text-success">{{ $item->seq_no }}</span>
+					<span class="hidden-lg-down pull-xs-right text-success">{{ $item->seq_no }}</span>
 					@if ( Auth::user()->ownsPlan($plan->id) && $plan->date >= \Carbon\Carbon::today() )
 						<i class="p-r-1 fa fa-arrows-v">
 					@endif

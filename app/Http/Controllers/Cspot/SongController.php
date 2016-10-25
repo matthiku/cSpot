@@ -110,6 +110,18 @@ class SongController extends Controller
         if ($request->orderby == 'author')
             $songs = $songs->where('author', '<>', '');
 
+        // special case for OrderBy Last Time Used (in a plan!)
+        if ($request->orderby == 'last_used') {
+            $songs = Song::withCount('items')
+                ->where('songs.id', '>', 0)
+                ->leftJoin('items', 'items.song_id', '=', 'songs.id')
+                ->leftJoin('plans', 'plans.id', '=', 'items.plan_id')
+                ->groupBy('songs.id')
+                ->selectRaw('songs.*, max(plans.date) as last_used')
+                ->orderBy('last_used', $order);
+        }
+
+
 
         $heading = 'Manage Songs etc.';
 
