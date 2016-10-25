@@ -22,7 +22,7 @@ class FileCategoryController extends Controller
      * define view names
      */
     protected $view_all = 'admin.file_categories';
-    protected $view_idx = 'admin.file_categories.index';
+    protected $view_idx = 'file_categories.index';
     protected $view_one = 'admin.file_category';
 
 

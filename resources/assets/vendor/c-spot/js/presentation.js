@@ -386,8 +386,6 @@ function recallNextBibleverse()
     // write new chapter into the DIV
     if (newChapter) {
         $('#bible-text-present-all').html('');
-        var div = document.createElement('div');
-        $(div).addClass('bible-text-present');
         var p = document.createElement('p');
         $(p).addClass('item-comment');
         $(p).attr('id','item-comment');
@@ -397,6 +395,8 @@ function recallNextBibleverse()
         $(p).addClass('bible-text-present-ref');
         $(p).text(bRef.header);
         $('#bible-text-present-all').append(p);
+        var div = document.createElement('div');
+        $(div).addClass('bible-text-present');
         $('#bible-text-present-all').append(div);
         $('#bible-text-present-all').append(nivText);
         // run the pre-formatter again

@@ -769,6 +769,7 @@ function createAndShowSearchResult(elem, result)
         }
 
         // create a new DOM element 
+        var anchor;
 
         // song Count indicator
         var bold = document.createElement('b');
@@ -782,6 +783,8 @@ function createAndShowSearchResult(elem, result)
         var lastUse = lastPlanDate ? moment(lastPlanDate, 'YYYY-MM-DD HH:mm:ss').fromNow() : 'never used!!';
         spn2.innerHTML = '<b>Last used: '+lastUse+'</b> Total: ';
         spn2.appendChild(bold);
+        if ( lastUse.split(' ')[1]=='days' && lastUse.split(' ')[0]<12 )
+            $(spn2).addClass('red') // make it all red if the song has been used just recently
         $(spn2).append(' times');
 
         // spn containing the youtube link
@@ -789,7 +792,7 @@ function createAndShowSearchResult(elem, result)
         if ( result[i].youtube_id.length>0 ) {
             spnYT.className = "pull-xs-right";
             spnYT.title     = "preview song";
-            var anchor = document.createElement('a');
+            anchor = document.createElement('a');
             anchor.href = '#';
             $(anchor).attr('onclick', 'showYTvideoPreview("'+ result[i].youtube_id +'", this)');
             anchor.innerHTML = '<i class="fa fa-youtube-play red"></i>';
@@ -801,7 +804,7 @@ function createAndShowSearchResult(elem, result)
         if ( result[i].ccli_no>10000 ) {
             spnSS.className = "pull-xs-right m-r-1";
             spnSS.title     = "review song on SongSelect";
-            var anchor = document.createElement('a');
+            anchor = document.createElement('a');
             anchor.href = cSpot.env.songSelectUrl + result[i].ccli_no;
             anchor.target = 'new';
             anchor.innerHTML = '<i class="fa fa-music"></i>';
@@ -978,7 +981,7 @@ function uploadSingleFile(selector, category)
                 console.log(data.data);
                 $('.show-file-add-button').html('Success! Reloading page ...'+cSpot.const.waitspinner);
                 // reload page and show latest upload
-                location.href = "http://c-spot.app/cspot/files?newest=yes";
+                location.href = location.pathname+"?newest=yes";
             
         }).fail( function( data ) {
             $('.show-file-add-button').text('Error, pres F12 to see more!');

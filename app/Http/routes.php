@@ -291,12 +291,13 @@ Route::group(['prefix' => 'admin', 'middleware' => ['web']], function() {
     Route::resource('default_items', 'Admin\DefaultItemController');    
     Route::resource('file_categories','Admin\FileCategoryController');    
     // as forms cannot use DELETE method, we implement it as GET
-    Route::get('users/{users}/delete',    'Admin\UserController@destroy');    
-    Route::get('roles/{roles}/delete',       'Admin\RoleController@destroy');    
-    Route::get('resources/{resources}/delete',  'Admin\ResourceController@destroy');    
-    Route::get('instruments/{instrument}/delete',  'Admin\InstrumentController@destroy');    
-    Route::get('types/{types}/delete',               'Admin\TypeController@destroy');    
-    Route::get('default_items/{default_items}/delete',  'Admin\DefaultItemController@destroy');    
+    Route::get('users/{id}/delete',    'Admin\UserController@destroy');    
+    Route::get('roles/{id}/delete',     'Admin\RoleController@destroy');    
+    Route::get('resources/{id}/delete',  'Admin\ResourceController@destroy');    
+    Route::get('instruments/{id}/delete', 'Admin\InstrumentController@destroy');    
+    Route::get('types/{id}/delete',        'Admin\TypeController@destroy');    
+    Route::get('default_items/{id}/delete', 'Admin\DefaultItemController@destroy');    
+    Route::get('file_categories/{id}/delete','Admin\FileCategoryController@destroy');    
 
     // user wants to set current page as their homepage
     Route::post('users/{user_id}/setstartpage',         'Admin\UserController@setStartPage')->name('user.setstartpage');

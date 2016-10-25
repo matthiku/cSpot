@@ -20,7 +20,11 @@
 
 
 	@if( Auth::user()->isEditor() )
-		<a class="btn btn-outline-primary pull-xs-right" href="{{ url('cspot/plans/create') }}">
+		<a class="btn btn-outline-primary pull-xs-right" 
+			href="{{ url('cspot/plans/create') }}{{ 
+				( Request::has('filterby') && Request::input('filterby')=='type' && Request::has('filtervalue') ) 
+					? '?type_id='.Request::input('filtervalue') 
+					: '' }}">
 			<i class="fa fa-plus"> </i> &nbsp; Add a new Service/Event
 		</a>
 	@endif
