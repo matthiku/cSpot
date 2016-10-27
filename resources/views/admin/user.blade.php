@@ -28,7 +28,7 @@
 
         <div class="col-md-6">
 
-            <div class="row m-b-1 full-width">
+            <div class="row mb-1 full-width">
                 <div class="col-sm-6 text-sm-right">
                     {!! Form::label('first_name', 'First Name') !!} <i class="red">*</i>
                 </div>
@@ -37,7 +37,7 @@
                </div>
             </div>
 
-            <div class="row m-b-1 full-width">
+            <div class="row mb-1 full-width">
                 <div class="col-sm-6 text-sm-right">
                     {!! Form::label('last_name', 'Last Name') !!} <i class="red">*</i>
                 </div>
@@ -46,7 +46,7 @@
                </div>
             </div>
 
-            <div class="row m-b-1 full-width">
+            <div class="row mb-1 full-width">
                 <div class="col-sm-6 text-sm-right">
                     {!! Form::label('name', 'Display Name (must be unique)') !!} <i class="red">*</i>
                 </div>
@@ -55,7 +55,7 @@
                </div>
             </div>
 
-            <div class="row m-b-1 full-width">
+            <div class="row mb-1 full-width">
                 <div class="col-sm-6 text-sm-right">
                     {!! Form::label('email', 'Email Address') !!}
                 </div>
@@ -83,7 +83,7 @@
                 </div>
             </div>
 
-            <div class="row m-b-1 full-width">
+            <div class="row mb-1 full-width">
                 <div class="col-sm-6 text-sm-right">
                     <strong>Your Start Page</strong><br>
                     <small>(The page you are directed to after login)</small>
@@ -150,7 +150,7 @@
     
     @if (! Auth::user()->isAdmin())
         <hr>
-        <div class="row m-t-1">
+        <div class="row mt-1">
             <div class="col-xl-2 col-lg-3 col-md-4 col-sm-5">
                 @if ($user->roles->count())
                     <label>Your Roles:</label><br>

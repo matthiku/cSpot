@@ -35,7 +35,7 @@
                             $key    = 1; // we can't use a $key in the foreach statement as it's a re-sorted collection!
                         ?>            
                         @foreach ($files as $file)
-                            <img class="slide-background-image song-background-image m-b-2" data-slides-id="{{ $key }}" style="display: none;" 
+                            <img class="slide-background-image song-background-image mb-2" data-slides-id="{{ $key }}" style="display: none;" 
                                    src="{{ url(config('files.uploads.webpath')).'/'.$file->token }}">
                             <?php $key++; ?>
                         @endforeach
@@ -43,7 +43,7 @@
 
                     {{-- show song title --}}
                     @if (! $item->hideTitle)
-                        <div class="text-present m-b-3 lyrics-parts" id="lyrics-title"
+                        <div class="text-present mb-3 lyrics-parts" id="lyrics-title"
                              style="display: none; position: absolute; left: auto; top: 0px; width: 100%; font-style: italic;">
                             {{ $item->song->title }}
                             <span style="font-size: 90%">
@@ -56,13 +56,13 @@
                     @if ($item->song->title_2=='video')
 
                         <div class="hidden-xs-up" id="videoclip-url">{{ $item->song->title_2}}</div>
-                        <div class="text-present m-b-3" id="present-lyrics">
+                        <div class="text-present mb-3" id="present-lyrics">
                             <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ $item->song->youtube_id }}" frameborder="0" allowfullscreen></iframe>
                         </div>
 
                     @else 
 
-                        <div class="text-present m-b-3"
+                        <div class="text-present mb-3"
                              style="display: none; position: absolute; left: auto; top: 0px; width: 100%;"
                                 id="present-lyrics">{{ $item->song->lyrics }}
                         </div>
@@ -90,7 +90,7 @@
                     $key    = 1; // we can't use a $key in the foreach statement as it's a re-sorted collection!
                 ?>            
                 @foreach ($files as $file)
-                    <img class="slide-background-image  {{ $bibleTexts ? 'song-background-image' : '' }}  m-b-2" data-slides-id="{{ $key }}" style="display: none;" 
+                    <img class="slide-background-image  {{ $bibleTexts ? 'song-background-image' : '' }}  mb-2" data-slides-id="{{ $key }}" style="display: none;" 
                            src="{{ url(config('files.uploads.webpath')).'/'.$file->token }}">
                     <?php $key++; ?>
                 @endforeach
@@ -235,7 +235,7 @@
 
 
         <!-- jump to next plan item -->
-        <ul class="nav navbar-nav pull-xs-right" id="next-item-button">
+        <ul class="nav navbar-nav float-xs-right" id="next-item-button">
             <li>
                 <a 
                     @if ($item->id == $item->plan->lastItem()->id)
@@ -251,7 +251,7 @@
 
 
         {{-- 'sequence' indicates the order in which the various lyric parts are to be shown --}}
-        <span class="navbar-nav pull-xs-right hidden-xs-down text-success" id="lyrics-sequence-nav">
+        <span class="navbar-nav float-xs-right hidden-xs-down text-success" id="lyrics-sequence-nav">
             <!-- {{-- this is currently resolved on the client side --}} -->
             @if ($item->song_id && $item->song->sequence)
                 <a href="#" onclick="advancePresentation();" 
@@ -353,7 +353,7 @@
                         href="{{ url('cspot/plans/'.$item->plan_id) }}">
                         <i class="fa fa-undo"></i>
                         Back to plan overview
-                        <small class="pull-xs-right"><span class="font-weight-bold">*</span>item in local cache)</small>
+                        <small class="float-xs-right"><span class="font-weight-bold">*</span>item in local cache)</small>
                     </a>
                 </div>
 
@@ -363,7 +363,7 @@
             <!-- 
                 Personal Notes 
             -->
-            <div class="btn-group dropup hidden-xs-down m-l-1">
+            <div class="btn-group dropup hidden-xs-down ml-1">
                 <button    type="button" title="Your Private Notes"
                           class="btn btn-sm btn{{ $item->itemNotes->where('user_id', Auth::user()->id)->first() ? '' : '-outline' }}-success dropdown-toggle"                     
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -389,7 +389,7 @@
                 Add New Item into Plan! 
             -->
             @if (Auth::user()->ownsPlan($item->plan_id))
-                <div class="btn-group dropup hidden-xs-down m-l-1">
+                <div class="btn-group dropup hidden-xs-down ml-1">
                     {{-- new MODAL POPUP to add song, scripture or comment --}}
                     <button type="button" class="btn btn-sm btn-outline-info btn-sm" title="Add New Item (Song etc)" 
                          data-toggle="modal" data-target="#searchSongModal"
@@ -405,13 +405,13 @@
             {{-- link to song data on CCLI songselect --}}
             @if ($item->song_id && $item->song->ccli_no)
                 <a href="{{ env('SONGSELECT_URL', 'https://songselect.ccli.com/Songs/').$item->song->ccli_no }}" 
-                    target="new" class="pull-xs-right btn btn-sm btn-info hidden-sm-down m-l-1 p-y-0">
+                    target="new" class="float-xs-right btn btn-sm btn-info hidden-sm-down ml-1 p-y-0">
                 <img src="{{ url('/') }}/images/songselectlogo.png" width="30"></a>
             @endif
 
             {{-- help button to show modal --}}
             <a href="#" title="show keyboard shortcuts" data-toggle="modal" data-target=".help-modal"
-                class="hidden-sm-down pull-xs-right btn btn-sm btn-outline-success">
+                class="hidden-sm-down float-xs-right btn btn-sm btn-outline-success">
             <i class="fa fa-question-circle fa-lg"></i></a>
 
 
@@ -425,7 +425,7 @@
 
 
 
-            <ul class="nav navbar-nav pull-xs-left">
+            <ul class="nav navbar-nav float-xs-left">
                 <li>
                     <a 
                         @if ($item->id == $item->plan->firstItem()->id)
@@ -447,14 +447,14 @@
                         onclick="changeFontSize([
                             '.announce-text-present', '.text-present', '.bible-text-present', '.bible-text-present>h1', '.bible-text-present>p'
                             ]);"                             
-                            class="m-l-0 nav-item btn btn-sm btn-info" role="button">
+                            class="ml-0 nav-item btn btn-sm btn-info" role="button">
                         A <i class="fa fa-plus fa-lg"></i>
                     </a>
                 </li>
             </ul>
 
-            <div class="nav-item dropup pull-xs-left">
-                <button class="nav-link m-l-1 btn btn-sm btn-info dropdown-toggle" href="#" type="button" 
+            <div class="nav-item dropup float-xs-left">
+                <button class="nav-link ml-1 btn btn-sm btn-info dropdown-toggle" href="#" type="button" 
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Align</button>
                 <div class="dropdown-menu bg-info">
                     <a onclick="changeTextAlign(['.announce-text-present', '.text-present', '.bible-text-present'], 'left');" 
@@ -468,7 +468,7 @@
 
             {{-- configuration menu 
             --}}
-            <div class="nav-item btn-group dropup pull-xs-left m-l-1">
+            <div class="nav-item btn-group dropup float-xs-left ml-1">
 
                 <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
                      id="presentConfigDropUpMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

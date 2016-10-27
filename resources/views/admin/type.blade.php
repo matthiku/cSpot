@@ -23,7 +23,7 @@
         @endif
 
 
-        <div class="row m-b-2">
+        <div class="row mb-2">
 
             <div class="col-sm-6 bg-info">
                 <div class="pull-sm-right">
@@ -54,7 +54,7 @@
 
 
 
-        <div class="row m-b-1">
+        <div class="row mb-1">
             <div class="col-sm-6">
                 <div class="pull-sm-right">
 
@@ -93,7 +93,7 @@
 
 
 
-        <div class="row m-b-1">
+        <div class="row mb-1">
             <div class="col-sm-6">
                 <div class="pull-sm-right">
                     
@@ -119,7 +119,7 @@
 
 
 
-        <div class="row m-b-1">
+        <div class="row mb-1">
             <div class="col-sm-6">
                 <div class="pull-sm-right">
 
@@ -155,7 +155,7 @@
 
 
 
-        <div class="row m-b-1">
+        <div class="row mb-1">
             <div class="col-sm-6">
                 <div class="pull-sm-right">
 
@@ -191,7 +191,7 @@
 
 
 
-        <div class="row m-b-1">
+        <div class="row mb-1">
             <div class="col-sm-6">
                 <div class="pull-sm-right">
 
@@ -224,7 +224,7 @@
 
 
 
-        <div class="row m-b-1">
+        <div class="row mb-1">
             <div class="col-sm-6">
                 <div class="pull-sm-right">
 

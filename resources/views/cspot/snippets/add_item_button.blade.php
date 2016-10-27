@@ -1,6 +1,6 @@
 
 {{-- new MODAL POPUP to add song/scripture/comment --}}
-<div class="pull-xs-left">
+<div class="float-xs-left">
 
 	<button     type="button" class="btn btn-outline-primary btn-sm" 
 	     data-toggle="modal" data-target="#searchSongModal" data-item-action="insert-item"

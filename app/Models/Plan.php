@@ -91,6 +91,12 @@ class Plan extends Model
     }
 
 
+    public function histories()
+    {
+        return $this->hasMany('App\Models\History');
+    }
+
+
 
 
 

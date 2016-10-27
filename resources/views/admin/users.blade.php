@@ -16,14 +16,14 @@
 
 
 	@if( Auth::user()->isAdmin() )
-		<a class="btn btn-outline-primary pull-xs-right m-l-1" href="{{ url('admin/users/create') }}">
+		<a class="btn btn-outline-primary float-xs-right ml-1" href="{{ url('admin/users/create') }}">
 			<i class="fa fa-user-plus"> </i> &nbsp; Add a user
 		</a>
 	@endif
 
 
 
-	<form class="form-inline pull-xs-right m-l-1">
+	<form class="form-inline float-xs-right ml-1">
 		<div class="form-group">
 			<label for="instrumentfilter">Users playing</label>
 			<select class="custom-select" id="instrumentfilter" onchange="location.href='{{url('admin/users')}}?filterby=instrument&filtervalue='+$(this).val()">
@@ -38,7 +38,7 @@
 	</form>
 
 
-	<form class="form-inline pull-xs-right">
+	<form class="form-inline float-xs-right">
 		<div class="form-group">
 			<label for="rolefilter">Show only</label>
 			<select class="custom-select" id="rolefilter" onchange="location.href='{{url('admin/users')}}?filterby=role&filtervalue='+$(this).val()">
@@ -52,15 +52,16 @@
 		</div>
 	</form>
 
-    <h2>{{ $heading }}</h2>
 
 
+    <h2 class="float-xs-left mr-2">{{ $heading }}</h2>
 
-	<p>
-		<a href="{{ url('/admin/users' . (Request::is('*/active') ? '' : '/active')) }}">
-		<input type="checkbox" {{Request::is('*/active') ? 'checked' : ''}}>
-		Show only active users</a>
-	</p>
+	<button type="button" class="btn btn-outline-primary"
+		 onclick="location.href='{{ url('/admin/users' . (Request::has('active') ? '' : '?active=active')) }}'">
+		Show
+		{{ Request::has('active') ? 'all' : 'only active' }}
+		users
+	</button>
 
 
 

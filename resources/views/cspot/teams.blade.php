@@ -19,7 +19,7 @@
     @include('layouts.flashing')
 
     @if (  $plan->teams->count() > 0  &&  $userIsAuthorized  )  
-        <button onclick="$('#new-member-form').toggle();" class="pull-xs-right m-l-1">Add new team member</button>
+        <button onclick="$('#new-member-form').toggle();" class="float-xs-right ml-1">Add new team member</button>
     @endif
     
 
@@ -89,7 +89,7 @@
                     <!-- row AVAILABLE? -->
                     <td>
                         @if ( Auth::user()->id == $team->user_id  &&  ! $team->confirmed )
-                            <a class="btn btn-secondary btn-sm pull-sm-right" data-available="{{ $team->available ? 'true' : 'false' }}"
+                            <a class="btn btn-secondary btn-sm float-sm-right" data-available="{{ $team->available ? 'true' : 'false' }}"
                                title="Click if you are {{ $team->available ? 'NOT' : '' }} available for this Service" 
                                 href="#" onclick='userAvailableForPlan(this, {{ $team->plan_id }})'>
                                 {!! ($team->available) ? '<i class="fa fa-frown-o"></i> I\'m unavailable' : '<i class="fa fa-smile-o"></i> I\'m available' !!}
@@ -102,7 +102,7 @@
                     <!-- row REQUESTED? -->
                     @if( $userIsAuthorized )
                     <td>
-                            <a class="btn btn-secondary btn-sm pull-sm-right" title="Send request to user" 
+                            <a class="btn btn-secondary btn-sm float-sm-right" title="Send request to user" 
                                 onclick="$('#show-spinner').modal({keyboard: false});" 
                                 href='{{ url('cspot/plans/'.$team->plan_id.'/team/'.$team->id) }}/sendrequest'><i class="fa fa-envelope-o"></i></a>
                         <i class="fa fa-{{ ($team->requested) ? 'check-square' : 'minus-square-o' }}"> </i> 
@@ -112,7 +112,7 @@
                     <!-- row CONFIRMED? -->
                     <td>
                         @if ( Auth::user()->id == $team->user_id )
-                            <a class="btn btn-secondary btn-sm pull-sm-right" title="Confirm/Decline" 
+                            <a class="btn btn-secondary btn-sm float-sm-right" title="Confirm/Decline" 
                                 onclick="$('#show-spinner').modal({keyboard: false});" 
                                 href='{{ url('cspot/plans/'.$team->plan_id.'/team/'.$team->id) }}/confirm'>
                                 {{ ($team->confirmed) ? 'Decline' : 'Confirm' }}:
@@ -186,11 +186,11 @@
                 </span>
             @endif
 
-            <div class="m-l-2" id="show-instruments"></div>
+            <div class="ml-2" id="show-instruments"></div>
 
             <div id="select-team-role" style="display: none">
                 <label class="form-control-label">2. Select a role (one at a time):
-                    <div class="c-inputs-stacked m-l-1" id="select-role-box"></div>
+                    <div class="c-inputs-stacked ml-1" id="select-role-box"></div>
                 </label>
             </div>
 

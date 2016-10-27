@@ -2,7 +2,7 @@
 
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use App\User;
+use App\Models\User;
 
 class AuthTest extends TestCase
 {
@@ -13,39 +13,41 @@ class AuthTest extends TestCase
     {
         // When we register...
         $this->visit('register')
-             ->type('JohnDoe', 'name')
+             ->type('John', 'first_name')
+             ->type('Doe', 'last_name')
              ->type('john@example.com', 'email')
              ->type('password', 'password')
+             ->type('password', 'password_confirmation')
              ->press('Register');
 
         // We should have an account - but one that is not yet confirmed/verified.
-        $this->see('Please confirm your email address.')
-             ->seeInDatabase('users', ['name' => 'JohnDoe', 'verified' => 0]);
+        $this->see('>Click the link contained in that email in order to conclude your registration.')
+             ->seeInDatabase('users', ['first_name' => 'John', 'verified' => 0]);
 
-        $user = User::whereName('JohnDoe')->first();
+        $user = User::whereName('John')->first();
 
         // You can't login until you confirm your email address.
-        $this->login($user)->see('Could not sign you in.');
+        $this->login($user)->see('These credentials do not match our records or your email address has not been verified.');
 
         // Like this...
         $this->visit("register/confirm/{$user->token}")
-             ->see('You are now confirmed. Please login.')
-             ->seeInDatabase('users', ['name' => 'JohnDoe', 'verified' => 1]);
+             ->see('You are now confirmed. Please sign in.')
+             ->seeInDatabase('users', ['email' => 'john@example.com', 'verified' => 1]);
     }
 
     /** @test */
     public function a_user_may_login()
     {
-        $this->login()->see('Lesson complete. Good job!')->onPage('dashboard');
+        $this->login()->see('Welcome to c-SPOT!')->onPage('/');
     }
 
     protected function login($user = null)
     {
-        $user = $user ?: $this->factory->create('App\User', ['password' => 'password']);
+        $user = $user ?: $this->factory->create('App\Models\User', ['password' => 'password']);
 
         return $this->visit('login')
                     ->type($user->email, 'email')
                     ->type('password', 'password') // You might want to change this.
-                    ->press('Sign In');
+                    ->press('Login');
     }
 }

@@ -12,11 +12,11 @@
 
         @foreach($thread->messages as $message)
             <div class="media">
-                <a class="pull-left m-r-1" href="#">
+                <a class="float-left mr-1" href="#">
                     <img src="//www.gravatar.com/avatar/{!! md5($message->user->email) !!}?s=64" alt="{!! $message->user->name !!}" class="img-circle">
                 </a>
                 <div class="media-body">
-                    <a class="btn btn-warning btn-sm pull-xs-right" data-toggle="tooltip" title="Remove" 
+                    <a class="btn btn-warning btn-sm float-xs-right" data-toggle="tooltip" title="Remove" 
                         href='{{ url('messages/'.$message->id) }}/delete'><i class="fa fa-trash"></i></a>
                     <h5 class="media-heading">{!! $message->user->name !!}</h5>
                     <p>{!! $message->body !!}</p>
@@ -46,7 +46,7 @@
                 <div class="checkbox">
                     @foreach($users as $user)
                         @if ($user->isUser())
-                            <label title="{!!$user->getFullname()!!}" class="m-r-1">
+                            <label title="{!!$user->getFullname()!!}" class="mr-1">
                                 <input type="checkbox" name="recipients[]" value="{!!$user->id!!}">
                                 {!!$user->name!!}
                             </label>

@@ -15,7 +15,7 @@
     @include('layouts.flashing')
 
     @if(Auth::user()->isEditor())
-    <a class="btn btn-outline-primary pull-xs-right" href="{{ url('admin/types/create') }}">
+    <a class="btn btn-outline-primary float-xs-right" href="{{ url('admin/types/create') }}">
         <i class="fa fa-plus"> </i> &nbsp; Add new type
     </a>
     @endif
@@ -88,7 +88,7 @@
 
                     <td class="link center" onclick="location.href='{{ url('cspot/plans?filterby=type&filtervalue='.$type->id) }}&show=all'" 
                         title="Show all Plans of this Type of Service">{{ $type->plans->count() }} <sup><small><small><i class="text-muted fa fa-search"></i></small></small></sup>
-                        <a class="btn btn-secondary btn-sm m-l-1" title="Show all future Plans" 
+                        <a class="btn btn-secondary btn-sm ml-1" title="Show all future Plans" 
                                 href='{{ url('cspot/plans?show=future&filterby=type&filtervalue='.$type->id ) }}'>
                             <i class="fa fa-filter"></i></a>
                     </td>

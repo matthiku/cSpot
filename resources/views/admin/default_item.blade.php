@@ -24,7 +24,7 @@
         @endif
 
 
-        <div class="row m-b-2">
+        <div class="row mb-2">
 
             <div class="col-sm-6 bg-info">
                 <div class="pull-sm-right">
@@ -48,7 +48,7 @@
 
 
 
-        <div class="row m-b-1 bg-muted">
+        <div class="row mb-1 bg-muted">
             <div class="col-sm-6">
                 <div class="pull-sm-right">
                     <label>Event/Service Type</label> <i class="red">*</i>
@@ -96,7 +96,7 @@
 
 
 
-        <div class="row m-b-1 bg-muted">
+        <div class="row mb-1 bg-muted">
             <div class="col-sm-6">
                 <div class="pull-sm-right">
 
@@ -140,7 +140,7 @@
 
 
 
-        <div class="row m-b-1 bg-muted">
+        <div class="row mb-1 bg-muted">
             <div class="col-sm-6">
                 <div class="pull-sm-right">
                     @if (isset($default_item))
@@ -160,7 +160,7 @@
                     
                     @if ($file)
                         <div class="show-one-file-figure">                    
-                            <label class="m-r-2" style="vertical-align: top;">Default<br>Image<br>for this<br>item:
+                            <label class="mr-2" style="vertical-align: top;">Default<br>Image<br>for this<br>item:
                                 <br>
                                 <span>
                                     <a class="small" href="#" title="Unlink this file from this item"
@@ -198,7 +198,7 @@
 
 
         <hr>
-        <div class="row m-b-1">
+        <div class="row mb-1">
             <div class="col-sm-6">
                 <div class="pull-sm-right">
 
@@ -249,8 +249,8 @@
                             @foreach ($default_items as $item)
                                 <tr class="link show-all-default-items show-existing-{{ $item->type_id }}" style="display: none;"
                                     onclick="location.href ='{{ url('admin/default_items/' . $item->id) }}/edit'">
-                                    <td class="text-xs-center">{{ $item->id }}</td>
-                                    <td class="text-xs-center red">{{ $item->seq_no }}</td>
+                                    <td class="float-xs-center">{{ $item->id }}</td>
+                                    <td class="float-xs-center red">{{ $item->seq_no }}</td>
                                     <td>{{ $item->text }}</td>
                                 </tr>
                             @endforeach

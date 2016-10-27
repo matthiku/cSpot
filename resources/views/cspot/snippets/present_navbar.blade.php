@@ -44,7 +44,7 @@ $modalContent = '
     <!-- 
         DropUP Menu "Go to..."
     -->
-    <div class="btn-group dropup pull-xs-right m-r-1">
+    <div class="btn-group dropup pull-xs-right mr-1">
 
         <button type="button" class="btn btn-sm btn-info dropdown-toggle" 
             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -106,7 +106,7 @@ $modalContent = '
     <!-- 
         link to song data on CCLI songselect 
     -->
-    <div class="btn-group pull-xs-right m-r-1">
+    <div class="btn-group pull-xs-right mr-1">
         @if ($item->song_id && $item->song->ccli_no)
             <a href="{{ env('SONGSELECT_URL', 'https://songselect.ccli.com/Songs/').$item->song->ccli_no }}" 
                 target="new" class="pull-xs-right btn btn-sm btn-info hidden-sm-down p-y-0">
@@ -128,14 +128,14 @@ $modalContent = '
         help button 
     -->
     <a href="#" title="show keyboard shortcuts" data-toggle="modal" data-target=".help-modal"
-        class="hidden-sm-down pull-xs-right btn btn-sm btn-outline-success m-r-1">
+        class="hidden-sm-down pull-xs-right btn btn-sm btn-outline-success mr-1">
     <i class="fa fa-question-circle fa-lg"></i></a>
 
 
     <!-- 
         Personal Notes 
     -->
-    <div class="dropup hidden-xs-down pull-xs-right m-r-1{{ $item->itemNotes->where('user_id', Auth::user()->id)->first() ? ' open' : '' }}">
+    <div class="dropup hidden-xs-down pull-xs-right mr-1{{ $item->itemNotes->where('user_id', Auth::user()->id)->first() ? ' open' : '' }}">
         <button    type="button" title="Your Private Notes" 
                   class="btn btn-sm btn{{ $item->itemNotes->where('user_id', Auth::user()->id)->first() ? '' : '-outline' }}-success dropdown-toggle" 
             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -161,7 +161,7 @@ $modalContent = '
         Add New Item into Plan! 
     -->
     @if (Auth::user()->ownsPlan($item->plan_id))
-        <div class="btn-group dropup hidden-xs-down pull-xs-right m-r-1">
+        <div class="btn-group dropup hidden-xs-down pull-xs-right mr-1">
             {{-- new MODAL POPUP to add song, scripture or comment --}}
             <button type="button" class="btn btn-sm btn-outline-info btn-sm" title="Add New Item (Song etc.)" 
                  data-toggle="modal" data-target="#searchSongModal"
@@ -217,9 +217,9 @@ $modalContent = '
 
             @if( env('PRESENTATION_ENABLE_SYNC', 'false') && ! Auth::user()->ownsPlan($item->plan_id))
                 {{-- synchronise this presentation with the Main Presenter --}}
-                <form class="form-inline nav-item m-l-1 label label-info">
+                <form class="form-inline nav-item ml-1 label label-info">
                     <div class="checkbox" onmouseup="changeSyncPresentation()">
-                        <label class="checkbox-inline c-input c-checkbox m-b-0" style="" 
+                        <label class="checkbox-inline c-input c-checkbox mb-0" style="" 
                                 title="Synchronise this presentation with Main Presenter">
                             <input type="checkbox" id="configSyncPresentation">
                                 <span class="c-indicator"></span>&nbsp;Sync Presentation
@@ -237,7 +237,7 @@ $modalContent = '
 
     @if (Auth::user()->ownsPlan($item->plan_id))
         {{-- configuration menu --}}
-        <div class="nav-item btn-group dropup pull-xs-left m-l-1">
+        <div class="nav-item btn-group dropup pull-xs-left ml-1">
 
             <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
                  id="presentConfigDropUpMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -269,7 +269,7 @@ $modalContent = '
         <!-- 
             DropUP Menu "Show"
         -->
-        <div class="btn-group dropup pull-xs-left m-l-1" id="jumplist">
+        <div class="btn-group dropup pull-xs-left ml-1" id="jumplist">
 
             <button type="button" class="btn btn-sm btn-info dropdown-toggle" 
                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

@@ -11,10 +11,10 @@
 <div class="announce-text-present">
 
 
-	<div class="text-success font-weight-bold font-italic display-3 m-b-1">
+	<div class="text-success font-weight-bold font-italic display-3 mb-1">
 		<img class="pull-xs-left" height="140px" src="{{ url($logoPath.env('CHURCH_LOGO_FILENAME')) }}">
 		<img class="pull-xs-right" height="140px" src="{{ url($logoPath.env('CHURCH_LOGO_FILENAME')) }}">
-		<div class="header m-b-0" style="line-height: 1.0; vertical-align: middle;">This Week's Announcements
+		<div class="header mb-0" style="line-height: 1.0; vertical-align: middle;">This Week's Announcements
 			<div class="smaller text-muted">Week from {{$today->formatLocalized('%d %b')}} to {{$nextWeek->formatLocalized('%d %b')}}</div>
 		</div>
 	</div>
@@ -99,7 +99,7 @@
 
 						// now show the actual event data
 					?>
-					<div class="{{ $firstThisDay ? '' : 'm-t-2'}}">
+					<div class="{{ $firstThisDay ? '' : 'mt-2'}}">
 						<span class="d-block bg-info nowrap">{{ $event->date }}</span>
 						<div>{{ $event->type->name }}{!! $event->subtitle ? '<br><span class="text-muted">'.$event->subtitle.'</span>' : '' !!}</div>
 					</div>

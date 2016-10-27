@@ -57,6 +57,18 @@ class LoginController extends Controller
 
 
 
+    /**
+     * Override the default function to add 'verified' (i.e. make sure the email address was verfied)
+     */
+    public function credentials(Request $request)
+    {
+        return [
+            'email' => $request->email,
+            'password' => $request->password,
+            'verified' => 1,
+        ];
+    }
+
 
     public function login(Request $request)
     {

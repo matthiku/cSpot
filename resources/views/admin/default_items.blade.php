@@ -15,22 +15,22 @@
 	@include('layouts.flashing')
 
 	@if( Auth::user()->isEditor() )
-	<a class="btn btn-outline-warning pull-xs-right m-l-1" href="{{ url('cspot/plans/create') }}
+	<a class="btn btn-outline-warning float-xs-right ml-1" href="{{ url('cspot/plans/create') }}
 			{{ Request::has('filtervalue') ? '?type_id='.Request::get('filtervalue') : '' }}"
 			title="Create a new Event of selected type (if any)">
 		<i class="fa fa-plus"> </i> &nbsp; Create Event
 	</a>
-	<a class="btn btn-outline-primary pull-xs-right m-l-1" href="{{ url('admin/default_items/create') }}">
+	<a class="btn btn-outline-primary float-xs-right ml-1" href="{{ url('admin/default_items/create') }}">
 		<i class="fa fa-plus"> </i> &nbsp; Add item
 	</a>
 	@endif
 
 
-	<a class="btn btn-outline-success pull-xs-right m-l-1" href="{{ url('admin/default_items') }}">
+	<a class="btn btn-outline-success float-xs-right ml-1" href="{{ url('admin/default_items') }}">
 		<i class="fa fa-list"> </i> &nbsp; Show All
 	</a>
 
-	<form class="form-inline pull-xs-right">
+	<form class="form-inline float-xs-right">
 		<div class="form-group">
 			<label for="typefilter">Filter by</label>
 			<select class="custom-select" id="typefilter" onchange="location.href='{{url('admin/default_items')}}?filterby=type&filtervalue='+$(this).val()">

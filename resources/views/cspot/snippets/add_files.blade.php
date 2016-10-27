@@ -21,7 +21,7 @@
 
             {!! Form::label('file_category_id', 'Select a category: ') !!}
 
-            <div class="btn-group modal-select-file m-l-1" data-toggle="buttons"
+            <div class="btn-group modal-select-file ml-1" data-toggle="buttons"
                 @if (! isset($modal)) 
                         onclick="$('#show-location-selection').show()" 
                 @endif
@@ -52,7 +52,7 @@
 
             </div>
             
-            <p class="m-t-1">Selected category: <span class="text-info show-selected-category"></span></p>
+            <p class="mt-1">Selected category: <span class="text-info show-selected-category"></span></p>
 
         </li>
 
@@ -67,11 +67,11 @@
                 Do you want to upload a new image from your device or<br>select an image that was already uploaded?
             </label>
 
-            <button type="button" class="btn btn-primary btn-sm m-r-1" id="btn-upload-new-image"
+            <button type="button" class="btn btn-primary btn-sm mr-1" id="btn-upload-new-image"
                 onclick="$(this).parent().hide();$('.show-file-add-button').show()"
                     >Upload new image</button>
 
-            <button type="button" class="btn btn-secondary btn-sm m-l-1" id="btn-select-cspot-images"
+            <button type="button" class="btn btn-secondary btn-sm ml-1" id="btn-select-cspot-images"
                 data-ajax-url="{{ route('cspot.api.files') }}"
                 data-images-path="{{ url(config('files.uploads.webpath')) }}"
                 onclick="$(this).parent().hide();showImagesSelection(this)">Select c-SPOT images</button>
@@ -85,7 +85,7 @@
         --}}
         <li class="list-group-item image-selection-slideshow center" style="display: none;">
 
-            <p class="m-t-1">Selected category: <span class="text-info show-selected-category"></span></p>
+            <p class="mt-1">Selected category: <span class="text-info show-selected-category"></span></p>
 
             <label class="card-text" id="images-for-selection-label"></label>
             <br>

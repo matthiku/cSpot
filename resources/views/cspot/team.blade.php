@@ -38,11 +38,11 @@
             <input type="hidden" name="user-id" disabled="disabled" id="user-id" value="{{ $team->user_id }}">{{ $team->user->name }}
         </label>
 
-        <div class="m-l-2" id="show-instruments"></div>
+        <div class="ml-2" id="show-instruments"></div>
 
         <div id="select-team-role">
             <label class="form-control-label">Role:
-                <div class="c-inputs-stacked m-l-1" id="select-role-box">
+                <div class="c-inputs-stacked ml-1" id="select-role-box">
                     @foreach ($team->user->roles as $role)
                         <label class="c-input c-radio role-selector-items">
                             <input type="radio" id="role_id-{{ $role->id }}" value="{{ $role->id }}" name="role_id"

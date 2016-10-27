@@ -27,20 +27,20 @@
                 <h4 class="red">{{ $item->key }}</h4>
             @endif
             @if ($item->song->chords )
-                <div class="m-b-3">
+                <div class="mb-3">
                     <pre class="text-song" id="chords">{{ $item->song->chords }}</pre>
                 </div>
             @else
                 {{ $item->song->title_2=='slides' ? '(Info slide)' : '(No chords available!)' }}
                 @if ( count($item->song->files)>0 )
-                    <div class="m-b-3">
+                    <div class="mb-3">
                         @foreach ($item->song->files as $file)
                             <img class="figure-img img-fluid img-rounded"  
                                 src="{{ url(config('files.uploads.webpath')).'/'.$file->token }}">
                         @endforeach
                     </div>
                 @elseif ($item->song->title_2 != 'video')
-                    <pre class="text-song m-b-3" id="lyrics">{{ $item->song->lyrics }}</pre>
+                    <pre class="text-song mb-3" id="lyrics">{{ $item->song->lyrics }}</pre>
                 @endif
             @endif
 

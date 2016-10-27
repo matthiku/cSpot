@@ -4,7 +4,7 @@
 
 <div class="table-responsive">
 	<table class="table table-items
-		{{ count($plan->items)>5 ? 'table-sm m-b-0' : 'm-t-3 p-b-3'}} {{ count($plan->items)>10 ? 'table-xs' : ''}}">
+		{{ count($plan->items)>5 ? 'table-sm mb-0' : 'mt-3 p-b-3'}} {{ count($plan->items)>10 ? 'table-xs' : ''}}">
 
 		<tbody id="tbody-items">
 	    @foreach( $plan->items as $key => $item )
@@ -36,7 +36,7 @@
 
 
 				<th class="{{ Auth::user()->isUser() ? 'drag-item ' : ''}}dont-print" scope="row" title="drag item into the new position">
-					<span class="hidden-lg-down pull-xs-right text-success">{{ $item->seq_no }}</span>
+					<span class="hidden-lg-down float-xs-right text-success">{{ $item->seq_no }}</span>
 					@if ( Auth::user()->ownsPlan($plan->id) && $plan->date >= \Carbon\Carbon::today() )
 						<i class="p-r-1 fa fa-arrows-v">
 					@endif
@@ -272,22 +272,22 @@
 					<big>
 					@if ($item->song_id)
 	                    @if ( $item->song->hymnaldotnet_id > 0 )
-	                        <a target="new" title="Review song on hymnal.net" data-toggle="tooltip" class="m-r-1" 
+	                        <a target="new" title="Review song on hymnal.net" data-toggle="tooltip" class="mr-1" 
 	                            href="{{ env('HYMNAL.NET_PLAY', 'https://www.hymnal.net/en/hymn/h/').$item->song->hymnaldotnet_id }}">
 	                            <i class="fa fa-music"></i> </a>
 	                    @endif
 	                    @if ( $item->song->ccli_no > 1000 && 'MP'.$item->song->ccli_no != $item->song->book_ref && Auth::user()->hasMusician() )
-	                        <a target="new" title="Review song on SongSelect" data-toggle="tooltip" class="m-r-1" 
+	                        <a target="new" title="Review song on SongSelect" data-toggle="tooltip" class="mr-1" 
 	                            href="{{ env('SONGSELECT_URL', 'https://songselect.ccli.com/Songs/').$item->song->ccli_no }}">
 	                            <img src="{{ url('/') }}/images/songselectlogo.png" width="20"></a>
 	                    @endif
 	                    @if ( strlen($item->song->youtube_id)>0 )
 	                    	@if (Auth::user()->ownsPlan( $plan->id ))
-	                            <a title="Play in new tab" data-toggle="tooltip" target="new" class="hidden-md-down pull-xs-right"
+	                            <a title="Play in new tab" data-toggle="tooltip" target="new" class="hidden-md-down float-xs-right"
 	                            	href="{{ env('YOUTUBE_PLAY', 'https://www.youtube.com/watch?v=').$item->song->youtube_id }}">
 	                            	<i class="fa fa-external-link"></i></a>
                         	@endif
-	                        <a href="#" title="Play here" class="red pull-xs-right m-r-1" data-toggle="tooltip" data-song-title="{{ $item->song->title }}"
+	                        <a href="#" title="Play here" class="red float-xs-right mr-1" data-toggle="tooltip" data-song-title="{{ $item->song->title }}"
 	                        	onclick="showYTvideoInModal('{{ $item->song->youtube_id }}', this)">
 	                            <i class="fa fa-youtube-play"></i></a>
 	                    @endif
@@ -303,7 +303,7 @@
 									ACTION buttons 
 					  ________________________________________________
 				 --}}
-				<td class="text-xs-right text-nowrap dont-print">
+				<td class="float-xs-right text-nowrap dont-print">
 
 
 					{{-- CCLI Song Usage Reporting 
@@ -323,7 +323,7 @@
 							--}}
 							@if (! $item->reported_at)
 
-								<a class="btn btn-sm btn-outline-danger hidden-xs-down m-r-1" 
+								<a class="btn btn-sm btn-outline-danger hidden-xs-down mr-1" 
 									data-toggle="tooltip" data-placement="left" title="Report Song Usage to CCLI" 
 									onclick="reportSongUsageToCCLI(this, {{ $item->id }}, {{ $item->reported_at ? $item->reported_at : 'null' }})" 
 									href='{{ env('CCLI_REPORT_URL', 'https://olr.ccli.com/search/results?SearchTerm=').$item->song->ccli_no }}' target="new">
@@ -333,7 +333,7 @@
 
 								@if ( $item->reported_at->hour==0 && $item->reported_at->minute==0 )
 									{{-- reporting process was started but not yet confirmed by the user --}}
-									<a class="btn btn-sm btn-outline-warning hidden-xs-down m-r-1" 
+									<a class="btn btn-sm btn-outline-warning hidden-xs-down mr-1" 
 										data-toggle="tooltip" data-placement="left" title="Please confirm here when Song Usage Report to CCLI has been completed!" 
 										onclick="reportSongUsageToCCLI(this, {{ $item->id }}, '{{ $item->reported_at ? $item->reported_at : 'null' }}')" 
 										href="#"><i class="fa fa-copyright fa-lg"></i></a>
@@ -417,7 +417,7 @@
 	    @endforeach
 
 		@if (count($plan->items) < 6)
-			<tr><td class="pull-xs-right">
+			<tr><td class="float-xs-right">
 			
 				@if (count($plan->items) == 0 ) 
 					Plan has no items yet:</td><td>
@@ -435,7 +435,7 @@
 
 
 @if( Auth::user()->ownsPlan($plan->id) )
-	<div 	class="small pull-xs-right m-l-2" id="showCachedItems" 
+	<div 	class="small float-xs-right ml-2" id="showCachedItems" 
 		 	style="display: {{ $plan->planCaches()->count() ? 'initial' : 'none' }}">
 		Cache contains {{ $plan->planCaches()->count() }} pre-rendered items. 
 		<a href="#" onclick="clearServerCache({{ $plan->id }});"><i class="fa fa-trash"></i>&nbsp;Delete.</a>
@@ -444,7 +444,7 @@
 
 @if( Auth::user()->ownsPlan($plan->id) && $plan->date >= \Carbon\Carbon::yesterday() )
 
-	<div class="pull-xs-right m-l-2" id="trashedItems" 
+	<div class="float-xs-right ml-2" id="trashedItems" 
 		 style="display: {{ $trashedItemsCount ? 'initial' : 'none' }}">
 		<i class="fa fa-trash"></i>&nbsp;contains&nbsp;<big id="trashedItemsCount">{{ $trashedItemsCount }}</big>&nbsp;item{{$trashedItemsCount>1 ? 's' : ''}}: &nbsp;
 		<i class="fa fa-list-ul"></i>&nbsp;<a href="#" id="toggleBtn" onclick="toggleTrashed()">Show</a> &nbsp;

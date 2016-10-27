@@ -15,7 +15,7 @@
 	@include('layouts.flashing')
 
 	@if( Auth::user()->isEditor() )
-	<a class="btn btn-outline-primary pull-xs-right" href="{{ url('admin/file_categories/create') }}">
+	<a class="btn btn-outline-primary float-xs-right" href="{{ url('admin/file_categories/create') }}">
 		<i class="fa fa-plus"> </i> &nbsp; Add a new File Category
 	</a>
 	@endif
@@ -71,7 +71,7 @@
 								<a class="btn btn-danger btn-sm" title="Delete!" 
 									href="{{ url('admin/file_categories/'.$file_category->id) }}/delete"><i class="fa fa-trash"></i></a>
 							@else
-								<a tabindex="0" href="#" class="m-l-1" 
+								<a tabindex="0" href="#" class="ml-1" 
 					    			data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="focus"
 					    			data-content="system default values cannot be deleted!">
 					    			<i class="fa fa-question-circle"></i></a>

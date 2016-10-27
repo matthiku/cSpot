@@ -15,7 +15,7 @@
 	@include('layouts.flashing')
 
 	@if( Auth::user()->isEditor() )
-		<a class="btn btn-outline-primary pull-xs-right" href='{{ url('admin/resources/create') }}'>
+		<a class="btn btn-outline-primary float-xs-right" href='{{ url('admin/resources/create') }}'>
 			<i class="fa fa-plus"> </i> &nbsp; Add a new resource
 		</a>
 	@endif

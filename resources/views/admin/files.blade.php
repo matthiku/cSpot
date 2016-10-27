@@ -15,23 +15,23 @@
 	@include('layouts.flashing')
 
 	@if( Auth::user()->isEditor() )
-		<a class="btn btn-outline-primary pull-xs-right m-l-2" href='#'
+		<a class="btn btn-outline-primary float-xs-right ml-2" href='#'
                 data-toggle="modal" data-target="#fileUploadModal">
 			<i class="fa fa-plus"> </i> &nbsp; Add a new file
 		</a>
 	@endif
 
-    <a class="btn btn-outline-success pull-xs-right" href='#' 
+    <a class="btn btn-outline-success float-xs-right" href='#' 
             onclick="$('#show-as-large-icons').toggle();$('#show-as-filelist').toggle();">
         <i class="fa fa-list"> </i> &nbsp; Filelist / Icons
     </a>
 
 
-    <h2 class="hidden-xs-down pull-xs-left m-r-2">{{ $heading }}</h2>
-    <h5 class="hidden-sm-up pull-xs-left m-r-2">{{ $heading }}</h5>
+    <h2 class="hidden-xs-down float-xs-left mr-2">{{ $heading }}</h2>
+    <h5 class="hidden-sm-up float-xs-left mr-2">{{ $heading }}</h5>
 
 	
-    <select class="c-select pull-xs-left" id="fdf" onchange="selectCategory(this)">
+    <select class="c-select float-xs-left" id="fdf" onchange="selectCategory(this)">
         <option selected>Filter</option>
         <option value="newest">Show Newest</option>
         @foreach ($file_categories as $cat)
@@ -90,9 +90,9 @@
                                     select</a>
                             @elseif( Auth::user()->isEditor() )
                                 <a href="#" onclick="deleteFile({{ $file->id }})" title="delete this file" 
-                                    class="btn btn-sm btn-danger pull-xs-right">
+                                    class="btn btn-sm btn-danger float-xs-right">
                                     <i class="fa fa-trash"></i></a>
-                                <button type="button" class="btn btn-info btn-sm pull-xs-right" data-toggle="modal" data-target="#fileEditModal"
+                                <button type="button" class="btn btn-info btn-sm float-xs-right" data-toggle="modal" data-target="#fileEditModal"
                                     data-id="{{ $file->id }}" data-cat="{{ $file->file_category_id }}" data-filename="{{ $file->filename }}" 
                                     data-token="{{ url(config('files.uploads.webpath')).'/mini-'.$file->token }}">
                                     <i class="fa fa-pencil"></i>
@@ -150,7 +150,7 @@
                         <th>ID</th>
                         <th>Name</th>
                         <th class="hidden-xs-down">Category</th>
-                        <th colspan="2" class="center p-r-2">Linked to<br><span class="pull-xs-left">Song</span> or <span class="pull-xs-right">Event Item</span></th>
+                        <th colspan="2" class="center p-r-2">Linked to<br><span class="float-xs-left">Song</span> or <span class="float-xs-right">Event Item</span></th>
                         <th class="center">Size</th>
                         @if( Auth::user()->isEditor() )
                             <th>Modify</th>
@@ -205,7 +205,7 @@
 
                             {{-- linked event item 
                             --}}
-                            <td class="limit-td-width pull-xs-right p-r-2">
+                            <td class="limit-td-width float-xs-right p-r-2">
                                 @if ($file->item_id)
                                     <a title="Item Details" href="{{ route('cspot.items.edit',[ 0, $file->item_id]) }}">{{ $file->item_id }}</a>
                                 @endif
@@ -302,7 +302,7 @@
                 <h4 class="modal-title" id="fileEditModalLabel">Edit File Information</h4>
             </div>
             <div class="modal-body">
-                <img src="" class="pull-xs-right" alt="image">
+                <img src="" class="float-xs-right" alt="image">
                 <label>File Name</label>
                 <br>
                 <input type="text" id="filename">

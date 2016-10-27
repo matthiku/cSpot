@@ -520,8 +520,9 @@ PlanController extends Controller
         $plan = Plan::find($id);
         $plan->changer = Auth::user()->first_name;
 
-        // check if leader or teacher was changed
-        checkIfLeaderOrTeacherWasChanged( $request, $plan );
+        // check if leader or teacher was changed and if reason was given
+        if (! checkIfLeaderOrTeacherWasChanged( $request, $plan ))
+            return redirect()->back(); // no reason was given for the change
 
         // update Service Times
         //TODO: allow for end-time on the next day!

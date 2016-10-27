@@ -28,11 +28,10 @@ $(document).ready(function() {
         style       : 'display: inline',
         placeholder : '<span class="fa fa-pencil text-muted">&nbsp;</span>',
         data        : function(value, settings) {
-            // check if text is a simple string or a html element
-            // Issue: when comment contains a string AND a bible ref...
-            if (value.substr(0,2)=='<a')
-                return $(value).text();
-            return value;
+            // strip any html code off the field value
+            var tmp = document.createElement("DIV");
+            tmp.innerHTML = value;
+            return tmp.textContent || tmp.innerText || "";
         }
     });
 
@@ -66,7 +65,6 @@ $(document).ready(function() {
     // comment field or private notes on the Item Detail page
     $('.editable-item-field').editable(__app_url + '/cspot/api/items/update', {
         type        : 'textarea',
-        event       : 'mouseover',
         event       : 'mouseover',
         width       : '100%',
         rows        : '3',

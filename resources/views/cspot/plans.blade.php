@@ -20,7 +20,7 @@
 
 
 	@if( Auth::user()->isEditor() )
-		<a class="btn btn-outline-primary pull-xs-right" 
+		<a class="btn btn-outline-primary float-xs-right" 
 			href="{{ url('cspot/plans/create') }}{{ 
 				( Request::has('filterby') && Request::input('filterby')=='type' && Request::has('filtervalue') ) 
 					? '?type_id='.Request::input('filtervalue') 
@@ -29,7 +29,7 @@
 		</a>
 	@endif
 
-    <h2 class="pull-xs-left">
+    <h2 class="float-xs-left">
     	{{ $heading }}
 		<small class="small" style="font-size: 50%">
 			<a href="#" onclick="toogleAllorFuturePlans()">show {{Request::get('show')!='all' ? 'all' : 'only upcoming'}}</a>
@@ -119,7 +119,7 @@
 					@if( Auth::user()->isUser())
 						<td class="center">
 							@if( $plan->date > \Carbon\Carbon::yesterday() )
-								<a class="hidden-lg-up pull-xs-right" title="show team for this plan" href="{{ url('cspot/plans/'.$plan->id) }}/team">staff</a>
+								<a class="hidden-lg-up float-xs-right" title="show team for this plan" href="{{ url('cspot/plans/'.$plan->id) }}/team">staff</a>
 								<label class="c-input c-checkbox">
 									<input type="checkbox" {{ isset($userIsPlanMember[$plan->id]) ? 'checked' : '' }}
 										onclick="userAvailableForPlan(this, {{ $plan->id }}, {{ Auth::user()->id }})">
@@ -133,12 +133,12 @@
 					@endif
 
 					<td class="hidden-md-down center">
-						<a class="pull-xs-right" title="show team for this plan" href="{{ url('cspot/plans/'.$plan->id) }}/team"><small>(show)</small></a>
+						<a class="float-xs-right" title="show team for this plan" href="{{ url('cspot/plans/'.$plan->id) }}/team"><small>(show)</small></a>
 						{{ $plan->teams->count() ? $plan->teams->count() : '' }}
 					</td>
 
 					<td class="hidden-md-down center">
-						<a class="pull-xs-right" title="show resources for this plan" href="{{ url('cspot/plans/'.$plan->id) }}/resource"><small>(show)</small></a>
+						<a class="float-xs-right" title="show resources for this plan" href="{{ url('cspot/plans/'.$plan->id) }}/resource"><small>(show)</small></a>
 						{{ $plan->resources->count() ? $plan->resources->count() : '' }}
 					</td>
 

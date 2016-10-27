@@ -38,9 +38,9 @@
 			<a class="navbar-brand hidden-sm-down hidden-lg-up" href="#">{{ $heading }}</a>
 
 
-			<ul class="nav navbar-nav pull-xs-right">
+			<ul class="nav navbar-nav float-xs-right">
 				@if ($currentPage!=0)
-					<li class="nav-item hidden-sm-down small text-xs-right">
+					<li class="nav-item hidden-sm-down small float-xs-right">
 						Page {{ $songs->currentPage() }} of {{ $songs->lastPage() }}<br>
 						<small class="hidden-md-down">showing {{ $songs->perPage() }} of a total of {{ $songs->total() }} songs</small>
 					</li>
@@ -50,7 +50,7 @@
 
 			<ul class="nav navbar-nav">
 
-				<li class="nav-item m-r-3">@include('cspot.snippets.fullTextSearch')</li>
+				<li class="nav-item mr-3">@include('cspot.snippets.fullTextSearch')</li>
 
 				<li class="nav-item active">
 					@if ( Request::has('filterby') )
@@ -85,14 +85,19 @@
 				@if( Auth::user()->isEditor() && $plan_id==0 )
 					<li class="nav-item active">
 						<a class="nav-link btn btn-outline-primary" 
-							@if (Request::has('filtervalue'))
-								@if (Request::input('filtervalue')=='slides'))
-									href="{{ url('cspot/songs/create') }}?type=slides">
-								@elseif (Request::input('filtervalue')=='video')
-									href="{{ url('cspot/songs/create') }}?type=video">
-								@endif
-							@endif
+						    href="{{ url('cspot/songs/create') }}{{ 
+								Request::has('filtervalue')
+									? '?type='.Request::input('filtervalue')
+									: '' }}">
 							<i class="fa fa-plus"> </i> &nbsp;Add New
+								@if (Request::has('filtervalue') )
+									@if (Request::input('filtervalue')=='video') 
+										'<i class="fa fa-tv"> </i>'
+									@endif
+									@if (Request::input('filtervalue')=='slides')
+										'<i class="fa fa-clone"> </i>'
+									@endif
+								@endif
 						</a>
 					</li>
 				@endif
@@ -160,7 +165,7 @@
 	        	<?php $editLink = Auth::user()->isEditor() ? 'onclick=\'location.href="'.url('cspot/songs/'.$song->id).'/edit"\'' : ''; ?>
 
 				<tr>
-					<th {!! $editLink !!} scope="row" class="link hidden-md-down text-xs-center">{{ $song->id }}</th>
+					<th {!! $editLink !!} scope="row" class="link hidden-md-down float-xs-center">{{ $song->id }}</th>
 
 					<td {!! $editLink !!} class="link" title="{{ $song->lyrics }}">
 						{!! $song->title_2=='video' ? '<i class="fa fa-tv"> </i>' : '' !!}

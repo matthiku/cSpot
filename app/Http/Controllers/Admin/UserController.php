@@ -47,6 +47,26 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
+        // show only active users
+        // TODO: this currently produces duplicates...
+        if ($request->has('active'))
+        {
+            $user1 = Role::find(4)->users()->get();
+            $users = Role::find(5)->users()->get();
+            foreach ($user1 as $value) {
+                $users->prepend($value);
+            }
+            $heading = 'Show Active Users';
+
+            return view( 
+                $this->view_all, [
+                    'users' => $users,
+                    'heading' => $heading,
+                    'roles' => Role::get(),
+                    'instruments' => Instrument::get()
+                ]);
+        }
+
         // get all users in the requested order (default by id)
         $users = User::
             orderBy(
@@ -161,18 +181,6 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        // show only active users
-        // TODO: this currently produces duplicates...
-        if ($id=='active')
-        {
-            $user1 = Role::find(4)->users()->get();
-            $users = Role::find(5)->users()->get();
-            foreach ($user1 as $value) {
-                $users->prepend($value);
-            }
-            $heading = 'Show Active Users';
-            return view( $this->view_all, array('users' => $users, 'heading' => $heading) );
-        }
 
         // users can only see their own profile, unless they are Admins
         if ( Auth::user()->id<>$id  &&   ! Auth::user()->isAdmin() ) {

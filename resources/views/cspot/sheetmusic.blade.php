@@ -31,18 +31,18 @@
                 <h4 class="red">{{ $item->key }}</h4>
             @endif
             @if ($type=='sheetmusic' && count($item->song->files)>0 )
-                <div class="m-b-3">
+                <div class="mb-3">
                     @foreach ($item->song->files as $file)
                         <img class="figure-img img-fluid img-rounded"  
                             src="{{ url(config('files.uploads.webpath')).'/'.$file->token }}">
                     @endforeach
                 </div>
             @elseif ($item->song->chords )
-                <div class="m-b-3">
+                <div class="mb-3">
                     <pre class="big" id="chords">{{ $item->song->chords }}</pre>
                 </div>
             @else
-                <pre class="big m-b-3">{{ $item->song->lyrics }}</pre>
+                <pre class="big mb-3">{{ $item->song->lyrics }}</pre>
             @endif
         @endif
 

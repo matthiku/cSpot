@@ -30,7 +30,7 @@
 
             {{ $item->song->title_2=='slides' ? '(Info slide)' : '' }}
             @if ( count($item->song->files)>0 )
-                <div class="m-b-3">
+                <div class="mb-3">
                     @foreach ($item->song->files as $file)
                         <img class="figure-img img-fluid img-rounded"  
                             src="{{ url(config('files.uploads.webpath')).'/'.$file->token }}">
@@ -38,12 +38,12 @@
                 </div>
             @elseif ($item->song->title_2 != 'video')
                 <div class="text-song">Sequence: {{ $item->song->sequence }}</div>
-                <div class="text-song white-space-pre-wrap m-b-3" id="lyrics">{{ $item->song->lyrics }}</div>
+                <div class="text-song white-space-pre-wrap mb-3" id="lyrics">{{ $item->song->lyrics }}</div>
 
             {{-- insert videoclip or lyrics --}}
             @else
                 <div class="hidden-xs-up" id="videoclip-url">{{ $item->song->title_2}}</div>
-                <div class="text-present m-b-3" id="present-lyrics">
+                <div class="text-present mb-3" id="present-lyrics">
                     <iframe width="560" height="315" frameborder="0" allowfullscreen
                         src="https://www.youtube.com/embed/{{ $item->song->youtube_id }}" ></iframe>
                 </div>

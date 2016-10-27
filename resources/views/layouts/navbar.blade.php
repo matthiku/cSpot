@@ -8,7 +8,7 @@
         ___________________________________________________________
     --}}
 
-    <ul class="nav navbar-nav pull-xs-right">
+    <ul class="nav navbar-nav float-xs-right">
 
 
 
@@ -133,7 +133,7 @@
         ________________________________________________________
     --}}
     @if ( Auth::guest() )
-        <form class="form-inline pull-xs-right hidden-md-down" method="POST" role="form" action="{{ url('login') }}">
+        <form class="form-inline float-xs-right hidden-md-down" method="POST" role="form" action="{{ url('login') }}">
             Log in using @include('auth.social', ['hideLblText' => 'true']) or: 
             {!! csrf_field() !!}
             <div class="form-group">

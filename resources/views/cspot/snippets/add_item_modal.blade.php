@@ -24,23 +24,23 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
 
-                    <h4 class="modal-title m-b-1">
+                    <h4 class="modal-title mb-1">
                         <span id="searchSongModalLabel">Select what to insert</span> <span id="modal-show-item-id"></span>
                     </h4>
 
-                    <a href="#" class="btn btn-lg btn-outline-primary modal-pre-selection m-b-1"
+                    <a href="#" class="btn btn-lg btn-outline-primary modal-pre-selection mb-1"
                         onclick="showModalSelectionItems('song')"      ><strong><i class="fa fa-music"></i> &nbsp; Song</strong></a>
 
-                    <a href="#" class="btn btn-lg btn-outline-success modal-pre-selection m-b-1 font-weight-bold"
+                    <a href="#" class="btn btn-lg btn-outline-success modal-pre-selection mb-1 font-weight-bold"
                         onclick="showModalSelectionItems('scripture')"><strong><i class="fa fa-book"></i> Scripture Text</strong></a>
 
-                    <a href="#" class="btn btn-lg btn-outline-warning modal-pre-selection m-b-1"
+                    <a href="#" class="btn btn-lg btn-outline-warning modal-pre-selection mb-1"
                         onclick="showModalSelectionItems('clips')"><i class="fa fa-television"></i> VideoClip / Slides</a>
 
-                    <a href="#" class="btn btn-lg btn-outline-danger modal-pre-selection m-b-1"
+                    <a href="#" class="btn btn-lg btn-outline-danger modal-pre-selection mb-1"
                         onclick="showModalSelectionItems('file')"      ><i class="fa fa-file-picture-o"></i> &nbsp; Image</a>
 
-                    <a href="#" class="btn btn-lg btn-outline-info modal-pre-selection m-b-1 font-weight-bold"
+                    <a href="#" class="btn btn-lg btn-outline-info modal-pre-selection mb-1 font-weight-bold"
                         onclick="showModalSelectionItems('comment')"   ><i class="fa fa-comments"></i> Comment or Notes</a>
 
                 </div>
@@ -54,7 +54,7 @@
                     {{-- comment 
                     --}}
                     <input type="text"   id="comment" name="comment"
-                        class="center-block m-b-1 modal-select-comment modal-input-comment modal-select-scripture fully-width">
+                        class="center-block mb-1 modal-select-comment modal-input-comment modal-select-scripture fully-width">
 
 
                     {{-- scripture 
@@ -75,30 +75,30 @@
 
                     {{-- videoclip or slides 
                     --}}
-                    <label for="clips" class="search-form-item modal-select-clips m-b-0">Search for titles of Slides or VideoClips:</label>
-                    <input type="text" class="form-control search-form-item modal-select-clips modal-input-clips m-b-0" 
+                    <label for="clips" class="search-form-item modal-select-clips mb-0">Search for titles of Slides or VideoClips:</label>
+                    <input type="text" class="form-control search-form-item modal-select-clips modal-input-clips mb-0" 
                              id="clips" onkeyup="showSongHints('#clipsHint', this.value, 'clips')">
                     <div class="search-form-item modal-select-clips" id="clipsHint"></div>
 
-                    <label class="search-form-item modal-select-clips m-t-1 m-b-0" for="MPselect">...or select from this list:</label>
-                    <select class="form-control m-b-1 search-form-item modal-select-clips" id="ClipSelect" onchange="$('#searchForSongsButton').click();">
+                    <label class="search-form-item modal-select-clips mt-1 mb-0" for="MPselect">...or select from this list:</label>
+                    <select class="form-control mb-1 search-form-item modal-select-clips" id="ClipSelect" onchange="$('#searchForSongsButton').click();">
                         <option value="0">select....</option>
                     </select>
 
 
                     {{-- song 
                     --}}
-                    <label for="haystack" class="search-form-item modal-select-song m-b-0">Search Song title or number:</label>
-                    <input type="text" class="form-control search-form-item modal-select-song modal-input-song m-b-0"
+                    <label for="haystack" class="search-form-item modal-select-song mb-0">Search Song title or number:</label>
+                    <input type="text" class="form-control search-form-item modal-select-song modal-input-song mb-0"
                              id="haystack" onkeyup="showSongHints('#txtHint', this.value)">
                     <div class="search-form-item modal-select-song" id="txtHint"></div>
 
-                    <label class="search-form-item modal-select-song m-t-1 m-b-0" for="MPselect">...or select Mission Praise number:</label>
-                    <select class="form-control m-b-1 search-form-item modal-select-song" id="MPselect" onchange="$('#searchForSongsButton').click();">
+                    <label class="search-form-item modal-select-song mt-1 mb-0" for="MPselect">...or select Mission Praise number:</label>
+                    <select class="form-control mb-1 search-form-item modal-select-song" id="MPselect" onchange="$('#searchForSongsButton').click();">
                         <option value="0">select....</option>
                     </select>
 
-                    <label id="search-action-label" class="center-block modal-select-song m-b-0">Full-text search incl. lyrics:</label>
+                    <label id="search-action-label" class="center-block modal-select-song mb-0">Full-text search incl. lyrics:</label>
                     <input type="text"   id="search-string" class="search-input search-form-item center-block modal-select-song">
 
 

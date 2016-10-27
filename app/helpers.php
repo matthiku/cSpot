@@ -822,6 +822,7 @@ function addDefaultRolesAndResourcesToPlan($plan)
 }
 
 
+
 /**
  * Trigger certain actions when leader or teacher of a plan was changed
  *
@@ -836,19 +837,28 @@ function checkIfLeaderOrTeacherWasChanged($request, $plan)
     // check if LEADER was changed
     if ( $plan->leader_id != $request->leader_id ) {
 
+        // check if reason was given for the change
+        if (! $request->has('reasonForChange')) {
+            flashError('Please provide reason for the change of leader!');
+            return false;
+        }
+
         // affected users must be notified of this change accordingly 
         $new_leader = User::find($request->leader_id);
+
         sendInternalMessage(
             'Leader changed for '.Carbon::parse($plan->date)->format('l, jS \\of F Y'), 
             Auth::user()->name . ' changed the leader for this '.
                 $plan->type->name.' from '.$plan->leader->name.' to '.$new_leader->name, 
             $new_leader->id);
 
+
         // find the corresponding team record for the leader
         $leader = Team::where([
             ['plan_id', $plan->id], 
             ['role_id', env('LEADER_ID', 4)]  // default is 4 if not set in .env
         ]);
+
         if ($leader->count()) {               // update the team record
             $leader->update(['user_id' => $request->leader_id ]); }
         else {                                // create a new team member...
@@ -857,22 +867,31 @@ function checkIfLeaderOrTeacherWasChanged($request, $plan)
         }
     }
 
+
     // check if TEACHER was changed
     if ( $plan->teacher_id != $request->teacher_id ) {
 
+        // check if reason was given for the change
+        if (! $request->has('reasonForChange')) {
+            flashError('Please provide reason for the change of teacher!');
+            return false;
+        }
         // affected users must be notified of this change accordingly 
         $new_teacher = User::find($request->teacher_id);
+
         sendInternalMessage(
             'Teacher changed for '.Carbon::parse($plan->date)->format('l, jS \\of F Y'), 
             Auth::user()->name . ' changed the teacher for this '.
                 $plan->type->name.' from '.$plan->teacher->name.' to '.$new_teacher->name, 
             $new_teacher->id);
 
+
         // find the corresponding team record for the teacher
         $teacher = Team::where([
             ['plan_id', $plan->id], 
-            ['role_id', env('TEACHER_ID', 5)]  // default is 4 if not set in .env
+            ['role_id', env('TEACHER_ID', 5)]  // default is 5 if not set in .env
         ]);
+
         if ($teacher->count()) {               // update the team record
             $teacher->update(['user_id' => $request->teacher_id ]); }
         else {                                // create a new team member...
@@ -880,7 +899,10 @@ function checkIfLeaderOrTeacherWasChanged($request, $plan)
             addDefaultRolesAndResourcesToPlan($plan);
         }
     }
+
+    return true;
 }
+
 
 
 

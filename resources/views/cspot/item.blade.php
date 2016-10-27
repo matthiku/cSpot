@@ -40,7 +40,7 @@
         <div class="col-md-6">
 
 
-            <div class="pull-xs-right">
+            <div class="float-xs-right">
 
                 <!-- hide SUBMIT button until changes are made   -->
                 @if( false && Auth::user()->ownsPlan($item->plan_id) )
@@ -126,7 +126,7 @@
 
 
         <!-- action buttons -->
-        <div    class="col-md-6 text-xs-right nowrap"
+        <div    class="col-md-6 float-xs-right nowrap"
                 data-item-id="{{ $item->id }}" 
                 data-item-update-action="{{ route('cspot.api.items.update', $item->id) }}">
 
@@ -222,13 +222,13 @@
 
             <div id = "song-details-tab">
 
-                <div class="card card-block text-xs-center p-b-1" style="max-width: 40rem; ">
+                <div class="card card-block float-xs-center p-b-1" style="max-width: 40rem; ">
 
                     <div class="row song-details form-group">
                         <h5 class="card-title">
                             @if ( $item->itemType()=='song')
-                                <i class="pull-xs-left fa fa-music"></i>
-                                <i class="pull-xs-right fa fa-music"></i>
+                                <i class="float-xs-left fa fa-music"></i>
+                                <i class="float-xs-right fa fa-music"></i>
                             @endif
                             {{ $item->song->title ? $item->song->title : '' }}
                             @if ( $item->itemType()=='song' && $item->song->title_2)
@@ -256,22 +256,22 @@
                                 @endif
                             </div>
 
-                            <div class="row m-t-1">
+                            <div class="row mt-1">
                                                             
-                                <div class="card m-b-0">
-                                    <div class="card-block text-xs-left">
+                                <div class="card mb-0">
+                                    <div class="card-block float-xs-left">
                                         <h5 class="card-title">&#127896; Instructions for Music Team:</h5>
                                         <h6 class="card-subtitle text-muted">(e.g. for having a verse without music)</h6>
                                         <div class="card-text">
                                             @if (Auth::user()->ownsPlan( $plan->id ))
-                                                <pre id="key-item-id-{{ $item->id }}" class="editable-item-field form-control form-control-success m-b-0">{{ $item->key }}</pre>
+                                                <pre id="key-item-id-{{ $item->id }}" class="editable-item-field form-control form-control-success mb-0">{{ $item->key }}</pre>
                                             @else
-                                                 <pre class="w-100 m-b-0">{{ $item->key }}</pre>
+                                                 <pre class="w-100 mb-0">{{ $item->key }}</pre>
                                             @endif
                                         </div>
                                         <div class="card-text">
                                             @if (Auth::user()->ownsPlan( $plan->id ))
-                                                <a      href="#" class="card-link pull-xs-right form-control" id="key-notes-erase-link"  
+                                                <a      href="#" class="card-link float-xs-right form-control" id="key-notes-erase-link"  
                                                         onclick="deleteItemNote('key', 'key-item-id-{{ $item->id }}', '{{ route('cspot.api.item.update') }}')" 
                                                         style="max-width: 150px; display: {{ $item->key ? 'initial' : 'none' }}">
                                                     <small><i class="fa fa-remove text-muted"></i> clear note</small>
@@ -285,7 +285,7 @@
 
                         @else
 
-                            <span class="btn btn-secondary m-b-1">
+                            <span class="btn btn-secondary mb-1">
                                 <label class="custom-control custom-checkbox">
                                     <input type="checkbox" id="toggle-show-hideTitle" 
                                           class="custom-control-input" {{ $item->hideTitle ? 'checked="checked"' : '' }}
@@ -302,7 +302,7 @@
 
                         <br>
 
-                        <div class="row m-b-1">                            
+                        <div class="row mb-1">                            
                             <div class="col-sm-12 col-md-3 full-btn">
                                 @if ($item->song->youtube_id)
                                     <a href="https://www.youtube.com/watch?v={{ $item->song->youtube_id }}" 
@@ -416,10 +416,10 @@
                     @foreach ($files as $file)
                         <div id="file-{{ $file->id }}" style="padding=2px;{{ ($key % 2 == 1) ? 'background-color: #eee;' : 'background-color: #ddd;' }}">
 
-                            <div class="pull-xs-left" style="min-width: 60px;">
+                            <div class="float-xs-left" style="min-width: 60px;">
                                 @if ( $fcount>1 && $key>0 )
                                     <a href="{{ url("cspot/items/$item->id/movefile/$file->id/up") }}" title="Move up" 
-                                        onclick="showSpinner()" class="btn btn-info btn-sm move-button m-b-1" role="button" >
+                                        onclick="showSpinner()" class="btn btn-info btn-sm move-button mb-1" role="button" >
                                         <i class="fa fa-angle-double-up fa-lg"> </i> 
                                     </a>
                                 @endif
@@ -437,7 +437,7 @@
                                 @endif
                             </div>
                             @if ( $fcount>1)
-                                <div class="center pull-xs-right">Order:<br>{{ $file->pivot->seq_no }}</div>
+                                <div class="center float-xs-right">Order:<br>{{ $file->pivot->seq_no }}</div>
                             @endif
 
                             @include ('cspot.snippets.show_files')
@@ -455,7 +455,7 @@
                     <i class="fa fa-file"></i>&nbsp;Add another image</a> &nbsp; &nbsp;
 
                 {{-- Form to add new (image) file --}}
-                <div id="col-2-file-add" style="display: none;" class="m-b-1 dropzone">
+                <div id="col-2-file-add" style="display: none;" class="mb-1 dropzone">
                     @include('cspot.snippets.add_files')
                 </div>
             

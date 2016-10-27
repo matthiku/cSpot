@@ -40,7 +40,7 @@
 
             @if (isset($song))
                 {{-- SAVE or SUBMIT button --}}
-                <big class="submit-button pull-xs-right" onclick="showSpinner()" style="display: none;">{!! Form::submit('Save changes'); !!}</big>
+                <big class="submit-button float-xs-right" onclick="showSpinner()" style="display: none;">{!! Form::submit('Save changes'); !!}</big>
                 </big>
 
                 <h2 class="hidden-xs-down">Song/Item Details</h2>
@@ -48,7 +48,7 @@
                 <small>Last updated: {{ isset($song->updated_at) ? $song->updated_at->formatLocalized('%a, %d %b %Y, %H:%M') : 'unknown' }}</small>
 
             @else            
-                <big class="submit-button pull-xs-right" style="display: none;">{!! Form::submit('Submit'); !!}
+                <big class="submit-button float-xs-right" style="display: none;">{!! Form::submit('Submit'); !!}
                 </big>
 
                 <h2 class="hidden-xs-down">Add New
@@ -80,15 +80,15 @@
         --}}
         <div class="col-md-6">
 
-            <a class="pull-xs-right btn btn-outline-success" href="{{ url('cspot/songs?page=') .
+            <a class="float-xs-right btn btn-outline-success" href="{{ url('cspot/songs?page=') .
                     ( session()->has('currentPage') ? session('currentPage') : $currentPage ) }}">
                 All Songs
             </a>
-            <a class="pull-xs-right btn btn-outline-warning m-r-1"
+            <a class="float-xs-right btn btn-outline-warning mr-1"
                     href="{{ url('cspot/songs?filterby=title_2&filtervalue=slides') }}">
                 All Slideshows
             </a>
-            <a class="pull-xs-right btn btn-outline-danger m-r-1"
+            <a class="float-xs-right btn btn-outline-danger mr-1"
                     href="{{ url('cspot/songs?filterby=title_2&filtervalue=video') }}">
                 All Videoclips
             </a>
@@ -111,7 +111,7 @@
     <div class="row">
         <div class="col-xl-6">
 
-            <div class="slides-only m-b-2" style="display: none;">
+            <div class="slides-only mb-2" style="display: none;">
                 <p><strong>Slides</strong> (or sets of slides) are like songs, but with your own, free text.</p>
                 <p>Insert empty lines between text to force a new slide. But in order to be able to navigate beween your slides, use slide 
                     indicators like <i>[1], [2]</i> on a single line between your slides.</p>
@@ -121,7 +121,7 @@
                 <hr>
             </div>
 
-            <div class="video-only m-b-2" style="display: none;">
+            <div class="video-only mb-2" style="display: none;">
                 <p><strong>Videoclips</strong> are YouTube videos embedded into the presentation in a single slide.</p>
                 <p>Search for your clip on YouTube and copy the YouTube-URL (or <i>address</i> 
                     or just the ID) into the appropriate field.</p>
@@ -134,7 +134,7 @@
             </div>
 
             
-            <div class="row form-group m-b-0">
+            <div class="row form-group mb-0">
                 {!! Form::label('title', 'Title', ['class' => 'col-sm-4 col-md-3 col-lg-2 col-xl-4 text-sm-right']); !!}
                 <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width">{!! Form::text('title'); !!}</div>
             </div>
@@ -283,7 +283,7 @@
 
 
 
-            <div class="row form-group song-or-video-only m-t-1 bg-muted">
+            <div class="row form-group song-or-video-only mt-1 bg-muted">
 
                 <div class='col-sm-4 col-md-3 col-lg-2 col-xl-4 text-sm-right'>
                     {!! Form::label('youtube_id', 'Youtube ID or URL'); !!}
@@ -332,7 +332,7 @@
             </div>
 
 
-            <div class="row form-group m-t-1 bg-muted">
+            <div class="row form-group mt-1 bg-muted">
                 <div class="col-sm-4 col-md-3 col-lg-2 col-xl-4 text-sm-right l-h-1">
                     {!! Form::label('file', 'Attach an image'); !!}
                     <br>
@@ -359,7 +359,7 @@
         <div class="col-xl-6">
 
 
-            <div class="form-group m-b-0 song-only">
+            <div class="form-group mb-0 song-only">
                 {!! Form::label('sequence', 'Sequence: ', ['class' => 'baseline']); !!}
                 {!! Form::text('sequence'); !!} <small> (The sequence determines how the lyrics are presented)</small>
             </div>
@@ -384,14 +384,14 @@ like [1] for verse 1 or [chorus] for a chorus.
 
 Blank lines force a new slide 
 when the song is presented.">
-                                <i class="fa fa-info-circle m-l-2"></i></a>
+                                <i class="fa fa-info-circle ml-2"></i></a>
                             </a>
                         @endif
                     </h4>
                 </div>
                 <div id="collapseOne" class="panel-collapse collapse{{ ( !isset($song) || (isset($song) && $song->title_2=='slides') ) ? ' in' : '' }}" role="tabpanel" aria-labelledby="headingOne">
                     {!! Form::textarea('lyrics'); !!}
-                    <button id="lyrics-copy-btn" class="pull-xs-right"><i class="fa fa-copy"></i>&nbsp;copy text</button>
+                    <button id="lyrics-copy-btn" class="float-xs-right"><i class="fa fa-copy"></i>&nbsp;copy text</button>
 
                     {{-- reset size of textarea --}}
                     <small><a href="#" id="reset-lyrics-textarea" onclick="resizeTextArea(this, 'lyrics')" style="display:none">resize textbox</a></small>
@@ -417,14 +417,14 @@ Blank lines will be ignored.
 Put instructions on separate lines and
 enclose them in brackets,
 like "(repeat chorus!)"'>
-                        <i class="fa fa-info-circle m-l-2"></i></a>
+                        <i class="fa fa-info-circle ml-2"></i></a>
                     </a>
                   </h4>
                 </div>
 
                 <div id="collapseTwo" class="panel-collapse collapse{{!isset($song) ? ' in' : ''}}" role="tabpanel" aria-labelledby="headingTwo">
                     {!! Form::textarea('chords'); !!}
-                    <button id="chords-copy-btn" class="pull-xs-right"><i class="fa fa-copy"></i>&nbsp;copy chords</button>
+                    <button id="chords-copy-btn" class="float-xs-right"><i class="fa fa-copy"></i>&nbsp;copy chords</button>
                     <br>
 
                     {{-- reset size of textarea --}}
