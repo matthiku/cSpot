@@ -42644,7 +42644,7 @@ function reDisplayLyrics()
                     cls = '';
                     lyricsLine = lyricsLine.split('>')[1];
                 }
-                newLyr += '<p class="'+cls+' m-b-0" '+stl+'>'+lyricsLine+'</p>';
+                newLyr += '<p class="'+cls+' mb-0" '+stl+'>'+lyricsLine+'</p>';
             }
         }
     }
@@ -42776,14 +42776,14 @@ function reDisplayChords()
         if (chords[i].length==0) continue;
         // if a line looks like chords, make it red
         if ( identifyChords(chords[i]) ) {
-            $(selectorName).append('<pre class="red m-b-0">'+chords[i]+'</pre>');
+            $(selectorName).append('<pre class="red mb-0">'+chords[i]+'</pre>');
         }
         else {
             var hdr = identifyHeadings(chords[i]).split('$');
             var anchor = '';
             if (hdr.length>1 && hdr[1].length>0)
                 anchor = '<a name="'+hdr[1]+'"></a>';
-            $(selectorName).append(anchor+'<pre class="m-b-0 '+hdr[0]+'">'+chords[i]+'</pre>');
+            $(selectorName).append(anchor+'<pre class="mb-0 '+hdr[0]+'">'+chords[i]+'</pre>');
         }
     }
 }
@@ -42793,7 +42793,7 @@ function identifyHeadings(str)
 
     var patt = /^(coda|end)/i;
     if ( patt.test(str) ) 
-        return ' p-l-3 bg-info$';
+        return ' pl-3 bg-info$';
 
     patt = /^(Verse)/i;
     if ( patt.test(str) ) {
@@ -42803,25 +42803,25 @@ function identifyHeadings(str)
             $('#jumplist').show();
             $('#jump-verse'+nm).show();
         }
-        return ' p-l-3 bg-success$verse'+nm; 
+        return ' pl-3 bg-success$verse'+nm; 
     }
     patt = /^(Chorus)/i;
     if ( patt.test(str) ) {
         $('#jumplist').show();
         $('#jump-chorus').show();
-        return ' p-l-3 bg-info$chorus';
+        return ' pl-3 bg-info$chorus';
     }
     patt = /^(Pre-Chorus)/i;
     if ( patt.test(str) ) {
         $('#jumplist').show();
         $('#jump-chorus').show();
-        return ' p-l-3 bg-info$chorus';
+        return ' pl-3 bg-info$chorus';
     }
     patt = /^(bridge)/i;
     if ( patt.test(str) ) {
         $('#jumplist').show();
         $('#jump-bridge').show();
-        return ' p-l-3 bg-info$bridge';
+        return ' pl-3 bg-info$bridge';
     }
 
     patt = /^(Capo|Key|\()/;

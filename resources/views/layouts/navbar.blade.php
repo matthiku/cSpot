@@ -191,7 +191,12 @@
                     <i class="fa fa-btn fa-tasks fa-lg"></i> &nbsp; Event Types</a>
                 <hr>
                 <a class="dropdown-item" href="{{ url('cspot/songs') }}">
-                <i class="fa fa-btn fa-music fa-lg"></i> &nbsp; Songs etc.</a>
+                    <i class="fa fa-btn fa-music fa-lg"></i> &nbsp; Songs etc.</a>
+                @if (Auth::user()->isEditor())
+                <hr>
+                    <a class="dropdown-item" href="{{ url('cspot/history') }}">
+                        <i class="fa fa-btn fa-music fa-lg"></i> &nbsp; Event Plan History</a>
+                @endif
             </div>
         </li>
         <li class="nav-item hidden-sm-down">

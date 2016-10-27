@@ -235,7 +235,7 @@
             </div>
 
         
-            <div class="col-xl-3 col-lg-6">
+            <div class="col-xl-3 col-lg-6 mb-1">
                 <div class="card-block narrower bg-muted">
                     <div class="form-group mb-0">
                         {!! Form::label('date', 'Event Date: ', ['class'=>'d-block']); !!}
@@ -285,12 +285,18 @@
 
 
 
-        <div class="col-xl-5 col-lg-12">
+        <div class="col-xl-5 col-lg-12 mb-1">
             <div class="card-block narrower bg-muted">
 
 
                 <div class="col-xs-12">
                     <div class="row form-group nowrap mb-0">
+
+                        @if (isset($plan))
+                            <span class="float-xs-right small">
+                                <a href="{{ url('cspot/history?plan_id=').$plan->id }}">show plan history</a></span>
+                        @endif
+
                         <label class="form-control-label">Leader: &nbsp; &nbsp;
                             <select name="leader_id" id="leader_id" class="text-help c-select" 
                                 onchange="enableSaveButton(this); $('.reasonForChange').show(); $('.reasonForChange>input').focus()"
@@ -377,8 +383,8 @@
         
                  @if (isset($plan))
                     <div class="col-xs-12 reasonForChange mb-1" style="display: none;">                
-                    <span class="label label-default">Please provide reason for this change:</span>
-                    <input type="text" name="reasonForChange" class="fully-width">
+                        <span class="label label-default">Please provide reason for this change:</span>
+                        <input type="text" name="reasonForChange" class="fully-width">
                     </div>
                 @endif
 

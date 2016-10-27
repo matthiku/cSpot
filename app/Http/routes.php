@@ -130,6 +130,9 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     Route::get( 'plans/{plan_id}/resource/{resource_id}/delete','Cspot\ResourceController@destroy');
 
 
+    Route::get('history',                                       'Cspot\HistoryController@index');
+
+
     /*
          ITEMS
      */

@@ -7,7 +7,7 @@ $modalContent = '
     <p><kbd>1</kbd>, <kbd>2</kbd>, <kbd>3</kbd>... jump to verse 1...n</p>
     <p><kbd>c</kbd> jump to chorus</p>
     <p><kbd>b</kbd> jump to bridge</p>
-    <p class="pull-xs-right">On <strong>tablets</strong> or <strong>phones</strong>, you should instead use the buttons provided at the bottom of this screen!</p>
+    <p class="float-xs-right">On <strong>tablets</strong> or <strong>phones</strong>, you should instead use the buttons provided at the bottom of this screen!</p>
     <hr>
     <h5>Capo Usage:</h5>
     <p><img width="100%" src="'. url('/') .'/images/transpose.png"></p>';
@@ -16,9 +16,9 @@ $modalContent = '
 @include( 'cspot/snippets/modal', ['modalContent' => $modalContent, 'modalTitle' => 'Use your keyboard to:' ] )
 
 
-<nav class="navbar navbar-fixed-bottom bg-primary center p-b-0 p-t-0" id="present-navbar">
+<nav class="navbar navbar-fixed-bottom bg-primary center pb-0 pt-0" id="present-navbar">
 
-    <ul class="nav navbar-nav pull-xs-right">
+    <ul class="nav navbar-nav float-xs-right">
         <li>
             <a href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/go/next/'.$type) }}"
                     onclick="$('#show-spinner').modal({keyboard: false});" 
@@ -44,7 +44,7 @@ $modalContent = '
     <!-- 
         DropUP Menu "Go to..."
     -->
-    <div class="btn-group dropup pull-xs-right mr-1">
+    <div class="btn-group dropup float-xs-right mr-1">
 
         <button type="button" class="btn btn-sm btn-info dropdown-toggle" 
             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -95,7 +95,7 @@ $modalContent = '
                     href="{{ url('cspot/plans/'.$item->plan_id) }}">
                 <i class="fa fa-undo"></i>
                 Back to plan overview
-                <small class="pull-xs-right">(* = item in local cache)</small>
+                <small class="float-xs-right">(* = item in local cache)</small>
             </a>
         </div>
 
@@ -106,19 +106,19 @@ $modalContent = '
     <!-- 
         link to song data on CCLI songselect 
     -->
-    <div class="btn-group pull-xs-right mr-1">
+    <div class="btn-group float-xs-right mr-1">
         @if ($item->song_id && $item->song->ccli_no)
             <a href="{{ env('SONGSELECT_URL', 'https://songselect.ccli.com/Songs/').$item->song->ccli_no }}" 
-                target="new" class="pull-xs-right btn btn-sm btn-info hidden-sm-down p-y-0">
+                target="new" class="float-xs-right btn btn-sm btn-info hidden-sm-down py-0">
             <img src="{{ url('/') }}/images/songselectlogo.png" width="25"></a>
         @elseif ($item->song_id && $item->song->youtube_id)
-            <a class="pull-xs-right btn btn-sm btn-info hidden-sm-down" target="new" 
+            <a class="float-xs-right btn btn-sm btn-info hidden-sm-down" target="new" 
                 href="{{ env('YOUTUBE_PLAY', 'https://www.youtube.com/watch?v=').$item->song->youtube_id }}">
                 <i class="red fa fa-youtube-play fa-lg"></i>
             </a>
         @else
             <a href="#" disabled="" 
-               class="pull-xs-right btn btn-sm btn-outline-secondary hidden-lg-down">
+               class="float-xs-right btn btn-sm btn-outline-secondary hidden-lg-down">
             <i class="fa fa-youtube-play fa-lg"></i>&nbsp;</a>
         @endif
     </div>
@@ -128,14 +128,14 @@ $modalContent = '
         help button 
     -->
     <a href="#" title="show keyboard shortcuts" data-toggle="modal" data-target=".help-modal"
-        class="hidden-sm-down pull-xs-right btn btn-sm btn-outline-success mr-1">
+        class="hidden-sm-down float-xs-right btn btn-sm btn-outline-success mr-1">
     <i class="fa fa-question-circle fa-lg"></i></a>
 
 
     <!-- 
         Personal Notes 
     -->
-    <div class="dropup hidden-xs-down pull-xs-right mr-1{{ $item->itemNotes->where('user_id', Auth::user()->id)->first() ? ' open' : '' }}">
+    <div class="dropup hidden-xs-down float-xs-right mr-1{{ $item->itemNotes->where('user_id', Auth::user()->id)->first() ? ' open' : '' }}">
         <button    type="button" title="Your Private Notes" 
                   class="btn btn-sm btn{{ $item->itemNotes->where('user_id', Auth::user()->id)->first() ? '' : '-outline' }}-success dropdown-toggle" 
             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -161,7 +161,7 @@ $modalContent = '
         Add New Item into Plan! 
     -->
     @if (Auth::user()->ownsPlan($item->plan_id))
-        <div class="btn-group dropup hidden-xs-down pull-xs-right mr-1">
+        <div class="btn-group dropup hidden-xs-down float-xs-right mr-1">
             {{-- new MODAL POPUP to add song, scripture or comment --}}
             <button type="button" class="btn btn-sm btn-outline-info btn-sm" title="Add New Item (Song etc.)" 
                  data-toggle="modal" data-target="#searchSongModal"
@@ -185,7 +185,7 @@ $modalContent = '
     <!-- 
         LEFT part of navbar 
     -->
-    <ul class="nav navbar-nav pull-xs-left">
+    <ul class="nav navbar-nav float-xs-left">
         <li>
             <!-- go to previous slide -->
             <a href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/go/previous/'.$type) }}"
@@ -237,7 +237,7 @@ $modalContent = '
 
     @if (Auth::user()->ownsPlan($item->plan_id))
         {{-- configuration menu --}}
-        <div class="nav-item btn-group dropup pull-xs-left ml-1">
+        <div class="nav-item btn-group dropup float-xs-left ml-1">
 
             <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
                  id="presentConfigDropUpMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -269,7 +269,7 @@ $modalContent = '
         <!-- 
             DropUP Menu "Show"
         -->
-        <div class="btn-group dropup pull-xs-left ml-1" id="jumplist">
+        <div class="btn-group dropup float-xs-left ml-1" id="jumplist">
 
             <button type="button" class="btn btn-sm btn-info dropdown-toggle" 
                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

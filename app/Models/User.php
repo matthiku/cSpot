@@ -97,6 +97,17 @@ class User extends Authenticatable //implements Authenticatable //, Contract, Ca
 
 
 
+    /**
+     * Relationship with the History records
+     */
+    public function histories() 
+    {
+        return $this->hasMany('App\Models\History');
+    }
+
+
+
+
 
 
     /**
