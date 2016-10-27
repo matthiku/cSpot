@@ -47,7 +47,7 @@
             @endif
         @endif
 
-        <div class="pull-xs-right">Size: {{ humanFileSize($file->filesize) }}</div>
+        <div class="float-xs-right">Size: {{ humanFileSize($file->filesize) }}</div>
 
     </figcaption>
 

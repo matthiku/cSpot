@@ -12,8 +12,8 @@
 
 
 	<div class="text-success font-weight-bold font-italic display-3 mb-1">
-		<img class="pull-xs-left" height="140px" src="{{ url($logoPath.env('CHURCH_LOGO_FILENAME')) }}">
-		<img class="pull-xs-right" height="140px" src="{{ url($logoPath.env('CHURCH_LOGO_FILENAME')) }}">
+		<img class="float-xs-left" height="140px" src="{{ url($logoPath.env('CHURCH_LOGO_FILENAME')) }}">
+		<img class="float-xs-right" height="140px" src="{{ url($logoPath.env('CHURCH_LOGO_FILENAME')) }}">
 		<div class="header mb-0" style="line-height: 1.0; vertical-align: middle;">This Week's Announcements
 			<div class="smaller text-muted">Week from {{$today->formatLocalized('%d %b')}} to {{$nextWeek->formatLocalized('%d %b')}}</div>
 		</div>
@@ -24,14 +24,14 @@
 
 		<thead>
 			<tr>
-				<th class="announce-text-present p-b-0 p-t-0 text-danger">Today</th>
-				<th class="announce-text-present p-b-0 p-t-0">Monday</th>
-				<th class="announce-text-present p-b-0 p-t-0">Tuesday</th>
-				<th class="announce-text-present p-b-0 p-t-0">Wed.</th>
-				<th class="announce-text-present p-b-0 p-t-0">Thurs.</th>
-				<th class="announce-text-present p-b-0 p-t-0">Friday</th>
-				<th class="announce-text-present p-b-0 p-t-0">Saturday</th>
-				<th class="announce-text-present p-b-0 p-t-0 text-danger">Sunday</th>
+				<th class="announce-text-present pb-0 pt-0 text-danger">Today</th>
+				<th class="announce-text-present pb-0 pt-0">Monday</th>
+				<th class="announce-text-present pb-0 pt-0">Tuesday</th>
+				<th class="announce-text-present pb-0 pt-0">Wed.</th>
+				<th class="announce-text-present pb-0 pt-0">Thurs.</th>
+				<th class="announce-text-present pb-0 pt-0">Friday</th>
+				<th class="announce-text-present pb-0 pt-0">Saturday</th>
+				<th class="announce-text-present pb-0 pt-0 text-danger">Sunday</th>
 			</tr>
 		</thead>
 

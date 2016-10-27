@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ -z "$1" ]; then
-	echo update a git project using GIT PULL
+	echo Running migrations and optionally installing Composer packages
         echo usage: $0 directory
         exit
 fi
@@ -19,19 +19,7 @@ if [ "$1" = "plan" ]; then
         echo '-------------------------------------------------------------------------------'
     fi
 
-    # try normal git pull first
-	git pull
-    
-    if ! [ $? -eq 0 ]; then
-        echo
-        echo '"git pull" failed so we are trying to do a hard reset and overwrite:'
-        echo
-        echo '---------------------------------------------- fetch all updates'
-        git fetch --all
-        echo '---------------------------------------------- ignore all local changes'
-        git reset --hard origin/master
-    fi
-    
+   
 	php artisan migrate
 
 
@@ -50,15 +38,6 @@ if [ "$1" = "plan" ]; then
         echo '-------------------------------------------------------------------------------'
     fi
 
-    # try normal git pull first
-    git pull
-    
-    if ! [ $? -eq 0 ]; then
-    	echo '---------------------------------------------- fetch all updates'
-    	git fetch --all
-    	echo '---------------------------------------------- ignore all local changes'
-    	git reset --hard origin/master
-    fi
 
     php artisan migrate
 

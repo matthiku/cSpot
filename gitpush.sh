@@ -94,14 +94,14 @@ echo "pushing to the PRODUCTION server"
 echo ----
 git push production master
 
-exit
 
 
-
-
-#### outdated as we use direct push to remote!
 
 # call the pull command script on the server via SSH (using PPK)
+echo
+echo ----
+echo "On the server, run migrations and optionally install a Composer PACKAGE"
+echo ----
 ssh $HOSTNAME ./gitpull.sh plan $PACKAGE
 echo ----
 

@@ -114,7 +114,7 @@
 
             {{-- don't show the submit button on the popup modal form as we handle the upload via AJAX --}}
             @if (! isset($modal)) 
-                <span class="show-file-add-button pull-xs-right" style="display: none;">
+                <span class="show-file-add-button float-xs-right" style="display: none;">
                     {!! Form::submit('Submit') !!}                                
                 </span>
             @endif
