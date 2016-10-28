@@ -466,6 +466,21 @@
                 </div>
             </div>
 
+            <div class="nav navbar-nav float-xs-left ml-1">
+                <button class="btn btn-sm btn-info narrow">
+                    Text: 
+                    <input onchange="changeColor(['.announce-text-present', '.text-present', '.bible-text-present'], this.value);" type='text' id="colorPicker" />
+                </button class="btn btn-sm btn-info">
+            </div>
+
+            <div class="nav navbar-nav float-xs-left ml-1">
+                <button class="btn btn-sm btn-info narrow">
+                    BG: 
+                    <input onchange="changeColor(['#main-content', 'body'], this.value, 'BG');" type='text' id="BGcolorPicker" />
+                </button class="btn btn-sm btn-info">
+            </div>
+
+
             {{-- configuration menu 
             --}}
             <div class="nav-item btn-group dropup float-xs-left ml-1">

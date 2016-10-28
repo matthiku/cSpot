@@ -14,7 +14,7 @@ class AddFieldToItemsTable extends Migration
     {
         Schema::table('items', function (Blueprint $table) {
             // add field to make item visible only for plan leader
-            $table->boolean('forLeadersEyesOnly')->default(false);
+            $table->boolean('forLeadersEyesOnly')->default(false)->nullable();
             $table->boolean('show_comment')->default(false);
             $table->dateTime('reported_at')->nullable();
             $table->boolean('hideTitle')->nullable();

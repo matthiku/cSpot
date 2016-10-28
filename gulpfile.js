@@ -29,6 +29,7 @@ var path = {
     'jquery_ui'     : bower_path + '/jquery-ui',
     'moment'        : bower_path + '/moment',
     'jeditable'     : bower_path + '/jeditable',
+    'spectrum'      : bower_path + '/spectrum',
     'c_spot'        : bower_path + '/c-spot',
 };
 
@@ -51,6 +52,7 @@ elixir(function(mix) {
         path.jquery_ui      + '/themes/base/datepicker.css',
         path.jquery_ui      + '/themes/base/tabs.css',
         path.jquery_ui      + '/themes/'+ui_theme+'/theme.css',
+        path.spectrum       + '/spectrum.css',
         path.c_spot         + '/css/style.css',
         path.c_spot         + '/css/signin.css',
     ], 'public/css/c-spot.css', './');
@@ -64,6 +66,7 @@ elixir(function(mix) {
         path.bootstrap      + '/dist/js/bootstrap.js',
         path.moment         + '/moment.js',
         path.jeditable      + '/jquery.jeditable.js',
+        path.spectrum       + '/spectrum.js',
         path.c_spot         + '/js/_main.js',
         path.c_spot         + '/js/document.ready.js',
         path.c_spot         + '/js/spa.utilities.js',

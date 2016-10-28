@@ -7,6 +7,11 @@
  */
 
 
+/* Spectrum colour picker */
+.sp-replacer {
+    padding: 0;
+}
+
 /*  */
 .baseline {
     vertical-align: baseline;

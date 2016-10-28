@@ -303,7 +303,7 @@
 									ACTION buttons 
 					  ________________________________________________
 				 --}}
-				<td class="float-xs-right text-nowrap dont-print">
+				<td class="text-right text-nowrap dont-print">
 
 
 					{{-- CCLI Song Usage Reporting 

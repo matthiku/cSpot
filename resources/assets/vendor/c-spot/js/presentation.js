@@ -1777,6 +1777,40 @@ function changeFontSize(selectorList, how) {
 }
 
 
+/**
+ * Change the text or BG color of a given element
+ * stores the value in LocalStorage for later reference
+ *
+ * @param  selectorList string or array of valid CSS selectors
+ * @param  how string for color definition
+ * return void
+ */
+function changeColor(selectorList, how, what) {
+    if ( typeof selectorList === 'string') {
+        selectorList = [selectorList];
+    }
+    selectorList.forEach( function(selector) {
+        var element = $(selector);
+        var sel_name;
+        // only proceed if the element actually exists in the current document
+        if (element.length>0) {
+            if (what=='BG') {
+                if (selector=='#main-content')
+                    $(selector).removeClass('bg-inverse');
+                $(element).css('background-color', how);
+                 sel_name = selector+'_'+what+'_color';
+            }
+            else {
+                $(element).css('color', how);
+                sel_name = selector+'_color';
+            }
+            localStorage.setItem(sel_name, how);
+            ;;;console.log('LocalStorage for '+selector+' was set to '+localStorage.getItem(sel_name));
+        }
+    });
+}
+
+
 
 
 /*\
