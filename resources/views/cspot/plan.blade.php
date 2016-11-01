@@ -238,7 +238,7 @@
             <div class="col-xl-3 col-lg-6 mb-1">
                 <div class="card-block narrower bg-muted">
                     <div class="form-group mb-0">
-                        {!! Form::label('date', 'Event Date: ', ['class'=>'d-block']); !!}
+                        {!! Form::label('date', 'Event Date and Times: ', ['class'=>'d-block']); !!}
                         @if ( isset($plan) )
                             {!! Form::date( 
                                 'date', $plan->date, 
