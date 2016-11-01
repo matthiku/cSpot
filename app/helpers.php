@@ -10,6 +10,9 @@ use App\Models\Song;
 use App\Models\File;
 use App\Models\User;
 use App\Models\Team;
+use App\Models\DefaultItem;
+
+use App\Events\CspotItemUpdated;
 
 use App\Http\Controllers\Cspot\BibleController;
 
@@ -492,6 +495,12 @@ function insertItem( $request )
     $plan->newest_item_id = $item->id;
 
 
+    // notify event listener that an item was updated
+    $new_item = Item::find($plan->newest_item_id);
+    if ($new_item)
+        event( new CspotItemUpdated($new_item));
+
+
     // handle file uplaods
     if ($request->hasFile('file')) {
         flash('Image file added!');
@@ -743,6 +752,19 @@ function deleteCachedItemsContainingSongId(Song $song)
 }
 
 
+function deleteCachedItemsFromPastPlans($plan_id)
+{
+    $caches = PlanCache::get();
+
+    // check each cache item if it is outdated
+    foreach ($caches as $cache) {
+        if ( $cache->plan->date < Carbon::now()
+          && $cache->plan->id != $plan_id ) {
+            $cache->delete();
+        }
+    }
+}
+
 
 /** __________________________________________________
  *  
@@ -835,6 +857,7 @@ function addDefaultRolesAndResourcesToPlan($plan)
  */
 function checkIfLeaderOrTeacherWasChanged($request, $plan)
 {
+    $msg = false;
 
     // check if LEADER was changed
     if ( $plan->leader_id != $request->leader_id ) {
@@ -1130,3 +1153,24 @@ function getTypeBasedPlanData($type)
 
     return newPlanDate($planDate, $interval, $weekday);
 }
+
+/**
+ * Check for duplicates and non-integer sequence number 
+ * in the list of default items for a specific event type
+ * @param int $type_id
+ */
+function checkDefaultItemsSequencing($type_id)
+{
+    $items = DefaultItem::where('type_id', $type_id)
+        ->orderBy('seq_no')->get();
+
+    foreach ($items as $key => $item) {
+        # use the key as the new sequence number
+        $item->seq_no = $key + 1;
+        $item->save();
+    }
+
+}
+
+
+

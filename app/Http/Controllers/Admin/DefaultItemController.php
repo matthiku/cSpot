@@ -100,6 +100,15 @@ class DefaultItemController extends Controller
         else 
             $new = DefaultItem::create( $request->all() );
 
+        // special treatment for boolean value
+        if (isset($request->forLeadersEyesOnly) && $request->forLeadersEyesOnly=='on')
+            $new->forLeadersEyesOnly = True;
+        else 
+            $new->forLeadersEyesOnly = False;
+        $new->save();
+
+        checkDefaultItemsSequencing($new->type_id);
+
         $status = 'New DefaultItem added.';
 
         return \Redirect::route($this->view_idx, ['filterby'=>'type', 'filtervalue'=>$new->type_id])
@@ -167,11 +176,12 @@ class DefaultItemController extends Controller
     {
         // was there any change?
         $output = DefaultItem::find($id);
-        if (   $request->input('text') == $output->text 
-            && $request->input('seq_no') == $output->seq_no 
-            && $request->input('type_id') == $output->type_id 
-            && $request->input('forLeadersEyesOnly') == $output->forLeadersEyesOnly 
-            && ($request->input('file_id') == $output->file_id || $request->input('file_id') == '' )) 
+
+        if (   $request->input('text') === $output->text 
+            && $request->input('seq_no') === $output->seq_no 
+            && $request->input('type_id') === $output->type_id 
+            && $request->input('forLeadersEyesOnly') === $output->forLeadersEyesOnly 
+            && ($request->input('file_id') === $output->file_id || $request->input('file_id') == '' )) 
         {
             return \Redirect::route($this->view_idx)
                         ->with(['status' => 'no change']);
@@ -182,9 +192,15 @@ class DefaultItemController extends Controller
         if ($request->input('file_id')=='')
             array_push( $ignore, 'file_id');
 
-        // get this DefaultItem
-        DefaultItem::where('id', $id)
-                ->update($request->except($ignore));
+        // get the DefaultItem and update it
+        $new = DefaultItem::find($id);
+        $new->update( $request->except($ignore) );
+
+        // special treatment for boolean value
+        $new->forLeadersEyesOnly = $request->forLeadersEyesOnly;
+        $new->save();
+
+        checkDefaultItemsSequencing($new->type_id);
 
         $message = 'DefaultItem with id "' . $id . '" updated';
         return \Redirect::route($this->view_idx, ['filterby'=>'type', 'filtervalue'=>$output->type_id])

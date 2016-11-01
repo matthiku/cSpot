@@ -53,6 +53,7 @@
         cSpot.routes.apiAddNote    = '{{ route('api.addNote'           ) }}';
         cSpot.routes.apiUpload     = '{{ route('cspot.api.upload'      ) }}';
         cSpot.routes.apiItems      = '{{ route('cspot.api.item'        ) }}';
+        cSpot.routes.apiGetPlan    = '{{ route('api.plan.get'          ) }}';
         cSpot.routes.apiItemUpdate = '{{ route('cspot.api.item.update' ) }}';
         cSpot.routes.apiPlanUpdate = '{{ route('api.plan.update'       ) }}';
         cSpot.routes.apiGetSongList = '{{ route('getsonglist'          ) }}';
@@ -65,6 +66,8 @@
         cSpot.presentation.mainPresenterSetURL = '{{ route('presentation.mainPresenter.set') }}';
 
         @if( Request::is('*/present') || Request::is('*/chords') || Request::is('*/sheetmusic') || Request::is('*/leader') )
+
+            cSpot.presentation.plan = JSON.parse('{!! addslashes( json_encode($item->plan, JSON_HEX_APOS | JSON_HEX_QUOT ) ) !!}');
 
             // keep track of current background image
             cSpot.presentation.currentBGimage = 0;
@@ -159,7 +162,7 @@
 
 <body id="app-layout"
     @if (Request::is('*/present'))
-        class="bg-inverse"
+        style="background-color: #373a3c;"
     @endif
     >
 

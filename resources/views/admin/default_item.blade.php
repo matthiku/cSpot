@@ -27,7 +27,7 @@
         <div class="row mb-2">
 
             <div class="col-sm-6 bg-info">
-                <div class="pull-sm-right">
+                <div class="float-sm-right">
                     @if (isset($default_item))
                         <h2>Update Default Event Item</h2>
                     @else
@@ -50,7 +50,7 @@
 
         <div class="row mb-1 bg-muted">
             <div class="col-sm-6">
-                <div class="pull-sm-right">
+                <div class="float-sm-right">
                     <label>Event/Service Type</label> <i class="red">*</i>
                 </div>
             </div>
@@ -75,7 +75,7 @@
 
         <div class="row">
             <div class="col-sm-6">
-                <div class="pull-sm-right text-sm-right">
+                <div class="float-sm-right text-sm-right">
 
                     <strong>Sequence number within the event:</strong> <i class="red">*</i><br>
 
@@ -83,13 +83,13 @@
             </div>
             <div class="col-sm-6">
 
-                {!! Form::number('seq_no'); !!}<br>
+                {!! Form::text('seq_no'); !!}<br>
 
             </div>
         </div>
         <div class="row">
             <div class="col-sm-6 col-xs-12 text-sm-right">
-                <p class="pull-sm-right" style="max-width: 23rem; line-height: 1;">
+                <p class="float-sm-right" style="max-width: 23rem; line-height: 1;">
                     <small>(Make sure the sequence number hasn't been used already in this service type - See list of existing items below!)</small></p>
             </div>
         </div>
@@ -98,7 +98,7 @@
 
         <div class="row mb-1 bg-muted">
             <div class="col-sm-6">
-                <div class="pull-sm-right">
+                <div class="float-sm-right">
 
                     {!! Form::label('text', 'Text:'); !!} <i class="red">*</i>
 
@@ -114,7 +114,7 @@
 
         <div class="row">
             <div class="col-sm-6">
-                <div class="pull-sm-right">
+                <div class="float-sm-right">
 
                     {!! Form::label('text', 'Item always visible for all?'); !!} 
 
@@ -142,7 +142,7 @@
 
         <div class="row mb-1 bg-muted">
             <div class="col-sm-6">
-                <div class="pull-sm-right">
+                <div class="float-sm-right">
                     @if (isset($default_item))
                         <a href="#" onclick="$('.add-files-card').toggle();$('.show-one-file-figure').toggle();">Set/Change default image for this item</a>
                     @else
@@ -200,7 +200,7 @@
         <hr>
         <div class="row mb-1">
             <div class="col-sm-6">
-                <div class="pull-sm-right">
+                <div class="float-sm-right">
 
 
                     @if (isset($default_item))
@@ -214,7 +214,7 @@
             <div class="col-sm-6">
 
                 @if (isset($default_item))
-                    <a class="btn btn-danger btn-sm pull-xs-right"  type="button" 
+                    <a class="btn btn-danger btn-sm float-xs-right"  type="button" 
                             href="{{ url('admin/default_items/'. $default_item->id) }}/delete">
                         <i class="fa fa-trash" > </i> &nbsp; Delete
                     </a>
@@ -249,8 +249,8 @@
                             @foreach ($default_items as $item)
                                 <tr class="link show-all-default-items show-existing-{{ $item->type_id }}" style="display: none;"
                                     onclick="location.href ='{{ url('admin/default_items/' . $item->id) }}/edit'">
-                                    <td class="float-xs-center">{{ $item->id }}</td>
-                                    <td class="float-xs-center red">{{ $item->seq_no }}</td>
+                                    <td class="center">{{ $item->id }}</td>
+                                    <td class="center red">{{ $item->seq_no }}</td>
                                     <td>{{ $item->text }}</td>
                                 </tr>
                             @endforeach

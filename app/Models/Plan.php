@@ -23,10 +23,11 @@ class Plan extends Model
 		'info',
 		'state',
 		'changer',
-		'subtitle',
+		'subtitle', 
+		'updated_at',
 	];
 	protected $hidden = [
-		'created_at', 'updated_at'
+		'created_at'
 	];
 	protected $dates = [
 		'date', 'date_end', 'created_at', 'updated_at'

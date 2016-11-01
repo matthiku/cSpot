@@ -34,4 +34,14 @@ class DefaultItem extends Model
         return $this->belongsTo('App\Models\File');
     }
 
+
+
+    public function setForLeadersEyesOnlyAttribute( $value )
+    {
+        if ($value || $value=='on')
+            $this->attributes['forLeadersEyesOnly'] = true;
+        else
+            $this->attributes['forLeadersEyesOnly'] = false;
+    }
+
 }

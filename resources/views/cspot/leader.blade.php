@@ -29,15 +29,16 @@
             @endif
 
             {{ $item->song->title_2=='slides' ? '(Info slide)' : '' }}
-            @if ( count($item->song->files)>0 )
+            {{-- @if ( count($item->song->files)>0 )
                 <div class="mb-3">
                     @foreach ($item->song->files as $file)
                         <img class="figure-img img-fluid img-rounded"  
                             src="{{ url(config('files.uploads.webpath')).'/'.$file->token }}">
                     @endforeach
                 </div>
-            @elseif ($item->song->title_2 != 'video')
-                <div class="text-song">Sequence: {{ $item->song->sequence }}</div>
+            @elseif ($item->song->title_2 != 'video') --}}
+            @if ($item->song->title_2 != 'video')
+                <div class="text-song">Sequence: {{ $item->song->sequence ? $item->song->sequence : 'n/a' }}</div>
                 <div class="text-song white-space-pre-wrap mb-3" id="lyrics">{{ $item->song->lyrics }}</div>
 
             {{-- insert videoclip or lyrics --}}

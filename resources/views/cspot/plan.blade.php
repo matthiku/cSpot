@@ -164,7 +164,7 @@
                 <div class="float-xs-right small">
                     &nbsp; <a href="#" onclick="$('.plan-details').toggle()">edit plan details</a>
                 </div>
-                <div class="float-xs-right plan-details small" style="display: none;">
+                <div class="float-xs-right plan-details small" style="display: none;" title="{{ $plan->updated_at }}">
                     (last changed by {{ $plan->changer }} {{ Carbon::now()->diffForHumans( $plan->updated_at, true ) }} ago)
                 </div>
             @endif

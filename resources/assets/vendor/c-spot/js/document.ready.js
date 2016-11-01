@@ -129,7 +129,7 @@ $(document).ready(function() {
 
 
     /**
-     * enabling certain UI features 
+     * enabling certain Bootstrap UI features (Tooltips, Popovers)
      */
     $(function () {
         // activate the tooltips
@@ -444,7 +444,7 @@ $(document).ready(function() {
 
 
     /**
-     * Configuration for Items Presentation Views (present/chords/musicsheets)
+     * Handle Keyboard events in Presentation Views
      */
     if ( window.location.pathname.indexOf('/present' ) > 10
       || window.location.pathname.indexOf('/chords'   ) > 10
@@ -460,7 +460,7 @@ $(document).ready(function() {
             // key codes: 37=left arrow, 39=right, 38=up, 40=down, 34=PgDown, 33=pgUp, 
             //            36=home, 35=End, 32=space, 27=Esc, 66=e
             //
-            // ;;;console.log('pressed key code: '+event.keyCode);
+            ;;;console.log('pressed key code: '+event.keyCode);
             switch (event.keyCode) {
                 case 37: advancePresentation('back'); break; // left arrow
                 case 33: navigateTo('previous-item'); break; // left PgUp

@@ -108,6 +108,22 @@ PlanController extends Controller
 
 
 
+    /**
+     * API: Get Plan Data
+     */
+    public function APIgetPlan(Request $request)
+    {
+        if (! $request->has(('plan_id')))
+            return response()->json(['status' => 405, 'data' => 'APIgetPlan: : incorrect parameters!']);
+
+        $plan = Plan::find($request->plan_id);
+
+        return response()->json($plan);
+    }
+
+
+
+
 
     /**
      * Display a listing of Service Plans 
@@ -639,6 +655,8 @@ PlanController extends Controller
             }
             // delete team members for this plan (if any)
             $plan->teams()->delete();
+            // delete resources for this plan (if any)
+            $plan->resources()->detach(); // as it is a Many-To-Many relationship....
             // delete the plan
             $plan->delete();
             flash('Plan with id "' . $id . '" deleted.');
@@ -672,7 +690,10 @@ PlanController extends Controller
         // save key and value to local cache (replacing existing values)
         if ($plan->count()) {
 
-            // is there alerady a value for that key?
+            // keep only future plans in cache
+            deleteCachedItemsFromPastPlans($plan_id);
+
+            // is there already a value for that key?
             $cache = PlanCache::where('key', $request->key)->first();
 
             if ($cache) {

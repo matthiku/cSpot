@@ -16,7 +16,7 @@
 
 
     <!-- ================================================================================ -->
-    <div id="main-content" class="bg-inverse">
+    <div id="main-content" style="background-color: #373a3c;">
 
 
 
@@ -56,7 +56,7 @@
                     @if ($item->song->title_2=='video')
 
                         <div class="hidden-xs-up" id="videoclip-url">{{ $item->song->title_2}}</div>
-                        <div class="text-present mb-3" id="present-lyrics">
+                        <div class="text-present mb-3 pt-1" id="present-lyrics">
                             <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ $item->song->youtube_id }}" frameborder="0" allowfullscreen></iframe>
                         </div>
 
@@ -492,15 +492,19 @@
 
                 <div class="dropdown-menu dropdown-menu-right dropdown-menu-presentation" aria-labelledby="presentConfigDropUpMenu">
 
+                    <a      href="#" class="dropdown-item" onclick="resetLocalFormatting()" 
+                            title="Reset all locally defined formatting values (reload the page then in order to make it have an effect!) ">
+                        &#128472; Reset all locally defined formatting values</a>
+
                     <h6 class="dropdown-header">Show Configuration</h6>
 
                     <a      href="#" class="dropdown-item" onclick="changeBlankSlidesConfig()" 
                             title="Show empty slides between plan items">
-                        <i id="configBlankSlidesItem" class="fa fa-square-o">&nbsp;</i>insert blank slides between items?</a>
+                        <i id="config-BlankSlidesItem" class="fa fa-square-o">&nbsp;</i>insert blank slides between items?</a>
 
                     <a      href="#" class="dropdown-item" onclick="changeOfflineModeConfig()" 
                             title="Work off-line and get slides from local storage instead of from the server">
-                        <i id="configOfflineModeItem" class="fa fa-square-o">&nbsp;</i>use locally cached slides?</a>
+                        <i id="config-OfflineModeItem" class="fa fa-square-o">&nbsp;</i>use locally cached slides?</a>
 
                     <a      href="#" class="dropdown-item small" onclick="clearLocalCache();"
                             title="delete all locally cached items">

@@ -42138,7 +42138,7 @@ $(document).ready(function() {
 
 
     /**
-     * enabling certain UI features 
+     * enabling certain Bootstrap UI features (Tooltips, Popovers)
      */
     $(function () {
         // activate the tooltips
@@ -42453,7 +42453,7 @@ $(document).ready(function() {
 
 
     /**
-     * Configuration for Items Presentation Views (present/chords/musicsheets)
+     * Handle Keyboard events in Presentation Views
      */
     if ( window.location.pathname.indexOf('/present' ) > 10
       || window.location.pathname.indexOf('/chords'   ) > 10
@@ -42469,7 +42469,7 @@ $(document).ready(function() {
             // key codes: 37=left arrow, 39=right, 38=up, 40=down, 34=PgDown, 33=pgUp, 
             //            36=home, 35=End, 32=space, 27=Esc, 66=e
             //
-            // ;;;console.log('pressed key code: '+event.keyCode);
+            ;;;console.log('pressed key code: '+event.keyCode);
             switch (event.keyCode) {
                 case 37: advancePresentation('back'); break; // left arrow
                 case 33: navigateTo('previous-item'); break; // left PgUp
@@ -44309,8 +44309,12 @@ function updateFileInformation()
 
 
 
+
+
 /*\
+|*|
 |*#===========================================================================================    END   OF SPA UTILITIES
+|*|
 \*/
 
 
@@ -44395,6 +44399,8 @@ function reFormatBibleText()
     // get bible reference text from item comment
     var refList = $('#item-comment').text().split(';');
     var refNo = 0;
+    // pattern to detect bible references
+    var pattern = /(\d*)\s*([a-z]+)\s*(\d+)(?::(\d+))?(\s*-\s*(\d+)(?:\s*([a-z]+)\s*(\d+))?(?::(\d+))?)?/i;
 
     // remove unneeded parts of NIV code
     $('.sectionhead').remove();
@@ -44423,6 +44429,12 @@ function reFormatBibleText()
                 if (text.trim()=='') {return;}
                 value = value.trim();
                 if (value=='') {return;}
+
+                // ignore if this is not a bible reference string
+                if ( value.search(pattern) < 0 ) {
+                    refNo += 1;
+                    return;
+                }
                 // get access to each part of the bible ref: book, chapter, verse_form, verse-to and version
                 var ref = splitBref(text);
                 var rfc = splitBref(value);
@@ -45912,11 +45924,11 @@ function getLocalConfiguration()
 {
     // check if we want to be Main Presenter
     // if the value in LocalStorage was set to 'true', then we activate the checkbox:
-    if ( getLocalStorageItem('configMainPresenter', 'false') == 'true' ) {
+    if ( getLocalStorageItem('config-MainPresenter', 'false') == 'true' ) {
         // Check if there already is a presenter
         if ( cSpot.presentation.mainPresenter ) {
             // someone else is already ....
-            localStorage.setItem('configMainPresenter', 'false');
+            localStorage.setItem('config-MainPresenter', 'false');
         } 
         else {
             // make sure the Server knows we want to be presenter (if we are allowed to...)
@@ -45924,7 +45936,7 @@ function getLocalConfiguration()
             // activate the checkbox in the UI
             changeCheckboxIcon( '#setMainPresenterItem', true );
             // if we are Main Presenter, we can't sync to another ....
-            localStorage.setItem('configSyncPresentation', 'false');
+            localStorage.setItem('config-SyncPresentation', 'false');
 
             // now broadcast our current position!
             sendShowPosition('start');  // will include plan_id and item_id 
@@ -45934,13 +45946,13 @@ function getLocalConfiguration()
 
     // check if we want to syncronise our own presentation with the Main Presenter
     // if the value in LocalStorage was set to 'true', then we activate the checkbox:
-    if ( getLocalStorageItem('configSyncPresentation', 'false') == 'true' ) {
+    if ( getLocalStorageItem('config-SyncPresentation', 'false') == 'true' ) {
 
         // show in pop-up menu
         changeCheckboxIcon('#syncPresentationIndicator', true);
 
         // if we sync our presentation, we can't be Main Presenter
-        localStorage.setItem('configMainPresenter', 'false');
+        localStorage.setItem('config-MainPresenter', 'false');
 
         // save in global namespace
         cSpot.presentation.sync = true;
@@ -45951,75 +45963,76 @@ function getLocalConfiguration()
 
 
     // show a blank slide between items (default: no)
-    cSpot.presentation.configBlankSlides = getLocalStorageItem('configBlankSlides', 'false') == 'true';
+    cSpot.presentation.configBlankSlides = getLocalStorageItem('config-BlankSlides', 'false') == 'true';
 
     // if the value in LocalStorage was set to 'true', then we activate the checkbox:
-    changeCheckboxIcon('#configBlankSlidesItem', cSpot.presentation.configBlankSlides);
+    changeCheckboxIcon('#config-BlankSlidesItem', cSpot.presentation.configBlankSlides);
 
 
 
     // use the offline mode (Local Storage) - Default is: Yes
-    cSpot.presentation.useOfflineMode = getLocalStorageItem('configOfflineMode', 'true') == 'true';
+    cSpot.presentation.useOfflineMode = getLocalStorageItem('config-OfflineMode', 'true') == 'true';
     
     // if the value in LocalStorage was set to 'true', then we activate the checkbox:
-    changeCheckboxIcon('#configOfflineModeItem', cSpot.presentation.useOfflineMode);
+    changeCheckboxIcon('#config-OfflineModeItem', cSpot.presentation.useOfflineMode);
 
 
     // how many bible verses per slide?
-    var howManyVersesPerSlide = localStorage.getItem('configShowVersCount');
+    var howManyVersesPerSlide = localStorage.getItem('config-ShowVersCount');
     // if the value in LocalStorage was set to 'true', then we activate the checkbox:
     if (howManyVersesPerSlide>0 && howManyVersesPerSlide<6) {
-        $('#configShowVersCount').val( howManyVersesPerSlide );
+        $('#config-ShowVersCount').val( howManyVersesPerSlide );
     }
 
     applyLocallyDefinedTextFormatting();
 
 }
 
-// read and apply locally defined text format settings
-function applyLocallyDefinedTextFormatting() 
+/* 
+    Read and apply locally defined text format settings from Local Storage
+
+    The format of the keys for those values is:
+
+        format_<selectorname>_<styleattribute>
+
+    Because of that, we can simply loop through all keys and apply them easily!
+*/
+function applyLocallyDefinedTextFormatting(reset) 
 {
-    
-    // check if we have changed the default font size and text alignment for the presentation
-    var textAlign = localStorage.getItem('.text-present_text-align');
-    if (textAlign) {
-        $('.text-present').css('text-align', textAlign);
-        $('.bible-text-present').css('text-align', textAlign);
-        $('.bible-text-present>p').css('text-align', textAlign);
-        $('.bible-text-present>h1').css('text-align', textAlign);
-    }
 
-    var fontSize = localStorage.getItem('.text-present_font-size');
-    if ($.isNumeric(fontSize)) {
-        $('.text-present').css('font-size', parseInt(fontSize));
-    }
+    $.each(localStorage, function(key, value) {
+        var k = key.split('_');
+        var what = k[0];
+        var selector = k[1];
+        var attribute = k[2];
+
+        // only use keys named 'format_...'
+        if ( what=='format' ) {
+
+            if (reset=='reset') {
+                localStorage.removeItem(key);
+                return true; // same as 'continue'
+            }
+
+            ;;;console.log('formatting "'+ selector + '" with style "' + attribute + '" as "' + value + '"');
+
+            if ( attribute=='font-size'  &&  $.isNumeric(value) ) 
+                $( selector ).css( k[2], parseInt(value) );
+            else
+                $( selector ).css( k[2], value );
+            
+        }
+    });
+
+    // having applied all locally defined formatting, we can now show the lyrics...
     $('.text-present').show();
+}    
 
-    fontSize = localStorage.getItem('.bible-text-present_font-size');
-    if ($.isNumeric(fontSize)) {
-       $('.bible-text-present').css('font-size', parseInt(fontSize));
-       $('.bible-text-present>p').css('font-size', parseInt(fontSize));
-       $('.bible-text-present>h1').css('font-size', parseInt(fontSize));
-    }
-
-    // check if user has changed the default font size for chords/sheetmusic presentation
-    fontSize = localStorage.getItem('.text-song_font-size');
-    if (fontSize) {
-        $('.text-song').css('font-size', parseInt(fontSize));
-    }
-
-    // check if user has changed the default font size for chords/sheetmusic presentation
-    fontSize = localStorage.getItem('.announce-text-present_font-size');
-    if (fontSize) {
-        $('.announce-text-present').css('font-size', parseInt(fontSize));
-    }
-
-    // check if user has changed the default font size for chords/sheetmusic presentation
-    textAlign = localStorage.getItem('.announce-text-present_text-align');
-    if (textAlign) {
-        $('.announce-text-present').css('text-align', textAlign);
-    }
-
+/*  Reset all locally defined formatting values
+*/
+function resetLocalFormatting()
+{
+    applyLocallyDefinedTextFormatting('reset');
 }
 
 
@@ -46030,16 +46043,16 @@ function changeBlankSlidesConfig() {
     cSpot.presentation.configBlankSlides = ! cSpot.presentation.configBlankSlides;
     var sett = cSpot.presentation.configBlankSlides;
     ;;;console.log('User changed setting for "Show empty slides between items" to ' + sett );
-    changeCheckboxIcon('#configBlankSlidesItem', sett);
-    localStorage.setItem('configBlankSlides', sett);
+    changeCheckboxIcon('#config-BlankSlidesItem', sett);
+    localStorage.setItem('config-BlankSlides', sett);
 }
 
 function changeOfflineModeConfig() {
     cSpot.presentation.useOfflineMode = ! cSpot.presentation.useOfflineMode;
     var sett = cSpot.presentation.useOfflineMode;
     ;;;console.log('User changed setting for "Use cached items from Local Storage" to ' + sett );
-    changeCheckboxIcon('#configOfflineModeItem', sett);
-    localStorage.setItem('configOfflineMode', sett);
+    changeCheckboxIcon('#config-OfflineModeItem', sett);
+    localStorage.setItem('config-OfflineMode', sett);
 
     // if caching was now enabled, get copy of server-stored cache!
     if (sett) {
@@ -46048,9 +46061,9 @@ function changeOfflineModeConfig() {
 }
 
 function changeConfigShowVersCount() {
-    var sett = $('#configShowVersCount').val();
+    var sett = $('#config-ShowVersCount').val();
     console.log('User changed setting for "Show how many bible verses per slide" to ' + sett );
-    localStorage.setItem('configShowVersCount', sett);
+    localStorage.setItem('config-ShowVersCount', sett);
 }
 
 function changeTextAlign(selectorList, how) {
@@ -46061,8 +46074,8 @@ function changeTextAlign(selectorList, how) {
         var element = $(selector);
         if (element.length>0) {
             $(element).css('text-align', how);
-            localStorage.setItem(selector+'_text-align', how);
-            ;;;console.log('LocalStorage for '+selector+' was set to '+localStorage.getItem(selector+'_text-align'));
+            localStorage.setItem('format_'+selector+'_text-align', how);
+            ;;;console.log('LocalStorage for "'+selector+'" was set to "'+localStorage.getItem('format_'+selector+'_text-align')+'"');
         }
     });
 }
@@ -46089,8 +46102,8 @@ function changeFontSize(selectorList, how) {
             var fontSize = parseFloat($(element).css('font-size')) * factor;
             if (fontSize<8 || fontSize>150) return;
             $(element).css('font-size', fontSize);
-            localStorage.setItem(selector+'_font-size', fontSize);
-            ;;;console.log('LocalStorage for '+selector+' was set to '+localStorage.getItem(selector+'_font-size'));
+            localStorage.setItem('format_'+selector+'_font-size', fontSize);
+            ;;;console.log('LocalStorage for "'+selector+'" was set to "'+localStorage.getItem('format_'+selector+'_font-size')+'"');
         }
     });
 }
@@ -46117,14 +46130,14 @@ function changeColor(selectorList, how, what) {
                 if (selector=='#main-content')
                     $(selector).removeClass('bg-inverse');
                 $(element).css('background-color', how);
-                 sel_name = selector+'_'+what+'_color';
+                 sel_name = selector+'_'+'background-color';
             }
             else {
                 $(element).css('color', how);
                 sel_name = selector+'_color';
             }
-            localStorage.setItem(sel_name, how);
-            ;;;console.log('LocalStorage for '+selector+' was set to '+localStorage.getItem(sel_name));
+            localStorage.setItem('format_'+sel_name, how);
+            ;;;console.log('LocalStorage for "'+selector+'" was set to "'+localStorage.getItem('format_'+sel_name)+'"');
         }
     });
 }
@@ -46158,6 +46171,29 @@ function writeCachedDataIntoDOM(identifier) {
     $('#item-navbar-label'      ).html(localStorage.getItem(identifier + '-itemNavBar' ));
     $('#item-navbar-next-label' ).html(localStorage.getItem(identifier + '-itemNavBarNext'));
     // $('#next-item-button'       ).html(localStorage.getItem(identifier + '-itemNBNextItemBtn'));
+
+    // take the opportunity to get the latest plan data and see if the plan was updated meanwhile
+    var plan_id = cSpot.presentation.plan_id;
+
+    $.post( cSpot.routes.apiGetPlan, { 'plan_id' : plan_id } )
+        .done( 
+            function(data) {
+                ;;;console.log(data);
+                cSpot.presentation.plan = data;
+                // if local cache is out of date, delete the cached items
+                isCachedPlanStillUptodate(plan_id);
+            }
+        );
+}
+
+function isCachedPlanStillUptodate(plan_id) {
+    var cachedPlanDate = localStorage.getItem('offline-'+plan_id+'-0-planUpdatedAt');
+    if ( cachedPlanDate  &&  cachedPlanDate.trim() != cSpot.presentation.plan.updated_at ) {
+        ;;;console.log('Local Plan cache is outdated!');
+        clearLocalCache()
+        return false;
+    }
+    return true;
 }
 
 
@@ -46179,6 +46215,15 @@ function saveMainContentToLocalStorage(what) {
 
     // we should have only one plan in LocalStorage!
     checkLocalStorageForPresentation(plan_id);
+
+    // check if items in plan cache have expired since plan has been updated meanwhile
+    if ( isCachedPlanStillUptodate(plan_id) ) {
+        ;;;console.log('Presentation Cache for plan id '+plan_id+' is still valid or has just been created.');
+    } 
+    else {
+        // save the new datetime of the last update to this plan
+        saveLocallyAndRemote(plan_id, 'offline-'+plan_id+'-0-planUpdatedAt', cSpot.presentation.plan.updated_at);
+    }
 
     // save the Main Content into localStorage
     saveLocallyAndRemote(plan_id, itemIdentifier +'-mainContent'+what,  $('#main-content').html());
@@ -46218,7 +46263,7 @@ function checkLocalStorageForPresentation(plan_id)
         if (ident.length>3 && ident[0]=='offline') {
             // check if planId != given plan_id
             if ( ident[1].length>0  &&  !isNaN(ident[1])  &&  ident[1]!=plan_id ) {
-                console.log('removing item from other plan from localStorage: '+key);
+                //console.log('removing item from other plan from localStorage: '+key);
                 localStorage.removeItem(key);
             }
         }
@@ -46233,6 +46278,11 @@ function isInLocalStore(identifier)
     var type = cSpot.presentation.type;
 
     var ik = identifier.split('-');
+
+    // check if items in plan cache have expired since plan has been updated meanwhile
+    if ( ! isCachedPlanStillUptodate(ik[1]) ) {
+        return false;
+    }
     
     // loop through each localStorage item
     for (var key in localStorage) {
@@ -46272,7 +46322,7 @@ function saveLocallyAndRemote(plan_id, key, value)
     value = value.replace(/ {2,}/g,' ')
 
     // save locally
-    localStorage.setItem(key, value);
+    localStorage.setItem(key, value.trim());
 
     // save on server
     $.post(
@@ -46295,7 +46345,7 @@ function loadCachedPresentation(plan_id)
         return;
 
     // is local caching enabled?
-    if ( getLocalStorageItem('configOfflineMode', 'true') == 'false' ) 
+    if ( getLocalStorageItem('config-OfflineMode', 'true') == 'false' ) 
         return
 
     // get data via AJAX call
@@ -46307,6 +46357,9 @@ function loadCachedPresentation(plan_id)
 
             // make sure we have only one plan locally in cache!
             checkLocalStorageForPresentation(plan_id);
+
+            // write plan updated_at date into cache
+            saveLocallyAndRemote(plan_id, 'offline-'+plan_id+'-0-planUpdatedAt', cSpot.presentation.plan.updated_at);
             
             ;;;console.log('Saving server-cached pre-rendered items to LocalStorage');
 
@@ -46321,7 +46374,7 @@ function loadCachedPresentation(plan_id)
                 var existingValue = localStorage.getItem(planCache[item].key);
                 // do nothing if identical !
                 if ( existingValue  &&  existingValue.localeCompare(planCache[item].value) == 0 ) {
-                    ;;;console.log('already in cache: ' + planCache[item].key)
+                    // ;;;console.log('already in cache: ' + planCache[item].key)
                     continue;
                 }
                 // now save new item to local store
@@ -46380,12 +46433,12 @@ function changeMainPresenter() {
 
     if (sett==false) {
         // User is no longer the Main Presenter, so make sure he can sync 
-        $('#configSyncPresentation').parent().parent().parent().show();
+        $('#config-SyncPresentation').parent().parent().parent().show();
         
         // inform the server accordingly
         setMainPresenter('false');
 
-        localStorage.setItem('configMainPresenter', sett);
+        localStorage.setItem('config-MainPresenter', sett);
 
     } 
     else {    
@@ -46400,10 +46453,10 @@ function changeSyncPresentation() {
     var sett = cSpot.presentation.sync;
     console.log('User tries to change setting for "Sync Presentation" to ' + sett );
 
-    changeCheckboxIcon('#configMainPresenter', sett);
+    changeCheckboxIcon('#config-MainPresenter', sett);
 
     // save this to local storage for later reference
-    localStorage.setItem('configSyncPresentation', sett);
+    localStorage.setItem('config-SyncPresentation', sett);
 
     // now do the first sync
     syncPresentation(cSpot.presentation.syncData);
@@ -46413,7 +46466,7 @@ function changeSyncPresentation() {
 function setMainPresenter(trueOrFalse) {
     var sett = trueOrFalse || 'true';
     // we first uncheck this and see what the server says...
-    changeCheckboxIcon( '#configMainPresenter', false );
+    changeCheckboxIcon( '#config-MainPresenter', false );
     // keep the user updated...
     $('.showPresenterName').html('<i class="fa fa-spin fa-spinner"></i>');
 
@@ -46430,11 +46483,11 @@ function setMainPresenter(trueOrFalse) {
             // user was accepted     or  was already the active Main Presenter
             if (data.status == '201' || (data.status == '202' && data.data.id == cSpot.user.id) ) {
                 // Hide the Sync checkbox as the Main Presenter can't sync with another presenter...
-                $('#configSyncPresentation').parent().parent().parent().hide();
+                $('#config-SyncPresentation').parent().parent().parent().hide();
                 // tick the Main Presenter checkbox
                 changeCheckboxIcon( '#setMainPresenterItem', true);
                 ;;;console.log('User was accepted as "Main Presenter"' );
-                localStorage.setItem('configMainPresenter', 'true');
+                localStorage.setItem('config-MainPresenter', 'true');
                 // show presenter name 
                 $('.showPresenterName').text(' ('+data.data.name+')')
             }
@@ -46449,15 +46502,15 @@ function setMainPresenter(trueOrFalse) {
                     console.log(data.status + ' User was NOT accepted as "Main Presenter"' + data.data );
                     $('.showPresenterName').text(' ('+data.data.name+')')
                 }
-                localStorage.setItem('configMainPresenter', 'false');
-                changeCheckboxIcon( '#configMainPresenter', false );
+                localStorage.setItem('config-MainPresenter', 'false');
+                changeCheckboxIcon( '#config-MainPresenter', false );
             }
             // in any case, set the local value of the Main Presenter
             cSpot.presentation.mainPresenter = data.data;
         },
         error: function(data) {
             console.log(data);
-            changeCheckboxIcon( '#configMainPresenter', false );
+            changeCheckboxIcon( '#config-MainPresenter', false );
         },
     });
 }
@@ -46518,4 +46571,18 @@ function syncPresentation(syncData) {
     else 
         navigateTo(syncData.slide);
 }
+
+
+
+
+
+
+
+/*\
+|*|
+|*|
+|*+------------------------------------------ END of    presentation.js   ------------------------------------
+|*|
+|*|
+\*/
 

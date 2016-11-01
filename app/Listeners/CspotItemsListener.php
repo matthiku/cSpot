@@ -30,10 +30,11 @@ class CspotItemsListener
     {
         // get item
         $key  = 'offline-'.$event->item->plan_id;
-        $key .= '-'.(1*$event->item->seq_no).'-%'; 
+        //$key .= '-'.(1*$event->item->seq_no); 
 
-        // delete cached data of this item as it's now outdated
-        $cache = PlanCache::where('key', 'like', $key)->delete();
+        //       delete cached data of this item - NEW:
+        // delete cached data of the whole PLAN as it's now outdated
+        $cache = PlanCache::where('key', 'like', $key.'-%')->delete();
 
     }
 }
