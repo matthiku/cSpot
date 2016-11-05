@@ -34,8 +34,8 @@
 		<div class="collapse navbar-toggleable-xs" id="exCollapsingNavbar2">
 
 
-			<a class="navbar-brand big hidden-md-down" href="#">{{ $heading }}</a>
-			<a class="navbar-brand hidden-sm-down hidden-lg-up" href="#">{{ $heading }}</a>
+			<a class="navbar-brand big hidden-md-down bg-info px-1" href="#">{{ $heading }}</a>
+			<a class="navbar-brand hidden-sm-down hidden-lg-up bg-info px-1" href="#">{{ $heading }}</a>
 
 
 			<ul class="nav navbar-nav float-xs-right">
@@ -101,6 +101,15 @@
 						</a>
 					</li>
 				@endif
+
+				<li class="nav-item active">
+					@if ( ! Request::has('filtervalue') || (Request::has('filtervalue') && Request::input('filtervalue')!='slides' && Request::input('filtervalue')!='video') )
+						<a class="nav-link btn btn-outline-danger"
+								href="{{ url('cspot/songs') }}?filterby=songs&filtervalue=rare">
+							Show 'rare' Songs
+						</a>
+					@endif
+				</li>
 
 			</ul>
 

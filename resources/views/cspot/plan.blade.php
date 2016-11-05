@@ -175,13 +175,16 @@
                 <big>
                     @if (isset($plan))
                         @if (Auth::user()->isEditor())
-                            <span class="has-warning">
+                            <span class="has-warning mr-1">
                             {!! Form::submit('Save changes', [
                                 'data-toggle'    => 'tooltip', 
                                 'data-placement' => 'left',
-                                'class'          => 'form-submit plan-details text-help',
+                                'class'          => 'bnt btn-secondary disabled plan-details text-help',
+                                'id'             => 'form-submit-btn',
                                 'style'          => 'display: none',
                                 'title'          => 'Click to save changes to notes, event type, date, leader or teacher',
+                                'disabled'       => 'disabled',
+                                'aria-disabled'  => "true",
                             ]); !!}</span>
                         @endif
 
@@ -546,8 +549,10 @@
 
     <script>
         function enableSaveButton(that) {
-            $('.form-submit').removeAttr('disabled');
-            blink('.form-submit');
+            $('#form-submit-btn').removeAttr('disabled');
+            $('#form-submit-btn').removeClass('disabled');
+            $('#form-submit-btn').removeClass('btn-secondary');
+            $('#form-submit-btn').addClass('btn-primary');
             $(that).parent().addClass('has-warning');
         }
         

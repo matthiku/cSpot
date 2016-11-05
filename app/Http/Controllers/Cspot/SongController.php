@@ -57,7 +57,7 @@ class SongController extends Controller
         $order   = isset($request->order)   ? $request->order   : 'ASC';
 
         // with filtering?
-        if (isset($request->filterby) and isset($request->filtervalue)) {
+        if (isset($request->filterby) && $request->filterby!='songs' && isset($request->filtervalue)) {
             // we need to set the Pagination currentPage to 0,
             // otherwise we would not see the search results
             if (isset($request->page)) {
@@ -131,6 +131,17 @@ class SongController extends Controller
         if ( isset($request->filterby) && $request->filtervalue=='slides' )
             $heading = 'Manage Slides';
 
+        if (isset($request->filterby) && $request->filterby=='songs' && isset($request->filtervalue) && $request->filtervalue=='rare') {
+             //::
+            $songs = Song::withCount('items') 
+                ->where('songs.id', '>', 0)
+                ->leftJoin('items', 'items.song_id', '=', 'songs.id')
+                ->leftJoin('plans', 'plans.id', '=', 'items.plan_id')
+                ->groupBy('songs.id')
+                ->selectRaw('songs.*, max(plans.date) as last_used')
+                ->havingRaw('count(items.id) > 1')
+                ->orderBy('last_used', 'ASC');
+        }
 
         // URL contains ...?plan_id=xxx (needed in order to add a song to that plan)
         $plan_id = 0;
