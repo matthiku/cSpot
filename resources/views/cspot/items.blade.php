@@ -90,11 +90,12 @@
 				{{-- show song freshness 
 				--}}
 				@if ($item->song_id)
-					<td class="hidden-md-down" title=" - - - Song 'Freshness' Index - - -
+					<td class="hidden-md-down" data-toggle="tooltip"
+						data-template='<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><pre class="tooltip-inner"></pre></div>'
+						title="Song 'Freshness' Index:
 
-Song usage overall: {{$item->song->plansUsingThisSong()->count()}} times, 
-      by you: {{$item->song->leadersUsingThisSong($plan->leader_id)->count()}} times 
-
+Song usage total: {{$item->song->plansUsingThisSong()->count()}} times, 
+by you: {{$item->song->leadersUsingThisSong($plan->leader_id)->count()}} times 
 {{$item->song->lastTimeUsed ? 'Lastly used: '.$item->song->lastTimeUsed->diffForHumans() : ''}}">
 						@if ($item->song_freshness) 
 							{{ $item->song_freshness > 50 ? '&#127823;' : '&#127822;' }}<small>{{ $item->song_freshness }}%</small>

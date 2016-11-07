@@ -88,12 +88,14 @@
                         </div>
                     @endif
 
+{{-- currently not used
                     <div class="float-xs-right mr-1">
                         <a title="YouTube playlist of all songs" target="new" 
                             href="{{ env('YOUTUBE_PLAYLIST_URL', 'https://www.youtube.com/playlist?list=').env('CHURCH_YOUTUBE_PLAYLIST_ID', '') }}">
                             <i class="fa fa-youtube">&nbsp;</i>play all</a>
                     </div>
 
+ --}}               
                 </div>
             @endif
 
@@ -422,9 +424,9 @@
 
         <?php $modalContent = "
             <p>In the first place, songs should be selected as appropriate for the occasion, not by statistical considerations.</p>
-            <p>The 'Song Freshness Index' should only help to better understand how often the songs 
-                in this plan have been used before and when it was the last time they were used.</p>
-            <p>Each song receives its own index and it's calculation can be looked up by pointing to the individual index.</p>
+            <p>The 'Song Freshness Index' is only provided in order to help better to understand how often the songs 
+                in this plan have been used before (by all leaders and by you) and when it was the last time they were used in a service.</p>
+            <p>Each song added to this plan receives its own index and the numbers used for the calculation can be looked up by pointing to the individual index.</p>
             <p>An average 'freshness' index of all songs of this plan is shown at the bottom.</p>
         "; ?>
         @include( 'cspot/snippets/modal', ['modalContent' => $modalContent, 'modalTitle' => "Songs Freshness? What's that?", 'id' => 'sfh' ] )

@@ -561,12 +561,19 @@ function calculateSongFreshness($song_id, $leader_id, $planDate)
 
     $last_time_used = $song->lastTimeUsed;
 
-    $lastTimeUsed = 0;
+    $daysLapsed = 0;
 
     if ($last_time_used!=null)
-        $lastTimeUsed = $last_time_used->diffInDays($planDate);
+        $daysLapsed = $last_time_used->diffInDays($planDate);
 
-    return ( 100-$used_by_all + 100-$used_by_leader + 100 - min(100,$lastTimeUsed) ) / 3;
+    $a = 100 - $used_by_all;
+    $b = 100 - $used_by_leader;
+    $c = 0 + min(100, $daysLapsed);
+    $result = ( $a + $b + $c ) / 3;
+
+    Log::debug("Freshness calc.: song_id $song_id, usage: $used_by_all, by leader: $used_by_leader, last time: $daysLapsed - ($a + $b + $c) / 3 = $result");
+
+    return $result;
 }
 
 
