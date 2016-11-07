@@ -1,4 +1,4 @@
-@include( 'cspot/snippets/modal', ['modalContent' => '$modalContent', 'modalTitle' => '$modalTitle' ] )
+{{-- @include( 'cspot/snippets/modal', ['modalContent' => '$modalContent', 'modalTitle' => '$modalTitle' ] ) --}}
 
 <!-- # (C) 2016 Matthias Kuhs, Ireland -->
 
@@ -19,6 +19,7 @@
 					$item->song_id = Null; 
 				} 
 			?>
+
 
 
 			{{-- check if this is a "FLEO" item - only visible to the leader 
@@ -42,6 +43,8 @@
 					@endif
 				</th>
 
+
+
 				{{-- for leader's eyes only? 
 				--}}
 				@if( Auth::user()->ownsPlan($plan->id) )
@@ -56,6 +59,7 @@
 							: '<i class="fa fa-eye"></i>' !!}
 					</td>
 				@endif
+
 
 
 				{{-- Song Details editable via popup dialog 
@@ -82,6 +86,26 @@
 				</td>
 
 
+
+				{{-- show song freshness 
+				--}}
+				@if ($item->song_id)
+					<td class="hidden-md-down" title=" - - - Song 'Freshness' Index - - -
+
+Song usage overall: {{$item->song->plansUsingThisSong()->count()}} times, 
+      by you: {{$item->song->leadersUsingThisSong($plan->leader_id)->count()}} times 
+
+{{$item->song->lastTimeUsed ? 'Lastly used: '.$item->song->lastTimeUsed->diffForHumans() : ''}}">
+						@if ($item->song_freshness) 
+							{{ $item->song_freshness > 50 ? '&#127823;' : '&#127822;' }}<small>{{ $item->song_freshness }}%</small>
+						@endif
+					</td>
+				@else
+					<td></td>
+				@endif
+
+
+
 				{{-- show separate column for song title and comment on large devices 
 				--}}
 				<td class="hidden-lg-down link show-song-title" 
@@ -106,6 +130,7 @@
 					</span>
 					<span class="hover-only fa fa-pencil text-muted"></span>
 				</td>
+
 
 
 				<!-- COMMENT column - allow for inline editing 
@@ -142,6 +167,7 @@
 				</td>
 
 
+
 				{{-- show combined song-title and comment column on small devices 
 				--}}
 				<td {{$onclick}} {{$tooltip}} class="hidden-xl-up link">
@@ -164,6 +190,7 @@
 				</td>
 
 
+
 				{{-- show personal notes as popup 
 				--}}
 				<td {{$onclick}} class="hidden-sm-down center link"
@@ -178,7 +205,9 @@
 				</td>
 
 
+
 				@if (Auth::user()->hasMusician())
+
 					{{-- indicate if chords are available for this song 
 					--}}
 					<td class="hidden-sm-down center" title="Lyrics with chords for guitars">
@@ -189,6 +218,7 @@
 							@endif
 						@endif
 					</td>
+
 				
 					{{-- indicate if leader added instructions for this song 
 					--}}
@@ -198,6 +228,7 @@
 						@endif
 					</td>
 				
+
 
 					{{-- indicate if sheet music is linked to this song 
 					--}}
@@ -227,6 +258,7 @@
 						@endif
 					</td>
 				@endif
+
 
 
 				{{-- show if files are attached to this item and show button 
@@ -264,6 +296,7 @@
 						</a>
 					@endif
 				</td>
+
 
 
 				{{-- show various links if available, for song 

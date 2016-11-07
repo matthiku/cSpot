@@ -25,6 +25,7 @@ class Item extends Model
         'forLeadersEyesOnly',
         'reported_at',
         'hideTitle',
+        'song_freshness',
     ];
 
     protected $hidden = [

@@ -2,7 +2,7 @@
         Modal to show help information 
 --}}
 
-<div class="modal fade help-modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+<div class="modal fade help-modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" {{ isset($id) ? 'id='.$id : '' }}>
     <div class="modal-dialog modal-md">
         <div class="modal-content bg-info">
             <div class="modal-header">

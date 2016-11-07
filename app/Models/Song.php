@@ -89,6 +89,26 @@ class Song extends Model
         return $plans;
     }
 
+
+
+    /**
+     * Get collection of plans of leaders using this song - excluding future plans
+     *      (use this method to count the number of times this song was used by a certain leader)
+     */
+    public function leadersUsingThisSong($leader_id) {
+
+        $id = $this->id;
+
+        // get list of plans using this song
+        $plans = Plan::whereHas('items', function ($query) use ($id, $leader_id) {
+            $query->where('song_id', $id)
+                  ->where('leader_id', $leader_id)
+                  ->where('date', '<', Carbon::now());
+        })->orderBy('date', 'desc')->get();
+
+        return $plans;
+    }
+
     /**
      * Get collection of plans using this song - INCLUDING future plans
      */
@@ -134,7 +154,9 @@ class Song extends Model
                   ->where('date', '<', Carbon::now());
         })->orderBy('date', 'desc')->first();
 
-        return $plan->date;
+        if ($plan)
+            return $plan->date;
+        return null;
     }
 
 

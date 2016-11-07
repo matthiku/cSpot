@@ -224,20 +224,20 @@
 
                 <div class="card card-block float-xs-center p-b-1" style="max-width: 40rem; ">
 
-                    <div class="row song-details form-group">
+                    <div class="row center song-details">
                         <h5 class="card-title">
                             @if ( $item->itemType()=='song')
-                                <i class="float-xs-left fa fa-music"></i>
+                                <i class="float-xs-left fa fa-music"></i> &nbsp;
                                 <i class="float-xs-right fa fa-music"></i>
+                            @endif
+                            @if ($item->song->book_ref)
+                                <small>({{ $item->song->book_ref }})</small>
                             @endif
                             {{ $item->song->title ? $item->song->title : '' }}
                             @if ( $item->itemType()=='song' && $item->song->title_2)
                                 <br>({{ $item->song->title_2 }})
                             @endif
                         </h5>
-                        @if ($item->song->book_ref)
-                            <h6>({{ $item->song->book_ref }})</h6>
-                        @endif
                     </div>
 
                     <div class="card-text song-details">
@@ -245,10 +245,12 @@
 
                         @if ( $item->itemType()=='song')
 
-                            <div class="row text-muted">
-                                Note: 
+                            <div class="row center text-muted">
+                                <strong>Song 'Freshness': {{ $item->song_freshness > 50 ? '&#127823;' : '&#127822;' }}<small>{{ $item->song_freshness }}%</small></strong>
+                                <br>
                                 @if ( $usageCount )
-                                    Song was used before in <strong>{{ $usageCount }}</strong> service(s) -
+                                    This song was used before in <strong>{{ $usageCount }}</strong> service(s) -<br>
+                                    <strong>{{ $item->song->leadersUsingThisSong($plan->leader_id)->count() }}</strong> times by the leader of this plan and
                                     lastly <strong title="{{ $newestUsage->date }}">
                                         {{ Carbon::now()->diffForHumans( $newestUsage->date, true ) }} ago</strong>
                                 @else
@@ -258,10 +260,12 @@
 
                             <div class="row mt-1">
                                                             
-                                <div class="card mb-0">
-                                    <div class="card-block float-xs-left">
-                                        <h5 class="card-title">&#127896; Instructions for Music Team:</h5>
-                                        <h6 class="card-subtitle text-muted">(e.g. for having a verse without music)</h6>
+                                <div class="card center mb-0">
+                                    <div class="card-block p-0">
+                                        <h5 class="card-title float-xs-left">&#127896; Instructions for Music Team:
+                                            <br>
+                                            <small class="text-muted float-xs-left">(e.g. for having a verse without music)</small>
+                                        </h5>
                                         <div class="card-text">
                                             @if (Auth::user()->ownsPlan( $plan->id ))
                                                 <pre id="key-item-id-{{ $item->id }}" class="editable-item-field form-control form-control-success mb-0">{{ $item->key }}</pre>

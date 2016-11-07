@@ -9,12 +9,27 @@
 <body>
     <p>Dear {{ $recipient->first_name }},</p>
 
-    <p>{{$user->first_name}} wants to remind you to enter the missing items (songs) into the plan for<br>
+	<p>
+    @if (isset($role) && $role!='not set')
+    	You are <strong>{{ $role }}</strong> of this event and</p>
+    @endif
 
-    <h3><a href="{{ url('cspot/plans/'.$plan->id) }}">{{ $plan->type->name }} 
-        on {{ $plan->date->formatLocalized('%A, %d %B %Y') }}</a></h3>
+    {{$user->first_name}} wants to remind you to enter the <strong>
+    @if ( isset($role) )
+	    {{ $role=='leader'
+	    	? 'missing items (songs)'
+	    	: $role=='teacher'
+	    		? 'last song'
+	    		: 'missing items' }}
+    @endif
+    </strong>into the plan for<br>
 
-    <p>Best Regards,<br>    
+    <h4><a href="{{ url('cspot/plans/'.$plan->id) }}">{{ $plan->type->name }} 
+        on {{ $plan->date->formatLocalized('%A, %d %B %Y') }}</a></h4>
+
+    <p>
+
+    Best Regards,<br>    
     Your c-SPOT Admin
     </p>
 

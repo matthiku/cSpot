@@ -2,6 +2,8 @@
 
 # (C) 2016 Matthias Kuhs, Ireland
 
+//use DB;
+
 use App\Models\Item;
 use App\Models\Plan;
 use App\Models\PlanCache;
@@ -485,6 +487,7 @@ function insertItem( $request )
 
     // check if a song id was provided in the request
     if ( isset($request->song_id) ) {
+        $newItem->song_freshness = calculateSongFreshness( $request->song_id, $plan->leader_id, $plan->date );
         $newItem->song_id = $request->song_id;
     }
 
@@ -539,6 +542,32 @@ function insertItem( $request )
     return $plan;
 }
 
+
+/**
+ * Calculate Song Freshness (0...100%)
+ *
+ * ... based on the 
+ * - amount of times this song was used in general
+ * - amount of times this song was used by this leader
+ * - time span since the song was last used
+ */
+function calculateSongFreshness($song_id, $leader_id, $planDate)
+{
+    $song = Song::find($song_id);
+
+    $used_by_all    = $song->plansUsingThisSong()->count();
+
+    $used_by_leader = $song->leadersUsingThisSong($leader_id)->count();
+
+    $last_time_used = $song->lastTimeUsed;
+
+    $lastTimeUsed = 0;
+
+    if ($last_time_used!=null)
+        $lastTimeUsed = $last_time_used->diffInDays($planDate);
+
+    return ( 100-$used_by_all + 100-$used_by_leader + 100 - min(100,$lastTimeUsed) ) / 3;
+}
 
 
 

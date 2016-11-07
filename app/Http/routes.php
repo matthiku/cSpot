@@ -47,6 +47,8 @@ Route::group(['middleware' => 'web'], function () {
     // user confirms his partizipation with TOKEN (no login needed!)
     Route::get( 'cspot/plans/{plan_id}/team/{team_id}/confirm/{token}',                'Cspot\TeamController@confirm');
 
+    // get next event of any type
+    Route::get('api/plans/next',                   'Cspot\PlanController@APInextEvent')->name('api.next.event');
 });
 
 
@@ -68,8 +70,6 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
 
     // show next Sunday's Service plan
     Route::get('plans/next',                       'Cspot\PlanController@nextSunday'  )->name('next');
-    // get next event of any type
-    Route::get('api/plans/next',                   'Cspot\PlanController@APInextEvent')->name('api.next.event');
 
     // basic CRUD resources for plans, but without the simple GET method
     Route::resource('plans',                       'Cspot\PlanController');

@@ -42666,7 +42666,7 @@ $(document).ready(function() {
 
 
     // now we can allow the Modal to work fully
-    $('.modal-header').toggle();
+    $('.item-modal-header').toggle();
     $('.modal-footer').show();
 
     ;;;console.log('document fully loaded');

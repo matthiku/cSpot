@@ -99,8 +99,14 @@
 
             @if ( isset($plan) )
 
-                <h4 class="hidden-md-down">Plan for "{{ $plan->type->name }}" on {{ $plan->date->formatLocalized('%A, %d %B %Y') }}</h4>
-                <h4 class="hidden-lg-up">"{{ $plan->type->name }}" on {{ $plan->date->formatLocalized('%a, %d %B') }}</h4>
+                <h4 class="hidden-md-down">
+                    <span class="text-success font-italic font-weight-bold">{{ $plan->type->name }}</span>
+                    <span class="small font-weight-bold">on {{ $plan->date->formatLocalized('%A, %d %B %Y') }}</span>
+                </h4>
+                <h4 class="hidden-lg-up float-xs-left font-weight-bold">
+                    <span class="text-success font-italic">{{ $plan->type->name }}</span>
+                    on <span class="text-danger">{{ $plan->date->formatLocalized('%a, %d %b') }}</span>
+                </h4>
                 <small class="hidden-lg-down">{{ $plan->subtitle }}</small>
 
 
@@ -328,7 +334,7 @@
                                 </span>
                             @endif
                             @if ( isset($plan) && $plan->isFuture() && Auth::user()->isAuthor() )
-                                <a href="{{ url('cspot/plans/'.$plan->id.'/remind/'.$plan->leader_id) }}" 
+                                <a href="{{ url('cspot/plans/'.$plan->id.'/remind/'.$plan->leader_id) }}?role=leader" 
                                    class="btn btn-sm btn-secondary" role="button"
                                    data-toggle="tooltip" title="Send reminder to leader to insert missing items">
                                     <i class="fa fa-envelope"></i></a>
@@ -375,7 +381,7 @@
                                 </span>
                             @endif
                             @if ( isset($plan) && $plan->isFuture()  &&  Auth::user()->ownsPlan($plan->id) )
-                                <a href="{{ url('cspot/plans/'.$plan->id.'/remind/'.$plan->teacher_id) }}" 
+                                <a href="{{ url('cspot/plans/'.$plan->id.'/remind/'.$plan->teacher_id) }}?role=teacher" 
                                    class="btn btn-sm btn-secondary" role="button" data-placement="left"
                                    data-toggle="tooltip" title="Send reminder to teacher to insert missing items">
                                     <i class="fa fa-envelope"></i></a>
@@ -413,6 +419,20 @@
         @include('cspot.items')
 
 
+
+        <?php $modalContent = "
+            <p>In the first place, songs should be selected as appropriate for the occasion, not by statistical considerations.</p>
+            <p>The 'Song Freshness Index' should only help to better understand how often the songs 
+                in this plan have been used before and when it was the last time they were used.</p>
+            <p>Each song receives its own index and it's calculation can be looked up by pointing to the individual index.</p>
+            <p>An average 'freshness' index of all songs of this plan is shown at the bottom.</p>
+        "; ?>
+        @include( 'cspot/snippets/modal', ['modalContent' => $modalContent, 'modalTitle' => "Songs Freshness? What's that?", 'id' => 'sfh' ] )
+
+        <small>Songs overall: <big>{{ $plan->songsFreshness()>50 ? '&#127823;' : '&#127822;' }}</big> {{ number_format( $plan->songsFreshness(), 0 ) }}% 'freshness'
+            <a href="#" title="What's that?" data-toggle="modal" data-target="#sfh">
+            <i class="fa fa-question-circle fa-lg text-danger"></i></a>
+        </small>
 
 
         @if (Auth::user()->ownsPlan($plan->id) && $plan->isFuture() )

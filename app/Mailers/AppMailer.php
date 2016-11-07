@@ -122,14 +122,14 @@ class AppMailer
      * @param  
      * @return void
      */
-    public function planReminder(User $recipient, Plan $plan)
+    public function planReminder(User $recipient, Plan $plan, $role)
     {
         $user      = Auth::user();
         $this->cc  = findAdmins('email');
         $this->to  = $recipient->email;
         $this->subject = env('CHURCH_NAME', 'c-SPOT-App').' - missing items for your Service Plan';
         $this->view    = 'cspot.emails.reminder';
-        $this->data    = compact( 'user', 'recipient', 'plan' );
+        $this->data    = compact( 'user', 'recipient', 'plan', 'role' );
 
         $this->deliver();
     }

@@ -113,4 +113,25 @@ class Plan extends Model
     	return $items->sortByDesc('seq_no')->first();
     }
 
+
+
+
+    /**
+     * return average song freshness
+     */
+    public function songsFreshness()
+    {
+    	$items = $this->items
+            ->where('song_id', '>', 0)
+            ->where('deleted_at', null);
+
+    	$collect = collect();
+
+    	foreach ($items as $item) {
+    		if ($item->song_freshness)
+    			$collect->push($item->song_freshness);
+    	}
+
+		return $collect->avg();
+    }
 }

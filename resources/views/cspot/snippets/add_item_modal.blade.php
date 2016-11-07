@@ -15,10 +15,10 @@
 
                 {{-- M O D A L    H E A D E R - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
                 --}}
-                <div class="modal-header center">
+                <div class="modal-header item-modal-header center">
                     One moment please....
                 </div>
-                <div class="modal-header center" style="display: none;">
+                <div class="modal-header item-modal-header center" style="display: none;">
 
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>

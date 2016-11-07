@@ -18,6 +18,7 @@ class AddFieldToItemsTable extends Migration
             $table->boolean('show_comment')->default(false);
             $table->dateTime('reported_at')->nullable();
             $table->boolean('hideTitle')->nullable();
+            $table->integer('song_freshness')->nullable();
         });
     }
 
@@ -34,6 +35,7 @@ class AddFieldToItemsTable extends Migration
             $table->dropColumn('show_comment');
             $table->dropColumn('reported_at');
             $table->dropColumn('hideTitle');
+            $table->dropColumn('song_freshness');
         });
     }
 }

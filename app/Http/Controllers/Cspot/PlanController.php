@@ -565,10 +565,15 @@ PlanController extends Controller
         $plan = Plan::find($id);
         // get the recipient
         $recipient = User::find($user_id);
-        // verify validity of this request
-        if ($plan && $plan->isFuture() && Auth::user()->OwnsPlan($id) ) {
+        // what is the role of this user in this plan?
+        $role = 'not set';
+        if (isset($request->role))
+            $role = $request->role;
 
-            $mailer->planReminder( $recipient, $plan );
+        // verify validity of this request
+        if ($plan && $plan->isFuture() && Auth::user()->ownsPlan($id) ) {
+
+            $mailer->planReminder( $recipient, $plan, $role );
 
             flash( 'Email sent to '.$recipient->fullName );
             return redirect()->back();
@@ -577,6 +582,7 @@ PlanController extends Controller
         flash('Plan not found!');
         return redirect()->back();
     }
+
 
 
     public function APIaddNote(Request $request)

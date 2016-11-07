@@ -106,7 +106,7 @@
 					@if ( ! Request::has('filtervalue') || (Request::has('filtervalue') && Request::input('filtervalue')!='slides' && Request::input('filtervalue')!='video') )
 						<a class="nav-link btn btn-outline-danger"
 								href="{{ url('cspot/songs') }}?filterby=songs&filtervalue=rare">
-							Show 'rare' Songs
+							'Forgotten' Songs
 						</a>
 					@endif
 				</li>
