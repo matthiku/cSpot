@@ -36,8 +36,8 @@
 			    ">
 
 
-				<th class="{{ Auth::user()->isUser() ? 'drag-item ' : ''}}dont-print" scope="row" title="drag item into the new position">
-					<span class="hidden-lg-down float-xs-right text-success">{{ $item->seq_no }}</span>
+				<th class="hidden-lg-down {{ Auth::user()->isUser() ? 'drag-item ' : ''}}dont-print" scope="row" title="drag item into the new position">
+					<span class="float-xs-right text-success">{{ $item->seq_no }}</span>
 					@if ( Auth::user()->ownsPlan($plan->id) && $plan->date >= \Carbon\Carbon::today() )
 						<i class="p-r-1 fa fa-arrows-v">
 					@endif
@@ -102,7 +102,7 @@ by you: {{$item->song->leadersUsingThisSong($plan->leader_id)->count()}} times
 						@endif
 					</td>
 				@else
-					<td></td>
+					<td class="hidden-md-down"></td>
 				@endif
 
 
@@ -468,6 +468,8 @@ by you: {{$item->song->leadersUsingThisSong($plan->leader_id)->count()}} times
 </div>
 
 
+{{-- show cached items data 
+--}}
 @if( Auth::user()->ownsPlan($plan->id) )
 	<div 	class="small float-xs-right ml-2" id="showCachedItems" 
 		 	style="display: {{ $plan->planCaches()->count() ? 'initial' : 'none' }}">
@@ -476,6 +478,9 @@ by you: {{$item->song->leadersUsingThisSong($plan->leader_id)->count()}} times
 	</div>
 @endif
 
+
+{{-- show deleted items data 
+--}}
 @if( Auth::user()->ownsPlan($plan->id) && $plan->date >= \Carbon\Carbon::yesterday() )
 
 	<div class="float-xs-right ml-2" id="trashedItems" 
@@ -501,6 +506,8 @@ by you: {{$item->song->leadersUsingThisSong($plan->leader_id)->count()}} times
 @endif
 
 
+{{-- make sure the screen scrolls down to the jsut inserted item 
+--}}
 @if ( isset($newest_item_seq_no) )
 	<script>
 		// go to the just inserted new item

@@ -567,7 +567,7 @@ function calculateSongFreshness($song_id, $leader_id, $planDate)
         $daysLapsed = $last_time_used->diffInDays($planDate);
 
     $a = 100 - $used_by_all;
-    $b = 100 - $used_by_leader;
+    $b = 100 - $used_by_leader * 2;
     $c = 0 + min(100, $daysLapsed);
     $result = ( $a + $b + $c ) / 3;
 

@@ -416,25 +416,31 @@
 
 
 
-        {{-- list all plan items here 
+        {{-- 
+            List all plan items here 
         --}}
         @include('cspot.items')
+        {{-- 
+
+        --}}
 
 
 
-        <?php $modalContent = "
-            <p>In the first place, songs should be selected as appropriate for the occasion, not by statistical considerations.</p>
-            <p>The 'Song Freshness Index' is only provided in order to help better to understand how often the songs 
-                in this plan have been used before (by all leaders and by you) and when it was the last time they were used in a service.</p>
-            <p>Each song added to this plan receives its own index and the numbers used for the calculation can be looked up by pointing to the individual index.</p>
-            <p>An average 'freshness' index of all songs of this plan is shown at the bottom.</p>
-        "; ?>
-        @include( 'cspot/snippets/modal', ['modalContent' => $modalContent, 'modalTitle' => "Songs Freshness? What's that?", 'id' => 'sfh' ] )
+        @if ($plan->songsFreshness()>0)
+            <?php $modalContent = "
+                <p>In the first place, songs should be selected as appropriate for the occasion, not by statistical considerations.</p>
+                <p>The 'Song Freshness Index' is only provided in order to help better to understand how often the songs 
+                    in this plan have been used before (by all leaders and by you) and when it was the last time they were used in a service.</p>
+                <p>Each song added to this plan receives its own index and the numbers used for the calculation can be looked up by pointing to the individual index.</p>
+                <p>An average 'freshness' index of all songs of this plan is shown at the bottom.</p>
+            "; ?>
+            @include( 'cspot/snippets/modal', ['modalContent' => $modalContent, 'modalTitle' => "Songs Freshness? What's that?", 'id' => 'sfh' ] )
 
-        <small>Songs overall: <big>{{ $plan->songsFreshness()>50 ? '&#127823;' : '&#127822;' }}</big> {{ number_format( $plan->songsFreshness(), 0 ) }}% 'freshness'
-            <a href="#" title="What's that?" data-toggle="modal" data-target="#sfh">
-            <i class="fa fa-question-circle fa-lg text-danger"></i></a>
-        </small>
+            <small class="hidden-sm-down">Songs overall: <big>{{ $plan->songsFreshness()>50 ? '&#127823;' : '&#127822;' }}</big> {{ number_format( $plan->songsFreshness(), 0 ) }}% 'freshness'
+                <a href="#" title="What's that?" data-toggle="modal" data-target="#sfh">
+                <i class="fa fa-question-circle fa-lg text-danger"></i></a>
+            </small>
+        @endif
 
 
         @if (Auth::user()->ownsPlan($plan->id) && $plan->isFuture() )
