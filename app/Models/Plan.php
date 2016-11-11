@@ -20,9 +20,11 @@ class Plan extends Model
 		'leader_id',
 		'teacher_id',
 		'type_id',
+        'subtitle',
 		'info',
 		'state',
-		'changer',
+        'changer',
+		'private',
 		'subtitle', 
 		'updated_at',
 	];

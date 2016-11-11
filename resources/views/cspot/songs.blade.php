@@ -34,8 +34,8 @@
 		<div class="collapse navbar-toggleable-xs" id="exCollapsingNavbar2">
 
 
-			<a class="navbar-brand big hidden-md-down bg-info px-1" href="#">{{ $heading }}</a>
-			<a class="navbar-brand hidden-sm-down hidden-lg-up bg-info px-1" href="#">{{ $heading }}</a>
+			<a class="navbar-brand bg-info px-1 rounded hidden-md-down big" href="#">{{ $heading }}</a>
+			<a class="navbar-brand bg-info px-1 rounded hidden-sm-down hidden-lg-up" href="#">{{ $heading }}</a>
 
 
 			<ul class="nav navbar-nav float-xs-right">

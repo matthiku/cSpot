@@ -372,6 +372,13 @@ PlanController extends Controller
             $plan->date_end = $planDate->addHour(         $endTime->hour)->addMinute( $endTime->minute);
         }
 
+        // verify 'private' status from request
+        if ($request->has('private') && $request->private=='on')
+            $plan->private = true;
+        else
+            $plan->private = false;            
+
+
         $plan->save();
 
         addDefaultRolesAndResourcesToPlan($plan);
@@ -553,6 +560,14 @@ PlanController extends Controller
 
         $plan->update( $request->except(['_method','_token','date','start','end']) );
 
+        // verify 'private' status from request
+        if ($request->has('private') && $request->private=='on')
+            $plan->private = true;
+        else
+            $plan->private = false;            
+        $plan->save();
+        
+
         flash('Plan with id "' . $id . '" updated');
         return redirect()->back();
     }
@@ -629,7 +644,9 @@ PlanController extends Controller
                 $plan = Plan::find($plan_id);
                 if ($plan->count()) {
                     // allow for discarding the whole note
-                    if ($value=='_') $value='';
+                    if ($value==='_') $value='';
+                    if ($value==='false') $value=0;
+                    if ($value==='true' ) $value=1;
                     // update plan data and return new field value
                     $plan->update([$field_name => $value]);
                     return $plan[$field_name];

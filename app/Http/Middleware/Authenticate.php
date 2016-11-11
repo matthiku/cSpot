@@ -33,6 +33,9 @@ class Authenticate
 
         Log::info($request->ip().' handling an incoming request for '.Auth::user()->fullName . ' to path '.$request->path());
 
+        // update last access info in user table        
+        Auth::user()->update(['last_access' => \Carbon\Carbon::now()]);
+
         return $next( $request );
 
     }

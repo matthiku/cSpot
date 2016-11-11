@@ -3,7 +3,7 @@
 
 @extends('layouts.main')
 
-@section('title', "Create or Update a User")
+@section('title', "User Profiles")
 
 
 

@@ -42,7 +42,7 @@
 
             {{-- direct link to user list page --}}
             <li class="nav-item hidden-lg-down">
-                <a class="nav-link" href="{{ url('admin/users') }}">User List</a>
+                <a class="nav-link{{ Request::is('admin/users') ? ' active' : '' }}" href="{{ url('admin/users') }}">User List</a>
             </li>
 
 
@@ -78,7 +78,7 @@
 
             {{-- user specific drop-down menu  --}}
             <li class="nav-item dropdown">
-                <a href="#" class="nav-link dropdown-toggle " 
+                <a href="#" class="nav-link dropdown-toggle{{ Request::is('admin/users/'.Auth::user()->id) ? ' active' : '' }}" 
                    data-toggle="dropdown" role="button" aria-expanded="false">
                     {{ Auth::user()->first_name }}
                     <span class="caret"></span>
@@ -171,7 +171,7 @@
     --}}
     <ul class="nav navbar-nav">
         @if (Auth::user())
-        <li class="nav-item dropdown {{ Request::is('cspot/plans*') ? 'active' : '' }}">
+        <li class="nav-item dropdown{{ Request::is('cspot/plans') || Request::is('cspot/songs') || Request::is('cspot/history') || Request::is('admin/types') ? ' active' : '' }}">
             <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                 Planning <span class="caret"></span>
             </a>
@@ -203,10 +203,11 @@
             <a class="nav-link {{ Request::is('cspot/plans/next') ? 'active' : '' }}" href="{{ url('cspot/plans/next') }}">Next Sunday</a>
         </li>
         <li class="nav-item hidden-sm-down">
-            <a class="nav-link" href="{{ url('cspot/plans?filterby=future') }}">Upcoming Events</a>
+            <a class="nav-link{{ Request::has('filterby') && Request::input('filterby')=='future' ? ' active' : '' }}" 
+                href="{{ url('cspot/plans?filterby=future') }}">Upcoming Events</a>
         </li>
         <li class="nav-item hidden-lg-down">
-            <a class="nav-link {{ Request::is('cspot/plans') ? 'active' : '' }}" href="{{ url('cspot/plans') }}">My Events</a>
+            <a class="nav-link{{ Request::is('cspot/plans') && ! Request::has('filterby')  ? ' active' : '' }}" href="{{ url('cspot/plans') }}">My Events</a>
         </li>
         @endif
 

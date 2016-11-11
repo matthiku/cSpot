@@ -68,6 +68,8 @@
 					<th class="hidden-lg-down center">Times</th>
 
 					@if( Auth::user()->isUser() )
+						<th class="hidden-lg-down center small pa-0" title="Is this a non-public event? (It won't show up on the announcements)">Pr.?</th>
+
 						<th class="center" title="Check when you are available for that particular plan"
 							data-toggle="tooltip" title="Check when you are available for that particular plan">
 							<small>Available?</small></th>
@@ -117,6 +119,19 @@
 					</td>
 
 					@if( Auth::user()->isUser())
+						<td class="hidden-lg-down center">
+							<label class="c-input c-checkbox">
+								@if (Auth::user()->isEditor())
+									<input type="checkbox" {{ $plan->private ? 'checked="checked"' : '' }}
+										onclick="togglePlanPrivate(this, {{ $plan->id }})">
+									<span class="c-indicator"></span>
+								@endif
+								<span id="plan-private-{{ $plan->id }}">
+									{!! $plan->private ? '&#10004;' : '' !!}									
+								</span>
+							</label>
+						</td>
+
 						<td class="center">
 							@if( $plan->date > \Carbon\Carbon::yesterday() )
 								<a class="hidden-lg-up float-xs-right" title="show team for this plan" href="{{ url('cspot/plans/'.$plan->id) }}/team">staff</a>

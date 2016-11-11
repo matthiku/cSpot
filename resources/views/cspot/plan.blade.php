@@ -209,12 +209,26 @@
     <div class="plan-details row"{!! isset($plan) ? " style='display: none'" : '' !!}>
 
 
+
         @if (Auth::user()->isEditor())
+
             <div class="col-xl-4 col-lg-6">
                 <div class="card-block narrower bg-muted mb-1">
+
+                    <div class="float-xs-right">
+                        {!! Form::label('private', 'Make Private?', ['class'=>'d-block']); !!}
+                        <label class="custom-control custom-checkbox float-xs-right">
+                            <input name="private" type="checkbox" onclick="togglePlanPrivate( this, {{ $plan->id }} )"
+                                  class="custom-control-input"{{ $plan->private ? ' checked="checked"' : '' }}>
+                            <span class="custom-control-indicator"></span>
+                            <span class="small custom-control-description plan-private-field">(Hide on Announcements)</span>
+                        </label>
+                    </div>
+
                     @if (isset($plan))
                         {!! Form::label('type', 'Event Type:', ['class'=>'d-block']); !!}
                     @endif
+
                     <select name="type_id" id="type_id" class="form-control text-help plan-form-minw c-select" 
                         onchange="fillPlanDefaultValues(this)">
                         @if (! isset($plan) && ! isset($defaultValues['type_id'] ))
@@ -231,6 +245,7 @@
                             </option>
                         @endforeach
                     </select>
+
                     @if ($errors->has('type_id'))
                         <br><span class="help-block">
                             <strong>{{ $errors->first('type_id') }}</strong>

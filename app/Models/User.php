@@ -46,6 +46,7 @@ class User extends Authenticatable //implements Authenticatable //, Contract, Ca
         'notify_by_email',
         'startPage',
         'last_login',
+        'last_access',
     ];
     /**
      * The attributes excluded from the model's JSON form.
@@ -55,7 +56,7 @@ class User extends Authenticatable //implements Authenticatable //, Contract, Ca
     protected $hidden = ['password', 'remember_token'];
 
     protected $dates = [
-        'last_login', 'created_at', 'updated_at'
+        'last_login', 'created_at', 'updated_at', 'last_access'
     ];
 
 

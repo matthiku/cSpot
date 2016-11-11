@@ -52,9 +52,12 @@
 						}
 
 						// if this event is before the ongoing event, ignore it.
-						if ( $event->date->dayOfYear == $today->dayOfYear  &&  $event->date->hour < $today->hour ) {
+						if ( $event->date->dayOfYear == $today->dayOfYear  &&  $event->date->hour < $today->hour )
 							continue;
-						}
+
+						// if this event is private, ignore it.
+						if ( $event->private )
+							continue;
 
 						// event is not on this day, so insert a new column
 						if ($event->date->dayOfYear > $today->dayOfYear) {

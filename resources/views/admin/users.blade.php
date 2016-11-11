@@ -92,6 +92,8 @@
 
 				<th>Instrument(s)&nbsp; <a href="{{ route('instruments.index') }}" title="Manage Instruments"> &#128393; </a></th>
 
+				@include('cspot.snippets.theader', ['thfname' => 'last_access', 'thdisp' => 'Last Access', 'thsearch'=>false, 'thclass'=>'hidden-md-down center'])
+
 				@include('cspot.snippets.theader', ['thfname' => 'last_login', 'thdisp' => 'Last Login', 'thsearch'=>false, 'thclass'=>'hidden-md-down center'])
 
 				@include('cspot.snippets.theader', ['thfname' => 'created_at', 'thdisp' => 'Joined', 'thsearch'=>false, 'thclass'=>'hidden-lg-down center'])
@@ -129,6 +131,12 @@
                 	{{ ucfirst($instrument->name) }}{{ $key+1<$user->instruments->count() ? ',' : '' }}
 					@endforeach</td>
 
+
+				<td class="hidden-md-down small center" title = "{{ $user->last_access }}">{{ 
+					( $user->last_access && $user->last_access->ne(Carbon\Carbon::create(0,0,0,0,0,0)) )
+						? $user->last_access->diffForHumans() 
+						: 'never'
+					}}</td>
 
 				<td class="hidden-md-down small center" title = "{{ $user->last_login }}">{{ 
 					( $user->last_login && $user->last_login->ne(Carbon\Carbon::create(0,0,0,0,0,0)) )

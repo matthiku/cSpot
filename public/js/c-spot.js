@@ -43035,7 +43035,7 @@ function changeForLeadersEyesOnly(that) {
 
 
 
-/*\____________________________________________________________________________  PLAN  Details Page
+/*\____________________________________________________________________________  PLAN  Details Page = Items List page
 \*/
 
 
@@ -44214,10 +44214,39 @@ function addNoteToPlan( event )
         console.log('Failed to add new note to plan!');
         $('#showAddedPlanNote').text('Failed to add new note to plan! Press F12 to see more and notify Admin!');
     });
-
-
 }
 
+
+/* change status of 'private' setting of plan
+*/
+function togglePlanPrivate( that, plan_id ) 
+{
+    console.log('trying to change "private" setting for plan id '+plan_id+' to '+that.checked);
+
+    var origtext = $('.plan-private-field').text();
+    $('.plan-private-field').html(cSpot.const.waitspinner);
+    $('#plan-private-'+plan_id).html(cSpot.const.waitspinner);
+
+    // compose id/value pair
+    var id    = 'private-plan-id-'+plan_id;
+    var value = that.checked;
+
+    $.post( cSpot.routes.apiPlanUpdate, { 
+            id    : id,
+            value : value,
+        })
+        .done(function(data) {
+            $('.plan-private-field').html(origtext);
+            if (data==1) 
+                $('#plan-private-'+plan_id).html('&#10003;');
+            else
+                $('#plan-private-'+plan_id).html('&#10007;');            
+        })
+        .fail(function(data) {
+            $('.plan-private-field').html(data.responseJSON.data);
+            console.log("Update failed! Please notify admin! " + JSON.stringify(data));
+        });
+}
 
 
 /*  upload new file via AJAX and show little icon when successful
