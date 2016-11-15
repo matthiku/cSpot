@@ -48,7 +48,7 @@
     --}}
     
     <div class="row">
-        <div class="col-md-9 col-xl-8 md-center">
+        <div class="col-md-9 col-xl-8">
 
             @if ( isset($plan) && $plan->items()->count() )
 
@@ -88,14 +88,14 @@
                         </div>
                     @endif
 
-{{-- currently not used
+                    {{-- currently not used
                     <div class="float-xs-right mr-1">
                         <a title="YouTube playlist of all songs" target="new" 
                             href="{{ env('YOUTUBE_PLAYLIST_URL', 'https://www.youtube.com/playlist?list=').env('CHURCH_YOUTUBE_PLAYLIST_ID', '') }}">
                             <i class="fa fa-youtube">&nbsp;</i>play all</a>
                     </div>
+                    --}}  
 
- --}}               
                 </div>
             @endif
 
@@ -123,7 +123,7 @@
 
 
 
-        <div class="col-md-3 col-xl-4 right md-center">
+        <div class="col-md-3 col-xl-4 right">
 
             @if (isset($plan))
                 <div class="float-xs-left plan-details">
@@ -167,19 +167,8 @@
                 </div>
             @endif
 
-
-            @if ( Auth::user()->isEditor() && isset($plan) && $plan->date >= \Carbon\Carbon::yesterday() ) 
-                <div class="float-xs-right small">
-                    &nbsp; <a href="#" onclick="$('.plan-details').toggle()">edit plan details</a>
-                </div>
-                <div class="float-xs-right plan-details small" style="display: none;" title="{{ $plan->updated_at }}">
-                    (last changed by {{ $plan->changer }} {{ Carbon::now()->diffForHumans( $plan->updated_at, true ) }} ago)
-                </div>
-            @endif
-
-
-
-            <div class="form-buttons">
+            {{-- Submit or Save button --}}
+            <div class="form-buttons float-xs-right">
                 <big>
                     @if (isset($plan))
                         @if (Auth::user()->isEditor())
@@ -197,10 +186,21 @@
                         @endif
 
                     @else
-                        <input class="xs-width-half" type="submit" value="Submit">
+                        <input class="btn btn-block" type="submit" value="Submit">
                     @endif
                 </big>
             </div>  
+
+            @if ( Auth::user()->isEditor() && isset($plan) && $plan->date >= \Carbon\Carbon::yesterday() ) 
+                <div class="float-xs-right small">
+                    &nbsp; <a href="#" onclick="$('.plan-details').toggle()">toggle plan details</a>
+                </div>
+                <div class="float-xs-right plan-details small" style="display: none;" title="{{ $plan->updated_at }}">
+                    (last changed by {{ $plan->changer }} {{ Carbon::now()->diffForHumans( $plan->updated_at, true ) }} ago)
+                </div>
+            @endif
+
+
 
         </div>
     </div>
@@ -215,17 +215,17 @@
             <div class="col-xl-4 col-lg-6">
                 <div class="card-block narrower bg-muted mb-1">
 
-                    <div class="float-xs-right">
-                        {!! Form::label('private', 'Make Private?', ['class'=>'d-block']); !!}
-                        <label class="custom-control custom-checkbox float-xs-right">
-                            <input name="private" type="checkbox" onclick="togglePlanPrivate( this, {{ $plan->id }} )"
-                                  class="custom-control-input"{{ $plan->private ? ' checked="checked"' : '' }}>
-                            <span class="custom-control-indicator"></span>
-                            <span class="small custom-control-description plan-private-field">(Hide on Announcements)</span>
-                        </label>
-                    </div>
-
                     @if (isset($plan))
+                        <div class="float-xs-right">
+                            {!! Form::label('private', 'Make Private?', ['class'=>'d-block']); !!}
+                            <label class="custom-control custom-checkbox float-xs-right">
+                                <input name="private" type="checkbox" onclick="togglePlanPrivate( this, {{ $plan->id }} )"
+                                      class="custom-control-input"{{ $plan->private ? ' checked="checked"' : '' }}>
+                                <span class="custom-control-indicator"></span>
+                                <span class="small custom-control-description plan-private-field">(Hide on Announcements)</span>
+                            </label>
+                        </div>
+
                         {!! Form::label('type', 'Event Type:', ['class'=>'d-block']); !!}
                     @endif
 
@@ -254,7 +254,11 @@
                     
                     <p class="mt-1 mb-0">
                         {!! Form::label('type', 'Subtitle:', ['class'=>'d-block']); !!}
-                        {!! Form::text('subtitle') !!}</p>
+                        @if ( isset($plan) )
+                            {!! Form::text('subtitle', $plan->subtitle, ['onchange' => 'enableSaveButton(this)']) !!}</p>
+                        @else
+                            {!! Form::text('subtitle') !!}</p>
+                        @endif
                     <p class="small text-muted mb-0">(E.g. a location - used in the Announcements slide)</p>
 
                 </div>
@@ -423,11 +427,11 @@
 
 
 
-    <!-- 
+    @if (isset($plan))
+    {{-- 
         Show items for existing plan 
         ____________________________
-    -->
-    @if (isset($plan))
+    --}}
 
 
 
@@ -435,13 +439,12 @@
             List all plan items here 
         --}}
         @include('cspot.items')
-        {{-- 
-
-        --}}
 
 
 
-        @if ($plan->songsFreshness()>0)
+
+
+        @if ($plan->songsFreshness()>0 && Auth::user()->ownsPlan( $plan->id ))
             <?php $modalContent = "
                 <p>In the first place, songs should be selected as appropriate for the occasion, not by statistical considerations.</p>
                 <p>The 'Song Freshness Index' is only provided in order to help better to understand how often the songs 
@@ -591,13 +594,6 @@
     {!! Form::close() !!}
 
     <script>
-        function enableSaveButton(that) {
-            $('#form-submit-btn').removeAttr('disabled');
-            $('#form-submit-btn').removeClass('disabled');
-            $('#form-submit-btn').removeClass('btn-secondary');
-            $('#form-submit-btn').addClass('btn-primary');
-            $(that).parent().addClass('has-warning');
-        }
         
         @if (isset($types))
             cSpot.serviceTypes = JSON.parse('{!! addslashes( json_encode($types, JSON_HEX_APOS | JSON_HEX_QUOT) ) !!}');

@@ -20,7 +20,7 @@
 
 
 
-	{{-- 	-	-	-	-	Navigation Bar 
+	{{-- 	-	-	-	-	SONGS LIST Navigation Bar 
 	--}}
 
 	<nav class="navbar navbar-light bg-faded">
@@ -50,7 +50,7 @@
 
 			<ul class="nav navbar-nav">
 
-				<li class="nav-item mr-3">@include('cspot.snippets.fullTextSearch')</li>
+				<li class="nav-item mr-1">@include('cspot.snippets.fullTextSearch')</li>
 
 				<li class="nav-item active">
 					@if ( Request::has('filterby') )
@@ -60,7 +60,7 @@
 							<span class="sr-only">(current)</span>
 						</a>
 					@else
-						<span>Show instead:</span>
+						<span class="nav-link">Show instead:</span>
 					@endif
 				</li>
 

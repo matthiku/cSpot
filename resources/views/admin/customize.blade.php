@@ -143,8 +143,12 @@
 
             <hr class="hr-big">
 
-            {!! Form::submit('Apply Changes'); !!}
-            <p>(Note: Some changes will only be visible after reloading)</p>
+            <div class="row">
+                <div class="col-md-6">
+                    {!! Form::submit('Apply Changes', ['class'=>'btn btn-primary btn-block']); !!}
+                    <p>(Note: Some changes will only be visible after reloading)</p>
+                </div>
+            </div>
 
         {!! Form::close() !!}
 

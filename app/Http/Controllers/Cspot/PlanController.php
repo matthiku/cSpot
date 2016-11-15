@@ -145,6 +145,11 @@ PlanController extends Controller
         $orderBy     = isset($request->orderby)     ? $request->orderby     : 'date';
         $order       = isset($request->order)       ? $request->order       : 'asc';
 
+        if ($filterby=='type' && $filtervalue=='all') {
+            $filterby = 'future';
+            $show = 'all';
+        }
+
         $userIsPlanMember = [];
     
 
@@ -241,7 +246,11 @@ PlanController extends Controller
 
         return view( 
             $this->view_all, 
-            array('plans' => $plans, 'heading' => $heading, 'userIsPlanMember' => $userIsPlanMember) 
+            array(
+                'plans' => $plans, 
+                'heading' => $heading, 
+                'userIsPlanMember' => $userIsPlanMember,
+                'types' => Type::get()) 
         );
     }
 

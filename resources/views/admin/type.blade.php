@@ -26,7 +26,7 @@
         <div class="row mb-2">
 
             <div class="col-sm-6 bg-info">
-                <div class="pull-sm-right">
+                <div class="float-sm-right">
                     @if (isset($type))
                         <h2>Update Type</h2>
                     @else
@@ -41,7 +41,7 @@
 
             <div class="col-sm-2">
                 @if (isset($type))
-                    <a class="btn btn-outline-primary pull-sm-right" 
+                    <a class="btn btn-outline-primary float-sm-right" 
                             href="{{ url('cspot/plans/create') }}?type_id={{ $type->id }}"
                             title="Create a new Event of this type">
                         <i class="fa fa-plus"> </i> Create Event
@@ -56,7 +56,7 @@
 
         <div class="row mb-1">
             <div class="col-sm-6">
-                <div class="pull-sm-right">
+                <div class="float-sm-right">
 
                 {!! Form::label('name', 'Type Name'); !!} <i class="red">*</i>
 
@@ -78,7 +78,7 @@
 
         <div class="row">
             <div class="col-sm-6">
-                <div class="pull-sm-right">
+                <div class="float-sm-right">
 
                 {!! Form::label('subtitle', 'Subtitle or Info or Location'); !!}
 
@@ -95,7 +95,7 @@
 
         <div class="row mb-1">
             <div class="col-sm-6">
-                <div class="pull-sm-right">
+                <div class="float-sm-right">
                     
                     <label>Usual event times</label>
 
@@ -121,7 +121,7 @@
 
         <div class="row mb-1">
             <div class="col-sm-6">
-                <div class="pull-sm-right">
+                <div class="float-sm-right">
 
                     {!! Form::label('repeat', 'Interval (repeat)'); !!}
 
@@ -157,7 +157,7 @@
 
         <div class="row mb-1">
             <div class="col-sm-6">
-                <div class="pull-sm-right">
+                <div class="float-sm-right">
 
                 {!! Form::label('weekday', 'Weekday'); !!}
 
@@ -193,7 +193,7 @@
 
         <div class="row mb-1">
             <div class="col-sm-6">
-                <div class="pull-sm-right">
+                <div class="float-sm-right">
 
                     {!! Form::label('leader_id', 'Default Leader'); !!}
 
@@ -226,7 +226,7 @@
 
         <div class="row mb-1">
             <div class="col-sm-6">
-                <div class="pull-sm-right">
+                <div class="float-sm-right">
 
                     {!! Form::label('resource_id', 'Default Resource'); !!}
 
@@ -259,12 +259,12 @@
 
         <div class="row">
             <div class="col-sm-6">
-                <div class="pull-sm-right">
+                <div class="float-sm-right">
 
                     @if (isset($type))
-                        {!! Form::submit('&#10003; Update'); !!}
+                        {!! Form::submit('&#10003; Update', ['class'=>'btn btn-primary']); !!}
                     @else
-                        {!! Form::submit('Submit'); !!}
+                        {!! Form::submit('&#10004; Submit', ['class'=>'btn btn-primary']); !!}
                     @endif
 
                 </div>
@@ -272,12 +272,12 @@
             <div class="col-sm-6">
 
                 @if (isset($type) && $type->plans->count() == 0)
-                    <a class="btn btn-danger btn-sm pull-xs-right"  type="button" href="{{ url('admin/types/'.$type->id) }}/delete">
+                    <a class="btn btn-danger float-xs-right" href="{{ url('admin/types/'.$type->id) }}/delete">
                         <i class="fa fa-trash" > </i> &nbsp; Delete
                     </a>
                 @endif
 
-                <a href="{{url('admin/types')}}">{!! Form::button('&#10008; Cancel'); !!}</a></p>
+                <a href="{{url('admin/types')}}">{!! Form::button('&#10008; Cancel', ['class'=>'btn btn-secondary']); !!}</a></p>
 
            </div>
         </div>

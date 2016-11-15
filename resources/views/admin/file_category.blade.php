@@ -26,18 +26,18 @@
            {!! Form::text('name'); !!}</p>
 
     @if (isset($file_category))
-        <p>{!! Form::submit('Update'); !!}</p>
+        <p>{!! Form::submit('Update', ['class'=>'btn btn-primary']); !!}</p>
         <hr>
         <!--a class="btn btn-danger btn-sm"  instrument="button" href="{{ url('admin/file_categories/'.$file_category->id) }}/delete">
             <i class="fa fa-trash" > </i> &nbsp; Delete
         </a-->
     @else
-        <p>{!! Form::submit('Submit'); !!}
+        <p>{!! Form::submit('Submit', ['class'=>'btn btn-primary']); !!}
     @endif
 
     <script type="text/javascript">document.forms.inputForm.name.focus()</script>
 
-    <a href="{{ url('admin/file_categories/') }}">{!! Form::button('Cancel'); !!}</a></p>
+    <a href="{{ url('admin/file_categories/') }}">{!! Form::button('Cancel', ['class'=>'btn btn-secondary']); !!}</a></p>
     {!! Form::close() !!}
     
     <span><i class="red">*</i> = mandatory field(s) &nbsp;</span>

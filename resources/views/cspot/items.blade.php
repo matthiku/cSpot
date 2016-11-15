@@ -89,7 +89,7 @@
 
 				{{-- show song freshness 
 				--}}
-				@if ($item->song_id)
+				@if ($item->song_id && Auth::user()->ownsPlan( $plan->id ))
 					<td class="hidden-md-down" data-toggle="tooltip"
 						data-template='<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><pre class="tooltip-inner"></pre></div>'
 						title="Song 'Freshness' Index:

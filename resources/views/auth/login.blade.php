@@ -19,7 +19,7 @@
                 {!! csrf_field() !!}
         
                 <center>
-                    <h4>Sign in with your account with one of those service providers:</h4>
+                    <h4>Sign in with your account or with a service provider:</h4>
                     @include('auth.social')
                 </center>
                 <br />

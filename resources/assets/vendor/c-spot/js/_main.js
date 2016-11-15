@@ -381,6 +381,9 @@ function addOptionsToBookSelect()
 */
 function fillPlanDefaultValues(that)
 {
+    // make sure the Submit button is enabled
+    enableSaveButton(that);
+
     // get selected service type
     var selSerType = $(that).val();
 
@@ -418,6 +421,20 @@ function fillPlanDefaultValues(that)
         
     }
 }
+
+
+/*  On Plan Details page, enable the save button when user changes a plan detail
+*/
+function enableSaveButton(that) {
+    $('.text-help.plan-details').toggle( "bounce", { times: 3 }, "slow" );
+    $('.text-help.plan-details').removeAttr('disabled');
+    $('.text-help.plan-details').removeClass('disabled');
+    $('.text-help.plan-details').removeClass('btn-secondary');
+    $('.text-help.plan-details').addClass('btn-primary');
+    $('.text-help.plan-details').toggle( "bounce", { times: 3 }, "slow" );
+    $(that).parent().addClass('has-warning');
+}
+
 
 
 /* 

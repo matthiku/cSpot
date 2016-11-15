@@ -93,6 +93,36 @@
                </div>
             </div>
 
+            @if ($user->plans_as_leader->count()>0)
+                <div class="row mb-1 full-width">
+                    <div class="col-sm-6"></div>
+                    <div class="col-sm-6">
+                        <strong>
+                            Was leader of
+                            <span class="text-success">{{ $user->plans_as_leader->count() }}</span>
+                            events
+                        </strong>
+                        <a href="{{ url('cspot/plans?filterby=user&filtervalue='.$user->id) }}&show=all"
+                            title="show all plans of this user"><small> - show</small></a>
+                   </div>
+                </div>
+            @endif
+
+            @if ($user->plans_as_teacher->count()>0)
+                <div class="row mb-1 full-width">
+                    <div class="col-sm-6"></div>
+                    <div class="col-sm-6">
+                        <strong>
+                            Was teacher in
+                            <span class="text-success">{{ $user->plans_as_teacher->count() }}</span>
+                            services
+                        </strong>
+                        <a href="{{ url('cspot/plans?filterby=user&filtervalue='.$user->id) }}&show=all"
+                            title="show all plans of this user"><small> - show</small></a>
+                   </div>
+                </div>
+            @endif
+
 
         </div>
 
@@ -128,25 +158,35 @@
 
     <hr>
 
-    <span><i class="red">*</i> = mandatory field(s) &nbsp;</span>
 
-    @if (isset($user))
+    <div class="row">
+        <div class="col-md-6">
+            <span><i class="red">*</i> = mandatory field(s) &nbsp;</span>
 
-        <p>{!! Form::submit('Update'); !!}</p>
-        @if (Auth::user()->isAdmin())
-            <br>
-            <a class="btn btn-danger btn-sm"  role="button" href="{{ url('admin/users/'. $user->id) }}/delete">
-                <i class="fa fa-trash" > </i> &nbsp; Delete
-            </a>
-        @endif
-    @else
-        {!! Form::submit('Submit'); !!}
-    @endif
+            @if (isset($user))
 
-    {!! Form::close() !!}
+                <p class="float-xs-right">
+                    {!! Form::submit('&#10003; &nbsp;  Update', ['class'=>'btn btn-primary']); !!}
+                    @if (Auth::user()->isAdmin())
+                        {{-- disable delete button if user owns plans --}}
+                        <a class="btn btn-danger{{ $user->plans_as_leader->count() || $user->plans_as_teacher->count() ? ' disabled' : '' }}"
+                            {{ $user->plans_as_leader->count() || $user->plans_as_teacher->count() ? 'aria-disabled="true"' : '' }}" 
+                            href="{{ url('admin/users/'. $user->id) }}/delete">
+                            <i class="fa fa-trash" > </i> &nbsp; Delete
+                        </a>
+                    @endif
+                </p>
+            @else
+                <p class="float-xs-right">{!! Form::submit('&#10003; &nbsp;  Submit', ['class'=>'btn btn-primary']); !!}</p>
+            @endif
+
+            {!! Form::close() !!}
+        </div>
+    </div>
 
     <script type="text/javascript">document.forms.inputForm.first_name.focus()</script>
     
+
     
     @if (! Auth::user()->isAdmin())
         <hr>

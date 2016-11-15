@@ -202,11 +202,10 @@
             <div class="col-sm-6">
                 <div class="float-sm-right">
 
-
                     @if (isset($default_item))
-                        {!! Form::submit('&#10003; Update'); !!}
+                        {!! Form::submit('&#10003; Update', ['class'=>'btn btn-primary']); !!}
                     @else
-                        {!! Form::submit('&#10003; Submit'); !!}
+                        {!! Form::submit('&#10003; Submit', ['class'=>'btn btn-primary']); !!}
                     @endif
 
                 </div>
@@ -214,13 +213,13 @@
             <div class="col-sm-6">
 
                 @if (isset($default_item))
-                    <a class="btn btn-danger btn-sm float-xs-right"  type="button" 
+                    <a class="btn btn-danger float-xs-right"
                             href="{{ url('admin/default_items/'. $default_item->id) }}/delete">
                         <i class="fa fa-trash" > </i> &nbsp; Delete
                     </a>
                 @endif
 
-                <a href="{{ url()->previous() }}">{!! Form::button('&#10008; Cancel'); !!}</a>
+                <a href="{{ url()->previous() }}">{!! Form::button('&#10008; Cancel', ['class'=>'btn btn-secondary']); !!}</a>
 
            </div>
         </div>
@@ -235,7 +234,7 @@
 
                 @if (isset($default_items))
 
-                    <h5 class="text-muted text-sm-center">Currently defined Default Items for this type of event:</h5>
+                    <h5 class="text-muted text-sm-center">All currently defined <i>Default Items</i> for this type of event:</h5>
 
                     <table class="table table-sm table-striped m-x-auto" style="width: initial;">
                         <thead>

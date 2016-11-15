@@ -29,6 +29,25 @@
 		</a>
 	@endif
 
+
+
+	<form class="form-inline float-xs-right mr-1">
+		<div class="form-group">
+			<label for="typefilter">Show only</label>
+			<select class="custom-select" id="typefilter" onchange="location.href='{{url('cspot/plans')}}?filterby=type&filtervalue='+$(this).val()">
+				<option {{ Request::has('filterby') && Request::get('filterby')=='type' ? '' : 'selected' }} value="all">(select type)</option>
+				@foreach ($types as $type)
+					<option 
+						{{ (Request::has('filterby') && Request::get('filterby')=='type' && Request::get('filtervalue')==$type->id) ? 'selected' : '' }} 
+						value="{{$type->id}}">{{$type->name}}</option>
+				@endforeach
+			</select>
+		</div>
+	</form>
+
+
+
+
     <h2 class="float-xs-left">
     	{{ $heading }}
 		<small class="small" style="font-size: 50%">
@@ -68,7 +87,7 @@
 					<th class="hidden-lg-down center">Times</th>
 
 					@if( Auth::user()->isUser() )
-						<th class="hidden-lg-down center small pa-0" title="Is this a non-public event? (It won't show up on the announcements)">Pr.?</th>
+						<th class="hidden-lg-down center small pa-0" title="Is this a non-public event? (It won't show up on the announcements)">Priv.?</th>
 
 						<th class="center" title="Check when you are available for that particular plan"
 							data-toggle="tooltip" title="Check when you are available for that particular plan">
@@ -161,13 +180,13 @@
 
 					<td class="hidden-sm-down center">{{ $plan->leader ? $plan->leader->name : $plan->leader_id }}</td>
 					<td class="hidden-sm-down center">{{ $plan->teacher? $plan->teacher->name : $plan->teacher_id }}</td>
-					<td class="hidden-md-up center">
+					<td class="hidden-md-up center small">
 						{{ $plan->leader ? $plan->leader->name : $plan->leader_id }}{{ $plan->teacher_id<>0 ? ', '.$plan->teacher->name : '' }}
 					</td>
 
-					<td class="hidden-md-down text-right">
+					<td class="hidden-md-down text-right small">
 						{{ isset($plan->updated_at) ? $plan->updated_at->formatLocalized('%d-%m-%Y %H:%M') : 'unknown' }}</td>
-					<td class="hidden-md-down">{{ ucfirst($plan->changer) }}</td>
+					<td class="hidden-md-down small">{{ ucfirst($plan->changer) }}</td>
 
 				</tr>
 

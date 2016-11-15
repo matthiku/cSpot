@@ -555,6 +555,10 @@ function calculateSongFreshness($song_id, $leader_id, $planDate)
 {
     $song = Song::find($song_id);
 
+    // SFI is only for songs
+    if ($song->title_2=='video' || $song->title_2=='slides' )
+        return null;
+
     $used_by_all    = $song->plansUsingThisSong()->count();
 
     $used_by_leader = $song->leadersUsingThisSong($leader_id)->count();

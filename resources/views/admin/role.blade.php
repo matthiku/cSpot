@@ -26,18 +26,18 @@
            {!! Form::text('name'); !!}</p>
 
     @if (isset($role))
-        <p>{!! Form::submit('Update'); !!}</p>
+        <p>{!! Form::submit('Update', ['class'=>'btn btn-primary']); !!}</p>
         <hr>
-        <a class="btn btn-danger btn-sm"  role="button" href="{{ url('admin/roles/'.$role->id) }}/delete">
+        <a class="btn btn-danger"  href="{{ url('admin/roles/'.$role->id) }}/delete">
             <i class="fa fa-trash" > </i> &nbsp; Delete
         </a>
     @else
-        <p>{!! Form::submit('Submit'); !!}
+        <p>{!! Form::submit('Submit', ['class'=>'btn btn-primary']); !!}
     @endif
 
     <script type="text/javascript">document.forms.inputForm.name.focus()</script>
 
-    <a href="{{ url('admin/roles/') }}">{!! Form::button('Cancel'); !!}</a></p>
+    <a href="{{ url('admin/roles/') }}">{!! Form::button('Cancel', ['class'=>'btn btn-secondary']); !!}</a></p>
     {!! Form::close() !!}
 
     <span><i class="red">*</i> = mandatory field(s) &nbsp;</span>

@@ -74,7 +74,7 @@ class UserController extends Controller
                 isset($request->order)       ? $request->order       : 'asc'
             );
 
-        $heading = 'User Management';
+        $heading = 'List of all Users';
 
         // check if user selected a filter
         if ($request->has('filterby') && $request->has('filtervalue') && $request->filtervalue!='all') {
@@ -83,13 +83,13 @@ class UserController extends Controller
                 // get all -- USERS -- with this specific role id
                 $role       = Role::find($request->filtervalue);
                 $users      = $role->users();
-                $heading    = 'User Management - Show '.ucfirst($role->name).'s';
+                $heading    = 'All Users with Role "'.ucfirst($role->name).'"';
             } 
             else if ($request->filterby=='instrument') {
                 // get all -- USERS -- with this specific instrument id
                 $instrument = Instrument::find($request->filtervalue);
                 $users      = $instrument->users();
-                $heading    = 'User Management - Show users playing '.ucfirst($instrument->name);
+                $heading    = 'All Users Playing '.ucfirst($instrument->name);
             } else {
                 $users = $users->where($request->filterby, $request->filtervalue);
             }
