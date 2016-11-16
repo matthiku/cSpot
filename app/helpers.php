@@ -565,10 +565,13 @@ function calculateSongFreshness($song_id, $leader_id, $planDate)
 
     $last_time_used = $song->lastTimeUsed;
 
+
     $daysLapsed = 0;
 
-    if ($last_time_used!=null)
+    if ($last_time_used != null)
         $daysLapsed = $last_time_used->diffInDays($planDate);
+    else
+        $daysLapsed = 100;    // if song was never used
 
     $a = 100 - $used_by_all;
     $b = 100 - $used_by_leader * 2;

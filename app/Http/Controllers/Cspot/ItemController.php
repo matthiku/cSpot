@@ -238,13 +238,17 @@ class ItemController extends Controller
             $items = $plan->items;
 
             // find item with the highest seq.no
-            $seq_no = 50; // (temporary solution)               
+            $seq_no = 50; // (temporary solution)
 
             // create a new items object add it to this plan
             $item = new Item([
                 'seq_no' => $seq_no, 
                 'song_id' => $song_id,
             ]);
+
+            // add SFI 
+            $item->song_freshness = calculateSongFreshness( $song_id, $plan->leader_id, $plan->date );
+
             $newItem = $plan->items()->save($item);
 
             // provide new item id to the view for highlighting
