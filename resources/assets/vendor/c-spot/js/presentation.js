@@ -12,9 +12,117 @@
 
 /* for eslint */
 if (typeof($)===undefined) {
-    var $, cSpot, __app_url;
+    var $, cSpot;
 }
  
+
+
+function preparePresentation()
+{
+        // check if we have a VideoClip item or just lyrics
+        if ($('#videoclip-url').length) {
+            var videoclipUrl = $("#videoclip-url").text();
+            ;;;console.log('Current item is a Video Clip');
+        }
+
+        // instead, have just lyrics or bible verses or images
+        else { 
+            if ($('#present-lyrics').length) {
+                // re-format the lyrics
+                reDisplayLyrics(); 
+            }
+
+            // start showing bible parts if this is a bible reference
+            if ($('.bible-text-present').length) {
+                reFormatBibleText(); 
+            }
+
+            // center and maximise images
+            if ( $('.slide-background-image').length ) {
+                prepareImages(); 
+            }
+        }
+
+
+        /* configuration of the color picker
+        */
+        $("#colorPicker").spectrum({
+            appendTo : '#colorPicker-container',
+            showPaletteOnly: true,
+            togglePaletteOnly: true,
+            togglePaletteMoreText: 'more',
+            togglePaletteLessText: 'less',
+            color: 'yellow',
+            palette: [
+                ["#000","#444","#666","#999","#ccc","#eee","#f3f3f3","#fff"],
+                ["#f00","#f90","#ff0","#0f0","#0ff","#00f","#90f","#f0f"],
+                ["#f4cccc","#fce5cd","#fff2cc","#d9ead3","#d0e0e3","#cfe2f3","#d9d2e9","#ead1dc"],
+                ["#ea9999","#f9cb9c","#ffe599","#b6d7a8","#a2c4c9","#9fc5e8","#b4a7d6","#d5a6bd"],
+                ["#e06666","#f6b26b","#ffd966","#93c47d","#76a5af","#6fa8dc","#8e7cc3","#c27ba0"],
+                ["#c00","#e69138","#f1c232","#6aa84f","#45818e","#3d85c6","#674ea7","#a64d79"],
+                ["#900","#b45f06","#bf9000","#38761d","#134f5c","#0b5394","#351c75","#741b47"],
+                ["#600","#783f04","#7f6000","#274e13","#0c343d","#073763","#20124d","#4c1130"]
+            ]
+        });
+        $("#BGcolorPicker").spectrum({
+            appendTo : '#colorPicker-container',
+            showPaletteOnly: true,
+            togglePaletteOnly: true,
+            togglePaletteMoreText: 'more',
+            togglePaletteLessText: 'less',
+            color: '#373a3c',
+            palette: [
+                ["#000","#444","#666","#999","#ccc","#eee","#f3f3f3","#fff"],
+                ["#f00","#f90","#ff0","#0f0","#0ff","#00f","#90f","#f0f"],
+                ["#f4cccc","#fce5cd","#fff2cc","#d9ead3","#d0e0e3","#cfe2f3","#d9d2e9","#ead1dc"],
+                ["#ea9999","#f9cb9c","#ffe599","#b6d7a8","#a2c4c9","#9fc5e8","#b4a7d6","#d5a6bd"],
+                ["#e06666","#f6b26b","#ffd966","#93c47d","#76a5af","#6fa8dc","#8e7cc3","#c27ba0"],
+                ["#c00","#e69138","#f1c232","#6aa84f","#45818e","#3d85c6","#674ea7","#a64d79"],
+                ["#900","#b45f06","#bf9000","#38761d","#134f5c","#0b5394","#351c75","#741b47"],
+                ["#600","#783f04","#7f6000","#274e13","#0c343d","#073763","#20124d","#4c1130"]
+            ]
+        });
+
+
+        /**
+         * Check some user-defined settings in the Local Storage of the browser
+         */
+        getLocalConfiguration()
+
+
+        // check if we have a predefined sequence from the DB
+        var sequence=($('#sequence').text()).split(',');
+
+        // check if there are more lyric parts than 
+        // indicated in the sequence due to blank lines discoverd in the lyrics
+        if (sequence.length>1) 
+            compareLyricPartsWithSequence();
+
+        // auto-detect sequence if it is missing
+        if (sequence.length<2) {
+            createDefaultLyricSequence();
+            sequence=($('#sequence').text()).split(',');
+        }
+
+        // make sure the sequence indicator isn't getting too big! 
+        checkSequenceIndicatorLength();
+
+        // make sure the main content covers all the display area, but that no scrollbar appears
+        $('#main-content').css('max-height', window.innerHeight - $('.navbar-fixed-bottom').height());
+        $('#main-content').css('min-height', window.innerHeight - $('.navbar-fixed-bottom').height() - 10);
+
+
+
+        /**
+         * Save the new content into the local storage for offline presentations!
+         */
+        if (cSpot.presentation.useOfflineMode) {
+            saveMainContentToLocalStorage();
+        } 
+
+}
+
+
 
 /*\
 |* >------------------------------------------ PREPARE IMAGE SLIDES
@@ -268,7 +376,7 @@ function localCacheBibleText( bRef )
     if (x===null) {
         ;;;console.log('Not found locally - getting '+refName+' from the server');
         // get chapter via AJAX
-        $.get( __app_url+'/bible/text/'+bRef.version+'/'+bRef.book+'/'+bRef.chapter )
+        $.get( cSpot.appURL+'/bible/text/'+bRef.version+'/'+bRef.book+'/'+bRef.chapter )
             .done( function(data) {
                 ;;;console.log('storing ' + refName + ' to LocalStorage');
                 if (data.verses!==undefined)
@@ -762,7 +870,10 @@ function headerCode(divNam) {
 function prepareChordsPresentation(what)
 {
     // make type of presentation globally available
-    cSpot.presentation.type = what;
+    if (cSpot.presentation)
+        cSpot.presentation.type = what;
+    else 
+        cSpot.presentationType = what
 
     // check if user has changed the default font size for the presentation
     var fontSize = localStorage.getItem('.text-song_font-size');
@@ -1834,7 +1945,7 @@ function writeCachedDataIntoDOM(identifier) {
 
     ;;;console.log('Next item comes cached from local storage! Identifier: '+identifier);
 
-    var type = cSpot.presentation.type;
+    var type = cSpot.presentation.type || cSpot.presentationType;
 
     if ( type == 'chords'  || type == 'sheetmusic' ) {
         $('#main-content'       ).html(localStorage.getItem(identifier + '-mainContent-'+ type));
@@ -1922,7 +2033,7 @@ function saveMainContentToLocalStorage(what) {
 function checkLocalStorageForPresentation(plan_id) 
 {
     // only if activated ....
-    if ( !cSpot.presentation.useOfflineMode ) {
+    if ( cSpot.presentation && !cSpot.presentation.useOfflineMode ) {
         return;
     }
 
@@ -1952,7 +2063,7 @@ function isInLocalStore(identifier)
     // do nothing if parameter is missing
     if (!identifier) return false;
 
-    var type = cSpot.presentation.type;
+    var type = cSpot.presentation.type || cSpot.presentationType;
 
     var ik = identifier.split('-');
 
@@ -2003,7 +2114,7 @@ function saveLocallyAndRemote(plan_id, key, value)
 
     // save on server
     $.post(
-        __app_url+'/cspot/plan/'+plan_id+'/cache',
+        cSpot.appURL+'/cspot/plan/'+plan_id+'/cache',
         {
             'item_id'   : cSpot.presentation.item_id,
             'key'       : key,
@@ -2026,7 +2137,7 @@ function loadCachedPresentation(plan_id)
         return
 
     // get data via AJAX call
-    $.get(__app_url+'/cspot/plan/'+plan_id+'/cache', function(data, status) {
+    $.get(cSpot.appURL+'/cspot/plan/'+plan_id+'/cache', function(data, status) {
 
         if ( status == 'success') {
             // save to LocalStorage
@@ -2079,7 +2190,7 @@ function clearServerCache(plan_id)
     $('#showCachedItems').html('<i class="fa fa-spin fa-spinner"></i> one moment, please ...');
 
     // send the delte request
-    $.post(__app_url+'/cspot/plan/'+plan_id+'/cache/delete', function(data, status) {
+    $.post(cSpot.appURL+'/cspot/plan/'+plan_id+'/cache/delete', function(data, status) {
 
         if ( status == 'success') {
             // show result in UI
@@ -2219,7 +2330,7 @@ function syncPresentation(syncData) {
     if ( cSpot.presentation.plan_id != syncData.plan_id  ||  cSpot.presentation.item_id != syncData.item_id ) {
         ;;;console.log('we have to load a new page:'+myurl.pathname);
         if (showType == 'present' || showType == 'chords' || showType == 'sheetmusic')
-            window.location.href = __app_url + '/cspot/items/' + syncData.item_id + '/' + showType;
+            window.location.href = cSpot.appURL + '/cspot/items/' + syncData.item_id + '/' + showType;
         return;
     }
 

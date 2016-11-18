@@ -319,7 +319,7 @@ $modalContent = '
 <script>
     $(document).ready(function() {
 
-        prepareChordsPresentation('{{ $type }}');
+        cSpot.presentationType = '{{ $type }}';
         
     });
 </script>

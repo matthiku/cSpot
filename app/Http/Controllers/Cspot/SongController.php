@@ -96,11 +96,12 @@ class SongController extends Controller
             }
         } 
 
-        // no filter requested
+        // no filter requested - show JUST the songs
         else {
             // (the where clause is needed since the 'withCount' would bring in all items with song_id = 0)
             $songs = Song::withCount('items')
                 ->where('id', '>', 0)
+                ->whereNotIn('title_2', ['video', 'slides'])
                 ->orderBy($orderBy, $order);
         }
 

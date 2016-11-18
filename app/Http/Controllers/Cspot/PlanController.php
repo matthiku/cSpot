@@ -26,8 +26,7 @@ use Auth;
 use Log;
 
 
-class 
-PlanController extends Controller
+class PlanController extends Controller
 {
 
     /**
@@ -145,6 +144,9 @@ PlanController extends Controller
         $orderBy     = isset($request->orderby)     ? $request->orderby     : 'date';
         $order       = isset($request->order)       ? $request->order       : 'asc';
 
+        if ($filtervalue=='[]')
+            $filtervalue='all';
+
         if ($filterby=='type' && $filtervalue=='all') {
             $filterby = 'future';
             $show = 'all';
@@ -175,22 +177,40 @@ PlanController extends Controller
             $heading .= User::find($filtervalue)->first_name;
         }
 
+
         // show only plans of certain type
         elseif ($filterby=='type') 
         {
-            if ($show=='all') {
-                $plans = Plan::with('type')
-                    ->where('type_id', $filtervalue)
-                    ->orderBy($orderBy, $order);
-                $heading = 'Show All ';
-            } else {
-                $plans = Plan::with('type')
-                    ->whereDate('date', '>', Carbon::yesterday())
-                    ->where('type_id', $filtervalue)
-                    ->orderBy($orderBy, $order);
-                $heading = 'Show Upcoming ';
+            if (is_numeric($filtervalue)) {
+                if ($show=='all') {
+                    $plans = Plan::with('type')
+                        ->where('type_id', $filtervalue)
+                        ->orderBy($orderBy, $order);
+                    $heading = 'Show All ';
+                } else {
+                    $plans = Plan::with('type')
+                        ->whereDate('date', '>', Carbon::yesterday())
+                        ->where('type_id', $filtervalue)
+                        ->orderBy($orderBy, $order);
+                    $heading = 'Show Upcoming ';
+                }
+                $heading .= Type::find($filtervalue)->name.'s';
             }
-            $heading .= Type::find($filtervalue)->name.'s';
+
+            // filtervalue can also be an array of event type id's
+            else {
+                $filtervalue = json_decode($filtervalue);
+                if ($show=='all')
+                    $plans = Plan::with('type')
+                        ->whereIn('type_id', $filtervalue)
+                        ->orderBy($orderBy, $order);
+                else 
+                    $plans = Plan::with('type')
+                        ->whereDate('date', '>', Carbon::yesterday())
+                        ->whereIn('type_id', $filtervalue)
+                        ->orderBy($orderBy, $order);
+                $heading = "Various Event Types";
+            }
         }
 
         // show all future plans

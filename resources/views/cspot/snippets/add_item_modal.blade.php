@@ -126,6 +126,9 @@
                     <input type="hidden" id="song_id"       name="song_id">
                     <input type="hidden" id="file_id"       name="file_id">
                     {{ csrf_field() }}
+                    @if (isset($item))
+                        <input type="hidden" id="item_id"   name="item_id" value="{{$item->id}}">
+                    @Endif
 
                 </div>
 

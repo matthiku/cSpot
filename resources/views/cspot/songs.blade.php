@@ -42,7 +42,9 @@
 				@if ($currentPage!=0)
 					<li class="nav-item hidden-sm-down small float-xs-right">
 						Page {{ $songs->currentPage() }} of {{ $songs->lastPage() }}<br>
-						<small class="hidden-md-down">showing {{ $songs->perPage() }} of a total of {{ $songs->total() }} songs</small>
+						@if ( $songs->total() > $songs->perPage())
+							<small class="hidden-md-down">showing {{ $songs->perPage() }} of a total of {{ $songs->total() }} songs</small>
+						@endif
 					</li>
 				@endif
 			</ul>
@@ -51,36 +53,6 @@
 			<ul class="nav navbar-nav">
 
 				<li class="nav-item mr-1">@include('cspot.snippets.fullTextSearch')</li>
-
-				<li class="nav-item active">
-					@if ( Request::has('filterby') )
-						<a class="nav-link btn btn-outline-success"
-								href="{{ url('cspot/songs') }}">
-							<i class="fa fa-asterisk"> </i> &nbsp;Show Songs
-							<span class="sr-only">(current)</span>
-						</a>
-					@else
-						<span class="nav-link">Show instead:</span>
-					@endif
-				</li>
-
-				<li class="nav-item active">
-					@if ( ! (Request::has('filtervalue') && Request::input('filtervalue')=='video') )
-						<a class="nav-link btn btn-outline-danger"
-								href="{{ url('cspot/songs') }}?filterby=title_2&filtervalue=video">
-							<i class="fa fa-tv"> </i> &nbsp;Videoclips
-						</a>
-					@endif
-				</li>
-
-				<li class="nav-item active">
-					@if ( ! (Request::has('filtervalue') && Request::input('filtervalue')=='slides') )
-						<a class="nav-link btn btn-outline-warning"
-								href="{{ url('cspot/songs') }}?filterby=title_2&filtervalue=slides">
-							<i class="fa fa-clone"> </i> &nbsp;Slides
-						</a>
-					@endif
-				</li>
 
 				@if( Auth::user()->isEditor() && $plan_id==0 )
 					<li class="nav-item active">
@@ -103,10 +75,10 @@
 				@endif
 
 				<li class="nav-item active">
-					@if ( ! Request::has('filtervalue') || (Request::has('filtervalue') && Request::input('filtervalue')!='slides' && Request::input('filtervalue')!='video') )
-						<a class="nav-link btn btn-outline-danger"
+					@if ( ! Request::has('filtervalue') || (Request::has('filtervalue') && Request::input('filtervalue')=='rare' ) )
+						<a class="nav-link btn btn-outline-danger" title="Show songs ordered by usage, but at least twice used in the past" 
 								href="{{ url('cspot/songs') }}?filterby=songs&filtervalue=rare">
-							'Forgotten' Songs
+							List 'Forgotten' Songs
 						</a>
 					@endif
 				</li>

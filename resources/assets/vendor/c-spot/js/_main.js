@@ -12,6 +12,11 @@
 \*/
 
 
+/* for eslint */
+if (typeof($)===undefined) {
+    var $, cSpot;
+}
+
 
 
 // make sure all AJAX calls are using the token stored in the META tag
@@ -21,6 +26,7 @@ $.ajaxSetup({
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
 });
+
 
 
 // quick way to show the wait model
@@ -133,6 +139,196 @@ function getLocalStorageItem(key, defaultValue)
 
 
 
+function selectServiceType(that)
+{
+    if (that!='submit') {
+        $('#multi-filter-dropdown').addClass('open');
+        return;
+    }
+    // collect all selected options
+    var options = [];
+    $('input.form-check-input').each( function( index ) {
+        if ($(this).prop('checked'))
+            options.push( $(this).val().split('-')[1] );
+    })
+    var url = $('#multi-filter-dropdown').data('url');
+    showSpinner();
+    location.href = url + JSON.stringify(options);
+}
+
+
+/* 
+    provide certain (locally cached) data accross all cSpot  views 
+*/
+function loadFromLocalCache() 
+{
+
+    if (window.location.pathname.indexOf('cspot/')>0) 
+    {
+        /*  check if songList exists in local cache and if it is still up-to-date,
+            otherwise grab an update from the server
+        */
+
+        // check local storage
+        //  (provide empty array just in case when localStorage doesn't contain this item)
+        cSpot.songList = JSON.parse(localStorage.getItem('songList')) || [];
+        cSpot.songList.updated_at = localStorage.getItem('songList.updated_at');
+
+        // not found in local storage, or not up-to-date
+        // so get it from the server
+        if (cSpot.songList==null || cSpot.songList.updated_at != cSpot.lastSongUpdated_at) {
+            
+            ;;;console.log("Song list must be reloaded from server!");
+
+            $.get(cSpot.routes.apiGetSongList, function(data, status) {
+
+                if ( status == 'success') {
+                    cSpot.songList = JSON.parse(data);
+                    cSpot.songList.updated_at = cSpot.lastSongUpdated_at;
+                    localStorage.setItem( 'songList', JSON.stringify(cSpot.songList) );
+                    localStorage.setItem( 'songList.updated_at', cSpot.lastSongUpdated_at );
+                    ;;;console.log('Saving Song Titles List to LocalStorage');
+                    addOptionsToMPsongSelect();
+                }
+            });
+        } 
+        else {
+            addOptionsToMPsongSelect();
+        }
+        
+
+
+        /***
+         * Get array with all bible books with all chapters and number of verses in each chapter
+         */
+
+        // first check if data is alerady cached locally
+        cSpot.bibleBooks = JSON.parse(localStorage.getItem('bibleBooks'));
+
+        if (cSpot.bibleBooks==null) {
+            $.get( cSpot.routes.apiBibleBooksAllVerses, function(data, status) {
+
+                if ( status == 'success') {
+                    cSpot.bibleBooks = data;
+                    localStorage.setItem( 'bibleBooks', JSON.stringify(cSpot.bibleBooks) );
+                    ;;;console.log('Saving verses structure to LocalStorage');
+                    addOptionsToBookSelect();
+                }
+            });
+        }
+        else {
+            addOptionsToBookSelect();
+        }
+    }
+
+
+    /**
+     * check sync setting for chords or sheetmusic presentation
+     */
+    if ( window.location.pathname.indexOf('/chords')>10 || window.location.pathname.indexOf('/sheetmusic')>10 ) 
+    {
+        // check if we want to syncronise our own presentation with the Main Presenter
+        var configSyncPresentationSetting = localStorage.getItem('configSyncPresentation');
+        // if the value in LocalStorage was set to 'true', then we activate the checkbox:
+        if (configSyncPresentationSetting=='true') {
+            $('#configSyncPresentation').prop( "checked", true );
+            // save in global namespace
+            cSpot.presentation.sync = true;
+        }
+    }
+
+
+
+    /**
+     * Check some user-defined settings in the Local Storage of the browser
+     */
+    if ( window.location.pathname.indexOf('/leader')>10 ) {
+        getLocalConfiguration()
+    }
+
+
+    /**
+     * prepare lyrics or bible texts or image slides for presentation
+     */
+    if ( window.location.pathname.indexOf('/present')>10 ) {
+        preparePresentation();
+    }
+
+
+}
+
+
+
+// simple function to determine if the current user is the MP
+function isPresenter() {
+    if (cSpot.user.id == cSpot.presentation.mainPresenter.id)
+        return true;
+    return false;
+}
+
+
+function prepareSyncPresentation()
+{
+
+    // only on presentation pages
+    if ( window.location.pathname.indexOf('/present')   > 10 
+      || window.location.pathname.indexOf('/chords')    > 10 
+      || window.location.pathname.indexOf('/sheetmusic')> 10 
+      || window.location.pathname.indexOf('/leader')    > 10 ) {
+
+        // prepare Server-Sent Events
+        var es = new EventSource( cSpot.presentation.eventSource );
+        // handle generic messages
+        es.onmessage = function(e) {
+              console.log(e);
+        };
+
+        // handle advetisements of new Show Positions
+        es.addEventListener("syncPresentation", function(e) {
+            cSpot.presentation.syncData = JSON.parse(e.data);
+            ;;;console.log('New sync request received: ' + e.data);
+            // has user requested a syncchronisation?
+            if (cSpot.presentation.sync) {
+                // call function to sync 
+                syncPresentation(cSpot.presentation.syncData);
+            }
+        });
+
+        // handle advertisements of new MPs
+        es.addEventListener("newMainPresenter", function(e) {
+            cSpot.presentation.mainPresenter = JSON.parse(e.data);
+            // are we not longer MP?
+            if (!isPresenter()) {
+                // make sure the MP checkbox is no longer checked!
+                $('#configMainPresenter').prop( "checked", false);
+                // make sure the Sync checkbox is visible!
+                $('#configSyncPresentation').parent().parent().parent().show();
+            }
+            // write the new MP name into checkbox label
+            $('.showPresenterName').text(' ('+cSpot.presentation.mainPresenter.name+')')
+        });
+
+    }
+}
+
+// Function to inform server of current position
+function sendShowPosition(slideName) {
+    cSpot.presentation.slide = slideName;
+    if (isPresenter()) {
+        var data = {
+                plan_id : cSpot.presentation.plan_id,
+                item_id : cSpot.presentation.item_id,
+                slide   : slideName,
+            }
+        ;;;console.log('sending show position: '+JSON.stringify(data));
+        $.ajax({
+            url: cSpot.presentation.setPositionURL,
+            type: 'PUT',
+            data: data,
+        });
+    }
+}
+
 
 
 /*\
@@ -236,7 +432,7 @@ function showScriptureText(version,book,chapter,fromVerse,toVerse)
 {
     book = book.replace(' ', '+');
 
-    $.get(__app_url+'/bible/passage/'+version+'/'+book+'/'+chapter+'/'+fromVerse+'/'+toVerse , 
+    $.get(cSpot.appURL+'/bible/passage/'+version+'/'+book+'/'+chapter+'/'+fromVerse+'/'+toVerse , 
         function(data, status) 
         {
             if ( status == 'success') 
@@ -530,7 +726,7 @@ function reloadListOrderBy(field)
 function openPlanByDate(date) 
 {
     $('#show-spinner').modal({keyboard: false});
-    window.location.href = __app_url + '/cspot/plans/by_date/' + date.value;
+    window.location.href = cSpot.appURL + '/cspot/plans/by_date/' + date.value;
 }
 
 

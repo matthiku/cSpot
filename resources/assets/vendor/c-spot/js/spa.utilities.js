@@ -9,7 +9,7 @@
 
 /* for eslint */
 if (typeof($)===undefined) {
-    var $, cSpot, __app_url;
+    var $, cSpot;
 }
  
 
@@ -51,7 +51,7 @@ function userAvailableForPlan(that, plan_id) {
     if ( $.isNumeric(plan_id) ) {
         console.log('User wants his availability changed to '+that.checked);
         // make AJAX call to 'plans/{plan_id}/team/{user_id}/available/'+that.checked
-        $.get( __app_url+'/cspot/plans/'+plan_id+'/team/available/'+that.checked)
+        $.get( cSpot.appURL+'/cspot/plans/'+plan_id+'/team/available/'+that.checked)
         .done(function() {
             $('#user-available-for-plan-id-'+plan_id).text( that.checked ? 'yes' : 'no');
             if (teamPage) { location.reload(); }

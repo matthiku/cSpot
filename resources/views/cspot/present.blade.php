@@ -547,15 +547,17 @@
 
     <script>        
         // make type of presentation globally available
-        cSpot.presentation.type = 'lyrics';
+        $(document).ready(function() {
+            cSpot.presentationType = 'lyrics';
 
-        // control the activation of a blank screen
-        var screenBlank = true;
+            // control the activation of a blank screen
+            var screenBlank = true;
 
-        {{-- load cached items from server - if there are any --}}
-        @if ($item->plan->has('planCaches'))
-            loadCachedPresentation({{ $item->plan->id }});
-        @endif
+            {{-- load cached items from server - if there are any --}}
+            @if ($item->plan->has('planCaches'))
+                loadCachedPresentation({{ $item->plan->id }});
+            @endif
+        });
 
     </script>
 

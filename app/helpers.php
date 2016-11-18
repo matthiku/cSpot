@@ -295,6 +295,13 @@ function MPsongList()
 }
 
 
+/**
+ * Get date of the last update to the list of songs
+ */
+function getLastSongUpdated_at()
+{
+    return Song::select('updated_at')->orderby('updated_at', 'desc')->first()->updated_at;
+}
 
 /*\ __________________________________________________
  *  

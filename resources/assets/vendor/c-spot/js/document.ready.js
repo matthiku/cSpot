@@ -12,8 +12,43 @@
 \*/
 
 
+/* for eslint */
+if (typeof($)===undefined) {
+    var $, cSpot;
+}
+ 
+
+
 $(document).ready(function() {
 
+
+
+    /* Get Config data from backend
+    */
+    if (location.pathname.search('cspot')>=0)
+        $.get( cSpot.getConfigRoute+'?item_id='+$("#item_id").val() )
+
+        .done( function(data) {
+            for ( var item in data) {
+                cSpot[item] = data[item];
+            }
+            // presentation type might have been set in the view
+            if (cSpot.presentationType) {
+                cSpot.presentation.type = cSpot.presentationType;
+                // for chords presentation
+                prepareChordsPresentation(cSpot.presentationType);
+            }
+
+            // we need this config data to run these functions:
+            loadFromLocalCache();
+
+            if ( cSpot.env.presentationEnableSync )
+                prepareSyncPresentation();
+        })
+
+        .fail( function(data) {
+            console.log('cspot failed to load config data from backend!');
+        });
 
 
 
@@ -22,7 +57,7 @@ $(document).ready(function() {
      *
      * (see http://www.appelsiini.net/projects/jeditable)
      */
-    $('.editable').editable(__app_url + '/cspot/api/items/update', {
+    $('.editable').editable(cSpot.appURL + '/cspot/api/items/update', {
         onblur      : 'cancel',
         cssclass    : 'editable-input-field',
         style       : 'display: inline',
@@ -36,7 +71,7 @@ $(document).ready(function() {
     });
 
     // song sequence field on the item details page
-    $('.editable-song-field').editable(__app_url + '/cspot/api/songs/update', {
+    $('.editable-song-field').editable(cSpot.appURL + '/cspot/api/songs/update', {
         style       : 'display: inline',
         cancel      : 'Cancel',
         submit      : 'Update',
@@ -46,7 +81,7 @@ $(document).ready(function() {
     });
 
     // lyrics and chords textareas on the item details page
-    $('.edit_area').editable(__app_url + '/cspot/api/songs/update', {
+    $('.edit_area').editable(cSpot.appURL + '/cspot/api/songs/update', {
         type        : 'textarea',
         cancel      : 'Cancel',
         submit      : 'Update',
@@ -55,7 +90,7 @@ $(document).ready(function() {
     });
 
     // comment field in the resources list of a plan
-    $('.editable-resource').editable(__app_url + '/cspot/api/plans/resource/update', {
+    $('.editable-resource').editable(cSpot.appURL + '/cspot/api/plans/resource/update', {
         style       : 'display: inline',
         placeholder : '<span class="fa fa-pencil text-muted">&nbsp;</span>',
         event       : 'mouseover',
@@ -63,7 +98,7 @@ $(document).ready(function() {
     });
 
     // comment field or private notes on the Item Detail page
-    $('.editable-item-field').editable(__app_url + '/cspot/api/items/update', {
+    $('.editable-item-field').editable(cSpot.appURL + '/cspot/api/items/update', {
         type        : 'textarea',
         event       : 'mouseover',
         width       : '100%',
@@ -75,7 +110,7 @@ $(document).ready(function() {
         placeholder : '<span class="fa fa-edit">&nbsp;</span>',
     });
 
-    $('.editable-item-field-present').editable(__app_url + '/cspot/api/items/update', {
+    $('.editable-item-field-present').editable(cSpot.appURL + '/cspot/api/items/update', {
         type        : 'textarea',
         cancel      : 'Cancel',
         submit      : 'Save',
@@ -85,7 +120,7 @@ $(document).ready(function() {
     });
 
     // Plan Detail page - update Plan Note
-    $('.editable-plan-info').editable(__app_url + '/cspot/api/plan/update', {
+    $('.editable-plan-info').editable(cSpot.appURL + '/cspot/api/plan/update', {
         type        : 'textarea',
         cancel      : 'Cancel',
         width       : '90%',
@@ -147,15 +182,15 @@ $(document).ready(function() {
     /**
      * On 'Home' page, get list of future plans and show calendar widget
      */
-    if ( window.location.href == __app_url + '/home' ) {
-        $.getJSON( __app_url + '/cspot/plans?filterby=future&api=api',
+    if ( window.location.href == cSpot.appURL + '/home' ) {
+        $.getJSON( cSpot.appURL + '/cspot/plans?filterby=future&api=api',
             function(result){
                 $.each(result, function(i, field) {
                     // map each resulting event to the appropriate DAY element of the datepicker
-                    hint = field.type.name+' led by '+field.leader.first_name; 
+                    var hint = field.type.name+' led by '+field.leader.first_name; 
                     if ( field.teacher.first_name != "n/a" ) {
                         hint +='(teacher: ' + field.teacher.first_name +')'; }
-                    dt = new Date(field.date.split(' ')[0]).toLocaleDateString();
+                    var dt = new Date(field.date.split(' ')[0]).toLocaleDateString();
                     if (SelectedDates[dt]==undefined)
                         SelectedDates[dt] = hint;
                     else if (SelectedDates[dt]=="Today")
@@ -164,8 +199,8 @@ $(document).ready(function() {
                         SelectedDates[dt] = SelectedDates[dt]+'; '+hint;
                 });
                 // get the current browser window dimension (width)
-                browserWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-                numberOfMonths = 3;
+                var browserWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+                var numberOfMonths = 3;
                 if (browserWidth<800) numberOfMonths = 2;
                 if (browserWidth<600) numberOfMonths = 1;
                 // Now style the jQ date picker
@@ -290,70 +325,6 @@ $(document).ready(function() {
 
 
 
-    /* 
-        provide certain (locally cached) data accross all cSpot  views 
-    */
-    if (window.location.pathname.indexOf('cspot/')>0) {
-
-
-        /*  check if songList exists in local cache and if it is still up-to-date,
-            otherwise grab an update from the server
-        */
-
-        // check local storage
-        //  (provide empty array just in case when localStorage doesn't contain this item)
-        cSpot.songList = JSON.parse(localStorage.getItem('songList')) || [];
-        cSpot.songList.updated_at = localStorage.getItem('songList.updated_at');
-
-        // not found in local storage, or not up-to-date
-        // so get it from the server
-        if (cSpot.songList==null || cSpot.songList.updated_at != cSpot.lastSongUpdated_at) {
-            
-            ;;;console.log("Song list must be reloaded from server!");
-
-            $.get(cSpot.routes.apiGetSongList, function(data, status) {
-
-                if ( status == 'success') {
-                    cSpot.songList = JSON.parse(data);
-                    cSpot.songList.updated_at = cSpot.lastSongUpdated_at;
-                    localStorage.setItem( 'songList', JSON.stringify(cSpot.songList) );
-                    localStorage.setItem( 'songList.updated_at', cSpot.lastSongUpdated_at );
-                    ;;;console.log('Saving Song Titles List to LocalStorage');
-                    addOptionsToMPsongSelect();
-                }
-            });
-        } 
-        else {
-            addOptionsToMPsongSelect();
-        }
-        
-
-
-        /***
-         * Get array with all bible books with all chapters and number of verses in each chapter
-         */
-
-        // first check if data is alerady cached locally
-        cSpot.bibleBooks = JSON.parse(localStorage.getItem('bibleBooks'));
-
-        if (cSpot.bibleBooks==null) {
-            $.get( cSpot.routes.apiBibleBooksAllVerses, function(data, status) {
-
-                if ( status == 'success') {
-                    cSpot.bibleBooks = data;
-                    localStorage.setItem( 'bibleBooks', JSON.stringify(cSpot.bibleBooks) );
-                    ;;;console.log('Saving verses structure to LocalStorage');
-                    addOptionsToBookSelect();
-                }
-            });
-        }
-        else {
-            addOptionsToBookSelect();
-        }
-
-    }
-
-
 
     /**
      * Allow items on Plan page to be moved into new positions
@@ -370,15 +341,15 @@ $(document).ready(function() {
         stop    : function (event, ui) {
             $('#show-spinner').show();
             var changed=false;
-            should_seq_no = 0;
-            movedItem = [];
+            var should_seq_no = 0;
+            var movedItem = [];
             movedItem.id = ui.item.data('itemId');
             movedItem.seq_no = ui.item.attr('id').split('-')[2];
             // get all siblings of the just moved item
-            siblings = $(ui.item).parent().children();
+            var siblings = $(ui.item).parent().children();
             // check each sibling's sequence
             for (var i = 1; i <= siblings.length; i++) {
-                sib = siblings[-1+i];
+                var sib = siblings[-1+i];
                 if (sib.classList.contains('trashed')) {
                     // ignore trashed items....
                     continue;
@@ -397,7 +368,7 @@ $(document).ready(function() {
             }
             if (changed) {
                 should_seq_no = 1 * should_seq_no;
-                window.location.href = __app_url + '/cspot/items/' + changed.dataset.itemId + '/seq_no/'+ (0.5 + should_seq_no);
+                window.location.href = cSpot.appURL + '/cspot/items/' + changed.dataset.itemId + '/seq_no/'+ (0.5 + should_seq_no);
                 return;
             } 
         },
@@ -499,142 +470,7 @@ $(document).ready(function() {
 
 
 
-    /**
-     * check sync setting for chords or sheetmusic presentation
-     */
-    if ( window.location.pathname.indexOf('/chords')>10 || window.location.pathname.indexOf('/sheetmusic')>10 ) {
-
-        // check if we want to syncronise our own presentation with the Main Presenter
-        configSyncPresentationSetting = localStorage.getItem('configSyncPresentation');
-        // if the value in LocalStorage was set to 'true', then we activate the checkbox:
-        if (configSyncPresentationSetting=='true') {
-            $('#configSyncPresentation').prop( "checked", true );
-            // save in global namespace
-            cSpot.presentation.sync = true;
-        }
-
-    }
-
-
-
-    /**
-     * Check some user-defined settings in the Local Storage of the browser
-     */
-    if ( window.location.pathname.indexOf('/leader')>10 ) {
-        getLocalConfiguration()
-    }
-
-
     
-
-    /**
-     * prepare lyrics or bible texts or image slides for presentation
-     */
-    if ( window.location.pathname.indexOf('/present')>10 ) {
-
-        // check if we have a VideoClip item or just lyrics
-        if ($('#videoclip-url').length) {
-            var videoclipUrl = $("#videoclip-url").text();
-            ;;;console.log('Current item is a Video Clip');
-        }
-
-        // instead, have just lyrics or bible verses or images
-        else { 
-            if ($('#present-lyrics').length) {
-                // re-format the lyrics
-                reDisplayLyrics(); 
-            }
-
-            // start showing bible parts if this is a bible reference
-            if ($('.bible-text-present').length) {
-                reFormatBibleText(); 
-            }
-
-            // center and maximise images
-            if ( $('.slide-background-image').length ) {
-                prepareImages(); 
-            }
-        }
-
-
-        /* configuration of the color picker
-        */
-        $("#colorPicker").spectrum({
-            appendTo : '#colorPicker-container',
-            showPaletteOnly: true,
-            togglePaletteOnly: true,
-            togglePaletteMoreText: 'more',
-            togglePaletteLessText: 'less',
-            color: 'yellow',
-            palette: [
-                ["#000","#444","#666","#999","#ccc","#eee","#f3f3f3","#fff"],
-                ["#f00","#f90","#ff0","#0f0","#0ff","#00f","#90f","#f0f"],
-                ["#f4cccc","#fce5cd","#fff2cc","#d9ead3","#d0e0e3","#cfe2f3","#d9d2e9","#ead1dc"],
-                ["#ea9999","#f9cb9c","#ffe599","#b6d7a8","#a2c4c9","#9fc5e8","#b4a7d6","#d5a6bd"],
-                ["#e06666","#f6b26b","#ffd966","#93c47d","#76a5af","#6fa8dc","#8e7cc3","#c27ba0"],
-                ["#c00","#e69138","#f1c232","#6aa84f","#45818e","#3d85c6","#674ea7","#a64d79"],
-                ["#900","#b45f06","#bf9000","#38761d","#134f5c","#0b5394","#351c75","#741b47"],
-                ["#600","#783f04","#7f6000","#274e13","#0c343d","#073763","#20124d","#4c1130"]
-            ]
-        });
-        $("#BGcolorPicker").spectrum({
-            appendTo : '#colorPicker-container',
-            showPaletteOnly: true,
-            togglePaletteOnly: true,
-            togglePaletteMoreText: 'more',
-            togglePaletteLessText: 'less',
-            color: '#373a3c',
-            palette: [
-                ["#000","#444","#666","#999","#ccc","#eee","#f3f3f3","#fff"],
-                ["#f00","#f90","#ff0","#0f0","#0ff","#00f","#90f","#f0f"],
-                ["#f4cccc","#fce5cd","#fff2cc","#d9ead3","#d0e0e3","#cfe2f3","#d9d2e9","#ead1dc"],
-                ["#ea9999","#f9cb9c","#ffe599","#b6d7a8","#a2c4c9","#9fc5e8","#b4a7d6","#d5a6bd"],
-                ["#e06666","#f6b26b","#ffd966","#93c47d","#76a5af","#6fa8dc","#8e7cc3","#c27ba0"],
-                ["#c00","#e69138","#f1c232","#6aa84f","#45818e","#3d85c6","#674ea7","#a64d79"],
-                ["#900","#b45f06","#bf9000","#38761d","#134f5c","#0b5394","#351c75","#741b47"],
-                ["#600","#783f04","#7f6000","#274e13","#0c343d","#073763","#20124d","#4c1130"]
-            ]
-        });
-
-
-        /**
-         * Check some user-defined settings in the Local Storage of the browser
-         */
-        getLocalConfiguration()
-
-
-        // check if we have a predefined sequence from the DB
-        sequence=($('#sequence').text()).split(',');
-
-        // check if there are more lyric parts than 
-        // indicated in the sequence due to blank lines discoverd in the lyrics
-        if (sequence.length>1) 
-            compareLyricPartsWithSequence();
-
-        // auto-detect sequence if it is missing
-        if (sequence.length<2) {
-            createDefaultLyricSequence();
-            sequence=($('#sequence').text()).split(',');
-        }
-
-        // make sure the sequence indicator isn't getting too big! 
-        checkSequenceIndicatorLength();
-
-        // make sure the main content covers all the display area, but that no scrollbar appears
-        $('#main-content').css('max-height', window.innerHeight - $('.navbar-fixed-bottom').height());
-        $('#main-content').css('min-height', window.innerHeight - $('.navbar-fixed-bottom').height() - 10);
-
-
-
-        /**
-         * Save the new content into the local storage for offline presentations!
-         */
-        if (cSpot.presentation.useOfflineMode) {
-            saveMainContentToLocalStorage();
-        } 
-
-    }
-
     /**
      * re-design the showing of lyrics interspersed with guitar chords
      */

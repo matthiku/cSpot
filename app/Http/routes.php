@@ -63,6 +63,9 @@ Route::group(['middleware' => 'web'], function () {
 Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() {
 
 
+    // get the base config data for cSpot to the front-end
+    Route::get('api/config/get',                    'HomeController@APIconfigGet')->name('APIconfigGet');
+
 
     /*
          PLANS

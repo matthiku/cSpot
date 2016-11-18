@@ -45,6 +45,9 @@ class DefaultItemController extends Controller
      */
     public function index(Request $request)
     {
+        $heading = 'Manage Default Event Items';
+        $this_type = 'all';
+
         // eager loading of related table
         $default_items = DefaultItem::with('type')
             ->orderBy('type_id')
@@ -52,15 +55,25 @@ class DefaultItemController extends Controller
 
         if (   $request->has('filterby' ) 
             && $request->has('filtervalue') 
-            && $request->filterby=='type'   )
+            && $request->filterby=='type'   ) 
+        {
             $default_items->where('type_id', $request->filtervalue );
+            $this_type = Type::find($request->filtervalue);
+            $heading = "Default Event Items for ".$this_type->name;
+        }
 
         // get list of Event Types
         $types = Type::get();
 
-        $heading = 'Manage Default Event Items';
-
-        return view( $this->view_all, array('heading' => $heading, 'default_items' => $default_items->get(), 'types' => $types) );
+        return view( 
+            $this->view_all, 
+            array(
+                'heading' => $heading,
+                'default_items' => $default_items->get(),
+                'types' => $types,
+                'this_type' => $this_type
+                )
+            );
     }
 
 

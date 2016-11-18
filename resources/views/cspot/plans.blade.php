@@ -25,7 +25,7 @@
 				( Request::has('filterby') && Request::input('filterby')=='type' && Request::has('filtervalue') ) 
 					? '?type_id='.Request::input('filtervalue') 
 					: '' }}">
-			<i class="fa fa-plus"> </i> &nbsp; Add a new Service/Event
+			<i class="fa fa-plus"> </i>&nbsp; Create New<span class="hidden-md-down"> Event</span>
 		</a>
 	@endif
 
@@ -34,7 +34,7 @@
 	<form class="form-inline float-xs-right mr-1">
 		<div class="form-group">
 			<label for="typefilter">Show only</label>
-			<select class="custom-select" id="typefilter" onchange="location.href='{{url('cspot/plans')}}?filterby=type&filtervalue='+$(this).val()">
+			<select class="custom-select" id="typefilter" onchange="showSpinner();location.href='{{url('cspot/plans')}}?filterby=type&filtervalue='+$(this).val()">
 				<option {{ Request::has('filterby') && Request::get('filterby')=='type' ? '' : 'selected' }} value="all">(select type)</option>
 				@foreach ($types as $type)
 					<option 
@@ -46,6 +46,34 @@
 	</form>
 
 
+	<form class="form-inline float-xs-right mr-1">
+		<div class="dropdown" id="multi-filter-dropdown" data-url="{{url('cspot/plans')}}?filterby=type&filtervalue=">
+			<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				Show All Of:
+			</button>
+			<div class="dropdown-menu bg-faded padding-half" aria-labelledby="dropdownMenuButton">
+				<h5 class="dropdown-header">Select which types to show:</h5>
+				@if ( Request::has('filtervalue') )
+					<?php 
+						$fv = json_decode(Request::input('filtervalue')); 
+						if ($fv==Request::input('filtervalue'))		// make sure $fv is always an array!
+							$fv = [Request::input('filtervalue')]; ?>
+				@endif
+				@foreach ($types as $type)
+					<div class="form-check display-block">
+	  					<label class="form-check-label label-normal" onclick="selectServiceType()">
+	    					<input type="checkbox" class="form-check-input" name="multi-filter" 
+									{{ isset($fv) && in_array($type->id, $fv) ? 'checked="true"' : '' }}
+	    							value="option-{{$type->id}}">
+	    					{{ $type->name }}
+	  					</label>
+					</div>
+				@endforeach
+				<button type="button" class="btn btn-primary btn-sm btn-block mt-1" onclick="selectServiceType('submit')">Submit selection</button>
+			</div>
+		</div>
+	</form>
+
 
 
     <h2 class="float-xs-left">
@@ -55,7 +83,7 @@
 		</small>
     </h2>
 
-	@if (get_class($plans)=='Illuminate\Pagination\LengthAwarePaginator')
+	@if ( get_class($plans)=='Illuminate\Pagination\LengthAwarePaginator' && $plans->lastPage() > 1 )
 		<center>Page {{ $plans->currentPage() }} of {{ $plans->lastPage() }}</center>
 	@endif
 

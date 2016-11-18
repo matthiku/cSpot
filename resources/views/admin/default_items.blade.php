@@ -15,14 +15,17 @@
 	@include('layouts.flashing')
 
 	@if( Auth::user()->isEditor() )
-	<a class="btn btn-outline-warning float-xs-right ml-1" href="{{ url('cspot/plans/create') }}
-			{{ Request::has('filtervalue') ? '?type_id='.Request::get('filtervalue') : '' }}"
-			title="Create a new Event of selected type (if any)">
-		<i class="fa fa-plus"> </i> &nbsp; Create Event
-	</a>
-	<a class="btn btn-outline-primary float-xs-right ml-1" href="{{ url('admin/default_items/create') }}">
-		<i class="fa fa-plus"> </i> &nbsp; Add item
-	</a>
+		@if (Request::has('filtervalue'))
+			<a class="btn btn-outline-warning float-xs-right ml-1" href="{{ url('cspot/plans/create') }}
+					{{ Request::has('filtervalue') ? '?type_id='.Request::get('filtervalue') : '' }}"
+					title="Create a new Event of selected type (if any)">
+				<i class="fa fa-plus"> </i> &nbsp; Create new {{ $this_type->name }}
+			</a>
+		@endif
+		<a class="btn btn-outline-primary float-xs-right ml-1" href="{{ url('admin/default_items/create') }}"
+			title="add a new default item">
+			<i class="fa fa-plus"> </i> &nbsp; Add item
+		</a>
 	@endif
 
 
@@ -33,7 +36,7 @@
 	<form class="form-inline float-xs-right">
 		<div class="form-group">
 			<label for="typefilter">Filter by</label>
-			<select class="custom-select" id="typefilter" onchange="location.href='{{url('admin/default_items')}}?filterby=type&filtervalue='+$(this).val()">
+			<select class="custom-select" id="typefilter" onchange="showSpinner();location.href='{{url('admin/default_items')}}?filterby=type&filtervalue='+$(this).val()">
 				<option {{Request::has('filtervalue') ? '' : 'selected'}}>select Event Type</option>
 				@foreach ($types as $type)
 					<option {{(Request::has('filtervalue') && Request::get('filtervalue')==$type->id) ? 'selected' : ''}} value="{{$type->id}}">{{$type->name}}</option>
@@ -43,7 +46,7 @@
 	</form>
 
 
-    <h2>
+    <h3>
     	{{ $heading }}
     	<small class="text-muted">
     		<a tabindex="0" href="#"
@@ -51,7 +54,7 @@
     			data-content="Default items are parts of a service or event that are always the same. They will be automatically inserted into new event plans.">
     			<i class="fa fa-question-circle"></i></a>
 		</small>
-	</h2>
+	</h3>
 
 
 
@@ -123,7 +126,10 @@
 
     @else
 
-    	No default items found!
+    	No default items found
+    	@if (Request::has('filtervalue'))
+    		for this type of event
+    	@endif
 
 	@endif
 

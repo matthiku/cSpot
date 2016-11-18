@@ -3,7 +3,7 @@
 
 <div id="show-spinner" class="modal" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog">
-    <div class="modal-content center p-b-2 p-t-2">
+    <div class="modal-content center pb-1 pt-1 opac-7">
         <h3><i class="fa fa-spin fa-spinner fa-4"></i> one moment, please ...</h3>
     </div>
   </div>

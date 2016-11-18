@@ -93,7 +93,7 @@
                </div>
             </div>
 
-            @if ($user->plans_as_leader->count()>0)
+            @if (isset($user) && $user->plans_as_leader->count()>0)
                 <div class="row mb-1 full-width">
                     <div class="col-sm-6"></div>
                     <div class="col-sm-6">
@@ -108,7 +108,7 @@
                 </div>
             @endif
 
-            @if ($user->plans_as_teacher->count()>0)
+            @if (isset($user) && $user->plans_as_teacher->count()>0)
                 <div class="row mb-1 full-width">
                     <div class="col-sm-6"></div>
                     <div class="col-sm-6">

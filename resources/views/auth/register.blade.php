@@ -12,7 +12,7 @@
 
 
     <div class="row">
-        <div class="col-lg-6 offset-lg-3 signin-body">
+        <div class="container signin-body">
 
             @include('layouts.flashing')
 

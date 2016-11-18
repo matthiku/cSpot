@@ -34,10 +34,9 @@ class AppServiceProvider extends ServiceProvider
 
 
         /**
-         * Provide the data of the last update to the list of songs
+         * Provide the date of the last update to the list of songs
          */
-        $lastSongUpdated_at = Song::select('updated_at')->orderby('updated_at', 'desc')->first()->updated_at;
-        view()->share('lastSongUpdated_at', $lastSongUpdated_at);
+        view()->share('lastSongUpdated_at', getLastSongUpdated_at());
 
 
 

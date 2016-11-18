@@ -191,11 +191,15 @@
                     <i class="fa fa-btn fa-tasks fa-lg"></i> &nbsp; Event Types</a>
                 <hr>
                 <a class="dropdown-item" href="{{ url('cspot/songs') }}">
-                    <i class="fa fa-btn fa-music fa-lg"></i> &nbsp; Songs etc.</a>
+                    <i class="fa fa-btn fa-music fa-lg"> </i> &nbsp;&nbsp; Songs</a>
+                <a class="dropdown-item" href="{{ url('cspot/songs') }}?filterby=title_2&filtervalue=video">
+                    <i class="fa fa-btn fa-tv fa-lg"></i> &nbsp; Videoclips</a>
+                <a class="dropdown-item" href="{{ url('cspot/songs') }}?filterby=title_2&filtervalue=slides">
+                    <i class="fa fa-btn fa-clone fa-lg"></i> &nbsp; Slides</a>
                 @if (Auth::user()->isEditor())
-                <hr>
+                <hr class="mb-0">
                     <a class="dropdown-item" href="{{ url('cspot/history') }}">
-                        <i class="fa fa-btn fa-music fa-lg"></i> &nbsp; Event Plan History</a>
+                        <span class="xl-big">&#9991;</span> &nbsp; Event Plan History</a>
                 @endif
             </div>
         </li>

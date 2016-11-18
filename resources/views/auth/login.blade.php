@@ -15,19 +15,32 @@
 
             @include('layouts.flashing')
             
+            {!! csrf_field() !!}
+    
+
+            <center class="mb-2">
+
+                <h4>Sign in using your account from one of these service providers:</h4>
+
+                @include('auth.social')
+                
+                <div class="mt-2">
+                    Not sure what to do? <br>
+                    <i class="fa fa-youtube-play red"></i>
+                    <a href="https://www.youtube.com/watch?v=SNgq9ZW1KMs" target="new">
+                        Watch this short training video</a>
+                    <i class="fa fa-external-link small"></i><br> explaining 
+                    the sign-in process and the basics features of c-SPOT
+                </div>
+
+            </center>
+
+
+            <h5 class="card-header">You can also sign in by email address and password:</h5>
+
             <form class="form-horizontal" role="form" method="POST" id="inputForm"  action="{{ url('login') }}">
-                {!! csrf_field() !!}
-        
-                <center>
-                    <h4>Sign in with your account or with a service provider:</h4>
-                    @include('auth.social')
-                </center>
-                <br />
-                <br />
 
-                <h2 class="card-header">Or sign in via email:</h2>
-
-                <div class="row form-group{{ $errors->has('email') ? ' has-error' : '' }}">
+                <div class="row mt-1 form-group{{ $errors->has('email') ? ' has-error' : '' }}">
                     <label class="col-md-3 offset-md-1 control-label">E-Mail Address</label>
 
                     <div class="col-md-6">

@@ -309,12 +309,25 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
+        $user = User::find($id);
+
         // Prevent first user to be deleted
-        if ($id==1) {
+        if ( $id==1 || !$user ) {
             $message = 'User with id "' . $id . '" cannot be deleted!';
-        } else {
-            $user = User::where('id', $id)->delete();
-            $message = 'User with id "' . $id . '" was deleted';
+        } 
+        else {
+            //  first remove any roles 
+            if ($user->roles->count())
+                $user->roles()->detach();
+
+            // check if user has events assigned
+            if ($user->plans_as_leader->count()>0 || $user->plans_as_teacher->count()>0) {
+                $message = 'User with id "' . $id . '" still has events assigned and cannot be deleted!';
+            }
+            else {
+                $user->delete();
+                $message = 'User with id "' . $id . '" was deleted';
+            }
         }
         return \Redirect::route($this->view_all_idx)
                         ->with(['status' => $message]);
