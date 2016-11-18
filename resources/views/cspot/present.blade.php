@@ -552,11 +552,6 @@
 
             // control the activation of a blank screen
             var screenBlank = true;
-
-            {{-- load cached items from server - if there are any --}}
-            @if ($item->plan->has('planCaches'))
-                loadCachedPresentation({{ $item->plan->id }});
-            @endif
         });
 
     </script>

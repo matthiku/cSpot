@@ -2207,12 +2207,6 @@ function clearServerCache(plan_id)
 \*/
 
 
-// dummy method which will only be called if Sync Presentation is disabled
-// the actual (working) function is found in views/layouts/main.blade.php!
-function sendShowPosition() {
-    return;
-}
-
 // User becomes Main presenter (if no other is yet)
 function changeMainPresenter() {
 

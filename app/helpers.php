@@ -493,7 +493,7 @@ function insertItem( $request )
     $newItem->seq_no = $new_seq_no;
 
     // check if a song id was provided in the request
-    if ( isset($request->song_id) ) {
+    if ( isset($request->song_id) && $request->song_id > 0 ) {
         $newItem->song_freshness = calculateSongFreshness( $request->song_id, $plan->leader_id, $plan->date );
         $newItem->song_id = $request->song_id;
     }
@@ -561,6 +561,8 @@ function insertItem( $request )
 function calculateSongFreshness($song_id, $leader_id, $planDate)
 {
     $song = Song::find($song_id);
+
+    if (!$song) return null;
 
     // SFI is only for songs
     if ($song->title_2=='video' || $song->title_2=='slides' )

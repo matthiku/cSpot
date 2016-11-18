@@ -313,6 +313,8 @@ function prepareSyncPresentation()
 
 // Function to inform server of current position
 function sendShowPosition(slideName) {
+    if (!cSpot.presentation.sync)
+        return;
     cSpot.presentation.slide = slideName;
     if (isPresenter()) {
         var data = {

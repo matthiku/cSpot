@@ -14,8 +14,6 @@
         <div class="container signin-body">
 
             @include('layouts.flashing')
-            
-            {!! csrf_field() !!}
     
 
             <center class="mb-2">
@@ -24,13 +22,14 @@
 
                 @include('auth.social')
                 
-                <div class="mt-2">
-                    Not sure what to do? <br>
-                    <i class="fa fa-youtube-play red"></i>
+                <div class="bg-inverse mt-2">
+                    <span class="text-white">Not sure what to do? Need some help?<br>
                     <a href="https://www.youtube.com/watch?v=SNgq9ZW1KMs" target="new">
-                        Watch this short training video</a>
-                    <i class="fa fa-external-link small"></i><br> explaining 
-                    the sign-in process and the basics features of c-SPOT
+                        <i class="fa fa-youtube-play red"></i>
+                        Watch this short training video
+                        <i class="fa fa-external-link small"></i><br> 
+                    </a>
+                    explaining the sign-in process and the basics features of c-SPOT</span>
                 </div>
 
             </center>
@@ -39,6 +38,7 @@
             <h5 class="card-header">You can also sign in by email address and password:</h5>
 
             <form class="form-horizontal" role="form" method="POST" id="inputForm"  action="{{ url('login') }}">
+                {!! csrf_field() !!}
 
                 <div class="row mt-1 form-group{{ $errors->has('email') ? ' has-error' : '' }}">
                     <label class="col-md-3 offset-md-1 control-label">E-Mail Address</label>

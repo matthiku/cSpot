@@ -35,8 +35,12 @@ $(document).ready(function() {
             // presentation type might have been set in the view
             if (cSpot.presentationType) {
                 cSpot.presentation.type = cSpot.presentationType;
-                // for chords presentation
-                prepareChordsPresentation(cSpot.presentationType);
+                // load cached presentation data
+                if ( cSpot.presentationType=='lyrics' && cSpot.presentation.plan )
+                    loadCachedPresentation(cSpot.presentation.plan.id);
+                if ( cSpot.presentationType=='chords' )
+                    // for chords presentation
+                    prepareChordsPresentation(cSpot.presentationType);
             }
 
             // we need this config data to run these functions:

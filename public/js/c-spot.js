@@ -41649,6 +41649,8 @@ function prepareSyncPresentation()
 
 // Function to inform server of current position
 function sendShowPosition(slideName) {
+    if (!cSpot.presentation.sync)
+        return;
     cSpot.presentation.slide = slideName;
     if (isPresenter()) {
         var data = {
@@ -42322,8 +42324,12 @@ $(document).ready(function() {
             // presentation type might have been set in the view
             if (cSpot.presentationType) {
                 cSpot.presentation.type = cSpot.presentationType;
-                // for chords presentation
-                prepareChordsPresentation(cSpot.presentationType);
+                // load cached presentation data
+                if ( cSpot.presentationType=='lyrics' && cSpot.presentation.plan )
+                    loadCachedPresentation(cSpot.presentation.plan.id);
+                if ( cSpot.presentationType=='chords' )
+                    // for chords presentation
+                    prepareChordsPresentation(cSpot.presentationType);
             }
 
             // we need this config data to run these functions:
@@ -46672,12 +46678,6 @@ function clearServerCache(plan_id)
 |* >------------------------------------------------------------------ SYNC PRESENTATION
 \*/
 
-
-// dummy method which will only be called if Sync Presentation is disabled
-// the actual (working) function is found in views/layouts/main.blade.php!
-function sendShowPosition() {
-    return;
-}
 
 // User becomes Main presenter (if no other is yet)
 function changeMainPresenter() {
