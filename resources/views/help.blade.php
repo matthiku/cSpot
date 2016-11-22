@@ -1,11 +1,13 @@
 
 <!-- # (C) 2016 Matthias Kuhs, Ireland -->
 
-<div class="card">
+<div class="card lora">
 
     
 <div class="card-header">
-    <a class="float-xs-right" href="{{ route('trainingVideos') }}"><big>&#127979;</big> Training Videos</a>
+    @if (!Auth::guest())
+        <a class="float-xs-right" href="{{ route('trainingVideos') }}"><big>&#127979;</big> Training Videos</a>
+    @endif
     <h3>The Small Print ...</h3>
 </div>
 

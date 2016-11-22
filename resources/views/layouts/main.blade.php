@@ -22,6 +22,7 @@
 
     <link rel="manifest" href="{{ url('/') }}/manifest.json">
 
+    <link href="https://fonts.googleapis.com/css?family=Lora|Shadows+Into+Light|Vollkorn" rel="stylesheet">
 
     <meta name="csrf-token" content="{{ csrf_token() }}">    
 

@@ -52,9 +52,7 @@
 
 			<ul class="nav navbar-nav">
 
-				@if (Request::is('*/songs'))
-					<li class="nav-item mr-1">@include('cspot.snippets.fullTextSearch')</li>
-				@endif
+				<li class="nav-item mr-1">@include('cspot.snippets.fullTextSearch')</li>
 
 				@if( Auth::user()->isEditor() && $plan_id==0 )
 					<li class="nav-item active">
@@ -76,23 +74,20 @@
 					</li>
 				@endif
 
-				{{-- only for songs... --}}
-				@if (Request::is('*/songs'))
-					<li class="nav-item active">
-						@if ( ! Request::has('filtervalue') )
-							<a class="nav-link btn btn-outline-danger" title="Show songs ordered by usage, but at least twice used in the past" 
-									href="{{ url('cspot/songs') }}?filterby=songs&filtervalue=rare">
-								List 'Forgotten' Songs
-							</a>
-						@endif
-						@if ( Request::has('filtervalue') && Request::input('filtervalue')=='rare' )
-							<a class="nav-link btn btn-outline-success" title="Show full song list"
-									href="{{ url('cspot/songs') }}">
-								Show All Songs
-							</a>
-						@endif
-					</li>
-				@endif
+				<li class="nav-item active">
+					@if ( ! Request::has('filtervalue') )
+						<a class="nav-link btn btn-outline-danger" title="Show songs ordered by usage, but at least twice used in the past" 
+								href="{{ url('cspot/songs') }}?filterby=songs&filtervalue=rare">
+							List 'Forgotten' Songs
+						</a>
+					@endif
+					@if ( Request::has('filtervalue') && Request::input('filtervalue')=='rare' )
+						<a class="nav-link btn btn-outline-success" title="Show full song list"
+								href="{{ url('cspot/songs') }}">
+							Show All Songs
+						</a>
+					@endif
+				</li>
 
 			</ul>
 
@@ -117,39 +112,37 @@
 		<table class="table table-striped table-bordered {{ count($songs)>15 ? 'table-sm' : '' }}">
 
 
-			@if (Request::is('*/songs'))
-				<thead class="thead-default">
-					<tr>
-						@include('cspot.snippets.theader', ['thfname' => 'id', 'thdisp' => '#', 'thsearch'=>false, 'thclass'=>'center hidden-md-down'])
+			<thead class="thead-default">
+				<tr>
+					@include('cspot.snippets.theader', ['thfname' => 'id', 'thdisp' => '#', 'thsearch'=>false, 'thclass'=>'center hidden-md-down'])
 
-						@include('cspot.snippets.theader', ['thfname' => 'title', 'thdisp' => 'Title', 'thsearch'=>true, 'thclass'=>''])
+					@include('cspot.snippets.theader', ['thfname' => 'title', 'thdisp' => 'Title', 'thsearch'=>true, 'thclass'=>''])
 
-						@include('cspot.snippets.theader', ['thfname' => 'author', 'thdisp' => 'Author', 'thsearch'=>true, 'thclass'=>'hidden-md-down'])
+					@include('cspot.snippets.theader', ['thfname' => 'author', 'thdisp' => 'Author', 'thsearch'=>true, 'thclass'=>'hidden-md-down'])
 
-						@include('cspot.snippets.theader', ['thfname' => 'book_ref', 'thdisp' => 'Book Ref', 'thsearch'=>true, 'thclass'=>'small hidden-xs-down'])
+					@include('cspot.snippets.theader', ['thfname' => 'book_ref', 'thdisp' => 'Book Ref', 'thsearch'=>true, 'thclass'=>'small hidden-xs-down'])
 
-						<th class="center">Media</th>
-						
-						@include('cspot.snippets.theader', ['thfname' => 'chords', 'thdisp' => 'Chords?', 'thsearch'=>true, 'thclass'=>'center small hidden-sm-down'])
+					<th class="center">Media</th>
+					
+					@include('cspot.snippets.theader', ['thfname' => 'chords', 'thdisp' => 'Chords?', 'thsearch'=>true, 'thclass'=>'center small hidden-sm-down'])
 
-						<th class="center hidden-sm-down"><small>Sheets?</small></th>
+					<th class="center hidden-sm-down"><small>Sheets?</small></th>
 
-						@include('cspot.snippets.theader', ['thfname' => 'items_count', 'thdisp' => 'Usage', 'thsearch'=>true, 'thclass'=>'small center hidden-md-down'])
+					@include('cspot.snippets.theader', ['thfname' => 'items_count', 'thdisp' => 'Usage', 'thsearch'=>true, 'thclass'=>'small center hidden-md-down'])
 
-						@include('cspot.snippets.theader', ['thfname' => 'last_used', 'thdisp' => 'Last Use', 'thsearch'=>false, 'thclass'=>'center hidden-md-down'])
+					@include('cspot.snippets.theader', ['thfname' => 'last_used', 'thdisp' => 'Last Use', 'thsearch'=>false, 'thclass'=>'center hidden-md-down'])
 
-						<th class="center hidden-lg-down">CCLI No.</th>
+					<th class="center hidden-lg-down">CCLI No.</th>
 
-						@include('cspot.snippets.theader', ['thfname' => 'license', 'thdisp' => 'License', 'thsearch'=>true, 'thclass'=>'small center hidden-lg-down'])
+					@include('cspot.snippets.theader', ['thfname' => 'license', 'thdisp' => 'License', 'thsearch'=>true, 'thclass'=>'small center hidden-lg-down'])
 
-						@if( Auth::user()->isLeader() )
-							@include('cspot.snippets.theader', ['thfname' => 'created_at', 'thdisp' => 'Created', 'thsearch'=>false, 'thclass'=>'small center hidden-lg-down'])
+					@if( Auth::user()->isLeader() )
+						@include('cspot.snippets.theader', ['thfname' => 'created_at', 'thdisp' => 'Created', 'thsearch'=>false, 'thclass'=>'small center hidden-lg-down'])
 
-							<th class="center hidden-xs-down">Modify</th>
-						@endif
-					</tr>
-				</thead>
-			@endif
+						<th class="center hidden-xs-down">Modify</th>
+					@endif
+				</tr>
+			</thead>
 
 
 
@@ -159,18 +152,14 @@
 	        	<?php 
 	        		$editLink = Auth::user()->isEditor() && Request::is('*/songs') 
 	        			? 'onclick=\'location.href="'.url('cspot/songs/'.$song->id).'/edit"\'' 
-	        			: Request::is('*/songs')
-	        				? ''
-	        				: 'onclick="showYTvideoInModal(`'.$song->youtube_id.'`, this)"'; 
+	        			: ''; 
 	        	?>
 
 
 				<tr data-song-title="{{ $song->title }}">
 
 
-					@if (Request::is('*/songs'))
-						<th {!! $editLink !!} scope="row" class="link hidden-md-down float-xs-center">{{ $song->id }}</th>
-					@endif
+					<th {!! $editLink !!} scope="row" class="link hidden-md-down float-xs-center">{{ $song->id }}</th>
 
 
 					<td {!! $editLink !!} class="link" title="{{ $song->lyrics }}">
@@ -200,59 +189,54 @@
 					</td>
 
 
-					@if (Request::is('*/songs'))
-						<td class="center hidden-sm-down">
-							@if ( strlen($song->chords)>20 )
-								<i class="fa fa-check"></i>
-							@endif
-						</td>
+					<td class="center hidden-sm-down">
+						@if ( strlen($song->chords)>20 )
+							<i class="fa fa-check"></i>
+						@endif
+					</td>
 
 
-						<td class="center hidden-sm-down" title="Are there files (like sheet music) attached to this song?">
-							@if ( count($song->files)>0 )
-								<i class="fa fa-check"></i>
-							@endif
-						</td>
+					<td class="center hidden-sm-down" title="Are there files (like sheet music) attached to this song?">
+						@if ( count($song->files)>0 )
+							<i class="fa fa-check"></i>
+						@endif
+					</td>
 
-						<?php $last = $song->lastPlanUsingThisSong();?>
-
-
-						<td class="center hidden-md-down">
-							@if ($song->items_count>1 || !$last)
-								<a title="Show list of plans using this song" href="{{ route('songs.show', $song->id) }}">{{ $song->items_count }}</a>
-							@endif
-							@if ($last && $song->items_count==1)
-								<a href="{{ url('cspot/plans/'.$last->id) }}" title="open this plan">1</a>
-							@endif
-						</td>
+					<?php $last = $song->lastPlanUsingThisSong();?>
 
 
-						<td class="link center hidden-md-down">
-							@if ($last) 
-								<a href="{{ url('cspot/plans/'.$last->id) }}" title="open this plan">
-								<small>{{ $song->last_time_used->formatLocalized('%a, %d %b \'%y') }}</small></a>
-								{{-- <small>{{ $last->date->formatLocalized('%a, %d %b \'%y') }}</small></a> --}}
-							@endif
-						</td>
+					<td class="center hidden-md-down">
+						@if ($song->items_count>1 || !$last)
+							<a title="Show list of plans using this song" href="{{ route('songs.show', $song->id) }}">{{ $song->items_count }}</a>
+						@endif
+						@if ($last && $song->items_count==1)
+							<a href="{{ url('cspot/plans/'.$last->id) }}" title="open this plan">1</a>
+						@endif
+					</td>
 
 
-						<td class="center hidden-lg-down">
-		                    @if ( $song->ccli_no > 1000 && 'MP'.$song->ccli_no!=$song->book_ref )
-		                        <a class="btn btn-sm" type="button" target="new" 
-		                            href="{{ env('SONGSELECT_URL').$song->ccli_no }}">
-	                         	{{ $song->ccli_no }}
-	                        	</a>
-		                    @else
-	                         	{{ $song->ccli_no }}
-		                    @endif
-						</td>
+					<td class="link center hidden-md-down">
+						@if ($last) 
+							<a href="{{ url('cspot/plans/'.$last->id) }}" title="open this plan">
+							<small>{{ $song->last_time_used->formatLocalized('%a, %d %b \'%y') }}</small></a>
+							{{-- <small>{{ $last->date->formatLocalized('%a, %d %b \'%y') }}</small></a> --}}
+						@endif
+					</td>
 
 
-						<td class="center hidden-lg-down">{{ $song->license }}</td>
+					<td class="center hidden-lg-down">
+	                    @if ( $song->ccli_no > 1000 && 'MP'.$song->ccli_no!=$song->book_ref )
+	                        <a class="btn btn-sm" type="button" target="new" 
+	                            href="{{ env('SONGSELECT_URL').$song->ccli_no }}">
+                         	{{ $song->ccli_no }}
+                        	</a>
+	                    @else
+                         	{{ $song->ccli_no }}
+	                    @endif
+					</td>
 
-					@else
-						<td class="white-space-pre-wrap">{{ $song->lyrics }}</td>
-					@endif
+
+					<td class="center hidden-lg-down">{{ $song->license }}</td>
 
 
 
@@ -285,11 +269,14 @@
 
 		</table>
 
+
 		@if ($currentPage!=0)
 			<center>
 				{!! $songs->links() !!}
 			</center>
 		@endif
+
+
 
     @else
 

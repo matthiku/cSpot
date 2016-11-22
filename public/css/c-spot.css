@@ -10320,6 +10320,20 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
  */
 
 
+/* additional fonts */
+.lora {
+    font-family: 'Lora', serif;
+}
+.korn {
+    font-family: 'Vollkorn', serif;
+}
+.shil {
+    font-family: 'Shadows Into Light', cursive;
+}
+.text-shadow {
+    text-shadow: 4px 4px 4px #aaa;
+}
+
 /* Opacity (or transparency) */
 .opac-0 { opacity: 0.0; }
 .opac-1 { opacity: 0.1; }

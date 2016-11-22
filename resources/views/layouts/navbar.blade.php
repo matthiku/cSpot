@@ -222,7 +222,7 @@
             CENTER - Show church logo and name 
         -->
         <li class="hidden-md-down center">
-            <a class="nav-link" target="new" href="{{ env('CHURCH_URL') }}">
+            <a class="nav-link shil" target="new" href="{{ env('CHURCH_URL') }}">
                 <img src="{{ url($logoPath.env('CHURCH_LOGO_FILENAME')) }}" height="20">
                 {{ env('CHURCH_NAME') }}
             </a>

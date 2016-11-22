@@ -173,11 +173,9 @@ class SongController extends Controller
 
         $heading = 'c-Spot Training Videos';
 
-        return view( $this->view_all, array(
+        return view( 'cspot.training', array(
             'songs'       => $songs, 
             'heading'     => $heading,
-            'plan_id'     => 0,
-            'currentPage' => 0,
         ));
     }
 

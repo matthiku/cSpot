@@ -17,10 +17,10 @@
                 <div class="card card-block center">
 
                     @if (! Auth::user()->isMusician())
-                        <p>Welcome, <strong>{{ Auth::user()->first_name }}</strong>, to </p>
+                        <p>Welcome, <strong class="shil">{{ Auth::user()->first_name }}</strong>, to </p>
 
-                        <h3 class="card-title">
-                            c-SPOT, the <span class="text-primary">c</span>hurch-<span class="text-primary">S</span>ervice 
+                        <h3 class="card-title lora text-shadow">
+                            c-SPOT, the <span class="text-primary">c</span>hurch-<span class="text-primary">S</span>ervices 
                             <span class="text-primary">P</span>lanning <span class="text-primary">O</span>nline <span class="text-primary">T</span>ool
                         </h3>
                         for
@@ -28,24 +28,24 @@
 
                     @else
 
-                        <h4>c-SPOT, the <span class="text-primary">c</span>hurch-<span class="text-primary">S</span>ervice 
-                            <span class="text-primary">P</span>lanning <span class="text-primary">O</span>nline <span class="text-primary">T</span>ool</h4>
+                        <h3 class="korn text-shadow">c-SPOT, the <span class="text-primary">c</span>hurch-<span class="text-primary">S</span>ervices 
+                            <span class="text-primary">P</span>lanning <span class="text-primary">O</span>nline <span class="text-primary">T</span>ool</h3>
                         <small><a href="http://www.ie.ccli.com/?country=ie">CCLI</a> # {{ (env('CHURCH_CCLI')) ? env('CHURCH_CCLI') : '?' }}</small>
                     @endif
 
 
                     <a href="{{ env('CHURCH_URL') }}" target="new">
-                        <h4>
+                        <h3 class="shil">
                             <img src="{{ url($logoPath.env('CHURCH_LOGO_FILENAME')) }}" height="30">
                             {{ env('CHURCH_NAME') }}
-                        </h4>
+                        </h3>
                     </a>
 
 
                     <hr>
 
 
-                    <p class="card-text">
+                    <p class="card-text lora">
 
                         <span class="btn btn-lg btn-success md-full mr-2">
                             <a href="#" data-container="body" data-toggle="tooltip" data-placement="left" 
