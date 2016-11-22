@@ -38,7 +38,7 @@ class SongController extends Controller
      * Authentication
      */
     public function __construct() {
-        $this->middleware('role:editor', ['except' => ['index', 'show', 'APIgetSongList', 'searchSong']]);
+        $this->middleware('role:editor', ['except' => ['index', 'show', 'APIgetSongList', 'searchSong', 'trainingVideos']]);
     }
 
 
@@ -158,6 +158,26 @@ class SongController extends Controller
             'heading'     => $heading,
             'plan_id'     => $plan_id,
             'currentPage' => $songs->currentPage(),
+        ));
+    }
+
+
+    /**
+     * show list of training videos
+     */
+    public function trainingVideos()
+    {
+        $songs = Song::where('title_2', 'training')
+            ->orderBy('book_ref')
+            ->get();
+
+        $heading = 'cSpot Training Videos';
+
+        return view( $this->view_all, array(
+            'songs'       => $songs, 
+            'heading'     => $heading,
+            'plan_id'     => 0,
+            'currentPage' => 0,
         ));
     }
 

@@ -22,7 +22,7 @@
 
                 @include('auth.social')
                 
-                <div class="bg-inverse mt-2">
+                <div class="bg-success mt-2">
                     <span class="text-white">Not sure what to do? Need some help?<br>
                     <a href="https://www.youtube.com/watch?v=SNgq9ZW1KMs" target="new">
                         <i class="fa fa-youtube-play red"></i>

@@ -63,6 +63,9 @@
                     <a class="dropdown-item" href="{{ url('admin/instruments') }}"><i class="fa fa-btn fa-music fa-lg"></i> &nbsp; User Instruments</a>
                     <hr>
                     <a class="dropdown-item" href="{{ url('admin/resources') }}"><i class="fa fa-btn fa-cubes fa-lg"></i> &nbsp; Resources</a>
+                    <hr>
+                    <a class="dropdown-item" href="{{ route('trainingVideos') }}"><big>&#127979;</big> &nbsp; Training Videos</a>
+
                     @if (Auth::user()->isAdmin())
                         <hr>
                         <a target="_new" class="dropdown-item" href="{{ url('admin/logs')  }}">

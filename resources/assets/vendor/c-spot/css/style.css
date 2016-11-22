@@ -220,16 +220,17 @@ a[disabled] {
 }
 
 .drag-item {
-    cursor: grab;
+    cursor: n-resize;
 }
 .drag-item>i {
     color: #ccc;
-    cursor: grab;
+    cursor: n-resize;
 }
 .drag-item>i:hover {
     color: black;
 }
 .drag-item:hover {
+    padding: 2px;
     border: 2px solid #def;
     background-color: #abc;
 }

@@ -155,7 +155,7 @@
 
 
     </div>
-    <!-- ================================================================================ -->
+    {{-- ================================================================================ --}}
 
 
     <?php 
@@ -279,7 +279,7 @@
             &dArr;
         </button>
 
-        <button class="btn btn-sm btn-outline-secondary" type="button" onclick="showBlankScreen()">
+        <button class="btn btn-sm btn-outline-secondary" id="show-blank-screen" type="button" onclick="showBlankScreen()">
             <span class="hidden-sm-down text-muted">Blank</span><i class="fa fa-tv hidden-md-up"></i>
         </button>     
 

@@ -235,75 +235,84 @@ $modalContent = '
 
 
 
-    @if (Auth::user()->ownsPlan($item->plan_id))
-        {{-- configuration menu --}}
-        <div class="nav-item btn-group dropup float-xs-left ml-1">
+    {{-- configuration menu --}}
+    <div class="nav-item btn-group dropup float-xs-left ml-1">
 
-            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
-                 id="presentConfigDropUpMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="text-muted hidden-sm-down">Config </span><i class="fa fa-cog"></i>
-            </button>
+        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+             id="presentConfigDropUpMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="text-muted hidden-sm-down">Config </span><i class="fa fa-cog"></i>
+        </button>
 
-            <div class="dropdown-menu dropdown-menu-presentation" aria-labelledby="presentConfigDropUpMenu">
+        <div class="dropdown-menu dropdown-menu-presentation" aria-labelledby="presentConfigDropUpMenu">
 
-                <h6 class="dropdown-header">Synchronisation Settings</h6>
+            <h6 class="dropdown-header">Local Caching</h6>
 
-                <a      href="#" class="dropdown-item{{ env('PRESENTATION_ENABLE_SYNC', 'false') ? '' : ' disabled' }}" 
-                        onclick="changeSyncPresentation()" title="Synchronise this presentation with Main Presenter">
-                    <i id="syncPresentationIndicator" class="fa fa-square-o">&nbsp;</i>Sync presentation?
-                    <span class="small">&nbsp;with:</span>
-                    <span class="small showPresenterName"> ({{ $serverSideMainPresenter ? $serverSideMainPresenter['name'] : 'none' }})</span>
-                </a>
+                <a      href="#" class="dropdown-item" onclick="changeOfflineModeConfig()" 
+                        title="Work off-line and get slides from local storage instead of from the server">
+                    <i id="config-OfflineModeItem" class="fa fa-square-o">&nbsp;</i>use locally cached slides?</a>
 
-                <a      href="#" class="dropdown-item{{ env('PRESENTATION_ENABLE_SYNC', 'false') ? '' : ' disabled' }}" 
-                        onclick="changeMainPresenter()" title="Become Main Presenter controlling other presentations">
-                    <i id="setMainPresenterItem" class="fa fa-square-o">&nbsp;</i>Be Main Presenter?
-                    <span class="small showPresenterName"> ({{ $serverSideMainPresenter ? $serverSideMainPresenter['name'] : 'none' }})</span>
-                </a>
+                <a      href="#" class="dropdown-item small" onclick="clearLocalCache();"
+                        title="delete all locally cached items">
+                    <i class="fa fa-trash-o red"></i>&nbsp;</i>delete all locally cached slides</a>
 
-            </div>
-        </div>
+        @if (Auth::user()->ownsPlan($item->plan_id))
+            <div class="dropdown-divider"></div>
+            <h6 class="dropdown-header">Synchronisation Settings</h6>
 
-    @else 
+            <a      href="#" class="dropdown-item{{ env('PRESENTATION_ENABLE_SYNC', 'false') ? '' : ' disabled' }}" 
+                    onclick="changeSyncPresentation()" title="Synchronise this presentation with Main Presenter">
+                <i id="syncPresentationIndicator" class="fa fa-square-o">&nbsp;</i>Sync presentation?
+                <span class="small">&nbsp;with:</span>
+                <span class="small showPresenterName"> ({{ $serverSideMainPresenter ? $serverSideMainPresenter['name'] : 'none' }})</span>
+            </a>
 
-        <!-- 
-            DropUP Menu "Show"
-        -->
-        <div class="btn-group dropup float-xs-left ml-1" id="jumplist">
-
-            <button type="button" class="btn btn-sm btn-info dropdown-toggle" 
-                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Show
-            </button>
-
-            <div class="dropdown-menu dropdown-menu-left bg-faded">
-                @foreach (range(1,7) as $num)
-                    <a class="dropdown-item" href="#verse{{ $num }}" 
-                            id="jump-verse{{ $num }}" style="display: none">
-                        Verse {{ $num }}</a>
-                @endforeach
-                <a class="dropdown-item" href="#chorus" id="jump-chorus" style="display: none">Chorus</a>
-                <a class="dropdown-item" href="#bridge" id="jump-bridge" style="display: none">Bridge</a>
-                <div class="hidden-md-up dropdown-divider"></div>                
-                <a class="dropdown-item hidden-md-up edit-show-buttons" 
-                        href="#" style="display: none"
-                        onclick="decFontSize('.text-song');" >
-                    A <i class="fa fa-minus"></i> decrease font
-                </a>
-                <a class="dropdown-item hidden-md-up edit-show-buttons" 
-                        href="#" style="display: none"
-                        onclick="incFontSize('.text-song');" >
-                    A <i class="fa fa-plus"></i> increase font
-                </a>
-                <a class="dropdown-item hidden-md-up edit-show-buttons" id="goswap-dropup"
-                        href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/go/swap/'.$type) }}">
-                    <i class="fa fa-file-text"></i> <i class="fa fa-refresh fa-lg"></i> <i class="fa fa-music"></i>
-                    sheetmusic/chords
-            </div>
+            <a      href="#" class="dropdown-item{{ env('PRESENTATION_ENABLE_SYNC', 'false') ? '' : ' disabled' }}" 
+                    onclick="changeMainPresenter()" title="Become Main Presenter controlling other presentations">
+                <i id="setMainPresenterItem" class="fa fa-square-o">&nbsp;</i>Be Main Presenter?
+                <span class="small showPresenterName"> ({{ $serverSideMainPresenter ? $serverSideMainPresenter['name'] : 'none' }})</span>
+            </a>
+        @endif
 
         </div>
+    </div>
 
-    @endif
+    <!-- 
+        DropUP Menu "Show"
+    -->
+    <div class="btn-group dropup float-xs-left ml-1" id="jumplist">
+
+        <button type="button" class="btn btn-sm btn-info dropdown-toggle" 
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Show
+        </button>
+
+        <div class="dropdown-menu dropdown-menu-left bg-faded">
+            @foreach (range(1,7) as $num)
+                <a class="dropdown-item" href="#verse{{ $num }}" 
+                        id="jump-verse{{ $num }}" style="display: none">
+                    Verse {{ $num }}</a>
+            @endforeach
+            <a class="dropdown-item" href="#chorus" id="jump-chorus" style="display: none">Chorus</a>
+            <a class="dropdown-item" href="#bridge" id="jump-bridge" style="display: none">Bridge</a>
+            <div class="hidden-md-up dropdown-divider"></div>                
+            <a class="dropdown-item hidden-md-up edit-show-buttons" 
+                    href="#" style="display: none"
+                    onclick="decFontSize('.text-song');" >
+                A <i class="fa fa-minus"></i> decrease font
+            </a>
+            <a class="dropdown-item hidden-md-up edit-show-buttons" 
+                    href="#" style="display: none"
+                    onclick="incFontSize('.text-song');" >
+                A <i class="fa fa-plus"></i> increase font
+            </a>
+            <a class="dropdown-item hidden-md-up edit-show-buttons" id="goswap-dropup"
+                    href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/go/swap/'.$type) }}">
+                <i class="fa fa-file-text"></i> <i class="fa fa-refresh fa-lg"></i> <i class="fa fa-music"></i>
+                sheetmusic/chords
+        </div>
+
+    </div>
+
 
 </nav>
 

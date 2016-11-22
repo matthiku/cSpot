@@ -99,13 +99,15 @@
 
 				<th>Instrument(s)&nbsp; <a href="{{ route('instruments.index') }}" title="Manage Instruments"> &#128393; </a></th>
 
-				<th class="small" title="involved in # of events as leader">Leader</th>
+				<th class="small center" title="involved in # of events as leader">Leader</th>
 
-				<th class="small" title="involved in # of events as teacher">Teacher</th>
+				<th class="small center" title="involved in # of events as teacher">Teacher</th>
 
-				@include('cspot.snippets.theader', ['thfname' => 'last_access', 'thdisp' => 'Last Access', 'thsearch'=>false, 'thclass'=>'hidden-md-down center'])
+				@if (Auth::user()->isAdmin())
+					@include('cspot.snippets.theader', ['thfname' => 'last_access', 'thdisp' => 'Last Access', 'thsearch'=>false, 'thclass'=>'hidden-md-down center'])
 
-				@include('cspot.snippets.theader', ['thfname' => 'last_login', 'thdisp' => 'Last Login', 'thsearch'=>false, 'thclass'=>'hidden-md-down center'])
+					@include('cspot.snippets.theader', ['thfname' => 'last_login', 'thdisp' => 'Last Login', 'thsearch'=>false, 'thclass'=>'hidden-md-down center'])
+				@endif
 
 				@include('cspot.snippets.theader', ['thfname' => 'created_at', 'thdisp' => 'Joined', 'thsearch'=>false, 'thclass'=>'hidden-lg-down center'])
 
@@ -173,18 +175,21 @@
                 </td>
 
 
-				<td class="hidden-md-down small center" title = "{{ $user->last_access }}">{{ 
-					( $user->last_access && $user->last_access->ne(Carbon\Carbon::create(0,0,0,0,0,0)) )
-						? $user->last_access->diffForHumans() 
-						: 'never'
-					}}</td>
+				@if (Auth::user()->isAdmin())
 
+					<td class="hidden-md-down small center" title = "{{ $user->last_access }}">{{ 
+						( $user->last_access && $user->last_access->ne(Carbon\Carbon::create(0,0,0,0,0,0)) )
+							? $user->last_access->diffForHumans() 
+							: 'never'
+						}}</td>
 
-				<td class="hidden-md-down small center" title = "{{ $user->last_login }}">{{ 
-					( $user->last_login && $user->last_login->ne(Carbon\Carbon::create(0,0,0,0,0,0)) )
-						? $user->last_login->diffForHumans() 
-						: 'never'
-					}}</td>
+					<td class="hidden-md-down small center" title = "{{ $user->last_login }}">{{ 
+						( $user->last_login && $user->last_login->ne(Carbon\Carbon::create(0,0,0,0,0,0)) )
+							? $user->last_login->diffForHumans() 
+							: 'never'
+						}}</td>
+
+				@endif
 
 
 				<td class="hidden-lg-down small center">{{ 

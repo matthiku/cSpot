@@ -246,8 +246,10 @@
                         @if ( $item->itemType()=='song')
 
                             <div class="row center text-muted">
-                                <strong>Song 'Freshness': {{ $item->song_freshness > 50 ? '&#127823;' : '&#127822;' }}<small>{{ $item->song_freshness }}%</small></strong>
-                                <br>
+                                @if ($item->song_freshness)
+                                    <strong>Song 'Freshness': {{ $item->song_freshness > 50 ? '&#127823;' : '&#127822;' }}<small>{{ $item->song_freshness }}%</small></strong>
+                                    <br>
+                                @endif
                                 @if ( $usageCount )
                                     This song was used before in <strong>{{ $usageCount }}</strong> service(s) -<br>
                                     <strong>{{ $item->song->leadersUsingThisSong($plan->leader_id)->count() }}</strong> times by the leader of this plan and

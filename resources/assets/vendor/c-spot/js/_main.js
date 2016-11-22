@@ -235,6 +235,11 @@ function loadFromLocalCache()
             // save in global namespace
             cSpot.presentation.sync = true;
         }
+        // use the offline mode (Local Storage) - Default is: Yes
+        cSpot.presentation.useOfflineMode = getLocalStorageItem('config-OfflineMode', 'true') == 'true';
+        
+        // if the value in LocalStorage was set to 'true', then we activate the checkbox:
+        changeCheckboxIcon('#config-OfflineModeItem', cSpot.presentation.useOfflineMode);
     }
 
 
@@ -739,6 +744,8 @@ function showYTvideoInModal(ytid, that)
 {
     // get title from data attribute of the link (to avoid problems with special characters!)
     var title = $(that).data('songTitle');
+    if (title===undefined)
+        title = $(that).parent().data('songTitle');
 
     // write the modal title
     $('#snippet-modal-title').text(title);

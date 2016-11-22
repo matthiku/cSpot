@@ -41571,6 +41571,11 @@ function loadFromLocalCache()
             // save in global namespace
             cSpot.presentation.sync = true;
         }
+        // use the offline mode (Local Storage) - Default is: Yes
+        cSpot.presentation.useOfflineMode = getLocalStorageItem('config-OfflineMode', 'true') == 'true';
+        
+        // if the value in LocalStorage was set to 'true', then we activate the checkbox:
+        changeCheckboxIcon('#config-OfflineModeItem', cSpot.presentation.useOfflineMode);
     }
 
 
@@ -42075,6 +42080,8 @@ function showYTvideoInModal(ytid, that)
 {
     // get title from data attribute of the link (to avoid problems with special characters!)
     var title = $(that).data('songTitle');
+    if (title===undefined)
+        title = $(that).parent().data('songTitle');
 
     // write the modal title
     $('#snippet-modal-title').text(title);
@@ -42337,6 +42344,9 @@ $(document).ready(function() {
 
             if ( cSpot.env.presentationEnableSync )
                 prepareSyncPresentation();
+
+            // watch blank slide status in presentation
+            cSpot.presentation.screenBlank = true;
         })
 
         .fail( function(data) {
@@ -42696,7 +42706,7 @@ $(document).ready(function() {
             return false;
         });
 
-        // allow rght-mouse-click to move one slide or item back
+        // allow right-mouse-click to move one slide or item back
         $('#main-content').on('mouseup', function(event){
             event.preventDefault();
             if (event.which == 1) {
@@ -42788,6 +42798,9 @@ $(document).ready(function() {
     // now we can allow the Modal to work fully
     $('.item-modal-header').toggle();
     $('.modal-footer').show();
+
+    // set focus to main content of presentations
+    $('#main-content').focus();
 
     ;;;console.log('document fully loaded');
 });
@@ -44820,6 +44833,8 @@ function splitBref(text)
             var vto = vrs[1].split(/[,;]/);
             arr.verse_to = vto[0];
         }
+        if (arr.verse_to===undefined)
+            arr.verse_to=arr.verse_from;
     } 
     // no verse references detected, use generic values
     else {
@@ -44827,7 +44842,7 @@ function splitBref(text)
         arr.verse_to = 199;
     }
 
-    // name of the bible version (without brackets!)
+    // name of the bible VERSION (without brackets!)
     arr.version = ref[nr]
     if (arr.version)
         arr.version = arr.version.replace(/(\(|\))/g,'');
@@ -45361,17 +45376,17 @@ function prepareChordsPresentation(what)
         return false;
     });
 
-    // Allow mouse click (or finger touch) to move forward
-    $('#main-content').click(function(){
-        navigateTo('next-item');
-    });
-    // allow rght-mouse-click to move one slide or item back
-    $('#main-content').on('mouseup', function(event){
-        if (event.which == 3) {
-            event.preventDefault();
-            navigateTo('previous-item');
-        }
-    });
+    // // Allow mouse click (or finger touch) to move forward
+    // $('#main-content').click(function(){
+    //     navigateTo('next-item');
+    // });
+    // // allow rght-mouse-click to move one slide or item back
+    // $('#main-content').on('mouseup', function(event){
+    //     if (event.which == 3) {
+    //         event.preventDefault();
+    //         navigateTo('previous-item');
+    //     }
+    // });
 
     // check if rendered items for this plan are 
     // cached no the server - then load it into local storage
@@ -45837,14 +45852,9 @@ function navigateTo(where)
     if ( document.baseURI.search('/present')<10 )
         showSpinner();
 
-    // no blankscreen when navigating to 'edit' or 'back' (exit)
-    var screenBlank;
-    if (where=='edit' || where=='back')
-        screenBlank = false;
-
     // in presentation Mode, do we want a blank slide between items?
-    if ( cSpot.presentation.configBlankSlides  &&  screenBlank ) {
-        screenBlank = false;
+    if ( cSpot.presentation.configBlankSlides  &&  cSpot.presentation.screenBlank ) {
+        cSpot.presentation.screenBlank = false;
         // check if there is an empty slide/item (an item without lyrics, bibletext or images)
         var reg = /^[\s]+$/; // regex for a string containing only white space.
         var main  = $('#main-content').text();
@@ -45855,22 +45865,28 @@ function navigateTo(where)
         if (! reg.test(main) || images) {
             $('#main-content').html('<div>.</div>');
             ;;;console.log('inserting empty slide...');
+            // hide current slide title to indicate blank slide
+            $('#item-navbar-label').hide();
+            $('#show-blank-screen').addClass('ui-state-active')
             return;
         }
         console.log('slide was already empty, proceeding to next item...');
         // otherwise, if the slide/item was empty anyway, we proceed to the next item
     }
 
+    // if configured, show blank screen after next item
+    cSpot.presentation.screenBlank = true;
+
 
 
     /*\
        > For OFFLINE MODE: check if the next (or previous) item is cached in LocalStorage 
     \*/
-    if (cSpot.presentation.useOfflineMode) {
+    if ( where!='edit' && where!='back' && cSpot.presentation.useOfflineMode) {
 
         // get the current item identification values
-        var cur_seq_no  = cSpot.presentation.seq_no;        // dynamic value (will be changed below or on reload)
-        var max_seq_no  = cSpot.presentation.max_seq_no;    // static value
+        var cur_seq_no  = 1.0*cSpot.presentation.seq_no;        // dynamic value (will be changed below or on reload)
+        var max_seq_no  = 1.0*cSpot.presentation.max_seq_no;    // static value
         var cur_plan_id = 'offline-'+cSpot.presentation.plan_id;       // static value
         var next_seq_no, prev_seq_no;
 
@@ -45901,7 +45917,7 @@ function navigateTo(where)
             if (cSpot.presentation.seq_no == max_seq_no) {
                 cSpot.presentation.seq_no = 1;
             } else {
-                cSpot.presentation.seq_no += 1;
+                cSpot.presentation.seq_no = 1.0*cSpot.presentation.seq_no + 1;
             }
 
             // modify the next-item button to reflect the new item in the url
@@ -45911,7 +45927,9 @@ function navigateTo(where)
             $('.dropdown-item.nowrap').removeClass('bg-info')
             $('#menu-item-seq-no-'+cSpot.presentation.seq_no+'\\.0').addClass('bg-info');
 
-            screenBlank = true;     // reset to default....
+            // show title again (if it was hidden because of blank slide)
+            $('#item-navbar-label').show();
+
             return;
         }
 
@@ -45933,7 +45951,9 @@ function navigateTo(where)
             // modify the previous-item button to reflect the new item in the url
             modifyHRefOfJumpbutton(next_seq_no, prev_seq_no)
 
-            screenBlank = true;     // set to default....
+            // show title again (if it was hidden because of blank slide)
+            $('#item-navbar-label').show();
+
             return;
         }
 
@@ -46432,6 +46452,9 @@ function writeCachedDataIntoDOM(identifier) {
     $('#item-navbar-next-label' ).html(localStorage.getItem(identifier + '-itemNavBarNext'));
     // $('#next-item-button'       ).html(localStorage.getItem(identifier + '-itemNBNextItemBtn'));
 
+    // in case it was added to identify a blank slide:
+    $('#show-blank-screen').removeClass('ui-state-active')
+
     // take the opportunity to get the latest plan data and see if the plan was updated meanwhile
     var plan_id = cSpot.presentation.plan_id;
 
@@ -46471,7 +46494,7 @@ function saveMainContentToLocalStorage(what) {
         what = '';
     }
     var plan_id = cSpot.presentation.plan_id
-    var itemIdentifier = 'offline-' + plan_id + '-' + cSpot.presentation.seq_no;
+    var itemIdentifier = 'offline-' + plan_id + '-' + (cSpot.presentation.seq_no * 1.0);
 
     // we should have only one plan in LocalStorage!
     checkLocalStorageForPresentation(plan_id);
@@ -46554,9 +46577,10 @@ function isInLocalStore(identifier)
 
         if (sk[0]!='offline') continue;
 
-        if ( ik[0]==sk[0] && ik[1]==sk[1] && ik[2]==sk[2] ) 
+        if ( ik[0]==sk[0]  &&  ik[1]==sk[1]  &&  ik[2]==sk[2] ) 
         {
-            if ( type == 'lyrics' || sk[3]=='present' || sk[4]==type )
+            // we found a valid cache for this type of presentation
+            if ( (type == 'lyrics' && sk[3]=='seqIndicator') || sk[4]==type )
                 return true;
         }
     }
@@ -46578,8 +46602,9 @@ function saveLocallyAndRemote(plan_id, key, value)
         return;
     }
 
-    // remove excess blanks from the string
-    value = value.replace(/ {2,}/g,' ')
+    // remove excess blanks from the string, but not with chords
+    if (key.search('chords') < 0)
+        value = value.replace(/ {2,}/g,' ')
 
     // save locally
     localStorage.setItem(key, value.trim());
@@ -46651,7 +46676,7 @@ function clearLocalCache()
     checkLocalStorageForPresentation(999999999);
 }
 
-// clear local cache
+// clear server-side cached presentation data
 function clearServerCache(plan_id)
 {
     // validate plan id

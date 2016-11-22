@@ -48,6 +48,9 @@ $(document).ready(function() {
 
             if ( cSpot.env.presentationEnableSync )
                 prepareSyncPresentation();
+
+            // watch blank slide status in presentation
+            cSpot.presentation.screenBlank = true;
         })
 
         .fail( function(data) {
@@ -407,7 +410,7 @@ $(document).ready(function() {
             return false;
         });
 
-        // allow rght-mouse-click to move one slide or item back
+        // allow right-mouse-click to move one slide or item back
         $('#main-content').on('mouseup', function(event){
             event.preventDefault();
             if (event.which == 1) {
@@ -499,6 +502,9 @@ $(document).ready(function() {
     // now we can allow the Modal to work fully
     $('.item-modal-header').toggle();
     $('.modal-footer').show();
+
+    // set focus to main content of presentations
+    $('#main-content').focus();
 
     ;;;console.log('document fully loaded');
 });

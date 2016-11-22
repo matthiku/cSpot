@@ -470,13 +470,13 @@ Usage total: {{$item->song->plansUsingThisSong()->count()}} times,
 
 {{-- show cached items data 
 --}}
-@if( Auth::user()->ownsPlan($plan->id) )
-	<div 	class="small float-xs-right ml-2" id="showCachedItems" 
-		 	style="display: {{ $plan->planCaches()->count() ? 'initial' : 'none' }}">
-		Cache contains {{ $plan->planCaches()->count() }} pre-rendered items. 
-		<a href="#" onclick="clearServerCache({{ $plan->id }});"><i class="fa fa-trash"></i>&nbsp;Delete.</a>
-	</div>
-@endif
+<div 	class="small float-xs-right ml-2" id="showCachedItems" 
+	 	style="display: {{ $plan->planCaches()->count() ? 'initial' : 'none' }}">
+	Items-Cache contains {{ $plan->planCaches()->count() }} pre-rendered items. 
+	@if( Auth::user()->ownsPlan($plan->id) )
+		<a href="#showCachedItems" onclick="clearServerCache({{ $plan->id }});"><i class="fa fa-trash"></i>&nbsp;Delete.</a>
+	@endif
+</div>
 
 
 {{-- show deleted items data 

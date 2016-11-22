@@ -49,6 +49,7 @@ Route::group(['middleware' => 'web'], function () {
 
     // get next event of any type
     Route::get('api/plans/next',                   'Cspot\PlanController@APInextEvent')->name('api.next.event');
+
 });
 
 
@@ -250,6 +251,10 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
 
     // song list
     Route::get('api/songs/getsonglist', 'Cspot\SongController@APIgetSongList')->name('getsonglist');
+
+
+    // list of training videos
+    Route::get('training/videos',       'Cspot\SongController@trainingVideos')->name('trainingVideos');
 
 
     /*
