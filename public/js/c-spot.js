@@ -44605,8 +44605,30 @@ function preparePresentation()
             saveMainContentToLocalStorage();
         } 
 
+        // start showing the time in the presentation
+        show_time();
 }
 
+
+
+function show_time()
+{
+    var date = new Date();
+
+    var h = date.getHours();
+    if (h<10)
+        h = "0"+h;
+    var m = date.getMinutes();
+    if (m<10)
+        m = "0"+m;
+    var result = h+":"+m;
+    
+    var id = 'time-of-day';
+    document.getElementById(id).innerHTML = result;
+    setTimeout('show_time("'+id+'");','1000');
+
+    return true;
+}
 
 
 /*\

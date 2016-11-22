@@ -183,7 +183,7 @@
 					<td {!! $editLink !!} class="link hidden-md-down small">{{ mb_strimwidth($song->author, 0, 35, "...") }}</td>
 
 
-					<td {!! $editLink !!} class="link center hidden-xs-down small">{{ $song->book_ref }}</td>
+					<td {!! $editLink !!} class="link center hidden-xs-down">{{ $song->book_ref }}</td>
 
 
 

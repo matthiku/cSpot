@@ -16,14 +16,24 @@
 
                 <div class="card card-block center">
 
-                    <p>Welcome, <strong>{{ Auth::user()->first_name }}</strong>, to </p>
+                    @if (! Auth::user()->isMusician())
+                        <p>Welcome, <strong>{{ Auth::user()->first_name }}</strong>, to </p>
 
-                    <h3 class="card-title">
-                        c-SPOT, the <span class="text-primary">ch</span>urch-<span class="text-primary">S</span>ervice 
-                        <span class="text-primary">P</span>lanning <span class="text-primary">O</span>nline <span class="text-primary">T</span>ool
-                    </h3>
-                    for
-                    <small class="float-xs-right">CCLI # {{ (env('CHURCH_CCLI')) ? env('CHURCH_CCLI') : '?' }}</small>
+                        <h3 class="card-title">
+                            c-SPOT, the <span class="text-primary">c</span>hurch-<span class="text-primary">S</span>ervice 
+                            <span class="text-primary">P</span>lanning <span class="text-primary">O</span>nline <span class="text-primary">T</span>ool
+                        </h3>
+                        for
+                        <small class="float-xs-right"><a href="http://www.ie.ccli.com/?country=ie">CCLI</a> # {{ (env('CHURCH_CCLI')) ? env('CHURCH_CCLI') : '?' }}</small>
+
+                    @else
+
+                        <h4>c-SPOT, the <span class="text-primary">c</span>hurch-<span class="text-primary">S</span>ervice 
+                            <span class="text-primary">P</span>lanning <span class="text-primary">O</span>nline <span class="text-primary">T</span>ool</h4>
+                        <small><a href="http://www.ie.ccli.com/?country=ie">CCLI</a> # {{ (env('CHURCH_CCLI')) ? env('CHURCH_CCLI') : '?' }}</small>
+                    @endif
+
+
                     <a href="{{ env('CHURCH_URL') }}" target="new">
                         <h4>
                             <img src="{{ url($logoPath.env('CHURCH_LOGO_FILENAME')) }}" height="30">

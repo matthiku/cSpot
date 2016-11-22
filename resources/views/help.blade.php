@@ -2,10 +2,13 @@
 <!-- # (C) 2016 Matthias Kuhs, Ireland -->
 
 <div class="card">
+
     
 <div class="card-header">
-    <h3>The Fine Print ...</h3>
+    <a class="float-xs-right" href="{{ route('trainingVideos') }}"><big>&#127979;</big> Training Videos</a>
+    <h3>The Small Print ...</h3>
 </div>
+
 
 <div class="card-block xs-center">
 

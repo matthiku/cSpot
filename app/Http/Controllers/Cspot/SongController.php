@@ -101,7 +101,7 @@ class SongController extends Controller
             // (the where clause is needed since the 'withCount' would bring in all items with song_id = 0)
             $songs = Song::withCount('items')
                 ->where('id', '>', 0)
-                ->whereNotIn('title_2', ['video', 'slides'])
+                ->whereNotIn('title_2', ['video', 'slides', 'training'])
                 ->orderBy($orderBy, $order);
         }
 
@@ -171,7 +171,7 @@ class SongController extends Controller
             ->orderBy('book_ref')
             ->get();
 
-        $heading = 'cSpot Training Videos';
+        $heading = 'c-Spot Training Videos';
 
         return view( $this->view_all, array(
             'songs'       => $songs, 

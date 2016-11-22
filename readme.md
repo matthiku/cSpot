@@ -31,9 +31,9 @@ Check the [Installation instructions](#installation)
 
 In order to ease the familiarisation of users with the tool, a number of instructional videos will be recorded and published on YouTube on various topics:
 
-###### List of planned videos
+###### List of Training Videos
 
-1. Generic User Interface and Login
+1. [Generic User Interface and Login](https://www.youtube.com/watch?v=SNgq9ZW1KMs)
 2. Event Planning and Leading
 3. Musicians
 4. Presenting Events

@@ -23,13 +23,13 @@
                 @include('auth.social')
                 
                 <div class="bg-success mt-2">
-                    <span class="text-white">Not sure what to do? Need some help?<br>
+                    <span class="text-white">Not sure what to do? How to register?<br>
                     <a href="https://www.youtube.com/watch?v=SNgq9ZW1KMs" target="new">
                         <i class="fa fa-youtube-play red"></i>
                         Watch this short training video
                         <i class="fa fa-external-link small"></i><br> 
                     </a>
-                    explaining the sign-in process and the basics features of c-SPOT</span>
+                    <small>explains the sign-in process and the basics features of c-SPOT</small></span>
                 </div>
 
             </center>
