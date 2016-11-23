@@ -211,18 +211,24 @@ class SongController extends Controller
 
         $type = 'song';
         // is this a videoclip or slideshow?
-        if ( $song->title_2=='video' || $song->title_2=='slides' ) {
+        if ( $song->title_2=='video' || $song->title_2=='slides'  || $song->title_2=='training' ) {
             $song->update(['license' => 'PD']);
             $type = $song->title_2;
         }
 
+        // default route for 'normal' songs 
         if ($type=='song') {
             flash('New Song or Item added: '.$request->title );
             return \Redirect::route( $this->view_idx );
         }
 
-        // since we just create a new slide or clip, we go back to the list of slides or clips!
         flash('New '.$song->title_2.' added, titled: '.$request->title );
+
+        // show list of training videos if this was a new one of those
+        if ($type=='training')
+            return \Redirect::route( 'trainingVideos' );
+
+        // go back to the list of slides or clips if we just created a new slide or clip
         return redirect()->route(
             $this->view_idx, [
                 'filterby' => 'title_2',

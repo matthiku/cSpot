@@ -49,7 +49,7 @@
 
 
 				@if( Auth::user()->isEditor() )
-					<li class="nav-item active">
+					<li class="nav-item active float-xs-right mr-2">
 						<a class="nav-link btn btn-outline-primary" 
 						    href="{{ url('cspot/songs/create') }}{{ 
 								Request::has('filtervalue')
@@ -90,10 +90,11 @@
 
                     <div class="card" id="song-{{$song->id}}" data-content="{{$song}}">
 
+
                         <div class="card-block card-block-files">
                             @if ( Auth::user()->isEditor() )
                                 <a href="#" onclick="deleteFile({{ $song->id }})" title="delete this item" 
-                                    class="btn btn-sm btn-danger float-xs-right">
+                                    class="btn btn-sm btn-danger float-xs-right ml-1">
                                     <i class="fa fa-trash"></i></a>
                                 <a class="btn btn-outline-primary btn-sm float-xs-right" title="Edit song details" 
 										href='{{ url('cspot/songs/'.$song->id) }}/edit'><i class="fa fa-edit"></i></a>
@@ -103,24 +104,36 @@
                             </span>
                         </div>
 
-						<div class="card-block center">
-							<iframe height="200" src="https://www.youtube.com/embed/{{ $song->youtube_id }}" frameborder="0" allowfullscreen></iframe></div>
+
+						<div class="card-block p-0">
+							<div id="tabs-{{ $song->id }}" class="show-training-videos-tabs">
+								<ul>
+									<li><a href="#fragment-1" class="ui-training-videos-tabs"><span>Video</span></a></li>
+									<li><a href="#fragment-2" class="ui-training-videos-tabs"><span>Content</span></a></li>
+								</ul>
+								<div id="fragment-1" class="p-0 center">
+									<iframe height="200" src="https://www.youtube.com/embed/{{ $song->youtube_id }}" frameborder="0" allowfullscreen></iframe>
+								</div>
+								<div id="fragment-2" class="p-0">
+									<div class="white-space-pre-wrap">{{ $song->lyrics }}</div>
+								</div>
+							</div>
+						</div>
+
 
                     </div>
 
     			</div>
 
 
-				@if ( ($key+1) % 6 == 0)
+
+				@if ( ($key+1) % 4 == 0)
 					<div class="clearfix hidden-lg-down"></div>
-				@endif
-
-				@if ( ($key+1) % 3 == 0)
-					<div class="clearfix hidden-xl-up"></div>
-				@endif
-
-				@if ( ($key+1) % 2 == 0)
+				@elseif ( ($key+1) % 3 == 0)
 					<div class="clearfix hidden-md-up"></div>
+
+				@elseif ( ($key+1) % 2 == 0 && 1>2)
+					<div class="clearfix hidden-sm-down">{{$key}}hidden-sm-down</div>
 				@endif
 
 
@@ -129,6 +142,13 @@
 
 		</div><!-- row -->
 
+		<script>
+			$( ".show-training-videos-tabs" )
+				.tabs({
+  					heightStyle: "auto",
+  					event: "mouseover",
+				});
+		</script>
 
 
 
