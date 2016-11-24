@@ -5,7 +5,7 @@
 
 @section('title', "Present Plan")
 
-@section('plan', 'active')
+@section('plans', 'active')
 
 
 

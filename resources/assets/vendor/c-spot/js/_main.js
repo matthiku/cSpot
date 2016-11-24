@@ -138,6 +138,17 @@ function getLocalStorageItem(key, defaultValue)
 \*/
 
 
+/* Toggle tabs on Traing Videos page
+*/
+function toggleVideoTabs(on, off)
+{
+    $('#tab-'+on ).show();
+    $('#tab-'+off).hide();
+    $('#pill-'+on ).addClass('active');
+    $('#pill-'+off).removeClass('active');
+}
+
+
 
 function selectServiceType(that)
 {

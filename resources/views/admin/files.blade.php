@@ -5,7 +5,7 @@
 
 @section('title', $heading)
 
-@section('files', 'active')
+@section('admin', 'active')
 
 
 

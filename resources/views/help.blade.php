@@ -31,6 +31,7 @@
            to add or modify information accordingly.</p>
         <p>However, the ability to contribute to the plan details is based on distinct <span class="text-warning big">roles</span> given to each user, so that only authorized people
            can make modifications or even see certain details.</p>
+           More Details on the <a href="https://github.com/matthiku/cSpot/blob/master/readme.md">c-SPOT Project Page</a>
       </div>
     </div>
 

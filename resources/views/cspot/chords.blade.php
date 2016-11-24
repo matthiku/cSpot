@@ -5,7 +5,7 @@
 
 @section('title', "Show Chords")
 
-@section('plan', 'active')
+@section('plans', 'active')
 
 
 

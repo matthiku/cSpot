@@ -5,6 +5,7 @@
 
 @section('title', "User Profiles")
 
+@section('users', 'active')
 
 
 

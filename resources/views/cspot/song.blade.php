@@ -5,7 +5,7 @@
 
 @section('title', "Create or Update a Song")
 
-@section('songs', 'active')
+@section('plans', 'active')
 
 
 
@@ -40,7 +40,8 @@
 
             @if (isset($song))
                 {{-- SAVE or SUBMIT button --}}
-                <big class="submit-button float-xs-right" onclick="showSpinner()" style="display: none;">{!! Form::submit('Save changes'); !!}</big>
+                <big class="submit-button float-xs-right" onclick="showSpinner()" style="display: none;">
+                    {!! Form::submit('Save changes', ['class' => 'btn btn-success']); !!}
                 </big>
 
                 <h2 class="hidden-xs-down">Song/Item Details</h2>
@@ -80,18 +81,24 @@
         --}}
         <div class="col-md-6">
 
-            <a class="float-xs-right btn btn-outline-success" href="{{ url('cspot/songs?page=') .
-                    ( session()->has('currentPage') ? session('currentPage') : $currentPage ) }}">
-                All Songs
-            </a>
-            <a class="float-xs-right btn btn-outline-warning mr-1"
-                    href="{{ url('cspot/songs?filterby=title_2&filtervalue=slides') }}">
-                All Slideshows
-            </a>
-            <a class="float-xs-right btn btn-outline-danger mr-1"
-                    href="{{ url('cspot/songs?filterby=title_2&filtervalue=video') }}">
-                All Videoclips
-            </a>
+            @if ($song->title_2!='training')
+                <a class="float-xs-right btn btn-outline-success" href="{{ url('cspot/songs?page=') .
+                        ( session()->has('currentPage') ? session('currentPage') : $currentPage ) }}">
+                    All Songs
+                </a>
+                <a class="float-xs-right btn btn-outline-warning mr-1"
+                        href="{{ url('cspot/songs?filterby=title_2&filtervalue=slides') }}">
+                    All Slideshows
+                </a>
+                <a class="float-xs-right btn btn-outline-danger mr-1"
+                        href="{{ url('cspot/songs?filterby=title_2&filtervalue=video') }}">
+                    All Videoclips
+                </a>
+            @else
+                <a class="float-xs-right btn btn-outline-success" href="{{ route('trainingVideos') }}">
+                    Training Videos
+                </a>
+            @endif
 
             @if ( isset($song) && Auth::user()->isAdmin() && count($plansUsingThisSong)==0 )
                 <a href="{{ url('cspot/songs/'.$song->id) }}/delete">

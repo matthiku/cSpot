@@ -8,12 +8,13 @@
 @section('plans', 'active')
 
 
-@include( 'cspot/snippets/modal', ['modalContent' => '$modalContent', 'modalTitle' => '$modalTitle' ] )
-
 
 
 
 @section('content')
+
+	{{-- modal for showing embedded video --}}
+	@include( 'cspot.snippets.modal', ['modalContent' => '$modalContent', 'modalTitle' => '$modalTitle' ] )
 
 
 	@include('layouts.flashing')
@@ -76,9 +77,9 @@
 
 				<li class="nav-item active">
 					@if ( ! Request::has('filtervalue') )
-						<a class="nav-link btn btn-outline-danger" title="Show songs ordered by usage, but at least twice used in the past" 
+						<a class="nav-link btn btn-outline-danger" title="Show songs used in the past but not used in a long time" 
 								href="{{ url('cspot/songs') }}?filterby=songs&filtervalue=rare">
-							List 'Forgotten' Songs
+							List of 'Forgotten' Songs
 						</a>
 					@endif
 					@if ( Request::has('filtervalue') && Request::input('filtervalue')=='rare' )

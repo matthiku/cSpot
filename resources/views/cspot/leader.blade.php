@@ -5,7 +5,7 @@
 
 @section('title', "Leader's Script")
 
-@section('plan', 'active')
+@section('plans', 'active')
 
 
 

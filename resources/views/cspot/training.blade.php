@@ -5,25 +5,19 @@
 
 @section('title', $heading)
 
-@section('plans', 'active')
-
-
-@include( 'cspot/snippets/modal', ['modalContent' => '$modalContent', 'modalTitle' => '$modalTitle' ] )
-
+@section('setup', 'active')
 
 
 
 @section('content')
 
 
-	@include('layouts.flashing')
 
 
-
-	{{-- 	-	-	-	-	SONGS LIST Navigation Bar 
+	{{-- =============================================================== Navigation Bar =================
 	--}}
 
-	<nav class="navbar navbar-light bg-faded">
+	<nav class="navbar navbar-light bg-faded mb-1">
 
 		<button class="navbar-toggler hidden-sm-up" type="button" 
 			data-toggle="collapse" data-target="#exCollapsingNavbar2" aria-controls="exCollapsingNavbar2" aria-expanded="false" aria-label="Toggle navigation">
@@ -42,9 +36,9 @@
 			<ul class="nav navbar-nav">
 
 
-			    <a class="btn btn-outline-success float-xs-right" href='#' 
+			    <a class="btn btn-outline-success float-xs-right" href='#' title="Show videos as list or tiles" 
 			            onclick="$('#show-as-large-icons').toggle();$('#show-as-filelist').toggle();">
-			        <i class="fa fa-list"> </i> &nbsp; Filelist / Icons
+			        <i class="fa fa-list"> </i> &nbsp; List / Tiles
 			    </a>
 
 
@@ -81,47 +75,69 @@
 	@if (count($songs))
 
 
+		{{-- ===============================================================  TILES View ================
+		--}}
 		<div class="row" id="show-as-large-icons">
 
 
 	        @foreach( $songs as $key => $song )
 
+	        	@php
+	        		// title can be split in 2 when it contains a ' - ' string
+	        		$title = explode(' - ', $song->title);
+	        	@endphp
+
     			<div class="col-xs-12 col-md-6 col-lg-4 col-xl-3">
 
-                    <div class="card" id="song-{{$song->id}}" data-content="{{$song}}">
+
+					<div class="card training-videos-card">
+
+						<h5 class="bg-success text-xs-center training-videos-title">
+							{{ $title[0] }}
+							<br>
+							<span class="small text-white">{!! isset($title[1]) ? $title[1] : '<br>' !!}</span>
+						</h5>
 
 
-                        <div class="card-block card-block-files">
+						{{-- navigation tabs 
+						--}}
+						<div class="card-header px-1 pt-0" style="padding-bottom: 5px;">
                             @if ( Auth::user()->isEditor() )
-                                <a href="#" onclick="deleteFile({{ $song->id }})" title="delete this item" 
-                                    class="btn btn-sm btn-danger float-xs-right ml-1">
-                                    <i class="fa fa-trash"></i></a>
                                 <a class="btn btn-outline-primary btn-sm float-xs-right" title="Edit song details" 
 										href='{{ url('cspot/songs/'.$song->id) }}/edit'><i class="fa fa-edit"></i></a>
                             @endif
-                            <span class="card-title">
-                                <span class="fileshow-title-{{ $song->id }}">{{ $song->title }}</span><br>
-                            </span>
-                        </div>
-
-
-						<div class="card-block p-0">
-							<div id="tabs-{{ $song->id }}" class="show-training-videos-tabs">
-								<ul>
-									<li><a href="#fragment-1" class="ui-training-videos-tabs"><span>Video</span></a></li>
-									<li><a href="#fragment-2" class="ui-training-videos-tabs"><span>Content</span></a></li>
-								</ul>
-								<div id="fragment-1" class="p-0 center">
-									<iframe height="200" src="https://www.youtube.com/embed/{{ $song->youtube_id }}" frameborder="0" allowfullscreen></iframe>
-								</div>
-								<div id="fragment-2" class="p-0">
-									<div class="white-space-pre-wrap">{{ $song->lyrics }}</div>
-								</div>
-							</div>
+							<ul class="nav nav-tabs card-header-tabs float-xs-left">
+								<li class="nav-item">
+									<a class="nav-link {{ $song->youtube_id ? 'active' : '' }} ui-training-videos-tabs" href="#" id="pill-{{ $song->id }}-1" 
+										onclick="toggleVideoTabs('{{ $song->id }}-1', '{{ $song->id }}-2')">Video</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link {{ $song->youtube_id ? '' : 'active' }} ui-training-videos-tabs" 	   href="#" id="pill-{{ $song->id }}-2" 
+										onclick="toggleVideoTabs('{{ $song->id }}-2', '{{ $song->id }}-1')">Content</a>
+								</li>
+							</ul>
 						</div>
 
 
-                    </div>
+						{{-- card blocks 
+						--}}
+						<div class="card-block text-xs-center ui-training-videos-blocks" id="tab-{{ $song->id }}-1" style="display: {{ $song->youtube_id ? 'inherit' : 'none' }};">
+							<p class="card-text">
+								@if ($song->youtube_id)
+									<iframe height="200" src="https://www.youtube.com/embed/{{ $song->youtube_id }}" frameborder="0" allowfullscreen></iframe>
+								@else
+									coming soon...
+								@endif
+							</p>
+						</div>
+
+						<div class="card-block ui-training-videos-blocks" id="tab-{{ $song->id }}-2" style="display: {{ $song->youtube_id ? 'none' : 'inherit' }};">
+							<p class="card-text">
+								<div class="white-space-pre-wrap">{!! $song->lyrics !!}</div>
+							</p>
+						</div>
+					</div>
+
 
     			</div>
 
@@ -152,6 +168,9 @@
 
 
 
+
+		{{-- ===============================================================  LIST View ================
+		--}}
         <div id="show-as-filelist" style="display: none;">
 
 			<table class="table table-striped table-bordered {{ count($songs)>15 ? 'table-sm' : '' }}">
@@ -172,10 +191,8 @@
 
 
 
-						<td {!! $editLink !!} class="link" title="{{ $song->lyrics }}">
-							{!! $song->title_2=='video' ? '<i class="fa fa-tv"> </i>' : '' !!}
-							{!! $song->title_2=='slides' ? '<i class="fa fa-clone"> </i>' : '' !!}
-							{{ $song->title }} {{ ($song->title_2<>'' && $song->title_2<>'video' && $song->title_2<>'slides' && $song->title_2<>'training') ? '('. $song->title_2 .')' : '' }}
+						<td {!! $editLink !!} class="link">
+							{{ $song->title }}
 						</td>
 
 
@@ -199,7 +216,7 @@
 						</td>
 
 
-						<td class="white-space-pre-wrap">{{ $song->lyrics }}</td>
+						<td class="white-space-pre-wrap">{!! $song->lyrics !!}</td>
 
 
 
@@ -231,7 +248,7 @@
 
     @else
 
-    	<p>No songs/videos/slides found!</p>
+    	<p>No training videos found!</p>
 
 	@endif
 

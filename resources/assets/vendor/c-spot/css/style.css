@@ -10,7 +10,18 @@
 
 /* jQuery UI tabs on the training videos page*/
 .ui-training-videos-tabs {
+    padding: 4px !important;
+}
+.ui-training-videos-blocks {
     padding: 5px !important;
+    min-height: 220px;
+    background-color: #fff;
+}
+.training-videos-title {
+    padding-bottom: 5px;    
+}
+.training-videos-card {
+    border-width: 2px;
 }
 
 /* additional fonts */

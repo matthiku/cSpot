@@ -7,7 +7,7 @@
 
 @section('title', "Create or Update Plan Item")
 
-@section('plan', 'active')
+@section('plans', 'active')
 
 
 
