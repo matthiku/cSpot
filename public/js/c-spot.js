@@ -42729,16 +42729,16 @@ $(document).ready(function() {
 
 
     /**
-     * Handle Keyboard events in Presentation Views
+     * Handle Keyboard events 
      */
-    if ( window.location.pathname.indexOf('/present' ) > 10
-      || window.location.pathname.indexOf('/chords'   ) > 10
-      || window.location.pathname.indexOf('/leaser'    ) > 10
-      || window.location.pathname.indexOf('/sheetmusic' ) > 10 ) {
 
-        // handle keyboard events
-        $(document).keydown(function( event ) {
+    $(document).keydown(function( event ) {
 
+        // Handle Keyboard events in Presentation Views
+        if ( window.location.pathname.indexOf('/present' ) > 10
+          || window.location.pathname.indexOf('/chords'   ) > 10
+          || window.location.pathname.indexOf('/leaser'    ) > 10
+          || window.location.pathname.indexOf('/sheetmusic' ) > 10 ) {
             // do nothing while a modal is open
             if ($('.modal-content').is(':visible')) return;
 
@@ -42778,9 +42778,27 @@ $(document).ready(function() {
                 case 190: recallNextBibleverse();  break; // '.'  - jumpt to next bible verse
                 default: break;
             }
-        });
+        }
+
+        else {
+            console.log(event.keyCode);
+            switch (event.keyCode) {
+                default: break;
+            }
+        }
+
+
+    });
+
+
+    function KeyPress(e) {
+        var evtobj = window.event? event : e
+        if (evtobj.keyCode == 13 && evtobj.ctrlKey) {
+            document.forms[0].submit();
+        }
     }
-    
+
+    document.onkeydown = KeyPress;
 
 
 

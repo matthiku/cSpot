@@ -89,10 +89,10 @@
 
 					<div class="card training-videos-card">
 
-						<h5 class="bg-success text-xs-center training-videos-title">
+						<h5 class="{{ $song->youtube_id ? 'bg-success' : 'bg-faded' }} text-xs-center training-videos-title">
 							{{ $title[0] }}
 							<br>
-							<span class="small text-white">{!! isset($title[1]) ? $title[1] : '<br>' !!}</span>
+							<span class="small {{ $song->youtube_id ? 'text-white' : '' }}">{!! isset($title[1]) ? $title[1] : '<br>' !!}</span>
 						</h5>
 
 
@@ -129,9 +129,8 @@
 						</div>
 
 						<div class="card-block ui-training-videos-blocks" id="tab-{{ $song->id }}-2" style="display: {{ $song->youtube_id ? 'none' : 'inherit' }};">
-							<p class="card-text">
-								<div class="white-space-pre-wrap">{!! $song->lyrics !!}</div>
-							</p>
+							<div class="card-text">
+								<span class="white-space-pre-wrap">{!! $song->lyrics !!}</span></div>
 						</div>
 					</div>
 
