@@ -45,10 +45,7 @@
 				@if( Auth::user()->isEditor() )
 					<li class="nav-item active float-xs-right mr-2">
 						<a class="nav-link btn btn-outline-primary" 
-						    href="{{ url('cspot/songs/create') }}{{ 
-								Request::has('filtervalue')
-									? '?type='.Request::input('filtervalue')
-									: '' }}">
+						    href="{{ url('cspot/songs/create') }}?type=training">
 							<i class="fa fa-plus"> </i> &nbsp;Add New
 								@if (Request::has('filtervalue') )
 									@if (Request::input('filtervalue')=='video') 

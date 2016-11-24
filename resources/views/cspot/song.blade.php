@@ -81,7 +81,11 @@
         --}}
         <div class="col-md-6">
 
-            @if ($song->title_2!='training')
+            @if ( (isset($song) && $song->title_2=='training') || (! isset($song) && Request::has('type') && Request::input('type')=='training'  ) )
+                <a class="float-xs-right btn btn-outline-success" href="{{ route('trainingVideos') }}">
+                    Training Videos
+                </a>
+            @else
                 <a class="float-xs-right btn btn-outline-success" href="{{ url('cspot/songs?page=') .
                         ( session()->has('currentPage') ? session('currentPage') : $currentPage ) }}">
                     All Songs
@@ -93,10 +97,6 @@
                 <a class="float-xs-right btn btn-outline-danger mr-1"
                         href="{{ url('cspot/songs?filterby=title_2&filtervalue=video') }}">
                     All Videoclips
-                </a>
-            @else
-                <a class="float-xs-right btn btn-outline-success" href="{{ route('trainingVideos') }}">
-                    Training Videos
                 </a>
             @endif
 
