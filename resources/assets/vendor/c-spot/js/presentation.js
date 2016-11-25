@@ -222,7 +222,7 @@ function reFormatBibleText()
     $('#bible-text-present-all').show(); 
     
     // helper vars
-    var verse_from=0, verse_to=199, verse, verno=1;
+    var verseList = [], verse_from=0, verse_to=199, verse, verno=1;
 
     // Now analyze each paragraph, reformat the bible text and add it back into the container
     $(p).each( function() {
@@ -242,13 +242,13 @@ function reFormatBibleText()
                     refNo += 1;
                     return;
                 }
-                // get access to each part of the bible ref: book, chapter, verse_form, verse-to and version
+                // get access to each part of the bible ref: book, chapter, verse_from, verse-to and version
                 var ref = splitBref(text);
                 var rfc = splitBref(value);
                 // is the bible text in the html source the same as in the reference?
                 if (ref.book+ref.chapter == rfc.book+rfc.chapter ) {
                     // check if there was a vers unprinted from the previous Ref
-                    if (verse !== undefined && verse.length>2) { 
+                    if (verse !== undefined && verse.length>2  &&  verseList.indexOf(verno)>=0 ) { 
                         appendBibleText('p',verse,verno); verse = ''; }
                     // print the new Ref
                     if (refNo == index) {
@@ -261,6 +261,7 @@ function reFormatBibleText()
                         verse_to   = rfc.verse_to;
                     else 
                         verse_to   = rfc.verse_from;
+                    verseList = verseList.concat( updateVerseList(verse_from, verse_to) );
                 }
                 // request whole chapter and write it into local cache for later reference
                 localCacheBibleText( rfc );
@@ -282,7 +283,7 @@ function reFormatBibleText()
                 if (thisCls=='reftext') {
                     if (verse && verno != eltext) {
                         // only append text that is within the reference
-                        if ( 1*verno >= 1*verse_from && 1*verno <= 1*verse_to ) {
+                        if ( verseList.indexOf(1*verno) >= 0 ) {
                             appendBibleText('p', verse, verno); 
                             verse = ''; 
                         }
@@ -338,6 +339,17 @@ function reFormatBibleText()
     // all is set and we can show the first verse
     advancePresentation();
 
+}
+/* create array of numbers taken from the arguments 'from' and 'to' */
+function updateVerseList(fr,to)
+{
+    var arr = [];
+    if (fr <= to) {
+        for (var nr=1*fr; nr<=to; nr++) {
+            arr.push(nr);
+        }
+    }
+    return arr;
 }
 /*
     Split a bible reference into an array of book, chapter, verse_from, verse_to
@@ -567,6 +579,10 @@ function findVerse(element, index, array)
 */
 function appendBibleText(type, text, verno, show)
 {
+    // do not add the same verse twise...
+    if ( $('#bible-progress-'+verno ).length )
+        return;
+
     var style = '';
     var parts = '" ';
     var id    = ' id="'+verno+'">';  // name of the SLIDE
@@ -1118,6 +1134,10 @@ function getProgressIDnumber(fromWhat)
 // Insert the Sequence Navigation indicators into the navbar 
 function insertSeqNavInd(what, nr, where)
 {
+    // do not add the same number again...
+    if ( $('#bible-progress-'+nr ).length )
+        return;
+
     // set default action
     where = where || 'lyrics';
 
@@ -1586,23 +1606,23 @@ function bibleShow(what)
     // loop through all bible verses until number 'what' is found...
     for (var i=0; i<parts.length; i++) 
     {
-        if ($(parts[i]).attr('id') == what)             
+        if ($(parts[i]).attr('id') == what)
         {
             found = i;
             $(parts[i]).show();
             $(indic[i]).addClass('bg-danger');
-            $(indic[i]).data().showStatus = 'done';
+            $(indic[i]).data('showStatus', 'done');
         } 
         else if ( found>=0 ) {
             if ($(indic[i]).data())
-                $(indic[i]).data().showStatus = 'unshown';
+                $(indic[i]).data('showStatus', 'unshown');
             $(parts[i]).hide();
         }
         else 
         {
             $(parts[i]).hide();
             $(indic[i]).removeClass('bg-danger');
-            $(indic[i]).data().showStatus = 'done';
+            $(indic[i]).data('showStatus', 'done');
         }
     }
 }

@@ -9,7 +9,7 @@
 		<tbody id="tbody-items">
 	    @foreach( $plan->items as $key => $item )
 
-			<?php 
+			@php 
 				// set variable for click-on-item action
 				$onclick = 'onclick=showSpinner();location.href='."'".url('cspot/plans/'.$plan->id.'/items/'.$item->id).'/edit'."' ";
 				$tooltip = "title=click/touch&nbsp;for&nbsp;details data-toggle=tooltip" ; 
@@ -18,7 +18,11 @@
 					$item->comment="(Song with id ".$item->song_id.' missing!)'; 
 					$item->song_id = Null; 
 				} 
-			?>
+				if ( in_array($item->title_2, ['slides', 'video']) )
+					$item->type = $item->title_2;
+				else 
+					$item->type = False;
+			@endphp
 
 
 
@@ -125,7 +129,8 @@ Usage total: {{$item->song->plansUsingThisSong()->count()}} times,
 						@endif
 						data-action-url="{!! route('cspot.api.items.update', $item->id) !!}">
 						@if($item->song_id) 
-							{{ $item->song->title }} 
+							{{ $item->song->title_2=='slides' ? '&#128185;' : '' }}
+							{{ $item->song->title_2=='video'  ? '&#127909;' : '' }}{{ $item->song->title }} 
 							{{ $item->song->title_2 ? ' ('. $item->song->title_2 .')' : '' }}
 						@endif
 					</span>
@@ -285,7 +290,7 @@ Usage total: {{$item->song->plansUsingThisSong()->count()}} times,
 						<i class="fa fa-file-picture-o"></i>
 					@endif
 					@if ( $item->key=='announcements' )
-						<i class="fa fa-bullhorn" title="Announcements Slide!"></i>
+						<big title="Announcements Slide!">&#128364;</big>
 					@elseif ( $plan->date > \Carbon\Carbon::yesterday() && Auth::user()->ownsPlan($plan->id) )
 						{{-- MODAL POPUP to attach file (image) to this item --}}
 						<a href="#" class="text-muted link" data-toggle="modal" data-target="#searchSongModal"
