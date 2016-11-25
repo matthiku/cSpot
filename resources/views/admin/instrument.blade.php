@@ -17,27 +17,27 @@
 
     @if (isset($instrument))
         <h2>Update Instrument</h2>
-        {!! Form::model( $instrument, array('route' => array('instruments.update', $instrument->id), 'method' => 'put', 'id' => 'inputForm') ) !!}
+        {!! Form::model( $instrument, array('route' => array('instruments.update', $instrument->id), 'method' => 'put', 'id' => 'inputForm', 'oninput' => 'enableSubmitButton()') ) !!}
     @else
         <h2>Create Instrument</h2>
-        {!! Form::open(array('action' => 'Admin\InstrumentController@store', 'id' => 'inputForm') ) !!}
+        {!! Form::open(array('action' => 'Admin\InstrumentController@store', 'id' => 'inputForm', 'oninput' => 'enableSubmitButton()') ) !!}
     @endif
         <p>{!! Form::label('name', 'Instrument Name'); !!} <i class="red">*</i><br>
            {!! Form::text('name'); !!}</p>
 
     @if (isset($instrument))
-        <p>{!! Form::submit('Update', ['class'=>'btn btn-primary']); !!}</p>
+        <p>{!! Form::submit('Update', ['class'=>'btn btn-outline-success submit-button disabled']); !!}</p>
         <hr>
         <a class="btn btn-danger"  instrument="button" href="{{ url('admin/instruments/'.$instrument->id) }}/delete">
             <i class="fa fa-trash" > </i> &nbsp; Delete
         </a>
     @else
-        <p>{!! Form::submit('Submit', ['class'=>'btn btn-primary']); !!}
+        <p>{!! Form::submit('Submit', ['class'=>'btn btn-outline-success submit-button disabled']); !!}
     @endif
 
     <script type="text/javascript">document.forms.inputForm.name.focus()</script>
 
-    <a href="{{ url('admin/instruments/') }}">{!! Form::button('Cancel', ['class'=>'btn btn-secondary']); !!}</a></p>
+    <a href="{{ url('admin/instruments/') }}">{!! Form::button('Cancel', ['class'=>'btn btn-secondary cancel-button']); !!}</a></p>
     {!! Form::close() !!}
     
     <span><i class="red">*</i> = mandatory field(s) &nbsp;</span>

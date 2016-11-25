@@ -41519,11 +41519,11 @@ function loadFromLocalCache()
         // check local storage
         //  (provide empty array just in case when localStorage doesn't contain this item)
         cSpot.songList = JSON.parse(localStorage.getItem('songList')) || [];
-        cSpot.songList.updated_at = localStorage.getItem('songList.updated_at');
+        cSpot.songList.updated_at = JSON.parse(localStorage.getItem('songList.updated_at'));
 
         // not found in local storage, or not up-to-date
         // so get it from the server
-        if (cSpot.songList==null || cSpot.songList.updated_at != cSpot.lastSongUpdated_at) {
+        if (cSpot.songList==null || cSpot.songList.updated_at.date != cSpot.lastSongUpdated_at.date) {
             
             ;;;console.log("Song list must be reloaded from server!");
 
@@ -41533,7 +41533,7 @@ function loadFromLocalCache()
                     cSpot.songList = JSON.parse(data);
                     cSpot.songList.updated_at = cSpot.lastSongUpdated_at;
                     localStorage.setItem( 'songList', JSON.stringify(cSpot.songList) );
-                    localStorage.setItem( 'songList.updated_at', cSpot.lastSongUpdated_at );
+                    localStorage.setItem( 'songList.updated_at', JSON.stringify(cSpot.lastSongUpdated_at) );
                     ;;;console.log('Saving Song Titles List to LocalStorage');
                     addOptionsToMPsongSelect();
                 }
@@ -41771,7 +41771,7 @@ function populateComment() {
     $('.select-version').hide();
     $('#col-2-song-search').hide();
     $('#comment-label').text('Bible Reading');
-    blink('.save-buttons');
+    $('#searchForSongsSubmit').focus()
 }
 function emptyRefSelect(fromOrTo, what) {
     // get the <select> element 
@@ -41985,6 +41985,30 @@ function enableSaveButton(that) {
     $(that).parent().addClass('has-warning');
 }
 
+/* On all pages with a Submit Button
+*/
+function enableSubmitButton()
+{
+    if ( $('.submit-button').hasClass('disabled') ) {
+        $('.submit-button').removeClass('disabled');
+        $('.submit-button').removeClass('btn-outline-success');
+        $('.submit-button').addClass('btn-success');
+    }
+}
+
+/*  Called from an keyboard event (usually the Esc key)
+    click on the "Cancel" button in a form in order to navigate to the location defined with that button
+*/
+function cancelForm()
+{
+    showSpinner(); 
+    var newLoc = $('.cancel-button').attr('href');
+    if (newLoc === undefined)
+        newLoc = $('.cancel-button').parent().attr('href');
+    if (newLoc === undefined)
+        history.back;
+    location.href = newLoc;
+}
 
 
 /* 
@@ -42361,7 +42385,7 @@ $(document).ready(function() {
         })
 
         .fail( function(data) {
-            console.log('cspot failed to load config data from backend!');
+            alert('c-SPOT might not work properly as it could not load config data from backend server!');
         });
 
 
@@ -42616,10 +42640,7 @@ $(document).ready(function() {
      * and show the submit/save buttons
      */
     $("#file").on('mouseover', function() {
-        // do this only once ...
-        if ($('.submit-button').is(':visible')) return;
-        $('.submit-button').show();
-        blink('.submit-button');
+        enableSubmitButton();
     });
     $("input, textarea, input:radio, input:file").click(function() {
         // change background color of those fields
@@ -42628,12 +42649,8 @@ $(document).ready(function() {
         // not when a popup is open...
         if ($('#searchSongModal').is(':visible')) return;
 
-        // do this only once ...
-        if ($('.submit-button').is(':visible')) return;
-
         // show submit or save buttons
-        $('.submit-button').show();
-        blink('.submit-button');
+        enableSubmitButton();
     });
 
 
@@ -42781,8 +42798,9 @@ $(document).ready(function() {
         }
 
         else {
-            console.log(event.keyCode);
+            //console.log(event.keyCode);
             switch (event.keyCode) {
+                case 27: cancelForm(); break; // escape key
                 default: break;
             }
         }
@@ -42794,7 +42812,7 @@ $(document).ready(function() {
     function KeyPress(e) {
         var evtobj = window.event? event : e
         if (evtobj.keyCode == 13 && evtobj.ctrlKey) {
-            document.forms[0].submit();
+            $('#inputForm').submit();
         }
     }
 

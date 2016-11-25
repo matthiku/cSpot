@@ -17,27 +17,27 @@
 
     @if (isset($role))
         <h2>Update Role</h2>
-        {!! Form::model( $role, array('route' => array('roles.update', $role->id), 'method' => 'put', 'id' => 'inputForm') ) !!}
+        {!! Form::model( $role, array('route' => array('roles.update', $role->id), 'method' => 'put', 'id' => 'inputForm', 'oninput' => 'enableSubmitButton()') ) !!}
     @else
         <h2>Create Role</h2>
-        {!! Form::open(array('action' => 'Admin\RoleController@store', 'id' => 'inputForm') ) !!}
+        {!! Form::open(array('action' => 'Admin\RoleController@store', 'id' => 'inputForm', 'oninput' => 'enableSubmitButton()') ) !!}
     @endif
         <p>{!! Form::label('name', 'Role Name'); !!} <i class="red">*</i><br>
            {!! Form::text('name'); !!}</p>
 
     @if (isset($role))
-        <p>{!! Form::submit('Update', ['class'=>'btn btn-primary']); !!}</p>
+        <p>{!! Form::submit('Update', ['class'=>'btn btn-outline-success submit-button disabled']); !!}</p>
         <hr>
         <a class="btn btn-danger"  href="{{ url('admin/roles/'.$role->id) }}/delete">
             <i class="fa fa-trash" > </i> &nbsp; Delete
         </a>
     @else
-        <p>{!! Form::submit('Submit', ['class'=>'btn btn-primary']); !!}
+        <p>{!! Form::submit('Submit', ['class'=>'btn btn-outline-success submit-button disabled']); !!}
     @endif
 
     <script type="text/javascript">document.forms.inputForm.name.focus()</script>
 
-    <a href="{{ url('admin/roles/') }}">{!! Form::button('Cancel', ['class'=>'btn btn-secondary']); !!}</a></p>
+    <a href="{{ url('admin/roles/') }}">{!! Form::button('Cancel', ['class'=>'btn btn-secondary cancel-button']); !!}</a></p>
     {!! Form::close() !!}
 
     <span><i class="red">*</i> = mandatory field(s) &nbsp;</span>

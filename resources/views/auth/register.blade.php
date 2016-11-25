@@ -16,7 +16,8 @@
 
             @include('layouts.flashing')
 
-            <form class="form-horizontal" role="form" method="POST" id="inputForm" action="{{ url('register') }}">
+            <form class="form-horizontal" role="form" method="POST" id="inputForm" 
+                  oninput="enableSubmitButton()" action="{{ url('register') }}">
                 {!! csrf_field() !!}
                 
                 <center>
@@ -101,7 +102,7 @@
 
                 <div class="row form-group">
                     <div class="col-md-2 offset-md-8">
-                        <button type="submit" class="btn btn-primary form-btn">
+                        <button type="submit" class="btn form-btn btn-outline-success submit-button disabled">
                             <i class="fa fa-btn fa-envelope"></i> Register
                         </button>
                     </div>

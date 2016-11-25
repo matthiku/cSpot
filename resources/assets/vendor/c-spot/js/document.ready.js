@@ -54,7 +54,7 @@ $(document).ready(function() {
         })
 
         .fail( function(data) {
-            console.log('cspot failed to load config data from backend!');
+            alert('c-SPOT might not work properly as it could not load config data from backend server!');
         });
 
 
@@ -309,10 +309,7 @@ $(document).ready(function() {
      * and show the submit/save buttons
      */
     $("#file").on('mouseover', function() {
-        // do this only once ...
-        if ($('.submit-button').is(':visible')) return;
-        $('.submit-button').show();
-        blink('.submit-button');
+        enableSubmitButton();
     });
     $("input, textarea, input:radio, input:file").click(function() {
         // change background color of those fields
@@ -321,12 +318,8 @@ $(document).ready(function() {
         // not when a popup is open...
         if ($('#searchSongModal').is(':visible')) return;
 
-        // do this only once ...
-        if ($('.submit-button').is(':visible')) return;
-
         // show submit or save buttons
-        $('.submit-button').show();
-        blink('.submit-button');
+        enableSubmitButton();
     });
 
 
@@ -474,8 +467,9 @@ $(document).ready(function() {
         }
 
         else {
-            console.log(event.keyCode);
+            //console.log(event.keyCode);
             switch (event.keyCode) {
+                case 27: cancelForm(); break; // escape key
                 default: break;
             }
         }
@@ -487,7 +481,7 @@ $(document).ready(function() {
     function KeyPress(e) {
         var evtobj = window.event? event : e
         if (evtobj.keyCode == 13 && evtobj.ctrlKey) {
-            document.forms[0].submit();
+            $('#inputForm').submit();
         }
     }
 

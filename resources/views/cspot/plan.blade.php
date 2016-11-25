@@ -176,7 +176,7 @@
                             {!! Form::submit('Save changes', [
                                 'data-toggle'    => 'tooltip', 
                                 'data-placement' => 'left',
-                                'class'          => 'btn btn-secondary disabled plan-details text-help',
+                                'class'          => 'btn btn-outline-success submit-button disabled plan-details text-help',
                                 'id'             => 'form-submit-btn',
                                 'style'          => 'display: none',
                                 'title'          => 'Click to save changes to notes, event type, date, leader or teacher',
@@ -186,7 +186,7 @@
                         @endif
 
                     @else
-                        <input class="btn btn-block" type="submit" value="Submit">
+                        <input class="btn btn-outline-success btn-block submit-button disabled" type="submit" value="Submit">
                     @endif
                 </big>
             </div>  

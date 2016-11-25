@@ -36,7 +36,7 @@
 			    ">
 
 
-				<th class="hidden-lg-down {{ Auth::user()->isUser() ? 'drag-item ' : ''}}dont-print" scope="row" title="drag item into the new position">
+				<th class="hidden-sm-down {{ Auth::user()->isUser() ? 'drag-item ' : ''}}dont-print" scope="row" title="drag item into the new position">
 					<span class="float-xs-right text-success">{{ $item->seq_no }}</span>
 					@if ( Auth::user()->ownsPlan($plan->id) && $plan->date >= \Carbon\Carbon::today() )
 						<i class="p-r-1 fa fa-arrows-v">
@@ -48,7 +48,7 @@
 				{{-- for leader's eyes only? 
 				--}}
 				@if( Auth::user()->ownsPlan($plan->id) )
-					<td 	class="hidden-sm-down link" onclick="changeForLeadersEyesOnly(this)" 
+					<td 	class="hidden-lg-down link" onclick="changeForLeadersEyesOnly(this)" 
 							data-value="{{ $item->forLeadersEyesOnly }}"  data-toggle="tooltip" 
 							title="{{ $item->forLeadersEyesOnly 
 								? "Item visible for leader's eyes only. Click to change!"

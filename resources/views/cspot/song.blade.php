@@ -40,8 +40,8 @@
 
             @if (isset($song))
                 {{-- SAVE or SUBMIT button --}}
-                <big class="submit-button float-xs-right" onclick="showSpinner()" style="display: none;">
-                    {!! Form::submit('Save changes', ['class' => 'btn btn-success']); !!}
+                <big class="float-xs-right" onclick="showSpinner()">
+                    {!! Form::submit('Save changes', ['class' => 'btn btn-success submit-button disabled']); !!}
                 </big>
 
                 <h2 class="hidden-xs-down">Song/Item Details</h2>
@@ -49,13 +49,14 @@
                 <small>Last updated: {{ isset($song->updated_at) ? $song->updated_at->formatLocalized('%a, %d %b %Y, %H:%M') : 'unknown' }}</small>
 
             @else            
-                <big class="submit-button float-xs-right" style="display: none;">{!! Form::submit('Submit'); !!}
+                <big class="float-xs-right">{!! Form::submit('Submit', ['class' => 'btn btn-outline-success submit-button disabled']); !!}
                 </big>
 
                 <h2 class="hidden-xs-down">Add New
                     <span class="song-only">Song</span>
                     <span class="video-only" style="display: none;">Videoclip</span>
                     <span class="slides-only" style="display: none;">Set of Slides</span>
+                    <span class="training-show" style="display: none;">Training Video</span>
                 </h2>
 
                 <div class="song-only">
@@ -127,7 +128,6 @@
                     by putting these rules at the beginning of your text line.</p>
                 <hr>
             </div>
-
             <div class="video-only mb-2" style="display: none;">
                 <p><strong>Videoclips</strong> are YouTube videos embedded into the presentation in a single slide.</p>
                 <p>Search for your clip on YouTube and copy the YouTube-URL (or <i>address</i> 
@@ -139,6 +139,17 @@
                     to directly start searching for the desired videoclip.</p>
                 <hr>
             </div>
+
+            <div class="training-show mb-2" style="display: none;">
+                <p><strong>Training Videos</strong> are links to YouTube videos and will be presented in a particular way within c-SPOT.</p>
+                <p>For the <strong>descprition</strong>, you can use basic html elements like ol, ul etc.</p>
+                <p>Use the <strong>Book Ref.</strong> field to organize them accordingly. The syntax you should use is <em>XXnnb</em> where
+                    XX are 2 letters, nn are 2 numbers and b is otpional for another indicator.</p>
+                <p>Currently, 'tr' is being used to show the c-SPOT basic training videos. 
+                    The list of training videos is organized and sorted by this field.</p>
+                <hr>
+            </div>
+
 
             
             <div class="row form-group mb-0">
@@ -155,19 +166,19 @@
             </div>
 
 
-            <div class="row form-group song-only">
+            <div class="row form-group song-only training-show">
                 {!! Form::label('author', 'Author or Copyright statement', ['class' => 'col-sm-4 col-md-3 col-lg-2 col-xl-4 text-sm-right']); !!}
                 <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width">{!! Form::text('author'); !!}</div>
             </div>
 
 
-            <div class="row form-group song-only bg-muted">
+            <div class="row form-group song-only training-show bg-muted">
                 <div class='col-sm-4 col-md-3 col-lg-2 col-xl-4 text-sm-right'>                    
                     {!! Form::label('book_ref', 'Book Ref.'); !!}                    
                 </div>
                 <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8">
                     {!! Form::text('book_ref'); !!}
-                    <small>(e.g. Mission Praise='MPnnn')</small>
+                    <small class="song-only">(e.g. Mission Praise='MPnnn')</small>
                 </div>
             </div>
 
@@ -290,7 +301,7 @@
 
 
 
-            <div class="row form-group song-or-video-only mt-1 bg-muted">
+            <div class="row form-group song-or-video-only training-show mt-1 bg-muted">
 
                 <div class='col-sm-4 col-md-3 col-lg-2 col-xl-4 text-sm-right'>
                     {!! Form::label('youtube_id', 'Youtube ID or URL'); !!}
@@ -326,7 +337,7 @@
             </div>
 
 
-            <div class="row form-group song-or-video-only">
+            <div class="row form-group song-or-video-only training-show">
                 <div class='col-sm-4 col-md-3 col-lg-2 col-xl-4 text-sm-right'>
                     {!! Form::label('link', '(other) link(s)'); !!}
                     <big>
@@ -378,7 +389,9 @@
                     <h4 class="panel-title">
 
                         <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                            <span class="song-only">Lyrics</span><span class="slides-only" style="display: none;">Slides</span>:
+                            <span class="song-only">Lyrics</span><span 
+                                class="slides-only" style="display: none;">Slides</span><span 
+                                class="training-show" style="display: none;">Description</span>:
                         </a>
 
                         @if ( !isset($song) || (isset($song) && $song->title_2!='slides') )
@@ -562,6 +575,18 @@ like "(repeat chorus!)"'>
         }
 
 
+        function showTrainingForm(what) {
+            $('.song-only').hide();
+            $('.video-only').hide();
+            $('.song-or-video-only').hide();
+            $('.song-or-slides-only').show();
+            $('.training-show').show();
+            $('#all-items-button').text('Training Videos');
+            if (what) 
+                $("input[name='title_2']").val(what);
+        }
+
+
         /* Provide drop-targets for URL strings like YouTube links, CCLI numbers, hymnal.net URLs
         */
         $(".drop-target")
@@ -608,6 +633,8 @@ like "(repeat chorus!)"'>
                 showVideoForm();
             @elseif ($song->title_2=='slides' )
                 showSlidesForm();
+            @elseif ($song->title_2=='training' )
+                showTrainingForm();
             @endif
         @endif
 
@@ -618,6 +645,8 @@ like "(repeat chorus!)"'>
                 showVideoForm('video');
             @elseif (Request::input('type')=='slides')
                 showSlidesForm('slides');
+            @elseif (Request::input('type')=='training')
+                showTrainingForm('training');
             @endif
         @endif
 

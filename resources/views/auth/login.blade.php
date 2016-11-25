@@ -37,7 +37,8 @@
 
             <h5 class="card-header">You can also sign in by email address and password:</h5>
 
-            <form class="form-horizontal" role="form" method="POST" id="inputForm"  action="{{ url('login') }}">
+            <form class="form-horizontal" role="form" method="POST" id="inputForm" oninput="enableSubmitButton()"
+                action="{{ url('login') }}">
                 {!! csrf_field() !!}
 
                 <div class="row mt-1 form-group{{ $errors->has('email') ? ' has-error' : '' }}">
@@ -80,7 +81,7 @@
 
                 <div class="row form-group">
                     <div class="col-md-6 offset-md-4">
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-outline-success submit-button disabled">
                             <i class="fa fa-btn fa-sign-in"></i> Login
                         </button>
                         <a class="btn btn-outline-primary float-right" href="{{ url('password/reset') }}">Forgot Your Password?</a>

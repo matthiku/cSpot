@@ -10326,7 +10326,7 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
 }
 .ui-training-videos-blocks {
     padding: 5px !important;
-    min-height: 220px;
+    height: 220px;
     background-color: #fff;
 }
 .training-videos-title {
@@ -10334,6 +10334,10 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
 }
 .training-videos-card {
     border-width: 2px;
+}
+.overflow-scroll {
+    overflow-y: auto;
+    max-height: 100%;
 }
 
 /* additional fonts */

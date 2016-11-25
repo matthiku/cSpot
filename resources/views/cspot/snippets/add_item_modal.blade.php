@@ -80,7 +80,7 @@
                              id="clips" onkeyup="showSongHints('#clipsHint', this.value, 'clips')">
                     <div class="search-form-item modal-select-clips" id="clipsHint"></div>
 
-                    <label class="search-form-item modal-select-clips mt-1 mb-0" for="MPselect">...or select from this list:</label>
+                    <label class="search-form-item modal-select-clips mt-1 mb-0" for="ClipSelect">...or select from this list:</label>
                     <select class="form-control mb-1 search-form-item modal-select-clips" id="ClipSelect" onchange="$('#searchForSongsButton').click();">
                         <option value="0">select....</option>
                     </select>

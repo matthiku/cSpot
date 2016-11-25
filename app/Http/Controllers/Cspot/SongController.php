@@ -100,7 +100,6 @@ class SongController extends Controller
         else {
             // (the where clause is needed since the 'withCount' would bring in all items with song_id = 0)
             $songs = Song::withCount('items')
-                ->where('id', '>', 0)
                 ->whereNotIn('title_2', ['video', 'slides', 'training'])
                 ->orderBy($orderBy, $order);
         }
@@ -114,7 +113,6 @@ class SongController extends Controller
         // special case for OrderBy Last Time Used (in a plan!)
         if ($request->orderby == 'last_used') {
             $songs = Song::withCount('items')
-                ->where('songs.id', '>', 0)
                 ->leftJoin('items', 'items.song_id', '=', 'songs.id')
                 ->leftJoin('plans', 'plans.id', '=', 'items.plan_id')
                 ->groupBy('songs.id')
@@ -135,7 +133,6 @@ class SongController extends Controller
         if (isset($request->filterby) && $request->filterby=='songs' && isset($request->filtervalue) && $request->filtervalue=='rare') {
              //::
             $songs = Song::withCount('items') 
-                ->where('songs.id', '>', 0)
                 ->leftJoin('items', 'items.song_id', '=', 'songs.id')
                 ->leftJoin('plans', 'plans.id', '=', 'items.plan_id')
                 ->groupBy('songs.id')

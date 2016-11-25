@@ -497,6 +497,8 @@ function insertItem( $request )
         $newItem->song_freshness = calculateSongFreshness( $request->song_id, $plan->leader_id, $plan->date );
         $newItem->song_id = $request->song_id;
     }
+    else 
+        $newItem->song_id = NULL;   // make sure we do not reference a song!
 
     // saving the new Item via the relationship to the Plan
     $item = $plan->items()->save( $newItem );

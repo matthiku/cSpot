@@ -18,10 +18,10 @@
 
     @if (isset($user))
         <h2>Update User</h2>
-        {!! Form::model( $user, array('route' => array('users.update', $user->id), 'method' => 'put', 'id' => 'inputForm') ) !!}
+        {!! Form::model( $user, array('route' => array('users.update', $user->id), 'method' => 'put', 'id' => 'inputForm', 'oninput' => 'enableSubmitButton()') ) !!}
     @else
         <h2>Create User</h2>
-        {!! Form::open(array('action' => 'Admin\UserController@store', 'id' => 'inputForm')) !!}
+        {!! Form::open(array('action' => 'Admin\UserController@store', 'id' => 'inputForm', 'oninput' => 'enableSubmitButton()')) !!}
     @endif
 
 
@@ -167,7 +167,7 @@
             @if (isset($user))
 
                 <p class="float-xs-right">
-                    {!! Form::submit('&#10003; &nbsp;  Update', ['class'=>'btn btn-primary']); !!}
+                    {!! Form::submit('&#10003; &nbsp;  Update', ['class'=>'btn btn-outline-success submit-button disabled']); !!}
                     @if (Auth::user()->isAdmin())
                         {{-- disable delete button if user owns plans --}}
                         <a class="btn btn-danger{{ $user->plans_as_leader->count() || $user->plans_as_teacher->count() ? ' disabled' : '' }}"
@@ -178,7 +178,7 @@
                     @endif
                 </p>
             @else
-                <p class="float-xs-right">{!! Form::submit('&#10003; &nbsp;  Submit', ['class'=>'btn btn-primary']); !!}</p>
+                <p class="float-xs-right">{!! Form::submit('&#10003; &nbsp;  Submit', ['class'=>'btn btn-outline-success submit-button disabled']); !!}</p>
             @endif
 
             {!! Form::close() !!}

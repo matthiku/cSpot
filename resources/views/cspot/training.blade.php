@@ -129,7 +129,7 @@
 						</div>
 
 						<div class="card-block ui-training-videos-blocks" id="tab-{{ $song->id }}-2" style="display: {{ $song->youtube_id ? 'none' : 'inherit' }};">
-							<div class="card-text">
+							<div class="card-text overflow-scroll">
 								<span class="white-space-pre-wrap">{!! $song->lyrics !!}</span></div>
 						</div>
 					</div>
@@ -208,6 +208,8 @@
 		                    @if ( strlen($song->youtube_id)>0 )
 		                        <a href="#" title="Play YouTube Video" class="red" data-toggle="tooltip" data-song-title="{{ $song->title }}"
 		                        	onclick="showYTvideoInModal('{{ $song->youtube_id }}', this)"><i class="fa fa-youtube-play fa-lg"></i></a>
+		                    @else
+		                    	<small>coming<br>soon...</small>
 		                    @endif
 						</td>
 

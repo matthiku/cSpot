@@ -18,13 +18,13 @@
 
     <div class="container">
         @if (isset($default_item))
-            {!! Form::model( $default_item, array('route' => array('default_items.update', $default_item->id), 'method' => 'put', 'id' => 'inputForm') ) !!}
+            {!! Form::model( $default_item, array('route' => array('default_items.update', $default_item->id), 'method' => 'put', 'id' => 'inputForm', 'oninput' => 'enableSubmitButton()') ) !!}
         @else
-            {!! Form::open(array('action' => 'Admin\DefaultItemController@store', 'id' => 'inputForm')) !!}
+            {!! Form::open(array('action' => 'Admin\DefaultItemController@store', 'id' => 'inputForm', 'oninput' => 'enableSubmitButton()')) !!}
         @endif
 
 
-        <div class="row mb-2">
+        <div class="row">
 
             <div class="col-sm-6 bg-info">
                 <div class="float-sm-right">
@@ -44,11 +44,23 @@
             </div>
 
         </div>
-        <hr>
+
+        @if (!isset($default_item))
+            <div class="row">
+                <div class="col-xs-12 small mb-0 text-xs-center">
+                    <p>"<strong>Default Items</strong>" are items in a Service Plan or Event that are always (or usually) the same.<br>
+                    Instead of having to create them each time you create a new event, have them defined here and assign them to a certain event type.<br>
+                    The next time this event type will be created, the Default Items for this type will be added to this new event automatically.</p>
+                </div>
+            </div>
+        @else
+            <hr>
+        @endif
 
 
 
         <div class="row mb-1 bg-muted">
+        
             <div class="col-sm-6">
                 <div class="float-sm-right">
                     <label>Event/Service Type</label> <i class="red">*</i>
@@ -203,9 +215,9 @@
                 <div class="float-sm-right">
 
                     @if (isset($default_item))
-                        {!! Form::submit('&#10003; Update', ['class'=>'btn btn-primary']); !!}
+                        {!! Form::submit('&#10003; Update', ['class'=>'btn btn-outline-success submit-button disabled']); !!}
                     @else
-                        {!! Form::submit('&#10003; Submit', ['class'=>'btn btn-primary']); !!}
+                        {!! Form::submit('&#10003; Submit', ['class'=>'btn btn-outline-success submit-button disabled']); !!}
                     @endif
 
                 </div>
@@ -219,7 +231,7 @@
                     </a>
                 @endif
 
-                <a href="{{ url()->previous() }}">{!! Form::button('&#10008; Cancel', ['class'=>'btn btn-secondary']); !!}</a>
+                <a href="{{ url()->previous() }}">{!! Form::button('&#10008; Cancel', ['class'=>'btn btn-secondary cancel-button']); !!}</a>
 
            </div>
         </div>
@@ -238,7 +250,7 @@
 
                     <table class="table table-sm table-striped m-x-auto" style="width: initial;">
                         <thead>
-                            <tr>
+                            <tr class="show-header" style="display: none;">
                                 <th>ID</th>
                                 <th>Seq.No.</th>
                                 <th>Text</th>
@@ -274,8 +286,10 @@
         // show existing items for this type in the table below the form
         function showExistingItems() {
             var type = $('#type_id').val();
+            if ( isNaN(type) ) return;
             $('.show-all-default-items').hide();            
             $('.show-existing-'+type).show();            
+            $('.show-header').show();            
         }
 
         // set value of selector box depending on where the user    

@@ -17,9 +17,9 @@
 
     <div class="container">
         @if (isset($type))
-            {!! Form::model( $type, array('route' => array('types.update', $type->id), 'method' => 'put', 'id' => 'inputForm') ) !!}
+            {!! Form::model( $type, array('route' => array('types.update', $type->id), 'method' => 'put', 'id' => 'inputForm', 'oninput' => 'enableSubmitButton()') ) !!}
         @else
-            {!! Form::open(array('action' => 'Admin\TypeController@store', 'id' => 'inputForm')) !!}
+            {!! Form::open(array('action' => 'Admin\TypeController@store', 'id' => 'inputForm', 'oninput' => 'enableSubmitButton()')) !!}
         @endif
 
 
@@ -262,9 +262,9 @@
                 <div class="float-sm-right">
 
                     @if (isset($type))
-                        {!! Form::submit('&#10003; Update', ['class'=>'btn btn-primary']); !!}
+                        {!! Form::submit('&#10003; Update', ['class'=>'btn btn-outline-success submit-button disabled']); !!}
                     @else
-                        {!! Form::submit('&#10004; Submit', ['class'=>'btn btn-primary']); !!}
+                        {!! Form::submit('&#10004; Submit', ['class'=>'btn btn-outline-success submit-button disabled']); !!}
                     @endif
 
                 </div>
@@ -277,7 +277,7 @@
                     </a>
                 @endif
 
-                <a href="{{url('admin/types')}}">{!! Form::button('&#10008; Cancel', ['class'=>'btn btn-secondary']); !!}</a></p>
+                <a href="{{url('admin/types')}}">{!! Form::button('&#10008; Cancel', ['class'=>'btn btn-secondary cancel-button']); !!}</a></p>
 
            </div>
         </div>
