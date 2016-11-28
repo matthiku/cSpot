@@ -1684,8 +1684,9 @@ function lyricsShow(what)
     $('.lyrics-parts').fadeOut().promise().done( function() { $('#'+what).fadeIn() } );
 
     // elevate the currently used button
-    $('.lyrics-show-btns').removeClass('btn-danger');       // make sure all other buttons are back to normal
-    $('#btn-show-'+what).removeClass('btn-info-outline');   // aremove ouline for this button
+    if ($('#btn-show-'+what).length)
+        $('.lyrics-show-btns').removeClass('btn-danger');   // make sure all other buttons are back to normal
+    $('#btn-show-'+what).removeClass('btn-outline-info');   // aremove ouline for this button
     $('#btn-show-'+what).addClass('btn-danger');            // add warning class for this button
 }
 function decompPartCode(what) {

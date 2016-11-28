@@ -200,16 +200,19 @@ class PlanController extends Controller
             // filtervalue can also be an array of event type id's
             else {
                 $filtervalue = json_decode($filtervalue);
-                if ($show=='all')
+                $heading = "Various Upcoming Event Types";
+                
+                if ($show=='all') {
                     $plans = Plan::with('type')
                         ->whereIn('type_id', $filtervalue)
                         ->orderBy($orderBy, $order);
+                    $heading = "Various Event Types";
+                }
                 else 
                     $plans = Plan::with('type')
                         ->whereDate('date', '>', Carbon::yesterday())
                         ->whereIn('type_id', $filtervalue)
                         ->orderBy($orderBy, $order);
-                $heading = "Various Event Types";
             }
         }
 
@@ -224,7 +227,7 @@ class PlanController extends Controller
             if (isset($request->api)) {
                 return json_encode($plans->get());
             }
-            $heading = 'Upcoming Services or Events';
+            $heading = 'Upcoming Services';
             // get list of plans of which the current user is member
             $userIsPlanMember = listOfPlansForUser();
         }
@@ -247,7 +250,7 @@ class PlanController extends Controller
                            ->orWhere('teacher_id', Auth::user()->id)
                               ->with('type')
                            ->orderBy($orderBy, $order);
-                $heading = 'All Your Services/Events';
+                $heading = 'All Events for '.Auth::user()->name;
             } else {
                 // only future plans
                 $plans = Plan::with('type')
@@ -257,7 +260,7 @@ class PlanController extends Controller
                                     ->orWhere('teacher_id', Auth::user()->id);
                                 })
                           ->orderBy($orderBy, $order);
-                $heading = 'Your Upcoming Services/Events';
+                $heading = 'Upcoming Events for '.Auth::user()->name;
             }
         }
 

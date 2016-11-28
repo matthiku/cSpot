@@ -46,7 +46,7 @@
                 <div class="checkbox">
                     @foreach($users as $user)
                         @if ($user->isUser())
-                            <label title="{!!$user->getFullname()!!}" class="mr-1">
+                            <label title="{!! $user->getFullname !!}" class="mr-1">
                                 <input type="checkbox" name="recipients[]" value="{!!$user->id!!}">
                                 {!!$user->name!!}
                             </label>

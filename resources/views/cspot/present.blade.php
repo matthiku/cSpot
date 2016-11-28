@@ -185,7 +185,7 @@
 
         <ul class="nav navbar-nav">
 
-            <li id="time-of-day" class="float-xs-left">hh:mm</li>
+            <li id="time-of-day" class="float-xs-left show-time-of-day">hh:mm</li>
 
             <li id="lyrics-parts-indicators">
                 <!-- potential buttons for lyric parts (verses, chorusses etc) -->

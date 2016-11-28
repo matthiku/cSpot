@@ -122,7 +122,7 @@ class SongController extends Controller
 
 
 
-        $heading = 'Manage Songs etc.';
+        $heading = 'Songs Repository';
 
         if ( isset($request->filterby) && $request->filtervalue=='video' ) 
             $heading = 'Manage Videoclips';

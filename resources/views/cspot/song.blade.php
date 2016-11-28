@@ -36,23 +36,19 @@
 
     <div class="row">
 
-        <div class="col-md-6 md-center">
+        <div class="col-md-6">
 
+            {{-- PAGE TITLE  
+            --}}
             @if (isset($song))
-                {{-- SAVE or SUBMIT button --}}
-                <big class="float-xs-right" onclick="showSpinner()">
-                    {!! Form::submit('Save changes', ['class' => 'btn btn-success submit-button disabled']); !!}
-                </big>
 
-                <h2 class="hidden-xs-down">Song/Item Details</h2>
+                <h2 class="hidden-xs-down text-success lora">Song/Item Details</h2>
 
                 <small>Last updated: {{ isset($song->updated_at) ? $song->updated_at->formatLocalized('%a, %d %b %Y, %H:%M') : 'unknown' }}</small>
 
             @else            
-                <big class="float-xs-right">{!! Form::submit('Submit', ['class' => 'btn btn-outline-success submit-button disabled']); !!}
-                </big>
 
-                <h2 class="hidden-xs-down">Add New
+                <h2 class="hidden-xs-down text-success lora">Add New
                     <span class="song-only">Song</span>
                     <span class="video-only" style="display: none;">Videoclip</span>
                     <span class="slides-only" style="display: none;">Set of Slides</span>
@@ -78,13 +74,13 @@
         </div>
 
 
-        {{-- Song/Item List Navigation Buttons 
+        {{-- Song/Item Navigation and Submit/Save Buttons 
         --}}
         <div class="col-md-6">
 
             @if ( (isset($song) && $song->title_2=='training') || (! isset($song) && Request::has('type') && Request::input('type')=='training'  ) )
                 <a class="float-xs-right btn btn-outline-success" href="{{ route('trainingVideos') }}">
-                    Training Videos
+                    <span class="hidden-lg-down">Back to </span><span class="hidden-sm-down">List of </span>Training Videos
                 </a>
             @else
                 <a class="float-xs-right btn btn-outline-success" href="{{ url('cspot/songs?page=') .
@@ -100,7 +96,17 @@
                     All Videoclips
                 </a>
             @endif
+        
+            {{-- SAVE or SUBMIT button --}}
+            @if (isset($song))
+                <big class="mr-1" onclick="showSpinner()">
+                    {!! Form::submit('Save changes', ['class' => 'btn btn-success submit-button disabled']); !!}
+                </big>
+            @else            
+                <span class="mr-1">{!! Form::submit('Submit', ['class' => 'btn btn-outline-success submit-button disabled']); !!}</span>
+            @endif
 
+            {{-- DELETE button --}}
             @if ( isset($song) && Auth::user()->isAdmin() && count($plansUsingThisSong)==0 )
                 <a href="{{ url('cspot/songs/'.$song->id) }}/delete">
                     <i class="fa fa-trash text-danger" > </i> delete this item
@@ -142,11 +148,10 @@
 
             <div class="training-show mb-2" style="display: none;">
                 <p><strong>Training Videos</strong> are links to YouTube videos and will be presented in a particular way within c-SPOT.</p>
-                <p>For the <strong>descprition</strong>, you can use basic html elements like ol, ul etc.</p>
-                <p>Use the <strong>Book Ref.</strong> field to organize them accordingly. The syntax you should use is <em>XXnnb</em> where
-                    XX are 2 letters, nn are 2 numbers and b is otpional for another indicator.</p>
-                <p>Currently, 'tr' is being used to show the c-SPOT basic training videos. 
-                    The list of training videos is organized and sorted by this field.</p>
+                <p>For the <strong>description</strong>, you can use basic HTML elements like ol, ul etc.</p>
+                <p>The <strong>Book Ref.</strong> field is used to organize and sort the list of training videos.
+                    The syntax you should use is <em>XXnnb</em> where XX are 2 letters, nn are 2 numbers and b is otpional for another indicator.</p>
+                <p>Currently, 'tr' is being used to show the basic c-SPOT training videos.</p>
                 <hr>
             </div>
 
@@ -496,6 +501,16 @@ like "(repeat chorus!)"'>
         </div>{{-- col-xl-6 --}}
 
     </div>{{-- row --}}
+
+
+    {{-- SAVE or SUBMIT button --}}
+    @if (isset($song))
+        <big class="mr-1" onclick="showSpinner()">
+            {!! Form::submit('Save changes', ['class' => 'btn btn-success submit-button disabled']); !!}
+        </big>
+    @else            
+        <span class="mr-1">{!! Form::submit('Submit', ['class' => 'btn btn-outline-success submit-button disabled']); !!}</span>
+    @endif
 
 
     {!! Form::close() !!}

@@ -41500,7 +41500,9 @@ function selectServiceType(that)
     })
     var url = $('#multi-filter-dropdown').data('url');
     showSpinner();
-    location.href = url + JSON.stringify(options);
+    if (options.length)
+        location.href = url + JSON.stringify(options);
+    else location.href = location.pathname;
 }
 
 
@@ -41519,10 +41521,11 @@ function loadFromLocalCache()
         // check local storage
         //  (provide empty array just in case when localStorage doesn't contain this item)
         cSpot.songList = JSON.parse(localStorage.getItem('songList')) || [];
-        if ( localStorage.getItem('songList.updated_at') == "[object Object]")
+        var songListDate = localStorage.getItem('songList.updated_at');
+        if ( songListDate == "[object Object]"  || songListDate.substr(0,1)!='{' )
             cSpot.songList = null;
         else 
-            cSpot.songList.updated_at = JSON.parse(localStorage.getItem('songList.updated_at'));
+            cSpot.songList.updated_at = JSON.parse( songListDate );
 
         // not found in local storage, or not up-to-date
         // so get it from the server
@@ -46219,8 +46222,9 @@ function lyricsShow(what)
     $('.lyrics-parts').fadeOut().promise().done( function() { $('#'+what).fadeIn() } );
 
     // elevate the currently used button
-    $('.lyrics-show-btns').removeClass('btn-danger');       // make sure all other buttons are back to normal
-    $('#btn-show-'+what).removeClass('btn-info-outline');   // aremove ouline for this button
+    if ($('#btn-show-'+what).length)
+        $('.lyrics-show-btns').removeClass('btn-danger');   // make sure all other buttons are back to normal
+    $('#btn-show-'+what).removeClass('btn-outline-info');   // aremove ouline for this button
     $('#btn-show-'+what).addClass('btn-danger');            // add warning class for this button
 }
 function decompPartCode(what) {

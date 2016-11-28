@@ -310,14 +310,14 @@ Usage total: {{$item->song->plansUsingThisSong()->count()}} times,
 				<td class="center hidden-xs-down dont-print show-youtube-links">
 					<big>
 					@if ($item->song_id)
-	                    @if ( $item->song->hymnaldotnet_id > 0 )
+	                    @if ( $item->song->hymnaldotnet_id )
 	                        <a target="new" title="Review song on hymnal.net" data-toggle="tooltip" class="mr-1" 
 	                            href="{{ env('HYMNAL.NET_PLAY', 'https://www.hymnal.net/en/hymn/h/').$item->song->hymnaldotnet_id }}">
 	                            <i class="fa fa-music"></i> </a>
 	                    @endif
 	                    @if ( $item->song->ccli_no > 1000 && 'MP'.$item->song->ccli_no != $item->song->book_ref && Auth::user()->hasMusician() )
 	                        <a target="new" title="Review song on SongSelect" data-toggle="tooltip" class="mr-1" 
-	                            href="{{ env('SONGSELECT_URL', 'https://songselect.ccli.com/Songs/').$item->song->ccli_no }}">
+	                            href="{{ $item->song->ccli_no }}">
 	                            <img src="{{ url('/') }}/images/songselectlogo.png" width="20"></a>
 	                    @endif
 	                    @if ( strlen($item->song->youtube_id)>0 )
@@ -348,46 +348,49 @@ Usage total: {{$item->song->plansUsingThisSong()->count()}} times,
 					{{-- CCLI Song Usage Reporting 
 						 (link opens new browser tab of CCLI reporting page!)
 					--}}
-					@if (  $item->song_id 
-						&& $item->song->ccli_no > 1000 && 'MP'.$item->song->ccli_no != $item->song->book_ref 
-						&& Auth::user()-> isEditor() 
-						&& $plan->date < \Carbon\Carbon::tomorrow() )
+					@if ( $item->song_id )
 
 						@if ( $item->song->license == 'CCLI' )
 
-							{{-- show a different icon color depending on status of reporting 
-							 	 red    - no date in field 'reported_at'  - no action has taken place yet
-							 	 yellow - date present, but time is 00:00 - user started reporting, but hasn't confirmed it yet
-								 green  - date is set and time > 00:00 	  - user has confirmed that he finished the reporting
-							--}}
-							@if (! $item->reported_at)
+							@if ( $item->song->ccli_no > 1000 && 'MP'.$item->song->ccli_no != $item->song->book_ref 
+							  && Auth::user()-> isEditor() 
+							  && $plan->date < \Carbon\Carbon::tomorrow() )
+								{{-- show a different icon color depending on status of reporting 
+								 	 red    - no date in field 'reported_at'  - no action has taken place yet
+								 	 yellow - date present, but time is 00:00 - user started reporting, but hasn't confirmed it yet
+									 green  - date is set and time > 00:00 	  - user has confirmed that he finished the reporting
+								--}}
+								@if (! $item->reported_at)
 
-								<a class="btn btn-sm btn-outline-danger hidden-xs-down mr-1" 
-									data-toggle="tooltip" data-placement="left" title="Report Song Usage to CCLI" 
-									onclick="reportSongUsageToCCLI(this, {{ $item->id }}, {{ $item->reported_at ? $item->reported_at : 'null' }})" 
-									href='{{ env('CCLI_REPORT_URL', 'https://olr.ccli.com/search/results?SearchTerm=').$item->song->ccli_no }}' target="new">
-									<i class="fa fa-copyright fa-lg"></i></a>
+									<a class="btn btn-sm btn-outline-danger hidden-xs-down mr-1" 
+										data-toggle="tooltip" data-placement="left" title="Report Song Usage to CCLI" 
+										onclick="reportSongUsageToCCLI(this, {{ $item->id }}, {{ $item->reported_at ? $item->reported_at : 'null' }})" 
+										href='{{ env('CCLI_REPORT_URL', 'https://olr.ccli.com/search/results?SearchTerm=').$item->song->ccli_no }}' target="new">
+										<i class="fa fa-copyright fa-lg"></i></a>
 
-							@else
-
-								@if ( $item->reported_at->hour==0 && $item->reported_at->minute==0 )
-									{{-- reporting process was started but not yet confirmed by the user --}}
-									<a class="btn btn-sm btn-outline-warning hidden-xs-down mr-1" 
-										data-toggle="tooltip" data-placement="left" title="Please confirm here when Song Usage Report to CCLI has been completed!" 
-										onclick="reportSongUsageToCCLI(this, {{ $item->id }}, '{{ $item->reported_at ? $item->reported_at : 'null' }}')" 
-										href="#"><i class="fa fa-copyright fa-lg"></i></a>
 								@else
-									{{-- reporting process complete --}}
-									<a class="btn btn-sm btn-outline-success hidden-xs-down narrow"
-										data-toggle="tooltip" data-placement="left" title="Song Usage has already been reported to CCLI."
-										href="#"><i class="fa fa-copyright"></i><i class="fa fa-check"></i></a>
 
+									@if ( $item->reported_at->hour==0 && $item->reported_at->minute==0 )
+										{{-- reporting process was started but not yet confirmed by the user --}}
+										<a class="btn btn-sm btn-outline-warning hidden-xs-down mr-1" 
+											data-toggle="tooltip" data-placement="left" title="Please confirm here when Song Usage Report to CCLI has been completed!" 
+											onclick="reportSongUsageToCCLI(this, {{ $item->id }}, '{{ $item->reported_at ? $item->reported_at : 'null' }}')" 
+											href="#"><i class="fa fa-copyright fa-lg"></i></a>
+									@else
+										{{-- reporting process complete --}}
+										<a class="btn btn-sm btn-outline-success hidden-xs-down narrow"
+											data-toggle="tooltip" data-placement="left" title="Song Usage has already been reported to CCLI."
+											href="#"><i class="fa fa-copyright"></i><i class="fa fa-check"></i></a>
+
+									@endif
 								@endif
 
 							@endif
-						@else
+							
+						@elseif (Auth::user()->isEditor())
 							<small>({{ $item->song->license }})</small>
 						@endif
+
 					@endif
 
 

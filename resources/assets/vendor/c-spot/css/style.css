@@ -8,6 +8,12 @@
  */
 
 
+/* default font size to show time-of-day on the presentation */
+.show-time-of-day {
+    font-size: larger;
+    font-weight: bolder;
+}
+
 /* jQuery UI tabs on the training videos page*/
 .ui-training-videos-tabs {
     padding: 4px !important;

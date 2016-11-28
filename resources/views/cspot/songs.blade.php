@@ -31,12 +31,14 @@
 			&#9776;
 		</button>
 
+		<h4 class="hidden-sm-up float-xs-right text-success lora">{{ $heading }}</h4>
+
 
 		<div class="collapse navbar-toggleable-xs" id="exCollapsingNavbar2">
 
 
-			<a class="navbar-brand bg-info px-1 rounded hidden-md-down big" href="#">{{ $heading }}</a>
-			<a class="navbar-brand bg-info px-1 rounded hidden-sm-down hidden-lg-up" href="#">{{ $heading }}</a>
+			<a class="navbar-brand text-success lora px-1 hidden-md-down big font-weight-bold" href="#">{{ $heading }}</a>
+			<a class="navbar-brand text-success lora px-1 hidden-xs-down hidden-lg-up" href="#">{{ $heading }}</a>
 
 
 			<ul class="nav navbar-nav float-xs-right">
@@ -57,12 +59,12 @@
 
 				@if( Auth::user()->isEditor() && $plan_id==0 )
 					<li class="nav-item active">
-						<a class="nav-link btn btn-outline-primary" 
+						<a class="nav-link btn btn-outline-success" 
 						    href="{{ url('cspot/songs/create') }}{{ 
 								Request::has('filtervalue')
 									? '?type='.Request::input('filtervalue')
 									: '' }}">
-							<i class="fa fa-plus"> </i> &nbsp;Add New
+							<i class="fa fa-plus"> </i> &nbsp;Add New<span class="hidden-md-down"> Song</span>
 								@if (Request::has('filtervalue') )
 									@if (Request::input('filtervalue')=='video') 
 										'<i class="fa fa-tv"> </i>'
@@ -75,11 +77,11 @@
 					</li>
 				@endif
 
-				<li class="nav-item active">
+				<li class="nav-item">
 					@if ( ! Request::has('filtervalue') )
-						<a class="nav-link btn btn-outline-danger" title="Show songs used in the past but not used in a long time" 
+						<a class="nav-link btn btn-outline-primary" title="Show songs used in the past but not used in a long time" 
 								href="{{ url('cspot/songs') }}?filterby=songs&filtervalue=rare">
-							List of 'Forgotten' Songs
+							<span class="hidden-md-down">List of </span>'Forgotten' Songs
 						</a>
 					@endif
 					@if ( Request::has('filtervalue') && Request::input('filtervalue')=='rare' )

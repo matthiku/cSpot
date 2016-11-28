@@ -125,7 +125,7 @@ class MessagesController extends Controller
 
         // Recipients
         if (Input::has('recipients')) {
-            $thread->addParticipants($input['recipients']);
+            $thread->addParticipant($input['recipients']);
         }
 
         // email notification via helper method

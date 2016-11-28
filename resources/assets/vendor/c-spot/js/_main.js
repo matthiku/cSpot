@@ -164,7 +164,9 @@ function selectServiceType(that)
     })
     var url = $('#multi-filter-dropdown').data('url');
     showSpinner();
-    location.href = url + JSON.stringify(options);
+    if (options.length)
+        location.href = url + JSON.stringify(options);
+    else location.href = location.pathname;
 }
 
 
@@ -183,10 +185,11 @@ function loadFromLocalCache()
         // check local storage
         //  (provide empty array just in case when localStorage doesn't contain this item)
         cSpot.songList = JSON.parse(localStorage.getItem('songList')) || [];
-        if ( localStorage.getItem('songList.updated_at') == "[object Object]")
+        var songListDate = localStorage.getItem('songList.updated_at');
+        if ( songListDate == "[object Object]"  || songListDate.substr(0,1)!='{' )
             cSpot.songList = null;
         else 
-            cSpot.songList.updated_at = JSON.parse(localStorage.getItem('songList.updated_at'));
+            cSpot.songList.updated_at = JSON.parse( songListDate );
 
         // not found in local storage, or not up-to-date
         // so get it from the server
