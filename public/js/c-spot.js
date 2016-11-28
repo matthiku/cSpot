@@ -41522,7 +41522,7 @@ function loadFromLocalCache()
         //  (provide empty array just in case when localStorage doesn't contain this item)
         cSpot.songList = JSON.parse(localStorage.getItem('songList')) || [];
         var songListDate = localStorage.getItem('songList.updated_at');
-        if ( songListDate == "[object Object]"  || songListDate.substr(0,1)!='{' )
+        if ( songListDate && ( songListDate == "[object Object]"  || songListDate.substr(0,1)!='{' ) )
             cSpot.songList = null;
         else 
             cSpot.songList.updated_at = JSON.parse( songListDate );
