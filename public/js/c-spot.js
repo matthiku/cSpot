@@ -41511,7 +41511,6 @@ function selectServiceType(that)
 */
 function loadFromLocalCache() 
 {
-
     if (window.location.pathname.indexOf('cspot/')>0) 
     {
         /*  check if songList exists in local cache and if it is still up-to-date,
@@ -41522,14 +41521,14 @@ function loadFromLocalCache()
         //  (provide empty array just in case when localStorage doesn't contain this item)
         cSpot.songList = JSON.parse(localStorage.getItem('songList')) || [];
         var songListDate = localStorage.getItem('songList.updated_at');
-        if ( songListDate && ( songListDate == "[object Object]"  || songListDate.substr(0,1)!='{' ) )
+        if ( !songListDate || (songListDate && ( songListDate == "[object Object]"  || songListDate.substr(0,1)!='{' )) )
             cSpot.songList = null;
         else 
             cSpot.songList.updated_at = JSON.parse( songListDate );
 
         // not found in local storage, or not up-to-date
         // so get it from the server
-        if (cSpot.songList==null || cSpot.songList.updated_at.date != cSpot.lastSongUpdated_at.date) {
+        if ( !songListDate || cSpot.songList.updated_at.date != cSpot.lastSongUpdated_at.date) {
             
             ;;;console.log("Song list must be reloaded from server!");
 
@@ -41611,8 +41610,6 @@ function loadFromLocalCache()
     if ( window.location.pathname.indexOf('/present')>10 ) {
         preparePresentation();
     }
-
-
 }
 
 

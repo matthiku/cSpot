@@ -17,7 +17,7 @@
 
 
     @if (isset($user))
-        <h2>Update User</h2>
+        <h2>User Profile</h2>
         {!! Form::model( $user, array('route' => array('users.update', $user->id), 'method' => 'put', 'id' => 'inputForm', 'oninput' => 'enableSubmitButton()') ) !!}
     @else
         <h2>Create User</h2>
@@ -95,16 +95,14 @@
             </div>
 
             @if (isset($user) && $user->plans_as_leader->count()>0)
-                <div class="row mb-1 full-width">
+                <div class="row full-width">
                     <div class="col-sm-6"></div>
                     <div class="col-sm-6">
                         <strong>
-                            Was leader of
+                            {{ $user->name }} was leader of
                             <span class="text-success">{{ $user->plans_as_leader->count() }}</span>
                             events
                         </strong>
-                        <a href="{{ url('cspot/plans?filterby=user&filtervalue='.$user->id) }}&show=all"
-                            title="show all plans of this user"><small> - show</small></a>
                    </div>
                 </div>
             @endif
@@ -114,7 +112,7 @@
                     <div class="col-sm-6"></div>
                     <div class="col-sm-6">
                         <strong>
-                            Was teacher in
+                            was teacher in
                             <span class="text-success">{{ $user->plans_as_teacher->count() }}</span>
                             services
                         </strong>
@@ -211,5 +209,14 @@
         </div>
     @endif
 
-@stop
 
+
+    @if ($user->id == Auth::user()->id)
+        <p class="small">Only when instructed by the c-SPOT Administrator:
+            <br>Click to
+            <a href="#" onclick="localStorage.clear();">clear local c-SPOT-Cache</a>
+        </p>
+    @endif
+
+
+@stop
