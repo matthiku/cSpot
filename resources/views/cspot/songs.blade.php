@@ -126,6 +126,8 @@
 					@include('cspot.snippets.theader', ['thfname' => 'book_ref', 'thdisp' => 'Book Ref', 'thsearch'=>true, 'thclass'=>'small hidden-xs-down'])
 
 					<th class="center">Media</th>
+
+					<th class="center hidden-lg-down"><small>OnSong?</small></th>
 					
 					@include('cspot.snippets.theader', ['thfname' => 'chords', 'thdisp' => 'Chords?', 'thsearch'=>true, 'thclass'=>'center small hidden-sm-down'])
 
@@ -189,6 +191,13 @@
 	                        <a href="#" title="Play YouTube Video" class="red" data-toggle="tooltip" data-song-title="{{ $song->title }}"
 	                        	onclick="showYTvideoInModal('{{ $song->youtube_id }}', this)"><i class="fa fa-youtube-play fa-lg"></i></a>
 	                    @endif
+					</td>
+
+
+					<td class="center hidden-lg-down">
+						@if ( $song->songTexts->count() )
+							<i class="fa fa-check"></i>
+						@endif
 					</td>
 
 

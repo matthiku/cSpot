@@ -41372,6 +41372,7 @@ function showSpinner() {
 
 
 
+
             
 /**
  * Array to keep a list of future plan dates for highlighing in the calendar widget
@@ -42004,12 +42005,31 @@ function enableSubmitButton()
 */
 function cancelForm()
 {
+    // if a modal is open, simply close it and do nothing else
+    if ($('#myErrorModal').is(':visible')) {
+        $('#myErrorModal').modal('hide');
+        return;
+    }
+    if ($('#searchSongModal').is(':visible')) {
+        $('#searchSongModal').modal('hide');
+        return;
+    }
+    if ($('#addPlanNoteModal').is(':visible')) {
+        $('#addPlanNoteModal').modal('hide');
+        return;
+    }
     showSpinner(); 
     var newLoc = $('.cancel-button').attr('href');
     if (newLoc === undefined)
         newLoc = $('.cancel-button').parent().attr('href');
-    if (newLoc === undefined)
-        history.back;
+    if (newLoc == undefined) {
+        ;;;console.log('going back on history! History count: '+ window.history.length)
+        if (window.history.length) {
+            history.go(-1);
+            return false;
+        }
+        $('#show-spinner').modal('hide');
+    }
     location.href = newLoc;
 }
 
@@ -42366,6 +42386,12 @@ $(document).ready(function() {
             for ( var item in data) {
                 cSpot[item] = data[item];
             }
+
+            // some common html elements
+            cSpot.const.waitspinner = '<i class="fa fa-spinner fa-spin fa-fw"></i>';
+            cSpot.const.editIcon   = '<i class="fa fa-edit"></i>';
+            cSpot.const.deleteIcon = '<i class="fa fa-trash"></i>';
+            
             // presentation type might have been set in the view
             if (cSpot.presentationType) {
                 cSpot.presentation.type = cSpot.presentationType;
@@ -42849,8 +42875,15 @@ $(document).ready(function() {
     $('.item-modal-header').toggle();
     $('.modal-footer').show();
 
+
     // set focus to main content of presentations
     $('#main-content').focus();
+
+
+    // on a form, put focus on first input field, if there is any
+    if ($('.first-focus').length)
+        $('.first-focus')[0].focus();
+
 
     ;;;console.log('document fully loaded');
 });
@@ -42930,6 +42963,174 @@ function userAvailableForPlan(that, plan_id) {
         })        
     }
 }
+
+
+
+
+/*\__________________________________________________________________________  SONG  Details Page
+\*/
+
+
+function insertNewOnSongRow()
+{
+    $('#new-onsong-row').clone().attr('id', 'very-new-onsong-row').appendTo('#onsong-parts');
+    $('#new-onsong-row').fadeIn();
+    $('#new-onsong-row').addClass('table-success');
+    $('#new-onsong-row').removeAttr('id');
+    $('#very-new-onsong-row').attr('id', 'new-onsong-row');
+    $('#insertNewOnSongRow-link').hide();
+}
+
+
+function removeNewOnSongRow(that)
+{
+    $('.error-msg').hide();
+    $('#insertNewOnSongRow-link').show();
+    
+    var row  = $(that).parent().parent();
+    var onsong_id = $(row).data('onsong-id') || 0; // (undefined for new elements)
+
+    // remove row in case of a just added, empty row
+    if (!onsong_id) {
+        $(that).parents('tr').fadeOut('slow');
+        $(that).parents('tr').remove();
+        return;
+    }
+    
+    $(row).removeClass('table-warning');
+
+    // reinstate row layout for existing rows
+    // input area
+    $(row).children('.cell-two').children('.show-onsong-text').show();
+    $(row).children('.cell-two').children('textarea').hide();
+
+    // show correct action buttons
+    var cell = $(that).parent();
+    $(cell).children('.for-existing-items').show(); 
+    $(cell).children('.for-new-items').hide(); 
+    
+}
+
+
+function editOnSongText(that)
+{
+    $('#insertNewOnSongRow-link').hide();
+
+    // get handle on input elements etc
+    var row  = $(that).parent().parent();
+    // activate input area
+    $(row).children('.cell-two').children('.show-onsong-text').hide();
+    $(row).children('.cell-two').children('textarea').show();
+    // show correct action buttons
+    $(row).children('.cell-three').children('.for-existing-items').hide(); 
+    $(row).children('.cell-three').children('.for-new-items').show(); 
+
+    $(row).addClass('table-warning');
+}
+
+function deleteOnSongText(that)
+{
+    if ( confirm('This cannot be undone. Are you sure?') )
+        saveNewOnSongText(that, 'delete');
+}
+
+function saveNewOnSongText(that, del)
+{
+    $('.error-msg').hide();
+    $('.new-onsong-field').css('background-color', 'inherit');
+
+    // get handle on input elements etc
+    var cell = $(that).parent();
+    var row  = $(that).parent().parent();
+
+    // verify input data
+    var select  = $(row).children('.cell-one').children('select');
+    var part_id = $(select).val();
+
+    var onsong_id = $(row).data('onsong-id') || false; // (undefined for new elements)
+    if (onsong_id && !part_id)
+        part_id = $(row).data('part-id') || false;   // for existing elements
+
+    if (!onsong_id && !part_id) {
+        $(select).focus();
+        $(row).children('.cell-one').children('.error-msg').show();
+        $(select).css('background-color', 'red');
+        return;
+    }
+    var textarea = $(row).children('.cell-two').children('textarea');
+    var text = $(textarea).val();
+    if (!text) {
+        $(textarea).focus();
+        $(row).children('.cell-two').children('.error-msg').show();
+        $(textarea).css('background-color', 'red');
+        return;
+    }
+
+    // get text value of selected part name
+    var partname = select.children('option:selected').text();
+
+    // all good, we can proceed. Hide the action buttons
+    var oldCellHtml = $(cell).html(); 
+    $(cell).html(cSpot.const.waitspinner); // or append?
+
+    // is this a delete request?
+    if (del == 'delete')
+        text = '_'; // the controller will interpret '_' as a request to delete this item
+
+    // save data via AJAX
+    var table = $('#onsong-parts');
+    var song_id = $(table).data('song-id');
+    var save_onsong_url = $(table).data('update-onsong-url');
+    $.post(save_onsong_url, {
+            'onsong_id' : onsong_id,
+            'song_id' : song_id,
+            'part_id' : part_id,
+            'text'    : text,
+        })
+        .done( function(data) {
+            // remove waitspinner
+            $(cell).html(oldCellHtml); 
+            // show correct action buttons
+            $(cell).children('.for-existing-items').show(); 
+            $(cell).children('.for-new-items').hide(); 
+
+            // insert new table row with success data
+            // for new rows
+            if (!onsong_id) {
+                $(row).data('onsong-id', data.data.id);
+                $(row).data('part-id', data.data.song_part_id);
+                $(row).children('.cell-one').text(partname);
+                $(row).children('.cell-two').children('.show-onsong-text').html(data.data.text);
+                $(row).children('.cell-two').children('.show-onsong-text').show();
+                $(row).children('.cell-two').children('textarea').hide();
+            }
+            // for existing rows
+            else  {
+                // was it a delete request?
+                if (data.data == '_') {
+                    $(row).fadeOut();
+                    $(row).remove();
+                } 
+                else {
+                    $(row).children('.cell-two').children('.show-onsong-text').show().html(data.data.text);
+                    $(row).children('.cell-two').children('textarea').hide();
+                }
+            }
+            // enable ADD button
+            $('#insertNewOnSongRow-link').show();
+            $(row).removeClass('table-warning');
+            $(row).addClass('table-success');
+        })
+        .fail(function(data) {
+            // show error
+            console.log(data);
+            $(cell).html(oldCellHtml);
+    });
+}
+
+
+
+
 
 
 

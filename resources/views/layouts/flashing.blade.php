@@ -22,12 +22,12 @@
 
 
 
-@if (Session::has('status') && ! Session::get('status')=='')
+@if ( session('status')  &&  ! session('status')==''  )
    <div class="alert alert-success alert-dismissible fade in" role="alert">
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>
-      <strong>Status:</strong> {{ Session::get('status') }}
+      <strong>Status:</strong> {{ session('status') }}
    </div>
 @endif
 

@@ -74,9 +74,7 @@ class HomeController extends Controller
                 'presentationEnableSync' => env('PRESENTATION_ENABLE_SYNC', 'false'),
             ],
 
-            'const' => [
-                'waitspinner' => '<i class="fa fa-spinner fa-spin fa-fw"></i>',
-            ],
+            'const' => [],
 
             'routes' => [
                 'apiNextEvent'  => route('api.next.event'        ),

@@ -1,18 +1,21 @@
 <?php
 
 /**
- * Model for the table chords, which actually contains 
+ * Model for the Song_Texts table which actually contains 
  * the lyrics (song texts) AND the chords - interspersed like the OnSong format
  * The song text is divided into parts according to verse, chorus and bridge etc.
  */
 
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Song_text extends Model
+class SongText extends Model
 {
+
+    // actual table name
+    protected $table = 'song_texts';
 
 
     /**
@@ -20,7 +23,7 @@ class Song_text extends Model
      *
      * @var array
      */
-    protected $fillable = ['song_id', 'part_id', 'text'];
+    protected $fillable = ['song_id', 'song_part_id', 'text'];
 
 
 
@@ -32,7 +35,7 @@ class Song_text extends Model
      */
     public function song() {
 
-        $this->belongsTo('App\Models\Song');
+        return $this->belongsTo('App\Models\Song');
 
     }
 
@@ -45,10 +48,9 @@ class Song_text extends Model
      */
     public function song_part() {
 
-        $this->belongsTo('App\Models\Song_part');
+        return $this->belongsTo('App\Models\SongPart');
 
     }
-
 
 
 

@@ -32,6 +32,12 @@ $(document).ready(function() {
             for ( var item in data) {
                 cSpot[item] = data[item];
             }
+
+            // some common html elements
+            cSpot.const.waitspinner = '<i class="fa fa-spinner fa-spin fa-fw"></i>';
+            cSpot.const.editIcon   = '<i class="fa fa-edit"></i>';
+            cSpot.const.deleteIcon = '<i class="fa fa-trash"></i>';
+            
             // presentation type might have been set in the view
             if (cSpot.presentationType) {
                 cSpot.presentation.type = cSpot.presentationType;
@@ -515,8 +521,15 @@ $(document).ready(function() {
     $('.item-modal-header').toggle();
     $('.modal-footer').show();
 
+
     // set focus to main content of presentations
     $('#main-content').focus();
+
+
+    // on a form, put focus on first input field, if there is any
+    if ($('.first-focus').length)
+        $('.first-focus')[0].focus();
+
 
     ;;;console.log('document fully loaded');
 });

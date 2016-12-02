@@ -36,6 +36,7 @@ function showSpinner() {
 
 
 
+
             
 /**
  * Array to keep a list of future plan dates for highlighing in the calendar widget
@@ -668,12 +669,31 @@ function enableSubmitButton()
 */
 function cancelForm()
 {
+    // if a modal is open, simply close it and do nothing else
+    if ($('#myErrorModal').is(':visible')) {
+        $('#myErrorModal').modal('hide');
+        return;
+    }
+    if ($('#searchSongModal').is(':visible')) {
+        $('#searchSongModal').modal('hide');
+        return;
+    }
+    if ($('#addPlanNoteModal').is(':visible')) {
+        $('#addPlanNoteModal').modal('hide');
+        return;
+    }
     showSpinner(); 
     var newLoc = $('.cancel-button').attr('href');
     if (newLoc === undefined)
         newLoc = $('.cancel-button').parent().attr('href');
-    if (newLoc === undefined)
-        history.back;
+    if (newLoc == undefined) {
+        ;;;console.log('going back on history! History count: '+ window.history.length)
+        if (window.history.length) {
+            history.go(-1);
+            return false;
+        }
+        $('#show-spinner').modal('hide');
+    }
     location.href = newLoc;
 }
 

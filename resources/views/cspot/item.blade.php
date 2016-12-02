@@ -113,7 +113,7 @@
             </h2>
             <h5 class="hidden-md-down">
                 of the 
-                <a href="{{ url('cspot/plans/'.$plan->id)}}/edit">
+                <a href="{{ url('cspot/plans/'.$plan->id)}}/edit" class="cancel-button">
                     Service plan for {{ $plan->date->formatLocalized('%A, %d %B %Y') }}</a>
             </h5>
             <h4 class="hidden-lg-up">

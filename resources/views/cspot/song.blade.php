@@ -83,17 +83,17 @@
                     <span class="hidden-lg-down">Back to </span><span class="hidden-sm-down">List of </span>Training Videos
                 </a>
             @else
-                <a class="float-xs-right btn btn-outline-success" href="{{ url('cspot/songs?page=') .
+                <a class="float-xs-right btn btn-outline-success cancel-button" href="{{ url('cspot/songs?page=') .
                         ( session()->has('currentPage') ? session('currentPage') : $currentPage ) }}">
-                    All Songs
+                    <span class="hidden-lg-down">All </span>Songs
                 </a>
                 <a class="float-xs-right btn btn-outline-warning mr-1"
                         href="{{ url('cspot/songs?filterby=title_2&filtervalue=slides') }}">
-                    All Slideshows
+                    <span class="hidden-lg-down">All </span>Slideshows
                 </a>
                 <a class="float-xs-right btn btn-outline-danger mr-1"
                         href="{{ url('cspot/songs?filterby=title_2&filtervalue=video') }}">
-                    All Videoclips
+                    <span class="hidden-lg-down">All </span>Videoclips
                 </a>
             @endif
         
@@ -375,10 +375,24 @@
             @endif
 
 
+            {{-- SAVE or SUBMIT button --}}
+            <div class="hidden-lg-down">    
+                @if (isset($song))
+                    <big class="mr-1" onclick="showSpinner()">
+                        {!! Form::submit('Save changes', ['class' => 'btn btn-success submit-button disabled']); !!}
+                    </big>
+                @else            
+                    <span class="mr-1">{!! Form::submit('Submit', ['class' => 'btn btn-outline-success submit-button disabled']); !!}</span>
+                @endif
+            </div>
+
+
         </div>
 
 
 
+        {{-- Lyrics, chords and Usage History 
+        --}}
         <div class="col-xl-6">
 
 
@@ -390,10 +404,10 @@
 
             <div id="accordion" role="tablist" aria-multiselectable="true">
               <div class="panel panel-default song-or-slides-only">
-                <div class="panel-heading" role="tab" id="headingOne">
+                <div class="panel-heading" role="tab" id="lyrics-panel">
                     <h4 class="panel-title">
 
-                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseLyrics" aria-expanded="true" aria-controls="collapseLyrics">
                             <span class="song-only">Lyrics</span><span 
                                 class="slides-only" style="display: none;">Slides</span><span 
                                 class="training-show" style="display: none;">Description</span>:
@@ -414,7 +428,8 @@ when the song is presented.">
                         @endif
                     </h4>
                 </div>
-                <div id="collapseOne" class="panel-collapse collapse{{ ( !isset($song) || (isset($song) && $song->title_2=='slides') ) ? ' in' : '' }}" role="tabpanel" aria-labelledby="headingOne">
+                <div id="collapseLyrics" class="panel-collapse collapse{{ ( !isset($song) || (isset($song) && $song->title_2=='slides') ) ? ' in' : '' }}" 
+                        role="tabpanel" aria-labelledby="lyrics-panel">
                     {!! Form::textarea('lyrics'); !!}
                     <button id="lyrics-copy-btn" class="float-xs-right"><i class="fa fa-copy"></i>&nbsp;copy text</button>
 
@@ -427,9 +442,9 @@ when the song is presented.">
 
 
               <div class="panel panel-default song-only">
-                <div class="panel-heading" role="tab" id="headingTwo">
+                <div class="panel-heading" role="tab" id="chords-panel">
                   <h4 class="panel-title">
-                    <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseChords" aria-expanded="false" aria-controls="collapseChords">
                         Chords:</a>
                         <a 
                             tabindex="0" href="#" data-container="body" data-toggle="tooltip"
@@ -447,7 +462,7 @@ like "(repeat chorus!)"'>
                   </h4>
                 </div>
 
-                <div id="collapseTwo" class="panel-collapse collapse{{!isset($song) ? ' in' : ''}}" role="tabpanel" aria-labelledby="headingTwo">
+                <div id="collapseChords" class="panel-collapse collapse{{!isset($song) ? ' in' : ''}}" role="tabpanel" aria-labelledby="chords-panel">
                     {!! Form::textarea('chords'); !!}
                     <button id="chords-copy-btn" class="float-xs-right"><i class="fa fa-copy"></i>&nbsp;copy chords</button>
                     <br>
@@ -458,19 +473,45 @@ like "(repeat chorus!)"'>
               </div>
 
 
+                @if ( isset($song) )
+                    <div class="panel panel-default song-only">
+                        <div class="panel-heading" role="tab" id="onsong-panel">
+                          <h4 class="panel-title">
+                            <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseOnSong" aria-expanded="false" aria-controls="collapseOnSong">
+                                OnSong:</a>
+                                <a 
+                                    tabindex="0" href="#" data-container="body" data-toggle="tooltip"
+                                    data-template='<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><pre class="tooltip-inner tooltip-wide"></pre></div>'
+                                    title='(Click on title "OnSong" to open!)
+Lyrics with OnSong-formatted chords'>
+                                <i class="fa fa-info-circle ml-2"></i></a>
+                            </a>
+                          </h4>
+                        </div>
+
+
+                        <div id="collapseOnSong" class="panel-collapse collapse{{!isset($song) ? ' in' : ''}}" role="tabpanel" aria-labelledby="onsong-panel">
+                            
+                            @include ('cspot.snippets.onsong')
+
+                        </div>
+                    </div>
+                @endif
+
+
 
                 @if ( isset($song) )
                   <div class="panel panel-default">
-                    <div class="panel-heading" role="tab" id="headingThree">
+                    <div class="panel-heading" role="tab" id="history-panel">
                       <h4 class="panel-title">
-                        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseHistory" aria-expanded="false" aria-controls="collapseHistory">
                             Usage History: <small>(used <strong>{{ count($plansUsingThisSong) }}</strong> times)</small>
                         </a>
                       </h4>
                     </div>
 
 
-                    <div id="collapseThree" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingThree">
+                    <div id="collapseHistory" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="history-panel">
                         @if ( count($plansUsingThisSong) )
                             <table class="table table-striped table-normal table-hover table-sm">
                                 <thead class="thead-default"><tr>
@@ -504,13 +545,15 @@ like "(repeat chorus!)"'>
 
 
     {{-- SAVE or SUBMIT button --}}
-    @if (isset($song))
-        <big class="mr-1" onclick="showSpinner()">
-            {!! Form::submit('Save changes', ['class' => 'btn btn-success submit-button disabled']); !!}
-        </big>
-    @else            
-        <span class="mr-1">{!! Form::submit('Submit', ['class' => 'btn btn-outline-success submit-button disabled']); !!}</span>
-    @endif
+    <div class="hidden-xl-up">    
+        @if (isset($song))
+            <big class="mr-1" onclick="showSpinner()">
+                {!! Form::submit('Save changes', ['class' => 'btn btn-success submit-button disabled']); !!}
+            </big>
+        @else            
+            <span class="mr-1">{!! Form::submit('Submit', ['class' => 'btn btn-outline-success submit-button disabled']); !!}</span>
+        @endif
+    </div>
 
 
     {!! Form::close() !!}

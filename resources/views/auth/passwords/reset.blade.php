@@ -16,7 +16,7 @@
 
                 <input type="hidden" name="token" value="{{ $token }}">
 
-                <h2 class="card-header">Enter your new password and confirmation</h2>
+                <h3 class="card-header center mb-1">Please enter your new password and confirmation</h3>
 
                 <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
                     <label class="col-md-4 control-label">E-Mail Address</label>
@@ -61,7 +61,7 @@
 
                 <div class="form-group">
                     <div class="col-md-6 offset-md-4">
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-primary" onclick="showSpinner();">
                             <i class="fa fa-btn fa-refresh"></i> Reset Password
                         </button>
                     </div>

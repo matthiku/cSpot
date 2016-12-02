@@ -14,6 +14,8 @@ use Illuminate\Http\Response;
 use Illuminate\Pagination\Paginator;
 
 use App\Models\Song;
+use App\Models\SongPart;
+use App\Models\SongText;
 use App\Models\Plan;
 use App\Models\File;
 
@@ -130,8 +132,9 @@ class SongController extends Controller
         if ( isset($request->filterby) && $request->filtervalue=='slides' )
             $heading = 'Manage Slides';
 
+        // Get list of rarely used songs
         if (isset($request->filterby) && $request->filterby=='songs' && isset($request->filtervalue) && $request->filtervalue=='rare') {
-             //::
+            $heading = 'Rarely Used Songs';
             $songs = Song::withCount('items') 
                 ->leftJoin('items', 'items.song_id', '=', 'songs.id')
                 ->leftJoin('plans', 'plans.id', '=', 'items.plan_id')
@@ -255,7 +258,11 @@ class SongController extends Controller
 
         if ($plans) {
             $heading = 'Show Plans using the Song "'.$song->title.'"';
-            return view( 'cspot.plans', array('plans' => $plans, 'heading' => $heading) );
+            return view( 'cspot.plans', [
+                'plans' => $plans, 
+                'heading' => $heading,
+                'songParts' => SongPart::get(),
+            ]);
         }
 
         flash('No plans for this song found!');
@@ -298,6 +305,7 @@ class SongController extends Controller
                 'song'         => $song, 
                 'licensesEnum'   => $licensesEnum,
                 'currentPage'      => $currentPage,
+                'songParts'         => SongPart::get(),
                 'plansUsingThisSong' => $song->allPlansUsingThisSong(),
             ));
         }
@@ -428,8 +436,6 @@ class SongController extends Controller
      *
      * - - RESTful API request - -
      *
-     * @param int $id
-     *
      */
     public function APIunlink(Request $request)
     {
@@ -453,6 +459,66 @@ class SongController extends Controller
         return response()->json(['status' => 404, 'data' => 'File with id '.$file_id.' not found or song is not linked to this file!'], 404);
     }
 
+
+
+    /**
+     * Update or add an OnSong formatted song part
+     *
+     * - - RESTful API request - -
+     *
+     */
+    public function APIupdateOnSongParts(Request $request)
+    {
+        // check authentication
+        if ( ! Auth::user()->isEditor() )  {
+            return response()->json(['status' => 401, 'data' => 'Not authorized'], 401);
+        }
+
+        // only for changing existing song parts
+        $onsong_id = $request->has('onsong_id') ? $request->onsong_id : 0;
+        // verify song id, part_id and onsong text
+        $song_id = $request->has('song_id') ? $request->song_id : 0;
+        $part_id = $request->has('part_id') ? $request->part_id : 0;
+        $text    = $request->has('text')    ? $request->text    : 0;
+        if ($song_id===0 || $part_id===0 || $text===0) 
+            return response()->json(['status' => 400, 'data' => 'API: songId or part_id or text missing!'], 400);
+
+        // is this a request to update an existing song part?
+        if ($onsong_id) {
+            $song_text = SongText::find($onsong_id);
+            if ($song_text) {
+                // is this a request to delete this item?
+                if ($text=='_') {
+                    $song_text->delete();
+                    return response()->json(['status' => 202, 'data' => '_'], 202);
+                }
+                $song_text->text = $text;
+                $song_text->save();
+                return response()->json(['status' => 200, 'data' => $song_text], 200);
+            }
+        }
+
+        // find the single resource
+        $song = Song::find($song_id);
+
+        if ( $song ) {
+
+            // create a new onSong record and link it with the song
+            $song_text = new SongText(['song_part_id' => $part_id, 'text' => $text]);
+
+            // perform the update
+            $song->songTexts()->save($song_text);
+
+            // delete possible cached items which contain this song
+            deleteCachedItemsContainingSongId( $song );
+
+            // return the new record as JSON string
+            return response()->json(['status' => 201, 'data' => $song_text], 201);
+        }
+
+        // provided or local data was incoherent
+        return response()->json(['status' => 409, 'data' => 'API: conflicting data received!'], 409);
+    }
 
 
 

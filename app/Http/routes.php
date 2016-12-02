@@ -252,6 +252,10 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     // song list
     Route::get('api/songs/getsonglist', 'Cspot\SongController@APIgetSongList')->name('getsonglist');
 
+    // OnSong-type song parts
+    Route::post('api/songs/updateonsongparts', 'Cspot\SongController@APIupdateOnSongParts')->name('updateonsongparts');
+
+
 
     // list of training videos
     Route::get('training/videos',       'Cspot\SongController@trainingVideos')->name('trainingVideos');
@@ -301,8 +305,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['web']], function() {
     Route::resource('resources',  'Admin\ResourceController');    
     Route::resource('instruments', 'Admin\InstrumentController');    
     Route::resource('types',        'Admin\TypeController');    
-    Route::resource('default_items', 'Admin\DefaultItemController');    
-    Route::resource('file_categories','Admin\FileCategoryController');    
+    Route::resource('song_parts',    'Admin\SongPartController');    
+    Route::resource('default_items',  'Admin\DefaultItemController');    
+    Route::resource('file_categories', 'Admin\FileCategoryController');    
     // as forms cannot use DELETE method, we implement it as GET
     Route::get('users/{id}/delete',    'Admin\UserController@destroy');    
     Route::get('roles/{id}/delete',     'Admin\RoleController@destroy');    

@@ -53,8 +53,6 @@
                     <i class="fa fa-cogs"></i> <span class="caret"></span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" role="menu">
-                    <a class="dropdown-item" href="{{ url('admin/default_items') }}"><i class="fa fa-btn fa-server fa-lg"></i> &nbsp; Default Items</a>
-                    <hr>
                     <a class="dropdown-item" href="{{ url('cspot/files') }}"><i class="fa fa-btn fa-clone fa-lg"></i> &nbsp; Files/Images</a>
                     <a class="dropdown-item" href="{{ url('admin/file_categories') }}"><i class="fa fa-btn fa-file-archive-o fa-lg"></i> &nbsp; File Categories</a>
                     <hr>
@@ -167,56 +165,76 @@
 
 
 
+
+
     {{--________________________________________________________
 
                     LEFT - Main menu items
         ________________________________________________________
     --}}
     <ul class="nav navbar-nav">
+
         @if (Auth::user())
-        <li class="nav-item dropdown{{ Request::is('cspot/plans') || Request::is('cspot/songs') || Request::is('cspot/history') || Request::is('admin/types') ? ' active' : '' }}">
-            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                Planning <span class="caret"></span>
-            </a>
-            <div class="dropdown-menu" role="menu">
-                <a class="dropdown-item {{ Request::is('cspot/plans/next') ? 'active' : '' }}" href="{{ url('cspot/plans/next') }}">
-                    <i class="fa fa-btn fa-bell-o fa-lg"></i> &nbsp; Next Sunday</a>
-                <a class="dropdown-item" href="{{ url('cspot/plans?filterby=future') }}">
-                    <i class="fa fa-btn fa-calendar fa-lg"></i> &nbsp; Upcoming Events</a>
-                <hr>
-                <a class="dropdown-item {{ Request::is('cspot/plans') ? 'active' : '' }}" href="{{ url('cspot/plans') }}">
-                    <i class="fa fa-btn fa-calendar-check-o fa-lg"></i> &nbsp; Your Events</a>
-                @if( Auth::user()->isEditor() )
-                <a class="dropdown-item" href="{{ url('cspot/plans/create') }}">
-                    <i class="fa fa-btn fa-calendar-plus-o fa-lg"></i> &nbsp; Create New Event</a>
-                @endif
-                <a class="dropdown-item" href="{{ url('admin/types') }}">
-                    <i class="fa fa-btn fa-tasks fa-lg"></i> &nbsp; Event Types</a>
-                <hr>
-                <a class="dropdown-item" href="{{ url('cspot/songs') }}">
-                    <i class="fa fa-btn fa-music fa-lg"> </i> &nbsp;&nbsp; Songs</a>
-                <a class="dropdown-item" href="{{ url('cspot/songs') }}?filterby=title_2&filtervalue=video">
-                    <i class="fa fa-btn fa-tv fa-lg"></i> &nbsp; Videoclips</a>
-                <a class="dropdown-item" href="{{ url('cspot/songs') }}?filterby=title_2&filtervalue=slides">
-                    <i class="fa fa-btn fa-clone fa-lg"></i> &nbsp; Slides</a>
-                @if (Auth::user()->isEditor())
-                <hr class="mb-0">
-                    <a class="dropdown-item" href="{{ url('cspot/history') }}">
-                        <span class="xl-big">&#9991;</span> &nbsp; Event Plan History</a>
-                @endif
-            </div>
-        </li>
-        <li class="nav-item hidden-sm-down">
-            <a class="nav-link {{ Request::is('cspot/plans/next') ? 'active' : '' }}" href="{{ url('cspot/plans/next') }}">Next Sunday</a>
-        </li>
-        <li class="nav-item hidden-sm-down">
-            <a class="nav-link{{ Request::has('filterby') && Request::input('filterby')=='future' ? ' active' : '' }}" 
-                href="{{ url('cspot/plans?filterby=future') }}">Upcoming Events</a>
-        </li>
-        <li class="nav-item hidden-lg-down">
-            <a class="nav-link{{ Request::is('cspot/plans') && ! Request::has('filterby')  ? ' active' : '' }}" href="{{ url('cspot/plans') }}">My Events</a>
-        </li>
+
+            <li class="nav-item dropdown{{ Request::is('cspot/plans') || Request::is('cspot/songs') || Request::is('cspot/history') || Request::is('admin/types') ? ' active' : '' }}">
+                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                    Planning <span class="caret"></span>
+                </a>
+                <div class="dropdown-menu" role="menu">
+                    <a class="dropdown-item {{ Request::is('cspot/plans/next') ? 'active' : '' }}" href="{{ url('cspot/plans/next') }}">
+                        <i class="fa fa-btn fa-bell-o fa-lg"></i> &nbsp; Next Sunday</a>
+                    <a class="dropdown-item" href="{{ url('cspot/plans?filterby=future') }}">
+                        <i class="fa fa-btn fa-calendar fa-lg"></i> &nbsp; Upcoming Events</a>
+
+                    <hr>
+                    <a class="dropdown-item {{ Request::is('cspot/plans') ? 'active' : '' }}" href="{{ url('cspot/plans') }}">
+                        <i class="fa fa-btn fa-calendar-check-o fa-lg"></i> &nbsp; Your Events</a>
+                    @if( Auth::user()->isEditor() )
+                    <a class="dropdown-item" href="{{ url('cspot/plans/create') }}">
+                        <i class="fa fa-btn fa-calendar-plus-o fa-lg"></i> &nbsp; Create New Event</a>
+                    @endif
+                    <a class="dropdown-item" href="{{ url('admin/types') }}">
+                        <i class="fa fa-btn fa-tasks fa-lg"></i> &nbsp; Event Types</a>
+                    <a class="dropdown-item" href="{{ url('admin/default_items') }}">
+                        <i class="fa fa-btn fa-server fa-lg"></i> &nbsp; Default Items</a>
+
+                    <hr>
+                    <a class="dropdown-item" href="{{ url('cspot/songs') }}">
+                        <i class="fa fa-btn fa-music fa-lg"> </i> &nbsp;&nbsp; Songs</a>
+                    <a class="dropdown-item" href="{{ url('cspot/songs') }}?filterby=title_2&filtervalue=video">
+                        <i class="fa fa-btn fa-tv fa-lg"></i> &nbsp; Videoclips</a>
+                    <a class="dropdown-item" href="{{ url('cspot/songs') }}?filterby=title_2&filtervalue=slides">
+                        <i class="fa fa-btn fa-clone fa-lg"></i> &nbsp; Slides</a>
+                    @if (Auth::user()->isEditor())
+                        <a class="dropdown-item" href="{{ url('admin/song_parts') }}">
+                            <i class="fa fa-btn fa-server fa-lg"></i> &nbsp; Song Parts Names</a>
+                        <hr class="mb-0">
+                        <a class="dropdown-item" href="{{ url('cspot/history') }}">
+                            <span class="xl-big">&#9991;</span> &nbsp; Event Plan History</a>
+                    @endif
+                </div>
+            </li>
+
+
+            <li class="nav-item hidden-sm-down">
+                <a class="nav-link {{ Request::is('cspot/plans/next') ? 'active' : '' }}" href="{{ url('cspot/plans/next') }}">Next Sunday</a>
+            </li>
+
+
+            <li class="nav-item hidden-sm-down">
+                <a class="nav-link{{ Request::has('filterby') && Request::input('filterby')=='future' ? ' active' : '' }}" 
+                    href="{{ url('cspot/plans?filterby=future') }}">Upcoming Events</a>
+            </li>
+
+
+            <li class="nav-item hidden-lg-down">
+                <a class="nav-link{{ Request::is('cspot/plans') && ! Request::has('filterby')  ? ' active' : '' }}" href="{{ url('cspot/plans') }}">My Events</a>
+            </li>
+
         @endif
+
+
+
 
         <!-- 
             CENTER - Show church logo and name 

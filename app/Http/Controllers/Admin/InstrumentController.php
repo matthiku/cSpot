@@ -23,7 +23,7 @@ class InstrumentController extends Controller
      * define view names
      */
     protected $view_all = 'admin.instruments';
-    protected $view_idx = 'admin.instruments.index';
+    protected $view_idx = 'instruments.index';
     protected $view_one = 'admin.instrument';
 
 
@@ -110,7 +110,7 @@ class InstrumentController extends Controller
         }
         $message = 'Error! Instrument with ID "' . $id . '" not found';
         return \Redirect::route($this->view_idx)
-                        ->with(['status' => $message]);
+                        ->with(['error' => $message]);
     }
 
 

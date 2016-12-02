@@ -64,9 +64,9 @@ class Song extends Model
      * 
      * this text contains both lyrics with chords interspersed (like the OnSong format)
      */
-    public function song_texts() 
+    public function songTexts() 
     {
-        return $this->hasMany('App\Models\Song_text');
+        return $this->hasMany('App\Models\SongText');
     }
 
 
