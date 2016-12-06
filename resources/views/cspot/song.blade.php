@@ -55,21 +55,6 @@
                     <span class="training-show" style="display: none;">Training Video</span>
                 </h2>
 
-                <div class="song-only">
-                    Change to:
-                    <span class="btn-group btn-group-sm" role="group" aria-label="choose type of new song">
-                        <button type="button" class="btn btn-secondary" onclick="showVideoForm('video')">Videoclip</button>
-                        <button type="button" class="btn btn-secondary" onclick="showSlidesForm('slides')">Text Slides</button>
-                    </span>
-                    <big>
-                        <a tabindex="0" href="#"
-                            data-container="body" data-toggle="tooltip" data-placement="bottom"
-                            title="Select 'Videoclip' and the linked Youtube video can be shown on the presentation screen!
-    Select 'Text slides' in order to show Powerpoint-like slides using the text in the lyrics field!">
-                            <i class="fa fa-info-circle"></i></a>
-                    </big>
-                </div>
-
             @endif
         </div>
 
@@ -83,15 +68,15 @@
                     <span class="hidden-lg-down">Back to </span><span class="hidden-sm-down">List of </span>Training Videos
                 </a>
             @else
-                <a class="float-xs-right btn btn-outline-success cancel-button" href="{{ url('cspot/songs?page=') .
-                        ( session()->has('currentPage') ? session('currentPage') : $currentPage ) }}">
+                <a class="float-xs-right btn btn-outline-success song-only" 
+                        href="{{ url('cspot/songs?page=') . ( session()->has('currentPage') ? session('currentPage') : $currentPage ) }}">
                     <span class="hidden-lg-down">All </span>Songs
                 </a>
-                <a class="float-xs-right btn btn-outline-warning mr-1"
+                <a class="float-xs-right btn btn-outline-warning mr-1 slides-only" style="display: none;"
                         href="{{ url('cspot/songs?filterby=title_2&filtervalue=slides') }}">
                     <span class="hidden-lg-down">All </span>Slideshows
                 </a>
-                <a class="float-xs-right btn btn-outline-danger mr-1"
+                <a class="float-xs-right btn btn-outline-danger mr-1 video-only" style="display: none;"
                         href="{{ url('cspot/songs?filterby=title_2&filtervalue=video') }}">
                     <span class="hidden-lg-down">All </span>Videoclips
                 </a>
@@ -430,14 +415,24 @@ when the song is presented.">
                 </div>
                 <div id="collapseLyrics" class="panel-collapse collapse{{ ( !isset($song) || (isset($song) && $song->title_2=='slides') ) ? ' in' : '' }}" 
                         role="tabpanel" aria-labelledby="lyrics-panel">
-                    {!! Form::textarea('lyrics'); !!}
+
+                    <textarea name="lyrics" rows=4 onkeyup="calculateTextAreaHeight(this);">{{ isset($song) ? $song->lyrics : '' }}</textarea>
+
                     <button id="lyrics-copy-btn" class="float-xs-right"><i class="fa fa-copy"></i>&nbsp;copy text</button>
 
-                    {{-- reset size of textarea --}}
-                    <small><a href="#" id="reset-lyrics-textarea" onclick="resizeTextArea(this, 'lyrics')" style="display:none">resize textbox</a></small>
+                    {{-- zoom size of textarea --}}
+                    <small id="zoom-lyrics-textarea" style="display: none;">textbox size:
+                        <span class="btn btn-sm btn-outline-info narrow baseline" onclick="resizeTextArea('plus', 'lyrics')"> 
+                            <small>&#10133;</small>
+                        </span>
+                        <span class="btn btn-sm btn-outline-info narrow baseline" onclick="resizeTextArea('minus', 'lyrics')"> 
+                            <small>&#10134;</small>
+                        </span>
+                    </small>
   
                 </div>
               </div>
+
 
 
 
@@ -463,40 +458,47 @@ like "(repeat chorus!)"'>
                 </div>
 
                 <div id="collapseChords" class="panel-collapse collapse{{!isset($song) ? ' in' : ''}}" role="tabpanel" aria-labelledby="chords-panel">
-                    {!! Form::textarea('chords'); !!}
+
+                    <textarea name="chords" rows=4 onkeyup="calculateTextAreaHeight(this);">{{ isset($song) ? $song->chords : '' }}</textarea>
+
                     <button id="chords-copy-btn" class="float-xs-right"><i class="fa fa-copy"></i>&nbsp;copy chords</button>
                     <br>
 
-                    {{-- reset size of textarea --}}
-                    <small><a href="#" id="reset-chords-textarea" onclick="resizeTextArea(this, 'chords')" style="display:none">resize textbox</a></small>
+                    {{-- zoom size of textarea --}}
+                    <small id="zoom-chords-textarea" style="display: none;">textbox size:
+                        <span class="btn btn-sm btn-outline-info narrow baseline" onclick="resizeTextArea('plus', 'chords')"> 
+                            <small>&#10133;</small>
+                        </span>
+                        <span class="btn btn-sm btn-outline-info narrow baseline" onclick="resizeTextArea('minus', 'chords')"> 
+                            <small>&#10134;</small>
+                        </span>
+                    </small>
                 </div>
               </div>
 
 
-                @if ( isset($song) )
-                    <div class="panel panel-default song-only">
-                        <div class="panel-heading" role="tab" id="onsong-panel">
-                          <h4 class="panel-title">
-                            <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseOnSong" aria-expanded="false" aria-controls="collapseOnSong">
-                                OnSong:</a>
-                                <a 
-                                    tabindex="0" href="#" data-container="body" data-toggle="tooltip"
-                                    data-template='<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><pre class="tooltip-inner tooltip-wide"></pre></div>'
-                                    title='(Click on title "OnSong" to open!)
+                <div class="panel panel-default song-only">
+                    <div class="panel-heading" role="tab" id="onsong-panel">
+                      <h4 class="panel-title">
+                        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseOnSong" aria-expanded="false" aria-controls="collapseOnSong">
+                            OnSong:</a>
+                            <a 
+                                tabindex="0" href="#" data-container="body" data-toggle="tooltip"
+                                data-template='<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><pre class="tooltip-inner tooltip-wide"></pre></div>'
+                                title='(Click on title "OnSong" to open!)
 Lyrics with OnSong-formatted chords'>
-                                <i class="fa fa-info-circle ml-2"></i></a>
-                            </a>
-                          </h4>
-                        </div>
-
-
-                        <div id="collapseOnSong" class="panel-collapse collapse{{!isset($song) ? ' in' : ''}}" role="tabpanel" aria-labelledby="onsong-panel">
-                            
-                            @include ('cspot.snippets.onsong')
-
-                        </div>
+                            <i class="fa fa-info-circle ml-2"></i></a>
+                        </a>
+                      </h4>
                     </div>
-                @endif
+
+
+                    <div id="collapseOnSong" class="panel-collapse collapse{{!isset($song) ? ' in' : ''}}" role="tabpanel" aria-labelledby="onsong-panel">
+                        
+                        @include ('cspot.snippets.onsong')
+
+                    </div>
+                </div>
 
 
 
@@ -566,6 +568,18 @@ Lyrics with OnSong-formatted chords'>
         document.forms.inputForm.title.setAttribute('class', 'main-input');
 
 
+        // correct position of textarea sizing buttons
+        $(document).ready(function() {
+            positionZoomButtons('lyrics');
+            positionZoomButtons('chords');
+            $('#collapseLyrics').on('shown.bs.collapse', function () {
+                positionZoomButtons('lyrics');
+            })
+            $('#collapseChords').on('shown.bs.collapse', function () {
+                positionZoomButtons('chords');
+            })
+        })
+
         // Add ability to copy textarea content to the clipboard
         var copyTextareaBtn = document.querySelector('#chords-copy-btn');
         copyTextareaBtn.addEventListener('click', function(event) {
@@ -581,8 +595,7 @@ Lyrics with OnSong-formatted chords'>
         $("textarea[name='chords']").click(function() {
             {{-- get number of lines of text and set size of textarea accordingly --}}
             $("textarea[name='chords']").attr('rows', Math.max($("textarea[name='chords']").val().split('\n').length, 4) );
-            $('#reset-chords-textarea').show();
-            $('#reset-chords-textarea').position({my: 'right bottom', at: 'right top', of: 'textarea[name="chords"]'});
+            positionZoomButtons('chords');
         });
 
 
@@ -598,17 +611,13 @@ Lyrics with OnSong-formatted chords'>
             }
             event.preventDefault();
         });
+        // on click, resize textarea according to the size of its content (amount of lines)
         $("textarea[name='lyrics']").click(function() {
             {{-- get number of lines of lyrics and set size of textarea accordingly --}}
             $("textarea[name='lyrics']").attr( 'rows', Math.max($("textarea[name='lyrics']").val().split('\n').length, 4) );
-            $('#reset-lyrics-textarea').show();
-            $('#reset-lyrics-textarea').position({my: 'right bottom', at: 'right top', of: 'textarea[name="lyrics"]'});
+            positionZoomButtons('lyrics');
         });
 
-        function resizeTextArea(that, name) {
-            $('textarea[name='+name+']').attr('rows',6);
-            $(that).hide();
-        }
 
         function showSlidesForm(what) {
             $('.song-only').hide();

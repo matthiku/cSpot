@@ -11,8 +11,11 @@ class SongPart extends Model
 	protected $table = 'song_parts';
 
     // fillable field
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'sequence', 'code'];
 
 
+    public function songTexts() {
+    	return $this->hasMany('App\Models\SongText');
+    }
 
 }

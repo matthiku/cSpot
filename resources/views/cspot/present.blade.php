@@ -182,10 +182,38 @@
 
     <nav class="navbar navbar-fixed-bottom navbar-dark bg-black center" id="bottom-fixed-navbar" style="padding: 0;">
 
+        <div class="float-xs-left dropup">
+            <span title="Click to design this" class="link"                     
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span id="time-of-day" class="show-time-of-day">hh:mm</span>
+            </span>
+
+            <div class="dropdown-menu dropdown-menu-left bg-inverse text-white">
+
+                <div>
+                    <button class="btn btn-sm btn-info narrow">Text: 
+                        <input onchange="changeColor('.show-time-of-day', this.value);" type='text' class="colorPicker" />
+                    </button class="btn btn-sm btn-info">
+                    <button class="btn btn-sm btn-info narrow">BG: 
+                        <input onchange="changeColor('.show-time-of-day', this.value, 'BG');" type='text' class="BGcolorPicker" />
+                    </button class="btn btn-sm btn-info">
+                </div>
+                <div>Font size:
+                    <button class="btn btn-sm btn-outline-info narrow"> 
+                        <span class="link" onclick="changeFontSize('.show-time-of-day', 'increase')">&#10133;</span>
+                    </button>
+                    <button class="btn btn-sm btn-outline-info narrow"> 
+                        <span class="link" onclick="changeFontSize('.show-time-of-day', 'decrease')">&#10134;</span>
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+
 
         <ul class="nav navbar-nav">
 
-            <li id="time-of-day" class="float-xs-left show-time-of-day">hh:mm</li>
 
             <li id="lyrics-parts-indicators">
                 <!-- potential buttons for lyric parts (verses, chorusses etc) -->
@@ -471,14 +499,14 @@
             <div class="nav navbar-nav float-xs-left ml-1">
                 <button class="btn btn-sm btn-info narrow">
                     Text: 
-                    <input onchange="changeColor(['.announce-text-present', '.text-present', '.bible-text-present'], this.value);" type='text' id="colorPicker" />
+                    <input onchange="changeColor(['.announce-text-present', '.text-present', '.bible-text-present'], this.value);" type='text' class="colorPicker" />
                 </button class="btn btn-sm btn-info">
             </div>
 
             <div class="nav navbar-nav float-xs-left ml-1">
                 <button class="btn btn-sm btn-info narrow">
                     BG: 
-                    <input onchange="changeColor(['#main-content', 'body'], this.value, 'BG');" type='text' id="BGcolorPicker" />
+                    <input onchange="changeColor(['#main-content', 'body'], this.value, 'BG');" type='text' class="BGcolorPicker" />
                 </button class="btn btn-sm btn-info">
             </div>
 

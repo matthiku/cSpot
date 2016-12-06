@@ -195,6 +195,7 @@ class SongController extends Controller
         return view($this->view_one, [
             'licensesEnum' => $licensesEnum,
             'currentPage'  => $request->currentPage,
+            'songParts'    => SongPart::orderby('sequence')->get(),
         ]);
     }
 
@@ -261,7 +262,7 @@ class SongController extends Controller
             return view( 'cspot.plans', [
                 'plans' => $plans, 
                 'heading' => $heading,
-                'songParts' => SongPart::get(),
+                'songParts' => SongPart::orderby('sequence')->get(),
             ]);
         }
 
@@ -305,7 +306,7 @@ class SongController extends Controller
                 'song'         => $song, 
                 'licensesEnum'   => $licensesEnum,
                 'currentPage'      => $currentPage,
-                'songParts'         => SongPart::get(),
+                'songParts'         => SongPart::orderby('sequence')->get(),
                 'plansUsingThisSong' => $song->allPlansUsingThisSong(),
             ));
         }

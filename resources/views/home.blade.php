@@ -9,7 +9,7 @@
 
     <div class="container spark-screen">
         <div class="row">
-            <div class="col-md-10 offset-md-1">
+            <div class="col-xl-10 offset-xl-1">
             
                 @include('layouts.flashing')
 
@@ -69,12 +69,42 @@
                                     title="Show (future) plans where you are leader or teacher">
                                 &nbsp; <i class="fa fa-question-circle"></i></a>
                             <a href="{{ url('cspot/plans') }}">
-                                Your Services/Events
+                                My Services/Events
                             </a>
                         </span>
 
                     </p>
                     <hr>
+
+                    <p class="card-text lora">
+
+                        <span class="btn btn-outline-success md-full mr-2">
+                            <a href="{{ url('cspot/songs') }}">
+                                <i class="fa fa-btn fa-music fa-lg float-xs-left"> </i>
+                                &nbsp; Songs Repository
+                                <i class="fa fa-btn fa-music fa-lg float-xs-right hidden-md-up"></i>
+                            </a>
+                        </span>
+
+                        <button class="btn btn-outline-primary md-full mr-2">
+                            <a href="{{ url('cspot/songs?filterby=title_2&filtervalue=slides') }}">
+                                <i class="fa fa-btn fa-clone fa-lg float-xs-left"></i>
+                                &nbsp; Slides
+                                <i class="fa fa-btn fa-clone fa-lg float-xs-right hidden-md-up"></i>
+                            </a>
+                        </button>
+
+                        <span class="btn btn-outline-info md-full">
+                            <a href="{{ url('cspot/songs?filterby=title_2&filtervalue=video') }}">
+                                <i class="fa fa-btn fa-tv fa-lg float-xs-left"></i>
+                                &nbsp; Videoclips
+                                <i class="fa fa-btn fa-tv fa-lg float-xs-right hidden-md-up"></i>
+                            </a>
+                        </span>
+
+                    </p>
+                    <hr>
+
                     <div id="inpDate" onchange="openPlanByDate(this)"></div>
 
                 </div>

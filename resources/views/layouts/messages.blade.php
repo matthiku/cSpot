@@ -26,7 +26,7 @@
                     <!-- Message Form Input -->
                     <div class="form-group">
                         {!! Form::label('message', 'Message', ['class' => 'control-label']) !!}
-                        {!! Form::textarea('message', null, ['class' => 'form-control', 'id' => 'feedbackMessage']) !!}
+                        {!! Form::textarea('message', null, ['class' => 'form-control', 'id' => 'feedbackMessage', 'required' => 'required']) !!}
                     </div>
                     
                     @foreach ($administrators as $admin)
@@ -40,7 +40,7 @@
                     <!-- Submit Form Input -->
                     <div class="form-group">
                         <button type="button" class="btn btn-secondary mr-2" data-dismiss="modal">Cancel</button>
-                        {!! Form::submit('Submit', ['class' => 'btn btn-primary']) !!}
+                        {!! Form::submit('Submit', ['class' => 'btn btn-primary', 'onclick' => '$("#createMessage").modal("hide")']) !!}
                     </div>
 
                 </div>

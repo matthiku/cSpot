@@ -13,39 +13,25 @@
         <div class="col-md-9">
             <div class="panel panel-default">
                 
-                <div class="panel-heading">
+                <div class="panel-heading lora text-shadow">
                     <img src="{{ url($logoPath.env('CHURCH_LOGO_FILENAME')) }}" height="20">
-                    {{ env('CHURCH_NAME') }}<br>Welcome to  c-SPOT!
+                    {{ env('CHURCH_NAME') }}<br>Welcome to c-SPOT,
                 </div>
 
                 <br>
 
-                <div class="panel-body center">
-                    <h4>the <span class="text-primary">ch</span>urch-<span class="text-primary">S</span>ervice 
-                        <span class="text-primary">P</span>lanning <span class="text-primary">O</span>nline <span class="text-primary">T</span>ool</h4>
+                <div class="panel-body center lora text-shadow">
+                    <h2>the <span class="text-primary">ch</span>urch-<span class="text-primary">S</span>ervice 
+                        <span class="text-primary">P</span>lanning <span class="text-primary">O</span>nline <span class="text-primary">T</span>ool</h2>
                     <br>
 
                 </div>
 
-                @if (Auth::guest())
-
-                    <div class="form-signin right">
-                        <h4>
-                            <a href="{{url('login')}}"><i class="fa fa-sign-in"></i> Sign in</a>  
-                            &nbsp; or &nbsp;
-                            <a href="{{url('register')}}"><i class="fa fa-list"></i> Sign up</a>
-                        </h4>
-                    </div>
-
-                @else
-
-                    <div class="form-signin right">
-                        <h2 class="form-signin-heading">
-                            <a href="{{url('home')}}">Start using c-SPOT</a>
-                        </h2>
-                    </div>
-
-                @endif
+                <div class="right lora">
+                    <h4>
+                        <a href="{{url('home')}}">Start using c-SPOT</a>
+                    </h4>
+                </div>
 
 
             </div>

@@ -64,14 +64,18 @@
 								Request::has('filtervalue')
 									? '?type='.Request::input('filtervalue')
 									: '' }}">
-							<i class="fa fa-plus"> </i> &nbsp;Add New<span class="hidden-md-down"> Song</span>
+							<i class="fa fa-plus"> </i> &nbsp;Add New
 								@if (Request::has('filtervalue') )
 									@if (Request::input('filtervalue')=='video') 
-										'<i class="fa fa-tv"> </i>'
+										<span class="hidden-md-down"> Videoclip</span>
+										 '<i class="fa fa-tv"> </i>'
 									@endif
 									@if (Request::input('filtervalue')=='slides')
+										<span class="hidden-md-down"> Slideshow</span>
 										'<i class="fa fa-clone"> </i>'
 									@endif
+								@else
+									<span class="hidden-md-down"> Song</span>
 								@endif
 						</a>
 					</li>

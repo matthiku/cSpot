@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use App\Http\Requests\StoreSongPartRequest;
 use App\Http\Controllers\Controller;
 
 use App\Models\SongPart;
@@ -43,7 +44,7 @@ class SongPartController extends Controller
     public function index()
     {
         // get all items
-        $song_parts = SongPart::get();
+        $song_parts = SongPart::orderby('sequence')->get();
 
         return view(
             $this->view_all, 
@@ -63,7 +64,7 @@ class SongPartController extends Controller
     public function create()
     {
         // get all items
-        $song_parts = SongPart::get();
+        $song_parts = SongPart::orderby('sequence')->get();
         
         // return the simple Add/Edit view, but provide a list of existing names
         return view(
@@ -80,41 +81,16 @@ class SongPartController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreSongPartRequest $request)
     {
-        // get all items
-        $song_parts = SongPart::get();
+        // data has alredy been validatet so we can create a new resource
+        SongPart::create($request->all());
 
-        // get all existing names as an array
-        $part_names = SongPart::pluck('name');
-
-        $message = "Missing name!";
-
-        // check for name value and save new resource if found
-        if ($request->has('name')) {
-
-            $name = $request->name;
-
-            if ($part_names->contains($name)) {
-                $error = 'Error! Song Parts name "' . $name . '" already exists!';
-                $request->session()->flash('error', $error);
-                // $message = '';
-            } 
-            else {
-                SongPart::create($request->all());
-                $song_parts = SongPart::get();
-                return view( $this->view_all, 
-                    [
-                        'heading'    => 'Manage Song Part Names', 
-                        'song_parts' => $song_parts
-                    ]);
-            }
-        }
-        return view(
-            $this->view_one, 
-            ['song_parts' => $song_parts]
-        )
-        ->with('status', $message);
+        return view( $this->view_all, 
+            [
+                'heading'    => 'Manage Song Part Names', 
+                'song_parts' => SongPart::orderby('sequence')->get()
+            ]);
     }
 
 
@@ -142,12 +118,10 @@ class SongPartController extends Controller
      */
     public function edit($id)
     {
-        // get all items
-        $song_parts = SongPart::get();
         return view(
             $this->view_one, 
             [
-                'song_parts' => $song_parts,
+                'song_parts' => SongPart::orderby('sequence')->get(),
                 'song_part' => SongPart::find($id)
             ]
         );
@@ -161,43 +135,18 @@ class SongPartController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(StoreSongPartRequest $request, $id)
     {
         // get this item
         $sp = SongPart::find($id);
 
-        // get all items
-        $song_parts = SongPart::get();
+        $sp->update($request->all());
 
-        // get all existing names as an array
-        $part_names = SongPart::pluck('name');
-
-        $message = "Missing name!";
-
-        // check for name value and save new resource if found
-        if ($request->has('name')) {
-
-            $name = $request->name;
-
-            if ($part_names->contains($name)) {
-                $error = 'Error! Song Parts name "' . $name . '" already exists!';
-                $request->session()->flash('error', $error);
-            } 
-            else {
-                $sp->update($request->all());
-                $song_parts = SongPart::get();
-                return view( $this->view_all, 
-                    [
-                        'heading'    => 'Manage Song Part Names', 
-                        'song_parts' => $song_parts
-                    ]);
-            }
-        }
-        return view(
-            $this->view_one, 
-            ['song_parts' => $song_parts]
-        )
-        ->with('status', $message);
+        return view( $this->view_all, 
+            [
+                'heading'    => 'Manage Song Part Names', 
+                'song_parts' => SongPart::orderby('sequence')->get()
+            ]);
 
     }
 
@@ -210,5 +159,6 @@ class SongPartController extends Controller
     public function destroy($id)
     {
         //
+        return "not implemented yet!";
     }
 }

@@ -139,7 +139,36 @@ function getLocalStorageItem(key, defaultValue)
 \*/
 
 
-/* Toggle tabs on Traing Videos page
+/* Textarea input field height calculations
+*/
+function calculateTextAreaHeight(that)
+{
+    $(that).attr( 'rows', 1+Math.max($(that).val().split('\n').length, 2) );
+    positionZoomButtons($(that).attr('name'));
+}
+
+// position the zoom buttons always above the textarea on the right corner
+function positionZoomButtons(what) {
+    $('#zoom-'+what+'-textarea').show();
+    if ($('#zoom-'+what+'-textarea').is(':visible'))
+        $('#zoom-'+what+'-textarea').position({my: 'right bottom', at: 'right top', of: 'textarea[name="'+what+'"]'});
+}
+
+// called from the zoom buttons - increase or decrease height of textarea
+function resizeTextArea(what, name) {
+    var cursize = $('textarea[name='+name+']').attr('rows');
+    var diff = 0;
+    if ( what=='plus' ) diff  = 1.5*cursize;
+    else diff = cursize>5 ?  0.7*cursize  :  4;
+    $('textarea[name='+name+']').attr('rows', diff);
+    positionZoomButtons(name);
+}
+
+
+
+
+
+/* Toggle tabs on Training Videos page
 */
 function toggleVideoTabs(on, off)
 {
@@ -682,6 +711,11 @@ function cancelForm()
         $('#addPlanNoteModal').modal('hide');
         return;
     }
+    if ($('.newrow-cancel-button').is(':visible')) {
+        $('.newrow-cancel-button').click();
+        return;
+    }
+
     showSpinner(); 
     var newLoc = $('.cancel-button').attr('href');
     if (newLoc === undefined)
@@ -693,6 +727,7 @@ function cancelForm()
             return false;
         }
         $('#show-spinner').modal('hide');
+        return false;
     }
     location.href = newLoc;
 }

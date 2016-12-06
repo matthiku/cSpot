@@ -71,12 +71,22 @@ function userAvailableForPlan(that, plan_id) {
 
 function insertNewOnSongRow()
 {
+    // clone the existing and hidden, empty row and show it
     $('#new-onsong-row').clone().attr('id', 'very-new-onsong-row').appendTo('#onsong-parts');
     $('#new-onsong-row').fadeIn();
+    // make sure no other row has this class
+    $('#new-onsong-row').parent().children('tr').removeClass('table-success');
     $('#new-onsong-row').addClass('table-success');
+    // set the focus on the part-type selection
+    $('#new-onsong-row').children('.cell-one').children('select').focus();
+    // select 'Verse 1'?
+    $('#new-onsong-row').children('.cell-one').children('select').val('1');
+
+    // restore the old, empty, hidden row
     $('#new-onsong-row').removeAttr('id');
     $('#very-new-onsong-row').attr('id', 'new-onsong-row');
     $('#insertNewOnSongRow-link').hide();
+
 }
 
 
@@ -116,9 +126,15 @@ function editOnSongText(that)
 
     // get handle on input elements etc
     var row  = $(that).parent().parent();
-    // activate input area
+    // hide display-only text, show writeable input area
     $(row).children('.cell-two').children('.show-onsong-text').hide();
     $(row).children('.cell-two').children('textarea').show();
+    // make textarea height according to the number of lines in the OnSong text
+    $(row).children('.cell-two').children('textarea').attr(
+        'rows', 
+        $(row).children('.cell-two').children('textarea').text().split('\n').length
+    );
+
     // show correct action buttons
     $(row).children('.cell-three').children('.for-existing-items').hide(); 
     $(row).children('.cell-three').children('.for-new-items').show(); 
@@ -193,13 +209,15 @@ function saveNewOnSongText(that, del)
             $(cell).children('.for-new-items').hide(); 
 
             // insert new table row with success data
+            $(row).children('.cell-two').children('.show-onsong-text').show().html(data.data.text);
+
             // for new rows
             if (!onsong_id) {
                 $(row).data('onsong-id', data.data.id);
                 $(row).data('part-id', data.data.song_part_id);
                 $(row).children('.cell-one').text(partname);
-                $(row).children('.cell-two').children('.show-onsong-text').html(data.data.text);
-                $(row).children('.cell-two').children('.show-onsong-text').show();
+                // $(row).children('.cell-two').children('.show-onsong-text').html(data.data.text);
+                // $(row).children('.cell-two').children('.show-onsong-text').show();
                 $(row).children('.cell-two').children('textarea').hide();
             }
             // for existing rows
@@ -210,7 +228,6 @@ function saveNewOnSongText(that, del)
                     $(row).remove();
                 } 
                 else {
-                    $(row).children('.cell-two').children('.show-onsong-text').show().html(data.data.text);
                     $(row).children('.cell-two').children('textarea').hide();
                 }
             }
