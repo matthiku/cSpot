@@ -140,7 +140,7 @@ function show_time()
     
     var id = 'time-of-day';
     document.getElementById(id).innerHTML = result;
-    setTimeout('show_time("'+id+'");','1000');
+    setTimeout('show_time("'+id+'");','60000');
 
     return true;
 }

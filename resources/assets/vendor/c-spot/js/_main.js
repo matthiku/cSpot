@@ -222,7 +222,7 @@ function loadFromLocalCache()
 
         // not found in local storage, or not up-to-date
         // so get it from the server
-        if ( !songListDate || cSpot.songList.updated_at.date != cSpot.lastSongUpdated_at.date) {
+        if ( !songListDate || !cSpot.songList || cSpot.songList.updated_at.date != cSpot.lastSongUpdated_at.date) {
             
             ;;;console.log("Song list must be reloaded from server!");
 
