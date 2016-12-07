@@ -14,8 +14,8 @@ class SongPart extends Model
     protected $fillable = ['name', 'sequence', 'code'];
 
 
-    public function songTexts() {
-    	return $this->hasMany('App\Models\SongText');
+    public function onsongs() {
+    	return $this->hasMany('App\Models\OnSong');
     }
 
 }

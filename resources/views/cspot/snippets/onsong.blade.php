@@ -4,7 +4,8 @@
 
 	<thead>
 		<tr>
-			<th class="text-xs-center">Part</th>
+			<th class="text-xs-center">Part Name</th>
+			<th class="text-xs-center small">Code</th>
 			<th>Text and Chords</th>
 			<th></th>
 		</tr>
@@ -13,7 +14,7 @@
 
 	<tfoot>
 		<tr class="bg-faded link" onclick="insertNewOnSongRow();">
-			<th colspan="3" id="insertNewOnSongRow-link" class="text-xs-center">
+			<th colspan="4" id="insertNewOnSongRow-link" class="text-xs-center">
 				<a href="#tbl-bottom"></a>
 				<i class="fa fa-plus"></i> Add new Part
 			</th>
@@ -27,18 +28,20 @@
 
 
         @if ( isset($song) )
-			@foreach ($song->songTexts as $onsong)
+			@foreach ($song->onsongs as $onsong)
 				<tr id="tbl-row-{{ $onsong->id }}" data-onsong-id="{{ $onsong->id }}" data-part-id="{{ $onsong->song_part_id }}">
 
 					<th class="text-xs-center">{{ $onsong->song_part->name }}</th>
+					
+					<th class="text-xs-center">{{ $onsong->song_part->code }}</th>
 
-					<td class="cell-two">
+					<td class="cell-part-text">
 						<div class="show-onsong-text white-space-pre-wrap" onclick="editOnSongText(this);" title="Click to edit">{{ $onsong->text }}</div>
 						<textarea style="width: 100%; display: none;" tabindex=1 onkeyup="calculateTextAreaHeight(this);">{{ $onsong->text }}</textarea>
 						<div class="error-msg" style="display: none;">Enter text here.</div>
 					</td>
 
-					<td class="cell-three big">
+					<td class="cell-part-action big">
 						<a href="javascript:void(0);" class="for-existing-items" onclick="editOnSongText(this);" title="edit"><i class="fa fa-edit"></i></a>
 						<a href="javascript:void(0);" class="for-existing-items float-xs-right" onclick="deleteOnSongText(this);" title="delete"><i class="fa fa-trash"></i></a>
 						<a href="javascript:void(0);" class="for-new-items" onclick="saveNewOnSongText(this);" style="display: none;" title="save" tabindex=2>&#128427;</a>
@@ -54,7 +57,7 @@
 		--}}
 		<tr style="display: none;" id="new-onsong-row">
 		
-			<th class="cell-one text-xs-center">
+			<th class="cell-part-name text-xs-center">
 				<select class="new-onsong-field" tabindex=1>
 					<option value="">Select ...</option>
 					@foreach ($songParts as $part)
@@ -66,13 +69,15 @@
 				<a href="{{ url('admin/song_parts') }}" target="new" class="small">(edit list <i class="fa fa-external-link"></i>)</a>
 			</th>
 
-			<td class="cell-two">
+			<td class="cell-part-code"></td>
+
+			<td class="cell-part-text">
 				<div class="show-onsong-text white-space-pre-wrap" style="display: none;"></div>
 				<textarea class="new-onsong-field" style="width: 100%;" tabindex=2 onkeyup="calculateTextAreaHeight(this);"></textarea>
 				<div class="error-msg" style="display: none;">Enter text here.</div>
 			</td>
 
-			<td class="cell-three big">
+			<td class="cell-part-action big">
 				<a href="javascript:void(0);" class="for-existing-items" onclick="editOnSongText(this);"   style="display: none;" title="edit"><i class="fa fa-edit"></i></a>
 				<a href="javascript:void(0);" class="for-existing-items float-xs-right" onclick="deleteOnSongText(this);" style="display: none;" title="delete"><i class="fa fa-trash"></i></a>
 				<a href="javascript:void(0);" class="for-new-items" onclick="saveNewOnSongText(this);"  title="save" tabindex=3>&#128427;</a>

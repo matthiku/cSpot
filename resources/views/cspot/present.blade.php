@@ -60,11 +60,16 @@
                             <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ $item->song->youtube_id }}" frameborder="0" allowfullscreen></iframe>
                         </div>
 
-                    @else 
+                    @elseif ($item->song->onsongs->count() ) 
 
-                        <div class="text-present mb-3"
+                        <div class="text-present mb-3" id="present-lyrics"
                              style="display: none; position: absolute; left: auto; top: 0px; width: 100%;"
-                                id="present-lyrics">{{ $item->song->lyrics }}
+                             >{{ $item->song->onSongLyrics() }}</div>
+                    @else
+
+                        <div class="text-present mb-3" id="present-lyrics"
+                             style="display: none; position: absolute; left: auto; top: 0px; width: 100%;"
+                             >{{ $item->song->lyrics }}
                         </div>
 
                     @endif
@@ -200,10 +205,10 @@
                 </div>
                 <div>Font size:
                     <button class="btn btn-sm btn-outline-info narrow"> 
-                        <span class="link" onclick="changeFontSize('.show-time-of-day', 'increase')">&#10133;</span>
+                        <span class="link" onmousedown="changeFontSize('.show-time-of-day', 'increase')">&#10133;</span>
                     </button>
                     <button class="btn btn-sm btn-outline-info narrow"> 
-                        <span class="link" onclick="changeFontSize('.show-time-of-day', 'decrease')">&#10134;</span>
+                        <span class="link" onmousedown="changeFontSize('.show-time-of-day', 'decrease')">&#10134;</span>
                     </button>
                 </div>
 

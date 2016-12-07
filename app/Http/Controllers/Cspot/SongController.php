@@ -15,7 +15,7 @@ use Illuminate\Pagination\Paginator;
 
 use App\Models\Song;
 use App\Models\SongPart;
-use App\Models\SongText;
+use App\Models\OnSong;
 use App\Models\Plan;
 use App\Models\File;
 
@@ -486,7 +486,7 @@ class SongController extends Controller
 
         // is this a request to update an existing song part?
         if ($onsong_id) {
-            $song_text = SongText::find($onsong_id);
+            $song_text = OnSong::with('song_part')->find($onsong_id);
             if ($song_text) {
                 // is this a request to delete this item?
                 if ($text=='_') {
@@ -499,16 +499,18 @@ class SongController extends Controller
             }
         }
 
-        // find the single resource
+        // find the single corresponding song
         $song = Song::find($song_id);
 
         if ( $song ) {
 
             // create a new onSong record and link it with the song
-            $song_text = new SongText(['song_part_id' => $part_id, 'text' => $text]);
+            $song_text = new OnSong(['song_part_id' => $part_id, 'text' => $text]);
 
             // perform the update
-            $song->songTexts()->save($song_text);
+            $song->onsongs()->save($song_text);
+
+            // reload the new onsong part and link it with('song_part')
 
             // delete possible cached items which contain this song
             deleteCachedItemsContainingSongId( $song );

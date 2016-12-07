@@ -62,11 +62,11 @@
 							<td class="nowrap">
 								 @if( Auth::user()->isEditor() )
 									<a class="btn btn-outline-primary btn-sm" title="Edit" href='{{ url('admin/song_parts/'.$song_part->id) }}/edit'><i class="fa fa-pencil"></i></a>
-									@if ( ! $song_part->songTexts->count() )
+									@if ( ! $song_part->onsongs || ! $song_part->onsongs->count() )
 										<a class="btn btn-danger btn-sm" title="Delete!" href='{{ url('admin/song_parts/'.$song_part->id) }}/delete'><i class="fa fa-trash"></i></a>
 									@endif
 								@endif
-								<div class="float-xs-right small">{{ $song_part->songTexts->count() }}</div>
+								<div class="float-xs-right small">{{ $song_part->onsongs->count() }}</div>
 							</td>
 						</tr>
 			        @endforeach

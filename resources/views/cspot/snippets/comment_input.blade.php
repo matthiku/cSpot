@@ -28,7 +28,7 @@
                 <small style="display: {{ $item->forLeadersEyesOnly ? 'initial' : 'none' }}">(for Leader's eyes only!)</small>
                 <small style="display: {{ $item->forLeadersEyesOnly ? 'none' : 'initial' }}">(visible to all)</small>
             </a>
-            {{ $item->forLeadersEyesOnly ? "Leader's" : 'Public' }} Notes</h5>
+            {{ $item->forLeadersEyesOnly ? "Leader's" : 'General' }} Notes</h5>
 
             <p class="card-text">
 

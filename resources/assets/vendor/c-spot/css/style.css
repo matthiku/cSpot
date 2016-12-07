@@ -377,6 +377,16 @@ pre.text-present {
     color: red;
 }
 
+.chords {
+    color: red;
+    font-size: 75%;
+    margin-bottom: 0;
+}
+.lyrics {
+    font-size: 75%;
+    margin-bottom: 0;
+}
+
 .card-block-files {
     padding: 00.25rem;
     line-height: 1.1;

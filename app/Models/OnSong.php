@@ -11,11 +11,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class SongText extends Model
+class OnSong extends Model
 {
-
-    // actual table name
-    protected $table = 'song_texts';
 
 
     /**

@@ -42,6 +42,8 @@
                     <pre class="text-song mb-3" id="lyrics">{{ $item->song->lyrics }}</pre>
                 @endif
             @endif
+                
+            <div class="hidden-xs-up" id="sequence">{{ $item->song->sequence }}</div>
 
         
         @elseif ($item->files)

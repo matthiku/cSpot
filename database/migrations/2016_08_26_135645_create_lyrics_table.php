@@ -12,7 +12,7 @@ class CreateLyricsTable extends Migration
      */
     public function up()
     {
-        Schema::create('song_texts', function (Blueprint $table) {
+        Schema::create('on_songs', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('song_id')->unsigned()->index();
             $table->foreign('song_id')->references('id')->on('songs');
@@ -30,6 +30,6 @@ class CreateLyricsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('song_texts');
+        Schema::drop('on_songs');
     }
 }

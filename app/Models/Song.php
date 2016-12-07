@@ -64,9 +64,37 @@ class Song extends Model
      * 
      * this text contains both lyrics with chords interspersed (like the OnSong format)
      */
-    public function songTexts() 
+    public function onsongs() 
     {
-        return $this->hasMany('App\Models\SongText');
+        return $this->hasMany('App\Models\OnSong');
+    }
+
+
+    /**
+
+     *  Get the full lyrics text with encoded part headers 
+
+     */
+    public function onSongLyrics() {
+
+        $lyrics = '';
+
+        // add each onsong part but prepend it with it's part code as a header
+        foreach ($this->onsongs as $onsong) {
+            // ignore parts containing music instructions (like 'Capo')
+            if ($onsong->song_part->code) {
+                $lyrics .= '[' . $onsong->song_part->code . "]\n";
+                // remove OnSong codes enclosed in square brackets
+                $lyrics .= preg_replace("/\[[^\]]+\]/m", '', $onsong->text) . "\n";
+            }
+        }
+
+        // check if we had any onsong lyrics...
+        if ( strlen($lyrics) > 5 )
+            return $lyrics;
+
+        return $this->lyrics;
+
     }
 
 

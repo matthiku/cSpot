@@ -42884,6 +42884,11 @@ $(document).ready(function() {
 
 
 
+    /* reformat OnSong texts into sepeare lyrics and chords
+    */
+    if ($('.show-onsong-text').length)
+        reFormatOnsongLyrics();
+
     
     /**
      * re-design the showing of lyrics interspersed with guitar chords
@@ -43015,9 +43020,9 @@ function insertNewOnSongRow()
     $('#new-onsong-row').parent().children('tr').removeClass('table-success');
     $('#new-onsong-row').addClass('table-success');
     // set the focus on the part-type selection
-    $('#new-onsong-row').children('.cell-one').children('select').focus();
+    $('#new-onsong-row').children('.cell-part-name').children('select').focus();
     // select 'Verse 1'?
-    $('#new-onsong-row').children('.cell-one').children('select').val('1');
+    $('#new-onsong-row').children('.cell-part-name').children('select').val('1');
 
     // restore the old, empty, hidden row
     $('#new-onsong-row').removeAttr('id');
@@ -43046,8 +43051,8 @@ function removeNewOnSongRow(that)
 
     // reinstate row layout for existing rows
     // input area
-    $(row).children('.cell-two').children('.show-onsong-text').show();
-    $(row).children('.cell-two').children('textarea').hide();
+    $(row).children('.cell-part-text').children('.show-onsong-text').show();
+    $(row).children('.cell-part-text').children('textarea').hide();
 
     // show correct action buttons
     var cell = $(that).parent();
@@ -43064,17 +43069,17 @@ function editOnSongText(that)
     // get handle on input elements etc
     var row  = $(that).parent().parent();
     // hide display-only text, show writeable input area
-    $(row).children('.cell-two').children('.show-onsong-text').hide();
-    $(row).children('.cell-two').children('textarea').show();
+    $(row).children('.cell-part-text').children('.show-onsong-text').hide();
+    $(row).children('.cell-part-text').children('textarea').show();
     // make textarea height according to the number of lines in the OnSong text
-    $(row).children('.cell-two').children('textarea').attr(
+    $(row).children('.cell-part-text').children('textarea').attr(
         'rows', 
-        $(row).children('.cell-two').children('textarea').text().split('\n').length
+        $(row).children('.cell-part-text').children('textarea').text().split('\n').length
     );
 
     // show correct action buttons
-    $(row).children('.cell-three').children('.for-existing-items').hide(); 
-    $(row).children('.cell-three').children('.for-new-items').show(); 
+    $(row).children('.cell-part-action').children('.for-existing-items').hide(); 
+    $(row).children('.cell-part-action').children('.for-new-items').show(); 
 
     $(row).addClass('table-warning');
 }
@@ -43095,7 +43100,7 @@ function saveNewOnSongText(that, del)
     var row  = $(that).parent().parent();
 
     // verify input data
-    var select  = $(row).children('.cell-one').children('select');
+    var select  = $(row).children('.cell-part-name').children('select');
     var part_id = $(select).val();
 
     var onsong_id = $(row).data('onsong-id') || false; // (undefined for new elements)
@@ -43104,15 +43109,15 @@ function saveNewOnSongText(that, del)
 
     if (!onsong_id && !part_id) {
         $(select).focus();
-        $(row).children('.cell-one').children('.error-msg').show();
+        $(row).children('.cell-part-name').children('.error-msg').show();
         $(select).css('background-color', 'red');
         return;
     }
-    var textarea = $(row).children('.cell-two').children('textarea');
+    var textarea = $(row).children('.cell-part-text').children('textarea');
     var text = $(textarea).val();
     if (!text) {
         $(textarea).focus();
-        $(row).children('.cell-two').children('.error-msg').show();
+        $(row).children('.cell-part-text').children('.error-msg').show();
         $(textarea).css('background-color', 'red');
         return;
     }
@@ -43146,16 +43151,17 @@ function saveNewOnSongText(that, del)
             $(cell).children('.for-new-items').hide(); 
 
             // insert new table row with success data
-            $(row).children('.cell-two').children('.show-onsong-text').show().html(data.data.text);
+            $(row).children('.cell-part-text').children('.show-onsong-text').show().html(data.data.text);
 
             // for new rows
             if (!onsong_id) {
                 $(row).data('onsong-id', data.data.id);
                 $(row).data('part-id', data.data.song_part_id);
-                $(row).children('.cell-one').text(partname);
-                // $(row).children('.cell-two').children('.show-onsong-text').html(data.data.text);
-                // $(row).children('.cell-two').children('.show-onsong-text').show();
-                $(row).children('.cell-two').children('textarea').hide();
+                $(row).children('.cell-part-name').text(partname);
+                $(row).children('.cell-part-code').text(data.data.song_part_id);
+                // $(row).children('.cell-part-text').children('.show-onsong-text').html(data.data.text);
+                // $(row).children('.cell-part-text').children('.show-onsong-text').show();
+                $(row).children('.cell-part-text').children('textarea').hide();
             }
             // for existing rows
             else  {
@@ -43165,7 +43171,7 @@ function saveNewOnSongText(that, del)
                     $(row).remove();
                 } 
                 else {
-                    $(row).children('.cell-two').children('textarea').hide();
+                    $(row).children('.cell-part-text').children('textarea').hide();
                 }
             }
             // enable ADD button
@@ -45681,6 +45687,60 @@ function headerCode(divNam) {
 }
 
 
+function reFormatOnsongLyrics()
+{
+    var onsongs = $('.show-onsong-text');
+    $(onsongs).each( function(item) {
+        var newText = '';
+        var textblocks = $(onsongs[item]).text().split("\n");
+        $.each(textblocks, function(i) {
+            var tx = splitOnSong(textblocks[i]);
+            if (tx.lyrics)
+                newText += '<pre class="chords">' + tx.chords + '</pre><pre class="lyrics">' + tx.lyrics + "</pre>";
+        });
+        $(onsongs[item]).html(newText);
+    });
+}
+
+/* Split OnSong code into chords and lyrics
+ *
+ * @param onsong string line with lyrics and interspersed chords
+ *
+ * returns object with lyrics and chords, properly aligned
+ */
+function splitOnSong(onsong)
+{
+    var result = {};
+    // 1. Remove all OnSong code enclosed in square brackets [...]
+    // see http://www.regular-expressions.info/repeat.html
+    // an alternative would be: /\[.+?\]/gm
+    var lyrics = onsong.replace(/\[[^\]]+\]/gm,'');
+    // 2. Remove all excessive blanks 
+    lyrics = lyrics.replace(/\n\s+/g,"\n"); // remove blanks at the beginning of a newline
+    lyrics = lyrics.replace(/\s\s/g,' ');
+    result.lyrics = lyrics;
+
+    var del=0, start=false, end=true, chords='';
+    for (var char in onsong) {
+        if (end && onsong[char]==='[') {
+            start = true; end=false; del=0;
+        }
+        else if (start && onsong[char]===']') {
+            end = true; start = false;
+        }
+        else if (end) {
+            if (del<1) chords += ' ';
+            else del -= 1;
+        }
+        else if (start) {
+            chords += onsong[char];
+            del += 1;
+        }
+    }
+    result.chords = chords;
+
+    return result;
+}
 
 
 

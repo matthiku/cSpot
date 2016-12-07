@@ -126,9 +126,8 @@
 
 
         <!-- action buttons -->
-        <div    class="col-md-6 float-xs-right nowrap"
-                data-item-id="{{ $item->id }}" 
-                data-item-update-action="{{ route('cspot.api.items.update', $item->id) }}">
+        <div class="col-md-6 float-xs-right nowrap" data-item-id="{{ $item->id }}" 
+            data-item-update-action="{{ route('cspot.api.items.update', $item->id) }}">
 
             @if( Auth::user()->ownsPlan($item->plan_id) )
                 &nbsp;
@@ -188,7 +187,7 @@
                 <li><a href="#scripture-tab">Scripture</a></li>
             @endif
 
-            <li><a href="#bg-images-tab"><span class="hidden-sm-down">Background </span>Images
+            <li><a href="#bg-images-tab"><span class="hidden-md-down">Background </span><span class="hidden-lg-up hidden-xs-down">BG </span>Images
                 <small class="text-muted">({{ $item->files->count() }})</small>
             </a></li>
 
@@ -197,10 +196,13 @@
                     <small class="text-muted">{!! $item->song->lyrics ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>' !!}</small>
                 </a></li>
                 @if ( $item->itemType()=='song')
+                    <li><a href="#onsong-tab">OnSong
+                        <small class="text-muted">{!! $item->song->onsongs ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>' !!}</small>
+                    </a></li>
                     <li><a href="#chords-tab">Chords
                         <small class="text-muted">{!! $item->song->chords ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>' !!}</small>
                     </a></li>
-                    <li><a href="#sheet-tab">Sheet Music
+                    <li><a href="#sheet-tab"><span class="hidden-md-down">Sheet </span> Music
                         <small class="text-muted">{!! $item->song->files->count() ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>' !!}</small>
                     </a></li>
                 @endif
@@ -407,7 +409,11 @@
 
         <div id="bg-images-tab">
 
-            {{ $item->files->count() ? '' : '(no images attached yet)' }}
+            <div class="small"><strong>Background images</strong> can be used on their own or as background for scripture or song items.</div>
+            <div class="small">When used for song- or scripture-items and when more than one image is attached here, the 
+                images will change for each slide in the sequence given here in a rotating fashion.</div>
+
+            {!! $item->files->count() ? '' : '<p class="small center">(no images attached yet)</p>' !!}
 
             @if( Auth::user()->ownsPlan($plan->id) )
                 <?php 
@@ -482,7 +488,9 @@
             <div id="lyrics-tab">
 
                 @if ($item->itemType()=='song')
-                    <span class="text-info">
+                    <p class="small">If there are also <strong>lyrics</strong> defined in the <em>OnSong</em> tab, 
+                        the lyrics here will not be used! However, the sequence will be!</p>
+                    <p class="text-info">
                         @if (Auth::user()->isEditor())
                             Sequence:
                             <span id="sequence-song-id-{{ $item->song->id }}" class="editable-song-field">{{ $item->song->sequence }}</span>
@@ -490,7 +498,7 @@
                         @else
                             ({{ $item->song->sequence ? 'Sequence: '.$item->song->sequence : 'No sequence predefined' }})
                         @endif
-                    </span>
+                    </p>
                 @endif
 
                 @if ($item->itemType()=='video')
@@ -512,6 +520,24 @@
 
                 <div id="chords-tab">
                     <pre id="chords-song-id-{{ $item->song->id }}" class="{{ (Auth::user()->isEditor()) ? 'edit_area' : '' }} show-chords">{{ $item->song->chords }}</pre>
+                </div>
+                <div id="onsong-tab">
+                    <p class="small">Note: Blank lines will force a new slide in lyrics presentations but will be ignored when showing the chords.</p>
+                    <p class="text-info">
+                        @if (Auth::user()->isEditor())
+                            Sequence:
+                            <span id="sequence-song-id-{{ $item->song->id }}" class="editable-song-field">{{ $item->song->sequence }}</span>
+                            <i class="fa fa-pencil text-muted"> </i>
+                            <br><small class="text-muted">The sequence can only contain code as listed in the table below.</small>
+                        @else
+                            ({{ $item->song->sequence ? 'Sequence: '.$item->song->sequence : 'No sequence predefined' }})
+                        @endif
+                    </p>
+                    @php
+                        $song = $item->song;
+                        $songParts = App\Models\SongPart::orderby('sequence')->get();
+                    @endphp
+                    @include('cspot.snippets.onsong')
                 </div>
                 
 

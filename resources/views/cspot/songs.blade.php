@@ -199,7 +199,7 @@
 
 
 					<td class="center hidden-lg-down">
-						@if ( $song->songTexts->count() )
+						@if ( $song->onsongs->count() )
 							<i class="fa fa-check"></i>
 						@endif
 					</td>

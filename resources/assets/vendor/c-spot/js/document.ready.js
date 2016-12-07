@@ -495,6 +495,11 @@ $(document).ready(function() {
 
 
 
+    /* reformat OnSong texts into sepeare lyrics and chords
+    */
+    if ($('.show-onsong-text').length)
+        reFormatOnsongLyrics();
+
     
     /**
      * re-design the showing of lyrics interspersed with guitar chords
