@@ -31,7 +31,6 @@ class StoreSongRequest extends Request
         return [
             // validation rules
             'title' => 'required|min:5',
-            'lyrics' => 'required_unless:title_2,"video","slides","training"|min:15',
         ];
     }
 

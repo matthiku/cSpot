@@ -41466,6 +41466,9 @@ function getLocalStorageItem(key, defaultValue)
 
 
 
+
+
+
 /*\
 |*|
 |*|
@@ -41715,141 +41718,6 @@ function sendShowPosition(slideName) {
         });
     }
 }
-
-
-
-/*\
-|*|
-|*+------------------------------------------ Build a Bible Reference string
-|*|
-|*| (called from scripture_input.blade.php)
-\*/
-function showNextSelect(fromOrTo, what) 
-{
-    book    = $('#from-book').val();
-    chapter = $('#from-chapter').val();
-
-    // make sure all fields are visible now
-    $('.select-reference').show();
-
-    // remove old options from select box
-    emptyRefSelect(fromOrTo, what);
-    var x = document.getElementById(fromOrTo+'-'+what);
-
-    // API call to get the books/chapter/verses data
-    if (typeof(cSpot.bibleBooks)=='object') {
-        // make the element visible
-        $('#'+fromOrTo+'-'+what).show();
-
-        // minimum value for the 'to' verse is the 'from' verse
-        minNumber = 1;
-        if (fromOrTo=='to' && what=='verse') {
-            minNumber = $('#from-verse').val();
-        }
-
-        // are wee looking at chapters of a book or verses of a chapter?
-        if (what=='chapter') {
-            maxNumber = Object.keys(cSpot.bibleBooks[book]).length;
-        } else {
-            maxNumber = cSpot.bibleBooks[book][chapter];
-        }
-
-        // populate the select input with the relevant numbers
-        for (var i = minNumber; i <= maxNumber; i++) {
-            var option = document.createElement("option");
-            option.text = i;
-            option.value = i;
-            x.add(option);
-        }
-        // if book has only one chapter, populate the verses right now
-        if (what=='chapter') {
-            showNextSelect(fromOrTo, 'verse');
-        }
-        if (fromOrTo=='from' && what=='verse') {
-            showNextSelect('to', 'verse');
-            $('.select-version').show();                
-        }
-    };
-}
-function populateComment() {
-    // ignore if nothing was selected
-    if ($('#from-book').val()===null || $('#from-book').val()==' ') { 
-        return; }
-
-    // check existing comment
-    oldComment = $('#comment').val();
-    if (oldComment.length>0) {
-        oldComment += '; ';
-    }
-
-    // set default and minimum value identical with 'from' value
-    $('#comment').val( oldComment +
-        $('#from-book').val()+' ' +
-        $('#from-chapter').val()+':' +
-        $('#from-verse').val() + 
-        ($('#to-verse').val() != $('#from-verse').val() ? '-'+$('#to-verse').val() : '') + ' (' +
-        $('#version').val() + ')'
-    );
-
-    $('#waiting').show();
-    // now get the bible text via API and display it on the page
-    showScriptureText($('#version').val(), $('#from-book').val(), $('#from-chapter').val(), $('#from-verse').val(), $('#to-verse').val());
-
-    $('#from-book').val('');
-    emptyRefSelect('from', 'chapter');
-    emptyRefSelect('from', 'verse');
-    emptyRefSelect('to', 'verse');
-    $('#version').val('');
-    $('.select-reference').hide();
-    $('.select-version').hide();
-    $('#col-2-song-search').hide();
-    $('#comment-label').text('Bible Reading');
-    $('#searchForSongsSubmit').focus()
-}
-function emptyRefSelect(fromOrTo, what) {
-    // get the <select> element 
-    var x = document.getElementById(fromOrTo+'-'+what);
-    $(x).hide();
-    // clear the element of all current options
-    for (i=x.length; i>=0; i--) {
-        x.remove(i);
-    }
-}
-function showScriptureText(version,book,chapter,fromVerse,toVerse) 
-{
-    book = book.replace(' ', '+');
-
-    $.get(cSpot.appURL+'/bible/passage/'+version+'/'+book+'/'+chapter+'/'+fromVerse+'/'+toVerse , 
-        function(data, status) 
-        {
-            if ( status == 'success') 
-            {
-                $('#waiting').hide();
-                passage = data.response.search.result.passages;
-                if (passage.length>0) 
-                {
-                    text = (passage[0].text).replace(/h3/g, 'strong');
-                    text = text.replace(/h2/g, 'i');
-                    $('#bible-passages').append( 
-                        '<h5>' + passage[0].display +' ('+passage[0].version_abbreviation + ')</h5>' +
-                        '<div>'+ text + '</div>' +
-                        '<div class="small">' + passage[0].copyright + '</div><hr>'                        
-                    );                         
-                } 
-                else 
-                {
-                    $('#show-passages').html('(passage not found)');
-                }
-            }
-            else 
-            {
-                $('#waiting').append(' Not found! ' + data);
-            }
-        }
-    );
-}
-
-
 
 
 /*
@@ -42383,6 +42251,269 @@ function toggleTrashed() {
         $('#toggleBtn').text('Show');
     }
 }
+
+
+
+
+
+/*\
+|*|
+|*+------------------------------------------ Convert Chords to OnSong and vice versa
+|*|
+\*/
+
+/* take one DOM element, get it's text content
+   and write it back as individual lines of chords and lyrics */
+function rewriteOnsong(element)
+{
+    var newText = '';
+    var textblocks = $(element).text().split("\n");
+    $.each(textblocks, function(i) {
+        var tx = splitOnSong(textblocks[i]);
+        if (tx.lyrics)
+            newText += '<pre class="chords">' + tx.chords + '</pre><pre class="lyrics">' + tx.lyrics + "</pre>";
+    });
+    $(element).html(newText);
+}
+
+/* Split OnSong code into chords and lyrics
+ *
+ * @param onsong string line with lyrics and interspersed chords
+ *
+ * returns object with lyrics and chords, properly aligned
+ */
+function splitOnSong(onsong)
+{
+    var result = {};
+    // 1. Remove all OnSong code enclosed in square brackets [...]
+    // see http://www.regular-expressions.info/repeat.html
+    // an alternative would be: /\[.+?\]/gm
+    var lyrics = onsong.replace(/\[[^\]]+\]/gm,'');
+    // 2. Remove all excessive blanks 
+    lyrics = lyrics.replace(/\n\s+/g,"\n"); // remove blanks at the beginning of a newline
+    lyrics = lyrics.replace(/\s\s/g,' ');
+    result.lyrics = lyrics;
+
+    var del=0, start=false, end=true, chords='';
+    for (var char in onsong) {
+        if (end && onsong[char]==='[') {
+            start = true; end=false; del=0;
+        }
+        else if (start && onsong[char]===']') {
+            end = true; start = false;
+        }
+        else if (end) {
+            if (del<1) chords += ' ';
+            else del -= 1;
+        }
+        else if (start) {
+            chords += onsong[char];
+            del += 1;
+        }
+    }
+    result.chords = chords;
+
+    return result;
+}
+
+
+/*** 
+ * Join separate lines of chords and lyrics into an OnSong formatted line
+ * (this assumes that the first line always contains only chords!)
+ * Also, we must have a even number of lines for this to work properly
+ */
+function joinLyricsAndChordsToOnSong(chords)
+{
+    var lines = chords.split("\n");
+    if (lines < 2) 
+        return ("Can't proceed, chords or lyrics missing!");
+    var result = '';
+    // iterate through each line, TWO at a time
+    for (var i = 0; i < lines.length; i+=2) {
+        var online = '', start = 0;
+        var chline = lines[i];
+        var lyline = lines[1+i];
+        // ignore empty lines
+        if (! chline.trim().length  ||  chline == ' ') {
+            if (chline.trim().length)
+                result += chline + "\n";
+            i -= 1; 
+            continue;
+        }
+        // ignore parts headers or other instructions
+        if (identifyHeadings(chline).length) {
+            result += chline + "\n";            
+            i -= 1; 
+            continue;
+        }
+        
+        // find locations of chords
+        var chordsLocations = findChords(chline);
+        // array of actual chords
+        var lnchrds = chline.trim().split(/\s+/);
+
+        // insert the chords into the lyrics text at the right location
+        for (var j = 0; j < lyline.length; j++) {
+            if (j==chordsLocations[start]) {
+                online += '['+ lnchrds[start] + ']';
+                start++;
+            }
+            online += lyline[j];
+        }
+        result += online + "\n";
+    }
+    return result;
+}
+/* create array of the textual postion of chords in a string 
+*/
+function findChords(text)
+{
+    var loc=[], start=false;
+    for (var i = 0; i < text.length; i++) {
+        if (text[i]!==' ') {
+            if (!start) {
+                loc.push(i);
+                start=true;
+            }
+        } else start = false;
+
+    }
+    return loc;
+}
+
+
+/*\
+|*|
+|*+------------------------------------------ Build a Bible Reference string
+|*|
+|*| (called from scripture_input.blade.php)
+\*/
+function showNextSelect(fromOrTo, what) 
+{
+    book    = $('#from-book').val();
+    chapter = $('#from-chapter').val();
+
+    // make sure all fields are visible now
+    $('.select-reference').show();
+
+    // remove old options from select box
+    emptyRefSelect(fromOrTo, what);
+    var x = document.getElementById(fromOrTo+'-'+what);
+
+    // API call to get the books/chapter/verses data
+    if (typeof(cSpot.bibleBooks)=='object') {
+        // make the element visible
+        $('#'+fromOrTo+'-'+what).show();
+
+        // minimum value for the 'to' verse is the 'from' verse
+        minNumber = 1;
+        if (fromOrTo=='to' && what=='verse') {
+            minNumber = $('#from-verse').val();
+        }
+
+        // are wee looking at chapters of a book or verses of a chapter?
+        if (what=='chapter') {
+            maxNumber = Object.keys(cSpot.bibleBooks[book]).length;
+        } else {
+            maxNumber = cSpot.bibleBooks[book][chapter];
+        }
+
+        // populate the select input with the relevant numbers
+        for (var i = minNumber; i <= maxNumber; i++) {
+            var option = document.createElement("option");
+            option.text = i;
+            option.value = i;
+            x.add(option);
+        }
+        // if book has only one chapter, populate the verses right now
+        if (what=='chapter') {
+            showNextSelect(fromOrTo, 'verse');
+        }
+        if (fromOrTo=='from' && what=='verse') {
+            showNextSelect('to', 'verse');
+            $('.select-version').show();                
+        }
+    };
+}
+function populateComment() {
+    // ignore if nothing was selected
+    if ($('#from-book').val()===null || $('#from-book').val()==' ') { 
+        return; }
+
+    // check existing comment
+    oldComment = $('#comment').val();
+    if (oldComment.length>0) {
+        oldComment += '; ';
+    }
+
+    // set default and minimum value identical with 'from' value
+    $('#comment').val( oldComment +
+        $('#from-book').val()+' ' +
+        $('#from-chapter').val()+':' +
+        $('#from-verse').val() + 
+        ($('#to-verse').val() != $('#from-verse').val() ? '-'+$('#to-verse').val() : '') + ' (' +
+        $('#version').val() + ')'
+    );
+
+    $('#waiting').show();
+    // now get the bible text via API and display it on the page
+    showScriptureText($('#version').val(), $('#from-book').val(), $('#from-chapter').val(), $('#from-verse').val(), $('#to-verse').val());
+
+    $('#from-book').val('');
+    emptyRefSelect('from', 'chapter');
+    emptyRefSelect('from', 'verse');
+    emptyRefSelect('to', 'verse');
+    $('#version').val('');
+    $('.select-reference').hide();
+    $('.select-version').hide();
+    $('#col-2-song-search').hide();
+    $('#comment-label').text('Bible Reading');
+    $('#searchForSongsSubmit').focus()
+}
+function emptyRefSelect(fromOrTo, what) {
+    // get the <select> element 
+    var x = document.getElementById(fromOrTo+'-'+what);
+    $(x).hide();
+    // clear the element of all current options
+    for (i=x.length; i>=0; i--) {
+        x.remove(i);
+    }
+}
+function showScriptureText(version,book,chapter,fromVerse,toVerse) 
+{
+    book = book.replace(' ', '+');
+
+    $.get(cSpot.appURL+'/bible/passage/'+version+'/'+book+'/'+chapter+'/'+fromVerse+'/'+toVerse , 
+        function(data, status) 
+        {
+            if ( status == 'success') 
+            {
+                $('#waiting').hide();
+                passage = data.response.search.result.passages;
+                if (passage.length>0) 
+                {
+                    text = (passage[0].text).replace(/h3/g, 'strong');
+                    text = text.replace(/h2/g, 'i');
+                    $('#bible-passages').append( 
+                        '<h5>' + passage[0].display +' ('+passage[0].version_abbreviation + ')</h5>' +
+                        '<div>'+ text + '</div>' +
+                        '<div class="small">' + passage[0].copyright + '</div><hr>'                        
+                    );                         
+                } 
+                else 
+                {
+                    $('#show-passages').html('(passage not found)');
+                }
+            }
+            else 
+            {
+                $('#waiting').append(' Not found! ' + data);
+            }
+        }
+    );
+}
+
+
 
 
 /* ---------------------------------- END of main.js ------------------------------------------------##############################*/
@@ -43150,17 +43281,17 @@ function saveNewOnSongText(that, del)
             $(cell).children('.for-existing-items').show(); 
             $(cell).children('.for-new-items').hide(); 
 
-            // insert new table row with success data
+            // insert success data into the new table rowor the existing row (for updates)
             $(row).children('.cell-part-text').children('.show-onsong-text').show().html(data.data.text);
+            rewriteOnsong($(row).children('.cell-part-text').children('.show-onsong-text'));
 
             // for new rows
             if (!onsong_id) {
                 $(row).data('onsong-id', data.data.id);
                 $(row).data('part-id', data.data.song_part_id);
-                $(row).children('.cell-part-name').text(partname);
-                $(row).children('.cell-part-code').text(data.data.song_part_id);
-                // $(row).children('.cell-part-text').children('.show-onsong-text').html(data.data.text);
-                // $(row).children('.cell-part-text').children('.show-onsong-text').show();
+                $(row).children('.cell-part-name').text(data.data.song_part.name);
+                $(row).children('.cell-part-code').text(data.data.song_part.code);
+                $(row).children('.cell-part-code').addClass('font-weight-bold text-xs-center');
                 $(row).children('.cell-part-text').children('textarea').hide();
             }
             // for existing rows
@@ -45554,7 +45685,6 @@ function createDefaultLyricSequence()
 
     This function is called in the document.ready method, when it finds this element:
         $('#present-lyrics')
-
 */
 function reDisplayLyrics()
 {
@@ -45687,61 +45817,16 @@ function headerCode(divNam) {
 }
 
 
+
+/* grab all existing OnSong elements and rewrite 
+   them with seperate lines of chords and lyrics */
 function reFormatOnsongLyrics()
 {
     var onsongs = $('.show-onsong-text');
     $(onsongs).each( function(item) {
-        var newText = '';
-        var textblocks = $(onsongs[item]).text().split("\n");
-        $.each(textblocks, function(i) {
-            var tx = splitOnSong(textblocks[i]);
-            if (tx.lyrics)
-                newText += '<pre class="chords">' + tx.chords + '</pre><pre class="lyrics">' + tx.lyrics + "</pre>";
-        });
-        $(onsongs[item]).html(newText);
+        rewriteOnsong(onsongs[item]);
     });
 }
-
-/* Split OnSong code into chords and lyrics
- *
- * @param onsong string line with lyrics and interspersed chords
- *
- * returns object with lyrics and chords, properly aligned
- */
-function splitOnSong(onsong)
-{
-    var result = {};
-    // 1. Remove all OnSong code enclosed in square brackets [...]
-    // see http://www.regular-expressions.info/repeat.html
-    // an alternative would be: /\[.+?\]/gm
-    var lyrics = onsong.replace(/\[[^\]]+\]/gm,'');
-    // 2. Remove all excessive blanks 
-    lyrics = lyrics.replace(/\n\s+/g,"\n"); // remove blanks at the beginning of a newline
-    lyrics = lyrics.replace(/\s\s/g,' ');
-    result.lyrics = lyrics;
-
-    var del=0, start=false, end=true, chords='';
-    for (var char in onsong) {
-        if (end && onsong[char]==='[') {
-            start = true; end=false; del=0;
-        }
-        else if (start && onsong[char]===']') {
-            end = true; start = false;
-        }
-        else if (end) {
-            if (del<1) chords += ' ';
-            else del -= 1;
-        }
-        else if (start) {
-            chords += onsong[char];
-            del += 1;
-        }
-    }
-    result.chords = chords;
-
-    return result;
-}
-
 
 
 /*\

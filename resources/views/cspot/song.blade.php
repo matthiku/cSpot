@@ -44,7 +44,10 @@
 
                 <h2 class="hidden-xs-down text-success lora">Song/Item Details</h2>
 
-                <small>Last updated: {{ isset($song->updated_at) ? $song->updated_at->formatLocalized('%a, %d %b %Y, %H:%M') : 'unknown' }}</small>
+                <small title="{{ isset($song->updated_at) ? $song->updated_at->formatLocalized('%a, %d %b %Y, %H:%M') : 'unknown' }}">Last updated: 
+                    <span class="{{ isset($song->updated_at) && (\Carbon\Carbon::now()->diffinSeconds($song->updated_at) < 5) ? 'text-white bg-warning' : 'text-muted' }}"
+                        >&nbsp;{{ isset($song->updated_at) ? \Carbon\Carbon::now()->diffForHumans( $song->updated_at, true ).' ago' : 'unknown' }}&nbsp;</span>
+                </small>
 
             @else            
 
@@ -381,9 +384,9 @@
         <div class="col-xl-6">
 
 
-            <div class="form-group mb-0 song-only">
+            <div class="form-group mb-0 song-only" title="(The sequence determines how the lyrics are presented)">
                 {!! Form::label('sequence', 'Sequence: ', ['class' => 'baseline']); !!}
-                {!! Form::text('sequence'); !!} <small> (The sequence determines how the lyrics are presented)</small>
+                {!! Form::text('sequence'); !!} <small class="hidden-sm-down"> (The sequence determines how the lyrics are presented)</small>
             </div>
 
 
@@ -402,35 +405,37 @@
                             <a
                                 tabindex="0" href="#" data-container="body" data-toggle="tooltip"
                                 data-template='<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><pre class="tooltip-inner tooltip-wide"></pre></div>'
-                                title="(Click 'Lyrics' to open!)
-Song parts indicators must be enclosed with [], 
-like [1] for verse 1 or [chorus] for a chorus. 
-
-Blank lines force a new slide 
-when the song is presented.">
+                                @if ( !isset($song)  ||  (isset($song) && !$song->onsongs)  )
+                                    title="{{ isset($song) ? "(Click 'Lyrics' to open!)\n" : ''}}{{ 
+                                            "Song parts indicators must be enclosed with [],\nlike [1] for verse 1 or [chorus] for a chorus.\n\nBlank lines force a new slide\nwhen the song is presented.\n\nDon't fill that in if you plan to use the OnSong format!" }}"
+                                @else 
+                                    title="{{ "The Lyrics element is inaktiv as this song\nhas the lyrics in the OnSong-format.\n\nCheck the OnSong element." }}"
+                                @endif >
                                 <i class="fa fa-info-circle ml-2"></i></a>
                             </a>
                         @endif
                     </h4>
                 </div>
-                <div id="collapseLyrics" class="panel-collapse collapse{{ ( !isset($song) || (isset($song) && $song->title_2=='slides') ) ? ' in' : '' }}" 
-                        role="tabpanel" aria-labelledby="lyrics-panel">
+                @if ( !isset($song)  ||  (isset($song) && !$song->onsongs)  ||  (isset($song) && $song->title_2=='slides')   )
+                    <div id="collapseLyrics" class="panel-collapse collapse{{ ( !isset($song) || (isset($song) && $song->title_2=='slides') ) ? ' in' : '' }}" 
+                            role="tabpanel" aria-labelledby="lyrics-panel">
 
-                    <textarea name="lyrics" rows=4 onkeyup="calculateTextAreaHeight(this);">{{ isset($song) ? $song->lyrics : '' }}</textarea>
+                        <textarea name="lyrics" rows=4 onkeyup="calculateTextAreaHeight(this);">{{ isset($song) ? $song->lyrics : '' }}</textarea>
 
-                    <button id="lyrics-copy-btn" class="float-xs-right"><i class="fa fa-copy"></i>&nbsp;copy text</button>
+                        <button id="lyrics-copy-btn" class="float-xs-right"><i class="fa fa-copy"></i>&nbsp;copy text</button>
 
-                    {{-- zoom size of textarea --}}
-                    <small id="zoom-lyrics-textarea" style="display: none;">textbox size:
-                        <span class="btn btn-sm btn-outline-info narrow baseline" onclick="resizeTextArea('plus', 'lyrics')"> 
-                            <small>&#10133;</small>
-                        </span>
-                        <span class="btn btn-sm btn-outline-info narrow baseline" onclick="resizeTextArea('minus', 'lyrics')"> 
-                            <small>&#10134;</small>
-                        </span>
-                    </small>
-  
-                </div>
+                        {{-- zoom size of textarea --}}
+                        <small id="zoom-lyrics-textarea" style="display: none;">textbox size:
+                            <span class="btn btn-sm btn-outline-info narrow baseline" onclick="resizeTextArea('plus', 'lyrics')"> 
+                                <small>&#10133;</small>
+                            </span>
+                            <span class="btn btn-sm btn-outline-info narrow baseline" onclick="resizeTextArea('minus', 'lyrics')"> 
+                                <small>&#10134;</small>
+                            </span>
+                        </small>
+      
+                    </div>
+                @endif
               </div>
 
 
@@ -444,14 +449,8 @@ when the song is presented.">
                         <a 
                             tabindex="0" href="#" data-container="body" data-toggle="tooltip"
                             data-template='<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><pre class="tooltip-inner tooltip-wide"></pre></div>'
-                            title='(Click on title "Chords" to open!)
-Song parts indicators must be on separate
-lines and end with a colon (:).
-Blank lines will be ignored.
-
-Put instructions on separate lines and
-enclose them in brackets,
-like "(repeat chorus!)"'>
+                            title='{{ isset($song) ? "(Click on title 'Chords' to open!)\n" : '' }}{{ 
+                                    "Song parts indicators must be on separate\nlines and end with a colon (:).\nBlank lines will be ignored.\n\nPut instructions on separate lines and\nenclose them in brackets,\nlike '(repeat chorus!)'" }}'>
                         <i class="fa fa-info-circle ml-2"></i></a>
                     </a>
                   </h4>
@@ -459,10 +458,15 @@ like "(repeat chorus!)"'>
 
                 <div id="collapseChords" class="panel-collapse collapse{{!isset($song) ? ' in' : ''}}" role="tabpanel" aria-labelledby="chords-panel">
 
-                    <textarea name="chords" rows=4 onkeyup="calculateTextAreaHeight(this);">{{ isset($song) ? $song->chords : '' }}</textarea>
-
+                    <textarea name="chords" id="chords-textarea" rows=4 onkeyup="calculateTextAreaHeight(this);">{{ isset($song) ? $song->chords : '' }}</textarea>
+                    
                     <button id="chords-copy-btn" class="float-xs-right"><i class="fa fa-copy"></i>&nbsp;copy chords</button>
-                    <br>
+
+                    <span class="btn btn-sm btn-outline-primary float-xs-right" 
+                        onclick="$('#show-chords-as-onsong').text(joinLyricsAndChordsToOnSong($('#chords-textarea').val()));$(this).hide();">
+                        show OnSong-encoded copy</span>
+                    <pre id="show-chords-as-onsong"></pre>
+
 
                     {{-- zoom size of textarea --}}
                     <small id="zoom-chords-textarea" style="display: none;">textbox size:
@@ -485,8 +489,8 @@ like "(repeat chorus!)"'>
                             <a 
                                 tabindex="0" href="#" data-container="body" data-toggle="tooltip"
                                 data-template='<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><pre class="tooltip-inner tooltip-wide"></pre></div>'
-                                title='(Click on title "OnSong" to open!)
-Lyrics with OnSong-formatted chords'>
+                                title='{{ isset($song) ? "(Click on title 'OnSong' to open!)\n\n" : '' }}{{
+                                         "Lyrics and Chords combined, in OnSong-compatible format." }}'>
                             <i class="fa fa-info-circle ml-2"></i></a>
                         </a>
                       </h4>
@@ -495,7 +499,11 @@ Lyrics with OnSong-formatted chords'>
 
                     <div id="collapseOnSong" class="panel-collapse collapse{{!isset($song) ? ' in' : ''}}" role="tabpanel" aria-labelledby="onsong-panel">
                         
-                        @include ('cspot.snippets.onsong')
+                        @if ( isset($song) )
+                            @include ('cspot.snippets.onsong')
+                        @else
+                            (will be available once you saved the new song)
+                        @endif
 
                     </div>
                 </div>
@@ -582,16 +590,17 @@ Lyrics with OnSong-formatted chords'>
 
         // Add ability to copy textarea content to the clipboard
         var copyTextareaBtn = document.querySelector('#chords-copy-btn');
-        copyTextareaBtn.addEventListener('click', function(event) {
-            var copyTextarea = $('textarea[name="chords"]');
-            copyTextarea.select();
-            try {
-                var successful = document.execCommand('copy');
-                var msg = successful ? 'successful' : 'unsuccessful';
-            } catch (err) {
-            }
-            event.preventDefault();
-        });
+        if (copyTextareaBtn)
+            copyTextareaBtn.addEventListener('click', function(event) {
+                var copyTextarea = $('textarea[name="chords"]');
+                copyTextarea.select();
+                try {
+                    var successful = document.execCommand('copy');
+                    var msg = successful ? 'successful' : 'unsuccessful';
+                } catch (err) {
+                }
+                event.preventDefault();
+            });
         $("textarea[name='chords']").click(function() {
             {{-- get number of lines of text and set size of textarea accordingly --}}
             $("textarea[name='chords']").attr('rows', Math.max($("textarea[name='chords']").val().split('\n').length, 4) );
@@ -601,16 +610,17 @@ Lyrics with OnSong-formatted chords'>
 
         {{-- Add ability to copy textarea content to the clipboard --}}
         var copyTextareaBtn = document.querySelector('#lyrics-copy-btn');
-        copyTextareaBtn.addEventListener('click', function(event) {
-            var copyTextarea = $('textarea[name="lyrics"]');
-            copyTextarea.select();
-            try {
-                var successful = document.execCommand('copy');
-                var msg = successful ? 'successful' : 'unsuccessful';
-            } catch (err) {
-            }
-            event.preventDefault();
-        });
+        if (copyTextareaBtn)
+            copyTextareaBtn.addEventListener('click', function(event) {
+                var copyTextarea = $('textarea[name="lyrics"]');
+                copyTextarea.select();
+                try {
+                    var successful = document.execCommand('copy');
+                    var msg = successful ? 'successful' : 'unsuccessful';
+                } catch (err) {
+                }
+                event.preventDefault();
+            });
         // on click, resize textarea according to the size of its content (amount of lines)
         $("textarea[name='lyrics']").click(function() {
             {{-- get number of lines of lyrics and set size of textarea accordingly --}}

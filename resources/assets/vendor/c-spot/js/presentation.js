@@ -760,7 +760,6 @@ function createDefaultLyricSequence()
 
     This function is called in the document.ready method, when it finds this element:
         $('#present-lyrics')
-
 */
 function reDisplayLyrics()
 {
@@ -893,61 +892,16 @@ function headerCode(divNam) {
 }
 
 
+
+/* grab all existing OnSong elements and rewrite 
+   them with seperate lines of chords and lyrics */
 function reFormatOnsongLyrics()
 {
     var onsongs = $('.show-onsong-text');
     $(onsongs).each( function(item) {
-        var newText = '';
-        var textblocks = $(onsongs[item]).text().split("\n");
-        $.each(textblocks, function(i) {
-            var tx = splitOnSong(textblocks[i]);
-            if (tx.lyrics)
-                newText += '<pre class="chords">' + tx.chords + '</pre><pre class="lyrics">' + tx.lyrics + "</pre>";
-        });
-        $(onsongs[item]).html(newText);
+        rewriteOnsong(onsongs[item]);
     });
 }
-
-/* Split OnSong code into chords and lyrics
- *
- * @param onsong string line with lyrics and interspersed chords
- *
- * returns object with lyrics and chords, properly aligned
- */
-function splitOnSong(onsong)
-{
-    var result = {};
-    // 1. Remove all OnSong code enclosed in square brackets [...]
-    // see http://www.regular-expressions.info/repeat.html
-    // an alternative would be: /\[.+?\]/gm
-    var lyrics = onsong.replace(/\[[^\]]+\]/gm,'');
-    // 2. Remove all excessive blanks 
-    lyrics = lyrics.replace(/\n\s+/g,"\n"); // remove blanks at the beginning of a newline
-    lyrics = lyrics.replace(/\s\s/g,' ');
-    result.lyrics = lyrics;
-
-    var del=0, start=false, end=true, chords='';
-    for (var char in onsong) {
-        if (end && onsong[char]==='[') {
-            start = true; end=false; del=0;
-        }
-        else if (start && onsong[char]===']') {
-            end = true; start = false;
-        }
-        else if (end) {
-            if (del<1) chords += ' ';
-            else del -= 1;
-        }
-        else if (start) {
-            chords += onsong[char];
-            del += 1;
-        }
-    }
-    result.chords = chords;
-
-    return result;
-}
-
 
 
 /*\

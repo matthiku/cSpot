@@ -4,10 +4,10 @@
 
 	<thead>
 		<tr>
-			<th class="text-xs-center">Part Name</th>
-			<th class="text-xs-center small">Code</th>
+			<th class="text-xs-center" style="width: 80px;">Part</th>
+			<th class="text-xs-center small hidden-xs-down" style="width: 40px;">Code</th>
 			<th>Text and Chords</th>
-			<th></th>
+			<th style="width: 80px;"></th>
 		</tr>
 	</thead>
 
@@ -33,11 +33,11 @@
 
 					<th class="text-xs-center">{{ $onsong->song_part->name }}</th>
 					
-					<th class="text-xs-center">{{ $onsong->song_part->code }}</th>
+					<th class="text-xs-center hidden-xs-down">{{ $onsong->song_part->code }}</th>
 
 					<td class="cell-part-text">
 						<div class="show-onsong-text white-space-pre-wrap" onclick="editOnSongText(this);" title="Click to edit">{{ $onsong->text }}</div>
-						<textarea style="width: 100%; display: none;" tabindex=1 onkeyup="calculateTextAreaHeight(this);">{{ $onsong->text }}</textarea>
+						<textarea style="width: 100%; display: none; font-size: small;" tabindex=1 onkeyup="calculateTextAreaHeight(this);">{{ $onsong->text }}</textarea>
 						<div class="error-msg" style="display: none;">Enter text here.</div>
 					</td>
 
@@ -53,7 +53,7 @@
 		@endif
 
 
-		{{-- firstly invisible row to enter new song parts 
+		{{-- row to enter new song parts - invisible at first
 		--}}
 		<tr style="display: none;" id="new-onsong-row">
 		
@@ -69,7 +69,7 @@
 				<a href="{{ url('admin/song_parts') }}" target="new" class="small">(edit list <i class="fa fa-external-link"></i>)</a>
 			</th>
 
-			<td class="cell-part-code"></td>
+			<th class="cell-part-code"></th>
 
 			<td class="cell-part-text">
 				<div class="show-onsong-text white-space-pre-wrap" style="display: none;"></div>

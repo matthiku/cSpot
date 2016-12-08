@@ -208,17 +208,17 @@ function saveNewOnSongText(that, del)
             $(cell).children('.for-existing-items').show(); 
             $(cell).children('.for-new-items').hide(); 
 
-            // insert new table row with success data
+            // insert success data into the new table rowor the existing row (for updates)
             $(row).children('.cell-part-text').children('.show-onsong-text').show().html(data.data.text);
+            rewriteOnsong($(row).children('.cell-part-text').children('.show-onsong-text'));
 
             // for new rows
             if (!onsong_id) {
                 $(row).data('onsong-id', data.data.id);
                 $(row).data('part-id', data.data.song_part_id);
-                $(row).children('.cell-part-name').text(partname);
-                $(row).children('.cell-part-code').text(data.data.song_part_id);
-                // $(row).children('.cell-part-text').children('.show-onsong-text').html(data.data.text);
-                // $(row).children('.cell-part-text').children('.show-onsong-text').show();
+                $(row).children('.cell-part-name').text(data.data.song_part.name);
+                $(row).children('.cell-part-code').text(data.data.song_part.code);
+                $(row).children('.cell-part-code').addClass('font-weight-bold text-xs-center');
                 $(row).children('.cell-part-text').children('textarea').hide();
             }
             // for existing rows

@@ -488,8 +488,6 @@
             <div id="lyrics-tab">
 
                 @if ($item->itemType()=='song')
-                    <p class="small">If there are also <strong>lyrics</strong> defined in the <em>OnSong</em> tab, 
-                        the lyrics here will not be used! However, the sequence will be!</p>
                     <p class="text-info">
                         @if (Auth::user()->isEditor())
                             Sequence:
@@ -499,6 +497,8 @@
                             ({{ $item->song->sequence ? 'Sequence: '.$item->song->sequence : 'No sequence predefined' }})
                         @endif
                     </p>
+                    <p class="small"><strong>NOTE: </strong>If there are also <strong>lyrics</strong> defined in the <em>OnSong</em> tab, 
+                        the lyrics here will <strong>not be used</strong>! However, the sequence will be used still.</p>
                 @endif
 
                 @if ($item->itemType()=='video')
@@ -516,11 +516,17 @@
             </div>
 
 
+
             @if ( $item->itemType()=='song')
 
                 <div id="chords-tab">
                     <pre id="chords-song-id-{{ $item->song->id }}" class="{{ (Auth::user()->isEditor()) ? 'edit_area' : '' }} show-chords">{{ $item->song->chords }}</pre>
+                    <span class="btn btn-sm btn-outline-primary" 
+                        onclick="$('#show-chords-as-onsong').text(joinLyricsAndChordsToOnSong($('#chords-song-id-{{ $item->song->id }}').text()));$(this).hide();">
+                        show OnSong-encoded copy</span>
+                    <pre id="show-chords-as-onsong"></pre>
                 </div>
+
                 <div id="onsong-tab">
                     <p class="small">Note: Blank lines will force a new slide in lyrics presentations but will be ignored when showing the chords.</p>
                     <p class="text-info">

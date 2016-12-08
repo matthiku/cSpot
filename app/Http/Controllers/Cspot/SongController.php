@@ -382,7 +382,6 @@ class SongController extends Controller
         } 
 
         // instead of flashing, maybe show the field 'updated_at' in the form?
-        flash( 'Song or item "'.$request->title.'" updated.' );
         return redirect()->back()->with('currentPage', $currentPage);
     }
 
@@ -508,9 +507,10 @@ class SongController extends Controller
             $song_text = new OnSong(['song_part_id' => $part_id, 'text' => $text]);
 
             // perform the update
-            $song->onsongs()->save($song_text);
+            $song_text = $song->onsongs()->save($song_text);
 
             // reload the new onsong part and link it with('song_part')
+            $song_text = OnSong::with('song_part')->find($song_text->id);
 
             // delete possible cached items which contain this song
             deleteCachedItemsContainingSongId( $song );
