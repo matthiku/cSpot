@@ -42274,6 +42274,7 @@ function rewriteOnsong(element)
             newText += '<pre class="chords">' + tx.chords + '</pre><pre class="lyrics">' + tx.lyrics + "</pre>";
     });
     $(element).html(newText);
+    ;;;console.log('onsong chords re-formatted for '+element.nodeName+'.'+element.className);
 }
 
 /* Split OnSong code into chords and lyrics
@@ -42284,15 +42285,20 @@ function rewriteOnsong(element)
  */
 function splitOnSong(onsong)
 {
-    var result = {};
-    // 1. Remove all OnSong code enclosed in square brackets [...]
+    // 1. LYRICS
+
+    // Remove all OnSong code enclosed in square brackets [...]
     // see http://www.regular-expressions.info/repeat.html
     // an alternative would be: /\[.+?\]/gm
     var lyrics = onsong.replace(/\[[^\]]+\]/gm,'');
     // 2. Remove all excessive blanks 
     lyrics = lyrics.replace(/\n\s+/g,"\n"); // remove blanks at the beginning of a newline
     lyrics = lyrics.replace(/\s\s/g,' ');
+    var result = {};
     result.lyrics = lyrics;
+
+
+    // 2. CHORDS
 
     var del=0, start=false, end=true, chords='';
     for (var char in onsong) {
@@ -42303,7 +42309,7 @@ function splitOnSong(onsong)
             end = true; start = false;
         }
         else if (end) {
-            if (del<1) chords += ' ';
+            if (del<1 || lyrics.substr(char,1)=='') chords += ' ';
             else del -= 1;
         }
         else if (start) {
@@ -43202,10 +43208,11 @@ function editOnSongText(that)
     // hide display-only text, show writeable input area
     $(row).children('.cell-part-text').children('.show-onsong-text').hide();
     $(row).children('.cell-part-text').children('textarea').show();
-    // make textarea height according to the number of lines in the OnSong text
+
+    // textarea height according to the number of lines in the OnSong text - but at least 3
     $(row).children('.cell-part-text').children('textarea').attr(
         'rows', 
-        $(row).children('.cell-part-text').children('textarea').text().split('\n').length
+        Math.max($(row).children('.cell-part-text').children('textarea').text().split('\n').length, 3)
     );
 
     // show correct action buttons
@@ -43282,7 +43289,7 @@ function saveNewOnSongText(that, del)
             $(cell).children('.for-new-items').hide(); 
 
             // insert success data into the new table rowor the existing row (for updates)
-            $(row).children('.cell-part-text').children('.show-onsong-text').show().html(data.data.text);
+            $(row).children('.cell-part-text').children('.write-onsong-text').show().html(data.data.text);
             rewriteOnsong($(row).children('.cell-part-text').children('.show-onsong-text'));
 
             // for new rows

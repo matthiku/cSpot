@@ -405,7 +405,7 @@
                             <a
                                 tabindex="0" href="#" data-container="body" data-toggle="tooltip"
                                 data-template='<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><pre class="tooltip-inner tooltip-wide"></pre></div>'
-                                @if ( !isset($song)  ||  (isset($song) && !$song->onsongs)  )
+                                @if ( !isset($song)  ||  (isset($song) && !$song->onsongs->count())  )
                                     title="{{ isset($song) ? "(Click 'Lyrics' to open!)\n" : ''}}{{ 
                                             "Song parts indicators must be enclosed with [],\nlike [1] for verse 1 or [chorus] for a chorus.\n\nBlank lines force a new slide\nwhen the song is presented.\n\nDon't fill that in if you plan to use the OnSong format!" }}"
                                 @else 
@@ -416,7 +416,7 @@
                         @endif
                     </h4>
                 </div>
-                @if ( !isset($song)  ||  (isset($song) && !$song->onsongs)  ||  (isset($song) && $song->title_2=='slides')   )
+                @if ( !isset($song)  ||  (isset($song) && !$song->onsongs->count())  ||  (isset($song) && $song->title_2=='slides')   )
                     <div id="collapseLyrics" class="panel-collapse collapse{{ ( !isset($song) || (isset($song) && $song->title_2=='slides') ) ? ' in' : '' }}" 
                             role="tabpanel" aria-labelledby="lyrics-panel">
 
@@ -502,7 +502,7 @@
                         @if ( isset($song) )
                             @include ('cspot.snippets.onsong')
                         @else
-                            (will be available once you saved the new song)
+                            (will be available once you saved this new song)
                         @endif
 
                     </div>

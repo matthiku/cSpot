@@ -21,14 +21,31 @@
     <div id="main-content">
     {{-- ================================================================================ --}}
 
+
         @if ($item->song_id )
+
             @if ($item->key)
                 <h4 class="red">{{ $item->key }}</h4>
             @endif
-            @if ($item->song->chords )
+
+            @if ( isset($onSongChords)  &&  $onSongChords->count() )
+                <div class="mb-3">
+                    <div class="text-song" id="onsongs">
+                        @foreach ( $onSongChords as $onsong )
+                            @if ($onsong->song_part->code!='m')
+                                <h5 class="chords-header" id="song-part-{{ $onsong->song_part->code }}">{{ $onsong->song_part->name }}:</h5>
+                            @endif
+
+                            <div class="chords-part{{ $onsong->song_part->code!='m' ? ' show-onsong-text' : ' white-space-pre-wrap bigger red' }}">{{ $onsong->text }}</div>
+                        @endforeach
+                    </div>
+                </div>
+
+            @elseif ($item->song->chords )
                 <div class="mb-3">
                     <pre class="text-song" id="chords">{{ $item->song->chords }}</pre>
                 </div>
+
             @else
                 {{ $item->song->title_2=='slides' ? '(Info slide)' : '(No chords available!)' }}
                 @if ( count($item->song->files)>0 )
@@ -42,8 +59,11 @@
                     <pre class="text-song mb-3" id="lyrics">{{ $item->song->lyrics }}</pre>
                 @endif
             @endif
+
                 
             <div class="hidden-xs-up" id="sequence">{{ $item->song->sequence }}</div>
+
+
 
         
         @elseif ($item->files)
@@ -56,6 +76,8 @@
         @endif
 
 
+
+
         @if ($bibleTexts)
             <div class="col-xl-6" id="bibletext">
                 @foreach ($bibleTexts as $btext)
@@ -65,6 +87,7 @@
                     <hr>
                 @endforeach
             </div>
+
         @else
             <div class="jumbotron" id="item-comment">
                 <h1 class="display-3 center">
@@ -73,10 +96,14 @@
             </div>
         @endif
 
+
     </div>
     <!-- ================================================================================ -->
 
+
+
     @include('cspot.snippets.present_navbar')
+
 
 
 @stop

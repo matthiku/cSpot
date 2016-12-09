@@ -35,6 +35,7 @@
 				</small>
 			</h3>
 
+			<small>see also <a href="http://www.onsongapp.com/docs/features/formats/onsong/">the OnSong File Format manual</a></small>
 
 			@if (count($song_parts))
 

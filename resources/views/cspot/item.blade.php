@@ -197,7 +197,7 @@
                 </a></li>
                 @if ( $item->itemType()=='song')
                     <li><a href="#onsong-tab">OnSong
-                        <small class="text-muted">{!! $item->song->onsongs ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>' !!}</small>
+                        <small class="text-muted">{!! $item->song->onsongs->count() ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>' !!}</small>
                     </a></li>
                     <li><a href="#chords-tab">Chords
                         <small class="text-muted">{!! $item->song->chords ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>' !!}</small>

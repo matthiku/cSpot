@@ -129,10 +129,11 @@ function editOnSongText(that)
     // hide display-only text, show writeable input area
     $(row).children('.cell-part-text').children('.show-onsong-text').hide();
     $(row).children('.cell-part-text').children('textarea').show();
-    // make textarea height according to the number of lines in the OnSong text
+
+    // textarea height according to the number of lines in the OnSong text - but at least 3
     $(row).children('.cell-part-text').children('textarea').attr(
         'rows', 
-        $(row).children('.cell-part-text').children('textarea').text().split('\n').length
+        Math.max($(row).children('.cell-part-text').children('textarea').text().split('\n').length, 3)
     );
 
     // show correct action buttons
@@ -209,7 +210,7 @@ function saveNewOnSongText(that, del)
             $(cell).children('.for-new-items').hide(); 
 
             // insert success data into the new table rowor the existing row (for updates)
-            $(row).children('.cell-part-text').children('.show-onsong-text').show().html(data.data.text);
+            $(row).children('.cell-part-text').children('.write-onsong-text').show().html(data.data.text);
             rewriteOnsong($(row).children('.cell-part-text').children('.show-onsong-text'));
 
             // for new rows

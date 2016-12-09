@@ -82,7 +82,7 @@ class Song extends Model
         // add each onsong part but prepend it with it's part code as a header
         foreach ($this->onsongs as $onsong) {
             // ignore parts containing music instructions (like 'Capo')
-            if ($onsong->song_part->code) {
+            if ( $onsong->song_part->code != 'm'  &&  $onsong->song_part->code != 'i' ) {
                 $lyrics .= '[' . $onsong->song_part->code . "]\n";
                 // remove OnSong codes enclosed in square brackets
                 $lyrics .= preg_replace("/\[[^\]]+\]/m", '', $onsong->text) . "\n";

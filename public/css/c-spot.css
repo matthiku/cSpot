@@ -10667,6 +10667,10 @@ pre.text-present {
     font-size: 140%;
 }
 
+.bigger {
+    font-size: 120%;
+}
+
 .xl-big {
     font-size: 200%;
 }

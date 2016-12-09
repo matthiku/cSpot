@@ -29,14 +29,16 @@
 
         @if ( isset($song) )
 			@foreach ($song->onsongs as $onsong)
-				<tr id="tbl-row-{{ $onsong->id }}" data-onsong-id="{{ $onsong->id }}" data-part-id="{{ $onsong->song_part_id }}">
+				<tr id="tbl-row-{{ $onsong->id }}" {{ $onsong->song_part->code=='m' ? 'class=onsong-meta-data' : '' }}
+					data-onsong-id="{{ $onsong->id }}" data-part-id="{{ $onsong->song_part_id }}">
 
-					<th class="text-xs-center">{{ $onsong->song_part->name }}</th>
+					<th class="text-xs-center">{{ $onsong->song_part->code!='m' ? $onsong->song_part->name : '(Notes)' }}</th>
 					
-					<th class="text-xs-center hidden-xs-down">{{ $onsong->song_part->code }}</th>
+					<th class="text-xs-center hidden-xs-down">{{ $onsong->song_part->code!='m' ?$onsong->song_part->code : '' }}</th>
 
 					<td class="cell-part-text">
-						<div class="show-onsong-text white-space-pre-wrap" onclick="editOnSongText(this);" title="Click to edit">{{ $onsong->text }}</div>
+						<div class="white-space-pre-wrap write-onsong-text{{ $onsong->song_part->code!='m' ? ' show-onsong-text' : '' }}" 
+							onclick="editOnSongText(this);" title="Click to edit">{{ $onsong->text }}</div>
 						<textarea style="width: 100%; display: none; font-size: small;" tabindex=1 onkeyup="calculateTextAreaHeight(this);">{{ $onsong->text }}</textarea>
 						<div class="error-msg" style="display: none;">Enter text here.</div>
 					</td>
@@ -50,6 +52,11 @@
 
 				</tr>
 			@endforeach
+			<script>
+				// move the metadata row to the top of the table rows
+				row = $(".onsong-meta-data");
+				row.insertBefore(row.prevAll().last());
+			</script>
 		@endif
 
 
@@ -72,7 +79,7 @@
 			<th class="cell-part-code"></th>
 
 			<td class="cell-part-text">
-				<div class="show-onsong-text white-space-pre-wrap" style="display: none;"></div>
+				<div class="show-onsong-text write-onsong-text white-space-pre-wrap" style="display: none;"></div>
 				<textarea class="new-onsong-field" style="width: 100%;" tabindex=2 onkeyup="calculateTextAreaHeight(this);"></textarea>
 				<div class="error-msg" style="display: none;">Enter text here.</div>
 			</td>

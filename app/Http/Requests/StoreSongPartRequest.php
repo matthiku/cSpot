@@ -40,14 +40,16 @@ class StoreSongPartRequest extends Request
                 return [
                     'name'      => 'required|unique:song_parts,name',
                     'sequence'  => 'required|unique:song_parts,sequence',
+                    'code'      => 'required|unique:song_parts,code',
                 ];
             }
             case 'PATCH':
             case 'PUT':
             {
                 return [                    
-                    'name'      => 'required|unique:song_parts,name,'. $this->route('song_part'),
-                    'sequence'  => 'required|unique:song_parts,sequence',
+                    'name'      => 'required|unique:song_parts,name,'    . $this->route('song_part'),
+                    'sequence'  => 'required|unique:song_parts,sequence,'. $this->route('song_part'),
+                    'code'      => 'required|unique:song_parts,code,'    . $this->route('song_part'),
                 ];
             }
             default:break;

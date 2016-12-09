@@ -6,20 +6,20 @@ c-SPOT is a collaboration tool which helps to manage all event information and p
 
 It allows the management of song lyrics, music scores, guitar chords, event resources and teams in a user-friendly web application.
 
-- Frontend: Responsive design, runs on *any* device that supports a browser with JavaScript!
-- Create Order of Service with all relevant data (team (leaders, musicians, other functions), resources, songs, free slides, embedded videoclips etc)
-- Can be customized for your church with logos and external links
-- Manage your team (staff) with their roles; also manage the resources needed for a service (rooms, devices etc.)
-- Present your songs in a slideshow fashion via a projector 
-- The slideshow can be done off-line with all slides downloaded to the local computer
-- Control the slide show from **any device** using a Chromecast device attached to your projector
-- Or control the presentation from a small device (e.g. smartphone) that syncs with the main device attached to the projector!
-- Provide chords, lyrics and sheetmusic for musicians on all kinds of devices
-- Allows extensive collaboration and input from all users, but with full rights management, specified for each user type
+- Frontend: **Responsive design**, runs on *any* device that supports a browser with JavaScript!
+- Create **Order of Service** with all relevant data (team (leaders, musicians, other functions), resources, songs, free slides, embedded videoclips etc)
+- Can be **customized** for your church with logos and external links
+- Manage your team (staff) with their **roles**; also manage the **resources** needed for an event (rooms, devices etc.)
+- **Present** your songs in a slideshow fashion via a projector 
+- The slideshow can be done **off-line** with all slides downloaded to the local computer
+- Control the slide show from **any device** using a casting device (like Chromecast) attached to your projector
+- Or **control the presentation** from a small device (e.g. smartphone) that syncs with the main device attached to the projector!
+- Provide **chords, lyrics and sheetmusic for musicians** on all kinds of devices
+- Allows extensive **collaboration** and input from all users, but with full rights management, specified for each user type
 - Allows for a _synchronised presentation_ of lyrics, chords or sheet music _accross all designated devices!_
 - Exchange email and/or internal messages between users
-- Allows fast addition of songs even during the actual presentation!
-- Helps and tracks reporting of song usage to CCLI and integrates with SongSelect
+- Allows fast insertion of songs during the actual presentation!
+- Helps and tracks **reporting** of song usage to CCLI and integrates with SongSelect
 
 As a free and open source project, you can download ('clone') the sources, modify (customize) them and run the tool from your own web site hoster.
 
@@ -34,7 +34,7 @@ In order to ease the familiarisation of users with the tool, a number of instruc
 ###### List of Training Videos
 
 1. [Generic User Interface and Login](https://www.youtube.com/watch?v=SNgq9ZW1KMs)
-2. Event Planning and Leading
+2. [Event Planning and Leading](https://www.youtube.com/watch?v=w5qbcgW2qSY) and [part 2](https://www.youtube.com/watch?v=T9Csl2FPO1Y)
 3. Musicians
 4. Presenting Events
 5. Authors and Admins
@@ -43,6 +43,8 @@ In order to ease the familiarisation of users with the tool, a number of instruc
 ### Why c-SPOT?
 
 Many people don’t understand the complexities of making church services happen. If you just turn up, it probably looks pretty straightforward. However, a lot goes on behind the scenes before the event! This tool tries to help with that.
+
+Before, we used **easyslides** as the presentation tool, however, the developer has abandoned the project which unfortunately also was closed-source.
 
 #### History
 In our church, this was first done by the leader of the service, when he handed out his paper-based list of songs to the musicians on a Sunday morning. As things progressed, this was no longer viable, as musicians needed more time to practice the songs and the slides for the projection needed to be prepared. So we switched to sending emails around - but quite often, things were changed after the email went out and then not everyone was up-to-date. 

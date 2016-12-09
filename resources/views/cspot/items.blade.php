@@ -96,11 +96,9 @@
 				@if ($item->song_id && Auth::user()->ownsPlan( $plan->id ))
 					<td class="hidden-md-down" data-toggle="tooltip"
 						data-template='<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><pre class="tooltip-inner"></pre></div>'
-						title="Song 'Freshness' Index:
-
-Usage total: {{$item->song->plansUsingThisSong()->count()}} times, 
-&nbsp; &nbsp;by you: {{$item->song->leadersUsingThisSong($plan->leader_id)->count()}} times 
-{{$item->song->lastTimeUsed ? 'Lastly used: '.$item->song->lastTimeUsed->diffForHumans() : ''}}">
+						title="Song 'Freshness' Index:{{ '\n\nUsage total: '.$item->song->plansUsingThisSong()->count().'times, \n' }}&nbsp; &nbsp;by you: {{
+							$item->song->leadersUsingThisSong($plan->leader_id)->count() }} times {{ 
+								'\n'.$item->song->lastTimeUsed ? 'Lastly used: '.$item->song->lastTimeUsed->diffForHumans() : ''}}">
 						@if ($item->song_freshness) 
 							{{ $item->song_freshness > 50 ? '&#127823;' : '&#127822;' }}<small>{{ $item->song_freshness }}%</small>
 						@endif
@@ -218,7 +216,7 @@ Usage total: {{$item->song->plansUsingThisSong()->count()}} times,
 					--}}
 					<td class="hidden-sm-down center" title="Lyrics with chords for guitars">
 						@if ($item->song_id)
-							@if ( strlen($item->song->chords)>20 )
+							@if ( strlen($item->song->chords)>20  ||  $item->song->onsongs->count() )
 								<a href="{{ url('cspot/items').'/'.$item->id }}/chords">
 									<i class="fa fa-file-code-o"></i></a>
 							@endif
