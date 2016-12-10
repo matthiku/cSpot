@@ -10696,6 +10696,7 @@ pre.text-present {
 .chords {
     color: red;
     font-size: 75%;
+    font-weight: bold;
     margin-bottom: 0;
 }
 .lyrics {

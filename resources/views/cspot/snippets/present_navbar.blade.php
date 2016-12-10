@@ -195,13 +195,13 @@ $modalContent = '
             </a> 
 
             <!-- decrease font size -->
-            <a href="#" onclick="changeFontSize('.text-song', 'decrease');" id="decr-font"
+            <a href="#" onclick="changeFontSize(['.text-song', '.show-onsong-text'], 'decrease');" id="decr-font"
                     title="decrease font size" style="display: none" 
                     class="hidden-sm-down nav-item btn btn-sm btn-info edit-show-buttons" role="button">
                 A <i class="fa fa-minus"></i>
             </a>
             <!-- increase font size -->
-            <a href="#" onclick="changeFontSize('.text-song');" id="incr-font"
+            <a href="#" onclick="changeFontSize(['.text-song', '.show-onsong-text']);" id="incr-font"
                     title="increase font size" style="display: none" 
                     class="hidden-sm-down nav-item btn btn-sm btn-info edit-show-buttons" role="button">
                 A <i class="fa fa-plus"></i>
@@ -297,12 +297,12 @@ $modalContent = '
             <div class="hidden-md-up dropdown-divider"></div>                
             <a class="dropdown-item hidden-md-up edit-show-buttons" 
                     href="#" style="display: none"
-                    onclick="decFontSize('.text-song');" >
+                    onclick="decFontSize(['.text-song', '.show-onsong-text']);" >
                 A <i class="fa fa-minus"></i> decrease font
             </a>
             <a class="dropdown-item hidden-md-up edit-show-buttons" 
                     href="#" style="display: none"
-                    onclick="incFontSize('.text-song');" >
+                    onclick="incFontSize(['.text-song', '.show-onsong-text']);" >
                 A <i class="fa fa-plus"></i> increase font
             </a>
             <a class="dropdown-item hidden-md-up edit-show-buttons" id="goswap-dropup"

@@ -497,8 +497,13 @@ $(document).ready(function() {
 
     /* reformat OnSong texts into sepeare lyrics and chords
     */
-    if ($('.show-onsong-text').length)
+    if ($('.show-onsong-text').length) {
         reFormatOnsongLyrics();
+        // show zoom buttons on onsong chords presentation
+        $('.edit-show-buttons').css('display', 'inline');
+        applyLocallyDefinedTextFormatting();
+    }
+
 
     
     /**
@@ -515,6 +520,8 @@ $(document).ready(function() {
     else if ( $('#bibletext').text()!='' || $('#comment').text()!='' ) {
         $('#jumplist').remove();
     }
+
+
 
     // if sheetmusic is displayed, show button to swap between sheetmusic and chords
     if ( window.location.pathname.indexOf('sheetmusic')>0 || window.location.pathname.indexOf('swap')>0 ) {

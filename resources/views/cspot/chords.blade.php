@@ -30,7 +30,7 @@
 
             @if ( isset($onSongChords)  &&  $onSongChords->count() )
                 <div class="mb-3">
-                    <div class="text-song" id="onsongs">
+                    <div class="text-onsong" id="onsongs">
                         @foreach ( $onSongChords as $onsong )
                             @if ($onsong->song_part->code!='m')
                                 <h5 class="chords-header" id="song-part-{{ $onsong->song_part->code }}">{{ $onsong->song_part->name }}:</h5>

@@ -924,10 +924,7 @@ function prepareChordsPresentation(what)
         cSpot.presentationType = what
 
     // check if user has changed the default font size for the presentation
-    var fontSize = localStorage.getItem('.text-song_font-size');
-    if (fontSize) {
-        $('.text-song').css('font-size', parseInt(fontSize));
-    }
+    applyLocallyDefinedTextFormatting();
 
     // make sure the main content covers all the display area
     $('#main-content').css('min-height', window.screen.height);
