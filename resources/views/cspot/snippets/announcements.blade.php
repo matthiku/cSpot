@@ -104,7 +104,8 @@
 					?>
 					<div class="{{ $firstThisDay ? '' : 'mt-2'}}">
 						<span class="d-block bg-info nowrap">{{ $event->date }}</span>
-						<div>{{ $event->type->name }}{!! $event->subtitle ? '<br><span class="text-muted">'.$event->subtitle.'</span>' : '' !!}</div>
+						<div>{{ $event->type->name!='Other Meeting' ? $event->type->name : '' }}{!! $event->type->name!='Other Meeting' ? '<br>' : '' !!}
+							 {!! $event->subtitle ? '<span class="text-muted">'.$event->subtitle.'</span>' : '' !!}</div>
 					</div>
 
 					<?php 
