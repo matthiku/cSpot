@@ -19,6 +19,7 @@ class Type extends Model
         'resource_id',
         'weekday',
     	'subtitle',
+        'generic',
 	];
 
 

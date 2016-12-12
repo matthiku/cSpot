@@ -20,6 +20,7 @@ class AddFieldsToTypesTable extends Migration
             $table->foreign('resource_id')->references('id')->on('resources');
             $table->integer('weekday')->nullable();
             $table->text('subtitle')->nullable();
+            $table->boolean('generic');
         });
     }
 
@@ -36,6 +37,7 @@ class AddFieldsToTypesTable extends Migration
             $table->dropColumn('resource_id');
             $table->dropColumn('weekday');
             $table->dropColumn('subtitle');
+            $table->dropColumn('generic');
         });
     }
 }

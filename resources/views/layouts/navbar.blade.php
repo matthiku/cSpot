@@ -53,9 +53,11 @@
                     <i class="fa fa-cogs"></i> <span class="caret"></span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" role="menu">
-                    <a class="dropdown-item" href="{{ url('cspot/files') }}"><i class="fa fa-btn fa-clone fa-lg"></i> &nbsp; Files/Images</a>
-                    <a class="dropdown-item" href="{{ url('admin/file_categories') }}"><i class="fa fa-btn fa-file-archive-o fa-lg"></i> &nbsp; File Categories</a>
-                    <hr>
+                    @if (Auth::user()->isMusician())
+                        <a class="dropdown-item" href="{{ url('cspot/files') }}"><i class="fa fa-btn fa-clone fa-lg"></i> &nbsp; Files/Images</a>
+                        <a class="dropdown-item" href="{{ url('admin/file_categories') }}"><i class="fa fa-btn fa-file-archive-o fa-lg"></i> &nbsp; File Categories</a>
+                        <hr>
+                    @endif
                     <a class="dropdown-item" href="{{ url('admin/users') }}"><i class="fa fa-btn fa-users fa-lg"></i> &nbsp; User List</a>
                     <a class="dropdown-item" href="{{ url('admin/roles') }}"><i class="fa fa-btn fa-check-square-o fa-lg"></i> &nbsp; User Roles</a>
                     <a class="dropdown-item" href="{{ url('admin/instruments') }}"><i class="fa fa-btn fa-music fa-lg"></i> &nbsp; User Instruments</a>

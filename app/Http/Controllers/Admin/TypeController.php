@@ -79,6 +79,11 @@ class TypeController extends Controller
         if ( $request->weekday    =='null' ) array_push($exceptList, 'weekday');
         if ( $request->repeat     =='null' ) array_push($exceptList, 'repeat');
 
+        // make sure we only have one 'catch-all' type!
+        if ( $request->generic  &&  Type::where('generic', true)->count() ) {
+            flash('It doesn\'t make sense to have more than one event type named "Generic"!');
+        }
+
         // now create the new TYPE item
         Type::create( $request->except($exceptList) );
 
@@ -169,8 +174,16 @@ class TypeController extends Controller
             // update the other fields
             $output->update( $request->except([ '_method', '_token', 'leader_id', 'resource_id', 'weekday', 'repeat' ]) );
 
+            // make sure we only have one 'catch-all' type!
+            $genericEvent = Type::where('generic', true)->first();
+            if ( $request->generic  
+                &&  isset($genericEvent->id) 
+                && $genericEvent->id != $id ) {
+                flash('It doesn\'t make sense to have more than one event type named "Generic"!');
+            }
+
             // feedback to user and return view with list of types
-            $message = 'Type with id "' . $id . '" updated';
+            $message = 'Type "' . $output->name . '" updated';
             return \Redirect::route('types.index')
                             ->with(['status' => $message]);
         }

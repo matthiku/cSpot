@@ -450,7 +450,7 @@
                             tabindex="0" href="#" data-container="body" data-toggle="tooltip"
                             data-template='<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><pre class="tooltip-inner tooltip-wide"></pre></div>'
                             title='{{ isset($song) ? "(Click on title 'Chords' to open!)\n" : '' }}{{ 
-                                    "Song parts indicators must be on separate\nlines and end with a colon (:).\nBlank lines will be ignored.\n\nPut instructions on separate lines and\nenclose them in brackets,\nlike '(repeat chorus!)'" }}'>
+                                    "Song parts indicators must be on separate\nlines and end with a colon (:).\nBlank lines will be ignored.\n\nPut instructions on separate lines and\nenclose them in brackets,\nlike '(repeat chorus!)'\n\nDon't fill that in if you plan to use the OnSong format!" }}'>
                         <i class="fa fa-info-circle ml-2"></i></a>
                     </a>
                   </h4>

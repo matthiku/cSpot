@@ -109,7 +109,8 @@
                     <div id="show-video-clip" style="display: none;">
                         <button type="button" class="close" aria-label="Close" onclick="$('#show-video-clip').hide();$('.search-result-items').toggle()">
                             <span aria-hidden="true">&times;</span>
-                        </button>                        
+                        </button>
+                        <div></div>
                     </div>
 
 

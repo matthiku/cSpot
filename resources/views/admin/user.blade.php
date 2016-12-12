@@ -189,7 +189,7 @@
     
     @if (! Auth::user()->isAdmin())
         <hr>
-        <div class="row mt-1">
+        <div class="row mt-1 mb-2">
             <div class="col-xl-2 col-lg-3 col-md-4 col-sm-5">
                 @if ($user->roles->count())
                     <label>Your Roles:</label><br>
@@ -212,6 +212,7 @@
 
 
     @if ($user->id == Auth::user()->id)
+        <hr>
         <p class="small">Only when instructed by the c-SPOT Administrator:
             <br>Click to
             <a href="#" onclick="localStorage.clear();">clear local c-SPOT-Cache</a>

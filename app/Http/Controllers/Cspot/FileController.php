@@ -24,6 +24,15 @@ class FileController extends Controller
 {
 
 
+    /**
+     * Authentication
+     */
+    public function __construct() {
+        $this->middleware('auth');
+        $this->middleware('role:leader', ['except' => ['APIindex', 'add', 'update', 'upload'] ]);
+    }
+
+
 
 
     /**

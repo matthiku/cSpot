@@ -26,11 +26,11 @@
         <div class="row mb-2">
 
             <div class="col-sm-6 bg-info">
-                <div class="float-sm-right">
+                <div class="lora float-sm-right">
                     @if (isset($type))
-                        <h2>Update Type</h2>
+                        <h3>Update Type</h3>
                     @else
-                        <h2>Create Type</h2>
+                        <h3>Create Type</h3>
                     @endif
                 </div>
             </div>
@@ -44,7 +44,7 @@
                     <a class="btn btn-outline-primary float-sm-right" 
                             href="{{ url('cspot/plans/create') }}?type_id={{ $type->id }}"
                             title="Create a new Event of this type">
-                        <i class="fa fa-plus"> </i> Create Event
+                        <i class="fa fa-plus"> </i> Create new "{{ $type->name }}" Event
                     </a>
                 @endif
             </div>
@@ -75,8 +75,26 @@
         </div>
 
 
+        <div class="row mb-1">
+            <div class="col-sm-6">
+                <div class="text-sm-right">
+                    {!! Form::label('generic', 'Is this a generic Type?'); !!}
+                </div>
+            </div>
 
-        <div class="row">
+            <div class="col-sm-6">    
+                <div class="btn btn-secondary float-xs-left mr-1" onclick="changeGeneric(this);">
+                    {!! Form::hidden('generic', '0') !!}
+                    {!! Form::checkbox('generic', '1') !!}
+                </div>    
+                <div class="small narrow"><strong>Note:</strong> A generic event type has no default values and can be used for all kinds of events. 
+                When creating a new event of that type, the new subtitle will be used as the main title (or name) of the actual event.</div>
+           </div>
+        </div>
+
+
+
+        <div class="row other-stuff">
             <div class="col-sm-6">
                 <div class="float-sm-right">
 
@@ -93,7 +111,7 @@
 
 
 
-        <div class="row mb-1">
+        <div class="row mb-1 other-stuff">
             <div class="col-sm-6">
                 <div class="float-sm-right">
                     
@@ -119,7 +137,7 @@
 
 
 
-        <div class="row mb-1">
+        <div class="row mb-1 other-stuff">
             <div class="col-sm-6">
                 <div class="float-sm-right">
 
@@ -155,7 +173,7 @@
 
 
 
-        <div class="row mb-1">
+        <div class="row mb-1 other-stuff">
             <div class="col-sm-6">
                 <div class="float-sm-right">
 
@@ -191,7 +209,7 @@
 
 
 
-        <div class="row mb-1">
+        <div class="row mb-1 other-stuff">
             <div class="col-sm-6">
                 <div class="float-sm-right">
 
@@ -224,7 +242,7 @@
 
 
 
-        <div class="row mb-1">
+        <div class="row mb-1 other-stuff">
             <div class="col-sm-6">
                 <div class="float-sm-right">
 
@@ -289,7 +307,22 @@
 
     {{-- put focus on first input field 
     --}}
-    <script type="text/javascript">document.forms.inputForm.name.focus()</script>
+    <script type="text/javascript">
+        document.forms.inputForm.name.focus()
+
+        @if ($type->generic)
+            $('.other-stuff').hide();
+        @endif
+
+        function changeGeneric(that){
+            $(that).children('input')[1].click();
+            if ( $($(that).children('input')[1]).prop('checked')==true )
+                $('.other-stuff').hide();
+            else
+                $('.other-stuff').show();                
+        }
+
+    </script>
 
   
 

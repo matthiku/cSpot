@@ -16,7 +16,11 @@ if (typeof($)===undefined) {
 }
  
 
-
+/*
+ * Prepare the presentation of lyrics, chords etc.
+ *
+ * called from loadFromLocalCache method in main.js
+ */
 function preparePresentation()
 {
     // check if we have a VideoClip item or just lyrics
@@ -198,7 +202,7 @@ function prepareImages()
     The <p> elements also contain child elements for verse numbers and footnotes etc
         which have to be removed (with only the verse numbers being retained)
 
-    This function is called in the document.ready method, when it finds this element:
+    This function is called in the preparePresentation method, when it finds this element:
         $('.bible-text-present')
 */
 function reFormatBibleText() 
@@ -344,7 +348,7 @@ function reFormatBibleText()
 function updateVerseList(fr,to)
 {
     var arr = [];
-    if (fr <= to) {
+    if (1*fr <= 1*to) {
         for (var nr=1*fr; nr<=to; nr++) {
             arr.push(nr);
         }
@@ -1849,8 +1853,8 @@ function applyLocallyDefinedTextFormatting(reset)
         var selector = k[1];
         var attribute = k[2];
 
-        // only use keys named 'format_...'
-        if ( what=='format' ) {
+        // only use keys named 'format_...' and only do this for existing elements
+        if ( what=='format'  &&  $(selector).length ) {
 
             if (reset=='reset') {
                 localStorage.removeItem(key);

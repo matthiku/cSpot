@@ -95,7 +95,8 @@
                     $key    = 1; // we can't use a $key in the foreach statement as it's a re-sorted collection!
                 ?>            
                 @foreach ($files as $file)
-                    <img class="slide-background-image  {{ $bibleTexts ? 'song-background-image' : '' }}  mb-2" data-slides-id="{{ $key }}" style="display: none;" 
+                    <img class="slide-background-image{{ $bibleTexts || $file->file_category->name != 'presentation' ? ' song-background-image ' : ' ' }}mb-2" 
+                        data-slides-id="{{ $key }}" style="display: none;" 
                            src="{{ url(config('files.uploads.webpath')).'/'.$file->token }}">
                     <?php $key++; ?>
                 @endforeach

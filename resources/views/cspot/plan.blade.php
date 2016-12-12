@@ -102,14 +102,14 @@
             @if ( isset($plan) )
 
                 <h4 class="hidden-md-down">
-                    <span class="text-success lora font-weight-bold">{{ $plan->type->name }}</span>
+                    <span class="text-success lora font-weight-bold">{{ $plan->type->generic ? $plan->subtitle : $plan->type->name }}</span>
                     <span class="small font-weight-bold">on {{ $plan->date->formatLocalized('%A, %d %B %Y') }}</span>
                 </h4>
                 <h4 class="hidden-lg-up float-xs-left font-weight-bold">
-                    <span class="text-success lora">{{ $plan->type->name }}</span>
+                    <span class="text-success lora">{{ $plan->type->generic ? $plan->subtitle : $plan->type->name }}</span>
                     on <span class="text-danger">{{ $plan->date->formatLocalized('%a, %d %b') }}</span>
                 </h4>
-                <small class="hidden-lg-down">{{ $plan->subtitle }}</small>
+                <small class="hidden-lg-down">{{ $plan->type->generic ? '' : $plan->subtitle  }}</small>
 
 
             @else

@@ -18,6 +18,7 @@ use App\Models\SongPart;
 use App\Models\OnSong;
 use App\Models\Plan;
 use App\Models\File;
+use App\Models\Type;
 
 use Storage;
 use Auth;
@@ -261,6 +262,7 @@ class SongController extends Controller
             $heading = 'Show Plans using the Song "'.$song->title.'"';
             return view( 'cspot.plans', [
                 'plans' => $plans, 
+                'types'  => Type::get(),
                 'heading' => $heading,
                 'songParts' => SongPart::orderby('sequence')->get(),
             ]);

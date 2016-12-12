@@ -43123,7 +43123,7 @@ function setCurrentPageAsStartupPage(that)
 function userAvailableForPlan(that, plan_id) {
     // make sure the tooltip is hidden now
     $(that).parent().parent().tooltip('hide')
-    $('#user-available-for-plan-id-'+plan_id).text( "wait..." );
+    $('#user-available-for-plan-id-'+plan_id).html( cSpot.const.waitspinner );
 
     var teamPage = false;
     // was this function called from within the Team page?
@@ -43139,7 +43139,7 @@ function userAvailableForPlan(that, plan_id) {
         // make AJAX call to 'plans/{plan_id}/team/{user_id}/available/'+that.checked
         $.get( cSpot.appURL+'/cspot/plans/'+plan_id+'/team/available/'+that.checked)
         .done(function() {
-            $('#user-available-for-plan-id-'+plan_id).text( that.checked ? 'yes' : 'no');
+            $('#user-available-for-plan-id-'+plan_id).html( that.checked ? '&#10003;' : '&#10007;');
             if (teamPage) { location.reload(); }
         })
         .fail(function() {
@@ -43920,12 +43920,7 @@ function searchForSongs()
                     data.data = "[]"; // simulate empty result
                 var result = JSON.parse(data.data);
                 if (result.length==0 || !result ) {
-                    $('#search-action-label').text('Nothing found for "'+search+'", please try again:');
-                    $('#searchForSongsButton').toggle();
-                    $('#searchForSongsSubmit').toggle();
-                    $('#searching').hide();  
-                    $('.search-form-item').show();  
-                    $('#haystack').focus();
+                    noSongFound(search, type);
                     return;
                 }
                 $('#search-action-label').html('<span class="bg-info">Select the desired Song:</span>');
@@ -43939,6 +43934,10 @@ function searchForSongs()
             })
             .fail(function(data) {
                 $('#searching').hide();
+                if (data.status==404) {
+                    noSongFound(search, type);
+                    return;
+                }
                 console.log(data);
                 $('#search-result').text("Search failed! Please notify admin! " + JSON.stringify(data));
             });
@@ -44015,6 +44014,26 @@ function searchForSongs()
         // submit the form - causes a POST http request to STORE a new item
         document.getElementById('searchSongForm').submit();
     }
+}
+
+/*
+*/
+function noSongFound(search,type) 
+{
+    var msg = 'Nothing found for "'+search+'", please try again:';
+    $('#search-result').text(msg);
+    $('#searchForSongsButton').toggle();
+    $('#searchForSongsSubmit').toggle();
+    $('#searching').hide();
+    if (type!='song') {
+        $('#search-action-label').text(msg);
+        $('.search-form-item').show();  
+        $('#haystack').focus();
+    }
+        
+    showModalSelectionItems(type);
+    if (type=='song')
+        $('#search-string').focus();
 }
 
 /*  loop through each item in the search result and present it to the user for selection
@@ -44123,10 +44142,11 @@ function showYTvideoPreview(ytid, that)
 {
     // hide the search result for now
     $('.search-result-items').toggle();
+    // only show the 'clicked' song
     $(that).parent().parent().toggle();
 
     // show the YT preview DIV and insert the player code
-    $('#show-video-clip').append('<iframe width="560" height="315" src="https://www.youtube.com/embed/'+ytid+'" frameborder="0" allowfullscreen></iframe>');
+    $('#show-video-clip').children('div').html('<iframe width="560" height="315" src="https://www.youtube.com/embed/'+ytid+'" frameborder="0" allowfullscreen></iframe>');
     $('#show-video-clip').show();
 }
 
@@ -44955,7 +44975,11 @@ if (typeof($)===undefined) {
 }
  
 
-
+/*
+ * Prepare the presentation of lyrics, chords etc.
+ *
+ * called from loadFromLocalCache method in main.js
+ */
 function preparePresentation()
 {
     // check if we have a VideoClip item or just lyrics
@@ -45137,7 +45161,7 @@ function prepareImages()
     The <p> elements also contain child elements for verse numbers and footnotes etc
         which have to be removed (with only the verse numbers being retained)
 
-    This function is called in the document.ready method, when it finds this element:
+    This function is called in the preparePresentation method, when it finds this element:
         $('.bible-text-present')
 */
 function reFormatBibleText() 
@@ -45283,7 +45307,7 @@ function reFormatBibleText()
 function updateVerseList(fr,to)
 {
     var arr = [];
-    if (fr <= to) {
+    if (1*fr <= 1*to) {
         for (var nr=1*fr; nr<=to; nr++) {
             arr.push(nr);
         }
@@ -46788,8 +46812,8 @@ function applyLocallyDefinedTextFormatting(reset)
         var selector = k[1];
         var attribute = k[2];
 
-        // only use keys named 'format_...'
-        if ( what=='format' ) {
+        // only use keys named 'format_...' and only do this for existing elements
+        if ( what=='format'  &&  $(selector).length ) {
 
             if (reset=='reset') {
                 localStorage.removeItem(key);

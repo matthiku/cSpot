@@ -59,7 +59,7 @@
 
 				@if( Auth::user()->isEditor() && $plan_id==0 )
 					<li class="nav-item active">
-						<a class="nav-link btn btn-outline-success" 
+						<a class="nav-link btn btn-sm btn-outline-success" 
 						    href="{{ url('cspot/songs/create') }}{{ 
 								Request::has('filtervalue')
 									? '?type='.Request::input('filtervalue')
@@ -83,13 +83,13 @@
 
 				<li class="nav-item">
 					@if ( ! Request::has('filtervalue') )
-						<a class="nav-link btn btn-outline-primary" title="Show songs used in the past but not used in a long time" 
+						<a class="nav-link btn btn-sm btn-outline-primary" title="Show songs used in the past but not used in a long time" 
 								href="{{ url('cspot/songs') }}?filterby=songs&filtervalue=rare">
-							<span class="hidden-md-down">List of </span>'Forgotten' Songs
+							<span class="hidden-md-down">Show List of </span>'Forgotten' Songs
 						</a>
 					@endif
 					@if ( Request::has('filtervalue') && Request::input('filtervalue')=='rare' )
-						<a class="nav-link btn btn-outline-success" title="Show full song list"
+						<a class="nav-link btn btn-sm btn-outline-success" title="Show full song list"
 								href="{{ url('cspot/songs') }}">
 							Show All Songs
 						</a>

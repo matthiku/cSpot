@@ -69,7 +69,7 @@
 
                     <td class="{!! $tdl !!}">{{ $type->name }}</td>
 
-                    <td class="hidden-lg-down {!! $tdl !!}">{{ $type->subtitle }}</td>
+                    <td class="hidden-lg-down {!! $tdl !!}">{{ $type->generic ? '(generic type)' : $type->subtitle }}</td>
 
                     <td class="hidden-md-down {!! $tdl !!}">{{ substr($type->start,0,5) }}</td>
                     <td class="hidden-md-down {!! $tdl !!}">{{ substr($type->end,0,5) }}</td>
