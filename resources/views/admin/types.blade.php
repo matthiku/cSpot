@@ -110,7 +110,7 @@
 
                             <a class="btn btn-outline-warning btn-sm" 
                                     href="{{ url('cspot/plans/create') }}?type_id={{ $type->id }}"
-                                    title="Create a new Event of this type">
+                                    title="Create a new Event of this type - Note: proposed date will be newer than the newest existing event of this type!">
                                 <i class="fa fa-plus"> </i>
                             </a>
 

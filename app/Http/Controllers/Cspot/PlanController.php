@@ -351,13 +351,15 @@ class PlanController extends Controller
             $newDate =  getTypeBasedPlanData($type);
 
             // send the default values to the View
-            $request->session()->flash('defaultValues', [
-                'type_id'   => $type->id,
-                'date'      => $newDate,
-                'start'     => $type->start,
-                'end'       => $type->end,
-                'leader_id' => $type->leader_id
-            ]);
+            $request->session()->flash(
+                'defaultValues', [
+                    'type_id'   => $type->id,
+                    'date'      => $newDate,
+                    'start'     => $type->start,
+                    'end'       => $type->end,
+                    'leader_id' => $type->leader_id
+                ]
+            );
         }
 
         // get list of service types

@@ -1533,7 +1533,7 @@ function navigateTo(where)
     // inform server of current position if we are presenter
     sendShowPosition(where);
 
-    if (goWhereButton.onclick==null) {
+    if (goWhereButton.href && goWhereButton.href!='#' ) {
         // try to go to the location defined in href
         window.location.href = goWhereButton.href;
         return;

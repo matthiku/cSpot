@@ -42263,15 +42263,19 @@ function toggleTrashed() {
 \*/
 
 /* take one DOM element, get it's text content
-   and write it back as individual lines of chords and lyrics */
+ *    and write it back as individual lines of chords and lyrics 
+ */
 function rewriteOnsong(element)
 {
     var newText = '';
     var textblocks = $(element).text().split("\n");
     $.each(textblocks, function(i) {
         var tx = splitOnSong(textblocks[i]);
-        if (tx.lyrics)
-            newText += '<pre class="chords">' + tx.chords + '</pre><pre class="lyrics">' + tx.lyrics + "</pre>";
+        if (tx.lyrics) {
+            if ( tx.chords.trim()!='' ) // don't add an empty line
+                newText += '<pre class="chords">' + tx.chords + '</pre>';
+            newText += '<pre class="lyrics">' + tx.lyrics + "</pre>";
+        }
     });
     $(element).html(newText);
     ;;;console.log('onsong chords re-formatted for '+element.nodeName+'.'+element.className);
@@ -43660,6 +43664,8 @@ function resetSearchForSongs()
     $('#haystack').val('');
     $('#show-images-for-selection').html('');
     $('#comment').val('');
+    $('#show-video-clip').children('div').html(''); // reset video preview
+    
 }
 
                 
@@ -46492,7 +46498,7 @@ function navigateTo(where)
     // inform server of current position if we are presenter
     sendShowPosition(where);
 
-    if (goWhereButton.onclick==null) {
+    if (goWhereButton.href && goWhereButton.href!='#' ) {
         // try to go to the location defined in href
         window.location.href = goWhereButton.href;
         return;

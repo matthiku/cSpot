@@ -235,10 +235,10 @@ class ItemController extends Controller
 
         if ($plan) {
             // get all current items of this plan
-            $items = $plan->items;
+            $last_item = $plan->items->sortBy('seq_no')->last();
 
             // find item with the highest seq.no
-            $seq_no = 50; // (temporary solution)
+            $seq_no = 1 * $last_item->seq_no + 1; // (temporary solution)
 
             // create a new items object add it to this plan
             $item = new Item([

@@ -927,15 +927,19 @@ function toggleTrashed() {
 \*/
 
 /* take one DOM element, get it's text content
-   and write it back as individual lines of chords and lyrics */
+ *    and write it back as individual lines of chords and lyrics 
+ */
 function rewriteOnsong(element)
 {
     var newText = '';
     var textblocks = $(element).text().split("\n");
     $.each(textblocks, function(i) {
         var tx = splitOnSong(textblocks[i]);
-        if (tx.lyrics)
-            newText += '<pre class="chords">' + tx.chords + '</pre><pre class="lyrics">' + tx.lyrics + "</pre>";
+        if (tx.lyrics) {
+            if ( tx.chords.trim()!='' ) // don't add an empty line
+                newText += '<pre class="chords">' + tx.chords + '</pre>';
+            newText += '<pre class="lyrics">' + tx.lyrics + "</pre>";
+        }
     });
     $(element).html(newText);
     ;;;console.log('onsong chords re-formatted for '+element.nodeName+'.'+element.className);

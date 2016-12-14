@@ -1205,36 +1205,37 @@ function getNextPlanDate( $plan )
 }
 
 /**
- * Calculate new date based on internval and Weekday
+ * Calculate new date based on interval and Weekday
  */
 function newPlanDate( $planDate, $interval, $weekday)
 {
     // send default values for another adding amount of days dpending on interval value
     //if ($interval == 'weekly') -> this is the default...
-    $newDate =  $planDate->addDays(7);
+    $newDate =  $planDate->copy()->addDays(7);
+    // $newDate;
 
     // valid intervals are: daily,weekly,biweekly,fortnightly,monthly,quarterly,half-yearly,yearly
     if ($interval == 'daily')
-        $newDate =  $planDate->addDays(-6);
+        $newDate->addDays(-6);
 
     if ($interval == 'biweekly' || $interval == 'fortnightly')
-        $newDate =  $planDate->addDays(14);
+        $newDate->addDays(14);
 
     if ($interval == 'monthly') {
-        $newDate =  $planDate->addWeeks(4);
+        $newDate->addWeeks(4);
         // sometimes we need to add 5 weeks ...
         if ($newDate->month == $planDate->month)
             $newDate->addWeek();
     }
 
     if ($interval == 'quarterly')
-        $newDate =  $planDate->addMonths(3);
+        $newDate->addMonths(3);
 
     if ($interval == 'half-yearly')
-        $newDate =  $planDate->addWeeks(26);
+        $newDate->addWeeks(26);
 
     if ($interval == 'yearly')
-        $newDate =  $planDate->addWeeks(52);
+        $newDate->addWeeks(52);
 
     return $newDate;
 }
@@ -1251,16 +1252,21 @@ function getTypeBasedPlanData($type)
     // get default weekday for this plan type
     $weekday = $type->weekday;
 
+    // set proposed date according to default weekday for this event type 
     $planDate = Carbon::now();
-
-    // set default date according to weekday
     $weekdayNames = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
-    if ($weekday!==null && $weekday>=0 && $weekday<7) {
+    if ($weekday!==null && $weekday>=0 && $weekday<7)
         $planDate = new Carbon( 'last '.$weekdayNames[$weekday] );
-    }
+
+    // do not propose to create a new event on a day where this event alredy exists
+    $plan = Plan::where('type_id', $type->id)->where('date', '>=', Carbon::tomorrow())->orderby('date', 'DESC')->first();
+    if ($plan)
+        $planDate = $plan->date;
 
     return newPlanDate($planDate, $interval, $weekday);
 }
+
+
 
 /**
  * Check for duplicates and non-integer sequence number 

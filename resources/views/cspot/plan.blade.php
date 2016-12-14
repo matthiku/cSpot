@@ -186,7 +186,7 @@
                         @endif
 
                     @else
-                        <input class="btn btn-outline-success btn-block submit-button disabled" type="submit" value="Submit">
+                        <input class="btn btn-outline-success btn-block submit-button{{ isset($defaultValues['type_id']) ? '' : ' disabled'}}" type="submit" value="Submit">
                     @endif
                 </big>
             </div>  

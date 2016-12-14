@@ -574,6 +574,8 @@ function resetSearchForSongs()
     $('#haystack').val('');
     $('#show-images-for-selection').html('');
     $('#comment').val('');
+    $('#show-video-clip').children('div').html(''); // reset video preview
+    
 }
 
                 

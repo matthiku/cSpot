@@ -62,7 +62,12 @@ class TypeController extends Controller
         // also get the users table
         $users = User::orderBy('first_name')->get();
         //
-        return view('admin.type', ['users'=>$users, 'resources'=>$resources]);
+        return view(
+            'admin.type', [
+                'users'     => $users, 
+                'resources' => $resources,
+                'types'     => Type::get(),
+            ]);
     }
 
     /**
@@ -136,7 +141,13 @@ class TypeController extends Controller
             $users = User::orderBy('first_name')->get();
 
             // return the view with all the data
-            return view( 'admin.type', ['type' => $type, 'users' => $users , 'resources' => $resources ] );
+            return view( 
+                'admin.type', [
+                    'type'      => $type, 
+                    'users'     => $users, 
+                    'resources' => $resources,
+                    'types'     => Type::get(),
+                ] );
         }
         //
         $message = 'Error! Type with id "' . $id . '" not found';
