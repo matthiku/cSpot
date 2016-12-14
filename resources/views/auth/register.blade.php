@@ -21,14 +21,14 @@
                 {!! csrf_field() !!}
                 
                 <center>
-                    <h4><strong>Sign up</strong> using your account with one of those providers:</h4>
+                    <h4 class="lora"><strong>Sign up (register)</strong> using your account with one of those providers:</h4>
                     @include('auth.social')
                 </center>
                 <br />
                 <br />
 
 
-                <h3 class="card-header">Or register here:</h3>
+                <h3 class="card-header mb-2">Or register here:</h3>
 
                 <div class="row form-group{{ $errors->has('first_name') ? ' has-error' : '' }}">
                     <label class="col-md-3 offset-md-1 control-label">First Name</label>
@@ -102,7 +102,7 @@
 
                 <div class="row form-group">
                     <div class="col-md-2 offset-md-8">
-                        <button type="submit" class="btn form-btn btn-outline-success submit-button disabled">
+                        <button type="submit" class="btn form-btn btn-outline-success submit-button disabled" onclick="showSpinner();">
                             <i class="fa fa-btn fa-envelope"></i> Register
                         </button>
                     </div>

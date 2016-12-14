@@ -47,6 +47,10 @@ read -p 'Commit will be pushed to staging. Push to Production as well? (Y/n) ' "
 
 
 
+# save the current date into a file for rendering online (to see it in the GUI)
+date > public/lastCommit.txt
+
+
 # add all files to the commit
 git add .
 echo ----

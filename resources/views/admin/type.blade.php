@@ -87,6 +87,10 @@
 
 
 
+            <div class="row other-stuff text-xs-center" style="display: none;">
+                <a href="#" class="small" onclick="$('.other-stuff').toggle();">show other fields</a>
+            </div>
+
             <div class="row other-stuff">
                 <div class="col-sm-6">
                     <div class="float-sm-right">
@@ -315,15 +319,20 @@
                         <th>Generic?</th>
                         <th>Interval</th>
                         <th>Weekday</th>
+                        <th>Edit</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($types as $type)
-                        <tr>
-                            <td>{{ $type->name }}{{ $type->subtitle ? ' ('.$type->subtitle.')' : '' }}</th>
-                            <td>{{ $type->generic ? '&#10004;' : '' }}</td>
-                            <td>{{ $type->repeat }}</td>
-                            <td>{{ $type->weekdayName }}</td>
+                    @foreach ($types as $typ)
+                        <tr class="{{ $typ->id == $type->id ? 'text-info' : '' }}">
+                            <td>{{ $typ->name }}{{ $typ->subtitle ? ' ('.$typ->subtitle.')' : '' }}</th>
+                            <td>{{ $typ->generic ? '&#10004;' : '' }}</td>
+                            <td>{{ $typ->repeat }}</td>
+                            <td>{{ $typ->weekdayName }}</td>
+                            <td>@if ($typ->id != $type->id)
+                                    <a class="btn btn-sm btn-outline-info" href="{{ route('types.edit', $typ->id) }}">&#9997;</a>
+                                @endif
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -339,7 +348,7 @@
         document.forms.inputForm.name.focus()
 
         @if ($type->generic)
-            $('.other-stuff').hide();
+            $('.other-stuff').toggle();
         @endif
 
         function changeGeneric(that){
@@ -347,12 +356,12 @@
             // user clicked the surrounding button, so we toggle the checkbox
             if (that.nodeName!='INPUT') {
                 if ( $($(that).children('input')[1]).prop('checked')==true ) {
-                    $('.other-stuff').show();
+                    $('.other-stuff').toggle();
                     $($(that).children('span')[0]).html('&#10008;');
                     $($(that).children('input')[1]).prop('checked', false );
                 }
                 else {
-                    $('.other-stuff').hide();
+                    $('.other-stuff').toggle();
                     $($(that).children('span')[0]).html('&#10004;');
                     $($(that).children('input')[1]).prop('checked', true );
                 }

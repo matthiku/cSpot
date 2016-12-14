@@ -94,11 +94,11 @@
 				{{-- show song freshness 
 				--}}
 				@if ($item->song_id && Auth::user()->ownsPlan( $plan->id ))
-					<td class="hidden-md-down" data-toggle="tooltip"
-						data-template='<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><pre class="tooltip-inner"></pre></div>'
-						title="Song 'Freshness' Index:{{ '\n\nUsage total: '.$item->song->plansUsingThisSong()->count().'times, \n' }}&nbsp; &nbsp;by you: {{
+					<td class="hidden-md-down" data-toggle="tooltip" 
+						data-template='<div class="tooltip" role="tooltip"><div class="tooltip-narrow"></div><pre class="tooltip-inner"></pre></div>'
+						title="Song 'Freshness' Index:{{ "\n\nUsage total: ".$item->song->plansUsingThisSong()->count()." times, \n" }}&nbsp; &nbsp;by you: {{
 							$item->song->leadersUsingThisSong($plan->leader_id)->count() }} times {{ 
-								'\n'.$item->song->lastTimeUsed ? 'Lastly used: '.$item->song->lastTimeUsed->diffForHumans() : ''}}">
+								"\nLastly used: " }}{{ get_class($item->song->lastTimeUsed)=='Carbon\Carbon' ? $item->song->lastTimeUsed->diffForHumans() : 'never' }}">
 						@if ($item->song_freshness) 
 							{{ $item->song_freshness > 50 ? '&#127823;' : '&#127822;' }}<small>{{ $item->song_freshness }}%</small>
 						@endif
@@ -310,12 +310,12 @@
 					@if ($item->song_id)
 	                    @if ( $item->song->hymnaldotnet_id )
 	                        <a target="new" title="Review song on hymnal.net" data-toggle="tooltip" class="mr-1" 
-	                            href="{{ env('HYMNAL.NET_PLAY', 'https://www.hymnal.net/en/hymn/h/').$item->song->hymnaldotnet_id }}">
+	                            href="{{ $item->song->hymnaldotnet_id }}">
 	                            <i class="fa fa-music"></i> </a>
 	                    @endif
 	                    @if ( $item->song->ccli_no > 1000 && 'MP'.$item->song->ccli_no != $item->song->book_ref && Auth::user()->hasMusician() )
 	                        <a target="new" title="Review song on SongSelect" data-toggle="tooltip" class="mr-1" 
-	                            href="{{ $item->song->ccli_no }}">
+	                            href="{{ env('SONGSELECT_URL', 'https://songselect.ccli.com/Songs/').$item->song->ccli_no }}">
 	                            <img src="{{ url('/') }}/images/songselectlogo.png" width="20"></a>
 	                    @endif
 	                    @if ( strlen($item->song->youtube_id)>0 )

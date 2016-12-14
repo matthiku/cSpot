@@ -16,23 +16,33 @@
             @include('layouts.flashing')
     
 
+
             <center class="mb-2">
 
-                <h4>Sign in using your account from one of these service providers:</h4>
+                <h4 class="lora">Sign in using your account from one of these service providers:</h4>
 
-                @include('auth.social')
-                
-                <div class="bg-success mt-2">
-                    <span class="text-white">Not sure what to do? How to register?<br>
-                    <a href="https://www.youtube.com/watch?v=SNgq9ZW1KMs" target="new">
-                        <i class="fa fa-youtube-play red"></i>
-                        Watch this short training video
-                        <i class="fa fa-external-link small"></i><br> 
-                    </a>
-                    <small>explains the sign-in process and the basics features of c-SPOT</small></span>
+                <div class="row">
+            
+                    <div class="col-md-12">
+                        @include('auth.social')
+                    </div>
+                    
+
+                    <div class="col-xl-4 offset-xl-4 col-lg-6 offset-lg-3 col-md-8 offset-md-2 col-sm-10 offset-sm-1 bg-info rounded mt-2">
+                        <span class="text-white">Not sure what to do? How to register?<br>
+                        <a href="https://www.youtube.com/watch?v=SNgq9ZW1KMs" target="new">
+                            <i class="fa fa-youtube-play red"></i>
+                            Watch this short training video
+                            <i class="fa fa-external-link small"></i><br> 
+                        </a>
+                        <small>explains the sign-in process and the basics features of c-SPOT</small></span>
+                    </div>
+
                 </div>
 
+
             </center>
+
 
 
             <h5 class="card-header">You can also sign in by email address and password:</h5>
@@ -42,7 +52,7 @@
                 {!! csrf_field() !!}
 
                 <div class="row mt-1 form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-                    <label class="col-md-3 offset-md-1 control-label">E-Mail Address</label>
+                    <label class="col-md-4 text-xs-right control-label">E-Mail Address</label>
 
                     <div class="col-md-6">
                         <input required type="email" class="form-control" name="email" value="{{ old('email') }}">
@@ -56,7 +66,7 @@
                 </div>
 
                 <div class="row form-group{{ $errors->has('password') ? ' has-error' : '' }}">
-                    <label class="col-md-3 offset-md-1 control-label">Password</label>
+                    <label class="col-md-4 text-xs-right control-label">Password</label>
 
                     <div class="col-md-6">
                         <input required type="password" class="form-control" name="password">
@@ -84,7 +94,7 @@
                         <button type="submit" class="btn btn-outline-success submit-button disabled">
                             <i class="fa fa-btn fa-sign-in"></i> Login
                         </button>
-                        <a class="btn btn-outline-primary float-right" href="{{ url('password/reset') }}">Forgot Your Password?</a>
+                        <a class="btn btn-outline-primary float-xs-right" href="{{ url('password/reset') }}">Forgot Your Password?</a>
                     </div>
                 </div>
 

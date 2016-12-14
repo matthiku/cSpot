@@ -53,7 +53,7 @@
                     <th class="center small" title="Shows number of default items defined for this type of plan">Default Items</th>
                     <th class="center small">Total No. of Plans</th>
                     @if( Auth::user()->id===1 || Auth::user()->isEditor() )
-                        <th class="center small">Modify</th>
+                        <th class="center small">Act</th>
                     @endif
                 </tr>
             </thead>
@@ -105,8 +105,7 @@
                             @endif
 
                             <a class="btn btn-outline-primary btn-sm" title="Edit" 
-                                    href='{{ url('admin/types/'.$type->id) }}/edit'>
-                                <i class="fa fa-pencil"></i></a>
+                                    href='{{ url('admin/types/'.$type->id) }}/edit'>&#9997;</a>
 
                             <a class="btn btn-outline-warning btn-sm" 
                                     href="{{ url('cspot/plans/create') }}?type_id={{ $type->id }}"

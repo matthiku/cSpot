@@ -489,12 +489,9 @@
 
                 @if ($item->itemType()=='song')
                     <p class="text-info">
+                        ({{ $item->song->sequence ? 'Sequence: '.$item->song->sequence : 'No sequence predefined' }})
                         @if (Auth::user()->isEditor())
-                            Sequence:
-                            <span id="sequence-song-id-{{ $item->song->id }}" class="editable-song-field">{{ $item->song->sequence }}</span>
-                            <i class="fa fa-pencil text-muted"> </i>
-                        @else
-                            ({{ $item->song->sequence ? 'Sequence: '.$item->song->sequence : 'No sequence predefined' }})
+                            <small>(Edit the Sequence in the OnSong tab)</small>
                         @endif
                     </p>
                     <p class="small"><strong>NOTE: </strong>If there are also <strong>lyrics</strong> defined in the <em>OnSong</em> tab, 

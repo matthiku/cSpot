@@ -17,15 +17,15 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/', 'HomeController@welcome');
     Route::get('/home', 'HomeController@index')->name('home');
 
+    // confirm registration route from registration email
+    Route::get('register/confirm/{token}',    'Auth\RegisterController@confirmEmail');
+
     // all authorization routes
     //Route::auth();  (old 5.2 way)
     Auth::routes();
 
     // allow get-method for logout again
     Route::get('/logout', 'Auth\LoginController@logout');
-
-    // confirm registration route from registration email
-    Route::get('register/confirm/{token}',    'Auth\RegisterController@confirmEmail');
 
 
     // Social (OAuth) authorization

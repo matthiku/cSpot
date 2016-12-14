@@ -80,16 +80,17 @@ class RegisterController extends Controller
      */
     protected function create(Request $request, array $data)
     {
-        Log::info($request->ip().' - creating new user record for '.$data['name']);
+        Log::info($request->ip().' - creating new user record for '.$data['first_name'].' '.$data['last_name'].' ('.$data['email'].')' );
 
         $user = User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
+            'first_name' => $data['first_name'],
+            'last_name' => $data['last_name'],
+            'email'    => $data['email'],
             'password' => bcrypt($data['password']),
         ]);
 
         // fire an event
-        event(new UserRegistered($user));
+        //event(new UserRegistered($user));
         
         return $user;
     }
@@ -115,11 +116,11 @@ class RegisterController extends Controller
         // $this->validate($request, [        ]);
 
 
-        //event(new Registered( $user = $this->create($request))) ;
+        $user = $this->create($request, $request->all()) ;
 
         //      $this->guard()->login($user);
 
-        $user = User::create( $request->all() );
+        // $user = User::create( $request->all() );
 
         //Assign Role
         $role = Role::whereName('user')->first();
@@ -162,7 +163,7 @@ class RegisterController extends Controller
             flash('You are now confirmed. Please sign in.');
         }
 
-        Log::info($request->ip().' - email confirmed for user '.$user->name);
+        Log::info($request->ip().' - email confirmed for user ');
 
         return redirect('/login');
     }

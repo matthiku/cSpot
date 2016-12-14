@@ -316,9 +316,11 @@ class UserController extends Controller
             $message = 'User with id "' . $id . '" cannot be deleted!';
         } 
         else {
-            //  first remove any roles 
+            //  first remove any roles and notes 
             if ($user->roles->count())
-                $user->roles()->detach();
+                $user->roles()->detach(); // (use "detach" since it's a many-to-many relationship)
+            if ($user->itemNotes->count())
+                $user->itemNotes()->delete(); //
 
             // check if user has events assigned
             if ($user->plans_as_leader->count()>0 || $user->plans_as_teacher->count()>0) {

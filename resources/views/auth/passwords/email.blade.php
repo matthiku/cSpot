@@ -16,7 +16,7 @@
             <form class="form-horizontal form-signin" role="form" method="POST" action="{{ url('password/email') }}">
                 {!! csrf_field() !!}
 
-                <h4 class="card-header center mb-1">Please enter your email address to reset your password</h4>
+                <h4 class="card-header lora center mb-1">Please enter your email address to reset your password</h4>
 
                 <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
                     <label class="col-md-4 control-label">E-Mail Address</label>

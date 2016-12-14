@@ -219,5 +219,9 @@
         </p>
     @endif
 
+    <hr>
+    <p class="small text-muted">Last Software Update:
+        {{ file_get_contents('lastCommit.txt') }}
+    </p>
 
 @stop

@@ -8,7 +8,7 @@
 @section('content')
 
     <div class="row">
-        <div class="col-lg-6 offset-lg-3 signin-body">
+        <div class="col-lg-6 offset-lg-3 signin-body pb-2">
 
             @include('layouts.flashing')
             <form class="form-horizontal" role="form" method="POST" action="{{ url('password/reset') }}">
@@ -16,12 +16,12 @@
 
                 <input type="hidden" name="token" value="{{ $token }}">
 
-                <h3 class="card-header center mb-1">Please enter your new password and confirmation</h3>
+                <h3 class="card-header lora center mb-1">Please create your new password</h3>
 
                 <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
                     <label class="col-md-4 control-label">E-Mail Address</label>
 
-                    <div class="col-md-6">
+                    <div class="col-md-6 mb-1">
                         <input type="email" class="form-control" name="email" value="{{ $email or old('email') }}">
 
                         @if ($errors->has('email'))
@@ -33,7 +33,7 @@
                 </div>
 
                 <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
-                    <label class="col-md-4 control-label">Password</label>
+                    <label class="col-md-4 control-label">New Password</label>
 
                     <div class="col-md-6">
                         <input type="password" class="form-control" name="password">
@@ -47,8 +47,8 @@
                 </div>
 
                 <div class="form-group{{ $errors->has('password_confirmation') ? ' has-error' : '' }}">
-                    <label class="col-md-4 control-label">Confirm Password</label>
-                    <div class="col-md-6">
+                    <label class="col-md-4 control-label">Confirm New Password</label>
+                    <div class="col-md-6 mb-2">
                         <input type="password" class="form-control" name="password_confirmation">
 
                         @if ($errors->has('password_confirmation'))

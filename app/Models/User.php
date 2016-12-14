@@ -159,6 +159,7 @@ class User extends Authenticatable //implements Authenticatable //, Contract, Ca
 
 
 
+
     /**
      * Boot the model.
      *
@@ -170,17 +171,6 @@ class User extends Authenticatable //implements Authenticatable //, Contract, Ca
         static::creating(function ($user) {
             $user->token = str_random(30);
         });
-    }
-
-
-    /**
-     * Set the password attribute.
-     *
-     * @param string $password
-     */
-    public function setPasswordAttribute($password)
-    {
-        $this->attributes['password'] = bcrypt($password);
     }
 
 
