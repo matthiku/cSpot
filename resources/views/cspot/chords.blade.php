@@ -30,10 +30,11 @@
 
             @if ( isset($onSongChords)  &&  $onSongChords->count() )
                 <div class="mb-3">
-                    <div class="text-onsong" id="onsongs">
+                    <div class="text-onsong" id="onsongs" style="column-count: 1;">
                         @foreach ( $onSongChords as $onsong )
                             @if ($onsong->song_part->code!='m')
-                                <h5 class="chords-header" id="song-part-{{ $onsong->song_part->code }}">{{ $onsong->song_part->name }}:</h5>
+                                <p class="chords-header pl-3 text-white {{ is_numeric($onsong->song_part->code) ? 'bg-success' : 'bg-info' }}" 
+                                      id="song-part-{{ $onsong->song_part->code }}">{{ $onsong->song_part->name }}:</p>
                             @endif
 
                             <div class="chords-part{{ $onsong->song_part->code!='m' ? ' show-onsong-text' : ' white-space-pre-wrap bigger red' }}">{{ $onsong->text }}</div>

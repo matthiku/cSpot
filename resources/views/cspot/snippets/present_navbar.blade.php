@@ -28,18 +28,28 @@ $modalContent = '
         </li>
     </ul>
 
+
+
+    {{-- show title and next title 
+    --}}
     <span class="nav navbar-nav center">
-        <small class="hidden-sm-down">{{$item->seq_no}} </small>
+
+        <small class="hidden-lg-down">{{$item->seq_no}} </small>
+
         @if ($item->song_id && $item->song->title)
-            <span class="hidden-xs-down">{{ $item->song->title }}</span>
+            <span class="hidden-sm-down">{{ $item->song->title }}</span>
         @else
-            {{ $item->comment }}
+            <span class="limited-width">{{ $item->comment }}</span>
         @endif
+
         @if ($item->id != $item->plan->lastItem()->id)
-            <small class="hidden-lg-up hidden-xs-down">(next: {{ substr(getItemTitle($item),0,15) }})</small>
-            <small class="hidden-md-down">(up next: {{ getItemTitle($item) }})</small>
+            <small class="hidden-lg-down">(next: {{ substr(getItemTitle($item),0,15) }})</small>
         @endif
+
     </span>
+
+
+
 
     <!-- 
         DropUP Menu "Go to..."
@@ -109,10 +119,10 @@ $modalContent = '
     <div class="btn-group float-xs-right mr-1">
         @if ($item->song_id && $item->song->ccli_no)
             <a href="{{ env('SONGSELECT_URL', 'https://songselect.ccli.com/Songs/').$item->song->ccli_no }}" 
-                target="new" class="float-xs-right btn btn-sm btn-info hidden-sm-down py-0">
+                target="new" class="float-xs-right btn btn-sm btn-info hidden-md-down py-0">
             <img src="{{ url('/') }}/images/songselectlogo.png" width="25"></a>
         @elseif ($item->song_id && $item->song->youtube_id)
-            <a class="float-xs-right btn btn-sm btn-info hidden-sm-down" target="new" 
+            <a class="float-xs-right btn btn-sm btn-info hidden-md-down" target="new" 
                 href="{{ env('YOUTUBE_PLAY', 'https://www.youtube.com/watch?v=').$item->song->youtube_id }}">
                 <i class="red fa fa-youtube-play fa-lg"></i>
             </a>
@@ -168,7 +178,7 @@ $modalContent = '
                 data-plan-id="{{$item->plan_id}}" data-item-id="after-{{$item->id}}" 
                  data-seq-no="after-{{ $item->seq_no }}"
                        title="Select new Song, Scripture or Comment">
-                <i class="fa fa-plus"></i> song etc.
+                <i class="fa fa-plus"></i> song<span class="hidden-lg-down"> etc.</span>
             </button>
         </div>
     @endif
@@ -194,24 +204,35 @@ $modalContent = '
                 <i class="fa fa-angle-double-left fa-lg"></i>
             </a> 
 
+            <!-- change number of columns for chords display -->
+            <span class="nav-item hidden-lg-down mr-0">Cols:</span>
+            <span class="hidden-md-down nav-item ml-0 btn btn-sm btn-info edit-show-buttons" >
+                <i class="fa fa-minus" onclick="setChordsColumns('decr');">&nbsp;</i>
+                    <span class="bg-inverse show-column-count">&nbsp;1&nbsp;</span>
+                <i class="fa fa-plus" onclick="setChordsColumns('incr');">&nbsp;</i>
+            </span>
+
+
             <!-- decrease font size -->
             <a href="#" onclick="changeFontSize(['.text-song', '.show-onsong-text'], 'decrease');" id="decr-font"
                     title="decrease font size" style="display: none" 
-                    class="hidden-sm-down nav-item btn btn-sm btn-info edit-show-buttons" role="button">
+                    class="hidden-md-down nav-item btn btn-sm btn-info edit-show-buttons" role="button">
                 A <i class="fa fa-minus"></i>
             </a>
+
             <!-- increase font size -->
             <a href="#" onclick="changeFontSize(['.text-song', '.show-onsong-text']);" id="incr-font"
                     title="increase font size" style="display: none" 
-                    class="hidden-sm-down nav-item btn btn-sm btn-info edit-show-buttons" role="button">
+                    class="hidden-md-down nav-item btn btn-sm btn-info edit-show-buttons" role="button">
                 A <i class="fa fa-plus"></i>
             </a>
+
             <!-- swap between chords and sheetmusic -->
             <a href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/go/swap/'.$type) }}" 
                     style="display: none" id="show-chords-or-music"
                     onclick="$('#show-spinner').modal({keyboard: false});" 
                     title="swap between chords and sheetmusic"
-                    class="hidden-sm-down nav-item btn btn-sm btn-warning edit-show-buttons" role="button">
+                    class="hidden-md-down nav-item btn btn-sm btn-warning edit-show-buttons" role="button">
                 <i class="fa fa-file-text"></i> <i class="fa fa-refresh fa-lg"></i> <i class="fa fa-music"></i>
             </a>
 
@@ -240,7 +261,7 @@ $modalContent = '
 
         <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
              id="presentConfigDropUpMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <span class="text-muted hidden-sm-down">Config </span><i class="fa fa-cog"></i>
+            <span class="text-muted hidden-md-down">Config </span><i class="fa fa-cog"></i>
         </button>
 
         <div class="dropdown-menu dropdown-menu-presentation" aria-labelledby="presentConfigDropUpMenu">
@@ -276,6 +297,8 @@ $modalContent = '
         </div>
     </div>
 
+
+
     <!-- 
         DropUP Menu "Show"
     -->
@@ -294,24 +317,44 @@ $modalContent = '
             @endforeach
             <a class="dropdown-item" href="#chorus" id="jump-chorus" style="display: none">Chorus</a>
             <a class="dropdown-item" href="#bridge" id="jump-bridge" style="display: none">Bridge</a>
-            <div class="hidden-md-up dropdown-divider"></div>                
-            <a class="dropdown-item hidden-md-up edit-show-buttons" 
+
+
+            <div class="hidden-lg-up dropdown-divider"></div>                
+
+            <!-- change number of columns for chords display -->
+            <span class="hidden-lg-up dropdown-item edit-show-buttons" >
+                <span>Cols:</span>
+                <i class="fa fa-minus" onclick="setChordsColumns('decr');">&nbsp;</i>
+                    <span class="bg-info show-column-count">&nbsp;1&nbsp;</span>
+                <i class="fa fa-plus" onclick="setChordsColumns('incr');">&nbsp;</i>
+            </span>
+
+
+            <div class="hidden-lg-up dropdown-divider"></div>                
+
+            <a class="dropdown-item hidden-lg-up edit-show-buttons" 
                     href="#" style="display: none"
                     onclick="decFontSize(['.text-song', '.show-onsong-text']);" >
                 A <i class="fa fa-minus"></i> decrease font
             </a>
-            <a class="dropdown-item hidden-md-up edit-show-buttons" 
+            <a class="dropdown-item hidden-lg-up edit-show-buttons" 
                     href="#" style="display: none"
                     onclick="incFontSize(['.text-song', '.show-onsong-text']);" >
                 A <i class="fa fa-plus"></i> increase font
             </a>
-            <a class="dropdown-item hidden-md-up edit-show-buttons" id="goswap-dropup"
+
+
+            <a class="dropdown-item hidden-lg-up edit-show-buttons" id="goswap-dropup"
                     href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/go/swap/'.$type) }}">
                 <i class="fa fa-file-text"></i> <i class="fa fa-refresh fa-lg"></i> <i class="fa fa-music"></i>
                 sheetmusic/chords
+            </a>
+
         </div>
 
     </div>
+
+
 
 
 </nav>
