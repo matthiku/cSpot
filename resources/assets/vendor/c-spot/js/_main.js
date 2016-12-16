@@ -953,38 +953,25 @@ function rewriteOnsong(element)
  */
 function splitOnSong(onsong)
 {
-    // 1. LYRICS
-
-    // Remove all OnSong code enclosed in square brackets [...]
-    // see http://www.regular-expressions.info/repeat.html
-    // an alternative would be: /\[.+?\]/gm
-    var lyrics = onsong.replace(/\[[^\]]+\]/gm,'');
-    // 2. Remove all excessive blanks 
-    lyrics = lyrics.replace(/\n\s+/g,"\n"); // remove blanks at the beginning of a newline
-    lyrics = lyrics.replace(/\s\s/g,' ');
-    var result = {};
-    result.lyrics = lyrics;
-
-
-    // 2. CHORDS
-
-    var del=0, start=false, end=true, chords='';
-    for (var char in onsong) {
-        if (end && onsong[char]==='[') {
-            start = true; end=false; del=0;
-        }
-        else if (start && onsong[char]===']') {
-            end = true; start = false;
-        }
-        else if (end) {
-            if (del<1 || lyrics.substr(char,1)=='') chords += ' ';
-            else del -= 1;
-        }
-        else if (start) {
-            chords += onsong[char];
-            del += 1;
+    var result = {}, lyrics='', chords='', spl, maxl=0, padd;
+    
+    var parts = onsong.split('[');
+    for (var i = 0; i < parts.length; i++) {
+        spl = parts[i].split(']');
+        // does this part contains chord and lyrics?
+        if (spl.length>1) {
+            maxl = Math.max(spl[0].length, spl[1].length);
+            if (spl[0].length >= spl[1].length) 
+                maxl+=1; // add an extra blank if chords are longer than lyrics
+            padd = ' '.repeat(maxl);
+            lyrics += (spl[1]+padd).substr(0,maxl);
+            chords += (spl[0]+padd).substr(0,maxl);
+        } else {
+            lyrics += spl[0];
+            chords += ' '.repeat(spl[0].length);
         }
     }
+    result.lyrics = lyrics;
     result.chords = chords;
 
     return result;

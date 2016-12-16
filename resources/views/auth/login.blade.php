@@ -35,7 +35,7 @@
                             Watch this short training video
                             <i class="fa fa-external-link small"></i><br> 
                         </a>
-                        <small>explains the sign-in process and the basics features of c-SPOT</small></span>
+                        <small>explaining the sign-in process and the basics features of c-SPOT</small></span>
                     </div>
 
                 </div>

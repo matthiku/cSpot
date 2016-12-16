@@ -58,7 +58,7 @@ $modalContent = '
 
         <button type="button" class="btn btn-sm btn-info dropdown-toggle" 
             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Go<span class="hidden-sm-down"> to</span>
+            Go<span class="hidden-lg-down"> to</span>
         </button>
         <div class="dropdown-menu dropdown-menu-right bg-faded">
             @foreach ($items as $menu_item)
@@ -205,10 +205,10 @@ $modalContent = '
             </a> 
 
             <!-- change number of columns for chords display -->
-            <span class="nav-item hidden-lg-down mr-0">Cols:</span>
-            <span class="hidden-md-down nav-item ml-0 btn btn-sm btn-info edit-show-buttons" >
+            <span class="nav-item hidden-lg-down mr-0 edit-show-buttons" style="display: none">Cols:</span>
+            <span class="hidden-md-down nav-item ml-0 btn btn-sm btn-info edit-show-buttons" style="display: none">
                 <i class="fa fa-minus" onclick="setChordsColumns('decr');">&nbsp;</i>
-                    <span class="bg-inverse show-column-count">&nbsp;1&nbsp;</span>
+                    <span class="bg-inverse show-column-count">&#9783;1&nbsp;</span>
                 <i class="fa fa-plus" onclick="setChordsColumns('incr');">&nbsp;</i>
             </span>
 
@@ -223,7 +223,7 @@ $modalContent = '
             <!-- increase font size -->
             <a href="#" onclick="changeFontSize(['.text-song', '.show-onsong-text']);" id="incr-font"
                     title="increase font size" style="display: none" 
-                    class="hidden-md-down nav-item btn btn-sm btn-info edit-show-buttons" role="button">
+                    class="hidden-md-down nav-item ml-0 btn btn-sm btn-info edit-show-buttons" role="button">
                 A <i class="fa fa-plus"></i>
             </a>
 
@@ -261,7 +261,7 @@ $modalContent = '
 
         <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
              id="presentConfigDropUpMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <span class="text-muted hidden-md-down">Config </span><i class="fa fa-cog"></i>
+            <span class="text-muted hidden-md-down">Conf.&nbsp;</span><i class="fa fa-cog"></i>
         </button>
 
         <div class="dropdown-menu dropdown-menu-presentation" aria-labelledby="presentConfigDropUpMenu">

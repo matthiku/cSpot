@@ -8,6 +8,16 @@
  */
 
 
+/* in multi-column mode, keep some elements always together */
+.keeptogether {
+    -webkit-column-break-inside:avoid;
+    -moz-column-break-inside:avoid;
+    -o-column-break-inside:avoid;
+    -ms-column-break-inside:avoid;
+    column-break-inside:avoid;
+}
+
+
 /* default font size to show time-of-day on the presentation */
 .show-time-of-day {
     font-size: larger;

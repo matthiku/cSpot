@@ -1960,17 +1960,20 @@ function changeFontSize(selectorList, how) {
  * Set Column Count for chords display
  */
 function setChordsColumns(how) {
-    var curr_count = 1*$('#onsongs').css('column-count');
+
     var new_count;
-    if (how=='incr')
-        new_count = ++curr_count;
-    if (how=='decr' && curr_count>1)
-        new_count = --curr_count;
+    var curr_count = 1*$('#onsongs').css('column-count');
+
+    if (how=='incr' && curr_count<4) new_count = ++curr_count;
+    if (how=='decr' && curr_count>1) new_count = --curr_count;
     if (!new_count) return;
+
     ;;;console.log('changing column count to ' + new_count);
     $('#onsongs').css('column-count', new_count );
-    // show the current column count
-    $('.show-column-count').html('&nbsp;'+new_count+'&nbsp;');
+
+    // show the current column count in the GUI
+    curr_count = 1*$('#onsongs').css('column-count');
+    $('.show-column-count').html('&#9783;'+curr_count+'&nbsp;');
 }
 
 

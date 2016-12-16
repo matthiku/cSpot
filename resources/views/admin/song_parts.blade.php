@@ -18,14 +18,14 @@
 
 
 			@if( Auth::user()->isEditor() )
-				<a class="btn btn-outline-primary float-xs-right" href='{{ url('admin/song_parts/create') }}'>
+				<a class="btn btn-sm btn-outline-primary float-xs-right" href='{{ url('admin/song_parts/create') }}'>
 					<i class="fa fa-plus"> </i>
-					<span class="hidden-sm-down"> &nbsp; Add a new Song Part</span>
+					<span class="hidden-sm-down"> &nbsp; Add New OnSong Part</span>
 					<span class="hidden-md-up">Add New</span>
 				</a>
 			@endif
 
-		    <h3 class="lora">
+		    <h4 class="lora">
 		    	{{ $heading }}
 		    	<small class="text-muted">
 		    		<a tabindex="0" href="#"
@@ -33,9 +33,12 @@
 		    			data-content="Song Parts divide the lyrics of a song into various parts like verses and chorus.">
 		    			<i class="fa fa-question-circle"></i></a>
 				</small>
-			</h3>
+			</h4>
 
-			<small>see also <a href="http://www.onsongapp.com/docs/features/formats/onsong/">the OnSong File Format manual</a></small>
+			<small class="l-h-1">
+				When adding lyrics and chords to a song in OnSong format, the individual song parts must be chosen according to this list.
+				For more information, see <a href="http://www.onsongapp.com/docs/features/formats/onsong/">the OnSong File Format manual</a>
+			</small>
 
 			@if (count($song_parts))
 
@@ -49,14 +52,14 @@
 							<th>SeqNo</th>
 							<th>Name</th>
 							<th>Code</th>
-							<th>Action
+							<th>Edit
 								<div class="float-xs-right small">Songs</div>
 							</th>
 						</tr>
 					</thead>
 					<tbody>
 			        @foreach( $song_parts as $song_part )
-						<tr class="link" onclick="location.href='{{ url('/admin/song_parts/' . $song_part->id) }}/edit'">
+						<tr>
 							<th scope="row">{{ $song_part->sequence }}</th>
 							<td>{{ ucfirst($song_part->name) }}</td>
 							<td>{{ $song_part->code }}</td>
@@ -67,7 +70,10 @@
 										<a class="btn btn-danger btn-sm" title="Delete!" href='{{ url('admin/song_parts/'.$song_part->id) }}/delete'><i class="fa fa-trash"></i></a>
 									@endif
 								@endif
-								<div class="float-xs-right small">{{ $song_part->onsongs->count() }}</div>
+								{{-- show amount of songs using that song part type and a link to all these songs --}}
+								<div class="float-xs-right link small" 
+									onclick="location.href='{{ route('songs.index') }}?filterby=onsong&filtervalue={{ $song_part->code }}'">{{ 
+										$song_part->onsongs->count() }}</div>
 							</td>
 						</tr>
 			        @endforeach

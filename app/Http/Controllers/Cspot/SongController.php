@@ -59,9 +59,12 @@ class SongController extends Controller
         $orderBy = isset($request->orderby) ? $request->orderby : 'title';
         $order   = isset($request->order)   ? $request->order   : 'ASC';
 
-        // with filtering?
+        $heading = 'Songs Repository';
+
+        // do we need to filter the ilst of songs?
         if (isset($request->filterby) && $request->filterby!='songs' && isset($request->filtervalue)) {
-            // we need to set the Pagination currentPage to 0,
+
+            // first, we need to set the Pagination currentPage to 0,
             // otherwise we would not see the search results
             if (isset($request->page)) {
                 $currentPage = 0;
@@ -72,6 +75,7 @@ class SongController extends Controller
             }
 
             if ($request->filterby=='fulltext') {
+                $heading = 'Songs containing "'.$request->filtervalue.'"';
                 $songs = Song::withCount('items')
                     ->orderBy($orderBy, $order)
                     ->where(  'title',    'like', '%'.$request->filtervalue.'%')
@@ -81,6 +85,7 @@ class SongController extends Controller
                     ->orWhere('lyrics',   'like', '%'.$request->filtervalue.'%');
             } 
             elseif ($request->filterby=='title') {
+                $heading = 'Song title like "'.$request->filtervalue.'"';
                 $songs = Song::withCount('items')
                     ->orderBy($orderBy, $order)
                     ->where(  'title',    'like', '%'.$request->filtervalue.'%')
@@ -93,6 +98,7 @@ class SongController extends Controller
                     ->orWhere($request->filterby, '');
             }
             else {
+                $heading = ucfirst($request->filterby).' like "'.$request->filtervalue.'"';
                 $songs = Song::withCount('items')
                     ->orderBy($orderBy, $order)
                     ->where(  $request->filterby, 'like', '%'.$request->filtervalue.'%');
@@ -101,31 +107,47 @@ class SongController extends Controller
 
         // no filter requested - show JUST the songs
         else {
-            // (the where clause is needed since the 'withCount' would bring in all items with song_id = 0)
+            if ($request->orderby == 'items_count' )
+                $heading = "Songs ordered by Usage Count";
+
             $songs = Song::withCount('items')
                 ->whereNotIn('title_2', ['video', 'slides', 'training'])
                 ->orderBy($orderBy, $order);
         }
 
-        // if orderBy is 'book_ref', then exclude all songs without a book_ref!
-        if ($request->orderby == 'book_ref')
-            $songs = $songs->where('book_ref', '<>', '');
-        if ($request->orderby == 'author')
-            $songs = $songs->where('author', '<>', '');
+        // if orderBy is not title (the default), then exclude all songs without a that field!
+        if ( isset($request->orderby)  &&  $request->orderby != 'title'  &&  $request->orderby != 'items_count') {
+            $heading = "Songs ordered by ".ucfirst($request->orderby);
+            $songs = $songs->where($request->orderby, '<>', '');
+        }
 
-        // special case for OrderBy Last Time Used (in a plan!)
+
+        // special case for filterby OnSong part name
+        if ($request->filterby == 'onsong') {
+            $heading = "Songs containing certain OnSong parts";
+            // get code id for the requested code 
+            $code = SongPart::where('code', $request->filtervalue)->first();
+            if ($code)
+                $songs = Song::withCount('items')
+                    ->leftJoin('on_songs', 'on_songs.song_id', '=', 'songs.id')
+                    ->selectRaw('songs.*')
+                    ->where('on_songs.song_part_id', $code->id);
+        }
+
+
+        // special case for OrderBy Last-Time-Used (in a plan!)
         if ($request->orderby == 'last_used') {
+            $heading = "Songs ordered by the last time used";
             $songs = Song::withCount('items')
                 ->leftJoin('items', 'items.song_id', '=', 'songs.id')
                 ->leftJoin('plans', 'plans.id', '=', 'items.plan_id')
                 ->groupBy('songs.id')
                 ->selectRaw('songs.*, max(plans.date) as last_used')
-                ->orderBy('last_used', $order);
+                ->where('plans.date', '<>', null)
+                ->orderBy('last_used', $order); 
         }
 
 
-
-        $heading = 'Songs Repository';
 
         if ( isset($request->filterby) && $request->filtervalue=='video' ) 
             $heading = 'Manage Videoclips';
@@ -149,7 +171,7 @@ class SongController extends Controller
         $plan_id = 0;
         if ($request->has('plan_id')) {
             $plan_id = $request->plan_id;
-            $heading = 'Select A Song For Your Plan';
+            $heading = 'Search for a Song for your Plan';
         }
         // for pagination, always append the original query string
         $songs = $songs->paginate(20)->appends($querystringArray);
@@ -161,6 +183,8 @@ class SongController extends Controller
             'currentPage' => $songs->currentPage(),
         ));
     }
+
+
 
 
     /**
@@ -179,6 +203,7 @@ class SongController extends Controller
             'heading'     => $heading,
         ));
     }
+
 
 
 

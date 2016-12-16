@@ -495,7 +495,7 @@
                         @endif
                     </p>
                     <p class="small"><strong>NOTE: </strong>If there are also <strong>lyrics</strong> defined in the <em>OnSong</em> tab, 
-                        the lyrics here will <strong>not be used</strong>! However, the sequence will be used still.</p>
+                        the lyrics here will <strong>not be used</strong></p>
                 @endif
 
                 @if ($item->itemType()=='video')
