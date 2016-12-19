@@ -345,7 +345,7 @@
 
             <div class="row form-group mt-1 bg-muted">
                 <div class="col-sm-4 col-md-3 col-lg-2 col-xl-4 text-sm-right l-h-1">
-                    {!! Form::label('file', 'Attach an image'); !!}
+                    {!! Form::label('file', 'Attach Sheet Music'); !!}
                     <br>
                     <small>(Maximum file size: <?php echo ini_get("upload_max_filesize"); ?>)</small>
                 </div>
@@ -353,7 +353,7 @@
                     {!! Form::file('file'); !!}
                     <!-- file category will be '1' (songs) -->
                     {!! Form::hidden('file_category_id','1') !!}
-                    <br><small>(<strong>Note: </strong>Image name will be book ref. + title)</small>
+                    <br><small>(<strong>Note: </strong>File name will be book ref. + title)</small>
                 </div>
             </div>
             @if ( isset($song) && $song->files)
@@ -402,21 +402,15 @@
                         </a>
 
                         @if ( !isset($song) || (isset($song) && $song->title_2!='slides') )
-                            <a
-                                tabindex="0" href="#" data-container="body" data-toggle="tooltip"
+                            <a  tabindex="0" href="#" data-container="body" data-toggle="tooltip"
                                 data-template='<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><pre class="tooltip-inner tooltip-wide"></pre></div>'
-                                @if ( !isset($song)  ||  (isset($song) && !$song->onsongs->count())  )
-                                    title="{{ isset($song) ? "(Click 'Lyrics' to open!)\n" : ''}}{{ 
-                                            "Song parts indicators must be enclosed with [],\nlike [1] for verse 1 or [chorus] for a chorus.\n\nBlank lines force a new slide\nwhen the song is presented.\n\nDon't fill that in if you plan to use the OnSong format!" }}"
-                                @else 
-                                    title="{{ "The Lyrics element is inaktiv as this song\nhas the lyrics in the OnSong-format.\n\nCheck the OnSong element." }}"
-                                @endif >
-                                <i class="fa fa-info-circle ml-2"></i></a>
+                                title="{{ "Song parts indicators must be enclosed with [],\nlike [1] for verse 1 or [chorus] for a chorus.\n\nBlank lines force a new slide\nwhen the song is presented.\n\nDon't fill that in if you plan to use the OnSong\nformat as lyrics will be taken from the OnSong data!" }}"
+                                <i class="fa fa-info-circle ml-2"></i>
                             </a>
                         @endif
                     </h4>
                 </div>
-                @if ( !isset($song)  ||  (isset($song) && !$song->onsongs->count())  ||  (isset($song) && $song->title_2=='slides')   )
+                @if ( !isset($song)  ||  (isset($song) && $song->title_2!='video')   )
                     <div id="collapseLyrics" class="panel-collapse collapse{{ ( !isset($song) || (isset($song) && $song->title_2=='slides') ) ? ' in' : '' }}" 
                             role="tabpanel" aria-labelledby="lyrics-panel">
 
@@ -451,7 +445,7 @@
                             data-template='<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><pre class="tooltip-inner tooltip-wide"></pre></div>'
                             title='{{ isset($song) ? "(Click on title 'Chords' to open!)\n" : '' }}{{ 
                                     "Song parts indicators must be on separate\nlines and end with a colon (:).\nBlank lines will be ignored.\n\nPut instructions on separate lines and\nenclose them in brackets,\nlike '(repeat chorus!)'\n\nDon't fill that in if you plan to use the OnSong format!" }}'>
-                        <i class="fa fa-info-circle ml-2"></i></a>
+                        <i class="fa fa-info-circle ml-2"></i>
                     </a>
                   </h4>
                 </div>
@@ -491,7 +485,7 @@
                                 data-template='<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><pre class="tooltip-inner tooltip-wide"></pre></div>'
                                 title='{{ isset($song) ? "(Click on title 'OnSong' to open!)\n\n" : '' }}{{
                                          "Lyrics and Chords combined, in OnSong-compatible format." }}'>
-                            <i class="fa fa-info-circle ml-2"></i></a>
+                            <i class="fa fa-info-circle ml-2"></i>
                         </a>
                       </h4>
                     </div>

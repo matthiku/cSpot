@@ -43218,6 +43218,7 @@ function editOnSongText(that)
     $(row).children('.cell-part-action').children('.for-new-items').show(); 
 
     $(row).addClass('table-warning');
+    $(row).children('.cell-part-text').children('textarea').focus();
 }
 
 function deleteOnSongText(that)

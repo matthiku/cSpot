@@ -80,12 +80,15 @@ class Song extends Model
         $lyrics = '';
 
         // add each onsong part but prepend it with it's part code as a header
-        foreach ($this->onsongs as $onsong) {
+        foreach ($this->onsongs as $key => $onsong) {
             // ignore parts containing music instructions (like 'Capo')
             if ( $onsong->song_part->code != 'm'  &&  $onsong->song_part->code != 'i' ) {
                 $lyrics .= '[' . $onsong->song_part->code . "]\n";
                 // remove OnSong codes enclosed in square brackets
-                $lyrics .= preg_replace("/\[[^\]]+\]/m", '', $onsong->text) . "\n";
+                $lyrics .= preg_replace("/\[[^\]]+\]/m", '', $onsong->text);
+                // avoid newline at the end of the complete lyrics
+                if ($key < $this->onsongs->count()-1)
+                    $lyrics .= "\n";
             }
         }
 

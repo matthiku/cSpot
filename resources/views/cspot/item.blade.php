@@ -192,16 +192,20 @@
             </a></li>
 
             @if ( $item->song_id )
+                @if ($item->itemType()=='song' && $item->song->onsongs->count()===0)
                 <li><a href="#lyrics-tab">{{ $item->itemType()=='song' ? 'Lyrics' : ucfirst($item->itemType()).'(s)' }}
                     <small class="text-muted">{!! $item->song->lyrics ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>' !!}</small>
                 </a></li>
+                @endif
                 @if ( $item->itemType()=='song')
                     <li><a href="#onsong-tab">OnSong
                         <small class="text-muted">{!! $item->song->onsongs->count() ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>' !!}</small>
                     </a></li>
-                    <li><a href="#chords-tab">Chords
-                        <small class="text-muted">{!! $item->song->chords ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>' !!}</small>
-                    </a></li>
+                    @if ($item->song->onsongs->count()===0)
+                        <li><a href="#chords-tab">Chords
+                            <small class="text-muted">{!! $item->song->chords ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>' !!}</small>
+                        </a></li>
+                    @endif
                     <li><a href="#sheet-tab"><span class="hidden-md-down">Sheet </span> Music
                         <small class="text-muted">{!! $item->song->files->count() ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>' !!}</small>
                     </a></li>
@@ -485,44 +489,47 @@
 
         @if ( $item->song_id )
 
-            <div id="lyrics-tab">
+            @if ($item->itemType()=='song' && $item->song->onsongs->count()===0)
+                <div id="lyrics-tab">
 
-                @if ($item->itemType()=='song')
-                    <p class="text-info">
-                        ({{ $item->song->sequence ? 'Sequence: '.$item->song->sequence : 'No sequence predefined' }})
-                        @if (Auth::user()->isEditor())
-                            <small>(Edit the Sequence in the OnSong tab)</small>
-                        @endif
-                    </p>
-                    <p class="small"><strong>NOTE: </strong>If there are also <strong>lyrics</strong> defined in the <em>OnSong</em> tab, 
-                        the lyrics here will <strong>not be used</strong></p>
-                @endif
+                    @if ($item->itemType()=='song')
+                        <p class="text-info">
+                            ({{ $item->song->sequence ? 'Sequence: '.$item->song->sequence : 'No sequence predefined' }})
+                            @if (Auth::user()->isEditor())
+                                <small>(Edit the Sequence in the OnSong tab)</small>
+                            @endif
+                        </p>
+                        <p class="small"><strong>NOTE: </strong>If there are also <strong>lyrics</strong> defined in the <em>OnSong</em> tab, 
+                            the lyrics here will <strong>not be used</strong></p>
+                    @endif
 
-                @if ($item->itemType()=='video')
-                    <small>(possible time parameter was ignored!)</small>
-                    <br>
-                    <iframe width="560" height="315" 
-                        src="https://www.youtube.com/embed/{{ strpos($item->song->youtube_id,'&')!= false ? explode('&', $item->song->youtube_id)[0] : $item->song->youtube_id }}" 
-                        frameborder="0" allowfullscreen>                                    
-                    </iframe>
-                @endif
+                    @if ($item->itemType()=='video')
+                        <small>(possible time parameter was ignored!)</small>
+                        <br>
+                        <iframe width="560" height="315" 
+                            src="https://www.youtube.com/embed/{{ strpos($item->song->youtube_id,'&')!= false ? explode('&', $item->song->youtube_id)[0] : $item->song->youtube_id }}" 
+                            frameborder="0" allowfullscreen>                                    
+                        </iframe>
+                    @endif
 
-                <pre id="lyrics-song-id-{{ $item->song->id }}" {{ (Auth::user()->isEditor()) ? 'class=edit_area' : '' }}>{{ $item->song->lyrics }}</pre>
+                    <pre id="lyrics-song-id-{{ $item->song->id }}" {{ (Auth::user()->isEditor()) ? 'class=edit_area' : '' }}>{{ $item->song->lyrics }}</pre>
 
-                <small class="text-muted">(click to edit!)</small>
-            </div>
-
+                    <small class="text-muted">(click to edit!)</small>
+                </div>
+            @endif
 
 
             @if ( $item->itemType()=='song')
 
-                <div id="chords-tab">
-                    <pre id="chords-song-id-{{ $item->song->id }}" class="{{ (Auth::user()->isEditor()) ? 'edit_area' : '' }} show-chords">{{ $item->song->chords }}</pre>
-                    <span class="btn btn-sm btn-outline-primary" 
-                        onclick="$('#show-chords-as-onsong').text(joinLyricsAndChordsToOnSong($('#chords-song-id-{{ $item->song->id }}').text()));$(this).hide();">
-                        show OnSong-encoded copy</span>
-                    <pre id="show-chords-as-onsong"></pre>
-                </div>
+                @if ($item->song->onsongs->count()===0)
+                    <div id="chords-tab">
+                        <pre id="chords-song-id-{{ $item->song->id }}" class="{{ (Auth::user()->isEditor()) ? 'edit_area' : '' }} show-chords">{{ $item->song->chords }}</pre>
+                        <span class="btn btn-sm btn-outline-primary" 
+                            onclick="$('#show-chords-as-onsong').text(joinLyricsAndChordsToOnSong($('#chords-song-id-{{ $item->song->id }}').text()));$(this).hide();">
+                            show OnSong-encoded copy</span>
+                        <pre id="show-chords-as-onsong"></pre>
+                    </div>
+                @endif
 
                 <div id="onsong-tab">
                     <p class="small">Note: Blank lines will force a new slide in lyrics presentations but will be ignored when showing the chords.</p>

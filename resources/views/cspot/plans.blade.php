@@ -155,13 +155,17 @@
 
 					<td {!! $editPlansHtml !!} class="link hidden-lg-down center" scope="row">{{ $plan->id }}</td>
 
+
 					<td {!! $editPlansHtml !!} class="link hidden-lg-down">{{ $plan->date->formatLocalized('%A, %d %B %Y') }}</td>
 					<td {!! $editPlansHtml !!} class="link hidden-sm-down hidden-xl-up">{{ $plan->date->formatLocalized('%a, %d %B %Y') }}</td>
 					<td {!! $editPlansHtml !!} class="link hidden-md-up">{{ $plan->date->formatLocalized('%a, %d %b') }}</td>
 
-					<td {!! $editPlansHtml !!} class="link">{{ $plan->type->name }}<span class="hidden-md-up small text-muted">{!! $plan->subtitle ? ' '.$plan->subtitle : '' !!}</span></td>
 
-					<td {!! $editPlansHtml !!} class="link hidden-lg-down center">{{ $plan->subtitle }}</td>
+					<td {!! $editPlansHtml !!} class="link">{{ $plan->type->generic ? $plan->subtitle : $plan->type->name 
+						}}<span class="hidden-md-up small text-muted">{!! (! $plan->subtitle || $plan->type->generic) ? ''  : ' '.$plan->subtitle !!}</span></td>
+
+					<td {!! $editPlansHtml !!} class="link hidden-lg-down center">{{ $plan->type->generic ? '' : $plan->subtitle }}</td>
+
 
 					<td {!! $editPlansHtml !!} class="link hidden-lg-down center" scope="row">
 						@if ($plan->date->hour==0 && $plan->date->minute==0 && ! $plan->date_end )
@@ -170,6 +174,7 @@
 							{{ $plan->date->formatLocalized('%H:%M') }}{{ $plan->date_end ? '-'.$plan->date_end->formatLocalized('%H:%M') : ''}}
 						@endif
 					</td>
+
 
 					@if( Auth::user()->isUser())
 						<td class="hidden-lg-down center">
@@ -199,6 +204,7 @@
 							@endif
 						</td>
 					@endif
+
 
 					<td class="hidden-lg-down center">
 						<a class="float-xs-right" title="show team for this plan" href="{{ url('cspot/plans/'.$plan->id) }}/team"><small>(show)</small></a>
