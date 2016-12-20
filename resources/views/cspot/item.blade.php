@@ -487,40 +487,57 @@
 
 
 
+
         @if ( $item->song_id )
 
-            @if ($item->itemType()=='song' && $item->song->onsongs->count()===0)
-                <div id="lyrics-tab">
 
-                    @if ($item->itemType()=='song')
-                        <p class="text-info">
-                            ({{ $item->song->sequence ? 'Sequence: '.$item->song->sequence : 'No sequence predefined' }})
-                            @if (Auth::user()->isEditor())
-                                <small>(Edit the Sequence in the OnSong tab)</small>
-                            @endif
-                        </p>
-                        <p class="small"><strong>NOTE: </strong>If there are also <strong>lyrics</strong> defined in the <em>OnSong</em> tab, 
-                            the lyrics here will <strong>not be used</strong></p>
-                    @endif
+            <div id="lyrics-tab">
 
-                    @if ($item->itemType()=='video')
-                        <small>(possible time parameter was ignored!)</small>
-                        <br>
-                        <iframe width="560" height="315" 
-                            src="https://www.youtube.com/embed/{{ strpos($item->song->youtube_id,'&')!= false ? explode('&', $item->song->youtube_id)[0] : $item->song->youtube_id }}" 
-                            frameborder="0" allowfullscreen>                                    
-                        </iframe>
-                    @endif
+
+                {{-- LYRICS content 
+                     (only show when there is no OnSong content!)
+                --}}
+                @if ($item->itemType()=='song' && $item->song->onsongs->count()===0)
+                    <p class="text-info">
+                        ({{ $item->song->sequence ? 'Sequence: '.$item->song->sequence : 'No sequence predefined' }})
+                        @if (Auth::user()->isEditor())
+                            <small>(Edit the Sequence in the OnSong tab)</small>
+                        @endif
+                    </p>
+                    <p class="small"><strong>NOTE: </strong>If there are also <strong>lyrics</strong> defined in the <em>OnSong</em> tab, 
+                        the lyrics here will <strong>not be used!</strong></p>
 
                     <pre id="lyrics-song-id-{{ $item->song->id }}" {{ (Auth::user()->isEditor()) ? 'class=edit_area' : '' }}>{{ $item->song->lyrics }}</pre>
 
                     <small class="text-muted">(click to edit!)</small>
-                </div>
-            @endif
+                @endif
+
+
+
+                @if ($item->itemType()=='video')
+
+                    <small>(possible time parameter was ignored!)</small>
+                    <br>
+                    <iframe width="560" height="315" 
+                        src="https://www.youtube.com/embed/{{ strpos($item->song->youtube_id,'&')!= false ? explode('&', $item->song->youtube_id)[0] : $item->song->youtube_id }}" 
+                        frameborder="0" allowfullscreen>                                    
+                    </iframe>
+                @endif
+
+
+            </div>
+
+
+
 
 
             @if ( $item->itemType()=='song')
 
+
+
+                {{-- CHORDS content 
+                     (only show when there is no OnSong content!)
+                --}}
                 @if ($item->song->onsongs->count()===0)
                     <div id="chords-tab">
                         <pre id="chords-song-id-{{ $item->song->id }}" class="{{ (Auth::user()->isEditor()) ? 'edit_area' : '' }} show-chords">{{ $item->song->chords }}</pre>
@@ -531,14 +548,19 @@
                     </div>
                 @endif
 
+
+
+                {{-- OnSong content 
+                --}}
                 <div id="onsong-tab">
-                    <p class="small">Note: Blank lines will force a new slide in lyrics presentations but will be ignored when showing the chords.</p>
                     <p class="text-info">
                         @if (Auth::user()->isEditor())
-                            Sequence:
-                            <span id="sequence-song-id-{{ $item->song->id }}" class="editable-song-field">{{ $item->song->sequence }}</span>
-                            <i class="fa fa-pencil text-muted"> </i>
-                            <br><small class="text-muted">The sequence can only contain code as listed in the table below.</small>
+                            <label class="mb-0">Sequence:
+                                <span id="sequence-song-id-{{ $item->song->id }}" onclick="$('.show-input-hint').show();" 
+                                    class="editable-song-field">{{ $item->song->sequence }}</span>
+                                <i class="fa fa-pencil text-muted"> </i>
+                            </label>
+                            <br><small class="text-primary show-input-hint" style="display: none;">The sequence can only contain code as listed in the table below!!</small>
                         @else
                             ({{ $item->song->sequence ? 'Sequence: '.$item->song->sequence : 'No sequence predefined' }})
                         @endif
@@ -547,10 +569,15 @@
                         $song = $item->song;
                         $songParts = App\Models\SongPart::orderby('sequence')->get();
                     @endphp
+
                     @include('cspot.snippets.onsong')
+
                 </div>
                 
 
+
+                {{-- Sheetmusic content 
+                --}}
                 <div id="sheet-tab">
                     @foreach ($item->song->files as $file)
                         @if ($item->song->license=='PD' || Auth::user()->isMusician() )
@@ -568,9 +595,14 @@
 
 
 
+
+
     </div>
 
-    {{-- activate the tabs --}}
+
+
+    {{-- activate the tabs 
+    --}}
     <script>
 
         cSpot.item = {!! json_encode($item, JSON_HEX_APOS | JSON_HEX_QUOT ) !!};

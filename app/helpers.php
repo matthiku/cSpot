@@ -1099,6 +1099,20 @@ function sendEmailNotification(Message $message)
 
 
 /**
+ * Create list of Song Parts indexed by their codes
+ */
+function getSongPartsByCode()
+{
+    $parts = SongPart::get();
+    $songparts = [];
+    foreach ($parts as $part) {
+        $songparts[$part->code] = $part;
+    }
+    return $songparts;
+}
+
+
+/**
  * Create full chords for songs with a sequence and corresponding OnSong elements
  */
 function getOnSongChords($song)

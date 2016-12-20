@@ -1,8 +1,13 @@
 
+<span class="small show-onsong-format-hint" style="display: none;">
+	<strong>Note:</strong> Blank lines will force a new slide in lyrics presentations but will be ignored when showing the chords.
+</span>
+
+
 <table class="table table-striped table-bordered table-sm" id="onsong-parts" 
 		data-song-id="{{ isset($song) ? $song->id : '0' }}" data-update-onsong-url="{{ route('updateonsongparts') }}">
 
-	<thead>
+	<thead style="display: none;">
 		<tr>
 			<th class="text-xs-center" style="width: 80px;">Part</th>
 			<th class="text-xs-center small hidden-xs-down" style="width: 40px;">Code</th>
@@ -32,7 +37,7 @@
 				<tr id="tbl-row-{{ $onsong->id }}" {{ $onsong->song_part->code=='m' ? 'class=onsong-meta-data' : '' }}
 					data-onsong-id="{{ $onsong->id }}" data-part-id="{{ $onsong->song_part_id }}">
 
-					<th class="text-xs-center">{{ $onsong->song_part->code!='m' ? $onsong->song_part->name : '(Notes)' }}</th>
+					<th class="text-xs-center">{{ $onsong->song_part->code!='m' ? $onsong->song_part->name : 'Notes' }}</th>
 					
 					<th class="text-xs-center hidden-xs-down">{{ $onsong->song_part->code!='m' ?$onsong->song_part->code : '' }}</th>
 
@@ -44,10 +49,10 @@
 					</td>
 
 					<td class="cell-part-action big">
-						<a href="javascript:void(0);" class="for-existing-items" onclick="editOnSongText(this);" title="edit"><i class="fa fa-edit"></i></a>
-						<a href="javascript:void(0);" class="for-existing-items float-xs-right" onclick="deleteOnSongText(this);" title="delete"><i class="fa fa-trash"></i></a>
-						<a href="javascript:void(0);" class="for-new-items" onclick="saveNewOnSongText(this);" style="display: none;" title="save" tabindex=2>&#128427;</a>
-						<a href="javascript:void(0);" class="for-new-items float-xs-right" onclick="removeNewOnSongRow(this);" style="display: none;" title="cancel" tabindex=3>&#10007;</a>
+						<a href="javascript:void(0);" onclick="editOnSongText(this);"  title="edit"   class="for-existing-items"><i class="fa fa-edit"></i></a>
+						<a href="javascript:void(0);" onclick="deleteOnSongText(this);" title="delete" class="for-existing-items float-xs-right"><i class="fa fa-trash"></i></a>
+						<a href="javascript:void(0);" onclick="saveNewOnSongText(this);" style="display: none;" title="save"   tabindex=2 class="for-new-items">&#128427;</a>
+						<a href="javascript:void(0);" onclick="removeNewOnSongRow(this);" style="display: none;" title="cancel" tabindex=3 class="for-new-items float-xs-right">&#10007;</a>
 					</td>
 
 				</tr>
@@ -85,10 +90,10 @@
 			</td>
 
 			<td class="cell-part-action big">
-				<a href="javascript:void(0);" class="for-existing-items" onclick="editOnSongText(this);"   style="display: none;" title="edit"><i class="fa fa-edit"></i></a>
-				<a href="javascript:void(0);" class="for-existing-items float-xs-right" onclick="deleteOnSongText(this);" style="display: none;" title="delete"><i class="fa fa-trash"></i></a>
-				<a href="javascript:void(0);" class="for-new-items" onclick="saveNewOnSongText(this);"  title="save" tabindex=3>&#128427;</a>
-				<a href="javascript:void(0);" class="for-new-items float-xs-right newrow-cancel-button" onclick="removeNewOnSongRow(this);" title="cancel" tabindex=4>&#10007;</a>
+				<a href="javascript:void(0);" onclick="editOnSongText(this);"  style="display: none;" title="edit"   class="for-existing-items"><i class="fa fa-edit"></i></a>
+				<a href="javascript:void(0);" onclick="deleteOnSongText(this);" style="display: none;" title="delete" class="for-existing-items float-xs-right"><i class="fa fa-trash"></i></a>
+				<a href="javascript:void(0);" onclick="saveNewOnSongText(this);" title="save" tabindex=3 class="for-new-items">&#128427;</a>
+				<a href="javascript:void(0);" onclick="removeNewOnSongRow(this);" title="cancel" tabindex=4 class="for-new-items float-xs-right newrow-cancel-button">&#10007;</a>
 			</td>
 		</tr>
 

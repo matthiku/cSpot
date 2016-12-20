@@ -79,8 +79,9 @@ function insertNewOnSongRow()
     $('#new-onsong-row').addClass('table-success');
     // set the focus on the part-type selection
     $('#new-onsong-row').children('.cell-part-name').children('select').focus();
-    // select 'Verse 1'?
-    $('#new-onsong-row').children('.cell-part-name').children('select').val('1');
+
+    // pre-select next possible OnSong part
+    $('#new-onsong-row').children('.cell-part-name').children('select').val( findNextPossibleOnSongPart() );
 
     // restore the old, empty, hidden row
     $('#new-onsong-row').removeAttr('id');
@@ -89,6 +90,36 @@ function insertNewOnSongRow()
 
 }
 
+function findNextPossibleOnSongPart() {
+
+    // get the exising onsong parts, then guess the next one
+    if (cSpot.item.song.onsongs) {
+        var max = 0, guess;
+        cSpot.item.song.onsongs.forEach( function(elem) {
+            var code = elem.song_part.code;
+            if ( !isNaN(code))
+                max = Math.max(max,code);
+            if (code=='c') 
+                guess = 'c';
+        });
+        // we already have a chorus
+        if (guess=='c') max = Math.max(max,1);
+
+        // we have verse 1 but no chorus yet
+        if (max==1 && guess===undefined)
+            guess='c';
+        else 
+            guess = 1*1+max;
+
+        ;;;console.log('guessing next song part as '+guess);
+        return cSpot.song_parts_by_code[guess].id;
+    } 
+    // or use the sequence for guessing the next one
+    else if (cSpot.item.song.sequence) {
+        return 1;
+    }
+    return 1;
+}
 
 function removeNewOnSongRow(that)
 {
@@ -110,6 +141,7 @@ function removeNewOnSongRow(that)
     // reinstate row layout for existing rows
     // input area
     $(row).children('.cell-part-text').children('.show-onsong-text').show();
+    $(row).children('.cell-part-text').children('.write-onsong-text').show();
     $(row).children('.cell-part-text').children('textarea').hide();
 
     // show correct action buttons
@@ -123,11 +155,13 @@ function removeNewOnSongRow(that)
 function editOnSongText(that)
 {
     $('#insertNewOnSongRow-link').hide();
+    $('.show-onsong-format-hint').show();
 
     // get handle on input elements etc
     var row  = $(that).parent().parent();
     // hide display-only text, show writeable input area
     $(row).children('.cell-part-text').children('.show-onsong-text').hide();
+    $(row).children('.cell-part-text').children('.write-onsong-text').hide();
     $(row).children('.cell-part-text').children('textarea').show();
 
     // textarea height according to the number of lines in the OnSong text - but at least 3
@@ -211,11 +245,14 @@ function saveNewOnSongText(that, del)
             $(cell).children('.for-new-items').hide(); 
 
             // insert success data into the new table rowor the existing row (for updates)
-            $(row).children('.cell-part-text').children('.write-onsong-text').show().html(data.data.text);
+            $(row).children('.cell-part-text').children('.write-onsong-text').html(data.data.text).show();
             rewriteOnsong($(row).children('.cell-part-text').children('.show-onsong-text'));
 
             // for new rows
             if (!onsong_id) {
+                // add this to the local representation of the song
+                cSpot.item.song.onsongs.push(data.data);
+
                 $(row).data('onsong-id', data.data.id);
                 $(row).data('part-id', data.data.song_part_id);
                 $(row).children('.cell-part-name').text(data.data.song_part.name);
@@ -227,6 +264,9 @@ function saveNewOnSongText(that, del)
             else  {
                 // was it a delete request?
                 if (data.data == '_') {
+                    // remove this part from the local object also
+                    removeFromLocalOnSongParts( row.data('onsongId') );
+
                     $(row).fadeOut();
                     $(row).remove();
                 } 
@@ -246,6 +286,13 @@ function saveNewOnSongText(that, del)
     });
 }
 
+function removeFromLocalOnSongParts(which)
+{
+    cSpot.item.song.onsongs.forEach( function(elem, idx, arr) {
+        if (elem.id == which)
+            cSpot.item.song.onsongs.splice(idx,1);
+    });
+}
 
 
 

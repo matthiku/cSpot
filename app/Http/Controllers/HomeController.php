@@ -6,6 +6,7 @@ use App\Http\Requests;
 use Illuminate\Http\Request;
 
 use App\Models\Item;
+use App\Models\SongPart;
 
 use Auth;
 
@@ -99,6 +100,9 @@ class HomeController extends Controller
                 'mainPresenter' => getMainPresenter(),
                 'mainPresenterSetURL' => route('presentation.mainPresenter.set'),
             ],
+
+            'song_parts' => json_decode( json_encode(SongPart::orderby('sequence')->get()) ),
+            'song_parts_by_code' => json_decode( json_encode(getSongPartsByCode()) ),
         ];
 
         // are we looking at a single item?

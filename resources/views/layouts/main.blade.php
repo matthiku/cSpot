@@ -29,7 +29,7 @@
     <title>c-SPOT @yield('title')</title>
 
     <!-- composed CSS -->
-    <link href="{{ url('css/c-spot.css') }}" rel="stylesheet" />
+    <link href="{{ elixir('css/c-spot.css') }}" rel="stylesheet" />
 
     <script>
         var cSpot = {};
@@ -38,7 +38,7 @@
     </script>
 
     <!-- load cSpot JavaScript App -->
-    <script src="{{ url('js/c-spot.js') }}"></script>
+    <script src="{{ elixir('js/c-spot.js') }}"></script>
 
 </head>
 
