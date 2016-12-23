@@ -43,7 +43,7 @@
 
 					<?php 
 						// extra treatment for the first event
-						if ( $event->date->dayOfYear == $item->plan->date->dayOfYear ) {
+						if ( $event->date->isSameDay($item->plan->date) ) {
 							// push down the event when it's start time is later in the day
 							while ($event->date->hour - $hour > 1) {
 								echo '<br>';
@@ -60,8 +60,8 @@
 							continue;
 
 						// event is not on this day, so insert a new column
-						if ($event->date->dayOfYear > $today->dayOfYear) {
-							$today->addDay();
+						if ($event->date->gt($today)) {
+							$today->addDay()->setTime(23,59,59);
 							$hour = 9;
 							$day += 1;
 							$firstThisDay = true;
@@ -74,7 +74,7 @@
 						}
 
 						// insert an empty column until we are at the event date
-						while ($event->date->dayOfYear > $today->dayOfYear ) {
+						while ($event->date->gt($today) ) {
 							echo '</td><td style="vertical-align: initial; line-height: 1;">';
 							$today->addDay();
 							$day += 1;
@@ -103,7 +103,7 @@
 						// now show the actual event data
 					?>
 					<div class="{{ $firstThisDay ? '' : 'mt-2'}}">
-						<span class="d-block bg-info nowrap">{{ $event->date }}</span>
+						<span class="d-block bg-info nowrap">{{ $event->date.' '.$event->date->dayOfYear.' '.$today->dayOfYear }}</span>
 						<div>{{ $event->type->generic ? '' : $event->type->name }}{!! $event->type->generic ? '' : '<br>' !!}
 							 {!! $event->subtitle ? '<span class="text-muted">'.$event->subtitle.'</span>' : '' !!}</div>
 					</div>

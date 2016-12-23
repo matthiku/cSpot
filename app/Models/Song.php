@@ -78,17 +78,35 @@ class Song extends Model
     public function onSongLyrics() {
 
         $lyrics = '';
+        $line = '';
 
         // add each onsong part but prepend it with it's part code as a header
-        foreach ($this->onsongs as $key => $onsong) {
+        foreach ($this->onsongs as $onsong) {
+
             // ignore parts containing music instructions (like 'Capo')
             if ( $onsong->song_part->code != 'm'  &&  $onsong->song_part->code != 'i' ) {
+                if (trim($line)!='') 
+                    $lyrics .= "\n"; // newline char not on the first line
+
                 $lyrics .= '[' . $onsong->song_part->code . "]\n";
-                // remove OnSong codes enclosed in square brackets
-                $lyrics .= preg_replace("/\[[^\]]+\]/m", '', $onsong->text);
-                // avoid newline at the end of the complete lyrics
-                if ($key < $this->onsongs->count()-1)
-                    $lyrics .= "\n";
+
+                // remove OnSong codes enclosed in square brackets and split by lines
+                $lines = preg_split('/$\R?^/m' , preg_replace("/\[[^\]]+\]/m", '', $onsong->text));
+
+                // now add each line to the lyrics, but not if it's a comment or musical instruction
+                $lkey = 0;
+                foreach ($lines as $line) {
+                    if (substr($line,0,1)!='#'  &&  substr($line,0,1)!='(' ) {
+                        if ($lkey > 0) 
+                            $lyrics .= "\n"; // newline char not on the first line
+                        $lyrics .= $line;
+                        $lkey++;
+                    } 
+                    else
+                        $line = '';
+                }
+                // ignore trailing empty line
+                $lyrics = rtrim($lyrics, "\n\n");
             }
         }
 

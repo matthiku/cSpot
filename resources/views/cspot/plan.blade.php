@@ -488,12 +488,6 @@
                 Insert other default values (times, resources) for this plan?
                 <br><small class="text-muted">(see: <a href="{{ url('admin/types') }}">List of event types</a>)</small>
             </label>
-            <div id="planServiceTimes" style="display: none">
-                {!! Form::label('start', 'New times:'); !!}
-                {!! Form::time( 'start'); !!}
-                {!! Form::label('end', ' - '); !!}
-                {!! Form::time( 'end');   !!}      
-            </div>
         </div>
 
         <!-- what to do after creating this plan? Either go to the new plan or add another one of this type -->
@@ -613,5 +607,15 @@
 
 
     <div id="bottom">&nbsp;</div>
+
+
+    {{-- should be moved into the form when needed 
+    --}}
+    <div id="planServiceTimes" style="display: none">
+        {!! Form::label('start', 'New times:'); !!}
+        {!! Form::time( 'start'); !!}
+        {!! Form::label('end', ' - '); !!}
+        {!! Form::time( 'end');   !!}      
+    </div>
 
 @stop

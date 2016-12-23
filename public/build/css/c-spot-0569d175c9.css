@@ -10322,8 +10322,7 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
 .lh-2 {
     line-height: 2.5;
 }
-.edit-chords {
-    cursor: move;
+.va-tb {
     vertical-align: text-bottom;    
 }
 

@@ -926,6 +926,7 @@ function toggleTrashed() {
 |*|
 \*/
 
+
 /* take one DOM element, get it's text content
  *    and write it back as individual lines of chords and lyrics 
  */
@@ -933,17 +934,26 @@ function rewriteOnsong(element)
 {
     var newText = '';
     var textblocks = $(element).text().split("\n");
+
     $.each(textblocks, function(i) {
+
         var tx = splitOnSong(textblocks[i]);
+
         if (tx.lyrics) {
             if ( tx.chords.trim()!='' ) // don't add an empty line
                 newText += '<pre class="chords">' + tx.chords + '</pre>';
-            newText += '<pre class="lyrics">' + tx.lyrics + "</pre>";
+            if ( tx.lyrics.substr(0,1)=='('  &&  tx.lyrics.substr(-1,1)==')' )
+                newText += '<pre class="mb-0 text-primary">' + tx.lyrics + "</pre>";
+            else if (tx.lyrics.substr(0,1)!='#')
+                newText += '<pre class="lyrics">' + tx.lyrics + "</pre>";
         }
     });
+
     $(element).html(newText);
+
     ;;;console.log('onsong chords re-formatted for '+element.nodeName+'.'+element.className);
 }
+
 
 /* Split OnSong code into chords and lyrics
  *
@@ -971,7 +981,7 @@ function splitOnSong(onsong)
             chords += ' '.repeat(spl[0].length);
         }
     }
-    result.lyrics = lyrics;
+    result.lyrics = lyrics.trim();
     result.chords = chords;
 
     return result;

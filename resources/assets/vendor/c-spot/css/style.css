@@ -7,6 +7,14 @@
  * (C) M.Kuhs Ireland, 2016
  */
 
+.lh-2 {
+    line-height: 2.5;
+}
+.edit-chords {
+    cursor: move;
+    vertical-align: text-bottom;    
+}
+
 
 /* in multi-column mode, keep some elements always together */
 .keeptogether {
@@ -15,6 +23,16 @@
     -o-column-break-inside:avoid;
     -ms-column-break-inside:avoid;
     column-break-inside:avoid;
+}
+.chords {
+    color: red;
+    font-size: 75%;
+    font-weight: bold;
+    margin-bottom: 0;
+}
+.lyrics {
+    font-size: 75%;
+    margin-bottom: 0;
 }
 
 
@@ -389,17 +407,6 @@ pre.text-present {
 
 .red {
     color: red;
-}
-
-.chords {
-    color: red;
-    font-size: 75%;
-    font-weight: bold;
-    margin-bottom: 0;
-}
-.lyrics {
-    font-size: 75%;
-    margin-bottom: 0;
 }
 
 .card-block-files {

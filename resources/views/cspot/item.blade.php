@@ -605,6 +605,7 @@
     --}}
     <script>
 
+        // provide item data on the client side
         cSpot.item = {!! json_encode($item, JSON_HEX_APOS | JSON_HEX_QUOT ) !!};
 
         $( function() {

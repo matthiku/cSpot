@@ -113,7 +113,7 @@
 				--}}
 				<td class="hidden-lg-down link show-song-title" 
 					@if ($item->song_id)
-						title="{{ substr($item->song->lyrics,0,500) }}" data-toggle="tooltip" 
+						title="{{ substr( ($item->song->onsongs ? $item->song->onSongLyrics() : $item->song->lyrics), 0, 500 ) }}" data-toggle="tooltip" 
 						@if ($item->seq_no<10)
 							data-placement="bottom"
 						@endif

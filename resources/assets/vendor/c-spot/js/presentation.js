@@ -789,6 +789,10 @@ function reDisplayLyrics()
 
         lyricsLine = lyrics[i].trim();  // get pure text
 
+        // ignore last line if its empty
+        if (i==lyrics.length-1 && lyricsLine=='')
+            break;
+
         // treat empty lines as start for a new slide!
         if (lyrics[i].length==0) {
             if (i==0) continue; // but not a leading empty line....

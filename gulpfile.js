@@ -38,7 +38,7 @@ var path = {
     other good ones: base, pepper-grinder, smoothness, redmond, overcast, sunny, flick, cuppertino, ui-lightness
     see: http://jqueryui.com/themeroller/
 */
-var ui_theme = 'flick'; 
+var ui_theme = 'pepper-grinder'; 
 
 
 

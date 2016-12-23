@@ -16,6 +16,9 @@
 
 
     @if (isset($song))
+        
+        @include ('cspot.snippets.advancedOnSongEditor')
+
         {!! Form::model( $song, array(
             'route'  => array('songs.update', $song->id), 
             'method' => 'put', 
@@ -160,7 +163,7 @@
 
 
             <div class="row form-group song-only training-show">
-                {!! Form::label('author', 'Author or Copyright statement', ['class' => 'col-sm-4 col-md-3 col-lg-2 col-xl-4 text-sm-right']); !!}
+                {!! Form::label('author', 'Author/Copyright', ['class' => 'col-sm-4 col-md-3 col-lg-2 col-xl-4 text-sm-right']); !!}
                 <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width">{!! Form::text('author'); !!}</div>
             </div>
 
@@ -178,7 +181,7 @@
 
             <div class="row form-group song-only">
                 <div class="col-sm-4 col-md-3 col-lg-2 col-xl-4 text-sm-right">                    
-                    {!! Form::label('license', 'Select a license:'); !!}
+                    {!! Form::label('license', 'License type:'); !!}
                     <big>
                         <a tabindex="0" href="#"
                             data-container="body" data-toggle="tooltip"
@@ -332,7 +335,7 @@
 
             <div class="row form-group song-or-video-only training-show">
                 <div class='col-sm-4 col-md-3 col-lg-2 col-xl-4 text-sm-right'>
-                    {!! Form::label('link', '(other) link(s)'); !!}
+                    {!! Form::label('link', 'Further link(s)'); !!}
                     <big>
                         <a tabindex="0" href="#" data-container="body" data-toggle="tooltip"
                             title="Paste the full URL (or link or address, usually starts with http://...) into this field. For more than one, just separate them by ';'">
@@ -345,7 +348,7 @@
 
             <div class="row form-group mt-1 bg-muted">
                 <div class="col-sm-4 col-md-3 col-lg-2 col-xl-4 text-sm-right l-h-1">
-                    {!! Form::label('file', 'Attach Sheet Music'); !!}
+                    {!! Form::label('file', 'Attach Sheet Music:'); !!}
                     <br>
                     <small>(Maximum file size: <?php echo ini_get("upload_max_filesize"); ?>)</small>
                 </div>
@@ -564,6 +567,12 @@
 
 
     <script>
+
+        // provide item data on the client side
+        @if (isset($song))
+            cSpot.item = [];
+            cSpot.item.song = {!! json_encode($song, JSON_HEX_APOS | JSON_HEX_QUOT ) !!};
+        @endif
 
         // define field that should always get input focus
         document.forms.inputForm.title.focus()

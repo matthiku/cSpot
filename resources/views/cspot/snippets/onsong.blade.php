@@ -1,8 +1,4 @@
 
-<span class="small show-onsong-format-hint" style="display: none;">
-	<strong>Note:</strong> Blank lines will force a new slide in lyrics presentations but will be ignored when showing the chords.
-</span>
-
 
 <table class="table table-striped table-bordered table-sm" id="onsong-parts" 
 		data-song-id="{{ isset($song) ? $song->id : '0' }}" data-update-onsong-url="{{ route('updateonsongparts') }}">
@@ -10,7 +6,7 @@
 	<thead style="display: none;">
 		<tr>
 			<th class="text-xs-center" style="width: 80px;">Part</th>
-			<th class="text-xs-center small hidden-xs-down" style="width: 40px;">Code</th>
+			<th class="text-xs-center small hidden-md-down" style="width: 40px;">Code</th>
 			<th>Text and Chords</th>
 			<th style="width: 80px;"></th>
 		</tr>
@@ -19,12 +15,24 @@
 
 	<tfoot>
 		<tr class="bg-faded link" onclick="insertNewOnSongRow();">
-			<th colspan="4" id="insertNewOnSongRow-link" class="text-xs-center">
+			<th colspan=3 id="insertNewOnSongRow-link" class="text-xs-center">
 				<a href="#tbl-bottom"></a>
 				<i class="fa fa-plus"></i> Add new Part
 			</th>
 		</tr>
-		<tr style="display: none;"><td><a href="tbl-bottom"></a></td></tr>
+
+		<tr style="display: none;" class="show-onsong-format-hint text-xs-center ">
+			<td colspan=3 class="small text-success">
+				You can insert "chords over lyrics" or OnSong-formatted chords and lyrics (lyrics with chords in square brackets).<br>
+				For more information, see the 
+				<a href="http://www.onsongapp.com/docs/features/formats/onsong/chords/" target="new" class="text-info">
+					OnSong manual on formats</a><br>
+				<div class="text-danger">
+					<strong>Note:</strong> Blank lines will force a new slide in lyrics presentations but will be ignored when showing the chords.
+				</div>
+			</td>
+		</tr>
+
 	</tfoot>
 
 
@@ -37,9 +45,14 @@
 				<tr id="tbl-row-{{ $onsong->id }}" {{ $onsong->song_part->code=='m' ? 'class=onsong-meta-data' : '' }}
 					data-onsong-id="{{ $onsong->id }}" data-part-id="{{ $onsong->song_part_id }}">
 
-					<th class="text-xs-center">{{ $onsong->song_part->code!='m' ? $onsong->song_part->name : 'Notes' }}</th>
+					<th {{ $onsong->song_part->code!='m' ? 'class=text-xs-center' : 'class=text-xs-right colspan=2' }}>
+						{{ $onsong->song_part->code!='m' ? $onsong->song_part->name : 'Notes:' }}
+						<span class="hidden-lg-up"><br>{{ $onsong->song_part->code!='m' ? '('.$onsong->song_part->code.')' : '' }}</span>
+					</th>
 					
-					<th class="text-xs-center hidden-xs-down">{{ $onsong->song_part->code!='m' ?$onsong->song_part->code : '' }}</th>
+					@if ($onsong->song_part->code!='m')
+						<th class="text-xs-center hidden-md-down">{{ $onsong->song_part->code!='m' ? $onsong->song_part->code : '' }}</th>
+					@endif
 
 					<td class="cell-part-text">
 						<div class="white-space-pre-wrap write-onsong-text{{ $onsong->song_part->code!='m' ? ' show-onsong-text' : '' }}" 
@@ -48,11 +61,17 @@
 						<div class="error-msg" style="display: none;">Enter text here.</div>
 					</td>
 
-					<td class="cell-part-action big">
-						<a href="javascript:void(0);" onclick="editOnSongText(this);"  title="edit"   class="for-existing-items"><i class="fa fa-edit"></i></a>
-						<a href="javascript:void(0);" onclick="deleteOnSongText(this);" title="delete" class="for-existing-items float-xs-right"><i class="fa fa-trash"></i></a>
-						<a href="javascript:void(0);" onclick="saveNewOnSongText(this);" style="display: none;" title="save"   tabindex=2 class="for-new-items">&#128427;</a>
-						<a href="javascript:void(0);" onclick="removeNewOnSongRow(this);" style="display: none;" title="cancel" tabindex=3 class="for-new-items float-xs-right">&#10007;</a>
+					<td class="cell-part-action">
+						<a href="javascript:void(0);" onclick="editOnSongText(this);"  title="edit"   class="for-existing-items big"><i class="fa fa-edit"></i></a>
+						@if ($onsong->song_part->code!='m')
+							<br><button title="Advanced OnSong Editor" type="button" class="btn btn-primary btn-sm for-existing-items" 
+									data-toggle="modal" data-target="#advOnSongEditor">&#9997;</button>
+						@endif
+						<br>
+						<a href="javascript:void(0);" onclick="deleteOnSongText(this);" title="delete" class="for-existing-items text-danger"><i class="fa fa-trash"></i></a>
+						<a href="javascript:void(0);" onclick="saveNewOnSongText(this);" style="display: none;" title="save"   tabindex=2 class="for-new-items big">&#128427;</a>
+						<br>
+						<a href="javascript:void(0);" onclick="removeNewOnSongRow(this);" style="display: none;" title="cancel" tabindex=3 class="for-new-items">&#10007;</a>
 					</td>
 
 				</tr>
@@ -78,10 +97,10 @@
 				</select>
 				<div class="error-msg" style="display: none;">Select a name!</div>
 				<br>
-				<a href="{{ url('admin/song_parts') }}" target="new" class="small">(edit list <i class="fa fa-external-link"></i>)</a>
+				<a href="{{ url('admin/song_parts') }}" target="new" class="small">edit list <i class="fa fa-external-link"></i></a>
 			</th>
 
-			<th class="cell-part-code"></th>
+			<th class="cell-part-code hidden-md-down"></th>
 
 			<td class="cell-part-text">
 				<div class="show-onsong-text write-onsong-text white-space-pre-wrap" style="display: none;"></div>
@@ -89,11 +108,11 @@
 				<div class="error-msg" style="display: none;">Enter text here.</div>
 			</td>
 
-			<td class="cell-part-action big">
-				<a href="javascript:void(0);" onclick="editOnSongText(this);"  style="display: none;" title="edit"   class="for-existing-items"><i class="fa fa-edit"></i></a>
-				<a href="javascript:void(0);" onclick="deleteOnSongText(this);" style="display: none;" title="delete" class="for-existing-items float-xs-right"><i class="fa fa-trash"></i></a>
-				<a href="javascript:void(0);" onclick="saveNewOnSongText(this);" title="save" tabindex=3 class="for-new-items">&#128427;</a>
-				<a href="javascript:void(0);" onclick="removeNewOnSongRow(this);" title="cancel" tabindex=4 class="for-new-items float-xs-right newrow-cancel-button">&#10007;</a>
+			<td class="cell-part-action">
+				<a href="javascript:void(0);" onclick="editOnSongText(this);"  style="display: none;" title="edit"   class="for-existing-items big"><i class="fa fa-edit"></i></a>
+				<a href="javascript:void(0);" onclick="deleteOnSongText(this);" style="display: none;" title="delete" class="for-existing-items text-danger float-xs-right"><i class="fa fa-trash"></i></a>
+				<a href="javascript:void(0);" onclick="saveNewOnSongText(this);" title="save" tabindex=3 class="for-new-items big">&#128427;</a><br>
+				<a href="javascript:void(0);" onclick="removeNewOnSongRow(this);" title="cancel" tabindex=4 class="for-new-items newrow-cancel-button">&#10007;</a>
 			</td>
 		</tr>
 
@@ -103,3 +122,4 @@
 
 </table>
 
+<a id="tbl-bottom"></a>

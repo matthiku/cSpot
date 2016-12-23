@@ -274,6 +274,17 @@ $(document).ready(function() {
     })
 
 
+    /*  Call action when Advanced OnSong Editor was opened
+    */
+    if ($('#advOnSongEditor').length>0) {
+        $('#advOnSongEditor').on('show.bs.modal', function (event) {
+            fillAdvOnSongEditor(event);
+        });
+        $('#advOnSongEditor').on('hidden.bs.modal', function (event) {
+            cancelAdvOnSongEditor();
+        });
+    }
+
 
 
     /*
