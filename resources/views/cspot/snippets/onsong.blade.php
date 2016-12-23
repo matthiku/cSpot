@@ -14,10 +14,13 @@
 
 
 	<tfoot>
-		<tr class="bg-faded link" onclick="insertNewOnSongRow();">
-			<th colspan=3 id="insertNewOnSongRow-link" class="text-xs-center">
-				<a href="#tbl-bottom"></a>
-				<i class="fa fa-plus"></i> Add new Part
+		<tr class="bg-faded link" id="insertNewOnSongRow-link">
+			<th colspan=3 class="pl-2">
+				<span onclick="insertNewOnSongRow();"><i class="fa fa-plus"></i> Add new Part</span>
+				<span class="small float-xs-right">
+					<a href="http://www.logue.net/xp/" target="new"><span class="text-info">Check out this online Tool for Transposing!</span>
+						<i class="fa fa-external-link"></i></a>
+				</span>
 			</th>
 		</tr>
 
@@ -61,18 +64,16 @@
 						<div class="error-msg" style="display: none;">Enter text here.</div>
 					</td>
 
-					<td class="cell-part-action">
-						<a href="javascript:void(0);" onclick="editOnSongText(this);"  title="edit"   class="for-existing-items big"><i class="fa fa-edit"></i></a>
+					<th class="cell-part-action center">
 						@if ($onsong->song_part->code!='m')
-							<br><button title="Advanced OnSong Editor" type="button" class="btn btn-primary btn-sm for-existing-items" 
+							<button title="Advanced OnSong Editor" type="button" class="btn btn-primary btn-sm for-existing-items" 
 									data-toggle="modal" data-target="#advOnSongEditor">&#9997;</button>
 						@endif
-						<br>
-						<a href="javascript:void(0);" onclick="deleteOnSongText(this);" title="delete" class="for-existing-items text-danger"><i class="fa fa-trash"></i></a>
-						<a href="javascript:void(0);" onclick="saveNewOnSongText(this);" style="display: none;" title="save"   tabindex=2 class="for-new-items big">&#128427;</a>
-						<br>
+						<a href="javascript:void(0);" onclick="deleteOnSongText(this);" title="delete" class="btn btn-outline-danger btn-sm for-existing-items"><big>&#128465;</big></a>
+
+						<a href="javascript:void(0);" onclick="saveNewOnSongText(this);" style="display: none;" title="save"   tabindex=2 class="for-new-items big">&#128427;</a><br>
 						<a href="javascript:void(0);" onclick="removeNewOnSongRow(this);" style="display: none;" title="cancel" tabindex=3 class="for-new-items">&#10007;</a>
-					</td>
+					</th>
 
 				</tr>
 			@endforeach
@@ -108,12 +109,13 @@
 				<div class="error-msg" style="display: none;">Enter text here.</div>
 			</td>
 
-			<td class="cell-part-action">
-				<a href="javascript:void(0);" onclick="editOnSongText(this);"  style="display: none;" title="edit"   class="for-existing-items big"><i class="fa fa-edit"></i></a>
-				<a href="javascript:void(0);" onclick="deleteOnSongText(this);" style="display: none;" title="delete" class="for-existing-items text-danger float-xs-right"><i class="fa fa-trash"></i></a>
+			<th class="cell-part-action center">
+				<a href="javascript:void(0);" onclick="deleteOnSongText(this);" style="display: none;" 
+				  title="delete" class="for-existing-items text-danger float-xs-right"><i class="fa fa-trash"></i></a>
+
 				<a href="javascript:void(0);" onclick="saveNewOnSongText(this);" title="save" tabindex=3 class="for-new-items big">&#128427;</a><br>
 				<a href="javascript:void(0);" onclick="removeNewOnSongRow(this);" title="cancel" tabindex=4 class="for-new-items newrow-cancel-button">&#10007;</a>
-			</td>
+			</th>
 		</tr>
 
 

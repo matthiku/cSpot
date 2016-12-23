@@ -42360,6 +42360,8 @@ function joinLyricsAndChordsToOnSong(chords)
         var lnchrds = chline.trim().split(/\s+/);
 
         // insert the chords into the lyrics text at the right location
+        if (lyline===undefined)
+            lyline=' ';
         for (var j = 0; j < lyline.length; j++) {
             if (j==chordsLocations[start]) {
                 online += '['+ lnchrds[start] + ']';
@@ -43182,8 +43184,9 @@ function insertNewOnSongRow()
     // restore the old, empty, hidden row
     $('#new-onsong-row').removeAttr('id');
     $('#very-new-onsong-row').attr('id', 'new-onsong-row');
+
+    // hide "add" link andshow row with input hints
     $('#insertNewOnSongRow-link').hide();
-    // show row with input hints
     $('.show-onsong-format-hint').show();
 
     // make sure all is in the visible viewport
@@ -43329,7 +43332,7 @@ function saveNewOnSongText(that, del)
     }
 
     // check if it is 'chords over lyrics' format!
-    if ( text.indexOf('[') < 0  &&  text.indexOf(']') < 0 )
+    if ( text.indexOf('[') < 0  &&  text.indexOf(']') < 0  &&  text.indexOf("\n") > -1 )
         text = joinLyricsAndChordsToOnSong(text);
 
     // get text value of selected part name

@@ -3,7 +3,7 @@
 	use Carbon\Carbon;
 	$day   = 0; // we start the table with Sunday and we need a total of 8 days
 	$hour  = 9; // the day starts at 9 a.m.
-	$today = $item->plan->date; 
+	$columnDay = $item->plan->date; 
 	$firstThisDay = true;	// first event of the day?
 	$nextWeek 	  = $item->plan->date->addDays(7);
 ?>
@@ -15,7 +15,7 @@
 		<img class="float-xs-left" height="140px" src="{{ url($logoPath.env('CHURCH_LOGO_FILENAME')) }}">
 		<img class="float-xs-right" height="140px" src="{{ url($logoPath.env('CHURCH_LOGO_FILENAME')) }}">
 		<div class="header mb-0" style="line-height: 1.0; vertical-align: middle;">This Week's Announcements
-			<div class="smaller text-muted">Week from {{$today->formatLocalized('%d %b')}} to {{$nextWeek->formatLocalized('%d %b')}}</div>
+			<div class="smaller text-muted">Week from {{$columnDay->formatLocalized('%d %b')}} to {{$nextWeek->formatLocalized('%d %b')}}</div>
 		</div>
 	</div>
 
@@ -41,7 +41,12 @@
 				<td style="vertical-align: initial; line-height: 1;">
 				@foreach ($events as $event)
 
+					<script>console.log("-------------------------------------------------------------------------------")</script>
+
 					<?php 
+						echo '<script>console.log("+++++ Column date is: " + '.json_encode($columnDay).'.date )</script>';
+						echo '<script>console.log("+++++ EVENT  date is: " + '.json_encode($event).'.date )</script>';
+
 						// extra treatment for the first event
 						if ( $event->date->isSameDay($item->plan->date) ) {
 							// push down the event when it's start time is later in the day
@@ -52,16 +57,21 @@
 						}
 
 						// if this event is before the ongoing event, ignore it.
-						if ( $event->date->dayOfYear == $today->dayOfYear  &&  $event->date->hour < $today->hour )
+						if ( $event->date->dayOfYear == $columnDay->dayOfYear  &&  $event->date->hour < $columnDay->hour ) {
+							echo '<script>console.log("+++++ ignoring event as it is before the ongoing event")</script>';
+							$columnDay->setTime(0,0,1);
 							continue;
+						}
 
 						// if this event is private, ignore it.
 						if ( $event->private )
 							continue;
 
 						// event is not on this day, so insert a new column
-						if ($event->date->gt($today)) {
-							$today->addDay()->setTime(23,59,59);
+						if ( $event->date->dayOfYear != $columnDay->dayOfYear ) {
+							echo '<script>console.log("+++++ inserting a new column: ");';
+							echo 'console.log('.json_encode($event->date).'.date)</script>';
+							$columnDay->setTime(0,0,1)->addDay();
 							$hour = 9;
 							$day += 1;
 							$firstThisDay = true;
@@ -73,10 +83,14 @@
 							}
 						}
 
-						// insert an empty column until we are at the event date
-						while ($event->date->gt($today) ) {
+						/* insert an empty column until we are at the event date
+							(we have to compare the dates with having identical times. But in order
+							 not to change the original dates, we have to create copies on the fly)
+						*/
+						while ($event->date->copy()->setTime(0,0,0)->gt($columnDay->copy()->setTime(0,0,0)) ) {
+							echo '<script>console.log("+++++ inserting an empty column")</script>';
 							echo '</td><td style="vertical-align: initial; line-height: 1;">';
-							$today->addDay();
+							$columnDay->addDay();
 							$day += 1;
 							$hour = 9;
 							$firstThisDay = true;
@@ -101,9 +115,10 @@
 						Carbon::setToStringFormat('g:i a');
 
 						// now show the actual event data
+						echo '<script>console.log("now showing the actual event data")</script>';
 					?>
 					<div class="{{ $firstThisDay ? '' : 'mt-2'}}">
-						<span class="d-block bg-info nowrap">{{ $event->date.' '.$event->date->dayOfYear.' '.$today->dayOfYear }}</span>
+						<span class="rounded d-block bg-info nowrap">{{ $event->date }}</span>
 						<div>{{ $event->type->generic ? '' : $event->type->name }}{!! $event->type->generic ? '' : '<br>' !!}
 							 {!! $event->subtitle ? '<span class="text-muted">'.$event->subtitle.'</span>' : '' !!}</div>
 					</div>

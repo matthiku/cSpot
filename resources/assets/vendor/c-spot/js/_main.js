@@ -1024,6 +1024,8 @@ function joinLyricsAndChordsToOnSong(chords)
         var lnchrds = chline.trim().split(/\s+/);
 
         // insert the chords into the lyrics text at the right location
+        if (lyline===undefined)
+            lyline=' ';
         for (var j = 0; j < lyline.length; j++) {
             if (j==chordsLocations[start]) {
                 online += '['+ lnchrds[start] + ']';

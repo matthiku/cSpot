@@ -11,10 +11,21 @@
 
 
 
+
 @section('content')
 
 
+
     @include('layouts.flashing')
+
+
+    {{-- provide modal to show advanced OnSong Editor 
+    --}}
+    @if ( $item->song_id )
+        @include ('cspot.snippets.advancedOnSongEditor')
+    @endif
+
+
 
     {!! Form::model( $item, array(
         'route'  => array('cspot.items.update', $item->id), 

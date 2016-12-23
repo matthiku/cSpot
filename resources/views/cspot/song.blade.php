@@ -387,9 +387,13 @@
         <div class="col-xl-6">
 
 
-            <div class="form-group mb-0 song-only" title="(The sequence determines how the lyrics are presented)">
+            <div class="form-group mb-0 lh-1 song-only" title="(The sequence determines how the lyrics are presented)">
                 {!! Form::label('sequence', 'Sequence: ', ['class' => 'baseline']); !!}
-                {!! Form::text('sequence'); !!} <small class="hidden-sm-down"> (The sequence determines how the lyrics are presented)</small>
+                {!! Form::text('sequence'); !!}
+                <small class="hidden-sm-down">
+                    This determines how the lyrics are presented.<br>
+                    The sequence must only contain codes for songparts that exist either in the "Lyrics" or the "OnSong" sections!
+                </small>
             </div>
 
 
@@ -407,7 +411,7 @@
                         @if ( !isset($song) || (isset($song) && $song->title_2!='slides') )
                             <a  tabindex="0" href="#" data-container="body" data-toggle="tooltip"
                                 data-template='<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><pre class="tooltip-inner tooltip-wide"></pre></div>'
-                                title="{{ "Song parts indicators must be enclosed with [],\nlike [1] for verse 1 or [chorus] for a chorus.\n\nBlank lines force a new slide\nwhen the song is presented.\n\nDon't fill that in if you plan to use the OnSong\nformat as lyrics will be taken from the OnSong data!" }}"
+                                title="{{ "Song parts indicators must be enclosed with [],\nlike [1] for verse 1 or [chorus] for a chorus.\n\nBlank lines force a new slide\nwhen the song is presented.\n\nDon't use that if you plan to use the OnSong\nformat as lyrics will be taken from the OnSong data!" }}"
                                 <i class="fa fa-info-circle ml-2"></i>
                             </a>
                         @endif
