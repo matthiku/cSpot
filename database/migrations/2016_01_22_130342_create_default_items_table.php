@@ -16,8 +16,8 @@ class CreateDefaultItemsTable extends Migration
             $table->increments('id');
             $table->integer('type_id')->unsigned()->index();
             $table->foreign('type_id')->references('id')->on('types')->onDelete('no action');
-            $table->integer('file_id')->unsigned()->default('NULL');
-            $table->foreign('file_id')->references('id')->on('files')->onDelete('set null');
+            $table->integer('file_id')->unsigned()->nullable()->default(null);
+            //$table->foreign('file_id')->references('id')->on('files')->onDelete('set null');
             $table->float('seq_no', 3, 1);
             $table->string('text', 250);
             $table->boolean('forLeadersEyesOnly')->default(false);

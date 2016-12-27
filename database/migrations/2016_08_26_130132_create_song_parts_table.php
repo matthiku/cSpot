@@ -14,7 +14,7 @@ class CreateSongPartsTable extends Migration
     {
         Schema::create('song_parts', function (Blueprint $table) {
             $table->increments('id');
-            $table->text('name')->unique();
+            $table->text('name');
             $table->timestamps();
         });
     }

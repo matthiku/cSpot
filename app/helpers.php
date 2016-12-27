@@ -301,7 +301,11 @@ function MPsongList()
  */
 function getLastSongUpdated_at()
 {
-    return Song::select('updated_at')->orderby('updated_at', 'desc')->first()->updated_at;
+    // during the installation phase, there is no songs....
+    $song = Song::select('updated_at')->orderby('updated_at', 'desc')->first();
+    if ($song)
+        return $song->updated_at;
+    return null;
 }
 
 /*\ __________________________________________________
