@@ -58,10 +58,6 @@ elixir(function(mix) {
         path.c_spot         + '/css/signin.css',
     ], 'public/css/c-spot.css', './');
 
-    // allow for versioning, see
-    // https://scotch.io/tutorials/run-gulp-tasks-in-laravel-easily-with-elixir
-    mix.version('public/css/c-spot.css');
-
 
     /* mix JS */
     mix.scripts([
@@ -78,22 +74,25 @@ elixir(function(mix) {
         path.c_spot         + '/js/presentation.js',
     ], 'public/js/c-spot.js', './');
     
-    // allow for versioning
-    mix.version('public/js/c-spot.js');
+
+    // allow for versioning, see
+    // https://scotch.io/tutorials/run-gulp-tasks-in-laravel-easily-with-elixir
+    mix.version(['public/css/c-spot.css', 'public/js/c-spot.js']);
 
 
     /* 
         copy static files 
+
+        1. FONTS
     */
-    // FONTS
     mix.copy([
         path.font_awesome   + '/fonts',
-    ], 'public/fonts');
+    ], 'public/build/fonts');
 
-    // IMAGES
+    // 2. IMAGES
     mix.copy([
         path.jquery_ui      + '/themes/'+ui_theme+'/images',
-    ], 'public/css/images');
+    ], 'public/build/css/images');
 
 
 });

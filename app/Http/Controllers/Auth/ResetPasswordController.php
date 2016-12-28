@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 
+use Illuminate\Support\Str;
+
+
 class ResetPasswordController extends Controller
 {
     /*
@@ -29,4 +32,25 @@ class ResetPasswordController extends Controller
     {
         $this->middleware('guest');
     }
+
+
+    /**
+     * Reset the given user's password (Refactored from Illuminate\Foundation\Auth\ResetsPasswords)
+     *
+     * @param  \Illuminate\Contracts\Auth\CanResetPassword  $user
+     * @param  string  $password
+     * @return void
+     */
+    protected function resetPassword($user, $password)
+    {
+        $user->forceFill([
+            'password' => bcrypt($password),
+            'remember_token' => Str::random(60),
+            'verified' => 1,
+        ])->save();
+
+        $this->guard()->login($user);
+    }
+
+
 }

@@ -29,7 +29,7 @@
     <title>c-SPOT @yield('title')</title>
 
     <!-- composed CSS -->
-    <link href="{{ elixir('css/c-spot.css') }}" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ elixir('css/c-spot.css') }}">
 
     <script>
         var cSpot = {};

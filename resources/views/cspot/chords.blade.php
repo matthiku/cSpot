@@ -38,7 +38,7 @@
                                           id="song-part-{{ $onsong->song_part->code }}">{{ $onsong->song_part->name }}:</div>
                                 @endif
 
-                                <div class="chords-part{{ $onsong->song_part->code!='m' ? ' show-onsong-text' : ' white-space-pre-wrap bigger red' }}">{{ $onsong->text }}</div>
+                                <div class="lh-1 chords-part{{ $onsong->song_part->code!='m' ? ' show-onsong-text' : ' white-space-pre-wrap bigger red' }}">{{ $onsong->text }}</div>
                             </div>
                         @endforeach
                     </div>

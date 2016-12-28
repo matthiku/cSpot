@@ -18,7 +18,7 @@
 			<th colspan=3 class="pl-2">
 				<span onclick="insertNewOnSongRow();"><i class="fa fa-plus"></i> Add new Part</span>
 				<span class="small float-xs-right">
-					<a href="http://www.logue.net/xp/" target="new"><span class="text-info">Check out this online Tool for Transposing!</span>
+					<a href="http://www.logue.net/xp/" target="new"><span class="text-info">Use this Tool for Transposing!</span>
 						<i class="fa fa-external-link"></i></a>
 				</span>
 			</th>
@@ -58,7 +58,7 @@
 					@endif
 
 					<td class="cell-part-text">
-						<div class="white-space-pre-wrap write-onsong-text{{ $onsong->song_part->code!='m' ? ' show-onsong-text' : '' }}" 
+						<div class="white-space-pre-wrap lh-1 write-onsong-text{{ $onsong->song_part->code!='m' ? ' show-onsong-text' : '' }}" 
 							onclick="editOnSongText(this);" title="Click to edit">{{ $onsong->text }}</div>
 						<textarea style="width: 100%; display: none; font-size: small;" tabindex=1 onkeyup="calculateTextAreaHeight(this);">{{ $onsong->text }}</textarea>
 						<div class="error-msg" style="display: none;">Enter text here.</div>
@@ -104,7 +104,7 @@
 			<th class="cell-part-code hidden-md-down"></th>
 
 			<td class="cell-part-text">
-				<div class="show-onsong-text write-onsong-text white-space-pre-wrap" style="display: none;"></div>
+				<div class="show-onsong-text write-onsong-text lh-1 white-space-pre-wrap" style="display: none;"></div>
 				<textarea class="new-onsong-field" style="width: 100%;" tabindex=2 onkeyup="calculateTextAreaHeight(this);"></textarea>
 				<div class="error-msg" style="display: none;">Enter text here.</div>
 			</td>

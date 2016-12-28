@@ -37,7 +37,8 @@
 	<form class="form-inline float-xs-right mr-1">
 		<div class="form-group">
 			<label class="hidden-sm-down" for="typefilter">Show only</label>
-			<select class="custom-select form-control form-control-sm" id="typefilter" onchange="showSpinner();location.href='{{url('cspot/plans')}}?filterby=type&filtervalue='+$(this).val()">
+			<select class="custom-select form-control form-control-sm pt-0 pb-0" id="typefilter" 
+				 onchange="showSpinner();location.href='{{url('cspot/plans')}}?filterby=type&filtervalue='+$(this).val()">
 				<option {{ Request::has('filterby') && Request::get('filterby')=='type' ? '' : 'selected' }} value="all">(select type)</option>
 				@foreach ($types as $type)
 					<option 

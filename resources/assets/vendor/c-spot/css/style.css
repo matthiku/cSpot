@@ -19,7 +19,6 @@
     vertical-align: text-bottom;    
 }
 
-
 /* in multi-column mode, keep some elements always together */
 .keeptogether {
     -webkit-column-break-inside:avoid;
@@ -33,10 +32,12 @@
     font-size: 75%;
     font-weight: bold;
     margin-bottom: 0;
+    overflow: hidden;
 }
 .lyrics {
     font-size: 75%;
-    margin-bottom: 0;
+    margin-bottom: 1rem;
+    overflow: hidden;
 }
 
 
