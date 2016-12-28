@@ -222,10 +222,10 @@
 
 
 					<td class="center hidden-md-down nowrap">
-						@if ($song->items_count>1 || !$last)
-							<a title="Show list of plans using this song" href="{{ route('songs.show', $song->id) }}">{{ $song->items_count }}</a>
+						@if ($song->itemsCount>1 || !$last)
+							<a title="Show list of plans using this song" href="{{ route('songs.show', $song->id) }}">{{ $song->itemsCount }}</a>
 						@endif
-						@if ($last && $song->items_count==1)
+						@if ($last && $song->itemsCount==1)
 							<a href="{{ url('cspot/plans/'.$last->id) }}" title="open this plan">1</a>
 						@endif
 					</td>

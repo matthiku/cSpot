@@ -76,12 +76,12 @@
                 <div class="col-sm-6">    
                     <div class="btn btn-secondary float-xs-left mr-1" onclick="changeGeneric(this);">
                         {!! Form::hidden('generic', '0') !!}
-                        {!! Form::hidden('generic', '1') !!}
+                        {!! Form::hidden('generic') !!}
                         <span>{!! isset($type) ? $type->generic ? '&#10004;' : '&#10008;' : '&#10008;' !!}</span>
                     </div>    
                     <div class="small narrow"><strong>Note:</strong> A generic event type has no default values and can be used for all kinds of events. 
                     When creating a new event of that type, the new subtitle will be used as the main title (or name) of the actual event.<br>
-                    There should be only one generic event type - see list below.</div>
+                    <span class="text-danger">There should be only one generic event type</span> - see list below.</div>
                </div>
             </div>
 
@@ -324,12 +324,12 @@
                 </thead>
                 <tbody>
                     @foreach ($types as $typ)
-                        <tr class="{{ $typ->id == $type->id ? 'text-info' : '' }}">
+                        <tr class="{{ (isset($type) && $typ->id == $type->id) ? 'text-info' : '' }}">
                             <td>{{ $typ->name }}{{ $typ->subtitle ? ' ('.$typ->subtitle.')' : '' }}</th>
                             <td>{{ $typ->generic ? '&#10004;' : '' }}</td>
                             <td>{{ $typ->repeat }}</td>
                             <td>{{ $typ->weekdayName }}</td>
-                            <td>@if ($typ->id != $type->id)
+                            <td>@if ( isset($type)  &&  $typ->id != $type->id)
                                     <a class="btn btn-sm btn-outline-info" href="{{ route('types.edit', $typ->id) }}">&#9997;</a>
                                 @endif
                             </td>
@@ -344,32 +344,30 @@
 
     {{-- put focus on first input field 
     --}}
-    <script type="text/javascript">
+    <script>
         document.forms.inputForm.name.focus()
 
-        @if ($type->generic)
+        @if (isset($type) && $type->generic)
             $('.other-stuff').toggle();
         @endif
 
+        // user clicked the surrounding button, so we toggle the checkbox
         function changeGeneric(that){
-
-            // user clicked the surrounding button, so we toggle the checkbox
+            // enable submit button
+            $('.disabled').removeClass('disabled');
+            // toggle input field value and toggle visibility of "other fields"
             if (that.nodeName!='INPUT') {
-                if ( $($(that).children('input')[1]).prop('checked')==true ) {
+                if ( $($(that).children('input')[1]).val()==0 ) {
                     $('.other-stuff').toggle();
-                    $($(that).children('span')[0]).html('&#10008;');
-                    $($(that).children('input')[1]).prop('checked', false );
+                    $($(that).children('span')[0]).html('&#10004;');
+                    $($(that).children('input')[1]).val(1);
                 }
                 else {
                     $('.other-stuff').toggle();
-                    $($(that).children('span')[0]).html('&#10004;');
-                    $($(that).children('input')[1]).prop('checked', true );
+                    $($(that).children('span')[0]).html('&#10008;');
+                    $($(that).children('input')[1]).val(0);
                 }
             }
-            else
-                $(that).prop('checked') 
-                    ? $(that).prop('checked', false) 
-                    : $(that).prop('checked', true);
         }
 
     </script>

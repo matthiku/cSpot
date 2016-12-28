@@ -1,14 +1,15 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Http\Requests;
 use Illuminate\Http\Request;
 
+use App\Models\Song;
 use App\Models\Item;
 use App\Models\SongPart;
 
 use Auth;
+use DB;
 
 
 class HomeController extends Controller
@@ -35,7 +36,15 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $songsCount = Song::whereNotIn("title_2", ['video','slides','training'])->where('deleted_at', null)->count();
+        $videoCount = Song::where("title_2", 'video' )->where('deleted_at', null)->count();
+        $slideCount = Song::where("title_2", 'slides')->where('deleted_at', null)->count();
+
+        return view('home', [
+            'songsCount' => $songsCount,
+            'videoCount' => $videoCount,
+            'slideCount' => $slideCount,
+        ]);
     }
 
 

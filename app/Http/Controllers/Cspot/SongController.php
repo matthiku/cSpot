@@ -99,11 +99,14 @@ class SongController extends Controller
             }
             else {
                 $heading = ucfirst($request->filterby).' like "'.$request->filtervalue.'"';
-                $songs = Song::withCount('items')
-                    ->orderBy($orderBy, $order)
+                $songs = Song::orderBy($orderBy, $order)
                     ->where(  $request->filterby, 'like', '%'.$request->filtervalue.'%');
             }
         } 
+
+        // show just videoclip or slideshow items
+        elseif (isset($request->only) && ($request->only=='slides' || $request->only=='video') )
+            $songs = Song::where('title_2', $request->only);
 
         // no filter requested - show JUST the songs
         else {

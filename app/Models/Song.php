@@ -37,6 +37,10 @@ class Song extends Model
         'chords',
     ];
 
+    protected $appends = [
+        'itemsCount',
+        'lastTimeUsed',
+    ];
 
 
     /**
@@ -189,6 +193,21 @@ class Song extends Model
 
         return $plan;
     }
+
+
+
+
+
+    /* ---------------- ACCESSORS and MUTATORS ------------------ */
+
+
+    /**
+     * count number of times this song has been used in a plan
+     */
+    public function getItemsCountAttribute() {
+        return $this->items->count();
+    }
+
 
     /**
      * get date of last time this song was used in a plan

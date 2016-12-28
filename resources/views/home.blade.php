@@ -81,23 +81,25 @@
                         <span class="btn btn-outline-success md-full mr-2">
                             <a href="{{ url('cspot/songs') }}">
                                 <i class="fa fa-btn fa-music fa-lg float-xs-left"> </i>
-                                &nbsp; Songs Repository
+                                &nbsp; Songs Repository <small>{{ isset($songsCount) ? '('.$songsCount.')' : '' }}</small>
                                 <i class="fa fa-btn fa-music fa-lg float-xs-right hidden-md-up"></i>
                             </a>
                         </span>
 
                         <button class="btn btn-outline-primary md-full mr-2">
-                            <a href="{{ url('cspot/songs?filterby=title_2&filtervalue=slides') }}">
+                            <a href="{{ url('cspot/songs?only=slides') }}">
                                 <i class="fa fa-btn fa-clone fa-lg float-xs-left"></i>
-                                &nbsp; Slides
+                                &nbsp; Slides 
+                                <small>{{ isset($slideCount) ? '('.$slideCount.')' : '' }}</small>
                                 <i class="fa fa-btn fa-clone fa-lg float-xs-right hidden-md-up"></i>
                             </a>
                         </button>
 
                         <span class="btn btn-outline-info md-full">
-                            <a href="{{ url('cspot/songs?filterby=title_2&filtervalue=video') }}">
+                            <a href="{{ url('cspot/songs?only=video') }}">
                                 <i class="fa fa-btn fa-tv fa-lg float-xs-left"></i>
-                                &nbsp; Videoclips
+                                &nbsp; Videoclips 
+                                <small>{{ isset($videoCount) ? '('.$videoCount.')' : '' }}</small>
                                 <i class="fa fa-btn fa-tv fa-lg float-xs-right hidden-md-up"></i>
                             </a>
                         </span>
