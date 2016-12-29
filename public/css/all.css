@@ -9368,14 +9368,14 @@ a.text-gray-dark:focus, a.text-gray-dark:hover {
  *
  * http://api.jqueryui.com/category/theming/
  *
- * To view and modify this theme, visit http://jqueryui.com/themeroller/?ffDefault=Trebuchet%20MS%2CTahoma%2CVerdana%2CArial%2Csans-serif&fwDefault=bold&fsDefault=1.1em&cornerRadius=6px&bgColorHeader=ffffff&bgTextureHeader=fine_grain&bgImgOpacityHeader=15&borderColorHeader=d4d1bf&fcHeader=453821&iconColorHeader=b83400&bgColorContent=eceadf&bgTextureContent=fine_grain&bgImgOpacityContent=10&borderColorContent=d9d6c4&fcContent=1f1f1f&iconColorContent=222222&bgColorDefault=f8f7f6&bgTextureDefault=fine_grain&bgImgOpacityDefault=10&borderColorDefault=cbc7bd&fcDefault=654b24&iconColorDefault=b83400&bgColorHover=654b24&bgTextureHover=fine_grain&bgImgOpacityHover=65&borderColorHover=654b24&fcHover=ffffff&iconColorHover=ffffff&bgColorActive=eceadf&bgTextureActive=fine_grain&bgImgOpacityActive=15&borderColorActive=d9d6c4&fcActive=140f06&iconColorActive=8c291d&bgColorHighlight=f7f3de&bgTextureHighlight=fine_grain&bgImgOpacityHighlight=15&borderColorHighlight=b2a266&fcHighlight=3a3427&iconColorHighlight=3572ac&bgColorError=b83400&bgTextureError=fine_grain&bgImgOpacityError=68&borderColorError=681818&fcError=ffffff&iconColorError=fbdb93&bgColorOverlay=6e4f1c&bgTextureOverlay=diagonal_maze&bgImgOpacityOverlay=20&opacityOverlay=60&bgColorShadow=000000&bgTextureShadow=diagonal_maze&bgImgOpacityShadow=40&opacityShadow=60&thicknessShadow=5px&offsetTopShadow=0&offsetLeftShadow=-10px&cornerRadiusShadow=18px
+ * To view and modify this theme, visit http://jqueryui.com/themeroller/?ffDefault=Verdana%2CArial%2Csans-serif&fwDefault=normal&fsDefault=1.1em&cornerRadius=4px&bgColorHeader=cccccc&bgTextureHeader=highlight_soft&bgImgOpacityHeader=75&borderColorHeader=aaaaaa&fcHeader=222222&iconColorHeader=222222&bgColorContent=ffffff&bgTextureContent=flat&bgImgOpacityContent=75&borderColorContent=aaaaaa&fcContent=222222&iconColorContent=222222&bgColorDefault=e6e6e6&bgTextureDefault=glass&bgImgOpacityDefault=75&borderColorDefault=d3d3d3&fcDefault=555555&iconColorDefault=888888&bgColorHover=dadada&bgTextureHover=glass&bgImgOpacityHover=75&borderColorHover=999999&fcHover=212121&iconColorHover=454545&bgColorActive=ffffff&bgTextureActive=glass&bgImgOpacityActive=65&borderColorActive=aaaaaa&fcActive=212121&iconColorActive=454545&bgColorHighlight=fbf9ee&bgTextureHighlight=glass&bgImgOpacityHighlight=55&borderColorHighlight=fcefa1&fcHighlight=363636&iconColorHighlight=2e83ff&bgColorError=fef1ec&bgTextureError=glass&bgImgOpacityError=95&borderColorError=cd0a0a&fcError=cd0a0a&iconColorError=cd0a0a&bgColorOverlay=aaaaaa&bgTextureOverlay=flat&bgImgOpacityOverlay=0&opacityOverlay=30&bgColorShadow=aaaaaa&bgTextureShadow=flat&bgImgOpacityShadow=0&opacityShadow=30&thicknessShadow=8px&offsetTopShadow=-8px&offsetLeftShadow=-8px&cornerRadiusShadow=8px
  */
 
 
 /* Component containers
 ----------------------------------*/
 .ui-widget {
-	font-family: Trebuchet MS,Tahoma,Verdana,Arial,sans-serif;
+	font-family: Verdana,Arial,sans-serif;
 	font-size: 1.1em;
 }
 .ui-widget .ui-widget {
@@ -9385,28 +9385,28 @@ a.text-gray-dark:focus, a.text-gray-dark:hover {
 .ui-widget select,
 .ui-widget textarea,
 .ui-widget button {
-	font-family: Trebuchet MS,Tahoma,Verdana,Arial,sans-serif;
+	font-family: Verdana,Arial,sans-serif;
 	font-size: 1em;
 }
 .ui-widget.ui-widget-content {
-	border: 1px solid #cbc7bd;
+	border: 1px solid #d3d3d3;
 }
 .ui-widget-content {
-	border: 1px solid #d9d6c4;
-	background: #eceadf url("images/ui-bg_fine-grain_10_eceadf_60x60.png") 50% 50% repeat;
-	color: #1f1f1f;
+	border: 1px solid #aaaaaa;
+	background: #ffffff;
+	color: #222222;
 }
 .ui-widget-content a {
-	color: #1f1f1f;
+	color: #222222;
 }
 .ui-widget-header {
-	border: 1px solid #d4d1bf;
-	background: #ffffff url("images/ui-bg_fine-grain_15_ffffff_60x60.png") 50% 50% repeat;
-	color: #453821;
+	border: 1px solid #aaaaaa;
+	background: #cccccc url("images/ui-bg_highlight-soft_75_cccccc_1x100.png") 50% 50% repeat-x;
+	color: #222222;
 	font-weight: bold;
 }
 .ui-widget-header a {
-	color: #453821;
+	color: #222222;
 }
 
 /* Interaction states
@@ -9420,10 +9420,10 @@ a.text-gray-dark:focus, a.text-gray-dark:hover {
 works properly when clicked or hovered */
 html .ui-button.ui-state-disabled:hover,
 html .ui-button.ui-state-disabled:active {
-	border: 1px solid #cbc7bd;
-	background: #f8f7f6 url("images/ui-bg_fine-grain_10_f8f7f6_60x60.png") 50% 50% repeat;
-	font-weight: bold;
-	color: #654b24;
+	border: 1px solid #d3d3d3;
+	background: #e6e6e6 url("images/ui-bg_glass_75_e6e6e6_1x400.png") 50% 50% repeat-x;
+	font-weight: normal;
+	color: #555555;
 }
 .ui-state-default a,
 .ui-state-default a:link,
@@ -9432,7 +9432,7 @@ a.ui-button,
 a:link.ui-button,
 a:visited.ui-button,
 .ui-button {
-	color: #654b24;
+	color: #555555;
 	text-decoration: none;
 }
 .ui-state-hover,
@@ -9443,10 +9443,10 @@ a:visited.ui-button,
 .ui-widget-header .ui-state-focus,
 .ui-button:hover,
 .ui-button:focus {
-	border: 1px solid #654b24;
-	background: #654b24 url("images/ui-bg_fine-grain_65_654b24_60x60.png") 50% 50% repeat;
-	font-weight: bold;
-	color: #ffffff;
+	border: 1px solid #999999;
+	background: #dadada url("images/ui-bg_glass_75_dadada_1x400.png") 50% 50% repeat-x;
+	font-weight: normal;
+	color: #212121;
 }
 .ui-state-hover a,
 .ui-state-hover a:hover,
@@ -9458,7 +9458,7 @@ a:visited.ui-button,
 .ui-state-focus a:visited,
 a.ui-button:hover,
 a.ui-button:focus {
-	color: #ffffff;
+	color: #212121;
 	text-decoration: none;
 }
 
@@ -9471,20 +9471,20 @@ a.ui-button:focus {
 a.ui-button:active,
 .ui-button:active,
 .ui-button.ui-state-active:hover {
-	border: 1px solid #d9d6c4;
-	background: #eceadf url("images/ui-bg_fine-grain_15_eceadf_60x60.png") 50% 50% repeat;
-	font-weight: bold;
-	color: #140f06;
+	border: 1px solid #aaaaaa;
+	background: #ffffff url("images/ui-bg_glass_65_ffffff_1x400.png") 50% 50% repeat-x;
+	font-weight: normal;
+	color: #212121;
 }
 .ui-icon-background,
 .ui-state-active .ui-icon-background {
-	border: #d9d6c4;
-	background-color: #140f06;
+	border: #aaaaaa;
+	background-color: #212121;
 }
 .ui-state-active a,
 .ui-state-active a:link,
 .ui-state-active a:visited {
-	color: #140f06;
+	color: #212121;
 	text-decoration: none;
 }
 
@@ -9493,35 +9493,35 @@ a.ui-button:active,
 .ui-state-highlight,
 .ui-widget-content .ui-state-highlight,
 .ui-widget-header .ui-state-highlight {
-	border: 1px solid #b2a266;
-	background: #f7f3de url("images/ui-bg_fine-grain_15_f7f3de_60x60.png") 50% 50% repeat;
-	color: #3a3427;
+	border: 1px solid #fcefa1;
+	background: #fbf9ee url("images/ui-bg_glass_55_fbf9ee_1x400.png") 50% 50% repeat-x;
+	color: #363636;
 }
 .ui-state-checked {
-	border: 1px solid #b2a266;
-	background: #f7f3de;
+	border: 1px solid #fcefa1;
+	background: #fbf9ee;
 }
 .ui-state-highlight a,
 .ui-widget-content .ui-state-highlight a,
 .ui-widget-header .ui-state-highlight a {
-	color: #3a3427;
+	color: #363636;
 }
 .ui-state-error,
 .ui-widget-content .ui-state-error,
 .ui-widget-header .ui-state-error {
-	border: 1px solid #681818;
-	background: #b83400 url("images/ui-bg_fine-grain_68_b83400_60x60.png") 50% 50% repeat;
-	color: #ffffff;
+	border: 1px solid #cd0a0a;
+	background: #fef1ec url("images/ui-bg_glass_95_fef1ec_1x400.png") 50% 50% repeat-x;
+	color: #cd0a0a;
 }
 .ui-state-error a,
 .ui-widget-content .ui-state-error a,
 .ui-widget-header .ui-state-error a {
-	color: #ffffff;
+	color: #cd0a0a;
 }
 .ui-state-error-text,
 .ui-widget-content .ui-state-error-text,
 .ui-widget-header .ui-state-error-text {
-	color: #ffffff;
+	color: #cd0a0a;
 }
 .ui-priority-primary,
 .ui-widget-content .ui-priority-primary,
@@ -9559,28 +9559,28 @@ a.ui-button:active,
 	background-image: url("images/ui-icons_222222_256x240.png");
 }
 .ui-widget-header .ui-icon {
-	background-image: url("images/ui-icons_b83400_256x240.png");
+	background-image: url("images/ui-icons_222222_256x240.png");
 }
 .ui-state-hover .ui-icon,
 .ui-state-focus .ui-icon,
 .ui-button:hover .ui-icon,
 .ui-button:focus .ui-icon {
-	background-image: url("images/ui-icons_ffffff_256x240.png");
+	background-image: url("images/ui-icons_454545_256x240.png");
 }
 .ui-state-active .ui-icon,
 .ui-button:active .ui-icon {
-	background-image: url("images/ui-icons_8c291d_256x240.png");
+	background-image: url("images/ui-icons_454545_256x240.png");
 }
 .ui-state-highlight .ui-icon,
 .ui-button .ui-state-highlight.ui-icon {
-	background-image: url("images/ui-icons_3572ac_256x240.png");
+	background-image: url("images/ui-icons_2e83ff_256x240.png");
 }
 .ui-state-error .ui-icon,
 .ui-state-error-text .ui-icon {
-	background-image: url("images/ui-icons_fbdb93_256x240.png");
+	background-image: url("images/ui-icons_cd0a0a_256x240.png");
 }
 .ui-button .ui-icon {
-	background-image: url("images/ui-icons_b83400_256x240.png");
+	background-image: url("images/ui-icons_888888_256x240.png");
 }
 
 /* positioning */
@@ -9770,36 +9770,36 @@ a.ui-button:active,
 .ui-corner-top,
 .ui-corner-left,
 .ui-corner-tl {
-	border-top-left-radius: 6px;
+	border-top-left-radius: 4px;
 }
 .ui-corner-all,
 .ui-corner-top,
 .ui-corner-right,
 .ui-corner-tr {
-	border-top-right-radius: 6px;
+	border-top-right-radius: 4px;
 }
 .ui-corner-all,
 .ui-corner-bottom,
 .ui-corner-left,
 .ui-corner-bl {
-	border-bottom-left-radius: 6px;
+	border-bottom-left-radius: 4px;
 }
 .ui-corner-all,
 .ui-corner-bottom,
 .ui-corner-right,
 .ui-corner-br {
-	border-bottom-right-radius: 6px;
+	border-bottom-right-radius: 4px;
 }
 
 /* Overlays */
 .ui-widget-overlay {
-	background: #6e4f1c url("images/ui-bg_diagonal-maze_20_6e4f1c_10x10.png") 50% 50% repeat;
-	opacity: .6;
-	filter: Alpha(Opacity=60); /* support: IE8 */
+	background: #aaaaaa;
+	opacity: .3;
+	filter: Alpha(Opacity=30); /* support: IE8 */
 }
 .ui-widget-shadow {
-	-webkit-box-shadow: -10px 0 5px #000000;
-	box-shadow: -10px 0 5px #000000;
+	-webkit-box-shadow: -8px -8px 8px #aaaaaa;
+	box-shadow: -8px -8px 8px #aaaaaa;
 }
 
 /***
@@ -10319,10 +10319,17 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
  * (C) M.Kuhs Ireland, 2016
  */
 
-.lh-2 {
-    line-height: 2;
+.lh-1 {
+    line-height: 1;
 }
 
+.lh-2 {
+    line-height: 2.5;
+}
+.edit-chords {
+    cursor: move;
+    vertical-align: text-bottom;    
+}
 
 /* in multi-column mode, keep some elements always together */
 .keeptogether {
@@ -10337,10 +10344,13 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
     font-size: 75%;
     font-weight: bold;
     margin-bottom: 0;
+    overflow: hidden;
 }
 .lyrics {
     font-size: 75%;
-    margin-bottom: 0;
+    margin-bottom: 1rem;
+    overflow: hidden;
+    line-height: 1.1;
 }
 
 

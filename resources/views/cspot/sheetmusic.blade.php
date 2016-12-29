@@ -27,10 +27,14 @@
     <div id="main-content">
     {{-- ================================================================================ --}}
 
+
+
         @if ($item->song_id )
+
             @if ($item->key)
                 <h4 class="red">{{ $item->key }}</h4>
             @endif
+
             @if ($type=='sheetmusic' && count($item->song->files)>0 )
                 <div class="mb-3">
                     @foreach ($item->song->files as $file)
@@ -38,14 +42,36 @@
                             src="{{ url(config('files.uploads.webpath')).'/'.$file->token }}">
                     @endforeach
                 </div>
+
             @elseif ($item->song->chords )
                 <div class="mb-3">
                     <pre class="big" id="chords">{{ $item->song->chords }}</pre>
                 </div>
+
+            @elseif ( isset($onSongChords)  &&  $onSongChords->count() )
+                <div class="mb-3">
+                    <div class="text-onsong" id="onsongs" style="column-count: 1;">
+                        @foreach ( $onSongChords as $onsong )
+                            <div class="keeptogether">                            
+                                @if ($onsong->song_part->code!='m')
+                                    <div class="chords-header pl-3 text-white {{ is_numeric($onsong->song_part->code) ? 'bg-success' : 'bg-info' }}" 
+                                          id="song-part-{{ $onsong->song_part->code }}">{{ $onsong->song_part->name }}:</div>
+                                @endif
+
+                                <div class="lh-1 chords-part{{ $onsong->song_part->code!='m' ? ' show-onsong-text' : ' white-space-pre-wrap bigger red' }}">{{ $onsong->text }}</div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+
             @else
                 <pre class="big mb-3">{{ $item->song->lyrics }}</pre>
+                
             @endif
         @endif
+
+
+
 
         @if ($item->files)
             @foreach ($item->files as $file)

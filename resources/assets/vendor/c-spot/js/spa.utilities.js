@@ -232,7 +232,7 @@ function saveNewOnSongText(that, del)
     }
 
     // check if it is 'chords over lyrics' format!
-    if ( text.indexOf('[') < 0  &&  text.indexOf(']') < 0  &&  text.indexOf("\n") > -1 )
+    if ( text.indexOf('[') > -1  &&  text.indexOf(']') > -1  &&  text.indexOf("\n") > -1 )
         text = joinLyricsAndChordsToOnSong(text);
 
     // get text value of selected part name
@@ -240,7 +240,7 @@ function saveNewOnSongText(that, del)
 
     // all good, we can proceed. Hide the action buttons
     var oldCellHtml = $(cell).html(); 
-    $(cell).html(cSpot.const.waitspinner); // or append?
+    $(cell).append(cSpot.const.waitspinner); // or append?
 
     // is this a delete request?
     if (del == 'delete')

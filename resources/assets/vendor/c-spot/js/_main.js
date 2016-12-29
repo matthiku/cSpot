@@ -939,14 +939,16 @@ function rewriteOnsong(element)
 
         var tx = splitOnSong(textblocks[i]);
 
-        if (tx.lyrics) {
-            if ( tx.chords.trim()!='' ) // don't add an empty line
-                newText += '<pre class="chords">' + tx.chords + '</pre>';
-            if ( tx.lyrics.substr(0,1)=='('  &&  tx.lyrics.substr(-1,1)==')' )
-                newText += '<pre class="mb-0 text-primary">' + tx.lyrics + "</pre>";
-            else if (tx.lyrics.substr(0,1)!='#')
-                newText += '<pre class="lyrics">' + tx.lyrics + "</pre>";
-        }
+        if ( tx.chords.trim()!='' ) // don't add an empty line
+            newText += '<pre class="chords">' + tx.chords + '</pre>';
+
+        if ( tx.lyrics.substr(0,1)=='('  
+          && tx.lyrics.substr(-1,1)==')' )
+            newText += '<pre class="mb-0 text-primary">' + tx.lyrics + "</pre>";
+
+        else if (tx.lyrics 
+              && tx.lyrics.substr(0,1)!='#')
+            newText += '<pre class="lyrics">' + tx.lyrics + "</pre>";
     });
 
     $(element).html(newText);
@@ -967,16 +969,27 @@ function splitOnSong(onsong)
     
     var parts = onsong.split('[');
     for (var i = 0; i < parts.length; i++) {
+
+        // divide this into chord and lyrics
         spl = parts[i].split(']');
-        // does this part contains chord and lyrics?
+        var chord = spl[0].trim();
+        var lyric;
+        if (spl[1]) lyric = spl[1];
+        // if there are leading blanks, make sure we have max one!
+        if (lyric && lyric.trim() && lyric.substr(0,2)=='  ') 
+            lyric = ' '+lyric.trimLeft();
+
+        // does this part contain both chord and lyrics?
         if (spl.length>1) {
-            maxl = Math.max(spl[0].length, spl[1].length);
-            if (spl[0].length >= spl[1].length) 
+            maxl = Math.max(chord.length, lyric.length);
+            if (chord.length >= lyric.length) 
                 maxl+=1; // add an extra blank if chords are longer than lyrics
             padd = ' '.repeat(maxl);
-            lyrics += (spl[1]+padd).substr(0,maxl);
-            chords += (spl[0]+padd).substr(0,maxl);
-        } else {
+            lyrics += (lyric+padd).substr(0,maxl);
+            chords += (chord+padd).substr(0,maxl);
+        } 
+        // no chords in this section, just lyrics
+        else {
             lyrics += spl[0];
             chords += ' '.repeat(spl[0].length);
         }
@@ -998,6 +1011,7 @@ function joinLyricsAndChordsToOnSong(chords)
     var lines = chords.split("\n");
     if (lines < 2) 
         return ("Can't proceed, chords or lyrics missing!");
+    
     var result = '';
     // iterate through each line, TWO at a time
     for (var i = 0; i < lines.length; i+=2) {

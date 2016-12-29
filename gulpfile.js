@@ -38,7 +38,7 @@ var path = {
     other good ones: base, pepper-grinder, smoothness, redmond, overcast, sunny, flick, cuppertino, ui-lightness
     see: http://jqueryui.com/themeroller/
 */
-var ui_theme = 'pepper-grinder'; 
+var ui_theme = 'redmond'; 
 
 
 
@@ -56,7 +56,7 @@ elixir(function(mix) {
         path.spectrum       + '/spectrum.css',
         path.c_spot         + '/css/style.css',
         path.c_spot         + '/css/signin.css',
-    ], 'public/css/c-spot.css', './');
+    ], 'public/css/all.css', './');
 
 
     /* mix JS */
@@ -72,12 +72,11 @@ elixir(function(mix) {
         path.c_spot         + '/js/document.ready.js',
         path.c_spot         + '/js/spa.utilities.js',
         path.c_spot         + '/js/presentation.js',
-    ], 'public/js/c-spot.js', './');
+    ], 'public/js/all.js', './');
     
 
-    // allow for versioning, see
-    // https://scotch.io/tutorials/run-gulp-tasks-in-laravel-easily-with-elixir
-    mix.version(['public/css/c-spot.css', 'public/js/c-spot.js']);
+    // allow for versioning
+    mix.version(['css/all.css', 'js/all.js']);
 
 
     /* 
@@ -94,5 +93,8 @@ elixir(function(mix) {
         path.jquery_ui      + '/themes/'+ui_theme+'/images',
     ], 'public/build/css/images');
 
+
+    // Browser Sync
+    // mix.browserSync({        proxy: 'c-spot.app'    });
 
 });

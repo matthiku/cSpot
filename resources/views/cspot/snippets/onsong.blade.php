@@ -18,7 +18,7 @@
 			<th colspan=3 class="pl-2">
 				<span onclick="insertNewOnSongRow();"><i class="fa fa-plus"></i> Add new Part</span>
 				<span class="small float-xs-right">
-					<a href="http://www.logue.net/xp/" target="new"><span class="text-info">Use this Tool for Transposing!</span>
+					<a href="http://www.logue.net/xp/" target="new"><span class="text-info">Tool for Transposing</span>
 						<i class="fa fa-external-link"></i></a>
 				</span>
 			</th>
@@ -49,12 +49,12 @@
 					data-onsong-id="{{ $onsong->id }}" data-part-id="{{ $onsong->song_part_id }}">
 
 					<th {{ $onsong->song_part->code!='m' ? 'class=text-xs-center' : 'class=text-xs-right colspan=2' }}>
-						{{ $onsong->song_part->code!='m' ? $onsong->song_part->name : 'Notes:' }}
+						{{ $onsong->song_part->code!='m' ? $onsong->song_part->name : '' }}
 						<span class="hidden-lg-up"><br>{{ $onsong->song_part->code!='m' ? '('.$onsong->song_part->code.')' : '' }}</span>
 					</th>
 					
 					@if ($onsong->song_part->code!='m')
-						<th class="text-xs-center hidden-md-down">{{ $onsong->song_part->code!='m' ? $onsong->song_part->code : '' }}</th>
+						<th class="text-xs-center text-primary hidden-md-down">{{ $onsong->song_part->code!='m' ? $onsong->song_part->code : '' }}</th>
 					@endif
 
 					<td class="cell-part-text">

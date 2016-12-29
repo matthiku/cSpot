@@ -121,7 +121,7 @@ class HomeController extends Controller
         if ( $referer[$len-3] == 'items' )
             $item = Item::find( $referer[$len-2] );
 
-        if ( $request->has('item_id')) 
+        if ( $request->has('item_id') && is_numeric($request->item_id))
             $item = Item::find( $request->item_id );
 
         if( isset($item) ) {
