@@ -7,6 +7,11 @@
  * (C) M.Kuhs Ireland, 2016
  */
 
+.hidden {
+    display: none;
+}
+
+
 .lh-1  { line-height: 1; }
 .lh-1h { line-height: 1.5; }
 .lh-2  { line-height: 2;   }

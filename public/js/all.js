@@ -43219,6 +43219,8 @@ function insertNewOnSongRow()
 
     // hide all other action buttons
     $('.for-existing-items').hide();
+    $('.toggle-onsong-buttons').hide(); 
+    $('.for-new-items').show();
     
     // set the focus on the part-type selection
     $('#new-onsong-row').children('.cell-part-name').children('select').focus();
@@ -43262,8 +43264,9 @@ function removeNewOnSongRow(that)
     $('.error-msg').hide();
     $('#insertNewOnSongRow-link').show();
     $('.for-existing-items').show();
+    $('.toggle-onsong-buttons').show(); 
     
-    var row  = $(that).parent().parent();
+    var row  = $(that).parent().parent().parent();
     var onsong_id = $(row).data('onsong-id') || 0; // (undefined for new elements)
 
     // remove row in case of a just added, empty row
@@ -43277,12 +43280,14 @@ function removeNewOnSongRow(that)
 
     // reinstate row layout for existing rows
     // input area
-    $(row).children('.cell-part-text').children('.show-onsong-text').show();
-    $(row).children('.cell-part-text').children('.write-onsong-text').show();
-    $(row).children('.cell-part-text').children('textarea').hide();
+    var onsongArea = $(row).children('.cell-part-text');
+    $(onsongArea).children('.show-onsong-text').show();
+    $(onsongArea).children('.write-onsong-text').show();
+    $(onsongArea).children('textarea').hide();
 
     // show correct action buttons
-    var cell = $(that).parent();
+    $('.cell-part-action').hide();
+    var cell =  $(onsongArea).children('.cell-part-action');
     $(cell).children('.for-existing-items').show(); 
     $(cell).children('.for-new-items').hide(); 
 }
@@ -43292,12 +43297,14 @@ function removeNewOnSongRow(that)
 */
 function editOnSongText(that)
 {
+    $('.toggle-onsong-buttons').hide(); 
     $('#insertNewOnSongRow-link').hide();
     $('.show-onsong-format-hint').show();
 
     // get handle on input elements etc
     var row  = $(that).parent().parent();
     // hide display-only text, show writeable input area
+    $(row).children('.cell-part-text').children('.cell-part-action').show();
     $(row).children('.cell-part-text').children('.show-onsong-text').hide();
     $(row).children('.cell-part-text').children('.write-onsong-text').hide();
     $(row).children('.cell-part-text').children('textarea').show();
@@ -43309,8 +43316,8 @@ function editOnSongText(that)
     );
 
     // show correct action buttons
-    $(row).children('.cell-part-action').children('.for-existing-items').hide(); 
-    $(row).children('.cell-part-action').children('.for-new-items').show(); 
+    $('.for-existing-items').hide(); 
+    $(row).children('.cell-part-text').children('.cell-part-action').children('.for-new-items').show(); 
 
     $(row).addClass('table-warning');
     $(row).children('.cell-part-text').children('textarea').focus();
@@ -43319,7 +43326,7 @@ function editOnSongText(that)
 function deleteOnSongText(that)
 {
     if ( confirm('This cannot be undone. Are you sure?') )
-        saveNewOnSongText(that, 'delete');
+        saveNewOnSongText($(that).parent(), 'delete');
 }
 
 function saveNewOnSongText(that, del)
@@ -43327,11 +43334,11 @@ function saveNewOnSongText(that, del)
     $('.show-onsong-format-hint').hide();
     $('.error-msg').hide();
     $('.new-onsong-field').css('background-color', 'inherit');
-    $('.for-existing-items').show();
+    // $('.for-existing-items').show();
 
     // get handle on input elements etc
     var cell = $(that).parent();
-    var row  = $(that).parent().parent();
+    var row  = $(that).parent().parent().parent();
 
     // verify input data
     var select  = $(row).children('.cell-part-name').children('select');
@@ -43365,7 +43372,7 @@ function saveNewOnSongText(that, del)
 
     // all good, we can proceed. Hide the action buttons
     var oldCellHtml = $(cell).html(); 
-    $(cell).append(cSpot.const.waitspinner); // or append?
+    $(cell).html(cSpot.const.waitspinner); 
 
     // is this a delete request?
     if (del == 'delete')
@@ -43406,6 +43413,8 @@ function saveNewOnSongText(that, del)
                 $(row).children('.cell-part-code').text(data.data.song_part.code);
                 $(row).children('.cell-part-code').addClass('font-weight-bold text-xs-center');
                 $(row).children('.cell-part-text').children('textarea').hide();
+                $(row).children('.cell-part-text').children('.cell-part-action').hide();
+                $('.toggle-onsong-buttons').show();
             }
             // for existing rows
             else  {
@@ -43420,6 +43429,7 @@ function saveNewOnSongText(that, del)
                 else {
                     $(row).children('.cell-part-text').children('textarea').hide();
                 }
+                removeNewOnSongRow(that);
             }
             // enable ADD button
             $('#insertNewOnSongRow-link').show();
@@ -43443,30 +43453,35 @@ function removeFromLocalOnSongParts(which)
 
 /* runs when modal was closed (hidden)
 */
-function cancelAdvOnSongEditor()
+function cancelAdvOnSongEditor(that)
 {
     // the id for the row comes from the modal's data attribute which was filled when the modal was triggered
-    var row = $('#' + $('#advOnSongEditor').data('for-row-id'));
-    $(row).children('.cell-part-action').children('.for-existing-items').show(); 
-    $(row).children('.cell-part-action').children('.for-new-items').hide(); 
+    var row = $(that).parent().parent().parent();
+    // var row = $('#' + $('#advOnSongEditor').data('for-row-id'));
     row.removeClass('table-warning');
+    $(row).children('.cell-part-text').children('.cell-part-action').children('.for-new-items').hide(); 
+    $(row).children('.cell-part-text').children('.editor-hints').hide(); 
+    $(row).children('.cell-part-text').children('.cell-part-action').children('.for-existing-items').show(); 
+    $('.toggle-onsong-buttons').show(); 
+    $(row).children('.cell-part-text').children('.show-onsong-text').show(); 
     // empty the editor
-    $('#advOnSongEditorArea').html('');
+    $(row).children('.cell-part-text').children('.advanced-editor').html('').hide();
 }
 
 /* get the changed data from the OnSong editor back into the textarea
 */
-function submitEditedOnSong()
+function submitEditedOnSong(that)
 {
     // get an handle on the row from which this modal was launched
-    var row = $('#' + $('#advOnSongEditor').data('for-row-id'));
+    // var row = $('#' + $('#advOnSongEditor').data('for-row-id'));
+    var row = $(that).parent().parent().parent();
 
     // the old OnSong data
     var textDiv = row.children('.cell-part-text').children('textarea');
 
     // the edited OnSong data
     var newData = '';
-    var lines = $('#advOnSongEditorArea').children('div');
+    var lines = $(row).children('.cell-part-text').children('.advanced-editor').children('div');
     // we must take care of newLine !
     $.each(lines, function(elem) {
         newData += $(lines[elem]).text()+"\n";
@@ -43479,29 +43494,29 @@ function submitEditedOnSong()
     textDiv.val(newData);
 
     // get handle on Save button
-    var handleOnSaveButton = row.children('.cell-part-action').children('a.for-new-items')[0];
+    var handleOnSaveButton = row.children('.cell-part-text').children('.cell-part-action').children('a.for-new-items')[0];
 
     // then submit the new data to the host
     saveNewOnSongText(handleOnSaveButton);
-    $(row).children('.cell-part-action').children('.for-new-items').show(); 
+    $(row).children('.cell-part-text').children('.cell-part-action').children('.for-new-items').show(); 
     
-    $('#advOnSongEditor').modal('hide');
-    cancelAdvOnSongEditor();
+    cancelAdvOnSongEditor(that);
 }
 
 /* launch the modal that shows the OnSong editor
 */
-function fillAdvOnSongEditor(event) 
+function fillAdvOnSongEditor(that) 
 {
+    // hide the container div
+    $(that).parent().hide();
+
     // get access to the triggering row
-    var row = $(event.relatedTarget).parent().parent();
+    var row = $(that).parent().parent().parent();
 
     // show correct action buttons
-    $(row).children('.cell-part-action').children('.for-existing-items').hide(); 
+    $(row).children('.cell-part-text').children('.cell-part-action').children('.for-existing-items').hide(); 
+    $('.toggle-onsong-buttons').hide(); 
     $(row).addClass('table-warning');
-
-    // save row id from which the modal was triggered
-    $('#advOnSongEditor').data('for-row-id', row.attr('id'));
 
     // get the existing OnSong data
     var textDiv = row.children('.cell-part-text').children('textarea');
@@ -43515,12 +43530,16 @@ function fillAdvOnSongEditor(event)
     });
 
     // write the data into the editor
-    $('#advOnSongEditorArea').html(newHtml);
+    // $('#advOnSongEditorArea').html(newHtml);
+    $(row).children('.cell-part-text').children('.show-onsong-text').hide(); 
+    $(row).children('.cell-part-text').children('.editor-hints').show(); 
+    $(row).children('.cell-part-text').children('.advanced-editor').html(newHtml).show(); 
+
 
     // make the chords draggable
     $('.onsong-edit-lines').sortable({
         axis: "x",
-        containment: "#advOnSongEditor",
+        containment: "#"+$(row).children('.cell-part-text').children('.advanced-editor').attr('id'),
     });
 }
 function splitOnSongLines(line) {

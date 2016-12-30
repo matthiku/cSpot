@@ -1,16 +1,9 @@
 
 
+
+
 <table class="table table-striped table-bordered table-sm" id="onsong-parts" 
 		data-song-id="{{ isset($song) ? $song->id : '0' }}" data-update-onsong-url="{{ route('updateonsongparts') }}">
-
-	<thead style="display: none;">
-		<tr>
-			<th class="text-xs-center" style="width: 80px;">Part</th>
-			<th class="text-xs-center small hidden-md-down" style="width: 40px;">Code</th>
-			<th>Text and Chords</th>
-			<th style="width: 80px;"></th>
-		</tr>
-	</thead>
 
 
 	<tfoot>
@@ -25,7 +18,7 @@
 		</tr>
 
 		<tr style="display: none;" class="show-onsong-format-hint text-xs-center ">
-			<td colspan=3 class="small text-success">
+			<td colspan=3 class="small">
 				You can insert "chords over lyrics" or OnSong-formatted chords and lyrics (lyrics with chords in square brackets).<br>
 				For more information, see the 
 				<a href="http://www.onsongapp.com/docs/features/formats/onsong/chords/" target="new" class="text-info">
@@ -57,23 +50,31 @@
 						<th class="text-xs-center text-primary hidden-md-down">{{ $onsong->song_part->code!='m' ? $onsong->song_part->code : '' }}</th>
 					@endif
 
+
 					<td class="cell-part-text">
+						<span class="toggle-onsong-buttons float-xs-right btn btn-sm" title="Show Edit Buttons" 
+							onclick="$(this).parent().children('.cell-part-action').toggle();">&#9997;</span>
+
+						<div id="advanced-editor-{{ $onsong->id }}" class="advanced-editor rounded bg-info text-white lh-2 px-1"></div>
+
 						<div class="white-space-pre-wrap lh-1 write-onsong-text{{ $onsong->song_part->code!='m' ? ' show-onsong-text' : '' }}" 
 							onclick="editOnSongText(this);" title="Click to edit">{{ $onsong->text }}</div>
+
 						<textarea style="width: 100%; display: none; font-size: small;" tabindex=1 onkeyup="calculateTextAreaHeight(this);">{{ $onsong->text }}</textarea>
+
 						<div class="error-msg" style="display: none;">Enter text here.</div>
+
+						<div class="editor-hints hidden small">
+			                <small>Re-arrange the keys (chords) within the lyrics by dragging them left or right.</small>
+			                <button type="button" class="btn btn-sm float-xs-right btn-success"onclick="submitEditedOnSong(this)" >Save changes</button>
+			                <button type="button" class="btn btn-sm float-xs-right btn-secondary"onclick="cancelAdvOnSongEditor(this)" >Cancel</button>
+						</div>
+
+						<div class="cell-part-action center hidden small">
+							@include('cspot.snippets.onsong_action')
+						</div>
 					</td>
 
-					<th class="cell-part-action center">
-						@if ($onsong->song_part->code!='m')
-							<button title="Advanced OnSong Editor" type="button" class="btn btn-primary btn-sm for-existing-items" 
-									data-toggle="modal" data-target="#advOnSongEditor">&#9997;</button>
-						@endif
-						<a href="javascript:void(0);" onclick="deleteOnSongText(this);" title="delete" class="btn btn-outline-danger btn-sm for-existing-items"><big>&#128465;</big></a>
-
-						<a href="javascript:void(0);" onclick="saveNewOnSongText(this);" style="display: none;" title="save"   tabindex=2 class="for-new-items big">&#128427;</a><br>
-						<a href="javascript:void(0);" onclick="removeNewOnSongRow(this);" style="display: none;" title="cancel" tabindex=3 class="for-new-items">&#10007;</a>
-					</th>
 
 				</tr>
 			@endforeach
@@ -96,7 +97,7 @@
 						<option value="{{ $part->id }}">{{ $part->name }}</option>
 					@endforeach
 				</select>
-				<div class="error-msg" style="display: none;">Select a name!</div>
+				<div class="error-msg hidden">Select a name!</div>
 				<br>
 				<a href="{{ url('admin/song_parts') }}" target="new" class="small">edit list <i class="fa fa-external-link"></i></a>
 			</th>
@@ -104,18 +105,25 @@
 			<th class="cell-part-code hidden-md-down"></th>
 
 			<td class="cell-part-text">
-				<div class="show-onsong-text write-onsong-text lh-1 white-space-pre-wrap" style="display: none;"></div>
+				<span class="toggle-onsong-buttons float-xs-right btn btn-sm hidden" title="Show Edit Buttons" 
+					onclick="$(this).parent().children('.cell-part-action').toggle();">&#9997;</span>
+
+				<div id="advanced-editor-0" class="advanced-editor rounded bg-info text-white lh-2 px-1"></div>
+
+				<div class="show-onsong-text write-onsong-text lh-1 white-space-pre-wrap hidden"></div>
 				<textarea class="new-onsong-field" style="width: 100%;" tabindex=2 onkeyup="calculateTextAreaHeight(this);"></textarea>
-				<div class="error-msg" style="display: none;">Enter text here.</div>
+				<div class="error-msg hidden">Enter text here.</div>
+
+				<div class="editor-hints hidden small">
+	                <small>Re-arrange the keys (chords) within the lyrics by dragging them left or right.</small>
+	                <button type="button" class="btn btn-sm float-xs-right btn-success"onclick="submitEditedOnSong(this)" >Save changes</button>
+	                <button type="button" class="btn btn-sm float-xs-right btn-secondary"onclick="cancelAdvOnSongEditor(this)" >Cancel</button>
+				</div>
+
+				<div class="cell-part-action center">
+					@include('cspot.snippets.onsong_action')
+				</div>
 			</td>
-
-			<th class="cell-part-action center">
-				<a href="javascript:void(0);" onclick="deleteOnSongText(this);" style="display: none;" 
-				  title="delete" class="for-existing-items text-danger float-xs-right"><i class="fa fa-trash"></i></a>
-
-				<a href="javascript:void(0);" onclick="saveNewOnSongText(this);" title="save" tabindex=3 class="for-new-items big">&#128427;</a><br>
-				<a href="javascript:void(0);" onclick="removeNewOnSongRow(this);" title="cancel" tabindex=4 class="for-new-items newrow-cancel-button">&#10007;</a>
-			</th>
 		</tr>
 
 

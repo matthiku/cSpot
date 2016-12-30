@@ -17,8 +17,6 @@
 
     @if (isset($song))
         
-        @include ('cspot.snippets.advancedOnSongEditor')
-
         {!! Form::model( $song, array(
             'route'  => array('songs.update', $song->id), 
             'method' => 'put', 

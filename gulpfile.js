@@ -54,8 +54,10 @@ elixir(function(mix) {
         path.jquery_ui      + '/themes/base/tabs.css',
         path.jquery_ui      + '/themes/'+ui_theme+'/theme.css',
         path.spectrum       + '/spectrum.css',
+
         path.c_spot         + '/css/style.css',
         path.c_spot         + '/css/signin.css',
+        
     ], 'public/css/all.css', './');
 
 
@@ -68,10 +70,12 @@ elixir(function(mix) {
         path.moment         + '/moment.js',
         path.jeditable      + '/jquery.jeditable.js',
         path.spectrum       + '/spectrum.js',
+
         path.c_spot         + '/js/_main.js',
         path.c_spot         + '/js/document.ready.js',
         path.c_spot         + '/js/spa.utilities.js',
         path.c_spot         + '/js/presentation.js',
+
     ], 'public/js/all.js', './');
     
 
