@@ -965,15 +965,15 @@ function rewriteOnsong(element)
  */
 function splitOnSong(onsong)
 {
-    var result = {}, lyrics='', chords='', spl, maxl=0, padd;
+    var result = {}, lyrics='', chords='', spl, maxl=0, padd, lyric, chord;
     
     var parts = onsong.split('[');
     for (var i = 0; i < parts.length; i++) {
 
         // divide this into chord and lyrics
         spl = parts[i].split(']');
-        var chord = spl[0].trim();
-        var lyric;
+        chord = spl[0].trim();
+        lyric = '';
         if (spl[1]) lyric = spl[1];
         // if there are leading blanks, make sure we have max one!
         if (lyric && lyric.trim() && lyric.substr(0,2)=='  ') 
