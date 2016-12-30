@@ -944,7 +944,7 @@ function rewriteOnsong(element)
 
         if ( tx.lyrics.substr(0,1)=='('  
           && tx.lyrics.substr(-1,1)==')' )
-            newText += '<pre class="mb-0 text-primary">' + tx.lyrics + "</pre>";
+            newText += '<pre class="mb-0 text-primary lh-1h">' + tx.lyrics + "</pre>";
 
         else if (tx.lyrics 
               && tx.lyrics.substr(0,1)!='#')
@@ -1009,15 +1009,25 @@ function splitOnSong(onsong)
 function joinLyricsAndChordsToOnSong(chords)
 {
     var lines = chords.split("\n");
-    if (lines < 2) 
-        return ("Can't proceed, chords or lyrics missing!");
+    if (lines < 2) return chords;
+
+    // at least one line must be chords only
+    var chordsFound = false;
+    for (var i = 0; i < lines.length; i++) {
+        chordsFound = identifyChords(lines[i]);
+        if (chordsFound) break;
+    }
+    if (!chordsFound) return chords;
     
     var result = '';
+
     // iterate through each line, TWO at a time
     for (var i = 0; i < lines.length; i+=2) {
+
         var online = '', start = 0;
         var chline = lines[i];
         var lyline = lines[1+i];
+
         // ignore empty lines
         if (! chline.trim().length  ||  chline == ' ') {
             if (chline.trim().length)
@@ -1026,9 +1036,9 @@ function joinLyricsAndChordsToOnSong(chords)
             continue;
         }
         // ignore parts headers or other instructions
-        if (identifyHeadings(chline).length) {
+        if (identifyHeadings(chline).length  ||  !identifyChords(chline)) {
             result += chline + "\n";            
-            i -= 1; 
+            i -= 1;
             continue;
         }
         
@@ -1049,7 +1059,8 @@ function joinLyricsAndChordsToOnSong(chords)
         }
         result += online + "\n";
     }
-    return result;
+    // return the result and make sure we have no trailing newline chars
+    return result.trimRight();
 }
 /* create array of the textual postion of chords in a string 
 */

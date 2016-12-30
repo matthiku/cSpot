@@ -232,7 +232,7 @@ function saveNewOnSongText(that, del)
     }
 
     // check if it is 'chords over lyrics' format!
-    if ( text.indexOf('[') > -1  &&  text.indexOf(']') > -1  &&  text.indexOf("\n") > -1 )
+    if ( text.indexOf('[') < 0  &&  text.indexOf(']') < 0  &&  text.indexOf("\n") > -1 )
         text = joinLyricsAndChordsToOnSong(text);
 
     // get text value of selected part name
@@ -263,9 +263,12 @@ function saveNewOnSongText(that, del)
             $(cell).children('.for-existing-items').show(); 
             $(cell).children('.for-new-items').hide(); 
 
-            // insert success data into the new table rowor the existing row (for updates)
+            // insert success data into the new table row or the existing row (for updates)
             $(row).children('.cell-part-text').children('.write-onsong-text').html(data.data.text).show();
+            // show it as chords over lyrics
             rewriteOnsong($(row).children('.cell-part-text').children('.show-onsong-text'));
+            // also write it into the textarea for futher edits in this session
+            $(textarea).val(data.data.text);
 
             // for new rows
             if (!onsong_id) {

@@ -7,13 +7,11 @@
  * (C) M.Kuhs Ireland, 2016
  */
 
-.lh-1 {
-    line-height: 1;
-}
+.lh-1  { line-height: 1; }
+.lh-1h { line-height: 1.5; }
+.lh-2  { line-height: 2;   }
+.lh-2h { line-height: 2.5; }
 
-.lh-2 {
-    line-height: 2.5;
-}
 .edit-chords {
     cursor: move;
     vertical-align: text-bottom;    

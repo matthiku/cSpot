@@ -29,20 +29,7 @@
             @endif
 
             @if ( isset($onSongChords)  &&  $onSongChords->count() )
-                <div class="mb-3">
-                    <div class="text-onsong" id="onsongs" style="column-count: 1;">
-                        @foreach ( $onSongChords as $onsong )
-                            <div class="keeptogether">                            
-                                @if ($onsong->song_part->code!='m')
-                                    <div class="chords-header pl-3 text-white {{ is_numeric($onsong->song_part->code) ? 'bg-success' : 'bg-info' }}" 
-                                          id="song-part-{{ $onsong->song_part->code }}">{{ $onsong->song_part->name }}:</div>
-                                @endif
-
-                                <div class="lh-1 chords-part{{ $onsong->song_part->code!='m' ? ' show-onsong-text' : ' white-space-pre-wrap bigger red' }}">{{ $onsong->text }}</div>
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
+                @include ('cspot.snippets.present_chords')
 
             @elseif ($item->song->chords )
                 <div class="mb-3">

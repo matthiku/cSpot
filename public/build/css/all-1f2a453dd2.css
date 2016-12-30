@@ -9368,14 +9368,14 @@ a.text-gray-dark:focus, a.text-gray-dark:hover {
  *
  * http://api.jqueryui.com/category/theming/
  *
- * To view and modify this theme, visit http://jqueryui.com/themeroller/?ffDefault=Verdana%2CArial%2Csans-serif&fwDefault=normal&fsDefault=1.1em&cornerRadius=4px&bgColorHeader=cccccc&bgTextureHeader=highlight_soft&bgImgOpacityHeader=75&borderColorHeader=aaaaaa&fcHeader=222222&iconColorHeader=222222&bgColorContent=ffffff&bgTextureContent=flat&bgImgOpacityContent=75&borderColorContent=aaaaaa&fcContent=222222&iconColorContent=222222&bgColorDefault=e6e6e6&bgTextureDefault=glass&bgImgOpacityDefault=75&borderColorDefault=d3d3d3&fcDefault=555555&iconColorDefault=888888&bgColorHover=dadada&bgTextureHover=glass&bgImgOpacityHover=75&borderColorHover=999999&fcHover=212121&iconColorHover=454545&bgColorActive=ffffff&bgTextureActive=glass&bgImgOpacityActive=65&borderColorActive=aaaaaa&fcActive=212121&iconColorActive=454545&bgColorHighlight=fbf9ee&bgTextureHighlight=glass&bgImgOpacityHighlight=55&borderColorHighlight=fcefa1&fcHighlight=363636&iconColorHighlight=2e83ff&bgColorError=fef1ec&bgTextureError=glass&bgImgOpacityError=95&borderColorError=cd0a0a&fcError=cd0a0a&iconColorError=cd0a0a&bgColorOverlay=aaaaaa&bgTextureOverlay=flat&bgImgOpacityOverlay=0&opacityOverlay=30&bgColorShadow=aaaaaa&bgTextureShadow=flat&bgImgOpacityShadow=0&opacityShadow=30&thicknessShadow=8px&offsetTopShadow=-8px&offsetLeftShadow=-8px&cornerRadiusShadow=8px
+ * To view and modify this theme, visit http://jqueryui.com/themeroller/?ffDefault=Lucida%20Grande%2CLucida%20Sans%2CArial%2Csans-serif&fwDefault=bold&fsDefault=1.1em&cornerRadius=5px&bgColorHeader=5c9ccc&bgTextureHeader=gloss_wave&bgImgOpacityHeader=55&borderColorHeader=4297d7&fcHeader=ffffff&iconColorHeader=d8e7f3&bgColorContent=fcfdfd&bgTextureContent=inset_hard&bgImgOpacityContent=100&borderColorContent=a6c9e2&fcContent=222222&iconColorContent=469bdd&bgColorDefault=dfeffc&bgTextureDefault=glass&bgImgOpacityDefault=85&borderColorDefault=c5dbec&fcDefault=2e6e9e&iconColorDefault=6da8d5&bgColorHover=d0e5f5&bgTextureHover=glass&bgImgOpacityHover=75&borderColorHover=79b7e7&fcHover=1d5987&iconColorHover=217bc0&bgColorActive=f5f8f9&bgTextureActive=inset_hard&bgImgOpacityActive=100&borderColorActive=79b7e7&fcActive=e17009&iconColorActive=f9bd01&bgColorHighlight=fbec88&bgTextureHighlight=flat&bgImgOpacityHighlight=55&borderColorHighlight=fad42e&fcHighlight=363636&iconColorHighlight=2e83ff&bgColorError=fef1ec&bgTextureError=glass&bgImgOpacityError=95&borderColorError=cd0a0a&fcError=cd0a0a&iconColorError=cd0a0a&bgColorOverlay=aaaaaa&bgTextureOverlay=flat&bgImgOpacityOverlay=0&opacityOverlay=30&bgColorShadow=aaaaaa&bgTextureShadow=flat&bgImgOpacityShadow=0&opacityShadow=30&thicknessShadow=8px&offsetTopShadow=-8px&offsetLeftShadow=-8px&cornerRadiusShadow=8px
  */
 
 
 /* Component containers
 ----------------------------------*/
 .ui-widget {
-	font-family: Verdana,Arial,sans-serif;
+	font-family: Lucida Grande,Lucida Sans,Arial,sans-serif;
 	font-size: 1.1em;
 }
 .ui-widget .ui-widget {
@@ -9385,28 +9385,28 @@ a.text-gray-dark:focus, a.text-gray-dark:hover {
 .ui-widget select,
 .ui-widget textarea,
 .ui-widget button {
-	font-family: Verdana,Arial,sans-serif;
+	font-family: Lucida Grande,Lucida Sans,Arial,sans-serif;
 	font-size: 1em;
 }
 .ui-widget.ui-widget-content {
-	border: 1px solid #d3d3d3;
+	border: 1px solid #c5dbec;
 }
 .ui-widget-content {
-	border: 1px solid #aaaaaa;
-	background: #ffffff;
+	border: 1px solid #a6c9e2;
+	background: #fcfdfd url("images/ui-bg_inset-hard_100_fcfdfd_1x100.png") 50% bottom repeat-x;
 	color: #222222;
 }
 .ui-widget-content a {
 	color: #222222;
 }
 .ui-widget-header {
-	border: 1px solid #aaaaaa;
-	background: #cccccc url("images/ui-bg_highlight-soft_75_cccccc_1x100.png") 50% 50% repeat-x;
-	color: #222222;
+	border: 1px solid #4297d7;
+	background: #5c9ccc url("images/ui-bg_gloss-wave_55_5c9ccc_500x100.png") 50% 50% repeat-x;
+	color: #ffffff;
 	font-weight: bold;
 }
 .ui-widget-header a {
-	color: #222222;
+	color: #ffffff;
 }
 
 /* Interaction states
@@ -9420,10 +9420,10 @@ a.text-gray-dark:focus, a.text-gray-dark:hover {
 works properly when clicked or hovered */
 html .ui-button.ui-state-disabled:hover,
 html .ui-button.ui-state-disabled:active {
-	border: 1px solid #d3d3d3;
-	background: #e6e6e6 url("images/ui-bg_glass_75_e6e6e6_1x400.png") 50% 50% repeat-x;
-	font-weight: normal;
-	color: #555555;
+	border: 1px solid #c5dbec;
+	background: #dfeffc url("images/ui-bg_glass_85_dfeffc_1x400.png") 50% 50% repeat-x;
+	font-weight: bold;
+	color: #2e6e9e;
 }
 .ui-state-default a,
 .ui-state-default a:link,
@@ -9432,7 +9432,7 @@ a.ui-button,
 a:link.ui-button,
 a:visited.ui-button,
 .ui-button {
-	color: #555555;
+	color: #2e6e9e;
 	text-decoration: none;
 }
 .ui-state-hover,
@@ -9443,10 +9443,10 @@ a:visited.ui-button,
 .ui-widget-header .ui-state-focus,
 .ui-button:hover,
 .ui-button:focus {
-	border: 1px solid #999999;
-	background: #dadada url("images/ui-bg_glass_75_dadada_1x400.png") 50% 50% repeat-x;
-	font-weight: normal;
-	color: #212121;
+	border: 1px solid #79b7e7;
+	background: #d0e5f5 url("images/ui-bg_glass_75_d0e5f5_1x400.png") 50% 50% repeat-x;
+	font-weight: bold;
+	color: #1d5987;
 }
 .ui-state-hover a,
 .ui-state-hover a:hover,
@@ -9458,7 +9458,7 @@ a:visited.ui-button,
 .ui-state-focus a:visited,
 a.ui-button:hover,
 a.ui-button:focus {
-	color: #212121;
+	color: #1d5987;
 	text-decoration: none;
 }
 
@@ -9471,20 +9471,20 @@ a.ui-button:focus {
 a.ui-button:active,
 .ui-button:active,
 .ui-button.ui-state-active:hover {
-	border: 1px solid #aaaaaa;
-	background: #ffffff url("images/ui-bg_glass_65_ffffff_1x400.png") 50% 50% repeat-x;
-	font-weight: normal;
-	color: #212121;
+	border: 1px solid #79b7e7;
+	background: #f5f8f9 url("images/ui-bg_inset-hard_100_f5f8f9_1x100.png") 50% 50% repeat-x;
+	font-weight: bold;
+	color: #e17009;
 }
 .ui-icon-background,
 .ui-state-active .ui-icon-background {
-	border: #aaaaaa;
-	background-color: #212121;
+	border: #79b7e7;
+	background-color: #e17009;
 }
 .ui-state-active a,
 .ui-state-active a:link,
 .ui-state-active a:visited {
-	color: #212121;
+	color: #e17009;
 	text-decoration: none;
 }
 
@@ -9493,13 +9493,13 @@ a.ui-button:active,
 .ui-state-highlight,
 .ui-widget-content .ui-state-highlight,
 .ui-widget-header .ui-state-highlight {
-	border: 1px solid #fcefa1;
-	background: #fbf9ee url("images/ui-bg_glass_55_fbf9ee_1x400.png") 50% 50% repeat-x;
+	border: 1px solid #fad42e;
+	background: #fbec88;
 	color: #363636;
 }
 .ui-state-checked {
-	border: 1px solid #fcefa1;
-	background: #fbf9ee;
+	border: 1px solid #fad42e;
+	background: #fbec88;
 }
 .ui-state-highlight a,
 .ui-widget-content .ui-state-highlight a,
@@ -9556,20 +9556,20 @@ a.ui-button:active,
 }
 .ui-icon,
 .ui-widget-content .ui-icon {
-	background-image: url("images/ui-icons_222222_256x240.png");
+	background-image: url("images/ui-icons_469bdd_256x240.png");
 }
 .ui-widget-header .ui-icon {
-	background-image: url("images/ui-icons_222222_256x240.png");
+	background-image: url("images/ui-icons_d8e7f3_256x240.png");
 }
 .ui-state-hover .ui-icon,
 .ui-state-focus .ui-icon,
 .ui-button:hover .ui-icon,
 .ui-button:focus .ui-icon {
-	background-image: url("images/ui-icons_454545_256x240.png");
+	background-image: url("images/ui-icons_217bc0_256x240.png");
 }
 .ui-state-active .ui-icon,
 .ui-button:active .ui-icon {
-	background-image: url("images/ui-icons_454545_256x240.png");
+	background-image: url("images/ui-icons_f9bd01_256x240.png");
 }
 .ui-state-highlight .ui-icon,
 .ui-button .ui-state-highlight.ui-icon {
@@ -9580,7 +9580,7 @@ a.ui-button:active,
 	background-image: url("images/ui-icons_cd0a0a_256x240.png");
 }
 .ui-button .ui-icon {
-	background-image: url("images/ui-icons_888888_256x240.png");
+	background-image: url("images/ui-icons_6da8d5_256x240.png");
 }
 
 /* positioning */
@@ -9770,25 +9770,25 @@ a.ui-button:active,
 .ui-corner-top,
 .ui-corner-left,
 .ui-corner-tl {
-	border-top-left-radius: 4px;
+	border-top-left-radius: 5px;
 }
 .ui-corner-all,
 .ui-corner-top,
 .ui-corner-right,
 .ui-corner-tr {
-	border-top-right-radius: 4px;
+	border-top-right-radius: 5px;
 }
 .ui-corner-all,
 .ui-corner-bottom,
 .ui-corner-left,
 .ui-corner-bl {
-	border-bottom-left-radius: 4px;
+	border-bottom-left-radius: 5px;
 }
 .ui-corner-all,
 .ui-corner-bottom,
 .ui-corner-right,
 .ui-corner-br {
-	border-bottom-right-radius: 4px;
+	border-bottom-right-radius: 5px;
 }
 
 /* Overlays */
@@ -10319,13 +10319,11 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
  * (C) M.Kuhs Ireland, 2016
  */
 
-.lh-1 {
-    line-height: 1;
-}
+.lh-1  { line-height: 1; }
+.lh-1h { line-height: 1.5; }
+.lh-2  { line-height: 2;   }
+.lh-2h { line-height: 2.5; }
 
-.lh-2 {
-    line-height: 2.5;
-}
 .edit-chords {
     cursor: move;
     vertical-align: text-bottom;    
