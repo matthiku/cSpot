@@ -18,7 +18,7 @@
 		</tr>
 
 		<tr style="display: none;" class="show-onsong-format-hint text-xs-center ">
-			<td colspan=3 class="small">
+			<td colspan=3 class="bg-info small">
 				You can insert "chords over lyrics" or OnSong-formatted chords and lyrics (lyrics with chords in square brackets).<br>
 				For more information, see the 
 				<a href="http://www.onsongapp.com/docs/features/formats/onsong/chords/" target="new" class="text-info">
@@ -26,6 +26,10 @@
 				<div class="text-danger">
 					<strong>Note:</strong> Blank lines will force a new slide in lyrics presentations but will be ignored when showing the chords.
 				</div>
+				<span class="label label-default">
+					Tabs in the inserted text will be replaced by how many spaces:
+					<input type="number" id="onsong-import-tab-size" value=4 style="width: 2rem" onchange="updateTabToSpacesRatio(this)">
+				</span>
 			</td>
 		</tr>
 
@@ -41,14 +45,10 @@
 				<tr id="tbl-row-{{ $onsong->id }}" {{ $onsong->song_part->code=='m' ? 'class=onsong-meta-data' : '' }}
 					data-onsong-id="{{ $onsong->id }}" data-part-id="{{ $onsong->song_part_id }}">
 
-					<th {{ $onsong->song_part->code!='m' ? 'class=text-xs-center' : 'class=text-xs-right colspan=2' }}>
+					<th {{ $onsong->song_part->code!='m' ? 'class=text-xs-center' : 'class=text-xs-right' }}>
 						{{ $onsong->song_part->code!='m' ? $onsong->song_part->name : '' }}
-						<span class="hidden-lg-up"><br>{{ $onsong->song_part->code!='m' ? '('.$onsong->song_part->code.')' : '' }}</span>
+						<span><br>{{ $onsong->song_part->code!='m' ? '('.$onsong->song_part->code.')' : '' }}</span>
 					</th>
-					
-					@if ($onsong->song_part->code!='m')
-						<th class="text-xs-center text-primary hidden-md-down">{{ $onsong->song_part->code!='m' ? $onsong->song_part->code : '' }}</th>
-					@endif
 
 
 					<td class="cell-part-text">
@@ -100,9 +100,9 @@
 				<div class="error-msg hidden">Select a name!</div>
 				<br>
 				<a href="{{ url('admin/song_parts') }}" target="new" class="small">edit list <i class="fa fa-external-link"></i></a>
+				<span class="cell-part-code hidden-md-down"></span>
 			</th>
 
-			<th class="cell-part-code hidden-md-down"></th>
 
 			<td class="cell-part-text">
 				<span class="toggle-onsong-buttons float-xs-right btn btn-sm hidden" title="Show Edit Buttons" 

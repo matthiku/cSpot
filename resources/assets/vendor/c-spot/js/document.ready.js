@@ -33,7 +33,9 @@ $(document).ready(function() {
                 cSpot[item] = data[item];
             }
 
+            cSpot.config = {};
             // some common html elements
+            cSpot.const = {};
             cSpot.const.waitspinner = '<i class="fa fa-spinner fa-spin fa-fw"></i>';
             cSpot.const.editIcon   = '<i class="fa fa-edit"></i>';
             cSpot.const.deleteIcon = '<i class="fa fa-trash"></i>';

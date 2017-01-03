@@ -41604,6 +41604,15 @@ function loadFromLocalCache()
         else {
             addOptionsToBookSelect();
         }
+
+
+        // how many bible verses per slide?
+        cSpot.config.tabToSpacesRatio = localStorage.getItem('config-tabToSpacesRatio') || 4;
+        // if the value in LocalStorage was set properly, then we apply it to the input field (in case it's present):
+        if (cSpot.config.tabToSpacesRatio>0 && cSpot.config.tabToSpacesRatio<99) {
+            $('#onsong-import-tab-size').val( cSpot.config.tabToSpacesRatio );
+        }
+
     }
 
 
@@ -41645,6 +41654,14 @@ function loadFromLocalCache()
     }
 }
 
+
+// save changes to the 
+function updateTabToSpacesRatio(that)
+{ 
+    cSpot.config.tabToSpacesRatio = $(that).val();
+    localStorage.setItem('config-tabToSpacesRatio', cSpot.config.tabToSpacesRatio);
+    ;;;console.log('Updating tab-to-spaces-ratio to: ' + cSpot.config.tabToSpacesRatio);
+}
 
 
 // simple function to determine if the current user is the MP
@@ -42402,11 +42419,26 @@ function joinLyricsAndChordsToOnSong(chords)
 */
 function findChords(text)
 {
-    var loc=[], start=false;
+    // replace tabs with the given tab-size
+    var tabtext='', tabs = 4, stopp=0;
+    if ($('#onsong-import-tab-size').val())
+        tabs = 1*$('#onsong-import-tab-size').val();
+
+    // find tabs in the text and replace them with the approriate number of spaces
     for (var i = 0; i < text.length; i++) {
-        if (text[i]!==' ') {
+        stopp = tabs - i%tabs;
+        if (text[i]=="\t")
+            tabtext += " ".repeat(stopp);
+        else
+            tabtext += text[i]
+    }
+
+    // find each non-blank location
+    var loc=[], start=false;
+    for (var j = 0; j < tabtext.length; j++) {
+        if (tabtext[j]!==' ') {
             if (!start) {
-                loc.push(i);
+                loc.push(j);
                 start=true;
             }
         } else start = false;
@@ -42587,7 +42619,9 @@ $(document).ready(function() {
                 cSpot[item] = data[item];
             }
 
+            cSpot.config = {};
             // some common html elements
+            cSpot.const = {};
             cSpot.const.waitspinner = '<i class="fa fa-spinner fa-spin fa-fw"></i>';
             cSpot.const.editIcon   = '<i class="fa fa-edit"></i>';
             cSpot.const.deleteIcon = '<i class="fa fa-trash"></i>';
@@ -43428,6 +43462,7 @@ function saveNewOnSongText(that, del)
                 } 
                 else {
                     $(row).children('.cell-part-text').children('textarea').hide();
+                    $('.cell-part-action').hide();
                 }
                 removeNewOnSongRow(that);
             }
@@ -47035,7 +47070,7 @@ function getLocalConfiguration()
     changeCheckboxIcon('#config-OfflineModeItem', cSpot.presentation.useOfflineMode);
 
 
-    // how many bible verses per slide?
+    // OnSong "chords-over-lyrics" import: user-defined tab-size (default is 4)
     var howManyVersesPerSlide = localStorage.getItem('config-ShowVersCount');
     // if the value in LocalStorage was set to 'true', then we activate the checkbox:
     if (howManyVersesPerSlide>0 && howManyVersesPerSlide<6) {

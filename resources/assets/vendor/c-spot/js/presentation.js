@@ -1828,7 +1828,7 @@ function getLocalConfiguration()
     changeCheckboxIcon('#config-OfflineModeItem', cSpot.presentation.useOfflineMode);
 
 
-    // how many bible verses per slide?
+    // OnSong "chords-over-lyrics" import: user-defined tab-size (default is 4)
     var howManyVersesPerSlide = localStorage.getItem('config-ShowVersCount');
     // if the value in LocalStorage was set to 'true', then we activate the checkbox:
     if (howManyVersesPerSlide>0 && howManyVersesPerSlide<6) {
@@ -1957,27 +1957,6 @@ function changeFontSize(selectorList, how) {
             ;;;console.log('LocalStorage for "'+selector+'" was set to "'+localStorage.getItem('format_'+selector+'_font-size')+'"');
         }
     });
-}
-
-
-/*
- * Set Column Count for chords display
- */
-function setChordsColumns(how) {
-
-    var new_count;
-    var curr_count = 1*$('#onsongs').css('column-count');
-
-    if (how=='incr' && curr_count<4) new_count = ++curr_count;
-    if (how=='decr' && curr_count>1) new_count = --curr_count;
-    if (!new_count) return;
-
-    ;;;console.log('changing column count to ' + new_count);
-    $('#onsongs').css('column-count', new_count );
-
-    // show the current column count in the GUI
-    curr_count = 1*$('#onsongs').css('column-count');
-    $('.show-column-count').html('&#9783;'+curr_count+'&nbsp;');
 }
 
 

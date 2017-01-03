@@ -167,7 +167,7 @@ class SongController extends Controller
                 ->groupBy('songs.id')
                 ->selectRaw('songs.*, max(plans.date) as last_used')
                 ->havingRaw('count(items.id) > 1')
-                ->orderBy('last_used', 'ASC');
+                ->orderBy('items_count', 'ASC');
         }
 
         // URL contains ...?plan_id=xxx (needed in order to add a song to that plan)

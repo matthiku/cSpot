@@ -84,13 +84,13 @@
 				<li class="nav-item">
 					@if ( ! Request::has('filtervalue') )
 						<a class="nav-link btn btn-sm btn-outline-primary" title="Show songs used in the past but not used in a long time" 
-								href="{{ url('cspot/songs') }}?filterby=songs&filtervalue=rare">
+								href="{{ url('cspot/songs') }}?filterby=songs&filtervalue=rare{{ Request::has('plan_id') ? '&plan_id='.Request::get('plan_id') : '' }}">
 							<span class="hidden-md-down">Show List of </span>'Forgotten' Songs
 						</a>
 					@endif
 					@if ( Request::has('filtervalue') && Request::input('filtervalue')=='rare' )
 						<a class="nav-link btn btn-sm btn-outline-success" title="Show full song list"
-								href="{{ url('cspot/songs') }}">
+								href="{{ url('cspot/songs') }}{{ Request::has('plan_id') ? '?plan_id='.Request::get('plan_id') : '' }}">
 							Show All Songs
 						</a>
 					@endif

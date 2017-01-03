@@ -14,6 +14,14 @@ use Illuminate\Database\Eloquent\Model;
 class OnSong extends Model
 {
 
+    /**
+     * All of the relationships to be touched.
+     *
+     * @var array
+     */
+    protected $touches = ['song'];
+
+
 
     /**
      * The attributes that are mass assignable.

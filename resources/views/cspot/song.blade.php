@@ -44,11 +44,15 @@
             @if (isset($song))
 
                 <h2 class="hidden-xs-down text-success lora">Song/Item Details</h2>
-
-                <small title="{{ isset($song->updated_at) ? $song->updated_at->formatLocalized('%a, %d %b %Y, %H:%M') : 'unknown' }}">Last updated: 
-                    <span class="{{ isset($song->updated_at) && (\Carbon\Carbon::now()->diffinSeconds($song->updated_at) < 5) ? 'text-white bg-warning' : 'text-muted' }}"
-                        >&nbsp;{{ isset($song->updated_at) ? \Carbon\Carbon::now()->diffForHumans( $song->updated_at, true ).' ago' : 'unknown' }}&nbsp;</span>
-                </small>
+    
+                @if (isset($song->updated_at))
+                    <small title="{{ $song->updated_at->formatLocalized('%a, %d %b %Y, %H:%M') }}">Last 
+                        updated:<span class="px-1 rounded {{ (\Carbon\Carbon::now()->diffinSeconds($song->updated_at) < 120) ? 'text-white bg-warning' : 'bg-muted' }}">{{ 
+                                \Carbon\Carbon::now()->diffinSeconds($song->updated_at) < 120
+                                    ? 'just now'
+                                    : \Carbon\Carbon::now()->diffForHumans( $song->updated_at, true ).' ago' }}</span>
+                    </small>
+                @endif
 
             @else            
 

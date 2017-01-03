@@ -142,7 +142,7 @@
 
             @if ($item->updated_at)
                 <br>
-                <small class="hidden-sm-down">Last updated:
+                <small class="hidden-sm-down float-md-right float-xl-none">Last updated:
                     {{ Carbon::now()->diffForHumans( $item->updated_at, true ) }} ago
                 </small>
             @endif

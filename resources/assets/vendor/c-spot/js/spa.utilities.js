@@ -303,6 +303,7 @@ function saveNewOnSongText(that, del)
                 } 
                 else {
                     $(row).children('.cell-part-text').children('textarea').hide();
+                    $('.cell-part-action').hide();
                 }
                 removeNewOnSongRow(that);
             }

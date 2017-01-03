@@ -18,6 +18,8 @@ $modalContent = '
 
 <nav class="navbar navbar-fixed-bottom bg-primary center pb-0 pt-0" id="present-navbar">
 
+    {{-- click to next item 
+    --}}
     <ul class="nav navbar-nav float-xs-right">
         <li>
             <a href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/go/next/'.$type) }}"
@@ -205,12 +207,12 @@ $modalContent = '
             </a> 
 
             <!-- change number of columns for chords display -->
-            <span class="nav-item hidden-lg-down mr-0 edit-show-buttons" style="display: none">Cols:</span>
-            <span class="hidden-md-down nav-item ml-0 btn btn-sm btn-info edit-show-buttons" style="display: none">
-                <i class="fa fa-minus" onclick="setChordsColumns('decr');">&nbsp;</i>
-                    <span class="bg-inverse show-column-count">&#9783;1&nbsp;</span>
-                <i class="fa fa-plus" onclick="setChordsColumns('incr');">&nbsp;</i>
-            </span>
+            <span class="hidden-md-down nav-item ml-0 btn btn-sm btn-info edit-show-buttons hidden ml-1" onclick="$('#onsongs').css('column-count', 1);"
+                title="show chords in 1 column" >&#9783;1</span>
+            <span class="hidden-md-down nav-item ml-0 btn btn-sm btn-info edit-show-buttons hidden" onclick="$('#onsongs').css('column-count', 2);" 
+                title="show chords in 2 columns">&#9783;2</span>
+            <span class="hidden-md-down nav-item ml-0 btn btn-sm btn-info edit-show-buttons hidden" onclick="$('#onsongs').css('column-count', 3);" 
+                title="show chords in 3 columns">&#9783;3</span>
 
 
             <!-- decrease font size -->

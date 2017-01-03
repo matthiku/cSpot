@@ -268,6 +268,15 @@ function loadFromLocalCache()
         else {
             addOptionsToBookSelect();
         }
+
+
+        // how many bible verses per slide?
+        cSpot.config.tabToSpacesRatio = localStorage.getItem('config-tabToSpacesRatio') || 4;
+        // if the value in LocalStorage was set properly, then we apply it to the input field (in case it's present):
+        if (cSpot.config.tabToSpacesRatio>0 && cSpot.config.tabToSpacesRatio<99) {
+            $('#onsong-import-tab-size').val( cSpot.config.tabToSpacesRatio );
+        }
+
     }
 
 
@@ -309,6 +318,14 @@ function loadFromLocalCache()
     }
 }
 
+
+// save changes to the 
+function updateTabToSpacesRatio(that)
+{ 
+    cSpot.config.tabToSpacesRatio = $(that).val();
+    localStorage.setItem('config-tabToSpacesRatio', cSpot.config.tabToSpacesRatio);
+    ;;;console.log('Updating tab-to-spaces-ratio to: ' + cSpot.config.tabToSpacesRatio);
+}
 
 
 // simple function to determine if the current user is the MP
@@ -1066,11 +1083,26 @@ function joinLyricsAndChordsToOnSong(chords)
 */
 function findChords(text)
 {
-    var loc=[], start=false;
+    // replace tabs with the given tab-size
+    var tabtext='', tabs = 4, stopp=0;
+    if ($('#onsong-import-tab-size').val())
+        tabs = 1*$('#onsong-import-tab-size').val();
+
+    // find tabs in the text and replace them with the approriate number of spaces
     for (var i = 0; i < text.length; i++) {
-        if (text[i]!==' ') {
+        stopp = tabs - i%tabs;
+        if (text[i]=="\t")
+            tabtext += " ".repeat(stopp);
+        else
+            tabtext += text[i]
+    }
+
+    // find each non-blank location
+    var loc=[], start=false;
+    for (var j = 0; j < tabtext.length; j++) {
+        if (tabtext[j]!==' ') {
             if (!start) {
-                loc.push(i);
+                loc.push(j);
                 start=true;
             }
         } else start = false;
