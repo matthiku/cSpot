@@ -942,18 +942,6 @@ function prepareChordsPresentation(what)
         return false;
     });
 
-    // // Allow mouse click (or finger touch) to move forward
-    // $('#main-content').click(function(){
-    //     navigateTo('next-item');
-    // });
-    // // allow rght-mouse-click to move one slide or item back
-    // $('#main-content').on('mouseup', function(event){
-    //     if (event.which == 3) {
-    //         event.preventDefault();
-    //         navigateTo('previous-item');
-    //     }
-    // });
-
     // check if rendered items for this plan are 
     // cached no the server - then load it into local storage
     loadCachedPresentation(cSpot.presentation.plan_id); 
@@ -974,17 +962,7 @@ function reDisplayChords()
     // get the chords text and split it into lines
     var chords = $(selectorName).text().split('\n');
 
-    // Are we on the Item Detail page?
-    //                                       TODO!! (Currently not implemented)
-    // in order to get this to work, we need to change the logic on how to be able to edit this via the editable plugin!
-    // as this is an editable field we have to get the original chords text from somewhere else, maybe from a hidden div?
-    if (chords.length==1) {
-        return;
-        /*selectorName = '.show-chords';
-        chords = $(selectorName);
-        if (chords.length) 
-            chords = $(chords[0]).text().split('\n');*/
-    }
+    if (chords.length==1) return;
 
     // empty the exisint pre tag
     $(selectorName).text('');
@@ -1864,6 +1842,11 @@ function applyLocallyDefinedTextFormatting(reset)
                 localStorage.removeItem(key);
                 return true; // same as 'continue'
             }
+
+            // selector 'body' is only for lyrics presentation
+            if (selector == 'body'  &&  location.pathname.indexOf('/present')<0)
+                return true;
+
 
             ;;;console.log('formatting "'+ selector + '" with style "' + attribute + '" as "' + value + '"');
 

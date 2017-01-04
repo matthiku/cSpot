@@ -492,7 +492,7 @@ class ItemController extends Controller
      */
     public function update(Request $request, $id, $seq_no=null)
     {
-        $item    = Item::find($id);
+        $item    = Item::with('files')->find($id);
         if (!$item) {
             flashError('Error! Item with ID "' . $id . '" not found! (F:update)');
             return \Redirect::back();
@@ -545,12 +545,13 @@ class ItemController extends Controller
 
             // check if it is a valid file
             if ($request->file('file')->isValid()) {
-                // use the helper function
+                // use the helper function to upload the new file
                 $file = saveUploadedFile($request);
-                // add the file as a relationship to the song
-                $item->files()->save($file);
+                $file->save(); // save the data to the DB
                 // correct seq_no of attached files (if more than one)
-                correctFileSequence($id);
+                $new_seq_no = getLatestSeqNoOfFilesAttachedToItem($item) + 1;
+                // attach the file as a many-to-many relationship to the song
+                $item->files()->attach( $file->id, ['seq_no' => $new_seq_no] );
                 // notify the view about the newly added file
                 $request->session()->flash('newFileAdded', $file->id);
             }

@@ -41,5 +41,9 @@
     {!! Form::close() !!}
     
     <span><i class="red">*</i> = mandatory field(s) &nbsp;</span>
+
+    <p class="small">Note: A category with the name <strong>'Presentation'</strong> (case is ignored!) 
+        can be used to show images with their original width/height aspect ractio in the presentation.
+    </p>
     
 @stop

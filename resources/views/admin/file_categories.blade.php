@@ -29,6 +29,7 @@
     			<i class="fa fa-question-circle"></i></a>
 		</small>
 	</h2>
+	<small>In order to show images with their original width/height aspect ractio, you should have and use a category with the name <strong>'Presentation'</strong> (case is ignored!).</small>
 
 
 	@if (count($file_categories))

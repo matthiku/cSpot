@@ -1,6 +1,6 @@
 # The *C*hurch *S*ervices *P*lanning *O*nline *T*ool
 
-c-SPOT was designed to help (small) churches plan their Sunday and Midweek services as well as other events.
+c-SPOT is a Collaborative Web Application designed to help (small) churches plan their Sunday and Midweek services as well as other events.
 
 c-SPOT is a collaboration tool which helps to manage all event information and processes - the Order of Service, staff, resources, worship song lists for worship leaders, musicians and every other person involved in the service or event and allows all participants to use, add or modify their relevant information - using the platform or device of their choice!
 
@@ -14,7 +14,7 @@ It allows the management of song lyrics, music scores, guitar chords, event reso
 - The slideshow can be done **off-line** with all slides downloaded to the local computer
 - Control the slide show from **any device** using a casting device (like Chromecast) attached to your projector
 - Or **control the presentation** from a small device (e.g. smartphone) that syncs with the main device attached to the projector!
-- Provide **chords, lyrics and sheetmusic for musicians** on all kinds of devices
+- Provide **chords, lyrics and sheetmusic for musicians** on all kinds of devices using the popular [OnSong](http://www.onsongapp.com/docs/) format
 - Allows extensive **collaboration** and input from all users, but with full rights management, specified for each user type
 - Allows for a _synchronised presentation_ of lyrics, chords or sheet music _accross all designated devices!_
 - Exchange email and/or internal messages between users

@@ -41606,8 +41606,14 @@ function loadFromLocalCache()
         }
 
 
-        // how many bible verses per slide?
-        cSpot.config.tabToSpacesRatio = localStorage.getItem('config-tabToSpacesRatio') || 4;
+        // Item Details page: check if user already confirmed the BG images information, then hide it
+        cSpot.config.imagesInstructionsConfirmed = localStorage.getItem('config-imagesInstructionsConfirmed') || false;
+        if (cSpot.config.imagesInstructionsConfirmed  &&  $('.bg-images-instructions') )
+            $('.confirm-bg-images-instructions>span').click();
+
+
+        // for importing chords, we need to know the actual tab size (ie. how many spaces between each tab stopp)
+        cSpot.config.tabToSpacesRatio = localStorage.getItem('config-tabToSpacesRatio') || 8;
         // if the value in LocalStorage was set properly, then we apply it to the input field (in case it's present):
         if (cSpot.config.tabToSpacesRatio>0 && cSpot.config.tabToSpacesRatio<99) {
             $('#onsong-import-tab-size').val( cSpot.config.tabToSpacesRatio );
@@ -44513,6 +44519,8 @@ function showLocalVersusRemoteButtons(that, modus)
         return;
     }
 
+    $('.show-selected-category').show();
+
     // skip the next step (choice between upload and cspot images)
     // as category 'newest' is only for c-spot images
     if (cat == 'newest') {
@@ -44534,6 +44542,9 @@ function showLocalVersusRemoteButtons(that, modus)
 
     // show the two buttons 'upload' or 'select existing'
     $('#show-location-selection').show();
+
+    // scroll down
+    location.href = "#upload-or-select";
 }
 
 function uploadSingleFile(selector, category)
@@ -44626,6 +44637,8 @@ function showImagesSelection(that, ajax_url)
                 // insert the images into the DOM
                 insertNextSelectionImage( data.data[nr], '#show-images-for-selection', img_path, showit );
             }
+            // scroll down...
+            location.href="#bottom";
         })
 
         .fail(function(data) {
@@ -44660,6 +44673,8 @@ function insertNextSelectionImage(data, parentElem, path, visible)
 
     // now insert all into the DOM
     $(parentElem).append(anchor);
+    // scroll down...
+    location.href="#bottom";
 }
 
 /*  hide the current and show the next (or previous) images in the images selection 
@@ -44744,7 +44759,7 @@ function addItemWithFileOrAddFileToItem(file_id, that)
         cSpot.item.action = 'add-file';
     }
 
-    ;;;console.log('Uploading new file via AJAX - type: '+cSpot.item.action);
+    ;;;console.log('Uploading new file or attaching existing file to item via AJAX - type: '+cSpot.item.action);
 
 
     // 1. File needs to be added to an existing item
@@ -46184,18 +46199,6 @@ function prepareChordsPresentation(what)
         return false;
     });
 
-    // // Allow mouse click (or finger touch) to move forward
-    // $('#main-content').click(function(){
-    //     navigateTo('next-item');
-    // });
-    // // allow rght-mouse-click to move one slide or item back
-    // $('#main-content').on('mouseup', function(event){
-    //     if (event.which == 3) {
-    //         event.preventDefault();
-    //         navigateTo('previous-item');
-    //     }
-    // });
-
     // check if rendered items for this plan are 
     // cached no the server - then load it into local storage
     loadCachedPresentation(cSpot.presentation.plan_id); 
@@ -46216,17 +46219,7 @@ function reDisplayChords()
     // get the chords text and split it into lines
     var chords = $(selectorName).text().split('\n');
 
-    // Are we on the Item Detail page?
-    //                                       TODO!! (Currently not implemented)
-    // in order to get this to work, we need to change the logic on how to be able to edit this via the editable plugin!
-    // as this is an editable field we have to get the original chords text from somewhere else, maybe from a hidden div?
-    if (chords.length==1) {
-        return;
-        /*selectorName = '.show-chords';
-        chords = $(selectorName);
-        if (chords.length) 
-            chords = $(chords[0]).text().split('\n');*/
-    }
+    if (chords.length==1) return;
 
     // empty the exisint pre tag
     $(selectorName).text('');
@@ -47107,6 +47100,11 @@ function applyLocallyDefinedTextFormatting(reset)
                 return true; // same as 'continue'
             }
 
+            // selector 'body' is only for lyrics presentation
+            if (selector == 'body'  &&  location.pathname.indexOf('/present')<0)
+                return true;
+
+
             ;;;console.log('formatting "'+ selector + '" with style "' + attribute + '" as "' + value + '"');
 
             if ( attribute=='font-size'  &&  $.isNumeric(value) ) 
@@ -47199,27 +47197,6 @@ function changeFontSize(selectorList, how) {
             ;;;console.log('LocalStorage for "'+selector+'" was set to "'+localStorage.getItem('format_'+selector+'_font-size')+'"');
         }
     });
-}
-
-
-/*
- * Set Column Count for chords display
- */
-function setChordsColumns(how) {
-
-    var new_count;
-    var curr_count = 1*$('#onsongs').css('column-count');
-
-    if (how=='incr' && curr_count<4) new_count = ++curr_count;
-    if (how=='decr' && curr_count>1) new_count = --curr_count;
-    if (!new_count) return;
-
-    ;;;console.log('changing column count to ' + new_count);
-    $('#onsongs').css('column-count', new_count );
-
-    // show the current column count in the GUI
-    curr_count = 1*$('#onsongs').css('column-count');
-    $('.show-column-count').html('&#9783;'+curr_count+'&nbsp;');
 }
 
 

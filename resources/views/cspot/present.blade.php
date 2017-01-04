@@ -16,7 +16,7 @@
 
 
     <!-- ================================================================================ -->
-    <div id="main-content" style="background-color: #373a3c;">
+    <div id="main-content" class="main-lyrics-presentation" style="background-color: #373a3c;">
 
 
 
@@ -95,8 +95,8 @@
                     $key    = 1; // we can't use a $key in the foreach statement as it's a re-sorted collection!
                 ?>            
                 @foreach ($files as $file)
-                    <img class="slide-background-image{{ $bibleTexts || $file->file_category->name != 'presentation' ? ' song-background-image ' : ' ' }}mb-2" 
-                        data-slides-id="{{ $key }}" style="display: none;" 
+                    <img class="slide-background-image hidden{{ ($bibleTexts || strtolower($file->file_category->name) != 'presentation') ? ' song-background-image ' : ' ' }}mb-2" 
+                        data-slides-id="{{ $key }}"
                            src="{{ url(config('files.uploads.webpath')).'/'.$file->token }}">
                     <?php $key++; ?>
                 @endforeach
@@ -512,7 +512,7 @@
             <div class="nav navbar-nav float-xs-left ml-1">
                 <button class="btn btn-sm btn-info narrow">
                     BG: 
-                    <input onchange="changeColor(['#main-content', 'body'], this.value, 'BG');" type='text' class="BGcolorPicker" />
+                    <input onchange="changeColor(['.main-lyrics-presentation', 'body'], this.value, 'BG');" type='text' class="BGcolorPicker" />
                 </button class="btn btn-sm btn-info">
             </div>
 

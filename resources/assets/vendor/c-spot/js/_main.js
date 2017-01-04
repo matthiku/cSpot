@@ -270,8 +270,14 @@ function loadFromLocalCache()
         }
 
 
-        // how many bible verses per slide?
-        cSpot.config.tabToSpacesRatio = localStorage.getItem('config-tabToSpacesRatio') || 4;
+        // Item Details page: check if user already confirmed the BG images information, then hide it
+        cSpot.config.imagesInstructionsConfirmed = localStorage.getItem('config-imagesInstructionsConfirmed') || false;
+        if (cSpot.config.imagesInstructionsConfirmed  &&  $('.bg-images-instructions') )
+            $('.confirm-bg-images-instructions>span').click();
+
+
+        // for importing chords, we need to know the actual tab size (ie. how many spaces between each tab stopp)
+        cSpot.config.tabToSpacesRatio = localStorage.getItem('config-tabToSpacesRatio') || 8;
         // if the value in LocalStorage was set properly, then we apply it to the input field (in case it's present):
         if (cSpot.config.tabToSpacesRatio>0 && cSpot.config.tabToSpacesRatio<99) {
             $('#onsong-import-tab-size').val( cSpot.config.tabToSpacesRatio );

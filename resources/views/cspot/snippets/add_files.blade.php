@@ -6,7 +6,13 @@
 
     @if (! isset($modal)) 
         <div class="card-block">
-            <h4 class="card-title">Add an image</h4> 
+            <h4 class="card-title">
+                <span class="big link float-xs-right" title="Close" onclick="
+                    $('#col-2-file-add').hide();
+                    $('.add-another-image-link').show();
+                    ">&#128502;</span>
+                Add an image
+            </h4> 
         </div>
     @endif
 
@@ -23,7 +29,11 @@
 
             <div class="btn-group modal-select-file ml-1" data-toggle="buttons"
                 @if (! isset($modal)) 
-                        onclick="$('#show-location-selection').show()" 
+                        onclick="
+                            $('#show-location-selection').show();
+                            $('.image-selection-slideshow').hide();
+                            $('.show-file-add-button').hide();
+                            location.href='#upload-or-select';" 
                 @endif
                 >
 
@@ -52,8 +62,9 @@
 
             </div>
             
-            <p class="mt-1">Selected category: <span class="text-info show-selected-category"></span></p>
+            <p class="mt-1 show-selected-category hidden">Selected category: <span class="text-info show-selected-category"></span></p>
 
+            <a id="select-category"></a>
         </li>
 
 
@@ -61,21 +72,32 @@
 
         {{-- upload a new one or select an existing file? 
         --}}
-        <li id="show-location-selection" class="list-group-item center" style="display: none;">
+        <li class="list-group-item center" id="show-location-selection" style="display: none;">
 
             <label class="card-text">
                 Do you want to upload a new image from your device or<br>select an image that was already uploaded?
             </label>
 
             <button type="button" class="btn btn-primary btn-sm mr-1" id="btn-upload-new-image"
-                onclick="$(this).parent().hide();$('.show-file-add-button').show()"
-                    >Upload new image</button>
+                onclick="
+                    $(this).parent().hide();
+                    $('.image-selection-slideshow').hide();
+                    $('.show-file-add-button').show();
+                    location.href='#bottom';"
+                    >
+                Upload new image</button>
 
             <button type="button" class="btn btn-secondary btn-sm ml-1" id="btn-select-cspot-images"
                 data-ajax-url="{{ route('cspot.api.files') }}"
                 data-images-path="{{ url(config('files.uploads.webpath')) }}"
-                onclick="$(this).parent().hide();showImagesSelection(this)">Select c-SPOT images</button>
+                onclick="
+                    $(this).parent().hide();
+                    $('.show-file-add-button').hide();
+                    showImagesSelection(this);
+                    ">
+                Select c-SPOT images</button>
 
+            <a id="upload-or-select"></a>
         </li>
 
 
@@ -90,11 +112,11 @@
             <label class="card-text" id="images-for-selection-label"></label>
             <br>
 
-            <a href="#" disabled="" class="show-next-image-arrows" onclick="showNextImages('back')"><i class="fa fa-caret-left fa-3x"></i></a>
+            <a disabled="" class="show-next-image-arrows" onclick="showNextImages('back');location.href='#bottom';"><i class="fa fa-caret-left fa-3x"></i></a>
 
             <span id="show-images-for-selection"></span>
 
-            <a href="#" disabled="" class="show-next-image-arrows" onclick="showNextImages('forw')"><i class="fa fa-caret-right fa-3x"></i></a>
+            <a disabled="" class="show-next-image-arrows" onclick="showNextImages('forw');location.href='#bottom';"><i class="fa fa-caret-right fa-3x"></i></a>
 
             <p class="card-text text-muted" id="link-to-more-images"></p>
 
@@ -105,7 +127,7 @@
 
         {{-- show file  UPLOAD  button 
         --}}
-        <li class="list-group-item show-file-add-button" style="display: none;">
+        <li class="list-group-item show-file-add-button"  style="display: none;">
             
             {!! Form::label('file', 'Select a file to be uploaded: ') !!}
             <br>
@@ -114,7 +136,7 @@
 
             {{-- don't show the submit button on the popup modal form as we handle the upload via AJAX --}}
             @if (! isset($modal)) 
-                <span class="show-file-add-button float-xs-right" style="display: none;">
+                <span class="show-file-add-button float-xs-right hidden">
                     {!! Form::submit('Submit') !!}                                
                 </span>
             @endif
@@ -123,3 +145,5 @@
 
     </ul>
 </div>
+
+<a id="bottom"></a>

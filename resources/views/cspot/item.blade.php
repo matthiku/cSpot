@@ -191,7 +191,7 @@
                 <li><a href="#scripture-tab">Scripture</a></li>
             @endif
 
-            <li><a href="#bg-images-tab"><span class="hidden-md-down">Background </span><span class="hidden-lg-up hidden-xs-down">BG </span>Images
+            <li><a href="#bg-images-tab" id="tab-for-bg-images"><span class="hidden-md-down">Background </span><span class="hidden-lg-up hidden-xs-down">BG </span>Images
                 <small class="text-muted">({{ $item->files->count() }})</small>
             </a></li>
 
@@ -417,9 +417,43 @@
 
         <div id="bg-images-tab">
 
-            <div class="small"><strong>Background images</strong> can be used on their own or as background for scripture or song items.</div>
-            <div class="small">When used for song- or scripture-items and when more than one image is attached here, the 
-                images will change for each slide in the sequence given here in a rotating fashion.</div>
+            <div class="confirm-bg-images-instructions float-xs-right">
+                <span class="btn btn-sm btn-outline-info" onclick="
+                    $('.bg-images-instructions').hide();
+                    $('.show-bg-images-instructions').show();
+                    $('.confirm-bg-images-instructions').hide();
+                    localStorage.setItem('config-imagesInstructionsConfirmed', true);
+                    ">&#128504; Got it!</span>
+            </div>
+            <div class="show-bg-images-instructions hidden float-xs-right">
+                <span class="btn btn-sm btn-outline-info ml-1" onclick="
+                    $('.bg-images-instructions').show();
+                    $('.show-bg-images-instructions').hide();
+                    $('.confirm-bg-images-instructions').show();
+                    localStorage.setItem('config-imagesInstructionsConfirmed', false);
+                    ">&#128161; Help!</span>
+            </div>
+            <div class="bg-images-instructions">
+                <div class="small"><strong>Images</strong> can be used as background for scripture or song items or for presentations.</div>
+                <div class="small">When used for song- or scripture-items and when more than one image is attached here, the 
+                    images will change for each slide in the sequence given here, in a rotating fashion.<br>
+                    <strong>Background</strong> images will be stretched/shrank in order to fill the whole background of the presentation space, but if you use 
+                    images with a category name of <i>"Presentation"</i>, the images will retain their original width-to-height aspect ratio, 
+                    with the height adapted to the height of the presentation area.
+                </div>
+            </div>
+
+            {{-- link to open the Add File dialog --}}
+            <span data-item-type="add-file" class="add-another-image-link btn btn-sm btn-success float-xs-right" onclick="
+                    $('#col-2-file-add').show();
+                    $('#show-location-selection').hide();
+                    $('.add-another-image-link').hide();
+                    $('.image-selection-slideshow').hide();
+                    $('.show-file-add-button').hide();
+                    location.href='#select-category';">
+                <i class="fa fa-file"></i>
+                Add another image
+            </span>
 
             {!! $item->files->count() ? '' : '<p class="small center">(no images attached yet)</p>' !!}
 
@@ -471,11 +505,16 @@
                 <br>
                 
                 {{-- link to open the Add File dialog --}}
-                <a href="#" onclick="$(this).hide();$('#col-2-file-add').show();" id="add-another-image-link" data-item-type="add-file">
-                    <i class="fa fa-file"></i>&nbsp;Add another image</a> &nbsp; &nbsp;
+                <span data-item-type="add-file" class="add-another-image-link btn btn-secondary" onclick="
+                        $('.add-another-image-link').hide();
+                        $('#col-2-file-add').show();
+                        location.href='#select-category';">
+                    <i class="fa fa-file"></i>
+                    Add another image
+                </span>
 
                 {{-- Form to add new (image) file --}}
-                <div id="col-2-file-add" style="display: none;" class="mb-1 dropzone">
+                <div id="col-2-file-add" class="mb-1 dropzone hidden">
                     @include('cspot.snippets.add_files')
                 </div>
             
@@ -605,22 +644,21 @@
 
 
 
+    {!! Form::close() !!}
+
     {{-- activate the tabs 
     --}}
     <script>
-
-        // provide item data on the client side
-        cSpot.item = {!! json_encode($item, JSON_HEX_APOS | JSON_HEX_QUOT ) !!};
-
-        $( function() {
+        $(document).ready( function() {
             $( "#tabs" ).tabs({
                 event: "mouseover",
                 active: {{ session()->has('newFileAdded') ? ($item->song_id ? '2' : '1') : '0' }}
             });
         });
-    </script>
 
-    {!! Form::close() !!}
+        // provide item data on the client side
+        cSpot.item = {!! json_encode($item, JSON_HEX_APOS | JSON_HEX_QUOT ) !!};
+    </script>
 
 
 

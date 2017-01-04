@@ -1354,6 +1354,8 @@ function showLocalVersusRemoteButtons(that, modus)
         return;
     }
 
+    $('.show-selected-category').show();
+
     // skip the next step (choice between upload and cspot images)
     // as category 'newest' is only for c-spot images
     if (cat == 'newest') {
@@ -1375,6 +1377,9 @@ function showLocalVersusRemoteButtons(that, modus)
 
     // show the two buttons 'upload' or 'select existing'
     $('#show-location-selection').show();
+
+    // scroll down
+    location.href = "#upload-or-select";
 }
 
 function uploadSingleFile(selector, category)
@@ -1467,6 +1472,8 @@ function showImagesSelection(that, ajax_url)
                 // insert the images into the DOM
                 insertNextSelectionImage( data.data[nr], '#show-images-for-selection', img_path, showit );
             }
+            // scroll down...
+            location.href="#bottom";
         })
 
         .fail(function(data) {
@@ -1501,6 +1508,8 @@ function insertNextSelectionImage(data, parentElem, path, visible)
 
     // now insert all into the DOM
     $(parentElem).append(anchor);
+    // scroll down...
+    location.href="#bottom";
 }
 
 /*  hide the current and show the next (or previous) images in the images selection 
@@ -1585,7 +1594,7 @@ function addItemWithFileOrAddFileToItem(file_id, that)
         cSpot.item.action = 'add-file';
     }
 
-    ;;;console.log('Uploading new file via AJAX - type: '+cSpot.item.action);
+    ;;;console.log('Uploading new file or attaching existing file to item via AJAX - type: '+cSpot.item.action);
 
 
     // 1. File needs to be added to an existing item

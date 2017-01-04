@@ -144,20 +144,23 @@ class FileController extends Controller
         if ($request->has('file_id'))
             $file_id = $request->file_id;
 
-        $item = Item::find($item_id);
+        $item = Item::with('files')->find($item_id);
 
         if ($item) {
+
+            // find the new seq no
+            $new_seq_no = getLatestSeqNoOfFilesAttachedToItem($item) + 1;
+
+            $item->files()->attach($file_id, ['seq_no' => $new_seq_no]);
             
             $file = File::find($file_id);
-            $item->files()->attach($file_id);
-            correctFileSequence($item_id);
+
+            // notify the view about the newly added file
+            $request->session()->flash('newFileAdded', $file->id);
 
             if ($request->is('*/api/*')) { 
                 return response()->json(['status' => 200, 'data' => $file]); 
             }
-
-            // notify the view about the newly added file
-            $request->session()->flash('newFileAdded', $file->id);
 
             return \Redirect::route( 'cspot.items.edit', [$item->plan_id, $item->id] );
         }
@@ -248,12 +251,13 @@ class FileController extends Controller
             return response()->json(['status' => 404, 'data' => 'API: songId or fileId missing!'], 404);
         
         // find the single resource
-        $item = Item::find($item_id);
+        $item = Item::with('files')->find($item_id);
+
         if ($item) {
 
             $item->files()->detach($file_id);
 
-            correctFileSequence($item_id);
+            correctFileSequence($item);
 
             // return to sender
             return response()->json(['status' => 200, 'data' => 'File unlinked.']);            
@@ -287,7 +291,7 @@ class FileController extends Controller
             $item->save();
 
             // make sure all files atteched to this item have the correct seq no now
-            correctFileSequence($item_id);
+            correctFileSequence($item);
 
             return \Redirect::route( 'cspot.items.edit', [$item->plan_id, $item->id] );
         } 

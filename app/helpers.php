@@ -97,24 +97,31 @@ function findAdmins( $field='all' )
 /**
  * Correct sequence of files attached to an item
  */
-function correctFileSequence($item_id)
+function correctFileSequence($item)
 {
-    $item = Item::with('files')->find($item_id);
-    if ($item) {
-        // get all files attached to this item
-        $files = $item->files()->get();
+    // get all files attached to this item
+    $files = $item->files()->get()->flatten()->sortBy('pivot_seq_no');
 
-        $seq = 1;
-        // update the sequence nomber on each file
-        foreach ($files as $file) {
-            // get the actual file DB object and update it
-            $file->pivot->update(['seq_no' => $seq]);
-            $seq += 1;
-        }
-        $item->save();
+    // update the sequence nomber on each file
+    $seq = 1;
+    foreach ($files as $file) {
+        $file->pivot->update(['seq_no' => $seq]);
+        $seq += 1;
     }
 }
-
+/**
+ * Of the files attached to an item, get the highest sequence number 
+ */
+function getLatestSeqNoOfFilesAttachedToItem($item)
+{ 
+    // get all files attached to this item
+    $files = $item->files()->get();
+    $seq = 0;
+    foreach ($files as $file) {
+        $seq = max($file->pivot->seq_no, $seq);
+    }
+    return $seq;
+}
 
 /**
  * Return sizes readable by humans
