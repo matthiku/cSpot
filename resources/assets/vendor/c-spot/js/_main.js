@@ -291,8 +291,17 @@ function loadFromLocalCache()
 
         // Item Details page: check if user already confirmed the BG images information, then hide it
         cSpot.config.imagesInstructionsConfirmed = localStorage.getItem('config-imagesInstructionsConfirmed') || false;
-        if (cSpot.config.imagesInstructionsConfirmed  &&  $('.bg-images-instructions') )
+        if (cSpot.config.imagesInstructionsConfirmed == "true" &&  $('.bg-images-instructions') ) {
+            cSpot.config.imagesInstructionsConfirmed = true;
             $('.confirm-bg-images-instructions>span').click();
+        }
+
+        // Item Details page: check if user already confirmed the OnSong information, then hide it
+        cSpot.config.onsongInstructionsConfirmed = localStorage.getItem('config-onsongInstructionsConfirmed') || false;
+        if (cSpot.config.onsongInstructionsConfirmed == "true" &&  $('.onsong-instructions') ) {
+            cSpot.config.onsongInstructionsConfirmed = true;
+            $('.confirm-onsong-instructions').click();
+        }
 
 
         // for importing chords, we need to know the actual tab size (ie. how many spaces between each tab stopp)

@@ -9,7 +9,7 @@
 	<tfoot>
 		<tr class="bg-faded link" id="insertNewOnSongRow-link">
 			<th colspan=3 class="pl-2">
-				<span onclick="insertNewOnSongRow();"><i class="fa fa-plus"></i> Add new Part</span>
+				<span onclick="insertNewOnSongRow();" class="btn btn-sm btn-success"><i class="fa fa-plus"></i> Add new Part</span>
 				<span class="small float-xs-right">
 					<a href="http://www.logue.net/xp/" target="new"><span class="text-info">Tool for Transposing</span>
 						<i class="fa fa-external-link"></i></a>
@@ -17,19 +17,12 @@
 			</th>
 		</tr>
 
-		<tr style="display: none;" class="show-onsong-format-hint text-xs-center ">
-			<td colspan=3 class="bg-info small">
-				You can insert "chords over lyrics" or OnSong-formatted chords and lyrics (lyrics with chords in square brackets).<br>
-				For more information, see the 
-				<a href="http://www.onsongapp.com/docs/features/formats/onsong/chords/" target="new" class="text-info">
-					OnSong manual on formats</a><br>
-				<div class="text-danger">
-					<strong>Note:</strong> Blank lines will force a new slide in lyrics presentations but will be ignored when showing the chords.
-				</div>
-				<span class="label label-default">
-					Tabs in the inserted text will be replaced by how many spaces:
+		<tr class="show-onsong-format-hint text-xs-center hidden">
+			<td colspan=3 class="small">
+				<p class="card">
+					If the imported text contains tab-stopps, define how many spaces they should be replaced with:
 					<input type="number" id="onsong-import-tab-size" value=4 style="width: 2rem" onchange="updateTabToSpacesRatio(this)">
-				</span>
+				</p>
 			</td>
 		</tr>
 

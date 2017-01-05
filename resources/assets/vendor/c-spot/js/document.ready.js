@@ -365,7 +365,7 @@ $(document).ready(function() {
             movedItem.id = ui.item.data('itemId');
             movedItem.seq_no = ui.item.attr('id').split('-')[2];
             // get all siblings of the just moved item
-            var siblings = $(ui.item).parent().children();
+            var siblings = $(ui.item).siblings();
             // check each sibling's sequence
             for (var i = 1; i <= siblings.length; i++) {
                 var sib = siblings[-1+i];

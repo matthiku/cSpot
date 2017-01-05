@@ -601,6 +601,40 @@
                 {{-- OnSong content 
                 --}}
                 <div id="onsong-tab">
+
+                    <div class="show-onsong-instructions hidden float-xs-right">
+                        <span class="btn btn-sm btn-outline-info ml-1" onclick="
+                            $('.onsong-instructions').show();
+                            $('.show-onsong-instructions').hide();
+                            $('.confirm-onsong-instructions').show();
+                            localStorage.setItem('config-onsongInstructionsConfirmed', false);
+                            ">&#128161; Help!</span>
+                    </div>
+                    <div class="card onsong-instructions small">
+                        <p>OnSong encoded chords is a popular format to store chords and lyrics in music apps. More info can be found 
+                            <a href="http://www.onsongapp.com/docs/features/formats/onsong/" class="text-info">here</a>.<br>
+                            In c-SPOT each song part (verses, chorus etc) is retained into seperate blocks.<br>
+                            The main difference to the popular 'chords-over-lyrics' format is that the chords are interspersed within the lyrics,
+                            enclosed in square brackets, like this: <i>Amazing [D]Grace, how [G]sweet the [D]sound</i>.</p>
+                        <p>Below you can add new parts or edit existing parts.</p>
+                        <p>When adding <strong>new song parts</strong>, you can just copy&amp;paste from an existing source and that can be either 
+                            in OnSong format or in the legacy "chords-over-lyrics" format.</p>
+                        <p>When editing <strong>existing parts</strong>, you can choose between 3 different editors: 
+                            (just click into the song part to show the editor selection)
+                            <ol>
+                                <li>OnSong editor - here you can drag the chords to the left or right, leaving the lyrics alone</li>
+                                <li>Plain text editor - here you can edit the data in the original OnSnog format</li>
+                                <span class="confirm-onsong-instructions float-xs-right btn btn-sm btn-outline-danger mr-1" onclick="
+                                    $('.onsong-instructions').hide();
+                                    $('.show-onsong-instructions').show();
+                                    $('.confirm-onsong-instructions').hide();
+                                    localStorage.setItem('config-onsongInstructionsConfirmed', true);
+                                    ">&#128504; OK, understood!</span>
+                                <li>Chords-over-Lyrics editor - this is helpful for editing just the lyrics.</li>
+                            </ol>
+                        </p>
+                    </div>
+
                     <p class="text-info">
                         @if (Auth::user()->isEditor())
                             <label class="mb-0">Sequence:

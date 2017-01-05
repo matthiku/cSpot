@@ -41627,8 +41627,17 @@ function loadFromLocalCache()
 
         // Item Details page: check if user already confirmed the BG images information, then hide it
         cSpot.config.imagesInstructionsConfirmed = localStorage.getItem('config-imagesInstructionsConfirmed') || false;
-        if (cSpot.config.imagesInstructionsConfirmed  &&  $('.bg-images-instructions') )
+        if (cSpot.config.imagesInstructionsConfirmed == "true" &&  $('.bg-images-instructions') ) {
+            cSpot.config.imagesInstructionsConfirmed = true;
             $('.confirm-bg-images-instructions>span').click();
+        }
+
+        // Item Details page: check if user already confirmed the OnSong information, then hide it
+        cSpot.config.onsongInstructionsConfirmed = localStorage.getItem('config-onsongInstructionsConfirmed') || false;
+        if (cSpot.config.onsongInstructionsConfirmed == "true" &&  $('.onsong-instructions') ) {
+            cSpot.config.onsongInstructionsConfirmed = true;
+            $('.confirm-onsong-instructions').click();
+        }
 
 
         // for importing chords, we need to know the actual tab size (ie. how many spaces between each tab stopp)
@@ -43002,7 +43011,7 @@ $(document).ready(function() {
             movedItem.id = ui.item.data('itemId');
             movedItem.seq_no = ui.item.attr('id').split('-')[2];
             // get all siblings of the just moved item
-            var siblings = $(ui.item).parent().children();
+            var siblings = $(ui.item).siblings();
             // check each sibling's sequence
             for (var i = 1; i <= siblings.length; i++) {
                 var sib = siblings[-1+i];
@@ -43285,24 +43294,25 @@ function insertNewOnSongRow()
     $('#new-onsong-row').clone().attr('id', 'very-new-onsong-row').appendTo('#onsong-parts');
     $('#new-onsong-row').fadeIn();
     // make sure no other row has this class
-    $('#new-onsong-row').parent().children('tr').removeClass('table-success');
+    $('#new-onsong-row').siblings('tr').removeClass('table-success');
     $('#new-onsong-row').addClass('table-success');
 
     // pre-select next possible OnSong part
-    $('#new-onsong-row').children('.cell-part-name').children('select').val( findNextPossibleOnSongPart() );
+    $('#new-onsong-row > .cell-part-name > select').val( findNextPossibleOnSongPart() );
 
     // un-hide action center of the new row
-    $('#new-onsong-row td').children('.cell-part-action').show();
+    $('#new-onsong-row td > .cell-part-action').show();
     // hide all other action buttons
     $('.for-existing-items').hide();
     $('.toggle-onsong-buttons').hide(); 
     $('.for-new-items').show();
+    $('#new-onsong-row td > .text-editor-hints').show();
 
     // restore the old, empty, hidden row
     $('#new-onsong-row').removeAttr('id');
     $('#very-new-onsong-row').attr('id', 'new-onsong-row');
 
-    // hide "add" link andshow row with input hints
+    // hide "add" link and show row with input hints
     $('#insertNewOnSongRow-link').hide();
     $('.show-onsong-format-hint').show();
 
@@ -43310,8 +43320,7 @@ function insertNewOnSongRow()
     window.location.href = "#tbl-bottom";
     
     // set the focus on the part-type selection
-    $('#new-onsong-row').children('.cell-part-name').children('select').focus();
-    $('select.new-onsong-field')[0].focus()
+    $('select.new-onsong-field')[0].focus();
 }
 
 function findNextPossibleOnSongPart() {
@@ -43349,12 +43358,13 @@ function findNextPossibleOnSongPart() {
 function removeNewOnSongRow(that)
 {
     $('.show-onsong-format-hint').hide();
+    $('.text-editor-hints').hide();
     $('.error-msg').hide();
     $('#insertNewOnSongRow-link').show();
     $('.for-existing-items').show();
     $('.toggle-onsong-buttons').show(); 
     
-    var row  = $(that).parent().parent().parent();
+    var row = $(that).parent().parent().parent().parent('td').parent('tr');
     var onsong_id = $(row).data('onsong-id') || 0; // (undefined for new elements)
 
     // remove row in case of a just added, empty row
@@ -43377,7 +43387,7 @@ function removeNewOnSongRow(that)
     $('.cell-part-action').hide();
     var cell =  $(onsongArea).children('.cell-part-action');
     $(cell).children('.for-existing-items').show(); 
-    $(cell).children('.for-new-items').hide(); 
+    $('.for-new-items').hide(); 
 }
 
 
@@ -43391,29 +43401,33 @@ function editOnSongText(that)
 
     // get handle on input elements etc
     var row  = $(that).parent().parent();
+    var cell = $(row).children('.cell-part-text');
     // hide display-only text, show writeable input area
-    $(row).children('.cell-part-text').children('.cell-part-action').show();
-    $(row).children('.cell-part-text').children('.show-onsong-text').hide();
-    $(row).children('.cell-part-text').children('.write-onsong-text').hide();
-    $(row).children('.cell-part-text').children('.plaintext-editor').show();
+    cell.children('.cell-part-action').show();
+    cell.children('.show-onsong-text').hide();
+    cell.children('.write-onsong-text').hide();
+    cell.children('.plaintext-editor').show();
+    cell.children('.text-editor-hints').show();
 
     // textarea height according to the number of lines in the OnSong text - but at least 3
-    $(row).children('.cell-part-text').children('.plaintext-editor').attr(
+    cell.children('.plaintext-editor').attr(
         'rows', 
-        Math.max($(row).children('.cell-part-text').children('.plaintext-editor').val().split('\n').length, 3)
+        Math.max(cell.children('.plaintext-editor').val().split('\n').length, 3)
     );
 
     // show correct action buttons
     $('.for-existing-items').hide(); 
-    $(row).children('.cell-part-text').children('.cell-part-action').children('.for-new-items').show(); 
+    cell.children('.cell-part-action').children('.for-new-items').show(); 
 
     $(row).addClass('table-warning');
-    $(row).children('.cell-part-text').children('.plaintext-editor').focus();
+    cell.children('.plaintext-editor').focus();
 }
 
 
 /*  Show "Chords-over-Lyrics" Editor
+
     Converts the OnSong data into chords-over-lyrics format.
+
     This editor allows for editing the plain lyrics, without the interspersed chords.
     However, the user has to make sure that the chords over the lyrics are still in the right place.
     When being saved, the data willl be converted back into the OnSong format.
@@ -43432,6 +43446,7 @@ function editOnSongLyrics(that)
     cell.children('.show-onsong-text').hide();
     cell.children('.write-onsong-text').hide();
     cell.children('.chords-over-lyrics-editor').show();
+    cell.children('.text-editor-hints').show();
 
     // get original OnSong data adn convert it to chords-over-lyrics format
     var text = cell.children('.plaintext-editor').val();
@@ -43464,12 +43479,13 @@ function deleteOnSongText(that)
 function saveNewOnSongText(that, del)
 {
     $('.show-onsong-format-hint').hide();
+    $('.text-editor-hints').hide();
     $('.error-msg').hide();
     $('.new-onsong-field').css('background-color', 'inherit');
 
     // get handle on input elements etc
     var cell = $(that).parent();
-    var row  = $(that).parent().parent().parent();
+    var row  = $(that).parent().parent().parent().parent('td').parent('tr');
 
     // verify input data
     var select  = $(row).children('.cell-part-name').children('select');
@@ -43597,15 +43613,17 @@ function cancelAdvOnSongEditor(that)
 {
     // the id for the row comes from the modal's data attribute which was filled when the modal was triggered
     var row = $(that).parent().parent().parent();
+    var cell = $(row).children('.cell-part-text'); 
     // var row = $('#' + $('#advOnSongEditor').data('for-row-id'));
     row.removeClass('table-warning');
-    $(row).children('.cell-part-text').children('.cell-part-action').children('.for-new-items').hide(); 
-    $(row).children('.cell-part-text').children('.editor-hints').hide(); 
-    $(row).children('.cell-part-text').children('.cell-part-action').children('.for-existing-items').show(); 
+    //cell.children('.cell-part-action > .for-new-items').hide(); 
+    cell.children('.editor-hints').hide(); 
+    cell.children('.cell-part-action').children('.for-existing-items').show(); 
     $('.toggle-onsong-buttons').show(); 
-    $(row).children('.cell-part-text').children('.show-onsong-text').show(); 
+    $('#insertNewOnSongRow-link').show();
+    cell.children('.show-onsong-text').show(); 
     // empty the editor
-    $(row).children('.cell-part-text').children('.advanced-editor').html('').hide();
+    cell.children('.advanced-editor').html('').hide();
 }
 
 
@@ -44117,7 +44135,7 @@ function insertNewOrUpdateExistingItems( event )
         // directly activate the scripture selection
         showModalSelectionItems('scripture');
         // use current comment text as initial value
-        var curCom = button.parent().children().first().text().trim();
+        var curCom = button.siblings().first().text().trim();
         $('#comment').val( curCom=='Click to edit' ? '' : curCom );
         // URL needed to update the comment as derived from the calling element
         $('#searchSongForm'      ).attr('data-action', item.actionUrl);

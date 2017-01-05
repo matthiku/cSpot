@@ -42,7 +42,7 @@
 
 			@if (count($song_parts))
 
-				<table class="table table-striped table-bordered 
+				<table class="table table-striped table-bordered table-sm
 							@if(count($song_parts)>10)
 							 table-sm
 							@endif
