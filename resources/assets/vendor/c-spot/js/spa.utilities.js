@@ -81,6 +81,13 @@ function insertNewOnSongRow()
     // pre-select next possible OnSong part
     $('#new-onsong-row').children('.cell-part-name').children('select').val( findNextPossibleOnSongPart() );
 
+    // un-hide action center of the new row
+    $('#new-onsong-row td').children('.cell-part-action').show();
+    // hide all other action buttons
+    $('.for-existing-items').hide();
+    $('.toggle-onsong-buttons').hide(); 
+    $('.for-new-items').show();
+
     // restore the old, empty, hidden row
     $('#new-onsong-row').removeAttr('id');
     $('#very-new-onsong-row').attr('id', 'new-onsong-row');
@@ -91,11 +98,6 @@ function insertNewOnSongRow()
 
     // make sure all is in the visible viewport
     window.location.href = "#tbl-bottom";
-
-    // hide all other action buttons
-    $('.for-existing-items').hide();
-    $('.toggle-onsong-buttons').hide(); 
-    $('.for-new-items').show();
     
     // set the focus on the part-type selection
     $('#new-onsong-row').children('.cell-part-name').children('select').focus();
@@ -132,6 +134,7 @@ function findNextPossibleOnSongPart() {
     }
     return 1;
 }
+
 
 function removeNewOnSongRow(that)
 {
@@ -182,12 +185,12 @@ function editOnSongText(that)
     $(row).children('.cell-part-text').children('.cell-part-action').show();
     $(row).children('.cell-part-text').children('.show-onsong-text').hide();
     $(row).children('.cell-part-text').children('.write-onsong-text').hide();
-    $(row).children('.cell-part-text').children('textarea').show();
+    $(row).children('.cell-part-text').children('.plaintext-editor').show();
 
     // textarea height according to the number of lines in the OnSong text - but at least 3
-    $(row).children('.cell-part-text').children('textarea').attr(
+    $(row).children('.cell-part-text').children('.plaintext-editor').attr(
         'rows', 
-        Math.max($(row).children('.cell-part-text').children('textarea').val().split('\n').length, 3)
+        Math.max($(row).children('.cell-part-text').children('.plaintext-editor').val().split('\n').length, 3)
     );
 
     // show correct action buttons
@@ -195,8 +198,51 @@ function editOnSongText(that)
     $(row).children('.cell-part-text').children('.cell-part-action').children('.for-new-items').show(); 
 
     $(row).addClass('table-warning');
-    $(row).children('.cell-part-text').children('textarea').focus();
+    $(row).children('.cell-part-text').children('.plaintext-editor').focus();
 }
+
+
+/*  Show "Chords-over-Lyrics" Editor
+    Converts the OnSong data into chords-over-lyrics format.
+    This editor allows for editing the plain lyrics, without the interspersed chords.
+    However, the user has to make sure that the chords over the lyrics are still in the right place.
+    When being saved, the data willl be converted back into the OnSong format.
+*/
+function editOnSongLyrics(that)
+{
+    $('.toggle-onsong-buttons').hide(); 
+    $('#insertNewOnSongRow-link').hide();
+    $('.show-onsong-format-hint').show();
+
+    // get handle on input elements etc
+    var row  = $(that).parent().parent().parent();
+    var cell = $(row).children('.cell-part-text');
+    // hide display-only text, show writeable input area
+    cell.children('.cell-part-action').show();
+    cell.children('.show-onsong-text').hide();
+    cell.children('.write-onsong-text').hide();
+    cell.children('.chords-over-lyrics-editor').show();
+
+    // get original OnSong data adn convert it to chords-over-lyrics format
+    var text = cell.children('.plaintext-editor').val();
+    text = convertOnSongToChordsOverLyrics(text);
+    cell.children('.chords-over-lyrics-editor').val(text);
+
+    // textarea height according to the number of lines in the OnSong text - but at least 3
+    cell.children('.chords-over-lyrics-editor').attr(
+        'rows', 
+        Math.max(cell.children('.chords-over-lyrics-editor').val().split('\n').length, 3)
+    );
+
+    // show correct action buttons
+    $('.for-existing-items').hide(); 
+    cell.children('.cell-part-action').children('.for-new-items').show(); 
+
+    $(row).addClass('table-warning');
+    cell.children('.chords-over-lyrics-editor').focus();
+
+}
+
 
 function deleteOnSongText(that)
 {
@@ -204,12 +250,12 @@ function deleteOnSongText(that)
         saveNewOnSongText($(that).parent(), 'delete');
 }
 
+
 function saveNewOnSongText(that, del)
 {
     $('.show-onsong-format-hint').hide();
     $('.error-msg').hide();
     $('.new-onsong-field').css('background-color', 'inherit');
-    // $('.for-existing-items').show();
 
     // get handle on input elements etc
     var cell = $(that).parent();
@@ -223,14 +269,18 @@ function saveNewOnSongText(that, del)
     if (onsong_id && !part_id)
         part_id = $(row).data('part-id') || false;   // for existing elements
 
+    // relevant data is missing
     if (!onsong_id && !part_id) {
         $(select).focus();
         $(row).children('.cell-part-name').children('.error-msg').show();
         $(select).css('background-color', 'red');
         return;
     }
+
     var textarea = $(row).children('.cell-part-text').children('textarea');
     var text = $(textarea).val();
+
+    // no chords text provided
     if (!text) {
         $(textarea).focus();
         $(row).children('.cell-part-text').children('.error-msg').show();
@@ -257,13 +307,16 @@ function saveNewOnSongText(that, del)
     var table = $('#onsong-parts');
     var song_id = $(table).data('song-id');
     var save_onsong_url = $(table).data('update-onsong-url');
+
     $.post(save_onsong_url, {
             'onsong_id' : onsong_id,
             'song_id' : song_id,
             'part_id' : part_id,
             'text'    : text,
         })
+
         .done( function(data) {
+
             // remove waitspinner
             $(cell).html(oldCellHtml); 
             // show correct action buttons
@@ -284,8 +337,7 @@ function saveNewOnSongText(that, del)
 
                 $(row).data('onsong-id', data.data.id);
                 $(row).data('part-id', data.data.song_part_id);
-                $(row).children('.cell-part-name').text(data.data.song_part.name);
-                $(row).children('.cell-part-code').text(data.data.song_part.code);
+                $(row).children('.cell-part-name').html(data.data.song_part.name + "<br>(" + data.data.song_part.code + ")");
                 $(row).children('.cell-part-code').addClass('font-weight-bold text-xs-center');
                 $(row).children('.cell-part-text').children('textarea').hide();
                 $(row).children('.cell-part-text').children('.cell-part-action').hide();
@@ -319,6 +371,7 @@ function saveNewOnSongText(that, del)
     });
 }
 
+
 function removeFromLocalOnSongParts(which)
 {
     cSpot.item.song.onsongs.forEach( function(elem, idx, arr) {
@@ -326,6 +379,7 @@ function removeFromLocalOnSongParts(which)
             cSpot.item.song.onsongs.splice(idx,1);
     });
 }
+
 
 /* runs when modal was closed (hidden)
 */
@@ -343,6 +397,7 @@ function cancelAdvOnSongEditor(that)
     // empty the editor
     $(row).children('.cell-part-text').children('.advanced-editor').html('').hide();
 }
+
 
 /* get the changed data from the OnSong editor back into the textarea
 */
@@ -378,6 +433,7 @@ function submitEditedOnSong(that)
     
     cancelAdvOnSongEditor(that);
 }
+
 
 /* launch the modal that shows the OnSong editor
 */
@@ -418,6 +474,7 @@ function fillAdvOnSongEditor(that)
         containment: "#"+$(row).children('.cell-part-text').children('.advanced-editor').attr('id'),
     });
 }
+
 function splitOnSongLines(line) {
     var spans = '';
 
@@ -437,6 +494,7 @@ function splitOnSongLines(line) {
 
     return spans;
 }
+
 function splitLyricsToSpans(line) {
     var spans = '';
     var chars = line.split('');
@@ -445,6 +503,7 @@ function splitLyricsToSpans(line) {
     }
     return spans;
 }
+
 function createNewSpan(ch, isChord) {
     var span = '<span';
     if (isChord) {

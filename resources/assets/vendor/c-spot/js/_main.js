@@ -18,6 +18,25 @@ if (typeof($)===undefined) {
 }
 
 
+/* as trim, trimLeft or trimRight might not be available in all environments
+ * see: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/Trim
+ */
+if (!String.prototype.trim) {
+  String.prototype.trim = function () {
+    return this.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '');
+  };
+}
+if (!String.prototype.trimRight) {
+  String.prototype.trimRight = function () {
+    return this.replace(/[\s\uFEFF\xA0]+$/g, '');
+  };
+}
+if (!String.prototype.trimLeft) {
+  String.prototype.trimLeft = function () {
+    return this.replace(/^[\s\uFEFF\xA0]+|/g, '');
+  };
+}
+
 
 // make sure all AJAX calls are using the token stored in the META tag
 // (see https://laravel.com/docs/5.2/routing#csrf-x-csrf-token)
@@ -977,6 +996,32 @@ function rewriteOnsong(element)
     $(element).html(newText);
 
     ;;;console.log('onsong chords re-formatted for '+element.nodeName+'.'+element.className);
+    if (!element.nodeName)
+        ;;;console.log(element);
+}
+function convertOnSongToChordsOverLyrics(text)
+{
+    var newText = '';
+    var textblocks = text.split("\n");
+
+    for (var i = 0; i < textblocks.length; i++) {
+        var tx = splitOnSong(textblocks[i]);
+
+        if ( tx.chords.trim()!='' ) // don't add an empty line
+            newText += tx.chords + "\n";
+
+        if ( tx.lyrics.substr(0,1)=='('  
+          && tx.lyrics.substr(-1,1)==')' )
+            newText += tx.lyrics + "\n";
+
+        else if (tx.lyrics 
+              && tx.lyrics.substr(0,1)!='#')
+            newText += tx.lyrics + "\n";
+        else
+            newText += "\n";
+    }
+
+    return newText.trimRight();
 }
 
 

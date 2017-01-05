@@ -71,6 +71,7 @@
 
 
         {{-- upload a new one or select an existing file? 
+            (we must use style="display: none;" here because when showing it, the inherited value would be "list-item")
         --}}
         <li class="list-group-item center" id="show-location-selection" style="display: none;">
 
@@ -112,11 +113,11 @@
             <label class="card-text" id="images-for-selection-label"></label>
             <br>
 
-            <a disabled="" class="show-next-image-arrows" onclick="showNextImages('back');location.href='#bottom';"><i class="fa fa-caret-left fa-3x"></i></a>
+            <a disabled="" class="show-next-image-arrows" onclick="showNextImages('back');location.href='#bottom';"><i class="fa fa-caret-left fa-3x link"></i></a>
 
             <span id="show-images-for-selection"></span>
 
-            <a disabled="" class="show-next-image-arrows" onclick="showNextImages('forw');location.href='#bottom';"><i class="fa fa-caret-right fa-3x"></i></a>
+            <a disabled="" class="show-next-image-arrows" onclick="showNextImages('forw');location.href='#bottom';"><i class="fa fa-caret-right fa-3x link"></i></a>
 
             <p class="card-text text-muted" id="link-to-more-images"></p>
 
