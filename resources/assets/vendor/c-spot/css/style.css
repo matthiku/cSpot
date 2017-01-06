@@ -11,6 +11,8 @@
     display: none;
 }
 
+/* placeholder for jQuery UI sortable function */
+.ui-state-highlight { height: 2em; }
 
 .lh-1  { line-height: 1; }
 .lh-1h { line-height: 1.5; }

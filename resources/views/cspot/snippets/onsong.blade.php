@@ -1,5 +1,8 @@
 
-
+{{-- 
+	code to show the OnSong parts of a song
+	and to provide the necessary tools tomodify same (add, edit, delete) 
+--}}
 
 
 <table class="table table-striped table-sm" id="onsong-parts" 
@@ -7,7 +10,7 @@
 
 
 	<tfoot>
-		<tr class="bg-faded link" id="insertNewOnSongRow-link">
+		<tr class="bg-faded link insertNewOnSongRow-link">
 			<th colspan=3 class="pl-2">
 				<span onclick="insertNewOnSongRow();" class="btn btn-sm btn-success"><i class="fa fa-plus"></i> Add new Part</span>
 				<span class="small float-xs-right">

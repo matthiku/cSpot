@@ -1004,9 +1004,13 @@ function rewriteOnsong(element)
 
     $(element).html(newText);
 
+    if (element.count===1)
+        element = element[0];
+
     ;;;console.log('onsong chords re-formatted for '+element.nodeName+'.'+element.className);
-    if (!element.nodeName)
+    if (!element.nodeName) {
         ;;;console.log(element);
+    }
 }
 function convertOnSongToChordsOverLyrics(text)
 {

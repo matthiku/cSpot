@@ -610,6 +610,8 @@
                             localStorage.setItem('config-onsongInstructionsConfirmed', false);
                             ">&#128161; Help!</span>
                     </div>
+
+
                     <div class="card onsong-instructions small">
                         <p>OnSong encoded chords is a popular format to store chords and lyrics in music apps. More info can be found 
                             <a href="http://www.onsongapp.com/docs/features/formats/onsong/" class="text-info">here</a>.<br>
@@ -634,6 +636,9 @@
                             </ol>
                         </p>
                     </div>
+
+                    <span onclick="insertNewOnSongRow();" class="btn btn-sm btn-success float-xs-right insertNewOnSongRow-link">
+                        <i class="fa fa-plus"></i> Add new Part</span>
 
                     <p class="text-info">
                         @if (Auth::user()->isEditor())

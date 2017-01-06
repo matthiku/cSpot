@@ -1,19 +1,15 @@
 
+
+{{-- 
+	table cell to show the actual OnSong data, provide the editors and all relevant action buttons 
+--}}
+
+
 <td class="cell-part-text">
 
 
 	<span class="toggle-onsong-buttons float-xs-right btn btn-sm" title="Show Edit Buttons" 
-		onclick="
-			if (! $('.show-onsong-format-hint').is(':visible'))
-				if ($('.cell-part-action').is(':visible')) {
-					$('.cell-part-action').hide();
-					$('#insertNewOnSongRow-link').show();
-				} else {
-					$(this).siblings('.cell-part-action').show();
-					$('.for-new-items').hide();
-					$('#insertNewOnSongRow-link').hide();
-				}		
-		">&#9997;</span>
+		onclick="toggleOnSongEditButtons(this);">&#9997;</span>
 
 
 	{{-- OnSong Editor 
@@ -24,7 +20,10 @@
 	{{-- Read-only area to show chords-over-lyrics 
 	--}}
 	<div class="white-space-pre-wrap lh-1 write-onsong-text{{ $newOnsongRow || $onsong->song_part->code!='m' ? ' show-onsong-text' : '' }}{{ $newOnsongRow ? ' hidden' : '' }}" 
-		onclick="$(this).siblings('.toggle-onsong-buttons').click();" title="Click to edit">{{ $newOnsongRow ? '' : $onsong->text }}</div>
+		 title="Click to edit" 
+		 onclick="
+				$(this).siblings('.toggle-onsong-buttons').click();
+			">{{ $newOnsongRow ? '' : $onsong->text }}</div>
 
 
 	{{-- text area to edit in plain onsong format 
@@ -44,9 +43,9 @@
 
 	<div class="editor-hints small hidden">
 		<span><span>			
-		    	<small>Re-arrange the keys (chords) within the lyrics by dragging them left or right.</small>
-		    	<button type="button" class="btn btn-sm float-xs-right btn-success"   onclick="submitEditedOnSong(   $(this))" >Save changes</button>
-		    	<button type="button" class="btn btn-sm float-xs-right btn-secondary" onclick="cancelAdvOnSongEditor($(this))" >Cancel</button>
+		    	<span>Re-arrange the keys (chords) within the lyrics by dragging them left or right.</span>
+		    	<button type="button" class="btn btn-sm float-xs-right btn-success"   onclick="submitEditedOnSong(  $(this))" >Save changes</button>
+		    	<button type="button" class="btn btn-sm float-xs-right btn-secondary" onclick="closeAdvOnSongEditor($(this))" >Cancel</button>
 		</span></span>
 	</div>
 
@@ -78,19 +77,28 @@
 
 	<div class="cell-part-action center small hidden">
 
+
 		<span class="for-existing-items text-success">Choose your Editor:</span>
+
 		@if ( isset($onsong) && $onsong->song_part->code!='m')
-			<button title="Advanced OnSong Editor" type="button" class="btn btn-outline-primary btn-sm for-existing-items" onclick="fillAdvOnSongEditor(this)">OnSong</button>
+			<button title="Advanced OnSong Editor" type="button" class="btn btn-outline-primary btn-sm for-existing-items select-adv-onsong-editor" 
+				onclick="fillAdvOnSongEditor(this)">OnSong</button>
 		@endif
+
 		<button title="Plain OnSong-Text Editor" type="button" class="btn btn-outline-primary btn-sm for-existing-items" onclick="editOnSongText($(this).parent())">Plain text</button>
+
 		<button title="Chords-Over-Lyrics Editor" type="button" class="btn btn-outline-primary btn-sm for-existing-items" onclick="editOnSongLyrics(this)">Chords-Over-Lyrics</button>
 
-		<span class="float-xs-right for-existing-items">delete
+
+		<span class="float-xs-right for-existing-items">
 			<a href="javascript:void(0);" onclick="deleteOnSongText(this);" title="delete this part" 
-			  class="btn btn-outline-danger btn-sm"><big>&#128465;</big>
+			  class="btn btn-outline-danger btn-sm">Delete <big>&#128465;</big>
 		  	</a>
 		</span>
 
+
 	</div>
+
+
 
 </td>
