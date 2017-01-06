@@ -65,7 +65,7 @@ function userAvailableForPlan(that, plan_id) {
 
 
 
-/*\__________________________________________________________________________  SONG  Details Page
+/*\__________________________________________________________________________  ONSONG data handling
 \*/
 
 
@@ -145,7 +145,12 @@ function removeNewOnSongRow(that)
     $('.for-existing-items').show();
     $('.toggle-onsong-buttons').show(); 
     
-    var row = $(that).parent().parent().parent().parent('td').parent('tr');
+    var row;
+    if (that.nodeName != 'row'  &&  that.nodeName !== undefined)
+        row = $(that).parent().parent().parent().parent('td').parent('tr');
+    else
+        row = that;
+
     var onsong_id = $(row).data('onsong-id') || 0; // (undefined for new elements)
 
     // remove row in case of a just added, empty row
@@ -200,7 +205,6 @@ function editOnSongText(that)
     $('.for-existing-items').hide(); 
     cell.children('.cell-part-action').children('.for-new-items').show(); 
 
-    $(row).addClass('table-warning');
     cell.children('.plaintext-editor').focus();
 }
 
@@ -244,7 +248,6 @@ function editOnSongLyrics(that)
     $('.for-existing-items').hide(); 
     cell.children('.cell-part-action').children('.for-new-items').show(); 
 
-    $(row).addClass('table-warning');
     cell.children('.chords-over-lyrics-editor').focus();
 
 }
@@ -260,12 +263,11 @@ function deleteOnSongText(that)
 function saveNewOnSongText(that, del)
 {
     $('.show-onsong-format-hint').hide();
-    $('.text-editor-hints').hide();
     $('.error-msg').hide();
     $('.new-onsong-field').css('background-color', 'inherit');
 
     // get handle on input elements etc
-    var cell = $(that).parent();
+    var cell = $(that).parent().parent();
     var row  = $(that).parent().parent().parent().parent('td').parent('tr');
 
     // verify input data
@@ -303,8 +305,8 @@ function saveNewOnSongText(that, del)
     var partname = select.children('option:selected').text();
 
     // all good, we can proceed. Hide the action buttons
-    var oldCellHtml = $(cell).html(); 
-    $(cell).html(cSpot.const.waitspinner); 
+    var oldCellHtml = cell.html(); 
+    cell.html('<div class="bg-info text-white fully-width text-xs-center"> '+cSpot.const.waitspinner+' </div>'); 
 
     // is this a delete request?
     if (del == 'delete')
@@ -325,10 +327,7 @@ function saveNewOnSongText(that, del)
         .done( function(data) {
 
             // remove waitspinner
-            $(cell).html(oldCellHtml); 
-            // show correct action buttons
-            $(cell).children('.for-existing-items').show(); 
-            $(cell).children('.for-new-items').hide(); 
+            cell.html(oldCellHtml); 
 
             // insert success data into the new table row or the existing row (for updates)
             $(row).children('.cell-part-text').children('.write-onsong-text').html(data.data.text).show();
@@ -364,7 +363,7 @@ function saveNewOnSongText(that, del)
                     $(row).children('.cell-part-text').children('textarea').hide();
                     $('.cell-part-action').hide();
                 }
-                removeNewOnSongRow(that);
+                removeNewOnSongRow(row);
             }
             // enable ADD button
             $('#insertNewOnSongRow-link').show();
@@ -374,7 +373,7 @@ function saveNewOnSongText(that, del)
         .fail(function(data) {
             // show error
             console.log(data);
-            $(cell).html(oldCellHtml);
+            cell.html(oldCellHtml);
     });
 }
 
@@ -393,7 +392,7 @@ function removeFromLocalOnSongParts(which)
 function cancelAdvOnSongEditor(that)
 {
     // the id for the row comes from the modal's data attribute which was filled when the modal was triggered
-    var row = $(that).parent().parent().parent();
+    var row  = $(that).parent().parent().parent().parent('td').parent('tr');
     var cell = $(row).children('.cell-part-text'); 
     // var row = $('#' + $('#advOnSongEditor').data('for-row-id'));
     row.removeClass('table-warning');
@@ -414,7 +413,7 @@ function submitEditedOnSong(that)
 {
     // get an handle on the row from which this modal was launched
     // var row = $('#' + $('#advOnSongEditor').data('for-row-id'));
-    var row = $(that).parent().parent().parent();
+    var row = $(that).parent().parent().parent().parent('td').parent('tr');
 
     // the old OnSong data
     var textDiv = row.children('.cell-part-text').children('textarea');
@@ -433,14 +432,11 @@ function submitEditedOnSong(that)
     // write the edited data into the display area and the textarea input
     textDiv.val(newData);
 
-    // get handle on Save button
-    var handleOnSaveButton = row.children('.cell-part-text').children('.cell-part-action').children('a.for-new-items')[0];
+    // restore the original look of the cell    
+    cancelAdvOnSongEditor(that);
 
     // then submit the new data to the host
-    saveNewOnSongText(handleOnSaveButton);
-    $(row).children('.cell-part-text').children('.cell-part-action').children('.for-new-items').show(); 
-    
-    cancelAdvOnSongEditor(that);
+    saveNewOnSongText(that);
 }
 
 

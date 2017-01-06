@@ -44,9 +44,7 @@
 					</th>
 
 
-					<td class="cell-part-text">
-						@include('cspot.snippets.onsong_action', ['newOnsongRow' => false])
-					</td>
+					@include('cspot.snippets.onsong_action', ['newOnsongRow' => false])
 
 
 				</tr>
@@ -77,9 +75,8 @@
 			</th>
 
 
-			<td class="cell-part-text">
-				@include('cspot.snippets.onsong_action', ['newOnsongRow' => true])
-			</td>
+			@include('cspot.snippets.onsong_action', ['newOnsongRow' => true])
+
 		</tr>
 
 
