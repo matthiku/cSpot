@@ -50,27 +50,45 @@
 	</div>
 
 
+
+
+
 	<div class="text-editor-hints small hidden">
 
-		<p class="card">
+		<div class="card">
 
-			<span class="float-xs-right">
+			<span class="float-xs-right ml-2 text-editor-save-cancel-buttons">
 				<a href="javascript:void(0);" onclick="saveNewOnSongText(this);" title="save"   tabindex=2 
-				  class="btn btn-sm btn-success float-xs-right"><big>&#128427;</big><span class="hidden-sm-down"> Save &nbsp;</span></a>
+				  class="btn btn-sm btn-success float-xs-right"><big>&#128427;</big><span class="hidden-sm-down text-white px-1">Save</span></a>
 				<br>
 				<a href="javascript:void(0);" onclick="removeNewOnSongRow(this);" title="cancel" tabindex=3 
-				  class="btn btn-sm btn-secondary">&#10007;<span class="hidden-sm-down">  Cancel</span></a>
+				  class="btn btn-sm btn-secondary"><big>&#10007;</big><span class="hidden-sm-down"> Cancel </span></a>
 			</span>
 
-			Use "chords over lyrics" or OnSong-formatted chords with lyrics (lyrics with chords in square brackets).<br> 
-			<small>(For more information, see the 
-				<a href="http://www.onsongapp.com/docs/features/formats/onsong/chords/" target="new" class="text-info">
-				OnSong manual on formats</a>)</small><br>
-			<span class="text-danger">
-				<strong>Note:</strong> Blank lines will force a new slide in lyrics presentations but will be ignored when showing the chords.
+			<span class="hints-for-onsong-chords-part">			
+				Use "chords over lyrics" or OnSong-formatted chords with lyrics (lyrics with chords in square brackets).<br>
+				Lines with text enclosed in brackets like this: "<i> (play twice) </i>" will only be seen by the musicians.<br>
+				You can add comments by inserting a '#' (sharp) sign at the start of the line. Comments won't appear anywhere else!<br>
+				<small>(For more information, see the 
+					<a href="http://www.onsongapp.com/docs/features/formats/onsong/chords/" target="new" class="text-info">
+					OnSong manual on formats</a>)</small><br>
+				<span class="text-danger">
+					<strong>Note:</strong> Blank lines will force a new slide in lyrics presentations but will be ignored when showing the chords.
+				</span>
 			</span>
-		</p>
+
+
+			<span class="hints-for-onsong-metadata hidden">
+				Use this part to provide information ("Metatags") about the song. Metatags are name/value pairs 
+				where the name is on the left and the value on the right separated by a colon. Example:
+				<pre class="ml-2 mb-0">Capo: 3{{"\n"}}Key: D{{"\n"}}Tempo: 76</pre>
+				<small class="float-xs-right">(For more information, see the 
+					<a href="http://www.onsongapp.com/docs/features/formats/onsong/metadata/" target="new" class="text-info">
+					OnSong manual on formats</a>)</small>
+			</span>
+		</div>
 	</div>
+
 
 
 

@@ -1046,7 +1046,7 @@ function convertOnSongToChordsOverLyrics(text)
  */
 function splitOnSong(onsong)
 {
-    var result = {}, lyrics='', chords='', spl, maxl=0, padd, lyric, chord;
+    var result = {}, lyrics='', chords='', spl, maxl=0, next, padd, padl, lyric, chord;
     
     var parts = onsong.split('[');
     for (var i = 0; i < parts.length; i++) {
@@ -1063,11 +1063,20 @@ function splitOnSong(onsong)
         // does this part contain both chord and lyrics?
         if (spl.length>1) {
             maxl = Math.max(chord.length, lyric.length);
-            if (chord.length >= lyric.length) 
+            padl = ' ';
+            if (chord.length >= lyric.length) {
                 maxl+=1; // add an extra blank if chords are longer than lyrics
+                // check if we are in the middle of a word
+                if (i+1 < parts.length) {
+                    next = parts[i+1].split(']');
+                    if (next.length>1 && next[1][0]!=' ')
+                        padl = '-';
+                }
+            }
             padd = ' '.repeat(maxl);
-            lyrics += (lyric+padd).substr(0,maxl);
             chords += (chord+padd).substr(0,maxl);
+            padd = padl.repeat(maxl);
+            lyrics += (lyric+padd).substr(0,maxl);
         } 
         // no chords in this section, just lyrics
         else {

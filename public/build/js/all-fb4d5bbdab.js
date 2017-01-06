@@ -42382,7 +42382,7 @@ function convertOnSongToChordsOverLyrics(text)
  */
 function splitOnSong(onsong)
 {
-    var result = {}, lyrics='', chords='', spl, maxl=0, padd, lyric, chord;
+    var result = {}, lyrics='', chords='', spl, maxl=0, next, padd, padl, lyric, chord;
     
     var parts = onsong.split('[');
     for (var i = 0; i < parts.length; i++) {
@@ -42399,11 +42399,20 @@ function splitOnSong(onsong)
         // does this part contain both chord and lyrics?
         if (spl.length>1) {
             maxl = Math.max(chord.length, lyric.length);
-            if (chord.length >= lyric.length) 
+            padl = ' ';
+            if (chord.length >= lyric.length) {
                 maxl+=1; // add an extra blank if chords are longer than lyrics
+                // check if we are in the middle of a word
+                if (i+1 < parts.length) {
+                    next = parts[i+1].split(']');
+                    if (next.length>1 && next[1][0]!=' ')
+                        padl = '-';
+                }
+            }
             padd = ' '.repeat(maxl);
-            lyrics += (lyric+padd).substr(0,maxl);
             chords += (chord+padd).substr(0,maxl);
+            padd = padl.repeat(maxl);
+            lyrics += (lyric+padd).substr(0,maxl);
         } 
         // no chords in this section, just lyrics
         else {
@@ -42826,6 +42835,7 @@ $(document).ready(function() {
             });
         });
     }
+
 
 
     /**
@@ -43296,9 +43306,14 @@ function insertNewOnSongRow()
     $('#new-onsong-row td > .cell-part-action').show();
     // hide all other action buttons
     $('.for-existing-items').hide();
-    $('.toggle-onsong-buttons').hide(); 
-    $('.for-new-items').show();
-    $('#new-onsong-row td > .text-editor-hints').show();
+    $('.toggle-onsong-buttons').hide();
+
+    // show help info and save/cancel buttons
+    var btn = $('#new-onsong-row td > .text-editor-hints');
+    btn.show();
+    var elem = $(btn).children('.card').children('span').children('a');
+    $(elem[1]).width( $(elem[0]).width() );            
+
 
     // restore the old, empty, hidden row
     $('#new-onsong-row').removeAttr('id');
@@ -43383,36 +43398,41 @@ function removeNewOnSongRow(that)
     $('.cell-part-action').hide();
     var cell =  $(onsongArea).children('.cell-part-action');
     $(cell).children('.for-existing-items').show(); 
-    $('.for-new-items').hide(); 
 }
 
 
 function toggleOnSongEditButtons(that) 
 {
     // first make sure that we are not currently ADDing a new song part
-    if (! $('.show-onsong-format-hint').is(':visible')) 
-    {
+    if (! $('.show-onsong-format-hint').is(':visible')) {
+
         // are we already EDITing another song part?
-        if ($('.cell-part-action').is(':visible')) 
-        {
+        if ($('.cell-part-action').is(':visible')) {
             $('.cell-part-action').hide();
             $('#insertNewOnSongRow-link').show();
         } 
-        else 
-        {
+        else {
+
             // if the song part contains no chords, we can directly start the plaintext editor!
             // get handle on input elements etc
             var row  = $(that).parents('tr');
             var cell = row.children('.cell-part-text');
             var text = cell.children('.plaintext-editor').val();
             // check if the original text and the converted text are the same (indicating that it contains no chords)
-            if (text == convertOnSongToChordsOverLyrics(text))
+            if (text == convertOnSongToChordsOverLyrics(text)) {
                 editOnSongText(that);
-                // $(that).siblings('.cell-part-action').children('.select-adv-onsong-editor').hide();
+
+                // if this is the part containing the metadata, we will show a different help section
+                if (row.hasClass('onsong-meta-data')) {
+                    // #tbl-row-[nnn] > td > div.text-editor-hints.small.hidden > p > span.hints-for-onsong-chords-part
+                    cell.children('.text-editor-hints').children('.card').children('.hints-for-onsong-chords-part').hide();
+                    cell.children('.text-editor-hints').children('.card').children('.hints-for-onsong-metadata').show();
+                }
+            }
             
             // now we can show the buttons to select an EDITor
             $(that).siblings('.cell-part-action').show();
-            $('.for-new-items').hide();
+
             $('#insertNewOnSongRow-link').hide();
         }
     }
@@ -43435,7 +43455,11 @@ function editOnSongText(that)
     cell.children('.show-onsong-text').hide();
     cell.children('.write-onsong-text').hide();
     cell.children('.plaintext-editor').show();
+
     cell.children('.text-editor-hints').show();
+    // make sure both buttons have the same size (which depends on the media size!)
+    var elem = cell.children('.text-editor-hints').children('.card').children('span').children('a');
+    $(elem[1]).width( $(elem[0]).width() );            
 
     // textarea height according to the number of lines in the OnSong text - but at least 3
     cell.children('.plaintext-editor').attr(
@@ -43445,7 +43469,6 @@ function editOnSongText(that)
 
     // show correct action buttons
     $('.for-existing-items').hide(); 
-    cell.children('.cell-part-action').children('.for-new-items').show(); 
 
     cell.children('.plaintext-editor').focus();
 }
@@ -43473,7 +43496,11 @@ function editOnSongLyrics(that)
     cell.children('.show-onsong-text').hide();
     cell.children('.write-onsong-text').hide();
     cell.children('.chords-over-lyrics-editor').show();
+
     cell.children('.text-editor-hints').show();
+    // make sure both buttons have the same size (which depends on the media size!)
+    var elem = cell.children('.text-editor-hints').children('.card').children('span').children('a');
+    $(elem[1]).width( $(elem[0]).width() );            
 
     // get original OnSong data adn convert it to chords-over-lyrics format
     var text = cell.children('.plaintext-editor').val();
@@ -43488,7 +43515,6 @@ function editOnSongLyrics(that)
 
     // show correct action buttons
     $('.for-existing-items').hide(); 
-    cell.children('.cell-part-action').children('.for-new-items').show(); 
 
     cell.children('.chords-over-lyrics-editor').focus();
 

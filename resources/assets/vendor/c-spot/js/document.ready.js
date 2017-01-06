@@ -178,6 +178,7 @@ $(document).ready(function() {
     }
 
 
+
     /**
      * enabling certain Bootstrap UI features (Tooltips, Popovers)
      */

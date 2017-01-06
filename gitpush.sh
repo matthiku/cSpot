@@ -29,10 +29,10 @@ fi
 
 echo
 echo Uploading all changes to GitHub with this description:
-echo '====> ' 
-printf "$DESC"
+echo '' 
+printf "====> $DESC <===="
 echo
-echo  ' <===='
+echo  ''
 read -p 'Continue? (Y/n) '
 if [ "$REPLY" = "n" ]; then
     echo 'Aborting...'
