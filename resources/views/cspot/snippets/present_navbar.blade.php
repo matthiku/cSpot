@@ -311,7 +311,7 @@ $modalContent = '
             Show
         </button>
 
-        <div class="dropdown-menu dropdown-menu-left bg-faded">
+        <div class="dropdown-menu dropdown-menu-left bg-faded lh-2">
             @foreach (range(1,7) as $num)
                 <a class="dropdown-item" href="#verse{{ $num }}" 
                         id="jump-verse{{ $num }}" style="display: none">
@@ -326,9 +326,12 @@ $modalContent = '
             <!-- change number of columns for chords display -->
             <span class="hidden-lg-up dropdown-item edit-show-buttons" >
                 <span>Cols:</span>
-                <i class="fa fa-minus" onclick="setChordsColumns('decr');">&nbsp;</i>
-                    <span class="bg-info show-column-count">&nbsp;1&nbsp;</span>
-                <i class="fa fa-plus" onclick="setChordsColumns('incr');">&nbsp;</i>
+                <span class="ml-0 btn btn-sm btn-info edit-show-buttons hidden" onclick="$('#onsongs').css('column-count', 1);"
+                    title="show chords in 1 column" >&#9783;1</span>
+                <span class="ml-0 btn btn-sm btn-info edit-show-buttons hidden" onclick="$('#onsongs').css('column-count', 2);" 
+                    title="show chords in 2 columns">&#9783;2</span>
+                <span class="ml-0 btn btn-sm btn-info edit-show-buttons hidden" onclick="$('#onsongs').css('column-count', 3);" 
+                    title="show chords in 3 columns">&#9783;3</span>
             </span>
 
 
@@ -336,12 +339,12 @@ $modalContent = '
 
             <a class="dropdown-item hidden-lg-up edit-show-buttons" 
                     href="#" style="display: none"
-                    onclick="decFontSize(['.text-song', '.show-onsong-text']);" >
+                    onclick="changeFontSize(['.text-song', '.show-onsong-text'], 'decrease');" >
                 A <i class="fa fa-minus"></i> decrease font
             </a>
             <a class="dropdown-item hidden-lg-up edit-show-buttons" 
                     href="#" style="display: none"
-                    onclick="incFontSize(['.text-song', '.show-onsong-text']);" >
+                    onclick="changeFontSize(['.text-song', '.show-onsong-text']);" >
                 A <i class="fa fa-plus"></i> increase font
             </a>
 

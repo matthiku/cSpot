@@ -41,16 +41,18 @@
 	<div class="error-msg hidden">Enter text here.</div>
 
 
+
+
+
 	<div class="editor-hints small hidden">
+
 		<span><span>			
 		    	<span>Re-arrange the keys (chords) within the lyrics by dragging them left or right.</span>
 		    	<button type="button" class="btn btn-sm float-xs-right btn-success"   onclick="submitEditedOnSong(  $(this))" >Save changes</button>
 		    	<button type="button" class="btn btn-sm float-xs-right btn-secondary" onclick="closeAdvOnSongEditor($(this))" >Cancel</button>
 		</span></span>
+		
 	</div>
-
-
-
 
 
 	<div class="text-editor-hints small hidden">
@@ -68,13 +70,13 @@
 			<span class="hints-for-onsong-chords-part">			
 				Use "chords over lyrics" or OnSong-formatted chords with lyrics (lyrics with chords in square brackets).<br>
 				Lines with text enclosed in brackets like this: "<i> (play twice) </i>" will only be seen by the musicians.<br>
-				You can add comments by inserting a '#' (sharp) sign at the start of the line. Comments won't appear anywhere else!<br>
+				<span class="text-danger">
+					<strong>Note:</strong> Blank lines will force a new slide in lyrics presentations but will be ignored when showing the chords.<br>
+				</span>
+				You can also add comments by inserting a '#' (sharp) sign at the start of the line. Those comments won't appear anywhere else!<br>
 				<small>(For more information, see the 
 					<a href="http://www.onsongapp.com/docs/features/formats/onsong/chords/" target="new" class="text-info">
 					OnSong manual on formats</a>)</small><br>
-				<span class="text-danger">
-					<strong>Note:</strong> Blank lines will force a new slide in lyrics presentations but will be ignored when showing the chords.
-				</span>
 			</span>
 
 

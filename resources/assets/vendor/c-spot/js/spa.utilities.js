@@ -281,7 +281,7 @@ function editOnSongLyrics(that)
     var elem = cell.children('.text-editor-hints').children('.card').children('span').children('a');
     $(elem[1]).width( $(elem[0]).width() );            
 
-    // get original OnSong data adn convert it to chords-over-lyrics format
+    // get original OnSong data and convert it to chords-over-lyrics format
     var text = cell.children('.plaintext-editor').val();
     text = convertOnSongToChordsOverLyrics(text);
     cell.children('.chords-over-lyrics-editor').val(text);
@@ -339,8 +339,14 @@ function saveNewOnSongText(that, del)
         return;
     }
 
+    // is the text from the plaintext or the Chords-over-Lyrics editor?
     var textarea = row.children('.cell-part-text').children('textarea');
-    var text = $(textarea).val();
+    var text = '';
+    if ( textarea.length>1  &&  $(textarea[1]).val() )
+        // use the text from the chords-over-lyrics editor if present
+        text = $(textarea[1]).val() || $(textarea[0]).val();
+    else 
+        text = $(textarea).val();
 
     // no chords text provided
     if (!text) {
@@ -386,8 +392,12 @@ function saveNewOnSongText(that, del)
             row.children('.cell-part-text').children('.write-onsong-text').html(data.data.text).show();
             // show it as chords over lyrics
             rewriteOnsong(row.children('.cell-part-text').children('.show-onsong-text'));
-            // also write it into the textarea for futher edits in this session
-            $(textarea).val(data.data.text);
+            // also write it into the textarea for further edits in this session
+            if ( textarea.length>1) {
+                $(textarea[0]).val(data.data.text);
+                $(textarea[1]).val('');
+            } else
+                $(textarea).val(data.data.text);
 
             // for new rows
             if (!onsong_id) {

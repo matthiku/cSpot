@@ -353,15 +353,17 @@ $(document).ready(function() {
             var movedItem = [];
             movedItem.id = ui.item.data('itemId');
             movedItem.seq_no = ui.item.attr('id').split('-')[2];
+
             // get all siblings of the just moved item
-            var siblings = $(ui.item).siblings();
+            var siblings = $(ui.item).parent().children();
             // check each sibling's sequence
             for (var i = 1; i <= siblings.length; i++) {
+                // 'i' is one ahead of the actual index...
                 var sib = siblings[-1+i];
-                if (sib.classList.contains('trashed')) {
-                    // ignore trashed items....
-                    continue;
-                }
+
+                // ignore trashed items....
+                if (sib.classList.contains('trashed')) continue;
+
                 // is this the moved item?
                 if ( sib.dataset.itemId == movedItem.id ) {
                     changed = sib;
@@ -369,9 +371,8 @@ $(document).ready(function() {
                 } 
                 else {
                     should_seq_no = 0.0 + sib.id.split('-')[2];
-                    if (changed) { 
+                    if (changed)
                         break; 
-                    }
                 }
             }
             if (changed) {

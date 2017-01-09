@@ -42405,13 +42405,14 @@ function splitOnSong(onsong)
                 // check if we are in the middle of a word
                 if (i+1 < parts.length) {
                     next = parts[i+1].split(']');
-                    if (next.length>1 && next[1][0]!=' ')
+                    if (lyrics[lyrics.length-1]!='-' && next.length>1 && next[1][0]!=' ' && next[1][0]!==undefined)
                         padl = '-';
                 }
             }
             padd = ' '.repeat(maxl);
             chords += (chord+padd).substr(0,maxl);
-            padd = padl.repeat(maxl);
+            // if the chords are longer than the lyrics text, we must insert placeholders ('- ')
+            padd = createLyricsPlaceholder(padl, maxl);
             lyrics += (lyric+padd).substr(0,maxl);
         } 
         // no chords in this section, just lyrics
@@ -42427,9 +42428,25 @@ function splitOnSong(onsong)
 }
 
 
+/* create placeholder characters (' -') up to a given length
+*/
+function createLyricsPlaceholder( string, length)
+{
+    if (string === ' '  || length === 1)
+        return string.repeat(length);
+
+    var newstr;
+    string = ' -';
+    newstr = string.repeat(length/2);
+    if (length%2 == 1)
+        newstr += ' ';
+    return newstr;
+}
+
+
 /*** 
  * Join separate lines of chords and lyrics into an OnSong formatted line
- * (this assumes that the first line always contains only chords!)
+ * (this requires that the first line always contains only chords!)
  * Also, we must have a even number of lines for this to work properly
  */
 function joinLyricsAndChordsToOnSong(chords)
@@ -42473,9 +42490,15 @@ function joinLyricsAndChordsToOnSong(chords)
         // array of actual chords
         var lnchrds = chline.trim().split(/\s+/);
 
-        // insert the chords into the lyrics text at the right location
+        // create a dummy lyrics line for a chords-only block (like an intro)
         if (lyline===undefined)
             lyline=' ';
+
+        // cater for chrods exceeding the actual lyrics text length
+        if (lyline.length < chline.length)
+            lyline = lyline + ' '.repeat(chline.length-lyline.length);
+
+        // insert the chords into the lyrics text at the right location
         for (var j = 0; j < lyline.length; j++) {
             if (j==chordsLocations[start]) {
                 online += '['+ lnchrds[start] + ']';
@@ -43012,15 +43035,17 @@ $(document).ready(function() {
             var movedItem = [];
             movedItem.id = ui.item.data('itemId');
             movedItem.seq_no = ui.item.attr('id').split('-')[2];
+
             // get all siblings of the just moved item
-            var siblings = $(ui.item).siblings();
+            var siblings = $(ui.item).parent().children();
             // check each sibling's sequence
             for (var i = 1; i <= siblings.length; i++) {
+                // 'i' is one ahead of the actual index...
                 var sib = siblings[-1+i];
-                if (sib.classList.contains('trashed')) {
-                    // ignore trashed items....
-                    continue;
-                }
+
+                // ignore trashed items....
+                if (sib.classList.contains('trashed')) continue;
+
                 // is this the moved item?
                 if ( sib.dataset.itemId == movedItem.id ) {
                     changed = sib;
@@ -43028,9 +43053,8 @@ $(document).ready(function() {
                 } 
                 else {
                     should_seq_no = 0.0 + sib.id.split('-')[2];
-                    if (changed) { 
+                    if (changed)
                         break; 
-                    }
                 }
             }
             if (changed) {
@@ -43502,7 +43526,7 @@ function editOnSongLyrics(that)
     var elem = cell.children('.text-editor-hints').children('.card').children('span').children('a');
     $(elem[1]).width( $(elem[0]).width() );            
 
-    // get original OnSong data adn convert it to chords-over-lyrics format
+    // get original OnSong data and convert it to chords-over-lyrics format
     var text = cell.children('.plaintext-editor').val();
     text = convertOnSongToChordsOverLyrics(text);
     cell.children('.chords-over-lyrics-editor').val(text);
@@ -43560,8 +43584,14 @@ function saveNewOnSongText(that, del)
         return;
     }
 
+    // is the text from the plaintext or the Chords-over-Lyrics editor?
     var textarea = row.children('.cell-part-text').children('textarea');
-    var text = $(textarea).val();
+    var text = '';
+    if ( textarea.length>1  &&  $(textarea[1]).val() )
+        // use the text from the chords-over-lyrics editor if present
+        text = $(textarea[1]).val() || $(textarea[0]).val();
+    else 
+        text = $(textarea).val();
 
     // no chords text provided
     if (!text) {
@@ -43607,8 +43637,12 @@ function saveNewOnSongText(that, del)
             row.children('.cell-part-text').children('.write-onsong-text').html(data.data.text).show();
             // show it as chords over lyrics
             rewriteOnsong(row.children('.cell-part-text').children('.show-onsong-text'));
-            // also write it into the textarea for futher edits in this session
-            $(textarea).val(data.data.text);
+            // also write it into the textarea for further edits in this session
+            if ( textarea.length>1) {
+                $(textarea[0]).val(data.data.text);
+                $(textarea[1]).val('');
+            } else
+                $(textarea).val(data.data.text);
 
             // for new rows
             if (!onsong_id) {
