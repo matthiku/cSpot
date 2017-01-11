@@ -52,8 +52,12 @@
     >
 
 
+
     @include ('layouts.messages')
     
+
+
+
 
     @unless (Request::is('*/present') || Request::is('*/chords'))
 
@@ -62,12 +66,14 @@
     @endunless
 
 
+
+
+
     <div class="container-fluid app-content">
 
             @yield('content')
 
     </div><!-- container fluid -->
-
 
 
 

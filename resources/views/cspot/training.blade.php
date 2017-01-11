@@ -36,14 +36,14 @@
 			<ul class="nav navbar-nav">
 
 
-			    <a class="btn btn-outline-success float-xs-right" href='#' title="Show videos as list or tiles" 
+			    <a class="btn btn-outline-success float-right" href='#' title="Show videos as list or tiles" 
 			            onclick="$('#show-as-large-icons').toggle();$('#show-as-filelist').toggle();">
 			        <i class="fa fa-list"> </i> &nbsp; List / Tiles
 			    </a>
 
 
 				@if( Auth::user()->isEditor() )
-					<li class="nav-item active float-xs-right mr-2">
+					<li class="nav-item active float-right mr-2">
 						<a class="nav-link btn btn-outline-primary" 
 						    href="{{ url('cspot/songs/create') }}?type=training">
 							<i class="fa fa-plus"> </i> &nbsp;Add New
@@ -100,10 +100,10 @@
 						--}}
 						<div class="card-header px-1 pt-0" style="padding-bottom: 5px;">
                             @if ( Auth::user()->isEditor() )
-                                <a class="btn btn-outline-primary btn-sm float-xs-right" title="Edit song details" 
+                                <a class="btn btn-outline-primary btn-sm float-right" title="Edit song details" 
 										href='{{ url('cspot/songs/'.$song->id) }}/edit'><i class="fa fa-edit"></i></a>
                             @endif
-							<ul class="nav nav-tabs card-header-tabs float-xs-left">
+							<ul class="nav nav-tabs card-header-tabs float-left">
 								<li class="nav-item">
 									<a class="nav-link {{ $song->youtube_id ? 'active' : '' }} ui-training-videos-tabs" href="#" id="pill-{{ $song->id }}-1" 
 										onclick="toggleVideoTabs('{{ $song->id }}-1', '{{ $song->id }}-2')">Video</a>

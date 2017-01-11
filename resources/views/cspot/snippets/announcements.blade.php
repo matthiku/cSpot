@@ -12,8 +12,8 @@
 
 
 	<div class="text-success font-weight-bold font-italic display-3 mb-1">
-		<img class="float-xs-left" height="140px" src="{{ url($logoPath.env('CHURCH_LOGO_FILENAME')) }}">
-		<img class="float-xs-right" height="140px" src="{{ url($logoPath.env('CHURCH_LOGO_FILENAME')) }}">
+		<img class="float-left" height="140px" src="{{ url($logoPath.env('CHURCH_LOGO_FILENAME')) }}">
+		<img class="float-right" height="140px" src="{{ url($logoPath.env('CHURCH_LOGO_FILENAME')) }}">
 		<div class="header mb-0" style="line-height: 1.0; vertical-align: middle;">This Week's Announcements
 			<div class="smaller text-muted">Week from {{$columnDay->formatLocalized('%d %b')}} to {{$nextWeek->formatLocalized('%d %b')}}</div>
 		</div>

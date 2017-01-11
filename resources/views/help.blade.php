@@ -6,7 +6,7 @@
         
     <div class="card-header">
         @if (!Auth::guest())
-            <button class="btn btn-outline-success float-xs-right">    
+            <button class="btn btn-outline-success float-right">    
                 <a href="{{ route('trainingVideos') }}"><big>&#127979;</big> Training Videos</a>
             </button>
         @endif

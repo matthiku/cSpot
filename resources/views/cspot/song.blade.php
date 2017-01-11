@@ -72,19 +72,19 @@
         <div class="col-md-6">
 
             @if ( (isset($song) && $song->title_2=='training') || (! isset($song) && Request::has('type') && Request::input('type')=='training'  ) )
-                <a class="float-xs-right btn btn-outline-success" href="{{ route('trainingVideos') }}">
+                <a class="float-right btn btn-outline-success" href="{{ route('trainingVideos') }}">
                     <span class="hidden-lg-down">Back to </span><span class="hidden-sm-down">List of </span>Training Videos
                 </a>
             @else
-                <a class="float-xs-right btn btn-outline-success song-only" 
+                <a class="float-right btn btn-outline-success song-only" 
                         href="{{ url('cspot/songs?page=') . ( session()->has('currentPage') ? session('currentPage') : $currentPage ) }}">
                     <span class="hidden-lg-down">All </span>Songs
                 </a>
-                <a class="float-xs-right btn btn-outline-warning mr-1 slides-only" style="display: none;"
+                <a class="float-right btn btn-outline-warning mr-1 slides-only" style="display: none;"
                         href="{{ url('cspot/songs?filterby=title_2&filtervalue=slides') }}">
                     <span class="hidden-lg-down">All </span>Slideshows
                 </a>
-                <a class="float-xs-right btn btn-outline-danger mr-1 video-only" style="display: none;"
+                <a class="float-right btn btn-outline-danger mr-1 video-only" style="display: none;"
                         href="{{ url('cspot/songs?filterby=title_2&filtervalue=video') }}">
                     <span class="hidden-lg-down">All </span>Videoclips
                 </a>
@@ -425,7 +425,7 @@
 
                         <textarea name="lyrics" rows=4 onkeyup="calculateTextAreaHeight(this);">{{ isset($song) ? $song->lyrics : '' }}</textarea>
 
-                        <button id="lyrics-copy-btn" class="float-xs-right"><i class="fa fa-copy"></i>&nbsp;copy text</button>
+                        <button id="lyrics-copy-btn" class="float-right"><i class="fa fa-copy"></i>&nbsp;copy text</button>
 
                         {{-- zoom size of textarea --}}
                         <small id="zoom-lyrics-textarea" style="display: none;">textbox size:
@@ -463,9 +463,9 @@
 
                     <textarea name="chords" id="chords-textarea" rows=4 onkeyup="calculateTextAreaHeight(this);">{{ isset($song) ? $song->chords : '' }}</textarea>
                     
-                    <button id="chords-copy-btn" class="float-xs-right"><i class="fa fa-copy"></i>&nbsp;copy chords</button>
+                    <button id="chords-copy-btn" class="float-right"><i class="fa fa-copy"></i>&nbsp;copy chords</button>
 
-                    <span class="btn btn-sm btn-outline-primary float-xs-right" 
+                    <span class="btn btn-sm btn-outline-primary float-right" 
                         onclick="$('#show-chords-as-onsong').text(joinLyricsAndChordsToOnSong($('#chords-textarea').val()));$(this).hide();">
                         show OnSong-encoded copy</span>
                     <pre id="show-chords-as-onsong"></pre>

@@ -10,7 +10,7 @@
 
     <h6><i class="fa fa-book">&nbsp;</i>Add Bible Reference:</h6>
 
-    <select name="from-book" id="from-book" class="float-xs-left" onchange="showNextSelect('from', 'chapter')">
+    <select name="from-book" id="from-book" class="float-left" onchange="showNextSelect('from', 'chapter')">
         <option selected="TRUE" value=" ">select book...</option>
     </select>&nbsp;
 

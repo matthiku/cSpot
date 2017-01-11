@@ -15,7 +15,7 @@
 	@include('layouts.flashing')
 
 
-    <h2 class="float-xs-left mr-2">
+    <h2 class="float-left mr-2">
     	{{ $heading }}
 	</h2>
 

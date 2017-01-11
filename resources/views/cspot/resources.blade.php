@@ -19,7 +19,7 @@
     @include('layouts.flashing')
 
     @if (  $plan->resources->count() > 0  &&  $userIsAuthorized  )  
-        <button onclick="$('#new-resource-form').toggle();" class="float-xs-right ml-1">Add Resource</button>
+        <button onclick="$('#new-resource-form').toggle();" class="float-right ml-1">Add Resource</button>
     @endif
     
 

@@ -19,7 +19,7 @@
     @include('layouts.flashing')
 
     @if (  $plan->teams->count() > 0  &&  $userIsAuthorized  )  
-        <button onclick="$('#new-member-form').toggle();" class="float-xs-right ml-1">Add new team member</button>
+        <button onclick="$('#new-member-form').toggle();" class="float-right ml-1">Add new team member</button>
     @endif
     
 

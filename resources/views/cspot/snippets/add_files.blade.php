@@ -7,7 +7,7 @@
     @if (! isset($modal)) 
         <div class="card-block">
             <h4 class="card-title">
-                <span class="big link float-xs-right" title="Close" onclick="
+                <span class="big link float-right" title="Close" onclick="
                     $('#col-2-file-add').hide();
                     $('.add-another-image-link').show();
                     ">&#128502;</span>
@@ -137,7 +137,7 @@
 
             {{-- don't show the submit button on the popup modal form as we handle the upload via AJAX --}}
             @if (! isset($modal)) 
-                <span class="show-file-add-button float-xs-right hidden">
+                <span class="show-file-add-button float-right hidden">
                     {!! Form::submit('Submit') !!}                                
                 </span>
             @endif

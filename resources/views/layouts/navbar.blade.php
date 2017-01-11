@@ -1,5 +1,133 @@
 
-<nav id="main-navbar" class="tek-nav navbar navbar-dark bg-primary navbar-full">
+<nav id="main-navbar" class="navbar navbar-toggleable-sm navbar-inverse bg-primary mb-2 py-0">
+
+    <button class="navbar-toggler navbar-toggler-right" type="button" 
+        data-toggle="collapse" data-target="#navbarSupportedContent" 
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    
+    {{--________________________________________________________
+
+                    LEFT - Home button
+        ________________________________________________________
+    --}}
+    <a class="navbar-brand" href="{{ Auth::guest() ? url('.') : url('home') }}">
+        <img src="{{ url('images/xs-cspot.png') }}" height="20" width="30"></a>
+
+
+
+
+<div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+
+    {{--________________________________________________________
+
+                    LEFT - Main menu items
+        ________________________________________________________
+    --}}
+    <ul class="navbar-nav">
+
+        @if (Auth::user())
+
+            <li class="nav-item dropdown{{ Request::is('cspot/plans') || Request::is('cspot/songs') || Request::is('cspot/history') || Request::is('admin/types') ? ' active' : '' }}">
+                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                    Planning <span class="caret"></span>
+                </a>
+                <div class="dropdown-menu" role="menu">
+                    <a class="dropdown-item {{ Request::is('cspot/plans/next') ? 'active' : '' }}" href="{{ url('cspot/plans/next') }}">
+                        <i class="fa fa-btn fa-bell-o fa-lg"></i> &nbsp; Next Sunday</a>
+                    <a class="dropdown-item" href="{{ url('cspot/plans?filterby=future') }}">
+                        <i class="fa fa-btn fa-calendar fa-lg"></i> &nbsp; Upcoming Events</a>
+
+                    <hr>
+                    <a class="dropdown-item {{ Request::is('cspot/plans') ? 'active' : '' }}" href="{{ url('cspot/plans') }}">
+                        <i class="fa fa-btn fa-calendar-check-o fa-lg"></i> &nbsp; Your Events</a>
+                    @if( Auth::user()->isEditor() )
+                    <a class="dropdown-item" href="{{ url('cspot/plans/create') }}">
+                        <i class="fa fa-btn fa-calendar-plus-o fa-lg"></i> &nbsp; Create New Event</a>
+                    @endif
+                    <a class="dropdown-item" href="{{ url('admin/types') }}">
+                        <i class="fa fa-btn fa-tasks fa-lg"></i> &nbsp; Event Types</a>
+                    <a class="dropdown-item" href="{{ url('admin/default_items') }}">
+                        <i class="fa fa-btn fa-server fa-lg"></i> &nbsp; Default Items</a>
+
+                    <hr>
+                    <a class="dropdown-item" href="{{ url('cspot/songs') }}">
+                        <i class="fa fa-btn fa-music fa-lg"> </i> &nbsp;&nbsp; Songs</a>
+                    <a class="dropdown-item" href="{{ url('cspot/songs') }}?filterby=title_2&filtervalue=video">
+                        <i class="fa fa-btn fa-tv fa-lg"></i> &nbsp; Videoclips</a>
+                    <a class="dropdown-item" href="{{ url('cspot/songs') }}?filterby=title_2&filtervalue=slides">
+                        <i class="fa fa-btn fa-clone fa-lg"></i> &nbsp; Slides</a>
+                    @if (Auth::user()->isEditor())
+                        <a class="dropdown-item" href="{{ url('admin/song_parts') }}">
+                            <i class="fa fa-btn fa-server fa-lg"></i> &nbsp; Song Parts Names</a>
+                        <hr class="mb-0">
+                        <a class="dropdown-item" href="{{ url('cspot/history') }}">
+                            <span class="xl-big">&#9991;</span> &nbsp; Event Plan History</a>
+                    @endif
+                </div>
+            </li>
+
+
+            <li class="nav-item hidden-sm-down">
+                <a class="nav-link {{ Request::is('cspot/plans/next') ? 'active' : '' }}" href="{{ url('cspot/plans/next') }}">Next Sunday</a>
+            </li>
+
+
+            <li class="nav-item hidden-sm-down">
+                <a class="nav-link{{ Request::has('filterby') && Request::input('filterby')=='future' ? ' active' : '' }}" 
+                    href="{{ url('cspot/plans?filterby=future') }}">Upcoming Events</a>
+            </li>
+
+
+            <li class="nav-item hidden-lg-down">
+                <a class="nav-link{{ Request::is('cspot/plans') && ! Request::has('filterby')  ? ' active' : '' }}" href="{{ url('cspot/plans') }}">My Events</a>
+            </li>
+
+        @endif
+
+    </ul>
+
+
+
+    <!-- 
+        CENTER - Show church logo and name 
+    -->
+    <span class="navbar-text hidden-md-down mx-auto">
+        <a class="nav-link shil text-white" target="new" href="{{ env('CHURCH_URL') }}">
+            <img src="{{ url($logoPath.env('CHURCH_LOGO_FILENAME')) }}" height="20">
+            {{ env('CHURCH_NAME') }}
+        </a>
+    </span>
+
+
+
+
+    {{--________________________________________________________
+
+                                            RIGHT - Login form        
+        ________________________________________________________
+    --}}
+    @if ( Auth::guest() )
+        <form class="form-inline ml-auto hidden-md-down" method="POST" role="form" action="{{ url('login') }}">
+            Log in using @include('auth.social', ['hideLblText' => 'true']) or: 
+            {!! csrf_field() !!}
+            <div class="form-group">
+                <input type="email" name="email" class="form-control-sm" id="inputEmail" placeholder="Enter email">
+            </div>
+            <div class="form-group small-pw-input">
+                <input type="password" name="password" class="form-control-sm small-pw-input" id="inputPassword" placeholder="Password">
+            </div>
+            <div class="checkbox hidden-xs-up">
+                <label>
+                    <input type="checkbox" name="remember" checked="checked"> Remember me
+                </label>
+            </div>
+            <button type="submit" class="btn btn-sm btn-primary">Sign in</button> &nbsp; &nbsp; &nbsp;
+        </form>
+    @endif
 
 
     {{--___________________________________________________________
@@ -8,7 +136,7 @@
         ___________________________________________________________
     --}}
 
-    <ul class="nav navbar-nav float-xs-right">
+    <ul class="navbar-nav ml-auto">
 
 
 
@@ -128,127 +256,6 @@
     </ul>
 
 
-
-
-    {{--________________________________________________________
-
-                                            RIGHT - Login form        
-        ________________________________________________________
-    --}}
-    @if ( Auth::guest() )
-        <form class="form-inline float-xs-right hidden-md-down" method="POST" role="form" action="{{ url('login') }}">
-            Log in using @include('auth.social', ['hideLblText' => 'true']) or: 
-            {!! csrf_field() !!}
-            <div class="form-group">
-                <input type="email" name="email" class="form-control-sm" id="inputEmail" placeholder="Enter email">
-            </div>
-            <div class="form-group small-pw-input">
-                <input type="password" name="password" class="form-control-sm small-pw-input" id="inputPassword" placeholder="Password">
-            </div>
-            <div class="checkbox hidden-xs-up">
-                <label>
-                    <input type="checkbox" name="remember" checked="checked"> Remember me
-                </label>
-            </div>
-            <button type="submit" class="btn btn-sm btn-primary">Sign in</button> &nbsp; &nbsp; &nbsp;
-        </form>
-    @endif
-
-
-
-    {{--________________________________________________________
-
-                    LEFT - Home button
-        ________________________________________________________
-    --}}
-    <a class="navbar-brand" href="{{ Auth::guest() ? url('.') : url('home') }}">
-        <img src="{{ url('images/xs-cspot.png') }}" height="20" width="30"></a>
-
-
-
-
-
-
-    {{--________________________________________________________
-
-                    LEFT - Main menu items
-        ________________________________________________________
-    --}}
-    <ul class="nav navbar-nav">
-
-        @if (Auth::user())
-
-            <li class="nav-item dropdown{{ Request::is('cspot/plans') || Request::is('cspot/songs') || Request::is('cspot/history') || Request::is('admin/types') ? ' active' : '' }}">
-                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                    Planning <span class="caret"></span>
-                </a>
-                <div class="dropdown-menu" role="menu">
-                    <a class="dropdown-item {{ Request::is('cspot/plans/next') ? 'active' : '' }}" href="{{ url('cspot/plans/next') }}">
-                        <i class="fa fa-btn fa-bell-o fa-lg"></i> &nbsp; Next Sunday</a>
-                    <a class="dropdown-item" href="{{ url('cspot/plans?filterby=future') }}">
-                        <i class="fa fa-btn fa-calendar fa-lg"></i> &nbsp; Upcoming Events</a>
-
-                    <hr>
-                    <a class="dropdown-item {{ Request::is('cspot/plans') ? 'active' : '' }}" href="{{ url('cspot/plans') }}">
-                        <i class="fa fa-btn fa-calendar-check-o fa-lg"></i> &nbsp; Your Events</a>
-                    @if( Auth::user()->isEditor() )
-                    <a class="dropdown-item" href="{{ url('cspot/plans/create') }}">
-                        <i class="fa fa-btn fa-calendar-plus-o fa-lg"></i> &nbsp; Create New Event</a>
-                    @endif
-                    <a class="dropdown-item" href="{{ url('admin/types') }}">
-                        <i class="fa fa-btn fa-tasks fa-lg"></i> &nbsp; Event Types</a>
-                    <a class="dropdown-item" href="{{ url('admin/default_items') }}">
-                        <i class="fa fa-btn fa-server fa-lg"></i> &nbsp; Default Items</a>
-
-                    <hr>
-                    <a class="dropdown-item" href="{{ url('cspot/songs') }}">
-                        <i class="fa fa-btn fa-music fa-lg"> </i> &nbsp;&nbsp; Songs</a>
-                    <a class="dropdown-item" href="{{ url('cspot/songs') }}?filterby=title_2&filtervalue=video">
-                        <i class="fa fa-btn fa-tv fa-lg"></i> &nbsp; Videoclips</a>
-                    <a class="dropdown-item" href="{{ url('cspot/songs') }}?filterby=title_2&filtervalue=slides">
-                        <i class="fa fa-btn fa-clone fa-lg"></i> &nbsp; Slides</a>
-                    @if (Auth::user()->isEditor())
-                        <a class="dropdown-item" href="{{ url('admin/song_parts') }}">
-                            <i class="fa fa-btn fa-server fa-lg"></i> &nbsp; Song Parts Names</a>
-                        <hr class="mb-0">
-                        <a class="dropdown-item" href="{{ url('cspot/history') }}">
-                            <span class="xl-big">&#9991;</span> &nbsp; Event Plan History</a>
-                    @endif
-                </div>
-            </li>
-
-
-            <li class="nav-item hidden-sm-down">
-                <a class="nav-link {{ Request::is('cspot/plans/next') ? 'active' : '' }}" href="{{ url('cspot/plans/next') }}">Next Sunday</a>
-            </li>
-
-
-            <li class="nav-item hidden-sm-down">
-                <a class="nav-link{{ Request::has('filterby') && Request::input('filterby')=='future' ? ' active' : '' }}" 
-                    href="{{ url('cspot/plans?filterby=future') }}">Upcoming Events</a>
-            </li>
-
-
-            <li class="nav-item hidden-lg-down">
-                <a class="nav-link{{ Request::is('cspot/plans') && ! Request::has('filterby')  ? ' active' : '' }}" href="{{ url('cspot/plans') }}">My Events</a>
-            </li>
-
-        @endif
-
-
-
-
-        <!-- 
-            CENTER - Show church logo and name 
-        -->
-        <li class="hidden-md-down center">
-            <a class="nav-link shil" target="new" href="{{ env('CHURCH_URL') }}">
-                <img src="{{ url($logoPath.env('CHURCH_LOGO_FILENAME')) }}" height="20">
-                {{ env('CHURCH_NAME') }}
-            </a>
-        </li>
-
-    </ul>
-
+</div>
 
 </nav>

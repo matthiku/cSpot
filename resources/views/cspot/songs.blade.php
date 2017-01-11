@@ -31,7 +31,7 @@
 			&#9776;
 		</button>
 
-		<h4 class="hidden-sm-up float-xs-right text-success lora">{{ $heading }}</h4>
+		<h4 class="hidden-sm-up float-right text-success lora">{{ $heading }}</h4>
 
 
 		<div class="collapse navbar-toggleable-xs" id="exCollapsingNavbar2">
@@ -41,9 +41,9 @@
 			<a class="navbar-brand text-success lora px-1 hidden-xs-down hidden-lg-up" href="#">{{ $heading }}</a>
 
 
-			<ul class="nav navbar-nav float-xs-right">
+			<ul class="nav navbar-nav float-right">
 				@if ($currentPage!=0)
-					<li class="nav-item hidden-sm-down small float-xs-right">
+					<li class="nav-item hidden-sm-down small float-right">
 						Page {{ $songs->currentPage() }} of {{ $songs->lastPage() }}<br>
 						@if ( $songs->total() > $songs->perPage())
 							<small class="hidden-md-down">showing {{ $songs->perPage() }} of a total of {{ $songs->total() }} songs</small>
@@ -168,7 +168,7 @@
 				<tr data-song-title="{{ $song->title }}">
 
 
-					<th {!! $editLink !!} scope="row" class="link hidden-md-down float-xs-center">{{ $song->id }}</th>
+					<th {!! $editLink !!} scope="row" class="link hidden-md-down float-center">{{ $song->id }}</th>
 
 
 					<td {!! $editLink !!} class="link nowrap" title="{{ $song->lyrics }}">

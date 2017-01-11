@@ -44,7 +44,7 @@
         <div class="col-md-6">
 
 
-            <div class="float-xs-right">
+            <div class="float-right">
 
                 <!-- hide SUBMIT button until changes are made   -->
                 @if( false && Auth::user()->ownsPlan($item->plan_id) )
@@ -130,7 +130,7 @@
 
 
         <!-- action buttons -->
-        <div class="col-md-6 float-xs-right nowrap" data-item-id="{{ $item->id }}" 
+        <div class="col-md-6 float-right nowrap" data-item-id="{{ $item->id }}" 
             data-item-update-action="{{ route('cspot.api.items.update', $item->id) }}">
 
             @if( Auth::user()->ownsPlan($item->plan_id) )
@@ -232,13 +232,13 @@
 
             <div id = "song-details-tab">
 
-                <div class="card card-block float-xs-center p-b-1" style="max-width: 40rem; ">
+                <div class="card card-block float-center p-b-1" style="max-width: 40rem; ">
 
                     <div class="row center song-details">
                         <h5 class="card-title">
                             @if ( $item->itemType()=='song')
-                                <i class="float-xs-left fa fa-music"></i> &nbsp;
-                                <i class="float-xs-right fa fa-music"></i>
+                                <i class="float-left fa fa-music"></i> &nbsp;
+                                <i class="float-right fa fa-music"></i>
                             @endif
                             @if ($item->song->book_ref)
                                 <small>({{ $item->song->book_ref }})</small>
@@ -274,9 +274,9 @@
                                                             
                                 <div class="card center mb-0">
                                     <div class="card-block p-0">
-                                        <h5 class="card-title float-xs-left">&#127896; Instructions for Music Team:
+                                        <h5 class="card-title float-left">&#127896; Instructions for Music Team:
                                             <br>
-                                            <small class="text-muted float-xs-left">(e.g. for having a verse without music)</small>
+                                            <small class="text-muted float-left">(e.g. for having a verse without music)</small>
                                         </h5>
                                         <div class="card-text">
                                             @if (Auth::user()->ownsPlan( $plan->id ))
@@ -287,7 +287,7 @@
                                         </div>
                                         <div class="card-text">
                                             @if (Auth::user()->ownsPlan( $plan->id ))
-                                                <a      href="#" class="card-link float-xs-right form-control" id="key-notes-erase-link"  
+                                                <a      href="#" class="card-link float-right form-control" id="key-notes-erase-link"  
                                                         onclick="deleteItemNote('key', 'key-item-id-{{ $item->id }}', '{{ route('cspot.api.item.update') }}')" 
                                                         style="max-width: 150px; display: {{ $item->key ? 'initial' : 'none' }}">
                                                     <small><i class="fa fa-remove text-muted"></i> clear note</small>
@@ -417,7 +417,7 @@
 
         <div id="bg-images-tab">
 
-            <div class="show-bg-images-instructions hidden float-xs-right">
+            <div class="show-bg-images-instructions hidden float-right">
                 <span class="btn btn-sm btn-outline-info ml-1" onclick="
                     $('.bg-images-instructions').show();
                     $('.show-bg-images-instructions').hide();
@@ -435,7 +435,7 @@
                     <strong>Background</strong> images will be stretched/shrank in order to fill the whole background of the presentation space, but if you use 
                     images with a category name of <i>"Presentation"</i>, the images will retain their original width-to-height aspect ratio, 
                     with the height adapted to the height of the presentation area.
-                    <span class="confirm-bg-images-instructions float-xs-right">
+                    <span class="confirm-bg-images-instructions float-right">
                         <span class="btn btn-sm btn-outline-danger mr-1" onclick="
                             $('.bg-images-instructions').hide();
                             $('.show-bg-images-instructions').show();
@@ -447,7 +447,7 @@
             </div>
 
             {{-- link to open the Add File dialog --}}
-            <span data-item-type="add-file" class="add-another-image-link btn btn-sm btn-success float-xs-right" onclick="
+            <span data-item-type="add-file" class="add-another-image-link btn btn-sm btn-success float-right" onclick="
                     $('#col-2-file-add').show();
                     $('#show-location-selection').hide();
                     $('.add-another-image-link').hide();
@@ -473,7 +473,7 @@
                     @foreach ($files as $file)
                         <div id="file-{{ $file->id }}" style="padding=2px;{{ ($key % 2 == 1) ? 'background-color: #eee;' : 'background-color: #ddd;' }}">
 
-                            <div class="float-xs-left" style="min-width: 60px;">
+                            <div class="float-left" style="min-width: 60px;">
                                 @if ( $fcount>1 && $key>0 )
                                     <a href="{{ url("cspot/items/$item->id/movefile/$file->id/up") }}" title="Move up" 
                                         onclick="showSpinner()" class="btn btn-info btn-sm move-button mb-1" role="button" >
@@ -494,7 +494,7 @@
                                 @endif
                             </div>
                             @if ( $fcount>1)
-                                <div class="center float-xs-right">Order:<br>{{ $file->pivot->seq_no }}</div>
+                                <div class="center float-right">Order:<br>{{ $file->pivot->seq_no }}</div>
                             @endif
 
                             @include ('cspot.snippets.show_files')
@@ -602,7 +602,7 @@
                 --}}
                 <div id="onsong-tab">
 
-                    <div class="show-onsong-instructions hidden float-xs-right">
+                    <div class="show-onsong-instructions hidden float-right">
                         <span class="btn btn-sm btn-outline-info ml-1" onclick="
                             $('.onsong-instructions').show();
                             $('.show-onsong-instructions').hide();
@@ -613,32 +613,53 @@
 
 
                     <div class="card onsong-instructions small">
-                        <p>OnSong encoded chords is a popular format to store chords and lyrics in music apps. More info can be found 
-                            <a href="http://www.onsongapp.com/docs/features/formats/onsong/" class="text-info">here</a>.<br>
-                            In c-SPOT each song part (verses, chorus etc) is retained into seperate blocks.<br>
-                            The main difference to the popular 'chords-over-lyrics' format is that the chords are interspersed within the lyrics,
-                            enclosed in square brackets, like this: <i>Amazing [D]Grace, how [G]sweet the [D]sound</i>.</p>
-                        <p>Below you can add new parts or edit existing parts.</p>
-                        <p>When adding <strong>new song parts</strong>, you can just copy&amp;paste from an existing source and that can be either 
-                            in OnSong format or in the legacy "chords-over-lyrics" format.</p>
-                        <p>When editing <strong>existing parts</strong>, you can choose between 3 different editors: 
-                            (just click into the song part to show the editor selection)
-                            <ol>
-                                <li>OnSong editor - here you can drag the chords to the left or right, leaving the lyrics alone</li>
-                                <li>Plain text editor - here you can edit the data in the original OnSnog format</li>
-                                <span class="confirm-onsong-instructions float-xs-right btn btn-sm btn-outline-danger mr-1" onclick="
-                                    $('.onsong-instructions').hide();
-                                    $('.show-onsong-instructions').show();
-                                    $('.confirm-onsong-instructions').hide();
-                                    localStorage.setItem('config-onsongInstructionsConfirmed', true);
-                                    ">&#128504; OK, understood!</span>
-                                <li>Chords-over-Lyrics editor - this is helpful for editing just the lyrics.</li>
-                            </ol>
-                        </p>
+                        <div class="card-block">
+                            <h6>Why is c-SPOT using the OnSong Format?</h6>
+
+                            <p> To provide musical information about a song for the musicians, various formats are available. 
+                                Many musicians are familiar with and use the <strong>"Chords-over-Lyrics" format</strong> 
+                                instead of music notes or sheet music.</p>
+
+                            <p> With that format, the <strong>advantage</strong> for c-SPOT is that we do not have to store the lyrics in a separate
+                                place but can use the lyrics of this format for the presentation to the congregation and the 
+                                chords-over-lyrics-format for the musicians, both drawing from the same source.</p>
+
+                            <p> <strong>OnSong</strong> encoded chords is a way to store these chords and lyrics in music apps. (More info 
+                                <a target="new" href="http://www.onsongapp.com/docs/features/formats/onsong/" class="text-info">here <i class="fa fa-external-link"></i></a>).
+                                c-SPOT uses this format but retains each song part (like verses, chorus, bridge etc) in seperate blocks (called <strong>song parts</strong>).
+                                The main difference to the popular 'chords-over-lyrics' format is that the chords are interspersed within the lyrics,
+                                enclosed in square brackets, like this:<br><i>Amazing [D]Grace, how [G]sweet the [D]sound</i></p>
+
+                            @if (Auth::user()->isEditor())
+                                <h6>Add new parts or edit existing parts</h6>
+
+                                <p>When adding <strong>new song parts</strong>, you can just <strong>copy&amp;paste</strong> from an existing source and that can be either 
+                                    in OnSong format or in the legacy "chords-over-lyrics" format.</p>
+
+                                <p>When editing <strong>existing parts</strong>, you can choose between 3 different editors: 
+                                    (just click into the song part to show the editor selection)
+                                    <ul>
+                                        <li>OnSong editor - here you can drag the chords to the left or right, leaving the lyrics alone</li>
+                                        <li>Plain text editor - here you can edit the data in the original OnSong format</li>
+                                        @endif
+                                        <span class="confirm-onsong-instructions float-right btn btn-sm btn-outline-danger mr-1" onclick="
+                                            $('.onsong-instructions').hide();
+                                            $('.show-onsong-instructions').show();
+                                            $('.confirm-onsong-instructions').hide();
+                                            localStorage.setItem('config-onsongInstructionsConfirmed', true);
+                                            ">&#128504; OK, understood!</span>
+                                        @if (Auth::user()->isEditor())
+                                        <li>Chords-over-Lyrics editor - this is helpful for editing just the lyrics.</li>
+                                    </ul>
+                                </p>
+                            @endif
+                        </div>
                     </div>
 
-                    <span onclick="insertNewOnSongRow();" class="btn btn-sm btn-success float-xs-right insertNewOnSongRow-link">
-                        <i class="fa fa-plus"></i> Add new Part</span>
+                    @if (Auth::user()->isEditor())
+                        <span onclick="insertNewOnSongRow();" class="btn btn-sm btn-success float-right insertNewOnSongRow-link">
+                            <i class="fa fa-plus"></i> Add new Part</span>
+                    @endif
 
                     <p class="text-info">
                         @if (Auth::user()->isEditor())
@@ -652,11 +673,12 @@
                             ({{ $item->song->sequence ? 'Sequence: '.$item->song->sequence : 'No sequence predefined' }})
                         @endif
                     </p>
+
+
                     @php
                         $song = $item->song;
                         $songParts = App\Models\SongPart::orderby('sequence')->get();
                     @endphp
-
                     @include('cspot.snippets.onsong')
 
                 </div>

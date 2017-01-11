@@ -17,7 +17,7 @@
                 class="card-title"><i class="fa fa-sticky-note"> </i> 
 
             {{-- is this item for leader's eyes only? --}}
-            <a      href="#" class="float-xs-right link small{{ $item->forLeadersEyesOnly ? ' bg-danger': '' }}" onclick="changeForLeadersEyesOnly(this)" 
+            <a      href="#" class="float-right link small{{ $item->forLeadersEyesOnly ? ' bg-danger': '' }}" onclick="changeForLeadersEyesOnly(this)" 
                     data-value="{{ $item->forLeadersEyesOnly }}"
                     title="Click to make item visible for {{ $item->forLeadersEyesOnly ? 'everyone': "leader's eyes only (useful for personal notes etc.)" }}">
                 @if ($item->forLeadersEyesOnly)
@@ -44,7 +44,7 @@
 
                 @if (! $item->song_id)
                     {{-- checkbox to indicate if public note should be shown in the presentation --}}
-                    <span class="btn btn-secondary float-xs-left item-comment-public">
+                    <span class="btn btn-secondary float-left item-comment-public">
                         <label class="custom-control custom-checkbox">
                             <input type="checkbox" id="toggle-show-comment" 
                                   class="custom-control-input" {{ $item->show_comment ? 'checked="checked"' : '' }}
@@ -59,7 +59,7 @@
 
                 @if( Auth::user()->ownsPlan($plan->id) )
                     {{-- show link to clear the public note --}}
-                    <a      href="#" class="card-link float-xs-right form-control item-comment-public" id="public-notes-erase-link"
+                    <a      href="#" class="card-link float-right form-control item-comment-public" id="public-notes-erase-link"
                             onclick="deleteItemNote('public', 'comment-item-id-{{ $item->id }}', '{{ route('cspot.api.item.update') }}')" 
                             style="max-width: 150px; display: {{ $item->comment ? 'initial' : 'none' }}">
                         <small><i class="fa fa-remove text-muted"></i> clear comment</small>
@@ -70,7 +70,7 @@
                     {{-- checkbox to indicate if this item should be used to show the ANNOUNCEMENTS in the presentation --}}
                     <br>
                     <br>
-                    <span class="btn btn-secondary float-xs-left item-comment-public">
+                    <span class="btn btn-secondary float-left item-comment-public">
                         <label class="custom-control custom-checkbox">
                             <input type="checkbox" id="toggle-show-announcements" 
                                   class="custom-control-input" {{ $item->key == 'announcements' ? 'checked="checked"' : '' }}
@@ -108,7 +108,7 @@
                     $item->itemNotes->where('user_id', Auth::user()->id)->first() ? $item->itemNotes->where('user_id', Auth::user()->id)->first()->text : '' }}</pre>
             </p>
 
-            <a      href="#" class="card-link float-xs-right form-control" id="private-notes-erase-link"  
+            <a      href="#" class="card-link float-right form-control" id="private-notes-erase-link"  
                     onclick="deleteItemNote('private', 'notes-item-id-{{ $item->id }}', '{{ route('cspot.api.item.update') }}')" 
                     style="max-width: 150px; display: {{ $item->itemNotes->where('user_id', Auth::user()->id)->first() ? 'initial' : 'none' }}">
                 <small><i class="fa fa-remove text-muted"></i> clear note</small>

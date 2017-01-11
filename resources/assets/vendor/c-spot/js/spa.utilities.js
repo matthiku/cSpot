@@ -90,7 +90,10 @@ function insertNewOnSongRow()
     // show help info and save/cancel buttons
     var btn = $('#new-onsong-row td > .text-editor-hints');
     btn.show();
-    var elem = $(btn).children('.card').children('span').children('a');
+    $(btn).children('.card').children('.card-block').children('.hints-for-plaintext-editor').show();
+    $(btn).children('.card').children('.card-block').children('.hints-for-chords-over-lyrics-editor').show();
+
+    var elem = $(btn).children('.card').children('.card-block').children('span').children('a');
     $(elem[1]).width( $(elem[0]).width() );            
 
 
@@ -144,6 +147,8 @@ function findNextPossibleOnSongPart() {
 function removeNewOnSongRow(that)
 {
     $('.show-onsong-format-hint').hide();
+    $('.hints-for-chords-over-lyrics-editor').hide();
+    $('.hints-for-plaintext-editor').hide();
     $('.text-editor-hints').hide();
     $('.error-msg').hide();
     $('.insertNewOnSongRow-link').show();
@@ -186,31 +191,43 @@ function toggleOnSongEditButtons(that)
     if (! $('.show-onsong-format-hint').is(':visible')) {
 
         // are we already EDITing another song part?
-        if ($('.cell-part-action').is(':visible')) {
+        if ($('.cell-part-action').is(':visible')) 
+        {
             $('.cell-part-action').hide();
             $('#insertNewOnSongRow-link').show();
+            $('.toggle-onsong-buttons').show();
         } 
-        else {
+        else 
+        {
+            $('.toggle-onsong-buttons').hide();
 
             // if the song part contains no chords, we can directly start the plaintext editor!
             // get handle on input elements etc
             var row  = $(that).parents('tr');
             var cell = row.children('.cell-part-text');
             var text = cell.children('.plaintext-editor').val();
+
+            row.addClass('table-warning');
+            // prevent opening of other editors
+            $('.insertNewOnSongRow-link').hide();
+            $('.show-onsong-format-hint').show();
+
             // check if the original text and the converted text are the same (indicating that it contains no chords)
             if (text == convertOnSongToChordsOverLyrics(text)) {
-                editOnSongText(that);
+                showPlaintextEditor(that);
 
                 // if this is the part containing the metadata, we will show a different help section
                 if (row.hasClass('onsong-meta-data')) {
                     // #tbl-row-[nnn] > td > div.text-editor-hints.small.hidden > p > span.hints-for-onsong-chords-part
-                    cell.children('.text-editor-hints').children('.card').children('.hints-for-onsong-chords-part').hide();
-                    cell.children('.text-editor-hints').children('.card').children('.hints-for-onsong-metadata').show();
+                    cell.children('.text-editor-hints').children('.card').children('.card-block').children('.hints-for-plaintext-editor').hide();
+                    cell.children('.text-editor-hints').children('.card').children('.card-block').children('.hints-for-chords-over-lyrics-editor').hide();
+                    cell.children('.text-editor-hints').children('.card').children('.card-block').children('.hints-for-onsong-metadata').show();
                 }
             }
             
             // now we can show the buttons to select an EDITor
             $(that).siblings('.cell-part-action').show();
+            $(that).siblings('.cell-part-action').position({my: 'right bottom', at: 'right bottom', of: cell});
 
             $('#insertNewOnSongRow-link').hide();
         }
@@ -218,14 +235,55 @@ function toggleOnSongEditButtons(that)
 }       
 
 
-/* show OnSong editor
+/* launch the modal that shows the OnSong editor
 */
-function editOnSongText(that)
+function showAdvOnSongEditor(that) 
 {
-    $('.toggle-onsong-buttons').hide(); 
-    $('.insertNewOnSongRow-link').hide();
-    $('.show-onsong-format-hint').show();
+    // hide the container div
+    $(that).parent().hide();
 
+    // get access to the triggering row
+    var row = $(that).parents('tr');
+
+    // show correct action buttons
+    row.children('.cell-part-text').children('.cell-part-action').children('.for-existing-items').hide(); 
+
+    // get the existing OnSong data
+    var textDiv = row.children('.cell-part-text').children('textarea');
+    var onSongData = textDiv.val();
+
+    // divide text into lines and add them as individual divs
+    var newHtml = '';
+    var lines = onSongData.split('\n');
+    lines.forEach( function(elem) {
+        newHtml += '<div class="onsong-edit-lines">'+splitOnSongLines(elem)+"</div>\n";
+    });
+
+    // write the data into the editor
+    // $('#advOnSongEditorArea').html(newHtml);
+    row.children('.cell-part-text').children('.show-onsong-text').hide(); 
+    row.children('.cell-part-text').children('.editor-hints').show(); 
+    row.children('.cell-part-text').children('.advanced-editor').html(newHtml).show(); 
+
+
+    // make the chords draggable
+    $('.onsong-edit-lines').sortable({
+        axis: "x",
+        opacity: 0.5,
+        cursorAt: { left: 5 },
+        placeholder: "ui-state-highlight",
+        start: function(event, ui) {
+            ui.placeholder.html('_'.repeat(ui.helper.outerWidth()/10));
+        },
+        containment: "#"+row.children('.cell-part-text').children('.advanced-editor').attr('id'),
+    });
+}
+
+
+/* show OnSong Plaintext Editor
+*/
+function showPlaintextEditor(that)
+{
     // get handle on input elements etc
     var row  = $(that).parents('tr');
     var cell = row.children('.cell-part-text');
@@ -236,8 +294,9 @@ function editOnSongText(that)
     cell.children('.plaintext-editor').show();
 
     cell.children('.text-editor-hints').show();
+    cell.children('.text-editor-hints').children('.card').children('.card-block').children('.hints-for-plaintext-editor').show();
     // make sure both buttons have the same size (which depends on the media size!)
-    var elem = cell.children('.text-editor-hints').children('.card').children('span').children('a');
+    var elem = cell.children('.text-editor-hints').children('.card').children('.card-block').children('span').children('a');
     $(elem[1]).width( $(elem[0]).width() );            
 
     // textarea height according to the number of lines in the OnSong text - but at least 3
@@ -261,12 +320,8 @@ function editOnSongText(that)
     However, the user has to make sure that the chords over the lyrics are still in the right place.
     When being saved, the data willl be converted back into the OnSong format.
 */
-function editOnSongLyrics(that)
+function showChOLyEditor(that)
 {
-    $('.toggle-onsong-buttons').hide(); 
-    $('.insertNewOnSongRow-link').hide();
-    $('.show-onsong-format-hint').show();
-
     // get handle on input elements etc
     var row  = $(that).parents('tr');
     var cell = row.children('.cell-part-text');
@@ -277,8 +332,9 @@ function editOnSongLyrics(that)
     cell.children('.chords-over-lyrics-editor').show();
 
     cell.children('.text-editor-hints').show();
+    cell.children('.text-editor-hints').children('.card').children('.card-block').children('.hints-for-chords-over-lyrics-editor').show();
     // make sure both buttons have the same size (which depends on the media size!)
-    var elem = cell.children('.text-editor-hints').children('.card').children('span').children('a');
+    var elem = cell.children('.text-editor-hints').children('.card').children('.card-block').children('span').children('a');
     $(elem[1]).width( $(elem[0]).width() );            
 
     // get original OnSong data and convert it to chords-over-lyrics format
@@ -388,6 +444,15 @@ function saveNewOnSongText(that, del)
             // remove waitspinner
             cell.html(oldCellHtml); 
 
+            // no proper data returned if user is not authorised for this call
+            if (data.data === undefined) {
+                removeNewOnSongRow(row); // remove the editor hints and buttons
+                row.children('.cell-part-text').children('.write-onsong-text').html('You are not authorised for this request.').show();
+                row.children('.cell-part-text').children('textarea').hide();
+                row.children('.cell-part-text').children('.cell-part-action').hide();
+                return false;
+            }
+
             // insert success data into the new table row or the existing row (for updates)
             row.children('.cell-part-text').children('.write-onsong-text').html(data.data.text).show();
             // show it as chords over lyrics
@@ -456,6 +521,8 @@ function removeFromLocalOnSongParts(which)
 
 function closeAdvOnSongEditor(that)
 {
+    $('.show-onsong-format-hint').hide();
+
     // get access to cell and row
     var row;
     if ( that[0].nodeName != 'TR' )
@@ -504,52 +571,6 @@ function submitEditedOnSong(that)
     saveNewOnSongText($(that));
 }
 
-
-/* launch the modal that shows the OnSong editor
-*/
-function fillAdvOnSongEditor(that) 
-{
-    // hide the container div
-    $(that).parent().hide();
-
-    // get access to the triggering row
-    var row = $(that).parents('tr');
-
-    // show correct action buttons
-    row.children('.cell-part-text').children('.cell-part-action').children('.for-existing-items').hide(); 
-    $('.toggle-onsong-buttons').hide(); 
-    row.addClass('table-warning');
-
-    // get the existing OnSong data
-    var textDiv = row.children('.cell-part-text').children('textarea');
-    var onSongData = textDiv.val();
-
-    // divide text into lines and add them as individual divs
-    var newHtml = '';
-    var lines = onSongData.split('\n');
-    lines.forEach( function(elem) {
-        newHtml += '<div class="onsong-edit-lines">'+splitOnSongLines(elem)+"</div>\n";
-    });
-
-    // write the data into the editor
-    // $('#advOnSongEditorArea').html(newHtml);
-    row.children('.cell-part-text').children('.show-onsong-text').hide(); 
-    row.children('.cell-part-text').children('.editor-hints').show(); 
-    row.children('.cell-part-text').children('.advanced-editor').html(newHtml).show(); 
-
-
-    // make the chords draggable
-    $('.onsong-edit-lines').sortable({
-        axis: "x",
-        opacity: 0.5,
-        cursorAt: { left: 5 },
-        placeholder: "ui-state-highlight",
-        start: function(event, ui) {
-            ui.placeholder.html('_'.repeat(ui.helper.outerWidth()/10));
-        },
-        containment: "#"+row.children('.cell-part-text').children('.advanced-editor').attr('id'),
-    });
-}
 
 function splitOnSongLines(line) {
     var spans = '';

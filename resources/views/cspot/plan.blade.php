@@ -25,6 +25,13 @@
     --}}
     @if (isset($plan))
 
+
+        {{--  provide popup to add/insert new item 
+        --}}
+        @include('cspot.snippets.add_item_modal')
+
+
+
         @if (Auth::user()->isEditor())
             {!! Form::model( $plan, array(
                 'route'  => array('plans.update', $plan->id), 
@@ -58,13 +65,13 @@
                 <div class="dont-print">
 
                     @if (Auth::user()->isMusician())
-                        <div class="float-xs-right">
+                        <div class="float-right">
                             <a title="Show sheetmusic (if available) for the songs on this plan"
                                 onclick="$('#show-spinner').modal({keyboard: false});" 
                                 href="{{ url('cspot/items/'.$plan->firstItem()->id.'/sheetmusic/') }}">
                                 <i class="fa fa-music">&nbsp;</i>Music</a>
                         </div>
-                        <div class="float-xs-right mr-1">
+                        <div class="float-right mr-1">
                             <a title="Show guitar chords (if available) for the songs on this plan" 
                                 onclick="$('#show-spinner').modal({keyboard: false});" 
                                 href="{{ url('cspot/items/').'/'.$plan->firstItem()->id }}/chords">
@@ -72,7 +79,7 @@
                         </div>
                     @endif
 
-                    <div class="float-xs-right mr-1">
+                    <div class="float-right mr-1">
                         <a title="Start projector-enabled presentation of each song and scripture reading in this plan" 
                             onclick="$('#show-spinner').modal({keyboard: false});" 
                             href="{{ url('cspot/items/'.$plan->firstItem()->id.'/present/') }}">
@@ -80,7 +87,7 @@
                     </div>
 
                     @if (Auth::user()->ownsPlan( $plan->id ))
-                        <div class="float-xs-right mr-1">
+                        <div class="float-right mr-1">
                             <a title="for the Leader: Event script with all items, slides and details" 
                                 onclick="$('#show-spinner').modal({keyboard: false});" 
                                 href="{{ url('cspot/items/'.$plan->firstItem()->id.'/leader/') }}">
@@ -89,7 +96,7 @@
                     @endif
 
                     {{-- currently not used
-                    <div class="float-xs-right mr-1">
+                    <div class="float-right mr-1">
                         <a title="YouTube playlist of all songs" target="new" 
                             href="{{ env('YOUTUBE_PLAYLIST_URL', 'https://www.youtube.com/playlist?list=').env('CHURCH_YOUTUBE_PLAYLIST_ID', '') }}">
                             <i class="fa fa-youtube">&nbsp;</i>play all</a>
@@ -105,7 +112,7 @@
                     <span class="text-success lora font-weight-bold">{{ $plan->type->generic ? $plan->subtitle : $plan->type->name }}</span>
                     <span class="small font-weight-bold">on {{ $plan->date->formatLocalized('%A, %d %B %Y') }}</span>
                 </h4>
-                <h4 class="hidden-lg-up float-xs-left font-weight-bold">
+                <h4 class="hidden-lg-up float-left font-weight-bold">
                     <span class="text-success lora">{{ $plan->type->generic ? $plan->subtitle : $plan->type->name }}</span>
                     on <span class="text-danger">{{ $plan->date->formatLocalized('%a, %d %b') }}</span>
                 </h4>
@@ -126,7 +133,7 @@
         <div class="col-md-3 col-xl-4 right">
 
             @if (isset($plan))
-                <div class="float-xs-left plan-details">
+                <div class="float-left plan-details">
                     <big>
                         L.:&nbsp;<strong>{{ $plan->leader ? $plan->leader->name : $plan->leader_id }}</strong> &nbsp;
                         @if ( strtoupper($plan->teacher->name)<>'N/A' )
@@ -168,7 +175,7 @@
             @endif
 
             {{-- Submit or Save button --}}
-            <div class="form-buttons float-xs-right">
+            <div class="form-buttons float-right">
                 <big>
                     @if (isset($plan))
                         @if (Auth::user()->isEditor())
@@ -192,10 +199,10 @@
             </div>  
 
             @if ( Auth::user()->isEditor() && isset($plan) && $plan->date >= \Carbon\Carbon::yesterday() ) 
-                <div class="float-xs-right small">
+                <div class="float-right small">
                     &nbsp; <a href="#" onclick="$('.plan-details').toggle()">toggle plan details</a>
                 </div>
-                <div class="float-xs-right plan-details small" style="display: none;" title="{{ $plan->updated_at }}">
+                <div class="float-right plan-details small" style="display: none;" title="{{ $plan->updated_at }}">
                     (last changed by {{ $plan->changer }} {{ Carbon::now()->diffForHumans( $plan->updated_at, true ) }} ago)
                 </div>
             @endif
@@ -216,9 +223,9 @@
                 <div class="card-block narrower bg-muted mb-1">
 
                     @if (isset($plan))
-                        <div class="float-xs-right">
+                        <div class="float-right">
                             {!! Form::label('private', 'Make Private?', ['class'=>'d-block']); !!}
-                            <label class="custom-control custom-checkbox float-xs-right">
+                            <label class="custom-control custom-checkbox float-right">
                                 <input name="private" type="checkbox" onclick="togglePlanPrivate( this, {{ $plan->id }} )"
                                       class="custom-control-input"{{ $plan->private ? ' checked="checked"' : '' }}>
                                 <span class="custom-control-indicator"></span>
@@ -323,7 +330,7 @@
                     <div class="row form-group nowrap mb-0">
 
                         @if (isset($plan))
-                            <span class="float-xs-right small">
+                            <span class="float-right small">
                                 <a href="{{ url('cspot/history?plan_id=').$plan->id }}">show plan history</a></span>
                         @endif
 
@@ -464,7 +471,7 @@
         @if (Auth::user()->ownsPlan($plan->id) && $plan->isFuture() )
             <a href="{{ url('cspot/songs?plan_id='.$plan->id) }}"  onclick="showSpinner()"
                 title="Search for a song via the full song listing" 
-                class="btn btn-sm btn-info float-xs-right">
+                class="btn btn-sm btn-info float-right">
                     <i class="fa fa-plus"></i><i class="fa fa-music"></i>&nbsp; - Search and add song</a>
         @endif
 
@@ -594,16 +601,6 @@
         @endif
 
     </script>   
-
-
-
-    @if (isset($plan))
-
-        {{--  provide popup to add/insert new item 
-        --}}
-        @include('cspot.snippets.add_item_modal')
-
-    @endif
 
 
     <div id="bottom">&nbsp;</div>

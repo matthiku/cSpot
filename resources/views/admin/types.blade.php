@@ -34,7 +34,7 @@
     @if (count($types))
 
         <table
-            class="table table-striped table-bordered 
+            class="table table-striped table-hover
                     @if(count($types)>5)
                      table-sm
                     @endif
@@ -53,7 +53,9 @@
                     <th class="center small" title="Shows number of default items defined for this type of plan">Default Items</th>
                     <th class="center small">Total No. of Plans</th>
                     @if( Auth::user()->id===1 || Auth::user()->isEditor() )
-                        <th class="center small">Act</th>
+                        <th class="center small">Action
+                        <small class="hidden-md-down small">/ next possible date</small>
+                        </th>
                     @endif
                 </tr>
             </thead>
@@ -111,6 +113,7 @@
                                     href="{{ url('cspot/plans/create') }}?type_id={{ $type->id }}"
                                     title="Create a new Event of this type - Note: proposed date will be newer than the newest existing event of this type!">
                                 <i class="fa fa-plus"> </i>
+                                <small class="text-muted">{{ getTypeBasedPlanData($type)->formatLocalized('%d-%m-%Y') }}</small>
                             </a>
 
                         </td>

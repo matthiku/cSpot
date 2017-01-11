@@ -22,7 +22,7 @@
 
 
 	@if( Auth::user()->isEditor() )
-		<a class="btn btn-sm btn-outline-success float-xs-right" 
+		<a class="btn btn-sm btn-outline-success float-right" 
 			href="{{ url('cspot/plans/create') }}{{ 
 				( Request::has('filterby') && Request::input('filterby')=='type' && Request::has('filtervalue') ) 
 					? '?type_id='.Request::input('filtervalue') 
@@ -34,7 +34,7 @@
 
 
 	{{-- SINGLE Event type: Drop-Down menu to select which event type to show --}}
-	<form class="form-inline float-xs-right mr-1">
+	<form class="form-inline float-right mr-1">
 		<div class="form-group">
 			<label class="hidden-sm-down" for="typefilter">Show only</label>
 			<select class="custom-select form-control form-control-sm pt-0 pb-0" id="typefilter" 
@@ -84,7 +84,7 @@
 
 
 
-    <h4 class="float-xs-left text-success lora">
+    <h4 class="float-left text-success lora">
     	{{ $heading }}
 		<small class="small" style="font-size: 50%">
 			<a href="#" onclick="toogleAllorFuturePlans()">show {{Request::get('show')!='all' ? 'all' : 'only upcoming'}}</a>
@@ -102,7 +102,7 @@
 			<center><small>(Total: {{ $plans->total() }} Events)</small></center>
 		@endif
 
-		<table class="table table-striped table-bordered table-hover
+		<table class="table table-striped table-hover
 					@if(count($plans)>15)
 					 table-sm
 					@endif
@@ -193,7 +193,7 @@
 
 						<td class="center">
 							@if( $plan->date > \Carbon\Carbon::yesterday() )
-								<a class="hidden-lg-up float-xs-right" title="show team for this plan" href="{{ url('cspot/plans/'.$plan->id) }}/team"><small>staff</small></a>
+								<a class="hidden-lg-up float-right" title="show team for this plan" href="{{ url('cspot/plans/'.$plan->id) }}/team"><small>staff</small></a>
 								<label class="c-input c-checkbox">
 									<input type="checkbox" {{ isset($userIsPlanMember[$plan->id]) ? 'checked' : '' }}
 										onclick="userAvailableForPlan(this, {{ $plan->id }}, {{ Auth::user()->id }})">
@@ -208,12 +208,12 @@
 
 
 					<td class="hidden-lg-down center">
-						<a class="float-xs-right" title="show team for this plan" href="{{ url('cspot/plans/'.$plan->id) }}/team"><small>(show)</small></a>
+						<a class="float-right" title="show team for this plan" href="{{ url('cspot/plans/'.$plan->id) }}/team"><small>(show)</small></a>
 						{{ $plan->teams->count() ? $plan->teams->count() : '' }}
 					</td>
 
 					<td class="hidden-lg-down center">
-						<a class="float-xs-right" title="show resources for this plan" href="{{ url('cspot/plans/'.$plan->id) }}/resource"><small>(show)</small></a>
+						<a class="float-right" title="show resources for this plan" href="{{ url('cspot/plans/'.$plan->id) }}/resource"><small>(show)</small></a>
 						{{ $plan->resources->count() ? $plan->resources->count() : '' }}
 					</td>
 

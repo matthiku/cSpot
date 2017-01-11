@@ -41,7 +41,7 @@
 
 
 				<th class="hidden-sm-down {{ Auth::user()->isUser() ? 'drag-item ' : ''}}dont-print" scope="row" title="drag item into the new position">
-					<span class="float-xs-right text-success">{{ $item->seq_no }}</span>
+					<span class="float-right text-success">{{ $item->seq_no }}</span>
 					@if ( Auth::user()->ownsPlan($plan->id) && $plan->date >= \Carbon\Carbon::today() )
 						<i class="p-r-1 fa fa-arrows-v">
 					@endif
@@ -320,11 +320,11 @@
 	                    @endif
 	                    @if ( strlen($item->song->youtube_id)>0 )
 	                    	@if (Auth::user()->ownsPlan( $plan->id ))
-	                            <a title="Play in new tab" data-toggle="tooltip" target="new" class="hidden-md-down float-xs-right"
+	                            <a title="Play in new tab" data-toggle="tooltip" target="new" class="hidden-md-down float-right"
 	                            	href="{{ env('YOUTUBE_PLAY', 'https://www.youtube.com/watch?v=').$item->song->youtube_id }}">
 	                            	<i class="fa fa-external-link"></i></a>
                         	@endif
-	                        <a href="#" title="Play here" class="red float-xs-right mr-1" data-toggle="tooltip" data-song-title="{{ $item->song->title }}"
+	                        <a href="#" title="Play here" class="red float-right mr-1" data-toggle="tooltip" data-song-title="{{ $item->song->title }}"
 	                        	onclick="showYTvideoInModal('{{ $item->song->youtube_id }}', this)">
 	                            <i class="fa fa-youtube-play"></i></a>
 	                    @endif
@@ -457,7 +457,7 @@
 	    @endforeach
 
 		@if (count($plan->items) < 6)
-			<tr><td class="float-xs-right">
+			<tr><td class="float-right">
 			
 				@if (count($plan->items) == 0 ) 
 					Plan has no items yet:</td><td>
@@ -476,7 +476,7 @@
 
 {{-- show cached items data 
 --}}
-<div 	class="small float-xs-right ml-2" id="showCachedItems" 
+<div 	class="small float-right ml-2" id="showCachedItems" 
 	 	style="display: {{ $plan->planCaches()->count() ? 'initial' : 'none' }}">
 	Items-Cache contains {{ $plan->planCaches()->count() }} pre-rendered items. 
 	@if( Auth::user()->ownsPlan($plan->id) )
@@ -489,7 +489,7 @@
 --}}
 @if( Auth::user()->ownsPlan($plan->id) && $plan->date >= \Carbon\Carbon::yesterday() )
 
-	<div class="float-xs-right ml-2" id="trashedItems" 
+	<div class="float-right ml-2" id="trashedItems" 
 		 style="display: {{ $trashedItemsCount ? 'initial' : 'none' }}">
 		<i class="fa fa-trash"></i>&nbsp;contains&nbsp;<big id="trashedItemsCount">{{ $trashedItemsCount }}</big>&nbsp;item{{$trashedItemsCount>1 ? 's' : ''}}: &nbsp;
 		<i class="fa fa-list-ul"></i>&nbsp;<a href="#" id="toggleBtn" onclick="toggleTrashed()">Show</a> &nbsp;

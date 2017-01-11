@@ -94,7 +94,7 @@
                         <button type="submit" class="btn btn-outline-success submit-button disabled">
                             <i class="fa fa-btn fa-sign-in"></i> Login
                         </button>
-                        <a class="btn btn-outline-primary float-xs-right" href="{{ url('password/reset') }}">Forgot Your Password?</a>
+                        <a class="btn btn-outline-primary float-right" href="{{ url('password/reset') }}">Forgot Your Password?</a>
                     </div>
                 </div>
 

@@ -181,7 +181,7 @@ textarea {
 
 /* buttons in the Insert/Add Item dialog */
 .modal-pre-selection {
-    min-width: 280px;
+    min-width: 14rem;
 }
 
 /* hide text that is outside the limited width of the element */
@@ -431,10 +431,6 @@ pre.text-present {
 }
 .app-content {
     padding: 0 1em;
-}
-
-.tek-nav {
-    margin-bottom: 15px;
 }
 
 .image {
