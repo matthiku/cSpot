@@ -5,31 +5,28 @@
 --}}
 
 
-<div  class="table table-striped table-sm"
-		id="onsong-parts" 
+<div  class="container-fluid px-0 px-sm-1" id="onsong-parts" 
 		data-song-id="{{ isset($song) ? $song->id : '0' }}" 
 		data-update-onsong-url="{{ route('updateonsongparts') }}">
 
 
     @if ( isset($song) )
 		@foreach ($song->onsongs as $onsong)
-			<div class="row border border-top-0{{ $onsong->song_part->code=='m' ? ' onsong-meta-data' : '' }}"
+			<div class="onsong-row {{ $onsong->song_part->code=='m' ? ' onsong-meta-data bg-faded' : '' }}"
 			 	 id="tbl-row-{{ $onsong->id }}" 
 				 data-onsong-id="{{ $onsong->id }}" data-part-id="{{ $onsong->song_part_id }}">
 
 				{{-- show the part name and code above the onsong data on smaller devices 
 				--}}
-				<div class="col col-sm-12 col-md-3 col-xl-2">
+				<div class="bg-info pl-2 rounded-top">
 
 					{{ $onsong->song_part->code!='m' ? $onsong->song_part->name : '' }}
 					<span>{{ $onsong->song_part->code!='m' ? '('.$onsong->song_part->code.')' : '' }}</span>
 
 				</div>
-				<div class="col col-sm-12 col-md-9 col-xl-10">
 
-					@include('cspot.snippets.onsong_action', ['newOnsongRow' => false])
+				@include('cspot.snippets.onsong_action', ['newOnsongRow' => false])
 
-				</div>
 
 			</div>
 		@endforeach
@@ -44,7 +41,7 @@
 	{{-- row to enter new song parts - invisible at first
 	--}}
 	<div class="row" style="display: none;" id="new-onsong-row">
-		<div class="col col-sm-12 col-md-3 col-xl-2 cell-part-name text-xs-center">
+		<div class="col col-12 col-md-2 cell-part-name text-xs-center">
 
 			<select class="new-onsong-field" tabindex=1>
 				<option value="">Select ...</option>
@@ -58,7 +55,7 @@
 			<span class="cell-part-code hidden-md-down"></span>
 
 		</div>
-		<div class="col col-sm-12 col-md-9 col-xl-10">
+		<div class="cell-part-data col col-12 col-md-10">
 
 			@include('cspot.snippets.onsong_action', ['newOnsongRow' => true])
 
@@ -67,7 +64,7 @@
 
 
 
-	<div class="row bg-faded link insertNewOnSongRow-link">
+	<div class="row onsong-row bg-faded link insertNewOnSongRow-link">
 		<div class="col col-xs-12 pl-2">
 			@if (Auth::user()->isEditor())
 				<span onclick="insertNewOnSongRow();" class="btn btn-sm btn-success"><i class="fa fa-plus"></i> Add new Part</span>
@@ -80,13 +77,9 @@
 	</div>
 
 
-	<div class="row show-onsong-format-hint text-center hidden">
-		<div class="col col-xs-12 small">
-			<p class="card">
-				If the imported text contains tab-stopps, define how many spaces they should be replaced with:
-				<input type="number" id="onsong-import-tab-size" value=4 style="width: 2rem" onchange="updateTabToSpacesRatio(this)">
-			</p>
-		</div>
+	<div class="row show-onsong-format-hint hidden rounded-bottom py-2 px-3 bg-faded text-right text-primary small">
+		If the imported text contains tab-stopps, define how many spaces they should be replaced with:
+		<input type="number" id="onsong-import-tab-size" value=4 style="width: 2rem" onchange="updateTabToSpacesRatio(this)">
 	</div>
 
 

@@ -54,7 +54,7 @@
     {{--  page header  
     --}}
     
-    <div class="row">
+    <div class="row mx-auto">
         <div class="col-md-9 col-xl-8">
 
             @if ( isset($plan) && $plan->items()->count() )

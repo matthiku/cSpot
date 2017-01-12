@@ -94,29 +94,28 @@
 
 				<span class="float-right ml-2 text-editor-save-cancel-buttons">
 					<a href="javascript:void(0);" onclick="saveNewOnSongText(this);" title="save"   tabindex=2 
-					  class="btn btn-sm btn-success float-right"><big>&#128427;</big><span class="hidden-sm-down text-white px-1">Save</span></a>
+					  class="btn btn-sm btn-success float-right"><big>&#128427;</big><span class="hidden-xs-down text-white px-1">Save</span></a>
 					<br>
 					<a href="javascript:void(0);" onclick="removeNewOnSongRow(this);" title="cancel" tabindex=3 
-					  class="btn btn-sm btn-secondary"><big>&#10007;</big><span class="hidden-sm-down"> Cancel </span></a>
+					  class="btn btn-sm btn-secondary"><big>&#10007;</big><span class="hidden-xs-down"> Cancel </span></a>
 				</span>
 
 				<p class="card-text hints-for-plaintext-editor hidden mb-0">			
-					The <strong>original OnSong format</strong> has the lyrics with chords interspersed and in square brackets, like this:<br>
-					<i>"Amazing [D]Grace, how [G]sweet the [D]sound"</i><br>
-					For <strong>instructions to musicians</strong>, you can add lines with text enclosed in round brackets like this:<br>
-					"<i>(play twice) </i>". This will only be visible to musicians.<br>
+					The <strong>original OnSong format</strong> has the lyrics with chords interspersed and<br>
+					in square brackets, like this: <i>"Amazing [D]Grace, how [G]sweet the [D]sound"</i><br>
 				</p>
 
 				<p class="card-text hints-for-chords-over-lyrics-editor hidden mb-0">			
 					With the <strong>"chords-over-lyrics" format</strong>, you can edit the lyrics of a song more easily. However, you need to manually
 					remove any excess dashes ('-') that might have been inserted in order to properly align the chords with the text.<br>
-					Lines with text enclosed in brackets like this: "<i>(play twice)</i>" will only be seen by the musicians.
 				</p>
 
 				<p class="card-text hints-for-plaintext-editor hints-for-chords-over-lyrics-editor hidden mb-0">			
 					<span class="text-danger">
 						<strong>Note:</strong> Insert an empty line to force a new slide in the lyrics presentations.<br>
 					</span>
+					For <strong>instructions to musicians</strong>, you can add lines with text enclosed in round brackets like this:<br>
+					"<i>(play twice) </i>". This will only be visible to musicians.<br>
 					Add <strong>comments</strong> by inserting a '#' (sharp) sign at the start of the line. Those comments won't appear anywhere else.
 				</p>
 

@@ -36,7 +36,7 @@
     <!-- 
         header area 
     -->
-    <div class="row" id=title-bar>
+    <div class="row mx-auto" id=title-bar>
 
 
 
@@ -191,7 +191,7 @@
                 <li><a href="#scripture-tab">Scripture</a></li>
             @endif
 
-            <li><a href="#bg-images-tab" id="tab-for-bg-images"><span class="hidden-md-down">Background </span><span class="hidden-lg-up hidden-xs-down">BG </span>Images
+            <li><a href="#bg-images-tab" id="tab-for-bg-images"><span class="hidden-sm-down">Background </span><span class=" hidden-xs-down hidden-md-up">BG </span>Images
                 <small class="text-muted">({{ $item->files->count() }})</small>
             </a></li>
 
@@ -230,53 +230,56 @@
 
             {!! Form::hidden('song_id', $item->song_id) !!}
 
-            <div id = "song-details-tab">
+            <div id = "song-details-tab" class="p-0">
 
-                <div class="card card-block float-center p-b-1" style="max-width: 40rem; ">
+                <div class="card card-block p-1 mt-4" style="max-width: 45rem; ">
 
-                    <div class="row center song-details">
-                        <h5 class="card-title">
+                    <div class="card-title text-center song-details px-2">
+                        <h4>
                             @if ( $item->itemType()=='song')
-                                <i class="float-left fa fa-music"></i> &nbsp;
-                                <i class="float-right fa fa-music"></i>
+                                <i class="fa fa-music float-left"></i>
+                                <i class="ml-auto fa fa-music float-right"></i>
                             @endif
                             @if ($item->song->book_ref)
-                                <small>({{ $item->song->book_ref }})</small>
+                                ({{ $item->song->book_ref }})
                             @endif
                             {{ $item->song->title ? $item->song->title : '' }}
                             @if ( $item->itemType()=='song' && $item->song->title_2)
-                                <br>({{ $item->song->title_2 }})
+                                <br>
+                                <small>({{ $item->song->title_2 }})</small>
                             @endif
-                        </h5>
+                        </h4>
                     </div>
 
-                    <div class="card-text song-details">
+
+                    <div class="card-text container song-details">
 
 
                         @if ( $item->itemType()=='song')
 
-                            <div class="row center text-muted">
-                                @if ($item->song_freshness)
-                                    <strong>Song 'Freshness': {{ $item->song_freshness > 50 ? '&#127823;' : '&#127822;' }}<small>{{ $item->song_freshness }}%</small></strong>
-                                    <br>
-                                @endif
-                                @if ( $usageCount )
-                                    This song was used before in <strong>{{ $usageCount }}</strong> service(s) -<br>
-                                    <strong>{{ $item->song->leadersUsingThisSong($plan->leader_id)->count() }}</strong> times by the leader of this plan and
-                                    lastly <strong title="{{ $newestUsage->date }}">
-                                        {{ Carbon::now()->diffForHumans( $newestUsage->date, true ) }} ago</strong>
-                                @else
-                                    Song was never used before in a service
-                                @endif
+                            <div class="row justify-content-between text-muted">
+                                <div class="col-12 text-center">
+                                    @if ($item->song_freshness)
+                                        <strong>Song 'Freshness': {{ $item->song_freshness > 50 ? '&#127823;' : '&#127822;' }}<small>{{ $item->song_freshness }}%</small></strong>
+                                        <br>
+                                    @endif
+                                    @if ( $usageCount )
+                                        This song was used before in <strong>{{ $usageCount }}</strong> service(s) -<br>
+                                        <strong>{{ $item->song->leadersUsingThisSong($plan->leader_id)->count() }}</strong> times by the leader of this plan and
+                                        lastly <strong title="{{ $newestUsage->date }}">
+                                            {{ Carbon::now()->diffForHumans( $newestUsage->date, true ) }} ago</strong>
+                                    @else
+                                        Song was never used before in a service
+                                    @endif
+                                </div>
                             </div>
 
-                            <div class="row mt-1">
-                                                            
-                                <div class="card center mb-0">
+                            <div class="row mt-4 mx-md-4">                                                            
+                                <div class="col-12 card mb-0 p-1">
                                     <div class="card-block p-0">
-                                        <h5 class="card-title float-left">&#127896; Instructions for Music Team:
+                                        <h5 class="card-title">&#127896; Instructions for Music Team:
                                             <br>
-                                            <small class="text-muted float-left">(e.g. for having a verse without music)</small>
+                                            <small class="text-muted">(e.g. for having a verse without music)</small>
                                         </h5>
                                         <div class="card-text">
                                             @if (Auth::user()->ownsPlan( $plan->id ))
@@ -296,7 +299,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
 
                         @else
@@ -316,10 +318,8 @@
                         @endif
 
 
-                        <br>
-
-                        <div class="row mb-1">                            
-                            <div class="col-sm-12 col-md-3 full-btn">
+                        <div class="row my-3 justify-content-center">                            
+                            <div class="col-6 col-sm-4 col-md-3 mx-md-1 mx-lg-2 mx-xl-4">
                                 @if ($item->song->youtube_id)
                                     <a href="https://www.youtube.com/watch?v={{ $item->song->youtube_id }}" 
                                         target="new" class="fully-width btn btn-outline-primary btn-sm">
@@ -330,7 +330,7 @@
                                     <i class="red fa fa-youtube-play"></i><br><small>no link found</small></a>
                                 @endif
                             </div>
-                            <div class="col-sm-12 col-md-3 full-btn">
+                            <div class="col-6 col-sm-4 col-md-3 mx-md-1 mx-lg-2 mx-xl-4">
                                 @if ( $item->song->ccli_no > 1000 && 'MP'.$item->song->ccli_no != $item->song->book_ref )
                                     <a href="https://songselect.ccli.com/Songs/{{ $item->song->ccli_no }}" 
                                         target="new" class="fully-width btn btn-outline-primary btn-sm">
@@ -341,7 +341,7 @@
                                     <img src="{{ url('/') }}/images/songselectlogo.png" width="14"><br><small>CCLI N<sup>o</sup>. missing</small></a>
                                 @endif
                             </div>
-                            <div class="col-sm-12 col-md-3 full-btn">
+                            <div class="col-6 col-sm-4 col-md-3 mx-md-1 mx-lg-2 mx-xl-4">
                                 @if ($item->song->hymnaldotnet_id!='')
                                     <a href="{{ $item->song->hymnaldotnet_id }}" 
                                         target="new" class="fully-width btn btn-outline-primary btn-sm">
@@ -354,14 +354,14 @@
                             </div>
                         </div>
 
-                        <div class="row">
+                        <div class="row justify-content-center">
                             @if ( Auth::user()->ownsPlan($item->plan_id) )
-                                <div class="col-sm-12 col-md-3 full-btn">
+                                <div class="col-6 col-sm-4 col-md-3 mx-md-1 mx-lg-2 mx-xl-4">
                                     <a href="#" class="fully-width btn btn-outline-primary btn-sm" 
                                         onclick="showSongSearchInput(this, '.song-search')" 
                                     ><i class="fa fa-exchange"></i><br><small>change song/slide</small></a>
                                 </div>
-                                <div class="col-sm-12 col-md-3 full-btn">
+                                <div class="col-6 col-sm-4 col-md-3 mx-md-1 mx-lg-2 mx-xl-4">
                                     <a href="#" class="fully-width btn btn-outline-primary btn-sm" 
                                         onclick="unlinkSong(this, {{ $item->id.', '.$item->song_id.', \''.route('plans.edit', $item->plan_id)."'" }})" 
                                         title="Detach song from this item" data-toggle="tooltip"
@@ -369,7 +369,7 @@
                                 </div>
                             @endif
                             @if (Auth::user()->isEditor() )
-                                <div class="col-sm-12 col-md-3 full-btn">
+                                <div class="col-6 col-sm-4 col-md-3 mx-md-1 mx-lg-2 mx-xl-4">
                                     <a href="#" class="fully-width btn btn-outline-primary btn-sm" accesskey="69" id="go-edit"
                                         onclick="showSpinner();location.href='{{ route('songs.edit', $item->song_id) }}'" 
                                           title="Edit details of this song" data-toggle="tooltip"
@@ -395,7 +395,7 @@
 
 
 
-        <div id="notes-tab">
+        <div id="notes-tab" class="mt-4 p-1">
             @include('cspot.snippets.comment_input')
         </div>
 
@@ -415,7 +415,7 @@
 
 
 
-        <div id="bg-images-tab">
+        <div id="bg-images-tab" class="px-0 px-sm-1">
 
             <div class="show-bg-images-instructions hidden float-right">
                 <span class="btn btn-sm btn-outline-info ml-1" onclick="
@@ -458,7 +458,7 @@
                 Add image
             </span>
 
-            {!! $item->files->count() ? '' : '<p class="small center">(no images attached yet)</p>' !!}
+            {!! $item->files->count() ? '' : '<p class="small mx-auto">(no images attached yet)</p>' !!}
 
             @if( Auth::user()->ownsPlan($plan->id) )
                 <?php 
@@ -468,7 +468,7 @@
                     $key    = 0; // we can't use a $key in the foreach statement as it's a re-sorted collection!
                 ?>
 
-                <div class="center" style="max-width: 380px;">
+                <div class="mx-auto" style="max-width: 380px;">
 
                     @foreach ($files as $file)
                         <div id="file-{{ $file->id }}" style="padding=2px;{{ ($key % 2 == 1) ? 'background-color: #eee;' : 'background-color: #ddd;' }}">
@@ -494,7 +494,7 @@
                                 @endif
                             </div>
                             @if ( $fcount>1)
-                                <div class="center float-right">Order:<br>{{ $file->pivot->seq_no }}</div>
+                                <div class="mx-auto float-right">Order:<br>{{ $file->pivot->seq_no }}</div>
                             @endif
 
                             @include ('cspot.snippets.show_files')
@@ -539,7 +539,7 @@
         @if ( $item->song_id )
 
 
-            <div id="lyrics-tab">
+            <div id="lyrics-tab" class="px-0 px-sm-1">
 
 
                 {{-- LYRICS content 
@@ -600,7 +600,7 @@
 
                 {{-- OnSong content 
                 --}}
-                <div id="onsong-tab">
+                <div id="onsong-tab" class="px-0 px-sm-1">
 
                     <div class="show-onsong-instructions hidden float-right">
                         <span class="btn btn-sm btn-outline-info ml-1" onclick="
@@ -631,7 +631,7 @@
                                 enclosed in square brackets, like this:<br><i>Amazing [D]Grace, how [G]sweet the [D]sound</i></p>
 
                             @if (Auth::user()->isEditor())
-                                <h6>Add new parts or edit existing parts</h6>
+                                <h6>How to Add New Parts or Edit Existing Parts</h6>
 
                                 <p>When adding <strong>new song parts</strong>, you can just <strong>copy&amp;paste</strong> from an existing source and that can be either 
                                     in OnSong format or in the legacy "chords-over-lyrics" format.</p>
@@ -639,8 +639,8 @@
                                 <p>When editing <strong>existing parts</strong>, you can choose between 3 different editors: 
                                     (just click into the song part to show the editor selection)
                                     <ul>
-                                        <li>OnSong editor - here you can drag the chords to the left or right, leaving the lyrics alone</li>
-                                        <li>Plain text editor - here you can edit the data in the original OnSong format</li>
+                                        <li><strong>OnSong editor</strong> - Drag just the chords to the left or right, leaving the lyrics alone</li>
+                                        <li><strong>Plain text editor</strong> - Edit the lyrics and chords data in the original OnSong format</li>
                                         @endif
                                         <span class="confirm-onsong-instructions float-right btn btn-sm btn-outline-danger mr-1" onclick="
                                             $('.onsong-instructions').hide();
@@ -649,7 +649,7 @@
                                             localStorage.setItem('config-onsongInstructionsConfirmed', true);
                                             ">&#128504; OK, understood!</span>
                                         @if (Auth::user()->isEditor())
-                                        <li>Chords-over-Lyrics editor - this is helpful for editing just the lyrics.</li>
+                                        <li><strong>Chords-over-Lyrics editor</strong> - this is helpful for editing just the lyrics.</li>
                                     </ul>
                                 </p>
                             @endif
@@ -687,7 +687,7 @@
 
                 {{-- Sheetmusic content 
                 --}}
-                <div id="sheet-tab">
+                <div id="sheet-tab" class="px-0 px-sm-1">
                     @foreach ($item->song->files as $file)
                         @if ($item->song->license=='PD' || Auth::user()->isMusician() )
                             @include ('cspot.snippets.show_files', ['edit' => false])
@@ -717,7 +717,7 @@
     <script>
         $(document).ready( function() {
             $( "#tabs" ).tabs({
-                event: "mouseover",
+                // event: "mouseover",
                 active: {{ session()->has('newFileAdded') ? ($item->song_id ? '2' : '1') : '0' }}
             });
         });

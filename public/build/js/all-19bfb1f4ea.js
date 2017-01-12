@@ -41551,6 +41551,34 @@ function parseURLstring(urlstring)
 }
 
 
+
+/* 
+    Apply the biggest value of width or height of each element 
+    in a collection to all elements of that collection
+
+    @param array collection Array of HTML elements
+    @param string what ['width' || 'height']
+*/
+function matchSize(collection, what)
+{
+    var max = 0;
+    // find the biggest element
+    $.each(collection, function(elem) {
+        if (what=='width')
+            max = Math.max(max, $(collection[elem]).width());
+        if (what=='height')
+            max = Math.max(max, $(collection[elem]).height());
+    })
+    // apply same to all elements
+    $.each(collection, function(elem) {
+        if (what=='width')
+            $(collection[elem]).width( max );
+        if (what=='height')
+            $(collection[elem]).height( max );
+    })
+}
+
+
 /*
     Automatically close the info modals after a timeout
     (called from layouts\flasing.modal.php)
@@ -43432,26 +43460,26 @@ function insertNewOnSongRow()
     $('#new-onsong-row').clone().attr('id', 'very-new-onsong-row').appendTo('#onsong-parts');
     $('#new-onsong-row').fadeIn();
     // make sure no other row has this class
-    $('#new-onsong-row').siblings('tr').removeClass('table-success');
+    $('#new-onsong-row').siblings('div').removeClass('table-success');
     $('#new-onsong-row').addClass('table-success');
 
     // pre-select next possible OnSong part
     $('#new-onsong-row > .cell-part-name > select').val( findNextPossibleOnSongPart() );
 
     // un-hide action center of the new row
-    $('#new-onsong-row td > .cell-part-action').show();
+    $('#new-onsong-row > .cell-part-data > .cell-part-text > .cell-part-action').show();
     // hide all other action buttons
     $('.for-existing-items').hide();
     $('.toggle-onsong-buttons').hide();
 
     // show help info and save/cancel buttons
-    var btn = $('#new-onsong-row td > .text-editor-hints');
+    var btn = $('#new-onsong-row > .cell-part-data > .cell-part-text > .text-editor-hints');
     btn.show();
     $(btn).children('.card').children('.card-block').children('.hints-for-plaintext-editor').show();
     $(btn).children('.card').children('.card-block').children('.hints-for-chords-over-lyrics-editor').show();
 
     var elem = $(btn).children('.card').children('.card-block').children('span').children('a');
-    $(elem[1]).width( $(elem[0]).width() );            
+    matchSize(elem, 'width');
 
 
     // restore the old, empty, hidden row
@@ -43503,6 +43531,15 @@ function findNextPossibleOnSongPart() {
 
 function removeNewOnSongRow(that)
 {
+    var row;
+    if (that.nodeName != 'div') {
+        row = $(that).parents('.onsong-row');
+        if (!row.length)
+            row = $(that).parents('.row');
+    }
+    else
+        row = that;
+
     $('.show-onsong-format-hint').hide();
     $('.hints-for-chords-over-lyrics-editor').hide();
     $('.hints-for-plaintext-editor').hide();
@@ -43512,17 +43549,11 @@ function removeNewOnSongRow(that)
     $('.for-existing-items').show();
     $('.toggle-onsong-buttons').show(); 
     
-    var row;
-    if (that.nodeName != 'tr')
-        row = $(that).parents('tr');
-    else
-        row = that;
-
     var onsong_id = $(row).data('onsong-id') || 0; // (undefined for new elements)
 
     // remove row in case of a just added, empty row
     if (!onsong_id) {
-        $(that).parents('tr').remove();
+        row.remove();
         return;
     }
     
@@ -43560,7 +43591,7 @@ function toggleOnSongEditButtons(that)
 
             // if the song part contains no chords, we can directly start the plaintext editor!
             // get handle on input elements etc
-            var row  = $(that).parents('tr');
+            var row  = $(that).parents('.onsong-row');
             var cell = row.children('.cell-part-text');
             var text = cell.children('.plaintext-editor').val();
 
@@ -43585,8 +43616,6 @@ function toggleOnSongEditButtons(that)
             // now we can show the buttons to select an EDITor
             $(that).siblings('.cell-part-action').show();
             $(that).siblings('.cell-part-action').position({my: 'right bottom', at: 'right bottom', of: cell});
-
-            $('#insertNewOnSongRow-link').hide();
         }
     }
 }       
@@ -43600,7 +43629,7 @@ function showAdvOnSongEditor(that)
     $(that).parent().hide();
 
     // get access to the triggering row
-    var row = $(that).parents('tr');
+    var row = $(that).parents('.onsong-row');
 
     // show correct action buttons
     row.children('.cell-part-text').children('.cell-part-action').children('.for-existing-items').hide(); 
@@ -43641,8 +43670,11 @@ function showAdvOnSongEditor(that)
 */
 function showPlaintextEditor(that)
 {
+    // show correct action buttons
+    $('.for-existing-items').hide(); 
+
     // get handle on input elements etc
-    var row  = $(that).parents('tr');
+    var row  = $(that).parents('.onsong-row');
     var cell = row.children('.cell-part-text');
     // hide display-only text, show writeable input area
     cell.children('.cell-part-action').show();
@@ -43652,19 +43684,16 @@ function showPlaintextEditor(that)
 
     cell.children('.text-editor-hints').show();
     cell.children('.text-editor-hints').children('.card').children('.card-block').children('.hints-for-plaintext-editor').show();
+
     // make sure both buttons have the same size (which depends on the media size!)
     var elem = cell.children('.text-editor-hints').children('.card').children('.card-block').children('span').children('a');
-    $(elem[1]).width( $(elem[0]).width() );            
+    matchSize(elem, 'width');
 
     // textarea height according to the number of lines in the OnSong text - but at least 3
     cell.children('.plaintext-editor').attr(
         'rows', 
         Math.max(cell.children('.plaintext-editor').val().split('\n').length, 3)
     );
-
-    // show correct action buttons
-    $('.for-existing-items').hide(); 
-
     cell.children('.plaintext-editor').focus();
 }
 
@@ -43679,8 +43708,11 @@ function showPlaintextEditor(that)
 */
 function showChOLyEditor(that)
 {
+    // show correct action buttons
+    $('.for-existing-items').hide(); 
+
     // get handle on input elements etc
-    var row  = $(that).parents('tr');
+    var row  = $(that).parents('.onsong-row');
     var cell = row.children('.cell-part-text');
     // hide display-only text, show writeable input area
     cell.children('.cell-part-action').show();
@@ -43692,7 +43724,7 @@ function showChOLyEditor(that)
     cell.children('.text-editor-hints').children('.card').children('.card-block').children('.hints-for-chords-over-lyrics-editor').show();
     // make sure both buttons have the same size (which depends on the media size!)
     var elem = cell.children('.text-editor-hints').children('.card').children('.card-block').children('span').children('a');
-    $(elem[1]).width( $(elem[0]).width() );            
+    matchSize(elem, 'width');
 
     // get original OnSong data and convert it to chords-over-lyrics format
     var text = cell.children('.plaintext-editor').val();
@@ -43704,12 +43736,7 @@ function showChOLyEditor(that)
         'rows', 
         Math.max(cell.children('.chords-over-lyrics-editor').val().split('\n').length, 3)
     );
-
-    // show correct action buttons
-    $('.for-existing-items').hide(); 
-
     cell.children('.chords-over-lyrics-editor').focus();
-
 }
 
 
@@ -43734,7 +43761,7 @@ function saveNewOnSongText(that, del)
         else
             cell = $(that).parents('.editor-hints');
 
-    var row  = cell.parents('tr');
+    var row  = cell.parents('.onsong-row');
 
     // verify input data
     var select  = row.children('.cell-part-name').children('select');
@@ -43882,8 +43909,8 @@ function closeAdvOnSongEditor(that)
 
     // get access to cell and row
     var row;
-    if ( that[0].nodeName != 'TR' )
-        row = $(that).parents('tr');
+    if ( that[0].nodeName != 'DIV' )
+        row = $(that).parents('.onsong-row');
     else
         row = that;
     row.removeClass('table-warning');
@@ -43905,7 +43932,7 @@ function closeAdvOnSongEditor(that)
 function submitEditedOnSong(that)
 {
     // get an handle on the row from which this modal was launched
-    var row = $(that).parents('tr');
+    var row = $(that).parents('.onsong-row');
 
     // the old OnSong data
     var textDiv = row.children('.cell-part-text').children('textarea');
@@ -43918,7 +43945,7 @@ function submitEditedOnSong(that)
         newData += $(lines[elem]).text()+"\n";
     });
 
-    // remove the last newLine!
+    // remove the last newLine character!
     newData = newData.substring(0, newData.length-1);
 
     // write the edited data into the display area and the textarea input

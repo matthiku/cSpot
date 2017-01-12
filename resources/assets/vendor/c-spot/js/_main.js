@@ -103,6 +103,34 @@ function parseURLstring(urlstring)
 }
 
 
+
+/* 
+    Apply the biggest value of width or height of each element 
+    in a collection to all elements of that collection
+
+    @param array collection Array of HTML elements
+    @param string what ['width' || 'height']
+*/
+function matchSize(collection, what)
+{
+    var max = 0;
+    // find the biggest element
+    $.each(collection, function(elem) {
+        if (what=='width')
+            max = Math.max(max, $(collection[elem]).width());
+        if (what=='height')
+            max = Math.max(max, $(collection[elem]).height());
+    })
+    // apply same to all elements
+    $.each(collection, function(elem) {
+        if (what=='width')
+            $(collection[elem]).width( max );
+        if (what=='height')
+            $(collection[elem]).height( max );
+    })
+}
+
+
 /*
     Automatically close the info modals after a timeout
     (called from layouts\flasing.modal.php)

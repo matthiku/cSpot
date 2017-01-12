@@ -8,7 +8,7 @@
 <div class="full-width">
 
 
-    <div class="card" style="max-width: 40rem;">
+    <div class="card mx-auto " style="max-width: 40rem;">
 
         <div class="card-block">
 
@@ -97,7 +97,7 @@
             show form for private notes 
         _____________________________________
     --}}
-    <div class="card item-comment-public" style="max-width: 40rem;">
+    <div class="card mx-auto mt-2 item-comment-public" style="max-width: 40rem;">
         <div class="card-block">
 
             <h5 class="card-title"><i class="fa fa-sticky-note-o"> </i> Private Notes</h5>

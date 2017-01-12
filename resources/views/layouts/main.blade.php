@@ -69,7 +69,7 @@
 
 
 
-    <div class="container-fluid app-content">
+    <div class="container-fluid app-content px-0 px-sm-1 px-md-2">
 
             @yield('content')
 
