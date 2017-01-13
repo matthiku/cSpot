@@ -1122,6 +1122,19 @@ function getSongPartsByCode()
     return $songparts;
 }
 
+/**
+ * get list of Songparts  that have not been used yet in this song
+ * (to avoid duplicates)
+ */
+function getRemainingSongParts($song)
+{
+    $used = [];
+    foreach ($song->onsongs as $onsong) {
+        array_push($used, $onsong->song_part_id);
+    }
+    $songparts = App\Models\SongPart::whereNotIn('id', $used)->orderby('sequence')->get();
+    return $songparts;
+}
 
 /**
  * Create full chords for songs with a sequence and corresponding OnSong elements

@@ -603,7 +603,7 @@
                 <div id="onsong-tab" class="px-0 px-sm-1">
 
                     <div class="show-onsong-instructions hidden float-right">
-                        <span class="btn btn-sm btn-outline-info ml-1" onclick="
+                        <span class="btn btn-sm link btn-outline-info ml-1" onclick="
                             $('.onsong-instructions').show();
                             $('.show-onsong-instructions').hide();
                             $('.confirm-onsong-instructions').show();
@@ -657,7 +657,7 @@
                     </div>
 
                     @if (Auth::user()->isEditor())
-                        <span onclick="insertNewOnSongRow();" class="btn btn-sm btn-success float-right insertNewOnSongRow-link">
+                        <span onclick="insertNewOnSongRow();" class="btn btn-sm btn-success link float-right insertNewOnSongRow-link">
                             <i class="fa fa-plus"></i> Add new Part</span>
                     @endif
 
@@ -665,7 +665,7 @@
                         @if (Auth::user()->isEditor())
                             <label class="mb-0">Sequence:
                                 <span id="sequence-song-id-{{ $item->song->id }}" onclick="$('.show-input-hint').show();" 
-                                    class="editable-song-field">{{ $item->song->sequence }}</span>
+                                    class="editable-song-field link">{{ $item->song->sequence }}</span>
                                 <i class="fa fa-pencil text-muted"> </i>
                             </label>
                             <br><small class="text-primary show-input-hint" style="display: none;">The sequence can only contain code as listed in the table below!!</small>
@@ -677,8 +677,9 @@
 
                     @php
                         $song = $item->song;
-                        $songParts = App\Models\SongPart::orderby('sequence')->get();
+                        $songParts = getRemainingSongParts($song);
                     @endphp
+
                     @include('cspot.snippets.onsong')
 
                 </div>

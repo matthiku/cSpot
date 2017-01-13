@@ -69,26 +69,43 @@ function userAvailableForPlan(that, plan_id) {
 \*/
 
 
+/*
+    Prepare New OnSong Row 
+    - launch modal for user to select the part code
+    - prepare textarea for user to enter actual onsong data
+    - save as a new row in the list of onSong parts
+*/
 function insertNewOnSongRow()
 {
+    // make sure no other element with this ID exists (from a previous adding)
+    $('#adding-new-song-part').attr('id', '');
+
     // clone the existing and hidden, empty row and show it
     $('#new-onsong-row').clone().attr('id', 'very-new-onsong-row').appendTo('#onsong-parts');
-    $('#new-onsong-row').fadeIn();
+    $('#new-onsong-row').attr('id', 'adding-new-song-part');
+    // restore the original row again
+    $('#very-new-onsong-row').attr('id', 'new-onsong-row');
+
+    $('#adding-new-song-part').fadeIn();
     // make sure no other row has this class
-    $('#new-onsong-row').siblings('div').removeClass('table-success');
-    $('#new-onsong-row').addClass('table-success');
+    $('#adding-new-song-part').siblings('div').removeClass('table-success');
+    $('#adding-new-song-part').addClass('table-success');
 
     // pre-select next possible OnSong part
-    $('#new-onsong-row > .cell-part-name > select').val( findNextPossibleOnSongPart() );
+    $('#new-onsong-part-selection').val( findNextPossibleOnSongPart() );
 
-    // un-hide action center of the new row
-    $('#new-onsong-row > .cell-part-data > .cell-part-text > .cell-part-action').show();
     // hide all other action buttons
+    $('.cell-part-action').hide();
     $('.for-existing-items').hide();
     $('.toggle-onsong-buttons').hide();
+    // hide "add" link and show row with input hints
+    $('.insertNewOnSongRow-link').hide();
+    $('.show-onsong-format-hint').show();
+    // un-hide action center of the new row
+    //$('#adding-new-song-part > .cell-part-text > .cell-part-action').show();
 
     // show help info and save/cancel buttons
-    var btn = $('#new-onsong-row > .cell-part-data > .cell-part-text > .text-editor-hints');
+    var btn = $('#adding-new-song-part > .cell-part-text > .text-editor-hints');
     btn.show();
     $(btn).children('.card').children('.card-block').children('.hints-for-plaintext-editor').show();
     $(btn).children('.card').children('.card-block').children('.hints-for-chords-over-lyrics-editor').show();
@@ -96,22 +113,62 @@ function insertNewOnSongRow()
     var elem = $(btn).children('.card').children('.card-block').children('span').children('a');
     matchSize(elem, 'width');
 
-
-    // restore the old, empty, hidden row
-    $('#new-onsong-row').removeAttr('id');
-    $('#very-new-onsong-row').attr('id', 'new-onsong-row');
-
-    // hide "add" link and show row with input hints
-    $('.insertNewOnSongRow-link').hide();
-    $('.show-onsong-format-hint').show();
-
     // make sure all is in the visible viewport
     window.location.href = "#tbl-bottom";
+
+    // call Modal for onsong part name selection
+    $('#selectSongPartCodeModal').modal('show');
     
-    // set the focus on the part-type selection
-    $('select.new-onsong-field')[0].focus();
+    // set the focus on the part-type selection 
+    $('#new-onsong-part-selection').focus();
 }
 
+function editPartNameForSelection(code, what) 
+{
+    var sel = $('#new-onsong-part-selection');
+    if (what=='remove') {
+        for (var i = 0; i < sel[0].length; i++) {
+            if ($(sel[0][i]).val() == code) {
+                $(sel[0][i]).remove();
+                return true;
+            }
+        }
+    }
+
+    if (what=='add')
+        sel.append('<option data-code="'+code.code+'" value="'+code.id+'">'+code.name+'</option>');
+}
+
+/* insert the selected part code from the Modal into the new song aprt row
+*/
+function insertSelectedPartCode()
+{
+    var newCodeId = $('#new-onsong-part-selection').val();
+    var newCodeCode = $($('#new-onsong-part-selection :selected')[0]).data('code');
+    var newCodeName = $($('#new-onsong-part-selection :selected')[0]).text();
+
+    if (newCodeId) {
+        // write html code to show Part name and part code
+        var html = '';
+        if (newCodeCode!='m')
+            html += newCodeName + '<span>' + (newCodeCode!='m' ? ' ('+newCodeCode+')' : '') + '</span>';
+        $('#adding-new-song-part > .cell-part-name').html(html);
+        $('#selectSongPartCodeModal').modal('hide');
+
+        // add selected code id as data attribute to the row
+        $($('#adding-new-song-part')[0]).data('part-id', newCodeId);
+
+        $('#adding-new-song-part > .cell-part-text > .plaintext-editor').focus();
+
+        return true;
+    }
+    // user didn't select a song part name
+    $('#part-selection-error-msg').show();
+    return false;
+}
+
+/* Check all existing song parts and determine which one could be the next....
+*/
 function findNextPossibleOnSongPart() {
 
     // get the exising onsong parts, then guess the next one
@@ -144,17 +201,8 @@ function findNextPossibleOnSongPart() {
 }
 
 
-function removeNewOnSongRow(that)
+function removeNewOnSongRow(row)
 {
-    var row;
-    if (that.nodeName != 'div') {
-        row = $(that).parents('.onsong-row');
-        if (!row.length)
-            row = $(that).parents('.row');
-    }
-    else
-        row = that;
-
     $('.show-onsong-format-hint').hide();
     $('.hints-for-chords-over-lyrics-editor').hide();
     $('.hints-for-plaintext-editor').hide();
@@ -188,7 +236,7 @@ function removeNewOnSongRow(that)
 }
 
 
-function toggleOnSongEditButtons(that) 
+function toggleOnSongEditButtons(row) 
 {
     // first make sure that we are not currently ADDing a new song part
     if (! $('.show-onsong-format-hint').is(':visible')) {
@@ -202,11 +250,12 @@ function toggleOnSongEditButtons(that)
         } 
         else 
         {
+            // $('.cell-part-action').hide();
             $('.toggle-onsong-buttons').hide();
+            $('.text-editor-delete-button').hide(); // make sure the delete button is hidden at first
 
             // if the song part contains no chords, we can directly start the plaintext editor!
             // get handle on input elements etc
-            var row  = $(that).parents('.onsong-row');
             var cell = row.children('.cell-part-text');
             var text = cell.children('.plaintext-editor').val();
 
@@ -217,7 +266,10 @@ function toggleOnSongEditButtons(that)
 
             // check if the original text and the converted text are the same (indicating that it contains no chords)
             if (text == convertOnSongToChordsOverLyrics(text)) {
-                showPlaintextEditor(that);
+                // also show the delete button now
+                $('.text-editor-delete-button').show();
+
+                showPlaintextEditor(row);
 
                 // if this is the part containing the metadata, we will show a different help section
                 if (row.hasClass('onsong-meta-data')) {
@@ -226,11 +278,21 @@ function toggleOnSongEditButtons(that)
                     cell.children('.text-editor-hints').children('.card').children('.card-block').children('.hints-for-chords-over-lyrics-editor').hide();
                     cell.children('.text-editor-hints').children('.card').children('.card-block').children('.hints-for-onsong-metadata').show();
                 }
+                return;
             }
-            
+
             // now we can show the buttons to select an EDITor
-            $(that).siblings('.cell-part-action').show();
-            $(that).siblings('.cell-part-action').position({my: 'right bottom', at: 'right bottom', of: cell});
+            $(cell).children('.cell-part-action').show();
+
+            // make sure there is enough room for the buttons
+            if (cell.height() < $(cell).children('.cell-part-action').height())
+                cell.height( $(cell).children('.cell-part-action').height() );
+
+            // position the buttons at the bottom of the cell
+            $(cell).children('.cell-part-action').position({my: 'right bottom', at: 'right bottom', of: cell});
+
+            // show the bottom of the window
+            // window.location.href = '#tbl-bottom';
         }
     }
 }       
@@ -238,13 +300,13 @@ function toggleOnSongEditButtons(that)
 
 /* launch the modal that shows the OnSong editor
 */
-function showAdvOnSongEditor(that) 
+function showAdvOnSongEditor(row) 
 {
     // hide the container div
-    $(that).parent().hide();
+    ///$(that).parent().hide();
 
     // get access to the triggering row
-    var row = $(that).parents('.onsong-row');
+    ///var row = $(that).parents('.onsong-row');
 
     // show correct action buttons
     row.children('.cell-part-text').children('.cell-part-action').children('.for-existing-items').hide(); 
@@ -283,16 +345,15 @@ function showAdvOnSongEditor(that)
 
 /* show OnSong Plaintext Editor
 */
-function showPlaintextEditor(that)
+function showPlaintextEditor(row)
 {
     // show correct action buttons
     $('.for-existing-items').hide(); 
 
     // get handle on input elements etc
-    var row  = $(that).parents('.onsong-row');
     var cell = row.children('.cell-part-text');
     // hide display-only text, show writeable input area
-    cell.children('.cell-part-action').show();
+    cell.children('.cell-part-action').hide();
     cell.children('.show-onsong-text').hide();
     cell.children('.write-onsong-text').hide();
     cell.children('.plaintext-editor').show();
@@ -321,16 +382,15 @@ function showPlaintextEditor(that)
     However, the user has to make sure that the chords over the lyrics are still in the right place.
     When being saved, the data willl be converted back into the OnSong format.
 */
-function showChOLyEditor(that)
+function showChOLyEditor(row)
 {
     // show correct action buttons
     $('.for-existing-items').hide(); 
 
     // get handle on input elements etc
-    var row  = $(that).parents('.onsong-row');
     var cell = row.children('.cell-part-text');
     // hide display-only text, show writeable input area
-    cell.children('.cell-part-action').show();
+    cell.children('.cell-part-action').hide();
     cell.children('.show-onsong-text').hide();
     cell.children('.write-onsong-text').hide();
     cell.children('.chords-over-lyrics-editor').show();
@@ -355,44 +415,37 @@ function showChOLyEditor(that)
 }
 
 
-function deleteOnSongText(that)
+function deleteOnSongText(row)
 {
     if ( confirm('This cannot be undone. Are you sure?') )
-        saveNewOnSongText($(that), 'delete');
+        saveNewOnSongText(row, 'delete');
 }
 
 
-function saveNewOnSongText(that, del)
+function saveNewOnSongText(row, del)
 {
+    // hide unneeded parts and reset bg color
     $('.show-onsong-format-hint').hide();
     $('.error-msg').hide();
     $('.new-onsong-field').css('background-color', 'inherit');
 
-    // get handle on input elements etc
-    var cell = $(that).parents('.card');
-    if (!cell.length)
-        if (del == 'delete')
-            cell = $(that).parents('td');
-        else
-            cell = $(that).parents('.editor-hints');
+    // determine the area to show the waitspinner etc.
+    var cell;
+    if (del == 'delete')
+        cell = $(row).children('.cell-part-text'); // this is the actual data AND the hints and buttons
+    else
+        cell = $(row).children('.cell-part-text').children('.text-editor-hints'); // only hints and buttons
 
-    var row  = cell.parents('.onsong-row');
+    // different cell for Adv.Editor:
+    if (!$(cell[0]).is(':visible'))
+        cell = $(row).children('.cell-part-text').children('.editor-hints');
 
-    // verify input data
-    var select  = row.children('.cell-part-name').children('select');
-    var part_id = $(select).val();
+    // verify input data from a newly added row
+    var part_id = $($('#adding-new-song-part')[0]).data('part-id');
 
     var onsong_id = row.data('onsong-id') || false; // (undefined for new elements)
     if (onsong_id && !part_id)
         part_id = $(row).data('part-id') || false;   // for existing elements
-
-    // relevant data is missing
-    if (!onsong_id && !part_id) {
-        $(select).focus();
-        row.children('.cell-part-name').children('.error-msg').show();
-        $(select).css('background-color', 'red');
-        return;
-    }
 
     // is the text from the plaintext or the Chords-over-Lyrics editor?
     var textarea = row.children('.cell-part-text').children('textarea');
@@ -416,15 +469,27 @@ function saveNewOnSongText(that, del)
         text = joinLyricsAndChordsToOnSong(text);
 
     // get text value of selected part name
-    var partname = select.children('option:selected').text();
+    // var partname = select.children('option:selected').text();
 
     // all good, we can proceed. Hide the action buttons
     var oldCellHtml = cell.html(); 
-    cell.html('<div class="bg-warning text-white fully-width text-xs-center"> '+cSpot.const.waitspinner+' </div>'); 
+    cell.html('<div class="bg-warning text-white fully-width text-xs-center"> '+cSpot.const.waitspinner
+        + (del == 'delete' ? ' deleting ...' : ' saving ...') + '</div>'); 
 
     // is this a delete request?
-    if (del == 'delete')
+    if (del == 'delete') {
         text = '_'; // the controller will interpret '_' as a request to delete this item
+        var my = row.children('.cell-part-name').text().trim().split('(');
+        if (my.length>1) {
+            var cd = my[1].split(')')[0];
+            var nm = my[0].trim();
+        }
+        var code = { 
+            'id'   : part_id, 
+            'code' : cd, 
+            'name' : nm,
+        };
+    }
 
     // save data via AJAX
     var table = $('#onsong-parts');
@@ -468,14 +533,15 @@ function saveNewOnSongText(that, del)
                 // add this to the local representation of the song
                 cSpot.item.song.onsongs.push(data.data);
 
-                removeNewOnSongRow(row); // remove the editor hints and buttons
-
+                // write new onsong id into the data attribute of the new row
                 row.data('onsong-id', data.data.id);
                 row.data('part-id', data.data.song_part_id);
-                row.children('.cell-part-name').html(data.data.song_part.name + "<br>(" + data.data.song_part.code + ")");
-                row.children('.cell-part-text').children('textarea').hide();
-                row.children('.cell-part-text').children('.cell-part-action').hide();
-                $('.toggle-onsong-buttons').show();
+                row.children('.cell-part-name').html(data.data.song_part.name + " (" + data.data.song_part.code + ")");
+
+                // make sure this part name isn't used a 2nd time for this song
+                editPartNameForSelection(data.data.song_part_id, 'remove');
+
+                removeNewOnSongRow(row); // remove the editor hints and buttons
             }
             // for existing rows
             else  {
@@ -483,6 +549,8 @@ function saveNewOnSongText(that, del)
                 if (data.data == '_') {
                     // remove this part from the local object also
                     removeFromLocalOnSongParts( row.data('onsongId') );
+                    // we can put this partname back into the selection
+                    editPartNameForSelection(code, 'add');
 
                     row.fadeOut();
                     row.remove();
@@ -518,16 +586,10 @@ function removeFromLocalOnSongParts(which)
 }
 
 
-function closeAdvOnSongEditor(that)
+function closeAdvOnSongEditor(row)
 {
     $('.show-onsong-format-hint').hide();
 
-    // get access to cell and row
-    var row;
-    if ( that[0].nodeName != 'DIV' )
-        row = $(that).parents('.onsong-row');
-    else
-        row = that;
     row.removeClass('table-warning');
 
     var cell = row.children('.cell-part-text'); 
@@ -544,11 +606,8 @@ function closeAdvOnSongEditor(that)
 
 /* get the changed data from the OnSong editor back into the textarea
 */
-function submitEditedOnSong(that)
+function submitEditedOnSong(row)
 {
-    // get an handle on the row from which this modal was launched
-    var row = $(that).parents('.onsong-row');
-
     // the old OnSong data
     var textDiv = row.children('.cell-part-text').children('textarea');
 
@@ -567,7 +626,7 @@ function submitEditedOnSong(that)
     textDiv.val(newData);
 
     // then submit the new data to the host
-    saveNewOnSongText($(that));
+    saveNewOnSongText(row);
 }
 
 
@@ -1556,7 +1615,7 @@ function uploadSingleFile(selector, category)
         }).done( 
             function( data ) {
                 console.log(data.data);
-                $('.show-file-add-button').html('Success! Reloading page ...'+cSpot.const.waitspinner);
+                $('.show-file-add-button').html(cSpot.const.waitspinner + ' Success! Reloading page ... ');
                 // reload page and show latest upload
                 location.href = location.pathname+"?newest=yes";
             
