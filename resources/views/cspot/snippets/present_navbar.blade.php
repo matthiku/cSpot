@@ -48,7 +48,7 @@ $modalContent = '
                 <div class="hidden-lg-up dropdown-divider"></div>                
 
                 <!-- change number of columns for chords display -->
-                <span class="hidden-lg-up dropdown-item edit-show-buttons" >
+                <span class="hidden-lg-up dropdown-item edit-show-buttons link" >
                     <span>Cols:</span>
                     <span class="ml-0 btn btn-sm btn-info edit-show-buttons hidden" onclick="$('#onsongs').css('column-count', 1);"
                         title="show chords in 1 column" >&#9783;1</span>
@@ -170,11 +170,11 @@ $modalContent = '
                 </a> 
 
                 <!-- change number of columns for chords display -->
-                <span class="hidden-md-down nav-item ml-2 btn btn-sm btn-info edit-show-buttons hidden" onclick="$('#onsongs').css('column-count', 1);"
+                <span class="hidden-md-down nav-item ml-2 btn btn-sm btn-info edit-show-buttons hidden link" onclick="$('#onsongs').css('column-count', 1);"
                     title="show chords in 1 column" >&#9783;1</span>
-                <span class="hidden-md-down nav-item mx-0 btn btn-sm btn-info edit-show-buttons hidden" onclick="$('#onsongs').css('column-count', 2);" 
+                <span class="hidden-md-down nav-item mx-0 btn btn-sm btn-info edit-show-buttons hidden link" onclick="$('#onsongs').css('column-count', 2);" 
                     title="show chords in 2 columns">&#9783;2</span>
-                <span class="hidden-md-down nav-item ml-0 btn btn-sm btn-info edit-show-buttons hidden" onclick="$('#onsongs').css('column-count', 3);" 
+                <span class="hidden-md-down nav-item ml-0 btn btn-sm btn-info edit-show-buttons hidden link" onclick="$('#onsongs').css('column-count', 3);" 
                     title="show chords in 3 columns">&#9783;3</span>
 
 

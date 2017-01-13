@@ -426,7 +426,6 @@ $(document).ready(function() {
     /**
      * Handle Keyboard events 
      */
-
     $(document).keydown(function( event ) {
 
         // Handle Keyboard events in Presentation Views
@@ -482,8 +481,6 @@ $(document).ready(function() {
                 default: break;
             }
         }
-
-
     });
 
 

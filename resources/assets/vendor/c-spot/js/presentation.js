@@ -112,8 +112,10 @@ function preparePresentation()
     checkSequenceIndicatorLength();
 
     // make sure the main content covers all the display area, but that no scrollbar appears
-    $('#main-content').css('max-height', window.innerHeight - $('.navbar-fixed-bottom').height());
-    $('#main-content').css('min-height', window.innerHeight - $('.navbar-fixed-bottom').height() - 10);
+    if ( $('#bottom-fixed-navbar').length ) {
+        $('#main-content').css('max-height', window.innerHeight - $('#bottom-fixed-navbar').height());
+        $('#main-content').css('min-height', window.innerHeight - $('#bottom-fixed-navbar').height() - 10);
+    }
 
 
 
@@ -165,7 +167,8 @@ function prepareImages()
 {
     // make sure the images have the correct size, filling either width or height
     $('#main-content'           ).css('text-align', 'center');
-    $('.slide-background-image' ).height( window.innerHeight - $('.navbar-fixed-bottom').height());
+    if ( $('#bottom-fixed-navbar').length )
+        $('.slide-background-image' ).height( window.innerHeight - $('#bottom-fixed-navbar').height());
     $('.slide-background-image' ).css('max-width', window.innerWidth);
     $('.app-content'            ).css('padding', 0);
     
@@ -935,7 +938,7 @@ function prepareChordsPresentation(what)
     applyLocallyDefinedTextFormatting();
 
     // make sure the main content covers all the display area
-    $('#main-content').css('min-height', window.screen.height);
+    //$('#main-content').css('min-height', window.screen.height);
 
     // intercept mouse clicks into the presentation area
     $('body').contextmenu( function() {

@@ -30,7 +30,7 @@
 			<a href="javascript:void(0);" onclick="removeNewOnSongRow($(this).parents('.onsong-row'));" title="cancel" class="text-danger">&#10007; cancel</a>
 		</span>
 		<br>
-		@if ( isset($onsong) && $onsong->song_part->code!='m')
+		@if ( $newOnsongRow || (isset($onsong) && $onsong->song_part->code!='m') )
 			<button title="Advanced OnSong Editor" type="button" class="btn btn-outline-primary btn-sm link for-existing-items select-adv-onsong-editor" 
 				onclick="showAdvOnSongEditor($(this).parents('.onsong-row'))">OnSong</button>
 		@endif
