@@ -12,7 +12,7 @@
 
 {{-- show status messages within the document --}}
 @if (session()->has('message') && ! session('message')=='')
-   <div class="alert alert-info alert-dismissible fade in" role="alert">
+   <div class="alert alert-info alert-dismissible fade show" role="alert">
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>
@@ -23,7 +23,7 @@
 
 
 @if ( session('status')  &&  ! session('status')==''  )
-   <div class="alert alert-success alert-dismissible fade in" role="alert">
+   <div class="alert alert-success alert-dismissible fade show" role="alert">
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>
@@ -34,7 +34,7 @@
 
 
 @if (session()->has('error') && Session::get('error') != '')
-    <div id="myErrorModal" class="modal fade">
+    <div id="myErrorModal" class="modal fade show">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -61,7 +61,7 @@
 
 
 @if (count($errors))
-    <div id="myErrorModal" class="modal fade">
+    <div id="myErrorModal" class="modal fade show">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">

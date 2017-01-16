@@ -824,21 +824,18 @@ function findOpenFilterField()
 */
 function showFilterField(field)
 {
+    var currUrl, newUrl;
     // Is this field already visible?
     if ($('#filter-'+field+'-clear').is(':visible')) 
     {
-        var currUrl  = parseURLstring(window.location.href);
+        currUrl  = parseURLstring(window.location.href);
         // check if there is a query string in the URL
         if (currUrl.search.length > 1) { 
-            // check that it doesn't contain a plan_id!
-            if (currUrl.search.search('plan_id') >= 0) {
-                return;
-            }
             // clear existing filter and reload page without a filter
             showSpinner();
             // remove filter elements from URL query string
             var queryStr = currUrl.search.split('?')[1].split('&');
-            var newUrl = currUrl.pathname;
+            newUrl = currUrl.pathname;
             if (queryStr.length > 2) {
                 newUrl += '?';
                 for (var i = queryStr.length - 1; i >= 0; i--) {
@@ -880,16 +877,16 @@ function showFilterField(field)
     else 
     {
         // Did user enter search data?
-        if ( $('#filter-'+field+'-input').val().length > 0 ) {
+        if ( $('#filter-'+field+'-input').length  &&  $('#filter-'+field+'-input').val().length > 0 ) {
             // fade background and show spinner
             showSpinner();
 
             var search =  $('#filter-'+field+'-input').val();
-            var currUrl  = window.location.href.replace('#','');
+            currUrl  = window.location.href.replace('#','');
             if (currUrl.indexOf('?')>1) {
-                var newUrl = currUrl + '&filterby='+field+'&filtervalue='+search;
+                newUrl = currUrl + '&filterby='+field+'&filtervalue='+search;
             } else {
-                var newUrl = currUrl + '?filterby='+field+'&filtervalue='+search;
+                newUrl = currUrl + '?filterby='+field+'&filtervalue='+search;
             }
             window.location.href = newUrl;
             return;
@@ -1113,7 +1110,7 @@ function splitOnSong(onsong)
             chords += ' '.repeat(spl[0].length);
         }
     }
-    result.lyrics = lyrics.trim();
+    result.lyrics = lyrics.trimRight();
     result.chords = chords;
 
     return result;

@@ -15,61 +15,87 @@
 	@include('layouts.flashing')
 
 
-	{{-- 	-	-	-	-	SONGS LIST Navigation Bar 
+	{{-- 	-	-	-	-	USERS LIST Navigation Bar 
 	--}}
 
-	<nav class="navbar navbar-light bg-faded">
+	<nav class="navbar navbar-toggleable-md navbar-light bg-info rounded-top">
 
-		<a class="navbar-brand bg-info px-1 rounded hidden-md-down big" href="#">{{ $heading }}</a>
-		<a class="navbar-brand bg-info px-1 rounded hidden-sm-down hidden-lg-up" href="#">{{ $heading }}</a>
+	  	<button class="navbar-toggler navbar-toggler-right" type="button" 
+	  			data-toggle="collapse" data-target="#navbarUserList" 
+	  			aria-controls="navbarUserList" aria-expanded="false" aria-label="Toggle navigation">
+    		<span class="navbar-toggler-icon"></span>
+  		</button>
 
-		@if( Auth::user()->isAdmin() )
-			<a class="btn btn-outline-primary float-xs-right ml-1" href="{{ url('admin/users/create') }}">
-				<i class="fa fa-user-plus"> </i> &nbsp; Add a user
-			</a>
-		@endif
+		<a class="navbar-brand" href="#">
+			<span class="hidden-lg-up">{{ $heading }}</span>
+			<span class="hidden-md-down big">{{ $heading }}</span>
 
+			<span class="hidden-lg-up">
+				<span class="btn btn-outline-primary ml-2"
+				 onclick="location.href='{{ url('/admin/users' . (Request::has('active') ? '' : '?active=active')) }}'">
+					{{ Request::has('active') ? 'all' : 'only active' }} users
+				</span>
 
+				@if( Auth::user()->isAdmin() )
+					<span class="btn btn-outline-primary ml-1" onclick="location.href='{{ url('admin/users/create') }}';">
+						<i class="fa fa-user-plus"> </i> &nbsp; Add user
+					</span>
+				@endif
+			</span>
 
-		<form class="form-inline float-xs-right ml-1">
-			<div class="form-group">
-				<label for="instrumentfilter">Users playing</label>
-				<select class="custom-select" id="instrumentfilter" onchange="location.href='{{url('admin/users')}}?filterby=instrument&filtervalue='+$(this).val()">
-					<option {{ Request::has('filterby') && Request::get('filterby')=='instrument' ? '' : 'selected' }} value="all">instrument</option>
-					@foreach ($instruments as $instrument)
-						<option 
-							{{ (Request::has('filterby') && Request::get('filterby')=='instrument' && Request::get('filtervalue')==$instrument->id) ? 'selected' : '' }} 
-							value="{{$instrument->id}}">{{$instrument->name}}</option>
-					@endforeach
-				</select>
-			</div>
-		</form>
-
-
-		<form class="form-inline float-xs-right">
-			<div class="form-group">
-				<label for="rolefilter">Show only</label>
-				<select class="custom-select" id="rolefilter" onchange="location.href='{{url('admin/users')}}?filterby=role&filtervalue='+$(this).val()">
-					<option {{ Request::has('filterby') && Request::get('filterby')=='role' ? '' : 'selected' }} value="all">(select role)</option>
-					@foreach ($roles as $role)
-						<option 
-							{{ (Request::has('filterby') && Request::get('filterby')=='role' && Request::get('filtervalue')==$role->id) ? 'selected' : '' }} 
-							value="{{$role->id}}">{{$role->name}}</option>
-					@endforeach
-				</select>
-			</div>
-		</form>
+		</a>
 
 
 
+  		<div class="collapse navbar-collapse" id="navbarUserList">
 
-		<button type="button" class="btn btn-outline-primary"
-			 onclick="location.href='{{ url('/admin/users' . (Request::has('active') ? '' : '?active=active')) }}'">
-			Show
-			{{ Request::has('active') ? 'all' : 'only active' }}
-			users
-		</button>
 
+		    <ul class="navbar-nav hidden-md-down mr-auto">
+				<li class="nav-item">
+					<a class="nav-link btn btn-outline-primary ml-2"
+					 onclick="location.href='{{ url('/admin/users' . (Request::has('active') ? '' : '?active=active')) }}'">
+						{{ Request::has('active') ? 'all' : 'only active' }} users
+					</a>
+				</li>
+
+				@if( Auth::user()->isAdmin() )
+					<li class="nav-item ml-2">
+						<a class="nav-link btn btn-outline-primary ml-1" href="{{ url('admin/users/create') }}">
+							<i class="fa fa-user-plus"> </i> &nbsp; Add user
+						</a>
+					</li>
+				@endif
+		    </ul>
+
+		    <form class="form-inline my-2 my-lg-0">
+				<div class="form-group">
+					<label for="rolefilter">Show only &nbsp;</label>
+					<select class="custom-select" id="rolefilter" onchange="location.href='{{url('admin/users')}}?filterby=role&filtervalue='+$(this).val()">
+						<option {{ Request::has('filterby') && Request::get('filterby')=='role' ? '' : 'selected' }} value="all">(select role)</option>
+						@foreach ($roles as $role)
+							<option 
+								{{ (Request::has('filterby') && Request::get('filterby')=='role' && Request::get('filtervalue')==$role->id) ? 'selected' : '' }} 
+								value="{{$role->id}}">{{$role->name}}</option>
+						@endforeach
+					</select>
+				</div>
+			</form>
+
+			<form class="form-inline ml-2">
+				<div class="form-group">
+					<label for="instrumentfilter">Users playing </label>
+					<select class="custom-select" id="instrumentfilter" onchange="location.href='{{url('admin/users')}}?filterby=instrument&filtervalue='+$(this).val()">
+						<option {{ Request::has('filterby') && Request::get('filterby')=='instrument' ? '' : 'selected' }} value="all">(select...)</option>
+						@foreach ($instruments as $instrument)
+							<option 
+								{{ (Request::has('filterby') && Request::get('filterby')=='instrument' && Request::get('filtervalue')==$instrument->id) ? 'selected' : '' }} 
+								value="{{$instrument->id}}">{{$instrument->name}}</option>
+						@endforeach
+					</select>
+				</div>
+			</form>
+
+		</div>
 	</nav>
 
 

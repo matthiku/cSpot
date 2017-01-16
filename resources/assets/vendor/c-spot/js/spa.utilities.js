@@ -120,7 +120,9 @@ function insertNewOnSongRow()
     $('#selectSongPartCodeModal').modal('show');
     
     // set the focus on the part-type selection 
-    $('#new-onsong-part-selection').focus();
+    $('#selectSongPartCodeModal').on('shown.bs.modal', function () {
+        $('#new-onsong-part-selection').focus();
+    })
 }
 
 function editPartNameForSelection(code, what) 
@@ -302,13 +304,7 @@ function toggleOnSongEditButtons(row)
 */
 function showAdvOnSongEditor(row) 
 {
-    // hide the container div
-    ///$(that).parent().hide();
-
-    // get access to the triggering row
-    ///var row = $(that).parents('.onsong-row');
-
-    // show correct action buttons
+    // hide the editor selection buttons
     row.children('.cell-part-text').children('.cell-part-action').children('.for-existing-items').hide(); 
 
     // get the existing OnSong data
@@ -319,7 +315,7 @@ function showAdvOnSongEditor(row)
     var newHtml = '';
     var lines = onSongData.split('\n');
     lines.forEach( function(elem) {
-        newHtml += '<div class="onsong-edit-lines">'+splitOnSongLines(elem)+"</div>\n";
+        newHtml += '<div class="onsong-edit-lines pl-2">'+splitOnSongLines(elem)+"</div>\n";
     });
 
     // write the data into the editor
@@ -537,6 +533,7 @@ function saveNewOnSongText(row, del)
                 row.data('onsong-id', data.data.id);
                 row.data('part-id', data.data.song_part_id);
                 row.children('.cell-part-name').html(data.data.song_part.name + " (" + data.data.song_part.code + ")");
+                row.children('.cell-part-text').children('advanced-editor').attr('id', 'advanced-editor-'+data.data.id);
 
                 // make sure this part name isn't used a 2nd time for this song
                 editPartNameForSelection(data.data.song_part_id, 'remove');
@@ -629,7 +626,9 @@ function submitEditedOnSong(row)
     saveNewOnSongText(row);
 }
 
-
+/* Split OnSong lines (with interspersed chords in square brackets) 
+    into spans of chords and lyrics 
+*/
 function splitOnSongLines(line) {
     var spans = '';
 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" {!! Request::is('*/present') ? 'style="background-color: #000;"' : '' !!}>
 
 <!-- # (C) 2016 Matthias Kuhs, Ireland -->
 
@@ -45,11 +45,7 @@
 
 
 
-<body id="app-layout"
-    @if (Request::is('*/present'))
-        style="background-color: #373a3c;"
-    @endif
-    >
+<body id="app-layout" {!! Request::is('*/present') ? 'style="background-color: #373a3c;"' : '' !!}>
 
 
 
@@ -69,7 +65,7 @@
 
 
 
-    <div class="container-fluid app-content px-0 px-sm-1 px-md-2">
+    <div class="container-fluid app-content {{ Request::is('*/present') ? 'p-0 m-0' : 'px-0 px-sm-1 px-md-2' }}">
 
             @yield('content')
 

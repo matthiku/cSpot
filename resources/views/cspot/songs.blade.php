@@ -24,7 +24,7 @@
 	{{-- 	-	-	-	-	SONGS LIST Navigation Bar 
 	--}}
 
-	<nav class="navbar navbar-light bg-faded">
+	<nav class="navbar navbar-toggleable-sm navbar-light bg-faded">
 
 		<button class="navbar-toggler hidden-sm-up" type="button" 
 			data-toggle="collapse" data-target="#exCollapsingNavbar2" aria-controls="exCollapsingNavbar2" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,31 +34,37 @@
 		<h4 class="hidden-sm-up float-right text-success lora">{{ $heading }}</h4>
 
 
-		<div class="collapse navbar-toggleable-xs" id="exCollapsingNavbar2">
+		<div class="collapse navbar-collapse" id="exCollapsingNavbar2">
 
 
 			<a class="navbar-brand text-success lora px-1 hidden-md-down big font-weight-bold" href="#">{{ $heading }}</a>
 			<a class="navbar-brand text-success lora px-1 hidden-xs-down hidden-lg-up" href="#">{{ $heading }}</a>
 
 
-			<ul class="nav navbar-nav float-right">
-				@if ($currentPage!=0)
-					<li class="nav-item hidden-sm-down small float-right">
-						Page {{ $songs->currentPage() }} of {{ $songs->lastPage() }}<br>
-						@if ( $songs->total() > $songs->perPage())
-							<small class="hidden-md-down">showing {{ $songs->perPage() }} of a total of {{ $songs->total() }} songs</small>
-						@endif
-					</li>
-				@endif
-			</ul>
-
-
 			<ul class="nav navbar-nav">
 
-				<li class="nav-item mr-1">@include('cspot.snippets.fullTextSearch')</li>
+				<li class="nav-item mr-3">@include('cspot.snippets.fullTextSearch')</li>
+				<li class="nav-item">
+					@if ( ! Request::has('filtervalue') )
+						<a class="nav-link btn btn-sm btn-outline-primary" title="Show songs used in the past but not used in a long time" 
+								href="{{ url('cspot/songs') }}?filterby=songs&filtervalue=rare{{ Request::has('plan_id') ? '&plan_id='.Request::get('plan_id') : '' }}">
+							<span class="hidden-md-down">Show List of </span>'Forgotten' Songs
+						</a>
+					@endif
+					@if ( Request::has('filtervalue') && Request::input('filtervalue')=='rare' )
+						<a class="nav-link btn btn-sm btn-outline-success" title="Show full song list"
+								href="{{ url('cspot/songs') }}{{ Request::has('plan_id') ? '?plan_id='.Request::get('plan_id') : '' }}">
+							Show All Songs
+						</a>
+					@endif
+				</li>
+
+			</ul>
+
+			<ul class="nav navbar-nav ml-auto">
 
 				@if( Auth::user()->isEditor() && $plan_id==0 )
-					<li class="nav-item active">
+					<li class="nav-item mr-3">
 						<a class="nav-link btn btn-sm btn-outline-success" 
 						    href="{{ url('cspot/songs/create') }}{{ 
 								Request::has('filtervalue')
@@ -81,22 +87,16 @@
 					</li>
 				@endif
 
-				<li class="nav-item">
-					@if ( ! Request::has('filtervalue') )
-						<a class="nav-link btn btn-sm btn-outline-primary" title="Show songs used in the past but not used in a long time" 
-								href="{{ url('cspot/songs') }}?filterby=songs&filtervalue=rare{{ Request::has('plan_id') ? '&plan_id='.Request::get('plan_id') : '' }}">
-							<span class="hidden-md-down">Show List of </span>'Forgotten' Songs
-						</a>
-					@endif
-					@if ( Request::has('filtervalue') && Request::input('filtervalue')=='rare' )
-						<a class="nav-link btn btn-sm btn-outline-success" title="Show full song list"
-								href="{{ url('cspot/songs') }}{{ Request::has('plan_id') ? '?plan_id='.Request::get('plan_id') : '' }}">
-							Show All Songs
-						</a>
-					@endif
-				</li>
-
+				@if ($currentPage!=0)
+					<li class="nav-item hidden-sm-down small">
+						Page {{ $songs->currentPage() }} of {{ $songs->lastPage() }}<br>
+						@if ( $songs->total() > $songs->perPage())
+							<small class="hidden-md-down">showing {{ $songs->perPage() }} of a total of {{ $songs->total() }} songs</small>
+						@endif
+					</li>
+				@endif
 			</ul>
+
 
 		</div>
 
@@ -168,7 +168,7 @@
 				<tr data-song-title="{{ $song->title }}">
 
 
-					<th {!! $editLink !!} scope="row" class="link hidden-md-down float-center">{{ $song->id }}</th>
+					<td {!! $editLink !!} scope="row" class="link hidden-md-down center">{{ $song->id }}</td>
 
 
 					<td {!! $editLink !!} class="link nowrap" title="{{ $song->lyrics }}">

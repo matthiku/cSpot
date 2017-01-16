@@ -10,7 +10,7 @@
 	    <i class="fa fa-plus"></i> &nbsp; Add item {{ isset($item) ? $item->seq_no+1 : 1 }}.0
 	</button>
 
-	@if (Auth::user()->ownsPlan($plan->id))
+	@if ($plan->items->first()  &&  Auth::user()->ownsPlan($plan->id))
 		<button type="button" class="hidden-md-down btn btn-outline-secondary btn-sm"
 			onclick="location.href='{{ url('cspot/plans/'.$plan->id) }}/items/{{$plan->items->first()->id}}/edit/'" 
 			><small>edit items</small></button>

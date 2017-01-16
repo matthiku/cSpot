@@ -42272,21 +42272,18 @@ function findOpenFilterField()
 */
 function showFilterField(field)
 {
+    var currUrl, newUrl;
     // Is this field already visible?
     if ($('#filter-'+field+'-clear').is(':visible')) 
     {
-        var currUrl  = parseURLstring(window.location.href);
+        currUrl  = parseURLstring(window.location.href);
         // check if there is a query string in the URL
         if (currUrl.search.length > 1) { 
-            // check that it doesn't contain a plan_id!
-            if (currUrl.search.search('plan_id') >= 0) {
-                return;
-            }
             // clear existing filter and reload page without a filter
             showSpinner();
             // remove filter elements from URL query string
             var queryStr = currUrl.search.split('?')[1].split('&');
-            var newUrl = currUrl.pathname;
+            newUrl = currUrl.pathname;
             if (queryStr.length > 2) {
                 newUrl += '?';
                 for (var i = queryStr.length - 1; i >= 0; i--) {
@@ -42328,16 +42325,16 @@ function showFilterField(field)
     else 
     {
         // Did user enter search data?
-        if ( $('#filter-'+field+'-input').val().length > 0 ) {
+        if ( $('#filter-'+field+'-input').length  &&  $('#filter-'+field+'-input').val().length > 0 ) {
             // fade background and show spinner
             showSpinner();
 
             var search =  $('#filter-'+field+'-input').val();
-            var currUrl  = window.location.href.replace('#','');
+            currUrl  = window.location.href.replace('#','');
             if (currUrl.indexOf('?')>1) {
-                var newUrl = currUrl + '&filterby='+field+'&filtervalue='+search;
+                newUrl = currUrl + '&filterby='+field+'&filtervalue='+search;
             } else {
-                var newUrl = currUrl + '?filterby='+field+'&filtervalue='+search;
+                newUrl = currUrl + '?filterby='+field+'&filtervalue='+search;
             }
             window.location.href = newUrl;
             return;
@@ -42561,7 +42558,7 @@ function splitOnSong(onsong)
             chords += ' '.repeat(spl[0].length);
         }
     }
-    result.lyrics = lyrics.trim();
+    result.lyrics = lyrics.trimRight();
     result.chords = chords;
 
     return result;
@@ -43502,7 +43499,9 @@ function insertNewOnSongRow()
     $('#selectSongPartCodeModal').modal('show');
     
     // set the focus on the part-type selection 
-    $('#new-onsong-part-selection').focus();
+    $('#selectSongPartCodeModal').on('shown.bs.modal', function () {
+        $('#new-onsong-part-selection').focus();
+    })
 }
 
 function editPartNameForSelection(code, what) 
@@ -43684,13 +43683,7 @@ function toggleOnSongEditButtons(row)
 */
 function showAdvOnSongEditor(row) 
 {
-    // hide the container div
-    ///$(that).parent().hide();
-
-    // get access to the triggering row
-    ///var row = $(that).parents('.onsong-row');
-
-    // show correct action buttons
+    // hide the editor selection buttons
     row.children('.cell-part-text').children('.cell-part-action').children('.for-existing-items').hide(); 
 
     // get the existing OnSong data
@@ -43701,7 +43694,7 @@ function showAdvOnSongEditor(row)
     var newHtml = '';
     var lines = onSongData.split('\n');
     lines.forEach( function(elem) {
-        newHtml += '<div class="onsong-edit-lines">'+splitOnSongLines(elem)+"</div>\n";
+        newHtml += '<div class="onsong-edit-lines pl-2">'+splitOnSongLines(elem)+"</div>\n";
     });
 
     // write the data into the editor
@@ -43919,6 +43912,7 @@ function saveNewOnSongText(row, del)
                 row.data('onsong-id', data.data.id);
                 row.data('part-id', data.data.song_part_id);
                 row.children('.cell-part-name').html(data.data.song_part.name + " (" + data.data.song_part.code + ")");
+                row.children('.cell-part-text').children('advanced-editor').attr('id', 'advanced-editor-'+data.data.id);
 
                 // make sure this part name isn't used a 2nd time for this song
                 editPartNameForSelection(data.data.song_part_id, 'remove');
@@ -44011,7 +44005,9 @@ function submitEditedOnSong(row)
     saveNewOnSongText(row);
 }
 
-
+/* Split OnSong lines (with interspersed chords in square brackets) 
+    into spans of chords and lyrics 
+*/
 function splitOnSongLines(line) {
     var spans = '';
 
@@ -45802,7 +45798,7 @@ function preparePresentation()
     // make sure the main content covers all the display area, but that no scrollbar appears
     if ( $('#bottom-fixed-navbar').length ) {
         $('#main-content').css('max-height', window.innerHeight - $('#bottom-fixed-navbar').height());
-        $('#main-content').css('min-height', window.innerHeight - $('#bottom-fixed-navbar').height() - 10);
+        $('#main-content').css('min-height', window.innerHeight - $('#bottom-fixed-navbar').height());
     }
 
 

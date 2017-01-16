@@ -211,7 +211,7 @@
 
 
 
-    @if ($user->id == Auth::user()->id)
+    @if (isset($user)  &&  $user->id == Auth::user()->id)
         <hr>
         <p class="small">Only when instructed by the c-SPOT Administrator:
             <br>Click to

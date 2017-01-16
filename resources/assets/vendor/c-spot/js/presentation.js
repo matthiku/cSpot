@@ -114,7 +114,7 @@ function preparePresentation()
     // make sure the main content covers all the display area, but that no scrollbar appears
     if ( $('#bottom-fixed-navbar').length ) {
         $('#main-content').css('max-height', window.innerHeight - $('#bottom-fixed-navbar').height());
-        $('#main-content').css('min-height', window.innerHeight - $('#bottom-fixed-navbar').height() - 10);
+        $('#main-content').css('min-height', window.innerHeight - $('#bottom-fixed-navbar').height());
     }
 
 

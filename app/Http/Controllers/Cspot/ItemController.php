@@ -234,11 +234,19 @@ class ItemController extends Controller
         }
 
         if ($plan) {
-            // get all current items of this plan
-            $last_item = $plan->items->sortBy('seq_no')->last();
-
-            // find item with the highest seq.no
-            $seq_no = 1 * $last_item->seq_no + 1; // (temporary solution)
+            /* 
+            decide where to append this song in the sequence of items:
+                - either at the end if this is the first song on this plan
+                - or after the last song already in the plan
+            */
+            $items = $plan->items->sortBy('seq_no')->where('song_id', '>', 0);
+            if ($items->count()) 
+                $seq_no = 1 * $items->last()->seq_no + 0.5;
+            else {
+                // get all current items of this plan and find the item with the highest seq.no 
+                $last_item = $plan->items->sortBy('seq_no')->last();
+                $seq_no = 1 * $last_item->seq_no + 1;
+            }
 
             // create a new items object add it to this plan
             $item = new Item([
@@ -250,6 +258,9 @@ class ItemController extends Controller
             $item->song_freshness = calculateSongFreshness( $song_id, $plan->leader_id, $plan->date );
 
             $newItem = $plan->items()->save($item);
+
+            // re-number all items 
+            $item = moveItem($newItem->id, 'static');            
 
             // provide new item id to the view for highlighting
             session()->put('newest_item_id', $newItem->id);

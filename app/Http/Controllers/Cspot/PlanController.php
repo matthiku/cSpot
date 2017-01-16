@@ -89,8 +89,8 @@ class PlanController extends Controller
             // call the edit action for a single plan
             return $this->edit($plan->id);
         }
-        flash('No upcoming Sunday Service plan found!');
-        return redirect()->back();
+        flash('No upcoming Sunday Service plan found! Do you want to create one?');
+        return redirect()->route('types.index');
     }
 
 
