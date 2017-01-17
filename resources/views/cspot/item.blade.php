@@ -622,7 +622,7 @@
 
                             <p> With that format, the <strong>advantage</strong> for c-SPOT is that we do not have to store the lyrics in a separate
                                 place but can use the lyrics of this format for the presentation to the congregation and the 
-                                chords-over-lyrics-format for the musicians, both drawing from the same source.</p>
+                                chords-over-lyrics-format for the musicians, both drawing <strong>from the same source</strong>.</p>
 
                             <p> <strong>OnSong</strong> encoded chords is a way to store these chords and lyrics in music apps. (More info 
                                 <a target="new" href="http://www.onsongapp.com/docs/features/formats/onsong/" class="text-info">here <i class="fa fa-external-link"></i></a>).
@@ -642,7 +642,7 @@
                                         <li><strong>OnSong editor</strong> - Drag just the chords to the left or right, leaving the lyrics alone</li>
                                         <li><strong>Plain text editor</strong> - Edit the lyrics and chords data in the original OnSong format</li>
                                         @endif
-                                        <span class="confirm-onsong-instructions float-right btn btn-sm btn-outline-danger mr-1" onclick="
+                                        <span class="confirm-onsong-instructions float-right btn btn-sm btn-outline-danger link mr-1" onclick="
                                             $('.onsong-instructions').hide();
                                             $('.show-onsong-instructions').show();
                                             $('.confirm-onsong-instructions').hide();
@@ -652,16 +652,20 @@
                                         <li><strong>Chords-over-Lyrics editor</strong> - this is helpful for editing just the lyrics.</li>
                                     </ul>
                                 </p>
+                                <!-- trigger help modal -->
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#showOnSongEditorHelp">
+                                    Which editor to use when?
+                                </button>                                
                             @endif
                         </div>
                     </div>
 
                     @if (Auth::user()->isEditor())
-                        <span onclick="insertNewOnSongRow();" class="btn btn-sm btn-success link float-right insertNewOnSongRow-link">
+                        <span onclick="insertNewOnSongRow();" class="show-onsong-instructions hidden btn btn-sm btn-success link float-right insertNewOnSongRow-link">
                             <i class="fa fa-plus"></i> Add new Part</span>
                     @endif
 
-                    <p class="text-info">
+                    <p class="show-onsong-instructions hidden text-info">
                         @if (Auth::user()->isEditor())
                             <label class="mb-0">Sequence:
                                 <span id="sequence-song-id-{{ $item->song->id }}" onclick="$('.show-input-hint').show();" 
@@ -679,8 +683,10 @@
                         $song = $item->song;
                         $songParts = getRemainingSongParts($song);
                     @endphp
-
-                    @include('cspot.snippets.onsong')
+                    
+                    <div class="show-onsong-instructions hidden">                        
+                        @include('cspot.snippets.onsong')
+                    </div>
 
                 </div>
                 

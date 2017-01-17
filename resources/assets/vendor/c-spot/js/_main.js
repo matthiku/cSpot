@@ -1015,6 +1015,12 @@ function rewriteOnsong(element)
 
         var tx = splitOnSong(textblocks[i]);
 
+        // in Presentation mode, ignore lyric lines starting with a dot ('.') and lines indicating the display region
+        if ( location.href.indexOf('chords')>10 ) {
+            if ( tx.lyrics.substr(0,1)=='.'  ||  tx.chords.substr(0,6)=='region' )
+                return true;
+        }
+
         if ( tx.chords.trim()!='' ) // don't add an empty line
             newText += '<pre class="chords">' + tx.chords + '</pre>';
 
@@ -1023,20 +1029,35 @@ function rewriteOnsong(element)
             newText += '<pre class="mb-0 text-primary lh-1h">' + tx.lyrics + "</pre>";
 
         else if (tx.lyrics 
-              && tx.lyrics.substr(0,1)!='#')
+              && tx.lyrics.substr(0,1)!='#') {
+            tx.lyrics = checkForSingerInstructions(tx.lyrics);
             newText += '<pre class="lyrics">' + tx.lyrics + "</pre>";
+        }
+
+        // insert horizontal line for each blank line in the source code, but not at the end and not in presentation mode
+        else if ( location.href.indexOf('chords')<0  &&  tx.chords.trim()==''  &&  tx.lyrics.trim()==''  &&  i < textblocks.length-1 )
+            newText += '<hr class="mb-1">'
     });
 
     $(element).html(newText);
 
-    if (element.count===1)
-        element = element[0];
-
-    ;;;console.log('onsong chords re-formatted for '+element.nodeName+'.'+element.className);
-    if (!element.nodeName) {
-        ;;;console.log(element);
-    }
 }
+
+/* check if lyrics contain instructions for the singers
+*/
+function checkForSingerInstructions(text)
+{
+    var start = text.indexOf("{");
+    var end   = text.indexOf("}");
+    if ( start>=0 && end>0 ) {
+        text = text.replace('{', '<i class="text-primary">{');
+        text = text.replace('}', '}</i>');
+    }
+    return text;
+}
+
+/* convert a OnSong text (lyrics with chords in squasre brackets) into the Chords-over-lyrics format
+*/
 function convertOnSongToChordsOverLyrics(text)
 {
     var newText = '';

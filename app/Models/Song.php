@@ -98,18 +98,19 @@ class Song extends Model
                 $lyrics .= '[' . $onsong->song_part->code . "]\n";
 
                 // remove OnSong codes enclosed in square brackets and split by lines
-                $lines = preg_split(  '/$\R?^/m' , preg_replace("/\[[^\]]+\]/m", '', $onsong->text)  );
+                $lines = preg_split(  '/$\R?^/m', $onsong->text  );
 
                 // now add each line to the lyrics, but not if it's a comment or musical instruction
                 $lkey = 0;
                 foreach ($lines as $line) {
-                    if (substr($line,0,1)=='#'  ||  substr($line,0,1)=='(' ) {
+                    if ( substr($line,0,1)=='#'  ||  substr($line,0,1)=='(' )
                         $lyrics .= "\n";
-                    } 
+                    elseif ( substr($line,0,3) == "[re" ) 
+                        $lyrics .= "\n" . $line;
                     else {
                         if ($lkey > 0) 
                             $lyrics .= "\n"; // newline char not on the first line
-                        $lyrics .= $line;
+                        $lyrics .= preg_replace("/\[[^\]]+\]/m", '', $line);
                         $lkey++;
                     }
                 }

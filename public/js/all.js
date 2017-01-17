@@ -42463,6 +42463,12 @@ function rewriteOnsong(element)
 
         var tx = splitOnSong(textblocks[i]);
 
+        // in Presentation mode, ignore lyric lines starting with a dot ('.') and lines indicating the display region
+        if ( location.href.indexOf('chords')>10 ) {
+            if ( tx.lyrics.substr(0,1)=='.'  ||  tx.chords.substr(0,6)=='region' )
+                return true;
+        }
+
         if ( tx.chords.trim()!='' ) // don't add an empty line
             newText += '<pre class="chords">' + tx.chords + '</pre>';
 
@@ -42471,20 +42477,35 @@ function rewriteOnsong(element)
             newText += '<pre class="mb-0 text-primary lh-1h">' + tx.lyrics + "</pre>";
 
         else if (tx.lyrics 
-              && tx.lyrics.substr(0,1)!='#')
+              && tx.lyrics.substr(0,1)!='#') {
+            tx.lyrics = checkForSingerInstructions(tx.lyrics);
             newText += '<pre class="lyrics">' + tx.lyrics + "</pre>";
+        }
+
+        // insert horizontal line for each blank line in the source code, but not at the end and not in presentation mode
+        else if ( location.href.indexOf('chords')<0  &&  tx.chords.trim()==''  &&  tx.lyrics.trim()==''  &&  i < textblocks.length-1 )
+            newText += '<hr class="mb-1">'
     });
 
     $(element).html(newText);
 
-    if (element.count===1)
-        element = element[0];
-
-    ;;;console.log('onsong chords re-formatted for '+element.nodeName+'.'+element.className);
-    if (!element.nodeName) {
-        ;;;console.log(element);
-    }
 }
+
+/* check if lyrics contain instructions for the singers
+*/
+function checkForSingerInstructions(text)
+{
+    var start = text.indexOf("{");
+    var end   = text.indexOf("}");
+    if ( start>=0 && end>0 ) {
+        text = text.replace('{', '<i class="text-primary">{');
+        text = text.replace('}', '}</i>');
+    }
+    return text;
+}
+
+/* convert a OnSong text (lyrics with chords in squasre brackets) into the Chords-over-lyrics format
+*/
 function convertOnSongToChordsOverLyrics(text)
 {
     var newText = '';
@@ -43616,6 +43637,21 @@ function removeNewOnSongRow(row)
     $(cell).children('.for-existing-items').show(); 
 }
 
+function closeAdvOnSongEditor(row)
+{
+    row.removeClass('table-warning');
+
+    var cell = row.children('.cell-part-text'); 
+    cell.children('.editor-hints').hide(); 
+    cell.children('.cell-part-action').children('.for-existing-items').show(); 
+    cell.children('.show-onsong-text').show(); 
+    // empty and hide the editor
+    cell.children('.advanced-editor').html('').hide();
+
+    removeNewOnSongRow(row);
+}
+
+
 
 function toggleOnSongEditButtons(row) 
 {
@@ -43646,7 +43682,7 @@ function toggleOnSongEditButtons(row)
             $('.show-onsong-format-hint').show();
 
             // check if the original text and the converted text are the same (indicating that it contains no chords)
-            if (text == convertOnSongToChordsOverLyrics(text)) {
+            if (text.trim() == convertOnSongToChordsOverLyrics(text).trim()) {
                 // also show the delete button now
                 $('.text-editor-delete-button').show();
 
@@ -43655,8 +43691,6 @@ function toggleOnSongEditButtons(row)
                 // if this is the part containing the metadata, we will show a different help section
                 if (row.hasClass('onsong-meta-data')) {
                     // #tbl-row-[nnn] > td > div.text-editor-hints.small.hidden > p > span.hints-for-onsong-chords-part
-                    cell.children('.text-editor-hints').children('.card').children('.card-block').children('.hints-for-plaintext-editor').hide();
-                    cell.children('.text-editor-hints').children('.card').children('.card-block').children('.hints-for-chords-over-lyrics-editor').hide();
                     cell.children('.text-editor-hints').children('.card').children('.card-block').children('.hints-for-onsong-metadata').show();
                 }
                 return;
@@ -43671,9 +43705,6 @@ function toggleOnSongEditButtons(row)
 
             // position the buttons at the bottom of the cell
             $(cell).children('.cell-part-action').position({my: 'right bottom', at: 'right bottom', of: cell});
-
-            // show the bottom of the window
-            // window.location.href = '#tbl-bottom';
         }
     }
 }       
@@ -43734,11 +43765,6 @@ function showPlaintextEditor(row)
     cell.children('.plaintext-editor').show();
 
     cell.children('.text-editor-hints').show();
-    cell.children('.text-editor-hints').children('.card').children('.card-block').children('.hints-for-plaintext-editor').show();
-
-    // make sure both buttons have the same size (which depends on the media size!)
-    var elem = cell.children('.text-editor-hints').children('.card').children('.card-block').children('span').children('a');
-    matchSize(elem, 'width');
 
     // textarea height according to the number of lines in the OnSong text - but at least 3
     cell.children('.plaintext-editor').attr(
@@ -43771,10 +43797,6 @@ function showChOLyEditor(row)
     cell.children('.chords-over-lyrics-editor').show();
 
     cell.children('.text-editor-hints').show();
-    cell.children('.text-editor-hints').children('.card').children('.card-block').children('.hints-for-chords-over-lyrics-editor').show();
-    // make sure both buttons have the same size (which depends on the media size!)
-    var elem = cell.children('.text-editor-hints').children('.card').children('.card-block').children('span').children('a');
-    matchSize(elem, 'width');
 
     // get original OnSong data and convert it to chords-over-lyrics format
     var text = cell.children('.plaintext-editor').val();
@@ -43918,6 +43940,8 @@ function saveNewOnSongText(row, del)
                 editPartNameForSelection(data.data.song_part_id, 'remove');
 
                 removeNewOnSongRow(row); // remove the editor hints and buttons
+
+                window.location.href = '#tbl-bottom';
             }
             // for existing rows
             else  {
@@ -43943,7 +43967,6 @@ function saveNewOnSongText(row, del)
             $('.insertNewOnSongRow-link').show();
             row.removeClass('table-warning');
             row.addClass('table-success');
-            window.location.href = '#tbl-bottom';
         })
         .fail(function(data) {
             // show error
@@ -43959,24 +43982,6 @@ function removeFromLocalOnSongParts(which)
         if (elem.id == which)
             cSpot.item.song.onsongs.splice(idx,1);
     });
-}
-
-
-function closeAdvOnSongEditor(row)
-{
-    $('.show-onsong-format-hint').hide();
-
-    row.removeClass('table-warning');
-
-    var cell = row.children('.cell-part-text'); 
-    cell.children('.editor-hints').hide(); 
-    cell.children('.cell-part-action').children('.for-existing-items').show(); 
-    cell.children('.show-onsong-text').show(); 
-    // empty the editor
-    cell.children('.advanced-editor').html('').hide();
-    
-    $('.toggle-onsong-buttons').show(); 
-    $('.insertNewOnSongRow-link').show();
 }
 
 
@@ -46497,6 +46502,7 @@ function reDisplayLyrics()
                 hdr = curPart + String.fromCharCode(apdxNam++);
             }
         }
+
         // or we already have a pre-defined header line for this song part
         else { 
             // find verse indicator (can be first word in the lyrics line, like: "[1] first line of lyrics")
@@ -46511,6 +46517,10 @@ function reDisplayLyrics()
             }
         }
 
+        // if line starts with a dot, it will be visible here but not for chords presentation
+        if (lyrics[i].substr(0,1)=='.')
+            lyricsLine = lyricsLine.substr(1, lyricsLine.length-1);
+
         // check if we have a header or the actual lyrics
         if (hdr.length>0) {
             // insert identifiable blocks
@@ -46521,6 +46531,7 @@ function reDisplayLyrics()
             region2= false;
             newDiv = '</div><div id="'+hdr+'" class="lyrics-parts" ';
         }
+
         // actual lyrics - insert as P element
         if (lyricsLine != undefined) {
             lines += 1;
@@ -46655,7 +46666,7 @@ function reDisplayChords()
     $(selectorName).text('');
     // analyse each line and put it back into single pre tags
     for (var i = 0; i <= chords.length - 1; i++) {
-        if (chords[i].length==0) continue;
+        if (chords[i].length==0  || chords[i].substr(0,1)=='.') continue;
         // if a line looks like chords, make it red
         if ( identifyChords(chords[i]) ) {
             $(selectorName).append('<pre class="red mb-0">'+chords[i]+'</pre>');

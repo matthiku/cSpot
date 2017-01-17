@@ -29,7 +29,12 @@
 		<span class="for-existing-items text-success">Choose Editor or
 			<a href="javascript:void(0);" onclick="removeNewOnSongRow($(this).parents('.onsong-row'));" title="cancel" class="text-danger">&#10007; cancel</a>
 		</span>
+
 		<br>
+
+		<!-- trigger help modal -->
+		<button type="button" class="btn btn-sm btn-info for-existing-items mr-1" data-toggle="modal" data-target="#showOnSongEditorHelp">Help</button>
+
 		@if ( $newOnsongRow || (isset($onsong) && $onsong->song_part->code!='m') )
 			<button title="Advanced OnSong Editor" type="button" class="btn btn-outline-primary btn-sm link for-existing-items select-adv-onsong-editor" 
 				onclick="showAdvOnSongEditor($(this).parents('.onsong-row'))">OnSong</button>
@@ -105,7 +110,12 @@
 		<div class="card">
 			<div class="card-block p-0">
 
-				<span class="float-right ml-2 pt-1 pr-1 text-right text-editor-save-cancel-buttons" style="max-width: 100px;">
+				<span class="float-right ml-2 pt-1 pr-1 text-right text-editor-save-cancel-buttons">
+					<!-- help modal -->
+					<button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#showOnSongEditorHelp">
+	  					Help on Editor usage
+					</button>
+
 					<a href="javascript:void(0);" onclick="saveNewOnSongText($(this).parents('.onsong-row'));" title="Save your changes"   tabindex=2 
 					  class="btn btn-sm btn-success"><big>&#128427;</big><span class="hidden-xs-down text-white px-1">Save</span></a>
 
@@ -117,39 +127,14 @@
 				</span>
 
 
-				<p class="card-text hints-for-plaintext-editor hidden mb-0">
-					The <strong>original OnSong format</strong> has the lyrics with chords interspersed and<br>
-					in square brackets, like this: <i>"Amazing [D]Grace, how [G]sweet the [D]sound"</i><br>
-				</p>
-
-
-				<p class="card-text hints-for-chords-over-lyrics-editor hidden mb-0">
-					With the <strong>"chords-over-lyrics" format</strong>, you can edit the lyrics of a song more easily. However, you need to manually
-					remove any excess dashes ('-') that might have been inserted in order to properly align the chords with the text.<br>
-				</p>
-
-
-				<p class="card-text hints-for-plaintext-editor hints-for-chords-over-lyrics-editor hidden mb-0">
-					<span class="text-danger">
-						<strong>Note:</strong> Insert an empty line to force a new slide in the lyrics presentations.<br>
-					</span>
-					For <strong>instructions to musicians</strong>, you can add lines with text enclosed in round brackets like this:<br>
-					"<i>(play twice) </i>". This will only be visible to musicians.<br>
-					Add <strong>comments</strong> by inserting a '#' (sharp) sign at the start of the line. Those won't appear anywhere else.
-				</p>
-
-
 				<div class="card-text hints-for-onsong-metadata hidden">
 					Use this part to provide information ("Metatags") about the song. Metatags are name/value pairs 
 					where the name is on the left and the value on the right; separated by a colon.<br>
 					<span class="float-left big">Example:</span>
-					<pre class="float-left ml-1 mb-0">Capo: 3{{"\n"}}Key: D{{"\n"}}Tempo: 76</pre>
+					<pre class="float-left ml-1 mb-1">Capo: 3{{"\n"}}Key: D{{"\n"}}Tempo: 76</pre>
 				</div>
 
 
-				<small class="float-right">(For more information, see the 
-					<a href="http://www.onsongapp.com/docs/features/formats/onsong/metadata/" target="new" class="text-info">
-					OnSong manual on formats <i class="fa fa-external-link"></i></a>)</small>
 			</div>
 		</div>
 	</div>

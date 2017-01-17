@@ -7,6 +7,14 @@
  * (C) M.Kuhs Ireland, 2016
  */
 
+red {
+    color: red;
+}
+
+.onsong-meta-data {
+    min-height: 3rem;
+}
+
 .hidden {
     display: none;
 }

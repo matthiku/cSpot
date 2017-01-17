@@ -12953,6 +12953,14 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
  * (C) M.Kuhs Ireland, 2016
  */
 
+red {
+    color: red;
+}
+
+.onsong-meta-data {
+    min-height: 3rem;
+}
+
 .hidden {
     display: none;
 }
@@ -13377,10 +13385,6 @@ pre.text-present {
 }
 .app-content {
     padding: 0 1em;
-}
-
-.tek-nav {
-    margin-bottom: 15px;
 }
 
 .image {

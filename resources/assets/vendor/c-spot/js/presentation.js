@@ -813,6 +813,7 @@ function reDisplayLyrics()
                 hdr = curPart + String.fromCharCode(apdxNam++);
             }
         }
+
         // or we already have a pre-defined header line for this song part
         else { 
             // find verse indicator (can be first word in the lyrics line, like: "[1] first line of lyrics")
@@ -827,6 +828,10 @@ function reDisplayLyrics()
             }
         }
 
+        // if line starts with a dot, it will be visible here but not for chords presentation
+        if (lyrics[i].substr(0,1)=='.')
+            lyricsLine = lyricsLine.substr(1, lyricsLine.length-1);
+
         // check if we have a header or the actual lyrics
         if (hdr.length>0) {
             // insert identifiable blocks
@@ -837,6 +842,7 @@ function reDisplayLyrics()
             region2= false;
             newDiv = '</div><div id="'+hdr+'" class="lyrics-parts" ';
         }
+
         // actual lyrics - insert as P element
         if (lyricsLine != undefined) {
             lines += 1;
@@ -971,7 +977,7 @@ function reDisplayChords()
     $(selectorName).text('');
     // analyse each line and put it back into single pre tags
     for (var i = 0; i <= chords.length - 1; i++) {
-        if (chords[i].length==0) continue;
+        if (chords[i].length==0  || chords[i].substr(0,1)=='.') continue;
         // if a line looks like chords, make it red
         if ( identifyChords(chords[i]) ) {
             $(selectorName).append('<pre class="red mb-0">'+chords[i]+'</pre>');

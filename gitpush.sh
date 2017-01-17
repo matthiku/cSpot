@@ -18,11 +18,17 @@ echo
 #    cd <path to your laravel project root folder>
 #    git pull
 
+
+# the description can come as commandline argument or it will be requested here:
 echo
-echo 
-read -r -p 'Enter the description of this Commit: (leave empyt to cancel) ' "DESC"
-if [ -z "$DESC" ]; then
-    exit
+echo
+if [ -z "$1" ]; then
+	read -r -p 'Enter the description of this Commit: (leave empyt to cancel) ' "DESC"
+	if [ -z "$DESC" ]; then
+	    exit
+	fi
+else 
+	DESC="$*"
 fi
 
 
