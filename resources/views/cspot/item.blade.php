@@ -651,11 +651,8 @@
                                         @if (Auth::user()->isEditor())
                                         <li><strong>Chords-over-Lyrics editor</strong> - this is helpful for editing just the lyrics.</li>
                                     </ul>
+                                    (For more information about the editor choices, check the help provided when adding or editing a song part here)
                                 </p>
-                                <!-- trigger help modal -->
-                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#showOnSongEditorHelp">
-                                    Which editor to use when?
-                                </button>                                
                             @endif
                         </div>
                     </div>

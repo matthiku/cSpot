@@ -51,12 +51,12 @@
                             <a href="#" data-container="body" data-toggle="tooltip" data-placement="left" 
                                     class="float-right" title="Go directly to next Sunday's Service Plan">
                                 &nbsp; <i class="fa fa-question-circle"></i></a>
-                            <a href="{{ url('cspot/plans/next') }}">
+                            <a href="{{ url('cspot/plans/next') }}" class="link">
                                 Next Sunday's Plan
                             </a>
                         </span>
 
-                        <button class="btn btn-lg btn-primary md-full mr-2"
+                        <button class="btn btn-lg btn-primary md-full mr-2 link"
                                 onclick="location.href='{{ url('cspot/plans?filterby=future') }}'">
                             <a href="#" data-container="body" data-toggle="tooltip" data-placement="left" 
                                     class="float-right" title="Show all upcoming Service Plans">
@@ -68,7 +68,7 @@
                             <a href="#" data-container="body" data-toggle="tooltip" data-placement="left" class="float-right" 
                                     title="Show (future) plans where you are leader or teacher">
                                 &nbsp; <i class="fa fa-question-circle"></i></a>
-                            <a href="{{ url('cspot/plans') }}">
+                            <a href="{{ url('cspot/plans') }}" class="link">
                                 My Services/Events
                             </a>
                         </span>
@@ -114,6 +114,10 @@
   
                 @include('help')
 
+
+                <p class="small text-muted">Last Software Update:
+                    {{ file_get_contents('lastCommit.txt') }}
+                </p>
 
             </div>
         </div>

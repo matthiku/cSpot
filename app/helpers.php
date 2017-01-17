@@ -1297,7 +1297,7 @@ function getTypeBasedPlanData($type)
         $planDate = new Carbon( 'last '.$weekdayNames[$weekday] );
 
     // do not propose to create a new event on a day where this event alredy exists
-    $plan = Plan::where('type_id', $type->id)->where('date', '>=', Carbon::tomorrow())->orderby('date', 'DESC')->first();
+    $plan = Plan::where('type_id', $type->id)->where('date', '>=', Carbon::today())->orderby('date', 'DESC')->first();
     if ($plan)
         $planDate = $plan->date;
 

@@ -323,7 +323,8 @@ class PlanController extends Controller
             'date'      => $date,
             'start'     => '00:00',
             'end'       => '00:00',
-            'leader_id' => null
+            'leader_id' => null,
+            'subtitle'  => ''
         ]);
         // call plan creation method
         return $this->create($request);
@@ -357,7 +358,8 @@ class PlanController extends Controller
                     'date'      => $newDate,
                     'start'     => $type->start,
                     'end'       => $type->end,
-                    'leader_id' => $type->leader_id
+                    'leader_id' => $type->leader_id,
+                    'subtitle'  => $type->subtitle,
                 ]
             );
         }
@@ -452,7 +454,8 @@ class PlanController extends Controller
                 'date'      => $newDate,
                 'start'     => $startTme->toTimeString(),
                 'end'       => $endTime->toTimeString(),
-                'leader_id' => $plan->leader_id
+                'leader_id' => $plan->leader_id,
+                'subtitle'  => $type->subtitle,
             ]);
 
             // get list of service types

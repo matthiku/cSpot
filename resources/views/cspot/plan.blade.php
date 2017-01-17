@@ -62,7 +62,7 @@
 
                 {{-- show links to various plan presentation modes 
                 --}}
-                <div class="dont-print">
+                <div class="dont-print plan-details">
 
                     @if (Auth::user()->isMusician())
                         <div class="float-right">
@@ -116,7 +116,7 @@
                     <span class="text-success lora">{{ $plan->type->generic ? $plan->subtitle : $plan->type->name }}</span>
                     on <span class="text-danger">{{ $plan->date->formatLocalized('%a, %d %b') }}</span>
                 </h4>
-                <small class="hidden-lg-down">{{ $plan->type->generic ? '' : $plan->subtitle  }}</small>
+                <small class="hidden-lg-down plan-details">{{ $plan->type->generic ? '' : $plan->subtitle ? '('.$plan->subtitle.')' : ''  }}</small>
 
 
             @else
@@ -175,7 +175,7 @@
             @endif
 
             {{-- Submit or Save button --}}
-            <div class="form-buttons float-right">
+            <div class="form-buttons float-left">
                 <big>
                     @if (isset($plan))
                         @if (Auth::user()->isEditor())
@@ -213,7 +213,7 @@
     </div>
 
 
-    <div class="plan-details row"{!! isset($plan) ? " style='display: none'" : '' !!}>
+    <div class="plan-details row mx-1"{!! isset($plan) ? " style='display: none'" : '' !!}>
 
 
 
@@ -263,6 +263,8 @@
                         {!! Form::label('type', 'Subtitle:', ['class'=>'d-block']); !!}
                         @if ( isset($plan) )
                             {!! Form::text('subtitle', $plan->subtitle, ['onchange' => 'enableSaveButton(this)']) !!}</p>
+                        @elseif ( isset($defaultValues) )
+                            {!! Form::text('subtitle', $defaultValues['subtitle'], ['onchange' => 'enableSaveButton(this)']) !!}</p>
                         @else
                             {!! Form::text('subtitle') !!}</p>
                         @endif
@@ -327,7 +329,7 @@
 
 
                 <div class="col-xs-12">
-                    <div class="row form-group nowrap mb-0">
+                    <div class="form-group nowrap mb-0">
 
                         @if (isset($plan))
                             <span class="float-right small">
@@ -373,7 +375,7 @@
 
 
                 <div class="col-xs-12">
-                    <div class="row form-group nowrap mb-0">
+                    <div class="form-group nowrap mb-0">
                         <label class="form-control-label">Teacher: &nbsp;
                             <select name="teacher_id" class="text-help c-select" 
                                 onchange="enableSaveButton(this); $('.reasonForChange').show(); $('.reasonForChange>input').focus()"

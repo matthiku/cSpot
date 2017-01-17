@@ -668,17 +668,18 @@ function compareLyricPartsWithSequence()
     var sequence = ( $('#sequence').text() ).split(',');
 
     var newSequence = '';
-    var nr = 0;
+    var nr = 0, type, parts, headerCode;
     // walk through the pre-defined sequence
     for (var i in sequence) {
         // what kind of lyric parts do we have (verse or chorus etc)
-        var type = identifyLyricsHeadings('['+sequence[i]+']');
+        type = identifyLyricsHeadings('['+sequence[i]+']');
         console.log('looking for part of type ' + type);
+        if (!type) return true; // precaution
         // for each item in the sequence, find the corresponding lyric part(s)
-        var parts = $('[id^='+type+']');
+        parts = $('[id^='+type+']');
         // for each part, add an indicator into the new sequence
         $(parts).each( function(entry){
-            var headerCode = $(this).data('header-code');
+            headerCode = $(this).data('header-code');
             newSequence += headerCode + ',' ;
             insertSeqNavInd(headerCode, nr);
             nr += 1;

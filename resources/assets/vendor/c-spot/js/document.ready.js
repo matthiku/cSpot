@@ -297,7 +297,6 @@ $(document).ready(function() {
             $('.modal-content').css('background-color', '#c2c2d6');
 
         });
-
     }
 
 

@@ -130,7 +130,7 @@
     @if ( isset($song) )
 
 		@foreach ($song->onsongs as $onsong)
-			<div class="onsong-row {{ $onsong->song_part->code=='m' ? ' onsong-meta-data bg-faded' : '' }}"
+			<div class="onsong-row rounded-bottom {{ $onsong->song_part->code=='m' ? ' onsong-meta-data bg-faded' : '' }}"
 			 	 id="tbl-row-{{ $onsong->id }}" 
 				 data-onsong-id="{{ $onsong->id }}" data-part-id="{{ $onsong->song_part_id }}">
 
@@ -196,7 +196,7 @@
 </div>
 
 
-<div class="row show-onsong-format-hint hidden rounded-bottom py-2 px-3 bg-faded text-right text-primary small">
+<div class="show-onsong-format-hint hidden rounded-bottom py-2 px-3 bg-faded text-right text-primary small">
 	If the imported text contains tab-stopps, define how many spaces they should be replaced with:
 	<input type="number" id="onsong-import-tab-size" value=4 style="width: 2rem" onchange="updateTabToSpacesRatio(this)">
 </div>

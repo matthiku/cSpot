@@ -433,9 +433,9 @@
 								</button>
 
 								<div class="dropdown-menu dropdown-menu-right">
-									@if ($item->song_id)
-					 				<a class="dropdown-item edit-song-link" href='{{ url('cspot/songs/'.$item->song->id) }}/edit/'>
-										<i class="fa fa-music"></i><i class="fa fa-pencil text-muted"></i>&nbsp;Edit Song</a>
+									@if (Auth::user()->isAdmin() && $item->song_id)
+						 				<a class="dropdown-item edit-song-link" href='{{ url('cspot/songs/'.$item->song->id) }}/edit/'>
+											<i class="fa fa-music"></i><i class="fa fa-pencil text-muted"></i>&nbsp;Edit Song</a>
 									@endif
 					 				<a class="dropdown-item" href='{{ url('cspot/plans/'.$plan->id) }}/items/{{$item->id}}/edit/'>
 										<i class="fa fa-pencil fa-lg"></i>&nbsp; &nbsp;Edit Item</a>

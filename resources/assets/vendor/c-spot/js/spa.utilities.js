@@ -101,20 +101,17 @@ function insertNewOnSongRow()
     // hide "add" link and show row with input hints
     $('.insertNewOnSongRow-link').hide();
     $('.show-onsong-format-hint').show();
-    // un-hide action center of the new row
-    //$('#adding-new-song-part > .cell-part-text > .cell-part-action').show();
 
     // show help info and save/cancel buttons
-    var btn = $('#adding-new-song-part > .cell-part-text > .text-editor-hints');
-    btn.show();
-    $(btn).children('.card').children('.card-block').children('.hints-for-plaintext-editor').show();
-    $(btn).children('.card').children('.card-block').children('.hints-for-chords-over-lyrics-editor').show();
-
-    var elem = $(btn).children('.card').children('.card-block').children('span').children('a');
-    matchSize(elem, 'width');
+    $('#adding-new-song-part > .cell-part-text > .text-editor-hints').show();
 
     // make sure all is in the visible viewport
     window.location.href = "#tbl-bottom";
+    
+    // move the part-type selection dialog down to the bottom
+    $('#selectSongPartCodeModal').on('show.bs.modal', function () {
+        $('#selectSongPartCodeModal').css('top','inherit');
+    })
 
     // call Modal for onsong part name selection
     $('#selectSongPartCodeModal').modal('show');
@@ -154,6 +151,9 @@ function insertSelectedPartCode()
         var html = '';
         if (newCodeCode!='m')
             html += newCodeName + '<span>' + (newCodeCode!='m' ? ' ('+newCodeCode+')' : '') + '</span>';
+        else 
+            $('.hints-for-onsong-metadata').show();
+
         $('#adding-new-song-part > .cell-part-name').html(html);
         $('#selectSongPartCodeModal').modal('hide');
 
@@ -255,6 +255,9 @@ function closeAdvOnSongEditor(row)
 
 function toggleOnSongEditButtons(row) 
 {
+    // make sure we have no "outdated" min-height
+    row.css('min-height', 0);
+
     // first make sure that we are not currently ADDing a new song part
     if (! $('.show-onsong-format-hint').is(':visible')) {
 
@@ -270,6 +273,7 @@ function toggleOnSongEditButtons(row)
             // $('.cell-part-action').hide();
             $('.toggle-onsong-buttons').hide();
             $('.text-editor-delete-button').hide(); // make sure the delete button is hidden at first
+            $('.hints-for-onsong-metadata').hide();
 
             // if the song part contains no chords, we can directly start the plaintext editor!
             // get handle on input elements etc
@@ -314,6 +318,9 @@ function toggleOnSongEditButtons(row)
 */
 function showAdvOnSongEditor(row) 
 {
+    // keep the height of the row while editing
+    var height = row.css('height');
+
     // hide the editor selection buttons
     row.children('.cell-part-text').children('.cell-part-action').children('.for-existing-items').hide(); 
 
@@ -346,6 +353,7 @@ function showAdvOnSongEditor(row)
         },
         containment: "#"+row.children('.cell-part-text').children('.advanced-editor').attr('id'),
     });
+    row.css('min-height', height);
 }
 
 
@@ -353,6 +361,9 @@ function showAdvOnSongEditor(row)
 */
 function showPlaintextEditor(row)
 {
+    // keep the height of the row while editing
+    var height = row.css('height');
+
     // show correct action buttons
     $('.for-existing-items').hide(); 
 
@@ -372,6 +383,8 @@ function showPlaintextEditor(row)
         Math.max(cell.children('.plaintext-editor').val().split('\n').length, 3)
     );
     cell.children('.plaintext-editor').focus();
+
+    row.css('min-height', height);
 }
 
 
@@ -385,6 +398,9 @@ function showPlaintextEditor(row)
 */
 function showChOLyEditor(row)
 {
+    // keep the height of the row while editing
+    var height = row.css('height');
+
     // show correct action buttons
     $('.for-existing-items').hide(); 
 
@@ -409,6 +425,8 @@ function showChOLyEditor(row)
         Math.max(cell.children('.chords-over-lyrics-editor').val().split('\n').length, 3)
     );
     cell.children('.chords-over-lyrics-editor').focus();
+    
+    row.css('min-height', height);
 }
 
 
