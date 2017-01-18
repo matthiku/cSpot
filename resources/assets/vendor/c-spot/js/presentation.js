@@ -1857,6 +1857,10 @@ function applyLocallyDefinedTextFormatting(reset)
             if (selector == 'body'  &&  location.pathname.indexOf('/present')<0)
                 return true;
 
+            // don't use in Song Details or Item Details pages
+            if (location.pathname.indexOf('/edit')>5)
+                return true;
+
 
             ;;;console.log('formatting "'+ selector + '" with style "' + attribute + '" as "' + value + '"');
 

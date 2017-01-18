@@ -613,10 +613,11 @@ class ItemController extends Controller
             return redirect()->back();
         }
 
+        // get and update the item
         $item = Item::find($item_id);
-        $item->update([
-            'song_id' => $song_id,
-        ]);
+        $item->song_freshness = calculateSongFreshness( $song_id, $plan->leader_id, $plan->date );
+        $item->song_id        = $song_id;
+        $item->save();
 
         // provide new item id to the view for highlighting
         session()->put('newest_item_id', $item->id);
@@ -698,6 +699,11 @@ class ItemController extends Controller
             // debug logging
             Log::debug('API item update request - ID:'.$item_id.', FIELD:'.$field_name.', VALUE:'.$request->value);
 
+            // if it's a song, also calculate and update the SFI
+            if ($field_name == 'song_id')
+                $item->update(['song_freshness' => calculateSongFreshness( $request->value, $plan->leader_id, $plan->date ) ]);
+
+            // execute the acutally requested update
             $item->update( [$field_name => $request->value] );
 
             // notify event listener that an item was updated

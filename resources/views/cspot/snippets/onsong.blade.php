@@ -130,7 +130,7 @@
     @if ( isset($song) )
 
 		@foreach ($song->onsongs as $onsong)
-			<div class="onsong-row rounded-bottom {{ $onsong->song_part->code=='m' ? ' onsong-meta-data bg-faded' : '' }}"
+			<div class="onsong-row rounded-bottom mb-2 {{ $onsong->song_part->code=='m' ? ' onsong-meta-data bg-faded' : '' }}"
 			 	 id="tbl-row-{{ $onsong->id }}" 
 				 data-onsong-id="{{ $onsong->id }}" data-part-id="{{ $onsong->song_part_id }}">
 
@@ -139,7 +139,7 @@
 				<div class="bg-info pl-2 rounded-top cell-part-name">
 
 					{{ $onsong->song_part->code!='m' ? $onsong->song_part->name : '' }}
-					<span>{{ $onsong->song_part->code!='m' ? '('.$onsong->song_part->code.')' : '' }}</span>
+					<span>{!! $onsong->song_part->code!='m' ? '<i class="text-white">('.$onsong->song_part->code.')</i>' : '' !!}</span>
 
 				</div>
 

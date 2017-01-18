@@ -150,7 +150,7 @@ function insertSelectedPartCode()
         // write html code to show Part name and part code
         var html = '';
         if (newCodeCode!='m')
-            html += newCodeName + '<span>' + (newCodeCode!='m' ? ' ('+newCodeCode+')' : '') + '</span>';
+            html += newCodeName + '<span>' + (newCodeCode!='m' ? ' <i class="text-white">('+newCodeCode+')</i>' : '') + '</span>';
         else 
             $('.hints-for-onsong-metadata').show();
 
@@ -280,6 +280,10 @@ function toggleOnSongEditButtons(row)
             var cell = row.children('.cell-part-text');
             var text = cell.children('.plaintext-editor').val();
 
+            // write original song text into a data attribute
+            //  in order to later be able see if anything was changed 
+            row.data('orig-onsong-text', text);
+
             row.addClass('table-warning');
             // prevent opening of other editors
             $('.insertNewOnSongRow-link').hide();
@@ -320,6 +324,7 @@ function showAdvOnSongEditor(row)
 {
     // keep the height of the row while editing
     var height = row.css('height');
+    row.css('min-height', height);
 
     // hide the editor selection buttons
     row.children('.cell-part-text').children('.cell-part-action').children('.for-existing-items').hide(); 
@@ -335,8 +340,7 @@ function showAdvOnSongEditor(row)
         newHtml += '<div class="onsong-edit-lines pl-2">'+splitOnSongLines(elem)+"</div>\n";
     });
 
-    // write the data into the editor
-    // $('#advOnSongEditorArea').html(newHtml);
+    // show the editor, hide the other stuff
     row.children('.cell-part-text').children('.show-onsong-text').hide(); 
     row.children('.cell-part-text').children('.editor-hints').show(); 
     row.children('.cell-part-text').children('.advanced-editor').html(newHtml).show(); 
@@ -353,7 +357,6 @@ function showAdvOnSongEditor(row)
         },
         containment: "#"+row.children('.cell-part-text').children('.advanced-editor').attr('id'),
     });
-    row.css('min-height', height);
 }
 
 
@@ -363,6 +366,7 @@ function showPlaintextEditor(row)
 {
     // keep the height of the row while editing
     var height = row.css('height');
+    row.css('min-height', height);
 
     // show correct action buttons
     $('.for-existing-items').hide(); 
@@ -383,8 +387,6 @@ function showPlaintextEditor(row)
         Math.max(cell.children('.plaintext-editor').val().split('\n').length, 3)
     );
     cell.children('.plaintext-editor').focus();
-
-    row.css('min-height', height);
 }
 
 
@@ -400,6 +402,7 @@ function showChOLyEditor(row)
 {
     // keep the height of the row while editing
     var height = row.css('height');
+    row.css('min-height', height);
 
     // show correct action buttons
     $('.for-existing-items').hide(); 
@@ -425,8 +428,6 @@ function showChOLyEditor(row)
         Math.max(cell.children('.chords-over-lyrics-editor').val().split('\n').length, 3)
     );
     cell.children('.chords-over-lyrics-editor').focus();
-    
-    row.css('min-height', height);
 }
 
 
@@ -439,6 +440,9 @@ function deleteOnSongText(row)
 
 function saveNewOnSongText(row, del)
 {
+    // make sure we have no "outdated" min-height
+    row.css('min-height', 0);
+
     // hide unneeded parts and reset bg color
     $('.show-onsong-format-hint').hide();
     $('.error-msg').hide();
@@ -483,8 +487,15 @@ function saveNewOnSongText(row, del)
     if ( text.indexOf('[') < 0  &&  text.indexOf(']') < 0  &&  text.indexOf("\n") > -1 )
         text = joinLyricsAndChordsToOnSong(text);
 
-    // get text value of selected part name
-    // var partname = select.children('option:selected').text();
+
+    // check if anything was changed
+    if (del != 'delete'  &&  text == row.data('orig-onsong-text')) {
+        $(textarea).focus();
+        row.children('.cell-part-text').children('.error-msg').text('Nothing was changed.');
+        row.children('.cell-part-text').children('.error-msg').show();
+        return;
+    }
+
 
     // all good, we can proceed. Hide the action buttons
     var oldCellHtml = cell.html(); 
@@ -607,8 +618,8 @@ function removeFromLocalOnSongParts(which)
 */
 function submitEditedOnSong(row)
 {
-    // the old OnSong data
-    var textDiv = row.children('.cell-part-text').children('textarea');
+    // get the old OnSong data
+    var textDiv = row.children('.cell-part-text').children('textarea.plaintext-editor');
 
     // the edited OnSong data
     var newData = '';
@@ -620,6 +631,11 @@ function submitEditedOnSong(row)
 
     // remove the last newLine character!
     newData = newData.substring(0, newData.length-1);
+
+    if (newData == textDiv.val()) {
+        closeAdvOnSongEditor(row);
+        return;
+    }
 
     // write the edited data into the display area and the textarea input
     textDiv.val(newData);

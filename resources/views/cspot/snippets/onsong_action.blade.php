@@ -61,7 +61,7 @@
 	{{-- Read-only area to show chords-over-lyrics and action buttons
 	--}}
 	<div class="white-space-pre-wrap lh-1 link write-onsong-text{{ $newOnsongRow || $onsong->song_part->code!='m' ? ' show-onsong-text' : '' }}{{ $newOnsongRow ? ' hidden' : '' }}" 
-		 title="Click to edit" 
+		 title="Click to edit" style="min-height: 3rem;" 
 		 onclick="
 				$(this).siblings('.toggle-onsong-buttons').click();
 			">{{ $newOnsongRow ? '' : $onsong->text }}

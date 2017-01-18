@@ -484,7 +484,13 @@ class PlanController extends Controller
     {
         // get plan with items ordered by seq no
         $plan = Plan::with([
-                'items' => function ($query) { $query->orderBy('seq_no'); }])
+                'items' => function ($query) use ($id) { 
+                    if (! Auth::User()->ownsPlan($id) )
+                        // do not provide the 'FLEO' items to non-leaders
+                        $query->where('forLeadersEyesOnly', '<>', '1')->orderBy('seq_no');
+                    else
+                        $query->withTrashed()->orderBy('seq_no');
+                }])
             ->find($id);
 
         $types = Type::get();
@@ -522,7 +528,13 @@ class PlanController extends Controller
 
         // find a single plan by ID
         $plan = Plan::with([
-                'items' => function ($query) { $query->withTrashed()->orderBy('seq_no'); }])
+                'items' => function ($query) use ($id) { 
+                    if (! Auth::User()->ownsPlan($id) )
+                        // do not provide the 'FLEO' items to non-leaders
+                        $query->where('forLeadersEyesOnly', '<>', '1')->orderBy('seq_no');
+                    else
+                        $query->withTrashed()->orderBy('seq_no');
+                }])
             ->find($id);
 
         if ($plan) {

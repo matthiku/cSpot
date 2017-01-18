@@ -13,11 +13,14 @@
 				// set variable for click-on-item action
 				$onclick = 'onclick=showSpinner();location.href='."'".url('cspot/plans/'.$plan->id.'/items/'.$item->id).'/edit'."' ";
 				$tooltip = "title=click/touch&nbsp;for&nbsp;details data-toggle=tooltip" ; 
+
 				// check if there is a song_id but no song in the database!
 				if ( $item->song_id && ! $item->song()->exists()) { 
 					$item->comment="(Song with id ".$item->song_id.' missing!)'; 
 					$item->song_id = Null; 
 				} 
+
+				// set item type 
 				if ( in_array($item->title_2, ['slides', 'video']) )
 					$item->type = $item->title_2;
 				else 
@@ -25,10 +28,6 @@
 			@endphp
 
 
-
-			{{-- check if this is a "FLEO" item - only visible to the leader 
-			--}}
-			@if ( (! $item->forLeadersEyesOnly) || Auth::user()->ownsPlan($plan->id) )
 
 			<tr id="tr-item-{{ str_replace('.', '-', $item->seq_no).($item->deleted_at ? 'trashed' : '') }}" 
 				data-item-id="{{ $item->id }}" data-item-update-action="{{ route('cspot.api.items.update', $item->id) }}"
@@ -452,7 +451,6 @@
 
 
 			</tr>
-			@endif {{-- (is it a FLEO item?) --}}
 
 	    @endforeach
 
