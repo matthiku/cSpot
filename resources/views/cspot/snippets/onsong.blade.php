@@ -6,8 +6,6 @@
 
 
 
-
-
 {{-- modal to select the proper part code 
 --}}
 <div class="modal" id="selectSongPartCodeModal" tabindex="-1" role="dialog" aria-labelledby="selectSongPartCodeModalLabel" aria-hidden="true">
@@ -113,6 +111,101 @@
 
 
 
+<small class="ml-1">Drag the <span class="bg-warning text-white rounded px-1">part-codes</span> into the 
+	<span class="bg-danger text-white rounded px-1">red zone</span class=""> in order to create/modify the sequence:
+</small>
+
+
+<div id="song-parts-sequence" class="row ml-2">
+
+	<div id="wastebin-or-moving-zone p-0">	
+		<span id="song-parts-wastebin-zone" class="btn btn-sm bg-inverse text-white" 
+			title="drag codes from the drop-zone into the waste bin to remove them from the sequence">
+			<big>&#128465;</big></span>
+
+		<span id="sequence-drop-zone" class="mx-1 bg-danger text-white rounded p-1">
+			@if ($song->sequence)
+				@foreach (explode(',', $song->sequence) as $seq)
+					<span class="p-1 rounded edit-chords item bg-success text-white" 
+						id="partcodes-sequence-{{ $seq }}">({{ $seq }})</span>
+				@endforeach
+			@endif
+		</span>
+	</div>
+
+	<span id="song-parts-drag-zone" class="pt-1">
+		@foreach ($song->onsongs as $onsong)
+			@if ($onsong->song_part->code!='m')
+				<span class="p-1 rounded edit-chords partcodes-draggable bg-warning text-white" 
+					id="partcodes-draggable-{{ $onsong->song_part->code }}">({{ $onsong->song_part->code }})</span>
+			@endif
+		@endforeach
+	</span>
+
+	@if (! $song->sequence)
+		<a class="mx-1 btn btn-sm btn-outline-secondary" 
+		   title="auto-create the default sequence from the existing song parts" href="#"><small>use default seq.</small></a>
+	@endif
+
+</div>
+
+
+<script>
+	// make the part codes dragg-able
+	$( ".partcodes-draggable" ).draggable({
+	  	containment: '#sequence-drop-zone',
+	  	helper: 'clone',
+	  	grid: [ 10, 5 ]
+	});
+	// make the drop-zone drop-able
+	$( "#sequence-drop-zone" ).droppable({
+	  	drop: 
+		  	function(event, ui) { 
+		  		// not for items already in this zone
+		  		if (ui.draggable[0].classList.contains('item'))
+		  			return;
+		  		// make sure the drop-zone is big enough
+		  		
+		  		// clone the dropped part and make it draggable again
+		  		$(this).append($(ui.draggable).clone());
+	            $("#sequence-drop-zone .partcodes-draggable").addClass("item");
+	            $("#sequence-drop-zone .item").removeClass("ui-draggable partcodes-draggable bg-warning");
+	            $("#sequence-drop-zone .item").addClass("bg-success");
+	            $("#sequence-drop-zone .item").draggable({
+	                containment: '#wastebin-or-moving-zone',
+	                grid: [10, 5]
+	            });
+		  	},
+		});
+
+	// the existing sequence items
+	$("#sequence-drop-zone .item").draggable({
+	    containment: '#wastebin-or-moving-zone',
+	    grid: [10, 5]
+	});
+	
+	// the waste bin ....
+	$( "#song-parts-wastebin-zone" ).droppable({
+	  	drop: 
+		  	function(event, ui) { 
+		  		// only allow items from the drop-zone to be removed
+		  		if (ui.draggable[0].classList.contains('item'))
+		  			$(ui.draggable).remove();
+		  	},
+		});
+</script>
+
+
+
+
+
+<div class="small text-right mr-2">
+	<a href="#" onclick="$('.cell-part-text').toggleClass('show');">collapse/expand all parts</a>
+</div>
+
+
+
+
 {{-- DIV element to show the actual OnSong data - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --}}
 <div id="onsong-parts"
@@ -131,16 +224,21 @@
 
 		@foreach ($song->onsongs as $onsong)
 			<div class="onsong-row rounded-bottom mb-2 {{ $onsong->song_part->code=='m' ? ' onsong-meta-data bg-faded' : '' }}"
-			 	 id="tbl-row-{{ $onsong->id }}" 
+			 	 id="tbl-row-{{ $onsong->id }}" role="tablist" aria-multiselectable="true"
 				 data-onsong-id="{{ $onsong->id }}" data-part-id="{{ $onsong->song_part_id }}">
 
 				{{-- show the part name and code above the onsong data
 				--}}
-				<div class="bg-info pl-2 rounded-top cell-part-name">
-
-					{{ $onsong->song_part->code!='m' ? $onsong->song_part->name : '' }}
-					<span>{!! $onsong->song_part->code!='m' ? '<i class="text-white">('.$onsong->song_part->code.')</i>' : '' !!}</span>
-
+				<div class="bg-info pl-2 rounded-top cell-part-name" role="tab"  id="heading-{{ $onsong->song_part_id }}">
+					<h5 class="mb-0">
+        				<a data-toggle="collapse" data-parent="#onsong-parts" href="#collapse-{{ $onsong->song_part_id }}"
+        										 aria-expanded="true" aria-controls="collapse-{{ $onsong->song_part_id }}">
+							{{ $onsong->song_part->code!='m' ? $onsong->song_part->name : '' }}
+							@if ($onsong->song_part->code!='m')
+								<span class="text-white">({{ $onsong->song_part->code }})</span>
+							@endif
+			        	</a>
+      				</h5>
 				</div>
 
 				{{-- actual data and editors --}}
@@ -164,12 +262,17 @@
 
 	{{-- row to enter NEW song parts - invisible at first
 	--}}
-	<div class="onsong-row hidden" id="new-onsong-row">
+	<div class="onsong-row rounded-bottom mb-2 hidden" id="new-onsong-row" role="tablist" aria-multiselectable="true">
 
 		{{-- placeholder to show the part name and code above the onsong data
 		--}}
-		<div class="bg-info pl-2 rounded-top cell-part-name">
-			Select song-part name and enter new lyrics/chords or other text:
+		<div class="bg-info pl-2 rounded-top cell-part-name" role="tab" id="heading-0">
+			<h5 class="mb-0">
+				<a data-toggle="collapse" data-parent="#onsong-parts" href="#collapse-0"
+										 aria-expanded="true" aria-controls="collapse-0">
+					Select song-part name and enter new lyrics/chords or other text:
+	        	</a>
+			</h5>
 		</div>
 
 		@include('cspot.snippets.onsong_action', ['newOnsongRow' => true])

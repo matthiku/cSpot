@@ -662,7 +662,7 @@
                             <i class="fa fa-plus"></i> Add new Part</span>
                     @endif
 
-                    <p class="show-onsong-instructions hidden text-info">
+                    <p class="show-onsong-instructions hidden text-info mb-0">
                         @if (Auth::user()->isEditor())
                             <label class="mb-0">Sequence:
                                 <span id="sequence-song-id-{{ $item->song->id }}" onclick="$('.show-input-hint').show();" 

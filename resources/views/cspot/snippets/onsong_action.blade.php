@@ -5,7 +5,7 @@
 --}}
 
 
-<div class="cell-part-text">
+<div class="cell-part-text collapse show" id="collapse-{{ $newOnsongRow ? '0' : $onsong->song_part_id }}" role="tabpanel" aria-labelledby="heading-{{ $newOnsongRow ? '0' : $onsong->song_part_id }}">
 
 	@if (Auth::user()->isEditor())
 		<span class="toggle-onsong-buttons float-right btn btn-sm link" title="Show Edit Buttons" 

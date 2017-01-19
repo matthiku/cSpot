@@ -105,6 +105,9 @@ function insertNewOnSongRow()
     // show help info and save/cancel buttons
     $('#adding-new-song-part > .cell-part-text > .text-editor-hints').show();
 
+    // make sure this part is not collapsed
+    $('#adding-new-song-part > .cell-part-text').addClass('show');
+
     // make sure all is in the visible viewport
     window.location.href = "#tbl-bottom";
     
@@ -150,11 +153,13 @@ function insertSelectedPartCode()
         // write html code to show Part name and part code
         var html = '';
         if (newCodeCode!='m')
-            html += newCodeName + '<span>' + (newCodeCode!='m' ? ' <i class="text-white">('+newCodeCode+')</i>' : '') + '</span>';
+            html += newCodeName + '<span>' + (newCodeCode!='m' ? ' <span class="text-white">>('+newCodeCode+')</span>' : '') + '</span>';
         else 
             $('.hints-for-onsong-metadata').show();
 
-        $('#adding-new-song-part > .cell-part-name').html(html);
+        $('#adding-new-song-part > .cell-part-name > h5 > a').attr('href', '#collapse-'+newCodeCode);
+        $('#adding-new-song-part > .cell-part-name > h5 > a').attr('aria-controls', 'collapse-'+newCodeCode);
+        $('#adding-new-song-part > .cell-part-name > h5 > a').html(html);
         $('#selectSongPartCodeModal').modal('hide');
 
         // add selected code id as data attribute to the row
@@ -231,6 +236,8 @@ function removeNewOnSongRow(row)
     $(onsongArea).children('.write-onsong-text').show();
     $(onsongArea).children('textarea').hide();
 
+    $('.show-onsong-text').addClass('link');
+
     // show correct action buttons
     $('.cell-part-action').hide();
     var cell =  $(onsongArea).children('.cell-part-action');
@@ -252,7 +259,8 @@ function closeAdvOnSongEditor(row)
 }
 
 
-
+/* show or hide the Editor selection buttons
+*/
 function toggleOnSongEditButtons(row) 
 {
     // make sure we have no "outdated" min-height
@@ -285,6 +293,8 @@ function toggleOnSongEditButtons(row)
             row.data('orig-onsong-text', text);
 
             row.addClass('table-warning');
+            $('.show-onsong-text').removeClass('link');
+
             // prevent opening of other editors
             $('.insertNewOnSongRow-link').hide();
             $('.show-onsong-format-hint').show();
@@ -318,7 +328,7 @@ function toggleOnSongEditButtons(row)
 }       
 
 
-/* launch the modal that shows the OnSong editor
+/* show the Advanced OnSong editor
 */
 function showAdvOnSongEditor(row) 
 {
@@ -559,11 +569,13 @@ function saveNewOnSongText(row, del)
                 // add this to the local representation of the song
                 cSpot.item.song.onsongs.push(data.data);
 
-                // write new onsong id into the data attribute of the new row
+                // write new onsong id into the data and other attributes of the new row and sub-cells
                 row.data('onsong-id', data.data.id);
                 row.data('part-id', data.data.song_part_id);
-                row.children('.cell-part-name').html(data.data.song_part.name + " (" + data.data.song_part.code + ")");
                 row.children('.cell-part-text').children('advanced-editor').attr('id', 'advanced-editor-'+data.data.id);
+                row.children('.cell-part-text').attr('id', 'collapse-'+data.data.song_part.code);
+                $('#song-parts-drag-zone').append('<span class="p-1 rounded edit-chords partcodes-draggable bg-warning text-white" id="partcodes-draggable-' +
+                    data.data.song_part.code+'">(' + data.data.song_part.code+')</span>')
 
                 // make sure this part name isn't used a 2nd time for this song
                 editPartNameForSelection(data.data.song_part_id, 'remove');
@@ -580,6 +592,12 @@ function saveNewOnSongText(row, del)
                     removeFromLocalOnSongParts( row.data('onsongId') );
                     // we can put this partname back into the selection
                     editPartNameForSelection(code, 'add');
+
+                    // remove from draggable list
+                    $('#partcodes-draggable-'+cd).remove();
+
+                    // drop from out of the global cSPOT variable
+                    //TODO TODO
 
                     row.fadeOut();
                     row.remove();

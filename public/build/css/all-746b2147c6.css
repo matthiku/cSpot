@@ -12953,6 +12953,18 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
  * (C) M.Kuhs Ireland, 2016
  */
 
+
+#song-parts-wastebin-zone {
+    cursor: crosshair;
+    vertical-align: top;
+}
+
+#sequence-drop-zone {
+    height: 2rem;
+    min-width: 10rem;
+    display: inline-block;
+}
+
 red {
     color: red;
 }
@@ -12975,7 +12987,7 @@ red {
 
 .edit-chords {
     cursor: move;
-    vertical-align: text-bottom;    
+    vertical-align: text-bottom;
 }
 
 /* in multi-column mode, keep some elements always together */
