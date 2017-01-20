@@ -20,6 +20,7 @@
 
 
 
+
     {!! Form::model( $item, array(
         'route'  => array('cspot.items.update', $item->id), 
         'method' => 'put', 
@@ -603,12 +604,12 @@
                 <div id="onsong-tab" class="px-0 px-sm-1">
 
                     <div class="show-onsong-instructions hidden float-right">
-                        <span class="btn btn-sm link btn-outline-info ml-1" onclick="
+                        <span class="btn btn-sm link btn-outline-info float-right ml-1" onclick="
                             $('.onsong-instructions').show();
                             $('.show-onsong-instructions').hide();
                             $('.confirm-onsong-instructions').show();
                             localStorage.setItem('config-onsongInstructionsConfirmed', false);
-                            ">&#128161; Help!</span>
+                            ">&#128161; OnSong Help</span>
                     </div>
 
 
@@ -657,20 +658,9 @@
                         </div>
                     </div>
 
-                    @if (Auth::user()->isEditor())
-                        <span onclick="insertNewOnSongRow();" class="show-onsong-instructions hidden btn btn-sm btn-success link float-right insertNewOnSongRow-link">
-                            <i class="fa fa-plus"></i> Add new Part</span>
-                    @endif
 
-                    <p class="show-onsong-instructions hidden text-info mb-0">
-                        @if (Auth::user()->isEditor())
-                            <label class="mb-0">Sequence:
-                                <span id="sequence-song-id-{{ $item->song->id }}" onclick="$('.show-input-hint').show();" 
-                                    class="editable-song-field link">{{ $item->song->sequence }}</span>
-                                <i class="fa fa-pencil text-muted"> </i>
-                            </label>
-                            <br><small class="text-primary show-input-hint" style="display: none;">The sequence can only contain code as listed in the table below!!</small>
-                        @else
+                    <p class="show-onsong-instructions hidden text-info my-0">
+                        @if (! Auth::user()->isEditor())
                             ({{ $item->song->sequence ? 'Sequence: '.$item->song->sequence : 'No sequence predefined' }})
                         @endif
                     </p>

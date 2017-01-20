@@ -32,12 +32,16 @@ red {
 }
 
 /* placeholder for jQuery UI sortable function */
-.ui-state-highlight { height: 2em; }
+.ui-state-highlight { 
+    height: 1.3em; 
+}
+
 
 .lh-1  { line-height: 1; }
 .lh-1h { line-height: 1.5; }
 .lh-2  { line-height: 2;   }
 .lh-2h { line-height: 2.5; }
+
 
 .edit-chords {
     cursor: move;

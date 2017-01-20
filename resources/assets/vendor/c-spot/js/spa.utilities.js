@@ -80,6 +80,9 @@ function insertNewOnSongRow()
     // make sure no other element with this ID exists (from a previous adding)
     $('#adding-new-song-part').attr('id', '');
 
+    // collapse the current song parts
+    $('.cell-part-text').removeClass('show');    
+
     // clone the existing and hidden, empty row and show it
     $('#new-onsong-row').clone().attr('id', 'very-new-onsong-row').appendTo('#onsong-parts');
     $('#new-onsong-row').attr('id', 'adding-new-song-part');
@@ -104,25 +107,24 @@ function insertNewOnSongRow()
 
     // show help info and save/cancel buttons
     $('#adding-new-song-part > .cell-part-text > .text-editor-hints').show();
+    $('.text-editor-delete-button').hide(); // delete button not needed atm
 
     // make sure this part is not collapsed
     $('#adding-new-song-part > .cell-part-text').addClass('show');
 
     // make sure all is in the visible viewport
     window.location.href = "#tbl-bottom";
-    
-    // move the part-type selection dialog down to the bottom
-    $('#selectSongPartCodeModal').on('show.bs.modal', function () {
-        $('#selectSongPartCodeModal').css('top','inherit');
+        
+    $('#selectSongPartCodeModal').on('shown.bs.modal', function () {
+        // move the part-type selection dialog down to the bottom
+        var mo = $('.modal-content.select-songpart-code')[0];
+        $(mo).position({my:'left top', at:'left bottom', of:$('#adding-new-song-part > .cell-part-name')});
+        // set the focus on the part-type selection 
+        $('#new-onsong-part-selection').focus();
     })
 
     // call Modal for onsong part name selection
     $('#selectSongPartCodeModal').modal('show');
-    
-    // set the focus on the part-type selection 
-    $('#selectSongPartCodeModal').on('shown.bs.modal', function () {
-        $('#new-onsong-part-selection').focus();
-    })
 }
 
 function editPartNameForSelection(code, what) 
@@ -153,7 +155,7 @@ function insertSelectedPartCode()
         // write html code to show Part name and part code
         var html = '';
         if (newCodeCode!='m')
-            html += newCodeName + '<span>' + (newCodeCode!='m' ? ' <span class="text-white">>('+newCodeCode+')</span>' : '') + '</span>';
+            html += newCodeName + '<span>' + (newCodeCode!='m' ? ' <span class="text-white">('+newCodeCode+')</span>' : '') + '</span>';
         else 
             $('.hints-for-onsong-metadata').show();
 
@@ -299,6 +301,9 @@ function toggleOnSongEditButtons(row)
             $('.insertNewOnSongRow-link').hide();
             $('.show-onsong-format-hint').show();
 
+            // check if this song part is still part of the SEQUENCE code list
+            isThisPartInSequenceListThenHideDeleteBtn(row)
+
             // check if the original text and the converted text are the same (indicating that it contains no chords)
             if (text.trim() == convertOnSongToChordsOverLyrics(text).trim()) {
                 // also show the delete button now
@@ -327,6 +332,13 @@ function toggleOnSongEditButtons(row)
     }
 }       
 
+function isThisPartInSequenceListThenHideDeleteBtn(row)
+{
+    var code = row.children('.cell-part-name').data('part-code');
+    var seq = getPartsSequenceListFromDragZone();
+    if (seq.indexOf(code) >= 0)
+        $('.text-editor-delete-button').hide();
+}
 
 /* show the Advanced OnSong editor
 */
@@ -574,8 +586,13 @@ function saveNewOnSongText(row, del)
                 row.data('part-id', data.data.song_part_id);
                 row.children('.cell-part-text').children('advanced-editor').attr('id', 'advanced-editor-'+data.data.id);
                 row.children('.cell-part-text').attr('id', 'collapse-'+data.data.song_part.code);
-                $('#song-parts-drag-zone').append('<span class="p-1 rounded edit-chords partcodes-draggable bg-warning text-white" id="partcodes-draggable-' +
-                    data.data.song_part.code+'">(' + data.data.song_part.code+')</span>')
+                row.children('.cell-part-name').data('partCode', data.data.song_part.code);
+
+                // add the new part codes to the list of draggable codes
+                $('#song-parts-drag-zone').append('<span class="p-1 rounded edit-chords partcodes-draggable bg-warning text-white mr-1" id="partcodes-draggable-' +
+                    data.data.song_part.code+'">' + data.data.song_part.code+"</span>\n");
+                makePartCodesDraggable();
+                $('#submit-sequence-button').show(); // show save seq. button
 
                 // make sure this part name isn't used a 2nd time for this song
                 editPartNameForSelection(data.data.song_part_id, 'remove');
@@ -593,13 +610,13 @@ function saveNewOnSongText(row, del)
                     // we can put this partname back into the selection
                     editPartNameForSelection(code, 'add');
 
-                    // remove from draggable list
+                    // remove from draggable list and show save button
                     $('#partcodes-draggable-'+cd).remove();
+                    $('#submit-sequence-button').show();
 
                     // drop from out of the global cSPOT variable
                     //TODO TODO
 
-                    row.fadeOut();
                     row.remove();
                 } 
                 else {

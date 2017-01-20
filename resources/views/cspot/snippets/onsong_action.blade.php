@@ -21,7 +21,7 @@
 
 		<span class="float-right for-existing-items">
 			<a href="javascript:void(0);" onclick="deleteOnSongText($(this).parents('.onsong-row'));" title="delete this part" 
-			  class="btn btn-outline-danger btn-sm">Delete <big>&#128465;</big>
+			  class="text-editor-delete-button btn btn-outline-danger btn-sm">Delete <big>&#128465;</big>
 		  	</a>
 		</span>
 		<br>
@@ -108,9 +108,9 @@
 	<div class="text-editor-hints small hidden">
 
 		<div class="card">
-			<div class="card-block p-0">
+			<div class="card-block p-0 center">
 
-				<span class="float-right ml-2 pt-1 pr-1 text-right text-editor-save-cancel-buttons">
+				<span class="text-editor-save-cancel-buttons">
 					<!-- help modal -->
 					<button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#showOnSongEditorHelp">
 	  					Help on Editor usage

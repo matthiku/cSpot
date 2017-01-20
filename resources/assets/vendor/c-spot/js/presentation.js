@@ -95,7 +95,7 @@ function preparePresentation()
 
 
     // check if we have a predefined sequence from the DB
-    var sequence=($('#sequence').text()).split(',');
+    var sequence = ($('#sequence').text()).split(',');
 
     // check if there are more lyric parts than 
     // indicated in the sequence due to blank lines discoverd in the lyrics
@@ -105,7 +105,7 @@ function preparePresentation()
     // auto-detect sequence if it is missing
     if (sequence.length<2) {
         createDefaultLyricSequence();
-        sequence=($('#sequence').text()).split(',');
+        sequence = ($('#sequence').text()).split(',');
     }
 
     // make sure the sequence indicator isn't getting too big! 
