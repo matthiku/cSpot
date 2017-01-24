@@ -212,6 +212,9 @@ function findNextPossibleOnSongPart() {
 
 function removeNewOnSongRow(row)
 {
+    // make sure we have no "outdated" min-height
+    row.css('min-height', 0);
+
     $('.show-onsong-format-hint').hide();
     $('.hints-for-chords-over-lyrics-editor').hide();
     $('.hints-for-plaintext-editor').hide();
@@ -597,6 +600,8 @@ function saveNewOnSongText(row, del)
                     data.data.song_part.code+'">' + data.data.song_part.code+"</span>\n");
                 makePartCodesDraggable();
                 $('#submit-sequence-button').show(); // show save seq. button
+                $('#song-parts-sequence').show();   // make sure the sequence area is visible
+                $('.no-onsong-sequence-help-text').hide(); // hide the help text for adding new parts
 
                 // make sure this part name isn't used a 2nd time for this song
                 editPartNameForSelection(data.data.song_part_id, 'remove');

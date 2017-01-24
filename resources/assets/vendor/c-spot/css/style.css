@@ -22,13 +22,11 @@ red {
     color: red;
 }
 
-.onsong-meta-data {
-    min-height: 3rem;
-}
 
 .hidden {
     display: none;
 }
+
 
 /* placeholder for jQuery UI sortable function */
 .ui-state-highlight { 

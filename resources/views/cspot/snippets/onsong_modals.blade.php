@@ -66,21 +66,25 @@
 
 
 				<h6>Formatting and Instructions for Musicians or Singers</h6>
-				Add certain elements in order to structure and prepare the presentation of the lyrics and chords for musicians or singers.
+				Use certain elements as below to change the format and structure of the presentation to provide additional information for musicians or singers.
 
 
 				<ul>
-					<li class="mb-1">Insert an <red>empty line</red> to <strong>force a new slide</strong> in the lyrics presentations.</li>
+					<li class="mb-1">Simply insert an <red>empty line</red> to <strong>create individual slides</strong> in the lyrics presentations.</li>
 
 					<li class="mb-1">For <strong>instructions to musicians</strong>, you can add lines with text enclosed in round brackets like this:<br>
 						"<red>(play twice) </red>". This will only be visible to musicians.</li>
 
 					<li class="mb-1">Text in curly braces "{}" will be shown only in the lyrics presentation as <strong>instructions for the singers</strong>,<br> 
-						like "<red>{women}</red>" - for only the women to sing that part of the song.</li>
+						like "<red>{women}</red>" - for when only the women should sing that part of the song.</li>
 
 					<li class="mb-1">In order to provide for songs where 2 groups of singers sing different lyrics at the same time, you have to create 
 						a <strong>second region</strong> with just lyrics. Do so by inserting a line containing the text 'region 2' in square
 						brackets like so: "<red>[region 2]</red>". Lyrics in Region 2 won't be visible for musicians.</li>
+
+					<li>Alternatively, you could show a lyrics line in a different colour by preceding it with a comma (,). 
+						Such a line also won't be shown to musicians. Additionally, for an echo, append the lyrics line with the echo lyrics in braces, 
+						like so: <i>I will follow (I will follow)</i></li>
 
 					<li class="mb-1">To hide the lyrics elsewhere from the musicians, start the line with a dot (.) </li>
 

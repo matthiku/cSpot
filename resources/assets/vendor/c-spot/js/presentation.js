@@ -829,9 +829,15 @@ function reDisplayLyrics()
             }
         }
 
-        // if line starts with a dot, it will be visible here but not for chords presentation
+        // if line starts with a dot, it will be visible here (and ignored in chords presentation!)
         if (lyrics[i].substr(0,1)=='.')
             lyricsLine = lyricsLine.substr(1, lyricsLine.length-1);
+
+        // if line starts with a comma, it will be displayed like Region 2
+        if (lyrics[i].substr(0,1)==',') {
+            lyricsLine = lyricsLine.substr(1, lyricsLine.length-1);
+            region2 = true;
+        }
 
         // check if we have a header or the actual lyrics
         if (hdr.length>0) {
@@ -862,8 +868,14 @@ function reDisplayLyrics()
                     cls = '';
                     lyricsLine = lyricsLine.split('>')[1];
                 }
+                // check if line contains instructions or alternate lyrics
+                lyricsLine = checkForAlternateLyricsOrSingerInstructions(lyricsLine);
+
                 newLyr += '<p class="'+cls+' mb-0" '+stl+'>'+lyricsLine+'</p>';
             }
+            // region 2 is only for one line if the line started with a comma
+            if (lyrics[i].substr(0,1)==',')
+                region2 = false;
         }
     }
     // insert the last lyrics part
@@ -880,6 +892,17 @@ function getStylesFromLyricsLine(line)
         return styles;
     }
     return '';
+}
+
+function checkForAlternateLyricsOrSingerInstructions(text)
+{
+    var start = text.indexOf("(");
+    var end   = text.indexOf(")");
+    if ( start>=0 && end>0 ) {
+        text = text.replace('(', '<i class="text-present-region2">(');
+        text = text.replace(')', ')</i>');
+    }
+    return text;    
 }
 
 // insert new SLIDE into the presentation

@@ -17,8 +17,8 @@
 		<h5 class="mb-1">
 			Sequence: &nbsp;
 			<span class="small link">
-				<a href="#" onclick="$('.sequence-help-text').toggle();" class="small">
-					(<span class="sequence-help-text">show</span><span class="sequence-help-text hidden">hide</span> help</a>)
+				<a onclick="$('.sequence-help-text').toggle();" class="small text-info">
+					(<span class="sequence-help-text">show</span><span class="sequence-help-text hidden">hide</span> help)</a>
 			</span>
 			<span class="float-right">
 		        @if (Auth::user()->isEditor())
@@ -29,7 +29,7 @@
 		</h5>
 	</div>
 
-	<div id="song-parts-sequence" class="col-12">
+	<div id="song-parts-sequence" class="col-12{{ $song->onsongs->count() ? '' : ' hidden' }}">
 
 		<span id="song-parts-drag-zone" class="pt-1">
 			@foreach ($song->onsongs as $onsong)
@@ -49,26 +49,27 @@
 				@endif
 			</span>
 
-			<span class="btn btn-sm bg-inverse text-white align-top" id="song-parts-wastebin-zone"
-				title="drag codes from the drop-zone into the waste bin to remove them from the sequence">
+			<span id="song-parts-wastebin-zone" class="btn btn-sm bg-inverse text-white align-top"
+				title="drag codes from the red drop-zone into the waste bin to remove them from the sequence">
 				<big>&#128465;</big> Bin</span>
 
-			<span class="btn btn-sm bg-success text-white align-text-top link hidden" id="submit-sequence-button" onclick="submitChangedSequence();" 
+			<span id="submit-sequence-button" class="btn btn-sm bg-success text-white align-text-top link hidden ml-2" onclick="submitChangedSequence();" 
 			   		title="submit new or changed sequence">
-			   <big>&#128427; </big> Save</span>
+			   <big>&#128427; </big> Save!</span>
 		</span>
 
-		@if (! $song->sequence)
-			<span class="p-1" id="create-default-seq-button">
-				<span class="mx-1 btn btn-sm btn-secondary link" onclick="createDefaultSequence();" 
-				   		title="auto-create the default sequence from the existing song parts (Won't work if song contains irregular parts!)">
-				   create default seq.</span>
-			</span>
-		@endif
+		<span id="create-default-seq-button" class="p-1 ml-2{{ $song->sequence ? ' hidden' : '' }}">
+			<span class="mx-1 btn btn-sm btn-secondary link" onclick="createDefaultSequence();" 
+			   		title="auto-create the default sequence from the existing song parts (Won't work if song contains irregular parts!)">
+			   create default seq.</span>
+		</span>
 
 	</div>
 
 
+	<div class="small col-12 mt-2 px-0{{ $song->onsongs->count() ? ' hidden' : '' }} no-onsong-sequence-help-text">
+		Start adding OnSong parts in order to be able to create the sequence!
+	</div>
 	<div class="small col-12 mt-2 px-0 hidden sequence-help-text">
 		To <span class="text-primary">create/modify</span> the sequence, drag the 
 			<span class="bg-warning text-white rounded px-1">part</span> <span class="bg-warning text-white rounded px-1">codes</span> into the 
@@ -195,9 +196,13 @@
 		  	},
 	  	activate:
 	  		function(event, ui) {
-	  			$('#sequence-drop-zone').removeClass('bg-danger').addClass('bg-primary');
+	  			that = this;
+	  			$(that).removeClass('bg-danger').addClass('bg-primary');
 	  			setTimeout( function() {
-	  				$('#sequence-drop-zone').addClass('bg-danger').removeClass('bg-primary');
+	  				$(that).addClass('bg-danger').removeClass('bg-primary');
+		  			setTimeout( function() {
+		  				$(that).addClass('bg-danger').removeClass('bg-primary');
+		  			}, 500);
 	  			}, 500);
 	  		},
 		});
@@ -232,9 +237,23 @@
 	            adaptMinWidthOfDropZone($('#sequence-drop-zone'));
 
 	            // show auto-creation button again if drop-zone is empty
-	            if ( $('#sequence-drop-zone').children().length == 0 )
-		  			$('#create-default-seq-button').show();
+	            // (we have to delay this as the dragging is not yet fully finished!)
+		  		setTimeout( function() {
+	            	if ( ! $('#sequence-drop-zone').children().length )
+		  				$('#create-default-seq-button').show();
+		  		}, 900);
 		  	},
+	  	activate:
+	  		function(event, ui) {
+	  			wb = this;
+	  			$(wb).removeClass('bg-inverse').addClass('bg-primary');
+	  			setTimeout( function() {
+	  				$(wb).addClass('bg-inverse').removeClass('bg-primary');
+		  			setTimeout( function() {
+		  				$(wb).addClass('bg-inverse').removeClass('bg-primary');
+		  			}, 500);
+	  			}, 500);
+	  		},
 		});
 	
 </script>
@@ -285,8 +304,8 @@
         				<a data-toggle="collapse" data-parent="#onsong-parts" href="#collapse-{{ $onsong->song_part_id }}"
         										 aria-expanded="true" aria-controls="collapse-{{ $onsong->song_part_id }}"
         										 onclick="removeNewOnSongRow($(this).parents('.onsong-row'));">
-							{{ $onsong->song_part->code!='m' ? $onsong->song_part->name : '' }}
-							@if ($onsong->song_part->code!='m')
+							{{  $onsong->song_part->name }}
+							@if ($onsong->song_part->code != 'm')
 								<span class="text-white">({{ $onsong->song_part->code }})</span>
 							@endif
 			        	</a>
@@ -301,7 +320,7 @@
 		@endforeach
 
 		<script>
-			// move the metadata row to the top of the table rows
+			// make sure the Meta-Data row is always at the top of the other OnSong parts
 			row = $(".onsong-meta-data");
 			row.insertBefore(row.prevAll().last());
 		</script>
@@ -342,7 +361,8 @@
 <div class="insertNewOnSongRow-link bg-inverse rounded ">
 
 	@if (Auth::user()->isEditor())
-		<span onclick="insertNewOnSongRow();" class="btn btn-sm btn-success link"><i class="fa fa-plus"></i> Add new Part</span>
+		<span onclick="insertNewOnSongRow();" 
+			class="btn btn-sm btn-success link"><i class="fa fa-plus"></i> Add new Part</span>
 	@endif
 
 	<span class="small float-right">
