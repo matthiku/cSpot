@@ -332,12 +332,16 @@ function toggleOnSongEditButtons(row)
     }
 }       
 
+// Compares the list of codes in the SEQUENCE field with the code of the current row.
+// If the code is listed in the sequence, the DELETE button will not be shown
 function isThisPartInSequenceListThenHideDeleteBtn(row)
 {
     var code = row.children('.cell-part-name').data('part-code');
     var seq = getPartsSequenceListFromDragZone();
     if (seq.indexOf(code) >= 0)
         $('.text-editor-delete-button').hide();
+    else
+        $('.text-editor-delete-button').show();
 }
 
 /* show the Advanced OnSong editor

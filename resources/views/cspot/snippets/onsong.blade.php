@@ -9,21 +9,27 @@
 
 
 
+{{-- Show and edit the SEQUENCE 
+--}}
 <div class="row bg-faded rounded mx-1 p-1">
 
-	<small class="ml-1">
-		To create/modify the sequence, drag the <span class="bg-warning text-white rounded px-1">part-codes</span> into the 
-		<span class="bg-danger text-white rounded px-1">red&nbsp;zone</span>. 
-	</small>
+	<div class="col-12 pl-0">
+		<h5 class="mb-1">
+			Sequence: &nbsp;
+			<span class="small link">
+				<a href="#" onclick="$('.sequence-help-text').toggle();" class="small">
+					(<span class="sequence-help-text">show</span><span class="sequence-help-text hidden">hide</span> help</a>)
+			</span>
+			<span class="float-right">
+		        @if (Auth::user()->isEditor())
+		            <span id="sequence-song-id-{{ $song->id }}" onclick="$('.show-input-hint').show();" 
+		               class="editable-song-field lora link">{{ $song->sequence }}</span>
+		        @endif
+			</span>
+		</h5>
+	</div>
 
-	<span class="ml-auto mr-4">
-        @if (Auth::user()->isEditor())
-            <span id="sequence-song-id-{{ $song->id }}" onclick="$('.show-input-hint').show();" 
-               class="editable-song-field lora link invisible">{{ $song->sequence }}</span>
-        @endif
-	</span>
-
-	<span id="song-parts-sequence" class="mx-2">
+	<div id="song-parts-sequence" class="col-12">
 
 		<span id="song-parts-drag-zone" class="pt-1">
 			@foreach ($song->onsongs as $onsong)
@@ -34,7 +40,7 @@
 			@endforeach
 		</span>
 		
-		<span id="wastebin-or-moving-zone p-0">	
+		<span id="wastebin-or-moving-zone">	
 			<span id="sequence-drop-zone" class="mx-1 bg-danger text-white rounded p-1">
 				@if ($song->sequence)
 					@foreach (explode(',', $song->sequence) as $seq)
@@ -43,30 +49,41 @@
 				@endif
 			</span>
 
-			<span id="song-parts-wastebin-zone" class="btn btn-sm bg-inverse text-white" 
+			<span class="btn btn-sm bg-inverse text-white align-top" id="song-parts-wastebin-zone"
 				title="drag codes from the drop-zone into the waste bin to remove them from the sequence">
-				<big>&#128465;</big></span>
+				<big>&#128465;</big> Bin</span>
+
+			<span class="btn btn-sm bg-success text-white align-text-top link hidden" id="submit-sequence-button" onclick="submitChangedSequence();" 
+			   		title="submit new or changed sequence">
+			   <big>&#128427; </big> Save</span>
 		</span>
 
 		@if (! $song->sequence)
 			<span class="p-1" id="create-default-seq-button">
 				<span class="mx-1 btn btn-sm btn-secondary link" onclick="createDefaultSequence();" 
-				   		title="auto-create the default sequence from the existing song parts (Won't work if song contains irregular parts)">
+				   		title="auto-create the default sequence from the existing song parts (Won't work if song contains irregular parts!)">
 				   create default seq.</span>
 			</span>
 		@endif
 
-		<span class="p-1 hidden" id="submit-sequence-button">
-			<span class="mx-1 btn btn-sm btn-success link" onclick="submitChangedSequence();" 
-			   		title="submit new or changed sequence">
-			   Save</span>
-		</span>
-	</span>
-
-	<div class="small m-auto">
-		To remove a part from the sequence, drag it into the <span class="bg-inverse text-white rounded px-1">bin</span>.
 	</div>
+
+
+	<div class="small col-12 mt-2 px-0 hidden sequence-help-text">
+		To <span class="text-primary">create/modify</span> the sequence, drag the 
+			<span class="bg-warning text-white rounded px-1">part</span> <span class="bg-warning text-white rounded px-1">codes</span> into the 
+			<span class="bg-danger text-white rounded px-1">red&nbsp;zone (sequence)</span>.
+		<br>
+		To <span class="text-primary">remove</span> a part from the sequence, drag it from the 
+			<span class="bg-danger text-white rounded px-1">sequence</span> into the 
+			<span class="bg-inverse text-white rounded px-1">bin</span>.
+		<br>
+		<strong>Note:</strong> You can't delete a song part from the list below while it's still listed in the
+			<span class="bg-danger text-white rounded px-1">sequence</span> above!
+	</div>
+
 </div>
+
 
 
 <script>
@@ -167,7 +184,6 @@
 		  		// no cloning for items already in this zone
 		  		if (ui.draggable[0].classList.contains('item'))
 		  			return;
-		  		// make sure the drop-zone is big enough
 
 		  		// clone the dropped part and make it draggable again
 		  		$(this).append($(ui.draggable).clone());
@@ -177,6 +193,13 @@
 				makeSequenceItemsDraggable();
 	            adaptMinWidthOfDropZone(this);
 		  	},
+	  	activate:
+	  		function(event, ui) {
+	  			$('#sequence-drop-zone').removeClass('bg-danger').addClass('bg-primary');
+	  			setTimeout( function() {
+	  				$('#sequence-drop-zone').addClass('bg-danger').removeClass('bg-primary');
+	  			}, 500);
+	  		},
 		});
 
 
@@ -189,6 +212,9 @@
 	        placeholder: "ui-state-highlight",
 	        start: function(event, ui) {
 	            ui.placeholder.html('__');
+	        },
+	        update: function(event, ui) {
+	        	$('#submit-sequence-button').show();
 	        },
 		});
 	}
@@ -217,8 +243,15 @@
 
 
 
-<div class="small text-right mr-2">
-	<a href="#" class="link" onclick="$('.cell-part-text').toggleClass('show');">collapse/expand all parts</a>
+
+<div class="small text-right mt-1 mr-2">
+	<a href="#" class="link" onclick="
+			$('.cell-part-text').toggleClass('show');
+			$('.collapse-button-text').toggle();">
+		<span class="collapse-button-text">collapse</span>
+		<span class="collapse-button-text hidden">expand</span>
+		all parts
+	</a>
 </div>
 
 
@@ -250,7 +283,8 @@
 				<div class="cell-part-name bg-info pl-2 rounded-top" role="tab" data-part-code="{{ $onsong->song_part->code }}" id="heading-{{ $onsong->song_part_id }}">
 					<h5 class="mb-0">
         				<a data-toggle="collapse" data-parent="#onsong-parts" href="#collapse-{{ $onsong->song_part_id }}"
-        										 aria-expanded="true" aria-controls="collapse-{{ $onsong->song_part_id }}">
+        										 aria-expanded="true" aria-controls="collapse-{{ $onsong->song_part_id }}"
+        										 onclick="removeNewOnSongRow($(this).parents('.onsong-row'));">
 							{{ $onsong->song_part->code!='m' ? $onsong->song_part->name : '' }}
 							@if ($onsong->song_part->code!='m')
 								<span class="text-white">({{ $onsong->song_part->code }})</span>
@@ -287,7 +321,8 @@
 		<div class="bg-info pl-2 rounded-top cell-part-name" role="tab" data-part-code="" id="heading-0">
 			<h5 class="mb-0">
 				<a data-toggle="collapse" data-parent="#onsong-parts" href="#collapse-0"
-										 aria-expanded="true" aria-controls="collapse-0">
+										 aria-expanded="true" aria-controls="collapse-0"
+        								 onclick="removeNewOnSongRow($(this).parents('.onsong-row'));">
 					Select song-part name and enter new lyrics/chords or other text:
 	        	</a>
 			</h5>

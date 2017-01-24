@@ -12,6 +12,8 @@ use Carbon\Carbon;
 use DB;
 use Auth;
 
+use App\Models\SongPart;
+
 
 class Song extends Model
 {
@@ -84,8 +86,8 @@ class Song extends Model
         $lyrics = '';
         $start = true;
 
-        // add each onsong part but prepend it with it's part code as a header
-        foreach ($this->onsongs as $onsong) {
+        // first, get the OnSong parts according to the given sequence
+        foreach ($this->onSongChords() as $onsong) {
 
             // ignore parts containing music instructions (like 'Capo')
             if ( $onsong->song_part->code != 'm'  &&  $onsong->song_part->code != 'i' ) {
@@ -103,7 +105,7 @@ class Song extends Model
                 // now add each line to the lyrics, but not if it's a comment or musical instruction
                 $lkey = 0;
                 foreach ($lines as $line) {
-                    if ( substr($line,0,1)=='#'  ||  substr($line,0,1)=='(' )
+                    if ( substr($line,0,1)=='#'  ||  (substr($line,0,1)=='(' && substr($line,-1,1)==')')  )
                         $lyrics .= "\n";
                     elseif ( substr($line,0,3) == "[re" ) 
                         $lyrics .= "\n" . $line;
@@ -125,6 +127,49 @@ class Song extends Model
 
         return $this->lyrics;
 
+    }
+
+
+    /**
+     * Get the full chords according to the given sequence 
+     */
+    public function onSongChords()
+    {
+        if ( ! $this->onsongs->count() )
+            return collect();
+
+        // turn the onsong parts into a named array, with the part code as the name
+        foreach ($this->onsongs as $onsong) {
+            $onsongs[$onsong->song_part->code] = $onsong;
+        }
+
+        // the song sequence contains a list of comma-separated 
+        // codes and MUST start with the 'm' section for the metadata
+        $sequence = $this->sequence;
+
+        $result = collect();
+        if ($sequence) {    
+            if ( strpos($sequence, 'm') !== 0)
+                $sequence = 'm,'.$sequence;
+            $seqs = explode(',', $sequence);
+
+            // combine all parts according to the sequence
+            foreach ($seqs as $seq) {
+                if (isset($onsongs[$seq]))
+                    $result->push($onsongs[$seq]);
+            }
+        }
+
+        // if sequence was not provided, we just add the elements as per order of song-part codes
+        else {
+            $songparts = SongPart::orderby('sequence')->get();
+            foreach ($songparts as $songpart) {
+                if (isset($onsongs[$songpart->code]))
+                    $result->push($onsongs[$songpart->code]);
+            }
+        }
+
+        return $result;
     }
 
 

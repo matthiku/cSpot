@@ -1136,48 +1136,6 @@ function getRemainingSongParts($song)
     return $songparts;
 }
 
-/**
- * Create full chords for songs with a sequence and corresponding OnSong elements
- */
-function getOnSongChords($song)
-{
-    if ( ! $song  ||  ! $song->onsongs->count() )
-        return collect();
-
-    // turn the onsong parts into a named array, with the part code as the name
-    foreach ($song->onsongs as $onsong) {
-        $onsongs[$onsong->song_part->code] = $onsong;
-    }
-
-    // the song sequence contains a list of comma-separated 
-    // codes and must start with 'm' for the metadata
-    $sequence = $song->sequence;
-
-    $result = collect();
-    if ($sequence) {    
-        if ( strpos($sequence, 'm') !== 0)
-            $sequence = 'm,'.$sequence;
-        $seqs = explode(',', $sequence);
-
-        // combine all parts according to the sequence
-        foreach ($seqs as $seq) {
-            if (isset($onsongs[$seq]))
-                $result->push($onsongs[$seq]);
-        }
-    }
-
-    // if sequence was not provided, we just add the elements as per order of song-part codes
-    else {
-        $songparts = SongPart::orderby('sequence')->get();
-        foreach ($songparts as $songpart) {
-            if (isset($onsongs[$songpart->code]))
-                $result->push($onsongs[$songpart->code]);
-        }
-    }
-
-    return $result;
-}
-
 
 
 /**

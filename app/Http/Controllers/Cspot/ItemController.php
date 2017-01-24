@@ -373,7 +373,6 @@ class ItemController extends Controller
             if ( ! $present)
                 $present = 'chords';
 
-
             return view('cspot.'.$present, [
                     'item'          => $item,
                     'events'        => $events,
@@ -381,7 +380,7 @@ class ItemController extends Controller
                     'items'         => $item->plan->items->sortBy('seq_no')->all(),   // all items of the plan to which this item belongs      
                     'type'          => $present,                                // what kind of item presentation is requested
                     'bibleTexts'    => getBibleTexts($item->comment),       // the bible text if there was any reference in the comment field of the item
-                    'onSongChords'  => getOnSongChords($item->song)     // prepare OnSong formatted lyrics and chords elements
+                    'onSongChords'  => $item->song ? $item->song->onSongChords() : []     // prepare OnSong formatted lyrics and chords elements
                 ]);
         }
 

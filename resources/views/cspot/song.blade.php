@@ -384,19 +384,22 @@
 
 
 
-        {{-- Lyrics, chords and Usage History 
+        {{-- Lyrics, chords, OnSong and Usage History 
         --}}
         <div class="col-xl-6">
 
 
-            <div class="form-group mb-0 lh-1 song-only" title="(The sequence determines how the lyrics are presented)">
-                {!! Form::label('sequence', 'Sequence: ', ['class' => 'baseline']); !!}
-                {!! Form::text('sequence'); !!}
-                <small class="hidden-sm-down">
-                    This determines how the lyrics are presented.<br>
-                    The sequence must only contain codes for songparts that exist either in the "Lyrics" or the "OnSong" sections!
-                </small>
-            </div>
+            {{-- show the sequence here only if there is no OnSong data --}}
+            @if ( ! $song->onsongs->count() )
+                <div class="form-group mb-0 lh-1 song-only" title="(The sequence determines how the lyrics are presented)">
+                    {!! Form::label('sequence', 'Sequence: ', ['class' => 'baseline']); !!}
+                    {!! Form::text('sequence'); !!}
+                    <small class="hidden-sm-down">
+                        This determines how the lyrics are presented.<br>
+                        The sequence must only contain codes for songparts that exist in the "Lyrics" section!
+                    </small>
+                </div>
+            @endif
 
 
             <div id="accordion" role="tablist" aria-multiselectable="true">

@@ -79,7 +79,10 @@
 						like "<red>{women}</red>" - for only the women to sing that part of the song.</li>
 
 					<li class="mb-1">In order to provide for songs where 2 groups of singers sing different lyrics at the same time, you have to create 
-						a <strong>second region</strong> with lyrics by inserting a line containing this code: "<red>[region 2]</red>".</li>
+						a <strong>second region</strong> with just lyrics. Do so by inserting a line containing the text 'region 2' in square
+						brackets like so: "<red>[region 2]</red>". Lyrics in Region 2 won't be visible for musicians.</li>
+
+					<li class="mb-1">To hide the lyrics elsewhere from the musicians, start the line with a dot (.) </li>
 
 					<li class="mb-1">Add <strong>comments</strong> by inserting a '<red>#</red>' (sharp) sign at the start of the line. Those won't appear in the presentations.</li>
 				</ul>

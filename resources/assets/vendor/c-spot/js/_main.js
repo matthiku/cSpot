@@ -1009,6 +1009,7 @@ function toggleTrashed() {
 function rewriteOnsong(element)
 {
     var newText = '';
+    var region2 = false;
     var textblocks = $(element).text().split("\n");
 
     $.each(textblocks, function(i) {
@@ -1017,19 +1018,24 @@ function rewriteOnsong(element)
 
         // in Presentation mode, ignore lyric lines starting with a dot ('.') and lines indicating the display region
         if ( location.href.indexOf('chords')>10 ) {
-            if ( tx.lyrics.substr(0,1)=='.'  ||  tx.chords.substr(0,6)=='region' )
+            if ( tx.lyrics.substr(0,1)=='.'  ||  tx.chords.substr(0,6)=='region' ) {
+                region2 = true;
                 return true;
+            }
         }
 
         if ( tx.chords.trim()!='' ) // don't add an empty line
             newText += '<pre class="chords">' + tx.chords + '</pre>';
+        
+        if ( tx.lyrics.trim()=='' )
+            region2 = false; // region 2 ends when a new slide begins
 
         if ( tx.lyrics.substr(0,1)=='('  
           && tx.lyrics.substr(-1,1)==')' )
             newText += '<pre class="mb-0 text-primary lh-1h">' + tx.lyrics + "</pre>";
 
-        else if (tx.lyrics 
-              && tx.lyrics.substr(0,1)!='#') {
+        else if ( !region2  &&  tx.lyrics  && tx.lyrics.substr(0,1)!='#' ) 
+        {
             tx.lyrics = checkForSingerInstructions(tx.lyrics);
             newText += '<pre class="lyrics">' + tx.lyrics + "</pre>";
         }
@@ -1052,6 +1058,12 @@ function checkForSingerInstructions(text)
     if ( start>=0 && end>0 ) {
         text = text.replace('{', '<i class="text-primary">{');
         text = text.replace('}', '}</i>');
+    }
+    start = text.indexOf("(");
+    end   = text.indexOf(")");
+    if ( start>=0 && end>0 ) {
+        text = text.replace('(', '<i class="text-primary">(');
+        text = text.replace(')', ')</i>');
     }
     return text;
 }
