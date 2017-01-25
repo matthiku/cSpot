@@ -65,25 +65,25 @@
                 <div class="dont-print plan-details">
 
                     @if (Auth::user()->isMusician())
-                        <div class="float-right">
+                        <div class="float-right ml-2">
                             <a title="Show sheetmusic (if available) for the songs on this plan"
                                 onclick="$('#show-spinner').modal({keyboard: false});" 
                                 href="{{ url('cspot/items/'.$plan->firstItem()->id.'/sheetmusic/') }}">
                                 <i class="fa fa-music">&nbsp;</i>Music</a>
                         </div>
-                        <div class="float-right mr-1">
+                        <div class="float-right mx-1">
                             <a title="Show guitar chords (if available) for the songs on this plan" 
                                 onclick="$('#show-spinner').modal({keyboard: false});" 
                                 href="{{ url('cspot/items/').'/'.$plan->firstItem()->id }}/chords">
-                                &#127928;&nbsp;</i>Chords</a>
+                                &#127928;</i>Chords</a>
                         </div>
                     @endif
 
-                    <div class="float-right mr-1">
+                    <div class="float-right mx-1">
                         <a title="Start projector-enabled presentation of each song and scripture reading in this plan" 
                             onclick="$('#show-spinner').modal({keyboard: false});" 
                             href="{{ url('cspot/items/'.$plan->firstItem()->id.'/present/') }}">
-                            &#127909;&nbsp;</i>Present</a>
+                            &#127909;</i>Present</a>
                     </div>
 
                     @if (Auth::user()->ownsPlan( $plan->id ))
@@ -91,7 +91,7 @@
                             <a title="for the Leader: Event script with all items, slides and details" 
                                 onclick="$('#show-spinner').modal({keyboard: false});" 
                                 href="{{ url('cspot/items/'.$plan->firstItem()->id.'/leader/') }}">
-                                &#128483;&nbsp;</i>Lead</a>
+                                &#128483;</i>Lead</a>
                         </div>
                     @endif
 
@@ -108,13 +108,17 @@
 
             @if ( isset($plan) )
 
+                {{-- Plan Title 
+                --}}
                 <h4 class="hidden-md-down">
                     <span class="text-success lora font-weight-bold">{{ $plan->type->generic ? $plan->subtitle : $plan->type->name }}</span>
                     <span class="small font-weight-bold">on {{ $plan->date->formatLocalized('%A, %d %B %Y') }}</span>
+                    @include ('cspot.snippets.details_link')
                 </h4>
                 <h4 class="hidden-lg-up float-left font-weight-bold">
                     <span class="text-success lora">{{ $plan->type->generic ? $plan->subtitle : $plan->type->name }}</span>
                     on <span class="text-danger">{{ $plan->date->formatLocalized('%a, %d %b') }}</span>
+                    @include ('cspot.snippets.details_link')
                 </h4>
                 <small class="hidden-lg-down plan-details">{{ $plan->type->generic ? '' : $plan->subtitle ? '('.$plan->subtitle.')' : ''  }}</small>
 
@@ -133,8 +137,10 @@
         <div class="col-md-3 col-xl-4 right">
 
             @if (isset($plan))
-                <div class="float-left plan-details">
-                    <big>
+                {{-- Show team and resources 
+                --}}
+                <div class="plan-details">
+                    <span>
                         L.:&nbsp;<strong>{{ $plan->leader ? $plan->leader->name : $plan->leader_id }}</strong> &nbsp;
                         @if ( strtoupper($plan->teacher->name)<>'N/A' )
                             T.:&nbsp;<strong>{{ $plan->teacher->name }}</strong>
@@ -157,7 +163,8 @@
                             data-placement="bottom" data-toggle="tooltip" title="{{ $teamList }}">
                             <i class="fa fa-users"></i>&nbsp;Team<small>({{$plan->teams->count()}})</small>
                         </a> 
-                    </big>
+                    </span>
+                    <small>
                         <?php
                             $resrcList = ''; // create the list of team members and their roles for this plan
                             foreach ( $plan->resources as $key => $resrc ) {
@@ -171,10 +178,17 @@
                             onclick="$('#show-spinner').modal({keyboard: false});" title="{{ $resrcList }}">
                             <i class="fa fa-cubes"></i>&nbsp;Resources<small>({{$plan->resources->count()}})</small>
                         </a> 
+                    </small>
                 </div>
             @endif
+            
+            <div class="d-inline plan-details small" style="display: none;" title="{{ $plan->updated_at }}">
+                (last changed by {{ $plan->changer }} {{ Carbon::now()->diffForHumans( $plan->updated_at, true ) }} ago)
+            </div>
 
-            {{-- Submit or Save button --}}
+
+            {{-- Submit or Save button 
+            --}}
             <div class="form-buttons float-left">
                 <big>
                     @if (isset($plan))
@@ -198,21 +212,14 @@
                 </big>
             </div>  
 
-            @if ( Auth::user()->isEditor() && isset($plan) && $plan->date >= \Carbon\Carbon::yesterday() ) 
-                <div class="float-right small">
-                    &nbsp; <a href="#" onclick="$('.plan-details').toggle()">toggle plan details</a>
-                </div>
-                <div class="float-right plan-details small" style="display: none;" title="{{ $plan->updated_at }}">
-                    (last changed by {{ $plan->changer }} {{ Carbon::now()->diffForHumans( $plan->updated_at, true ) }} ago)
-                </div>
-            @endif
-
 
 
         </div>
     </div>
 
 
+    {{-- PLAN DETAILS 
+    --}}
     <div class="plan-details row mx-1"{!! isset($plan) ? " style='display: none'" : '' !!}>
 
 
@@ -436,6 +443,9 @@
 
 
 
+
+
+
     @if (isset($plan))
     {{-- 
         Show items for existing plan 
@@ -463,18 +473,27 @@
             "; ?>
             @include( 'cspot/snippets/modal', ['modalContent' => $modalContent, 'modalTitle' => "Songs Freshness? What's that?", 'id' => 'sfh' ] )
 
-            <small class="hidden-sm-down">Songs overall: <big>{{ $plan->songsFreshness()>50 ? '&#127823;' : '&#127822;' }}</big> {{ number_format( $plan->songsFreshness(), 0 ) }}% 'freshness'
+            <small class="hidden-sm-down mx-4"><span class="hidden-md-down">Songs </span>overall: 
+                    <big>{{ $plan->songsFreshness()>50 ? '&#127823;' : '&#127822;' }}</big> {{ number_format( $plan->songsFreshness(), 0 ) }}% 'freshness'
                 <a href="#" title="What's that?" data-toggle="modal" data-target="#sfh">
                 <i class="fa fa-question-circle fa-lg text-danger"></i></a>
             </small>
         @endif
 
+        @if (Auth::user()->ownsPlan($plan->id))
+            <a href="#" title="" class="ml-4 hidden-sm-down bg-warning rounded px-1" onclick="showYTvideoInModal('w5qbcgW2qSY', this)" 
+                data-toggle="tooltip" data-song-title="Learn how to use this page" data-original-title="Watch this short video to quickly learn how to work on this page.">
+                <i class="fa fa-youtube-play red"></i> How to<span class="hidden-md-down"> use this page</span> P<span class="hidden-md-down">art</span> 1</a>
+            <a href="#" title="" class="ml-1 hidden-sm-down bg-warning rounded px-1" onclick="showYTvideoInModal('T9Csl2FPO1Y', this)" 
+                data-toggle="tooltip" data-song-title="Learn how to use this page" data-original-title="Watch this short video to quickly learn how to work on this page.">
+                <i class="fa fa-youtube-play red"></i> Part 2</a>
+        @endif
 
         @if (Auth::user()->ownsPlan($plan->id) && $plan->isFuture() )
             <a href="{{ url('cspot/songs?plan_id='.$plan->id) }}"  onclick="showSpinner()"
                 title="Search for a song via the full song listing" 
                 class="btn btn-sm btn-info float-right">
-                    <i class="fa fa-plus"></i><i class="fa fa-music"></i>&nbsp; - Search and add song</a>
+                    <i class="fa fa-plus"></i><i class="fa fa-music"></i>&nbsp; <span class="hidden-md-down">- Search and </span>add song</a>
         @endif
 
     @else

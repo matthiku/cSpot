@@ -14,13 +14,21 @@
     @if($threads->count() > 0)
 
         @foreach($threads as $thread)
+
             <?php $class = $thread->isUnread($currentUserId) ? 'alert-info' : ''; ?>
-            <div class="media alert {!!$class!!}">
+
+            <div class="media alert {!!$class!!}" style="justify-content: space-between;">
+
                 <h4 class="media-heading">{!! link_to('messages/' . $thread->id, $thread->subject) !!}</h4>
-                <p>{!! $thread->latestMessage->body !!}</p>
+
+                <div>{!! $thread->latestMessage->body !!}</div>
+
                 <p><small><strong>Creator:</strong> {!! $thread->creator()->first_name.' '.$thread->creator()->last_name !!}</small></p>
+
                 <p><small><strong>Participants:</strong> {!! $thread->participantsString( Auth::id() ) !!}</small></p>
             </div>
+
+
         @endforeach
 
     @else

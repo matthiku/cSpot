@@ -7,7 +7,7 @@
 	    data-plan-id="{{$plan->id}}" data-item-id="after-{{ isset($item) ? $item->id : '0' }}" 
 	     data-seq-no="after-{{ isset($item) ? $item->seq_no : '0' }}"
 	           title="Append new Song, Scripture or Comment to this plan">
-	    <i class="fa fa-plus"></i> &nbsp; Add item {{ isset($item) ? $item->seq_no+1 : 1 }}.0
+	    <i class="fa fa-plus"></i> &nbsp; Add<span class="hidden-md-down"> item</span> {{ isset($item) ? $item->seq_no+1 : 1 }}.0
 	</button>
 
 	@if ($plan->items->first()  &&  Auth::user()->ownsPlan($plan->id))

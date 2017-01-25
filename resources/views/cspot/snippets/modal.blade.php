@@ -3,7 +3,7 @@
 --}}
 
 <div class="modal fade help-modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" {{ isset($id) ? 'id='.$id : '' }}>
-    <div class="modal-dialog modal-md">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content bg-info">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -11,7 +11,7 @@
                 </button>
                 <h4 id="snippet-modal-title">{{ $modalTitle }}</h4>
             </div>
-            <div id="snippet-modal-content" class="modal-body text-x s-center">
+            <div id="snippet-modal-content" class="modal-body text-center">
                 {!! $modalContent !!}
             </div>
         </div>

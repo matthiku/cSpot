@@ -12,8 +12,12 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
+
                 <h4 class="modal-title" id="createMessageLabel">Report an issue or other feedback</h4>
+                
             </div>
+
+
             {!! Form::open(['route' => 'messages.store']) !!}
 
                 <div class="modal-body">

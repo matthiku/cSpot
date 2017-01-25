@@ -822,15 +822,17 @@ function findOpenFilterField()
 /*
     Show input field in header to filter data in this column or apply the filter if already set
 */
-function showFilterField(field)
+function showFilterField(field, that)
 {
+    console.log(that);
+
     var currUrl, newUrl;
     // Is this field already visible?
     if ($('#filter-'+field+'-clear').is(':visible')) 
     {
         currUrl  = parseURLstring(window.location.href);
-        // check if there is a query string in the URL
-        if (currUrl.search.length > 1) { 
+        // check if there is a query string in the URL (But not when we are searching for a song to be added to a plan!)
+        if ( (currUrl.search.indexOf('plan_id') < 0  && currUrl.search.length > 1) || that == 'clear' )  { 
             // clear existing filter and reload page without a filter
             showSpinner();
             // remove filter elements from URL query string
@@ -865,7 +867,7 @@ function showFilterField(field)
          
     // define html code for search input field
     var newHtml = '<input id="filter-fffff-input" style="line-height: normal;" type="text" placeholder="search fffff">'
-    newHtml    += '<i id="filter-fffff-submit" class="fa fa-check-square"> </i>';
+    newHtml    += '<i id="filter-fffff-submit" class="fa fa-check-square big"> </i>';
     // did user click on the visible search icon?
     if ($('#filter-'+field+'-show').is(':visible')) 
     {
