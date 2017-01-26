@@ -101,12 +101,12 @@ Chrome's menu and a new icon will appear on your homescreen:
 ## Technical Blah blah
 ### Code
 ##### Backend
-This PHP project is based on the [Laravel 5.2 framework](https://laravel.com/) with the [Socialite](https://github.com/laravel/socialite) and [LaravelCollective](https://laravelcollective.com) extensions. 
+This PHP project is based on the [Laravel 5.2 (now:5.3) framework](https://laravel.com/) with the [Socialite](https://github.com/laravel/socialite) and [LaravelCollective](https://laravelcollective.com) extensions. 
 ##### Frontend
 The design is intended to be fully responsive with a mobile-first approach and uses the [Bootstrap framework](http://v4-alpha.getbootstrap.com/) in version 4. (Which is still in alpha but hopefully will be fully released before this project is out of beta!)
 
 #### Prerequisites
-For the requirements, check [Laravel's website](https://laravel.com/docs/5.2#installation). Mainly, you need to have console access to your web server and need to have [Composer](http://getcomposer.org) and [Git](http://git-scm.com/download) installed.
+For the requirements, check [Laravel's website](https://laravel.com/docs/5.3#installation). Mainly, you need to have console access to your web server and need to have [Composer](http://getcomposer.org) and [Git](http://git-scm.com/download) installed.
 
 Composer handles the various dependencies for the Laravel framework. Git is being used to clone the project from the Git hub and also to keep it updated afterwards. Insofar Git is optional and not needed to actually run the project.
 

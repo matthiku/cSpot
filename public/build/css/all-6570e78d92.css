@@ -12954,6 +12954,49 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
  */
 
 
+/* building an events calendar using flexbox */
+html,
+body {
+    height: 100%;
+}
+.app-content {
+    padding: 0 1em;
+    height: 90%;
+}
+.calendar-container {
+    height: 95%;
+}
+
+#calendar {
+    box-sizing: border-box;   
+    height: 90%; 
+}
+.calendar-day {
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    -webkit-flex: 1 1 14.2857%;
+      -ms-flex: 1;
+    flex: 1;
+    min-width: 14.2857%;
+    max-width: 14.2857vw;
+    position: relative;
+    font-size: 1.8vw;
+    -webkit-transition: .35s opacity;
+    transition: .35s opacity;
+    border: 1px solid #ccc;
+}
+.calendar-day.blank {
+    min-height: 14vw; 
+}
+.calendar-day a { 
+    display: inline-block; 
+    width: 100%; height: 100%; 
+    position: inherit;
+    border-bottom: none;
+    outline: none;
+ }
+
+
 #song-parts-wastebin-zone {
     cursor: crosshair;
 }
@@ -13395,9 +13438,6 @@ pre.text-present {
 
 .card {
     background-color: #eee;
-}
-.app-content {
-    padding: 0 1em;
 }
 
 .image {

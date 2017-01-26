@@ -21,92 +21,153 @@
 	
 
 
-	@if( Auth::user()->isEditor() )
-		<a class="btn btn-sm btn-outline-success float-right" 
-			href="{{ url('cspot/plans/create') }}{{ 
-				( Request::has('filterby') && Request::input('filterby')=='type' && Request::has('filtervalue') ) 
-					? '?type_id='.Request::input('filtervalue') 
-					: '' }}">
-			<i class="fa fa-plus"> </i>&nbsp; Create New<span class="hidden-md-down"> Event</span>
-		</a>
-	@endif
+	{{-- Event List navigation bar 
+	--}}
+	<div class="row mx-0">
+		<div class="col-12 bg-faded">
 
-
-
-	{{-- SINGLE Event type: Drop-Down menu to select which event type to show --}}
-	<form class="form-inline float-right mr-1">
-		<div class="form-group">
-			<label class="hidden-sm-down" for="typefilter">Show only</label>
-			<select class="custom-select form-control form-control-sm pt-0 pb-0" id="typefilter" 
-				 onchange="showSpinner();location.href='{{url('cspot/plans')}}?filterby=type&filtervalue='+$(this).val()">
-				<option {{ Request::has('filterby') && Request::get('filterby')=='type' ? '' : 'selected' }} value="all">(select type)</option>
-				@foreach ($types as $type)
-					<option 
-						{{ (Request::has('filterby') && Request::get('filterby')=='type' && Request::get('filtervalue')==$type->id) ? 'selected' : '' }} 
-						value="{{$type->id}}">{{$type->name}}</option>
-				@endforeach
-			</select>
-		</div>
-	</form>
-
-
-	{{-- MULTIPLE Event Type: Checkboxes to filter which event types to show --}}
-	<form class="form-inline float-sm-right mr-1">
-		<div class="dropdown" id="multi-filter-dropdown" data-url="{{url('cspot/plans')}}?filterby=type&filtervalue=">
-			{{-- check if request already is filtering out some plans --}}
-			@if ( Request::has('filtervalue') )
-				@php 
-					$fv = json_decode(Request::input('filtervalue')); 
-					if ($fv==Request::input('filtervalue'))		// make sure $fv is always an array!
-						$fv = [Request::input('filtervalue')]; 
-				@endphp
+			@if( Auth::user()->isEditor() )
+				<a class="btn btn-sm btn-outline-success float-right" 
+					href="{{ url('cspot/plans/create') }}{{ 
+						( Request::has('filterby') && Request::input('filterby')=='type' && Request::has('filtervalue') ) 
+							? '?type_id='.Request::input('filtervalue') 
+							: '' }}">
+					<i class="fa fa-plus"> </i>&nbsp; Create New<span class="hidden-md-down"> Event</span>
+				</a>
 			@endif
-			<button class="btn btn-sm dropdown-toggle {{ isset($fv) && sizeof($fv) ? 'btn-primary' : 'btn-secondary ' }}" 
-				type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-				Show All Of:
-			</button>
-			<div class="dropdown-menu bg-faded padding-half" aria-labelledby="dropdownMenuButton">
-				<h5 class="dropdown-header">Select which types to show:</h5>
-				@foreach ($types as $type)
-					<div class="form-check display-block">
-	  					<label class="form-check-label label-normal" onclick="selectServiceType()">
-	    					<input type="checkbox" class="form-check-input" name="multi-filter" 
-									{{ isset($fv) && in_array($type->id, $fv) ? 'checked="true"' : '' }}
-	    							value="option-{{$type->id}}">
-	    					{{ $type->name }}
-	  					</label>
+
+
+
+			{{-- SINGLE Event type: Drop-Down menu to select which event type to show --}}
+			<form class="form-inline float-right mr-2">
+				<div class="form-group">
+					<select class="custom-select form-control form-control-sm pt-0 pb-0" id="typefilter" 
+						 onchange="showSpinner();location.href='{{url('cspot/plans')}}?filterby=type&filtervalue='+$(this).val()">
+
+						<option 
+							@if ( Request::has('filterby') && Request::get('filterby')=='type' )
+								{{ Request::get('filtervalue')=='all' ? 'selected' : '' }} 
+							@else 
+								selected
+							@endif
+							value="all">Show only: (event type)
+						</option>
+
+						@foreach ($types as $type)
+							<option {{ (Request::has('filterby') && Request::get('filterby')=='type' && strval(Request::get('filtervalue'))==strval($type->id)) ? 'selected' : '' }} 
+								value="{{ $type->id }}">{{ $type->name }}</option>
+						@endforeach
+
+					</select>
+				</div>
+			</form>
+
+
+
+
+			{{-- MULTIPLE Event Type: Checkboxes to filter which event types to show --}}
+			<form class="form-inline float-sm-right mr-2">
+				<div class="dropdown" id="multi-filter-dropdown" data-url="{{url('cspot/plans')}}?filterby=type&filtervalue=">
+					{{-- check if request already is filtering out some plans --}}
+					@if ( Request::has('filtervalue') )
+						@php 
+							$fv = json_decode(Request::input('filtervalue')); 
+							if ($fv==Request::input('filtervalue'))		// make sure $fv is always an array!
+								$fv = [Request::input('filtervalue')]; 
+						@endphp
+					@endif
+					<button class="btn btn-sm dropdown-toggle {{ isset($fv) && sizeof($fv) ? 'btn-primary' : 'btn-secondary ' }}" 
+						type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						Show All Of:
+					</button>
+					<div class="dropdown-menu bg-faded padding-half" aria-labelledby="dropdownMenuButton">
+						<h5 class="dropdown-header px-0">Select which types to show:</h5>
+						@foreach ($types as $type)
+							<div class="form-check justify-content-start">
+			  					<label class="form-check-label label-normal" onclick="selectServiceType()">
+			    					<input type="checkbox" class="form-check-input" name="multi-filter" 
+											{{ isset($fv) && in_array($type->id, $fv) ? 'checked="true"' : '' }}
+			    							value="option-{{$type->id}}">
+			    					{{ $type->name }}
+			  					</label>
+							</div>
+						@endforeach
+						<button type="button" class="btn btn-primary btn-sm btn-block mt-1" onclick="selectServiceType('submit')">Submit selection</button>
 					</div>
-				@endforeach
-				<button type="button" class="btn btn-primary btn-sm btn-block mt-1" onclick="selectServiceType('submit')">Submit selection</button>
-			</div>
+				</div>
+			</form>
+
+
+
+			{{-- Time and User Filter: Drop-Down menu to select which events show: future or all, single user or all users --}}
+			<form class="form-inline float-right mr-2">
+				<div class="form-group">
+					<select class="custom-select form-control form-control-sm pt-0 pb-0" id="showfilter" 
+						 onchange="toogleAllorFuturePlans($(this).val());">
+						<option 
+							value="nothing" class="small">Select all/future/etc.:</option>
+						<option 
+							value="user-all">All my events</option>
+						<option 
+							value="user-future">My upcoming events</option>
+						<option 
+							value="allusers-future">All upcoming events</option>
+						<option 
+							@if ( Request::get('filterby')=='user'   &&  Request::get('show')=='all'   &&   strval(Request::get('filtervalue'))=='all')
+								selected
+							@endif
+							value="allusers-all">All events</option>
+					</select>
+				</div>
+			</form>
+
+
+
+		    <h4 class="float-left text-success lora">
+		    	{{ $heading }}
+				<small class="small" style="font-size: 50%">
+					<a href="#" onclick="$('.events-table').toggle();" class="ml-3">
+						&#128197; show as 
+						<span class="events-table">calendar</span>
+						<span class="events-table hidden">list</span></a>
+				</small>
+		    </h4>
+
+			@if ( get_class($plans)=='Illuminate\Pagination\LengthAwarePaginator' && $plans->lastPage() > 1 )
+				<center>Page {{ $plans->currentPage() }} of {{ $plans->lastPage() }}</center>
+			@endif
+
+
+
+			@if ( isset($plans) && count($plans) )
+				@if (get_class($plans)=='Illuminate\Pagination\LengthAwarePaginator')
+					<center><small>(Total: {{ $plans->total() }} Events)</small></center>
+				@endif
+			@endif
+
 		</div>
-	</form>
-
-
-
-    <h4 class="float-left text-success lora">
-    	{{ $heading }}
-		<small class="small" style="font-size: 50%">
-			<a href="#" onclick="toogleAllorFuturePlans()">show {{Request::get('show')!='all' ? 'all' : 'only upcoming'}}</a>
-		</small>
-    </h4>
-
-	@if ( get_class($plans)=='Illuminate\Pagination\LengthAwarePaginator' && $plans->lastPage() > 1 )
-		<center>Page {{ $plans->currentPage() }} of {{ $plans->lastPage() }}</center>
-	@endif
+	</div>
 
 
 
 	@if ( isset($plans) && count($plans) )
-		@if (get_class($plans)=='Illuminate\Pagination\LengthAwarePaginator')
-			<center><small>(Total: {{ $plans->total() }} Events)</small></center>
-		@endif
 
-		<table class="table table-striped table-hover
-					@if(count($plans)>15)
-					 table-sm
-					@endif
-					 ">
+
+
+		{{-- As an alternative, show the events in a calendar-like table 
+		--}}
+		<div class="events-table calendar-container hidden">
+
+			@include ('cspot.snippets.events_calendar')	
+
+		</div>
+
+
+
+
+		{{-- show events as a list (table) 
+		--}}
+		<table class="events-table table table-striped table-hover{{ count($plans)>15 ? ' table-sm' : '' }}">
 
 
 
@@ -240,10 +301,11 @@
 		</table>
 
 		@if (get_class($plans)=='Illuminate\Pagination\LengthAwarePaginator')
-			<center>
+			<center class="events-table">
 				{!! $plans->links() !!}
 			</center>
 		@endif
+
 
     @else
 

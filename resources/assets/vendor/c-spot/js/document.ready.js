@@ -403,7 +403,9 @@ $(document).ready(function() {
 
 
     /*
-        On presentation views, allow mouse-click to advance to next or prev. item
+        On presentation views, 
+        - allow mouse-click to advance to next or previous item
+        - check if aut-advance mode is on 
     */
     if ($('#main-content').length) {
         // intercept mouse clicks into the presentation area
@@ -418,7 +420,13 @@ $(document).ready(function() {
                 advancePresentation(); }
             if (event.which == 3) {
                 advancePresentation('back'); }
-        });        
+        });
+
+        // start auto-advance mode (should stop on the last item as there is no "go-next-item"-button)
+        if (window.location.href.indexOf('advance=auto') > 10) {
+            console.log("Auto-Advance function activated!");
+            window.setTimeout( autoAdvance, 3000);
+        }
     }
 
 

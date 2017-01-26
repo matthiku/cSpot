@@ -41637,6 +41637,32 @@ function getLocalStorageItem(key, defaultValue)
 \*/
 
 
+/*
+*/
+function autoAdvance()
+{
+    var gonext = $('#go-next-item').attr('href');
+    if (gonext  && gonext != '#') {
+        console.log("now advancing to next item: " + gonext);
+        location.href = gonext + "?advance=auto";
+    }
+    else {
+        gonext = $('#go-back').attr('href');
+        if (gonext) {
+            console.log("going back to plan details page: " + gonext);
+            location.href = gonext;        
+        }
+    }
+}
+
+function startAutoAdvance() 
+{
+    var currUrl = parseURLstring(window.location.href);
+    if (currUrl.search) return;
+    location.href = currUrl.baseURI + '?advance=auto';
+}
+
+
 /* Textarea input field height calculations
 */
 function calculateTextAreaHeight(that)
@@ -42132,40 +42158,38 @@ function cancelForm()
     List filtering: Reload page with alternate filtering
     (plans.blade.php)
 */
-function toogleAllorFuturePlans()
+function toogleAllorFuturePlans(selection)
 {
+    console.log('user selected: ' + selection);
+    if (selection=='nothing') return;
+
+    var sel = selection.split('-');
+    if (sel.length!=2) return
+    var user = sel[0];
+    var time = sel[1];
+
     showSpinner();
+
     // get current url and query string
     var currUrl = window.location.href.split('?');
     var newUrl  = currUrl[0];
-    // does the URL contain a query string?
-    if (currUrl.length > 1) 
-    {
-        // modify existing query string
-        var show=false;
-        var queryStr = currUrl[1].split('&');
-        if (queryStr.length > 1) {
-            newUrl += '?';
-            for (var i = queryStr.length - 1; i >= 0; i--) {
-                parms = queryStr[i].split('=');
-                if (parms[0]=='show') {
-                    show=true;
-                    parms[1]=='all'  ?  parms[1]='future'  :  parms[1]='all';
-                    queryStr[i] = 'show='+parms[1];
-                }                
-                newUrl += queryStr[i];
-                if (i > 0) newUrl += '&';
-            }
-            if (!show) {
-                newUrl += '&show=all';
-            }
-        }
-    } 
-    else
-    {
+
+    /* possible values for selection:
+        user-future     My upcoming events (default)
+        user-all        All my events
+        allusers-future All upcoming events
+        allusers-all    All events
+    */
+    if (selection=='allusers-future')
+        newUrl += '?filterby=future';
+    else {
         // add new query string 
-        newUrl += '?show=all';
+        newUrl += '?show='+time;
+
+        if (user=='allusers') 
+            newUrl += '&filterby=user&filtervalue=all';
     }
+
     window.location.href = newUrl;
 }
 
@@ -43257,7 +43281,9 @@ $(document).ready(function() {
 
 
     /*
-        On presentation views, allow mouse-click to advance to next or prev. item
+        On presentation views, 
+        - allow mouse-click to advance to next or previous item
+        - check if aut-advance mode is on 
     */
     if ($('#main-content').length) {
         // intercept mouse clicks into the presentation area
@@ -43272,7 +43298,13 @@ $(document).ready(function() {
                 advancePresentation(); }
             if (event.which == 3) {
                 advancePresentation('back'); }
-        });        
+        });
+
+        // start auto-advance mode (should stop on the last item as there is no "go-next-item"-button)
+        if (window.location.href.indexOf('advance=auto') > 10) {
+            console.log("Auto-Advance function activated!");
+            window.setTimeout( autoAdvance, 3000);
+        }
     }
 
 

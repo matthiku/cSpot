@@ -125,14 +125,24 @@ class PlanController extends Controller
 
 
     /**
-     * Display a listing of Service Plans 
-     *    filtered by user (leader/teacher) or by plan type
+     * Display a List of Service Plans 
+     *    filtered by user (leader/teacher) or by plan type and/or ordered by certain fields
      *
-     * @param  filter (user|type) Show only plans for a certain user or of a certain type
-     * @param  value  user_id or type_id
-     * @param  show   (all|future) Show only future plans or all 
+     *
+     * @param  filterby     (user|type|date|future) 
+     *                      Show only plans for a certain user, of a certain type a certain date or all future events
+     *
+     * @param  filtervalue  (user_id|type_id)
+     *
+     * @param  show         (all|future)
+     *                      Show only future plans or all 
+     *
+     * @param  orderBy      Field by which the list must be sorted by
+     * @param  order        (desc|asc) default is 'asc' = ascending order
+     *
      *
      * @return \Illuminate\Http\Response
+     *
      */
     public function index(Request $request)
     {
@@ -164,17 +174,19 @@ class PlanController extends Controller
                     ->where('leader_id', $filtervalue)
                     ->orWhere('teacher_id', $filtervalue)
                     ->orderBy($orderBy, $order);
-                $heading = 'All Church Service Plans for ';
+                $heading = 'All Events for ';
             } else {
                 $plans = Plan::with('type')
                     ->whereDate('date', '>', Carbon::yesterday())
                     ->where('leader_id', $filtervalue)
                     ->orWhere('teacher_id', $filtervalue)
-                    ->whereDate('date', '>', Carbon::yesterday())
                     ->orderBy($orderBy, $order);
-                $heading = 'Upcoming Church Service Plans for ';
+                $heading = 'Upcoming Events for ';
             }
-            $heading .= User::find($filtervalue)->first_name;
+            if ($filtervalue == 'all')
+                $heading .= 'all users';
+            else 
+                $heading .= User::find($filtervalue)->first_name;
         }
 
 

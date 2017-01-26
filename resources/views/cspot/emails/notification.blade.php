@@ -16,7 +16,9 @@
     <summary>{{ $messi->thread->subject }}</summary>
 
     <h4>Message:</h4>
-    <details>{{ $messi->body }}</details>
+    <details>
+        <pre>{{ $messi->body }}</pre>
+    </details>
 
     <hr>
     <p>Please do not reply to this message, use <a href="{{ url('messages').'/'.$messi->thread_id }}">this link</a> to reply!</p>

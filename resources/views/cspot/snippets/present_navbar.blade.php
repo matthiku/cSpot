@@ -23,7 +23,6 @@ $modalContent = '
         <span class="navbar-text my-0 py-0">        
             <!-- go to previous slide -->
             <a href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/go/previous/'.$type) }}"
-                    onclick="$('#show-spinner').modal({keyboard: false});" 
                 class="nav-item btn btn-sm btn-warning" role="button">
                 <i class="fa fa-angle-double-left fa-lg"></i>
             </a> 
@@ -98,7 +97,6 @@ $modalContent = '
                             {{ $item->id == $menu_item->id ? 'bg-info' : '' }}
                             {{ ! $menu_item->song_id || $menu_item->song->title_2=='slide' ? 'hidden-md-down' : '' }}
                             {{ count($items) > 15 ? 'dropup-menu-item' : '' }}"
-                            onclick="$('#show-spinner').modal({keyboard: false});" 
                             href="{{ url('cspot/items/').'/'.$menu_item->id.'/'.$type }}">
                             <small class="hidden-xs-down">{{ $menu_item->seq_no }} &nbsp;</small> 
                             @if ( $menu_item->song_id && $menu_item->song->title )
@@ -116,8 +114,7 @@ $modalContent = '
                 @endforeach
                 @if (Auth::user()->ownsPlan($item->plan_id))
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" onclick="$('#show-spinner').modal({keyboard: false});" 
-                        href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/edit') }}">
+                    <a class="dropdown-item" href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/edit') }}">
                         <i class="fa fa-pencil"></i>
                         Edit this item
                     </a>
@@ -130,7 +127,6 @@ $modalContent = '
                 @endif
                 <div class="dropdown-divider"></div>
                 <a      class="dropdown-item" id="go-back"
-                        onclick="$('#show-spinner').modal({keyboard: false});" 
                         href="{{ url('cspot/plans/'.$item->plan_id) }}">
                     <i class="fa fa-undo"></i>
                     Back to plan overview
@@ -139,8 +135,12 @@ $modalContent = '
         </div>
         {{-- go to next --}}
         <span class="navbar-text my-0 py-0">        
-            <a href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/go/next/'.$type) }}"
-                    onclick="$('#show-spinner').modal({keyboard: false});" 
+            <a 
+                @if ($item->id == $item->plan->lastItem()->id)
+                    href="#" disabled="disabled"
+                @else
+                    href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/go/next/'.$type) }}"
+                @endif
                 class="nav-item btn btn-sm btn-warning" role="button" id="go-next-item">
                 <i class="fa fa-angle-double-right fa-lg"></i>
             </a>
@@ -164,7 +164,6 @@ $modalContent = '
             <li>
                 <!-- go to previous slide -->
                 <a href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/go/previous/'.$type) }}"
-                        onclick="$('#show-spinner').modal({keyboard: false});" 
                     class="nav-item btn btn-sm btn-warning hidden-sm-down" role="button" id="go-previous-item">
                     <i class="fa fa-angle-double-left fa-lg"></i>
                 </a> 
@@ -195,7 +194,6 @@ $modalContent = '
                 <!-- swap between chords and sheetmusic -->
                 <a href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/go/swap/'.$type) }}" 
                         style="display: none" id="show-chords-or-music"
-                        onclick="$('#show-spinner').modal({keyboard: false});" 
                         title="swap between chords and sheetmusic"
                         class="ml-2 hidden-md-down nav-item btn btn-sm btn-warning edit-show-buttons" role="button">
                     <i class="fa fa-file-text"></i> <i class="fa fa-refresh fa-lg"></i> <i class="fa fa-music"></i>
@@ -402,6 +400,11 @@ $modalContent = '
         <i class="fa fa-question-circle fa-lg"></i></a>
 
 
+        {{-- start auto advance mode --}}
+        <a href="#" title="start auto-advance mode" onclick="startAutoAdvance();" 
+            class="hidden-sm-down btn btn-sm btn-outline-success mx-3">&#127943;</a>
+
+
 
         <!-- 
             link to song data on CCLI songselect 
@@ -441,7 +444,6 @@ $modalContent = '
                             {{ $item->id == $menu_item->id ? 'bg-info' : '' }}
                             {{ ! $menu_item->song_id || $menu_item->song->title_2=='slide' ? 'hidden-md-down' : '' }}
                             {{ count($items) > 15 ? 'dropup-menu-item' : '' }}"
-                            onclick="$('#show-spinner').modal({keyboard: false});" 
                             href="{{ url('cspot/items/').'/'.$menu_item->id.'/'.$type }}">
                             <small class="hidden-xs-down">{{ $menu_item->seq_no }} &nbsp;</small> 
                             @if ( $menu_item->song_id && $menu_item->song->title )
@@ -461,7 +463,6 @@ $modalContent = '
                 @if (Auth::user()->ownsPlan($item->plan_id))
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" id="go-edit"
-                        onclick="$('#show-spinner').modal({keyboard: false});" 
                         href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/edit') }}">
                         <i class="fa fa-pencil"></i>
                         Edit this item
@@ -475,7 +476,6 @@ $modalContent = '
                 @endif
                 <div class="dropdown-divider"></div>
                 <a      class="dropdown-item" id="go-back"
-                        onclick="$('#show-spinner').modal({keyboard: false});" 
                         href="{{ url('cspot/plans/'.$item->plan_id) }}">
                     <i class="fa fa-undo"></i>
                     Back to plan overview
@@ -492,7 +492,6 @@ $modalContent = '
         <ul class="nav navbar-nav hidden-sm-down">
             <li>
                 <a href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/go/next/'.$type) }}"
-                        onclick="$('#show-spinner').modal({keyboard: false});" 
                     class="nav-item btn btn-sm btn-warning" role="button" id="go-next-item">
                     <i class="fa fa-angle-double-right fa-lg"></i>
                 </a>

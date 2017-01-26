@@ -180,11 +180,11 @@
                         </a> 
                     </small>
                 </div>
-            @endif
             
-            <div class="d-inline plan-details small" style="display: none;" title="{{ $plan->updated_at }}">
-                (last changed by {{ $plan->changer }} {{ Carbon::now()->diffForHumans( $plan->updated_at, true ) }} ago)
-            </div>
+                <div class="d-inline plan-details small" style="display: none;" title="{{ $plan->updated_at }}">
+                    (last changed by {{ $plan->changer }} {{ Carbon::now()->diffForHumans( $plan->updated_at, true ) }} ago)
+                </div>
+            @endif
 
 
             {{-- Submit or Save button 
@@ -404,7 +404,7 @@
                                     @endif
                                 @endforeach
                             </select>
-                            @if ( ! isset($plan) || (isset($plan) && Auth::user()->ownsPlan($plan->id)) )
+                            @if ( ! isset($plan) )
                                 <big>
                                     <a tabindex="0" href="#"
                                         data-container="body" data-toggle="tooltip"
