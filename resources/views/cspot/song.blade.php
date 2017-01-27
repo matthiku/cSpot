@@ -35,7 +35,7 @@
 
     <input type="hidden" name="currentPage" value="{{ $currentPage }}">
 
-    <div class="row">
+    <div class="row mx-0">
 
         <div class="col-md-6">
 
@@ -115,7 +115,7 @@
 
 
 
-    <div class="row">
+    <div class="row mx-0">
         <div class="col-xl-6">
 
             <div class="slides-only mb-2" style="display: none;">

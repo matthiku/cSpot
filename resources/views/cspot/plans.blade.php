@@ -124,7 +124,10 @@
 
 
 		    <h4 class="float-left text-success lora">
-		    	{{ $heading }}
+
+		    	<span class="events-table">{{ $heading }}</span>
+		    	<span class="events-table hidden">{{ Carbon\Carbon::today()->format("F Y") }}</span>
+
 				<small class="small" style="font-size: 50%">
 					<a href="#" onclick="$('.events-table').toggle();" class="ml-3">
 						&#128197; show as 

@@ -12977,24 +12977,12 @@ body {
     -webkit-flex: 1 1 14.2857%;
       -ms-flex: 1;
     flex: 1;
-    min-width: 14.2857%;
-    max-width: 14.2857vw;
-    position: relative;
-    font-size: 1.8vw;
-    -webkit-transition: .35s opacity;
-    transition: .35s opacity;
     border: 1px solid #ccc;
 }
 .calendar-day.blank {
     min-height: 14vw; 
 }
-.calendar-day a { 
-    display: inline-block; 
-    width: 100%; height: 100%; 
-    position: inherit;
-    border-bottom: none;
-    outline: none;
- }
+
 
 
 #song-parts-wastebin-zone {
@@ -13011,6 +12999,10 @@ red {
     color: red;
 }
 
+
+.overflow-hidden {
+    overflow: hidden;
+}
 
 .hidden {
     display: none;

@@ -46721,7 +46721,10 @@ function checkForAlternateLyricsOrSingerInstructions(text)
 function insertNewLyricsSlide(newDiv, newLyr, divNam, lines)
 {
     // only if the part is not empty..
-    if (lines == 0) { return; }
+    if (lines == 0) return;
+
+    // don't insert the same verse (or verse part) twice!
+    if ($('#'+divNam).length) return;
 
     newDiv += ' data-header-code="'+headerCode(divNam)+'">';
 
