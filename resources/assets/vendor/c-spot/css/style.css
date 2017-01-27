@@ -32,11 +32,12 @@ body {
       -ms-flex: 1;
     flex: 1;
     border: 1px solid #ccc;
+    overflow: hidden;
 }
-.calendar-day.blank {
-    min-height: 14vw; 
+.calendar-day h3 {
+    margin-bottom: 0;
+    padding: .5rem;
 }
-
 
 
 #song-parts-wastebin-zone {
@@ -649,6 +650,10 @@ label {
     }
     .md-center {
         text-align: center;
+    }
+
+    .pagination {
+        margin-bottom: 0;
     }
 }
 

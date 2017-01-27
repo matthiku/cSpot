@@ -125,13 +125,12 @@
 
 		    <h4 class="float-left text-success lora">
 
-		    	<span class="events-table">{{ $heading }}</span>
-		    	<span class="events-table hidden">{{ Carbon\Carbon::today()->format("F Y") }}</span>
+		    	<span>{{ $heading }}</span>
 
 				<small class="small" style="font-size: 50%">
 					<a href="#" onclick="$('.events-table').toggle();" class="ml-3">
-						&#128197; show as 
-						<span class="events-table">calendar</span>
+						&#128197; show 
+						<span class="events-table">as calendar</span>
 						<span class="events-table hidden">list</span></a>
 				</small>
 		    </h4>
@@ -243,29 +242,25 @@
 
 					@if( Auth::user()->isUser())
 						<td class="hidden-lg-down center">
-							<label class="c-input c-checkbox">
-								@if (Auth::user()->isEditor())
-									<input type="checkbox" {{ $plan->private ? 'checked="checked"' : '' }}
-										onclick="togglePlanPrivate(this, {{ $plan->id }})">
-									<span class="c-indicator"></span>
-								@endif
-								<span id="plan-private-{{ $plan->id }}">
-									{!! $plan->private ? '&#10003;' : '' !!}									
-								</span>
-							</label>
+							@if (Auth::user()->isEditor())
+								<input type="checkbox" {{ $plan->private ? 'checked="checked"' : '' }}
+									onclick="togglePlanPrivate(this, {{ $plan->id }})">
+								<span class="c-indicator"></span>
+							@endif
+							<span id="plan-private-{{ $plan->id }}">
+								{!! $plan->private ? '&#10003;' : '' !!}									
+							</span>
 						</td>
 
 						<td class="center">
 							@if( $plan->date > \Carbon\Carbon::yesterday() )
 								<a class="hidden-lg-up float-right" title="show team for this plan" href="{{ url('cspot/plans/'.$plan->id) }}/team"><small>staff</small></a>
-								<label class="c-input c-checkbox">
-									<input type="checkbox" {{ isset($userIsPlanMember[$plan->id]) ? 'checked' : '' }}
-										onclick="userAvailableForPlan(this, {{ $plan->id }}, {{ Auth::user()->id }})">
-									<span class="c-indicator"></span>
-									<span class="hidden-sm-down" id="user-available-for-plan-id-{{ $plan->id }}">
-										{{ isset($userIsPlanMember[$plan->id]) ? '&#10003;' : '' }}
-									</span>
-								</label>
+								<input type="checkbox" {{ isset($userIsPlanMember[$plan->id]) ? 'checked' : '' }}
+									onclick="userAvailableForPlan(this, {{ $plan->id }}, {{ Auth::user()->id }})">
+								<span class="c-indicator"></span>
+								<span class="hidden-sm-down" id="user-available-for-plan-id-{{ $plan->id }}">
+									{{ isset($userIsPlanMember[$plan->id]) ? '&#10003;' : '' }}
+								</span>
 							@endif
 						</td>
 					@endif
@@ -304,9 +299,9 @@
 		</table>
 
 		@if (get_class($plans)=='Illuminate\Pagination\LengthAwarePaginator')
-			<center class="events-table">
+			<div class="d-flex justify-content-center fixed-bottom">
 				{!! $plans->links() !!}
-			</center>
+			</div>
 		@endif
 
 

@@ -22,11 +22,11 @@ var bower_path = 'resources/assets/vendor';
 
 // paths to individual packages
 var path = {
-    'bootstrap'     : bower_path + '/bootstrap',
     'font_awesome'  : bower_path + '/font-awesome',
     'jquery'        : bower_path + '/jquery',
     'tether'        : bower_path + '/tether',
     'jquery_ui'     : bower_path + '/jquery-ui',
+    'bootstrap'     : bower_path + '/bootstrap',
     'moment'        : bower_path + '/moment',
     'jeditable'     : bower_path + '/jeditable',
     'spectrum'      : bower_path + '/spectrum',

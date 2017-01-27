@@ -165,24 +165,26 @@ class PlanController extends Controller
         $userIsPlanMember = [];
     
 
-        // show only plans for certain user ids
+        // show only plans for certain user ids or all users
         if ($filterby=='user') 
         {
+            $plans = Plan::with('type');
+
             // show all plans, past and future?
-            if ($show  =='all') {
-                $plans = Plan::with('type')
+            if (is_numeric($filtervalue))
+                $plans
                     ->where('leader_id', $filtervalue)
-                    ->orWhere('teacher_id', $filtervalue)
-                    ->orderBy($orderBy, $order);
-                $heading = 'All Events for ';
-            } else {
-                $plans = Plan::with('type')
-                    ->whereDate('date', '>', Carbon::yesterday())
-                    ->where('leader_id', $filtervalue)
-                    ->orWhere('teacher_id', $filtervalue)
-                    ->orderBy($orderBy, $order);
+                    ->orWhere('teacher_id', $filtervalue);
+
+            if ($show  != 'all') {
+                $plans->whereDate('date', '>', Carbon::yesterday());
                 $heading = 'Upcoming Events for ';
             }
+            else 
+                $heading = 'All Events for ';
+
+            $plans->orderBy($orderBy, $order);
+
             if ($filtervalue == 'all')
                 $heading .= 'all users';
             else 

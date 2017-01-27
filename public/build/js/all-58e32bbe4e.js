@@ -43062,10 +43062,13 @@ $(document).ready(function() {
      */
     $(function () {
         // activate the tooltips
-        $('[data-toggle="tooltip"]').tooltip();
+        $('[data-toggle="tooltip"]').tooltip({
+            animation: false 
+        });
 
         // activate popovers
         $('[data-toggle="popover"]').popover();
+        
         $('.popover-dismiss').popover({
             trigger: 'focus'
         });
