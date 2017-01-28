@@ -1732,6 +1732,7 @@ function decompPartCode(what) {
 function identifyLyricsHeadings(str)
 {
     switch (str.toLowerCase()) {
+        case '[i]': return 'intro';
         case '[1]': return 'verse1';
         case '[2]': return 'verse2';
         case '[3]': return 'verse3';

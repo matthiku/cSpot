@@ -30,12 +30,6 @@
 		// if the last day of a month is not a Saturday, we extend to the Saturday of the following month
 		if ($lastDay->dayOfWeek != 6)
 			$lastDay  = Carbon::parse('first Saturday of '.$startMonth->copy()->addMonth()->format("F Y"));
-
-// echo 'startMonth: '.$startMonth.'<br>';
-// echo 'lastMonth: '.$lastMonth.'<br><br>';
-// echo 'firstDay: '.$firstDay.'<br>';
-// echo 'lastDay: '.$lastDay.'<br>';
-// dd();
 	?>
 
 
@@ -72,14 +66,17 @@
 						@for ($i = 0; $i < 44; $i++)
 
 							@if ($i > 6  &&  $i % 7  ==  0)
-								{{-- every 7 days, start a new row --}}
+								{{-- after 7 days, start a new row --}}
 								</div><div class="d-flex mt-1">
 							@endif
 
 
 							<div class="calendar-day rounded{{ $startDay->month != $firstDay->month ? ' bg-white' : '' }}{{ $i%7<6 ? ' mr-1' : '' }}">
 
-								<h2 class="mb-0{{ $startDay->month != $firstDay->month ? ' text-muted' : '' }}">{{ $firstDay->day }}</h2>
+								<h2 class="mb-0{{ $startDay->month != $firstDay->month ? ' text-muted' : '' }}">
+									{{ $firstDay->day }}
+									<a href="{{ url('cspot/plans/by_date') }}/{{ $firstDay->toDateString() }}" class="float-right small">+</a>
+								</h2>
 
 								@foreach ($plans as $plan)
 
