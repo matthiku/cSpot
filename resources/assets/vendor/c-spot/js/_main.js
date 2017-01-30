@@ -189,6 +189,40 @@ function getLocalStorageItem(key, defaultValue)
 \*/
 
 
+/* Event Calendar: 
+    Calculate ideal height for each calendar week row
+*/
+function setIdealCalendarRowHeight()
+{
+    /* find out remaining white space which can be distrubted to the rows */
+    var remainingWhiteSpace = 
+        $('.calendar-container').height() 
+            - $('#calendar-accordion').height();
+
+    // we want a minimal white space to be distributed
+    if (remainingWhiteSpace < 10 ) return;
+
+    // get current max and total height of all calendar rows
+    var max=0, total=0, height=0, differ=0;
+    $('.calendar-month').each( function(i) {
+        var calendarWeek = $(this).children('.calendar-week');
+        var rows = calendarWeek.length;
+        calendarWeek.each( function(j) {
+            height = $(this).height();
+            max    = Math.max(max, height);
+            total += height;
+        });
+        differ = total + remainingWhiteSpace;
+        differ = differ - max * rows;
+        if (differ>0)
+            max = max + differ/rows;
+        calendarWeek.each( function(j) {
+            $(this).height(max);
+        });
+    });
+}
+
+
 /*
 */
 function autoAdvance()

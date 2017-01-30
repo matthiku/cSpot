@@ -190,11 +190,10 @@ $(document).ready(function() {
 
         // activate popovers
         $('[data-toggle="popover"]').popover();
-        
+
         $('.popover-dismiss').popover({
             trigger: 'focus'
         });
-
     });
   
 
@@ -252,8 +251,8 @@ $(document).ready(function() {
                 });
             }
         );
-        
     }
+
 
 
 

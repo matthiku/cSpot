@@ -128,7 +128,7 @@
 		    	<span>{{ $heading }}</span>
 
 				<small class="small" style="font-size: 50%">
-					<a href="#" onclick="$('.events-table').toggle();" class="ml-3">
+					<a href="#" onclick="$('.events-table').toggle();setIdealCalendarRowHeight();" class="ml-3">
 						&#128197; show 
 						<span class="events-table">as calendar</span>
 						<span class="events-table hidden">list</span></a>

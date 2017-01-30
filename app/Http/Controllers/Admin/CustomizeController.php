@@ -102,6 +102,10 @@ class CustomizeController extends Controller
             $this->updateDotEnv('YOUTUBE_PLAYLIST_URL', $request->youtube_playlist_url);
         }
 
+        if ($request->has('bible_versions')) {
+            $this->updateDotEnv('BIBLE_VERSIONS', $request->bible_versions);
+        }
+
 
         if ($request->has('enable_sync')) {
             $this->updateDotEnv('PRESENTATION_ENABLE_SYNC', $request->get('enable_sync'));

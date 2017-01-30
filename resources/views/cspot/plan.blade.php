@@ -160,7 +160,7 @@
                         <a href="{{ url('cspot/plans/'.$plan->id.'/team') }}" class="ml-2 nowrap" 
                             onclick="$('#show-spinner').modal({keyboard: false});" 
                             data-template='<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><pre class="tooltip-inner tooltip-medium"></pre></div>'
-                            data-placement="bottom" data-toggle="tooltip" title="{{ $teamList }}">
+                            data-placement="left" data-toggle="tooltip" title="{{ $teamList }}">
                             <i class="fa fa-users"></i>&nbsp;Team<small>({{$plan->teams->count()}})</small>
                         </a> 
                     </span>

@@ -330,8 +330,8 @@
             --}}
             <span class="navbar-nav" id="item-navbar-next-label">
                 @if ($item->id != $item->plan->lastItem()->id)
-                    <small class="hidden-lg-up hidden-md-down text-muted limited-width">(next: {{ substr(getItemTitle($item),0,15) }})</small>
-                    <small class="hidden-lg-down text-muted limited-width">(<span class="font-weight-bold">up next</span>: {{ getItemTitle($item) }})</small>
+                    <small class="hidden-lg-up text-muted limited-width">(next: {{ substr(getItemTitle($item),0,15) }})</small>
+                    <small class="hidden-md-down text-muted limited-width">(<span class="font-weight-bold">up next</span>: {{ getItemTitle($item) }})</small>
                 @endif
             </span>
             

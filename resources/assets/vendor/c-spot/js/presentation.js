@@ -229,7 +229,7 @@ function reFormatBibleText()
     $('#bible-text-present-all').show(); 
     
     // helper vars
-    var verseList = [], verse_from=0, verse_to=199, verse, verno=1;
+    var verseList = [], verse_from=0, verse_to=199, verse='', verno=1;
 
     // Now analyze each paragraph, reformat the bible text and add it back into the container
     $(p).each( function() {
@@ -259,6 +259,8 @@ function reFormatBibleText()
                         appendBibleText('p',verse,verno); verse = ''; }
                     // print the new Ref
                     if (refNo == index) {
+                        if (value.indexOf(' ('))
+                            value = value.split(' (')[0];
                         appendBibleText('h1',value,'bible-text-ref-header');
                         refNo += 1;
                     }
@@ -279,7 +281,9 @@ function reFormatBibleText()
         var cl4=clas.substr(0,4);
         var cl1=clas.substr(0,1);
         var elem;
-        if (cl4=='line' || cl4=='pcon' || cl4=='reg' || cl4=='open' || cl4=='chap' || cl4=='emb' || cl4=='red' ) {
+        // various versions use different class names for their bible texts
+        // ('poet' and 'body' are from the NET)
+        if ( $.inArray(cl4, ['line','pcon','reg','open','chap','emb','red','poet','body']) > -1 ) {
             // get all elements in one array
             elem = $(this).contents();
             // analyze each element and separate verse numbers and bible text
@@ -303,7 +307,7 @@ function reFormatBibleText()
                         verno = eltext;
                     }
                     verse = '('+eltext+') '; } // add verse indicator at the front
-                else if ( this.nodeName == '#text' || thisCls=='name' || thisCls=='red' ) {  // only add real text nodes
+                else if ( this.nodeName == '#text' || thisCls=='name' || thisCls=='red' || thisCls=='smallcaps' ) {  // only add real text nodes
                     if (eltext.substr(0,1)=='\n') { eltext=eltext.substr(1); }
                     verse += eltext;
                 }
@@ -317,7 +321,8 @@ function reFormatBibleText()
             // analyze each elements and separate verse numbers and bible text
             $(elem).each( function() {
                 var eltext = $(this).text();
-                if ($(this).attr('class')=='v') {
+                var cls    = $(this).attr('class');
+                if (cls=='v' || cls=='reftext') {
                     if (verse && verno != eltext) {
                         appendBibleText('p',verse,verno); }
                     verno = eltext; 
@@ -798,7 +803,7 @@ function reDisplayLyrics()
             break;
 
         // treat empty lines as start for a new slide!
-        if (lyrics[i].length==0) {
+        if ((lyrics[i]).trim().length==0) {
             if (i==0) continue; // but not a leading empty line....
             // we have no headings in this lyris, so we invent one....
             if (curPart == '') { 

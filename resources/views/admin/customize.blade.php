@@ -20,7 +20,7 @@
             <div class="row">
 
                 <div class="col-md-6">
-                    <h3>Application Customization</h3>
+                    <h3 class="text-success">Application Customization</h3>
                     <h5>Customise this App for your Organisation</h5>
 
                     <div class="form-group full-width">
@@ -69,6 +69,13 @@
                         </p>
                     </div>
 
+                    <div class="form-group full-width">
+                        {!! Form::label('bible_versions', 'List of supported Bible Versions:', ['class' => 'mb-0']) !!}
+                        <small>(This list will be used when adding scripture items to an event plan)</small><br>
+                        {!! Form::text('bible_versions', env('BIBLE_VERSIONS')); !!}
+                   </div>
+
+
                 </div>
 
 
@@ -76,7 +83,7 @@
 
 
                 <div class="col-md-6">
-                    <h3>System Configuration</h3>
+                    <h3 class="text-success">System Configuration</h3>
 
                     {{-- default value for checkbox --}}
                     <input type="hidden" name="enable_sync" value="false">
