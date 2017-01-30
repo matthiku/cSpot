@@ -72,6 +72,9 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
          PLANS
     */
 
+    // show calendar-like view for all events of a year
+    Route::get('plans/calendar',                   'Cspot\PlanController@calendar');    
+
     // show next Sunday's Service plan
     Route::get('plans/next',                       'Cspot\PlanController@nextSunday'  )->name('next');
 

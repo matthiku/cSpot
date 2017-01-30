@@ -293,6 +293,30 @@ class PlanController extends Controller
 
 
 
+    /**
+     * Show events in a Year/Month Calendar View
+     */
+    public function calendar(Request $request)
+    {
+        $year = date("Y");
+        if ($request->has('year'))
+            $year = $request->year;
+
+        $plans = Plan::with('type')
+            ->whereDate('date', '>=', Carbon::createFromDate($year, 1, 1))
+            ->whereDate('date', '<=', Carbon::createFromDate($year, 12, 31))
+            ->orderBy('date')
+            ->get();
+
+        return view(
+            'cspot.calendar', 
+            [
+                'plans' => $plans,
+                'heading' => 'Events for '.$year,
+            ]
+        );
+    }
+
 
 
     /**

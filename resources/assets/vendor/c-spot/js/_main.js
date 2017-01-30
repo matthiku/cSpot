@@ -197,7 +197,7 @@ function setIdealCalendarRowHeight()
     /* find out remaining white space which can be distrubted to the rows */
     var remainingWhiteSpace = 
         $('.calendar-container').height() 
-            - $('#calendar-accordion').height();
+            - $('#calendar-tabs').height();
 
     // we want a minimal white space to be distributed
     if (remainingWhiteSpace < 10 ) return;

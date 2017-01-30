@@ -2,133 +2,141 @@
 <?php 
 	Use Carbon\Carbon; 
 
-	// get the earliest date we have in the list of events
-	$startDay = $plans->first()->date;
+	if ($plans->count()) {
+		// get the earliest date we have in the list of events
+		$startDay = $plans->first()->date;
 
-	// get the current month
-	$startMonth = $plans->first()->date->day(1);
-	$lastMonth  = $plans->last()->date;
+		// get the current month
+		$startMonth = $plans->first()->date->day(1);
+		$lastMonth  = $plans->last()->date;
+	} 
 
 	$first = true;
+
+	if ($plans->count()) {
 ?>
 
 
-<div id="calendar-accordion" role="tablist" aria-multiselectable="true">
+<div id="calendar-tabs" role="tablist" class="p-1">
 
-@while ($startMonth->timestamp < $lastMonth->timestamp)
+  	{{-- <h3 class="mb-0 lora"></h3> --}}
 
-	<?php 
+	<ul>
+		<li><a href="#calendar-years"><red>{{ $startDay->format("Y") }}</red></a></li>
+		<li><a href="#calendar-month-1">January</a></li>
+		<li><a href="#calendar-month-2">February</a></li>
+		<li><a href="#calendar-month-3">March</a></li>
+		<li><a href="#calendar-month-4">April</a></li>
+		<li><a href="#calendar-month-5">May</a></li>
+		<li><a href="#calendar-month-6">June</a></li>
+		<li><a href="#calendar-month-7">July</a></li>
+		<li><a href="#calendar-month-8">August</a></li>
+		<li><a href="#calendar-month-9">September</a></li>
+		<li><a href="#calendar-month-10">October</a></li>
+		<li><a href="#calendar-month-11">November</a></li>
+		<li><a href="#calendar-month-12">December</a></li>
+	</ul>
 
-		// find the first Sunday to show
-		$firstDay = Carbon::parse('first day of ' .  $startDay->format("F Y"));
-		// if the first day of this month is not a Sunday, we go back to the previous Sunday
-		if ($firstDay->dayOfWeek != 0)
-			$firstDay = Carbon::parse('last Sunday of ' .  $startMonth->copy()->subMonth()->format("F Y"));
+	@while ($startMonth->timestamp < $lastMonth->timestamp)
 
-		// find the last day to show
-		$lastDay = Carbon::parse('last day of ' .  $startMonth->format("F Y"));
-		// if the last day of a month is not a Saturday, we extend to the Saturday of the following month
-		if ($lastDay->dayOfWeek != 6)
-			$lastDay  = Carbon::parse('first Saturday of '.$startMonth->copy()->addMonth()->format("F Y"));
-	?>
+		<?php 
 
-	<li>
-		<ul id="calendar-jan">January</ul>
-		<ul id="calendar-feb">February</ul>
-		<ul id="calendar-mar">March</ul>
-		<ul id="calendar-apr">April</ul>
-		<ul id="calendar-may">May</ul>
-		<ul id="calendar-jun">June</ul>
-		<ul id="calendar-jul">July</ul>
-		<ul id="calendar-aug">August</ul>
-		<ul id="calendar-sep">September</ul>
-		<ul id="calendar-oct">October</ul>
-		<ul id="calendar-nov">November</ul>
-		<ul id="calendar-dec">December</ul>
-	</li>
+			// find the first Sunday to show
+			$firstDay = Carbon::parse('first day of ' .  $startDay->format("F Y"));
+			// if the first day of this month is not a Sunday, we go back to the previous Sunday
+			if ($firstDay->dayOfWeek != 0)
+				$firstDay = Carbon::parse('last Sunday of ' .  $startMonth->copy()->subMonth()->format("F Y"));
 
-  	<div class="card">
-
-		<div class="card-header" role="tab" id="heading{{$startMonth->month}}">
-		  	<h3 class="mb-0">
-		    	<a class="lora" data-toggle="collapse" data-parent="#calendar-accordion" href="#collapse{{$startMonth->month}}" aria-expanded="true" aria-controls="collapse{{$startMonth->month}}">
-		      	{{ $startDay->format("F Y") }}
-		    	</a>
-		  	</h3>
-		</div>
-
-		<div id="collapse{{$startMonth->month}}" class="collapse{{ $first ? ' show' : ''}}" role="tabpanel" aria-labelledby="heading{{$startMonth->month}}">
-		  	<div class="card-block p-1">
-
-				<div class="d-flex flex-column calendar-month">
+			// find the last day to show
+			$lastDay = Carbon::parse('last day of ' .  $startMonth->format("F Y"));
+			// if the last day of a month is not a Saturday, we extend to the Saturday of the following month
+			if ($lastDay->dayOfWeek != 6)
+				$lastDay  = Carbon::parse('first Saturday of '.$startMonth->copy()->addMonth()->format("F Y"));
+		?>
 
 
-					<div class="d-flex korn">
-						<div class="calendar-day bg-info rounded mr-1 text-danger"><h3>Sunday</h3></div>
-						<div class="calendar-day bg-info rounded mr-1"><h3>Monday</h3></div>
-						<div class="calendar-day bg-info rounded mr-1"><h3>Tues<span class="hidden-xs-down">day</span></h3></div>
-						<div class="calendar-day bg-info rounded mr-1"><h3>Wed<span class="hidden-sm-down">nesday</span></h3></div>
-						<div class="calendar-day bg-info rounded mr-1"><h3>Thurs<span class="hidden-xs-down">day</span></h3></div>
-						<div class="calendar-day bg-info rounded mr-1"><h3>Friday</h3></div>
-						<div class="calendar-day bg-info rounded">	   <h3>Sat<span class="hidden-sm-down">urday</span></h3></div>
-					</div>
-					
+		<div id="calendar-years"></div>
 
-					<div class="d-flex mt-1 calendar-week">
+		<div id="calendar-month-{{$startMonth->month}}" class="p-0{{ $first ? ' active' : ''}}">
 
-						{{-- loop through each day for this month' calendar page --}}
-						@for ($i = 0; $i < 44; $i++)
-
-							@if ($i > 6  &&  $i % 7  ==  0)
-								{{-- after 7 days, start a new row --}}
-								</div><div class="d-flex mt-1 calendar-week">
-							@endif
+			<div class="d-flex flex-column calendar-month">
 
 
-							<div class="calendar-day {{ $firstDay==Carbon::today() ? 'calendar-day-today' : '' }}
-								rounded{{ $startDay->month != $firstDay->month ? ' bg-white' : '' }}{{ $i%7<6 ? ' mr-1' : '' }}">
-
-								<h2 class="mb-0{{ $startDay->month != $firstDay->month ? ' text-muted' : '' }}">
-									{{ $firstDay->day }}
-									<a href="{{ url('cspot/plans/by_date') }}/{{ $firstDay->toDateString() }}" title="Add an event for this day" class="float-right small">+</a>
-								</h2>
-
-								@foreach ($plans as $plan)
-
-									@if ($plan->date->toDateString() == $firstDay->toDateString())
-
-										<a href="{{ url('cspot/plans/'.$plan->id) }}/edit" class="d-block"
-											title="Click to open. Leader: {{ $plan->leader ? $plan->leader->name : 'unknown' }}, Teacher: {{ $plan->teacher ? $plan->teacher->name : 'n/a' }}">
-											<span class="hidden-sm-down text-success">{{ $plan->date->format("H:i") }}</span>
-											{{ $plan->type->generic ? $plan->subtitle : $plan->type->name }}
-										</a>
-									@endif
-
-								@endforeach
-							</div>
-
-							<?php 
-								$firstDay->addDay(); 
-
-								if ($firstDay->month != $startMonth->month)
-									$startMonth = $firstDay;
-							?>
-							@break($firstDay->gt($lastDay))
-						@endfor
-
-					</div>
+				<div class="d-flex mt-1 korn">
+					<div class="calendar-day bg-info rounded mr-1 text-danger"><h3>Sunday</h3></div>
+					<div class="calendar-day bg-info rounded mr-1"><h3>Monday</h3></div>
+					<div class="calendar-day bg-info rounded mr-1"><h3>Tues<span class="hidden-xs-down">day</span></h3></div>
+					<div class="calendar-day bg-info rounded mr-1"><h3>Wed<span class="hidden-sm-down">nesday</span></h3></div>
+					<div class="calendar-day bg-info rounded mr-1"><h3>Thurs<span class="hidden-xs-down">day</span></h3></div>
+					<div class="calendar-day bg-info rounded mr-1"><h3>Friday</h3></div>
+					<div class="calendar-day bg-info rounded">	   <h3>Sat<span class="hidden-sm-down">urday</span></h3></div>
 				</div>
+				
 
+				<div class="d-flex mt-1 calendar-week">
 
-	      	</div>
-	    </div>
+{{-- avoid too many blank-filled lines in the HTML source! --}}
+{{-- loop through each day for this month' calendar page --}}
+@for ($i = 0; $i < 44; $i++)
+
+	@if ($i > 6  &&  $i % 7  ==  0)
+		{{-- after 7 days, start a new row --}}
+</div><div class="d-flex mt-1 calendar-week">
+	@endif
+<div class="calendar-day {{ $firstDay==Carbon::today() ? 'calendar-day-today' : '' }}
+	rounded{{ $startDay->month != $firstDay->month ? ' bg-gray' : ' bg-white' }}{{ $i%7<6 ? ' mr-1' : '' }}">
+
+<h3 class="mb-0 py-0 {{ $startDay->month != $firstDay->month ? ' text-muted' : '' }}">{{ $firstDay->day }}
+	@if ($firstDay >= Carbon::today())
+<a href="{{ url('cspot/plans/by_date') }}/{{ $firstDay->toDateString() }}" title="Add an event for this day" class="float-right small">+</a>
+	@endif
+</h3>
+@foreach ($plans as $plan)
+@if ($plan->date->toDateString() == $firstDay->toDateString())
+	<a href="{{ url('cspot/plans/'.$plan->id) }}/edit" class="d-block"
+		title="Click to open. Leader: {{ $plan->leader ? $plan->leader->name : 'unknown' }}, Teacher: {{ $plan->teacher ? $plan->teacher->name : 'n/a' }}">
+		<span class="hidden-sm-down text-success">{{ $plan->date->format("H:i") }}</span>
+		@if ($plan->type->generic)
+			{{ $plan->subtitle }}
+		@else
+			{{ $plan->type->name }}
+			{!! $plan->subtitle ? '<small>('.$plan->subtitle.')</small>' : '' !!}
+		@endif
+	</a>
+@endif
+@endforeach
 	</div>
 
-
 	<?php 
-		$startDay = $firstDay;
-		$first = false;
+		$firstDay->addDay(); 
+
+		if ($firstDay->month != $startMonth->month)
+			$startMonth = $firstDay;
 	?>
+	@break($firstDay->gt($lastDay))
+@endfor
+
+				</div>
+			</div>
+
+	    </div>
+
+
+		<?php 
+			$startDay = $firstDay;
+			$first = false;
+		?>
 
 	@endwhile
 </div>
+
+<script>
+$( "#calendar-tabs" ).tabs({
+	active: 1,
+	disabled: [0],
+});
+</script>
+ 
+<?php 
+	}
+?>

@@ -38,8 +38,10 @@
                 <div class="dropdown-menu" role="menu">
                     <a class="dropdown-item {{ Request::is('cspot/plans/next') ? 'active' : '' }}" href="{{ url('cspot/plans/next') }}">
                         <i class="fa fa-btn fa-bell-o fa-lg"></i> &nbsp; Next Sunday</a>
+                    <a class="dropdown-item" href="{{ url('cspot/plans/calendar') }}">
+                        <i class="fa fa-btn fa-calendar fa-lg"></i> &nbsp; Event Calendar</a>
                     <a class="dropdown-item" href="{{ url('cspot/plans?filterby=future') }}">
-                        <i class="fa fa-btn fa-calendar fa-lg"></i> &nbsp; Upcoming Events</a>
+                        <i class="fa fa-btn fa-calendar fa-lg"></i> &nbsp; Upcoming Event List</a>
 
                     <hr>
                     <a class="dropdown-item {{ Request::is('cspot/plans') ? 'active' : '' }}" href="{{ url('cspot/plans') }}">
@@ -77,8 +79,8 @@
 
 
             <li class="nav-item hidden-sm-down">
-                <a class="nav-link{{ Request::has('filterby') && Request::input('filterby')=='future' ? ' active' : '' }}" 
-                    href="{{ url('cspot/plans?filterby=future') }}">Upcoming Events</a>
+                <a class="nav-link{{ Request::is('cspot/plans/calendar') ? ' active' : '' }}" 
+                    href="{{ url('cspot/plans/calendar') }}">Event Calendar</a>
             </li>
 
 

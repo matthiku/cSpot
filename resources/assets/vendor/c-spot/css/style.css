@@ -32,19 +32,27 @@ body {
       -ms-flex: 1;
     flex: 1;
     border: 1px solid #ccc;
-    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 .calendar-day:hover {
-    border: 1px dotted red;    
+    border-width: 4px;
+    border-style: inset;
 }
 .calendar-day h3 {
+    border: 1px solid #eee;
     margin-bottom: 0;
     padding: .5rem;
 }
 .calendar-day-today {
-    border-color: red;
     border-width: 4px;
     border-style: inset;
+}
+.bg-white {
+    background-color: #fff;
+}
+.bg-gray, .bg-grey {
+    background-color: #ccc;
 }
 
 
