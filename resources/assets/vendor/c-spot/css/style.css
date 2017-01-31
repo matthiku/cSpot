@@ -8,7 +8,8 @@
  */
 
 
-/* building an events calendar using flexbox */
+/* ---------------------------------------------*/
+/*   building an events calendar using flexbox */
 html,
 body {
     height: 100%;
@@ -25,7 +26,7 @@ body {
     box-sizing: border-box;   
     height: 90%; 
 }
-.calendar-day {
+.calendar-day, .calendar-col {
     -webkit-box-flex: 1;
     -webkit-flex: 1;
     -webkit-flex: 1 1 14.2857%;
@@ -35,9 +36,15 @@ body {
     overflow-x: hidden;
     overflow-y: auto;
 }
+.calendar-col>h3 {
+    margin-bottom: 2px;
+    overflow: hidden;
+}
 .calendar-day:hover {
-    border-width: 4px;
+    border-width: 2px;
     border-style: inset;
+    padding: 2px;
+    margin: 0;
 }
 .calendar-day h3 {
     border: 1px solid #eee;
@@ -46,8 +53,23 @@ body {
 }
 .calendar-day-today {
     border-width: 4px;
-    border-style: inset;
+    border-style: outset;
+    border-color: green;
+    margin: 0;
 }
+.ui-tabs-active>.ui-tabs-anchor {
+    font-size: larger;
+}
+.ui-state-disabled {
+    opacity: 1 !important;
+}
+.ui-state-disabled>.ui-tabs-anchor {
+    background-color: white !important;
+    font-size: xx-large !important;
+    padding: 0 !important;
+}
+/* ---------------------------------------------*/
+
 .bg-white {
     background-color: #fff;
 }

@@ -11,13 +11,23 @@
 <div class="announce-text-present">
 
 
-	<div class="text-success font-weight-bold font-italic display-3 mb-1">
+	<div class="hidden-lg-down text-success font-weight-bold font-italic display-3 mb-1">
 		<img class="float-left" height="140px" src="{{ url($logoPath.env('CHURCH_LOGO_FILENAME')) }}">
 		<img class="float-right" height="140px" src="{{ url($logoPath.env('CHURCH_LOGO_FILENAME')) }}">
 		<div class="header mb-0" style="line-height: 1.0; vertical-align: middle;">This Week's Announcements
 			<div class="smaller text-muted">Week from {{$columnDay->formatLocalized('%d %b')}} to {{$nextWeek->formatLocalized('%d %b')}}</div>
 		</div>
 	</div>
+
+	<div class="hidden-xl-up text-success font-weight-bold font-italic display-4 mb-1">
+		<img class="float-left" height="60px" src="{{ url($logoPath.env('CHURCH_LOGO_FILENAME')) }}">
+		<img class="float-right" height="60px" src="{{ url($logoPath.env('CHURCH_LOGO_FILENAME')) }}">
+		<div class="header mb-0" style="line-height: 1.0; vertical-align: middle;">This Week's Announcements
+			<div class="smaller text-muted">Week from {{$columnDay->formatLocalized('%d %b')}} to {{$nextWeek->formatLocalized('%d %b')}}</div>
+		</div>
+	</div>
+
+
 
 
 	<table class="table table-bordered">

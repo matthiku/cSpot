@@ -19,7 +19,7 @@
 
 <div id="calendar-tabs" role="tablist" class="p-1">
 
-  	{{-- <h3 class="mb-0 lora"></h3> --}}
+
 
 	<ul>
 		<li><a href="#calendar-years"><red>{{ $startDay->format("Y") }}</red></a></li>
@@ -36,6 +36,8 @@
 		<li><a href="#calendar-month-11">November</a></li>
 		<li><a href="#calendar-month-12">December</a></li>
 	</ul>
+
+
 
 	@while ($startMonth->timestamp < $lastMonth->timestamp)
 
@@ -63,13 +65,13 @@
 
 
 				<div class="d-flex mt-1 korn">
-					<div class="calendar-day bg-info rounded mr-1 text-danger"><h3>Sunday</h3></div>
-					<div class="calendar-day bg-info rounded mr-1"><h3>Monday</h3></div>
-					<div class="calendar-day bg-info rounded mr-1"><h3>Tues<span class="hidden-xs-down">day</span></h3></div>
-					<div class="calendar-day bg-info rounded mr-1"><h3>Wed<span class="hidden-sm-down">nesday</span></h3></div>
-					<div class="calendar-day bg-info rounded mr-1"><h3>Thurs<span class="hidden-xs-down">day</span></h3></div>
-					<div class="calendar-day bg-info rounded mr-1"><h3>Friday</h3></div>
-					<div class="calendar-day bg-info rounded">	   <h3>Sat<span class="hidden-sm-down">urday</span></h3></div>
+					<div class="calendar-col pt-1 bg-info rounded mr-1 text-danger"><h3>Sunday</h3></div>
+					<div class="calendar-col pt-1 bg-info rounded mr-1"><h3>Monday</h3></div>
+					<div class="calendar-col pt-1 bg-info rounded mr-1"><h3>Tues<span class="hidden-xs-down">day</span></h3></div>
+					<div class="calendar-col pt-1 bg-info rounded mr-1"><h3>Wed<span class="hidden-sm-down">nesday</span></h3></div>
+					<div class="calendar-col pt-1 bg-info rounded mr-1"><h3>Thurs<span class="hidden-xs-down">day</span></h3></div>
+					<div class="calendar-col pt-1 bg-info rounded mr-1"><h3>Friday</h3></div>
+					<div class="calendar-col pt-1 bg-info rounded">	   <h3>Sat<span class="hidden-sm-down">urday</span></h3></div>
 				</div>
 				
 
@@ -95,7 +97,7 @@
 @if ($plan->date->toDateString() == $firstDay->toDateString())
 	<a href="{{ url('cspot/plans/'.$plan->id) }}/edit" class="d-block"
 		title="Click to open. Leader: {{ $plan->leader ? $plan->leader->name : 'unknown' }}, Teacher: {{ $plan->teacher ? $plan->teacher->name : 'n/a' }}">
-		<span class="hidden-sm-down text-success">{{ $plan->date->format("H:i") }}</span>
+		<span class="hidden-sm-down text-success font-weight-bold">{{ $plan->date->format("H:i") }}</span>
 		@if ($plan->type->generic)
 			{{ $plan->subtitle }}
 		@else
