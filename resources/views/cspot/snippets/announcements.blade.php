@@ -30,7 +30,7 @@
 
 
 
-	<table class="table table-bordered">
+	<table class="table table-bordered overflow-hidden">
 
 		<thead>
 			<tr>

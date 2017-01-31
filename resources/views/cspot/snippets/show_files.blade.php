@@ -47,7 +47,7 @@
             @endif
         @endif
 
-        <div class="float-right">Size: {{ $file->filesize ? humanFileSize($file->filesize) : '<small>unknown</small>' }}</div>
+        <div class="float-right">Size: {!! $file->filesize ? humanFileSize($file->filesize) : '<small>unknown</small>' !!}</div>
 
     </figcaption>
 

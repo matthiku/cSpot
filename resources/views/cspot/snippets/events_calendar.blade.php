@@ -2,39 +2,39 @@
 <?php 
 	Use Carbon\Carbon; 
 
-	if ($plans->count()) {
+	if ($allPlans->count()) {
 		// get the earliest date we have in the list of events
-		$startDay = $plans->first()->date;
+		$startDay = $allPlans->first()->date;
 
 		// get the current month
-		$startMonth = $plans->first()->date->day(1);
-		$lastMonth  = $plans->last()->date;
+		$startMonth = $allPlans->first()->date->day(1);
+		$lastMonth  = $allPlans->last()->date;
 	} 
 
 	$first = true;
 
-	if ($plans->count()) {
+	if ($allPlans->count()) {
 ?>
 
 
-<div id="calendar-tabs" role="tablist" class="p-1">
+<div id="calendar-tabs" role="tablist" class="p-0">
 
 
 
-	<ul>
-		<li><a href="#calendar-years"><red>{{ $startDay->format("Y") }}</red></a></li>
-		<li><a href="#calendar-month-1">January</a></li>
-		<li><a href="#calendar-month-2">February</a></li>
-		<li><a href="#calendar-month-3">March</a></li>
-		<li><a href="#calendar-month-4">April</a></li>
-		<li><a href="#calendar-month-5">May</a></li>
-		<li><a href="#calendar-month-6">June</a></li>
-		<li><a href="#calendar-month-7">July</a></li>
-		<li><a href="#calendar-month-8">August</a></li>
-		<li><a href="#calendar-month-9">September</a></li>
-		<li><a href="#calendar-month-10">October</a></li>
-		<li><a href="#calendar-month-11">November</a></li>
-		<li><a href="#calendar-month-12">December</a></li>
+	<ul class="d-flex flex-wrap">
+		<li class="calendar-month-row"><a href="#calendar-years"><red>{{ $startDay->format("Y") }}</red></a></li>
+		<li class="calendar-month-row"><a href="#calendar-month-1">Jan<span class="hidden-md-down">uary</span></a></li>
+		<li class="calendar-month-row"><a href="#calendar-month-2">Feb<span class="hidden-md-down">ruary</span></a></li>
+		<li class="calendar-month-row"><a href="#calendar-month-3">Mar<span class="hidden-md-down">ch</span></a></li>
+		<li class="calendar-month-row"><a href="#calendar-month-4">Apr<span class="hidden-md-down">il</span></a></li>
+		<li class="calendar-month-row"><a href="#calendar-month-5">May</a></li>
+		<li class="calendar-month-row"><a href="#calendar-month-6">Jun<span class="hidden-md-down">e</span></a></li>
+		<li class="calendar-month-row"><a href="#calendar-month-7">Jul<span class="hidden-md-down">y</span></a></li>
+		<li class="calendar-month-row"><a href="#calendar-month-8">Aug<span class="hidden-md-down">ust</span></a></li>
+		<li class="calendar-month-row"><a href="#calendar-month-9">Sep<span class="hidden-md-down">tember</span></a></li>
+		<li class="calendar-month-row"><a href="#calendar-month-10">Oct<span class="hidden-md-down">ober</span></a></li>
+		<li class="calendar-month-row"><a href="#calendar-month-11">Nov<span class="hidden-md-down">ember</span></a></li>
+		<li class="calendar-month-row"><a href="#calendar-month-12">Dec<span class="hidden-md-down">ember</span></a></li>
 	</ul>
 
 
@@ -93,7 +93,7 @@
 <a href="{{ url('cspot/plans/by_date') }}/{{ $firstDay->toDateString() }}" title="Add an event for this day" class="float-right small">+</a>
 	@endif
 </h3>
-@foreach ($plans as $plan)
+@foreach ($allPlans as $plan)
 @if ($plan->date->toDateString() == $firstDay->toDateString())
 	<a href="{{ url('cspot/plans/'.$plan->id) }}/edit" class="d-block"
 		title="Click to open. Leader: {{ $plan->leader ? $plan->leader->name : 'unknown' }}, Teacher: {{ $plan->teacher ? $plan->teacher->name : 'n/a' }}">

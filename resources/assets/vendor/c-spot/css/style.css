@@ -8,8 +8,8 @@
  */
 
 
-/* ---------------------------------------------*/
-/*   building an events calendar using flexbox */
+
+/* Make sure we ue the full viewport */
 html,
 body {
     height: 100%;
@@ -18,10 +18,165 @@ body {
     padding: 0 1em;
     height: 90%;
 }
+
+
+
+
+  /* -------------------------------------------*/
+ /*   Bootstrap-like generic classes           */
+/* -------------------------------------------*/
+
+
+.bg-khaki {
+    background-color: rgb(240, 230, 140);
+}
+.bg-grey, .bg-muted {
+    background-color: #eee;
+}
+.bg-black {
+    background-color: black;
+}
+.bg-white {
+    background-color: #fff;
+}
+.bg-gray, .bg-grey {
+    background-color: #ccc;
+}
+red {
+    color: red;
+}
+.text-shadow {
+    text-shadow: 4px 4px 4px #aaa;
+}
+.smaller {
+    font-size: 66%;
+}
+.big {
+    font-size: 140%;
+}
+.bigger {
+    font-size: 120%;
+}
+.xl-big {
+    font-size: 200%;
+}
+.baseline {
+    vertical-align: baseline;
+}
+.l-h-1 { line-height: 1; }
+.lh-1  { line-height: 1; }
+.lh-1h { line-height: 1.5; }
+.lh-2  { line-height: 2;   }
+.lh-2h { line-height: 2.5; }
+
+/* additional fonts */
+.lora {
+    font-family: 'Lora', serif;
+}
+.korn {
+    font-family: 'Vollkorn', serif;
+}
+.shil {
+    font-family: 'Shadows Into Light', cursive;
+}
+
+.overflow-hidden {
+    overflow: hidden;
+}
+.overflow-scroll {
+    overflow-y: auto;
+    max-height: 100%;
+}
+.display-block {
+    display: block !important;
+}
+.hidden {
+    display: none;
+}
+/* Opacity (or transparency) */
+.opac-0 { opacity: 0.0; }
+.opac-1 { opacity: 0.1; }
+.opac-2 { opacity: 0.2; }
+.opac-3 { opacity: 0.3; }
+.opac-4 { opacity: 0.4; }
+.opac-5 { opacity: 0.5; }
+.opac-6 { opacity: 0.6; }
+.opac-7 { opacity: 0.7; }
+.opac-8 { opacity: 0.8; }
+.opac-9 { opacity: 0.9; }
+.opac-10 { opacity: 1; }
+
+/* Don't ignore new line chars in html elements */
+.white-space-pre-wrap {
+    white-space: pre-wrap;
+}
+.padding-half {
+    padding: .5rem;
+}
+
+
+
+
+
+  /* -------------------------------------------*/
+ /*          jQuery UI customizations          */
+/* -------------------------------------------*/
+.ui-tabs-active>.ui-tabs-anchor {
+    font-size: larger;
+}
+.ui-state-disabled {
+    opacity: 1 !important;
+}
+.ui-state-disabled>.ui-tabs-anchor {
+    background-color: white !important;
+    font-size: xx-large !important;
+    padding: 0 !important;
+    width: 100%;
+    text-align: center;
+}
+/* placeholder for jQuery UI sortable function */
+.ui-state-highlight { 
+    height: 1.3em; 
+}
+.ui-widget {
+    font-size: inherit;
+}
+.ui-widget-header {
+    color: darkblue;
+}
+.ui-datepicker-inline {
+    margin: auto;
+}
+.ui-datepicker-today {
+    border: 2px solid blue !important;
+}
+.ui-datepicker-sunday>a {
+    color: red !important;
+}
+/* in datepicker, highlight dates with an existing future plan */
+.ui-highlighted a {
+   background-color : cadetblue !important;
+   background-image :none !important;
+   color: White !important;
+   font-weight:bold !important;
+}
+
+
+
+
+
+
+
+  /* -------------------------------------------*/
+ /*  building an events calendar using flexbox */
+/* -------------------------------------------*/
 .calendar-container {
     height: 95%;
 }
-
+#calendar-tabs {
+    border-radius: 10px;
+    border-width: 3px;
+}
 #calendar {
     box-sizing: border-box;   
     height: 90%; 
@@ -57,26 +212,21 @@ body {
     border-color: green;
     margin: 0;
 }
-.ui-tabs-active>.ui-tabs-anchor {
-    font-size: larger;
-}
-.ui-state-disabled {
-    opacity: 1 !important;
-}
-.ui-state-disabled>.ui-tabs-anchor {
-    background-color: white !important;
-    font-size: xx-large !important;
-    padding: 0 !important;
-}
-/* ---------------------------------------------*/
-
-.bg-white {
-    background-color: #fff;
-}
-.bg-gray, .bg-grey {
-    background-color: #ccc;
+.calendar-month-row {
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    -webkit-flex: 1 1 8.33%;
+      -ms-flex: 1;
+    flex: 1;
 }
 
+
+
+
+
+  /* -------------------------------------------*/
+ /*        other, page-specific components     */
+/* -------------------------------------------*/
 
 #song-parts-wastebin-zone {
     cursor: crosshair;
@@ -87,31 +237,6 @@ body {
     min-width: 10rem;
     display: inline-block;
 }
-
-red {
-    color: red;
-}
-
-
-.overflow-hidden {
-    overflow: hidden;
-}
-
-.hidden {
-    display: none;
-}
-
-
-/* placeholder for jQuery UI sortable function */
-.ui-state-highlight { 
-    height: 1.3em; 
-}
-
-
-.lh-1  { line-height: 1; }
-.lh-1h { line-height: 1.5; }
-.lh-2  { line-height: 2;   }
-.lh-2h { line-height: 2.5; }
 
 
 .edit-chords {
@@ -163,48 +288,11 @@ red {
 .training-videos-card {
     border-width: 2px;
 }
-.overflow-scroll {
-    overflow-y: auto;
-    max-height: 100%;
-}
-
-/* additional fonts */
-.lora {
-    font-family: 'Lora', serif;
-}
-.korn {
-    font-family: 'Vollkorn', serif;
-}
-.shil {
-    font-family: 'Shadows Into Light', cursive;
-}
-.text-shadow {
-    text-shadow: 4px 4px 4px #aaa;
-}
-
-/* Opacity (or transparency) */
-.opac-0 { opacity: 0.0; }
-.opac-1 { opacity: 0.1; }
-.opac-2 { opacity: 0.2; }
-.opac-3 { opacity: 0.3; }
-.opac-4 { opacity: 0.4; }
-.opac-5 { opacity: 0.5; }
-.opac-6 { opacity: 0.6; }
-.opac-7 { opacity: 0.7; }
-.opac-8 { opacity: 0.8; }
-.opac-9 { opacity: 0.9; }
-.opac-10 { opacity: 1; }
 
 /* non-bold labels */
 .label-normal {
     font-weight: normal !important;
     white-space: nowrap;
-}
-.display-block {
-    display: block !important;
-}
-.padding-half {
-    padding: .5rem;
 }
 
 /* Spectrum colour picker */
@@ -212,14 +300,6 @@ red {
     padding: 0;
 }
 
-/*  */
-.baseline {
-    vertical-align: baseline;
-}
-
-.l-h-1 {
-    line-height: 1;
-}
 
 /* always use fixed font in textarea input field */
 textarea {
@@ -232,11 +312,6 @@ textarea {
     width: 1rem;
 }
 
-/* Don't ignore new line chars in html elements */
-.white-space-pre-wrap {
-    white-space: pre-wrap;
-}
-
 /* for external links to be aligned beneath input fields  */
 .right-align-input {
     display: none;
@@ -245,10 +320,6 @@ textarea {
 /* for error messages below input fields */
 .help-block {
     color: red;    
-}
-
-.smaller {
-    font-size: 66%;
 }
 
 /* editable input field: space before submit button */
@@ -370,29 +441,6 @@ a[disabled] {
     margin-right: .25rem;
 }
 
-.ui-widget {
-    font-size: inherit;
-}
-.ui-widget-header {
-    color: darkblue;
-}
-.ui-datepicker-inline {
-    margin: auto;
-}
-.ui-datepicker-today {
-    border: 2px solid blue !important;
-}
-.ui-datepicker-sunday>a {
-    color: red !important;
-}
-/* in datepicker, highlight dates with an existing future plan */
-.ui-highlighted a {
-   background-color : cadetblue !important;
-   background-image :none !important;
-   color: White !important;
-   font-weight:bold !important;
-}
-
 .drag-item {
     cursor: n-resize;
 }
@@ -472,29 +520,6 @@ pre.text-present {
     border-width: 5px;
     border-color: #5bc0de;
     border-radius: 2px;
-}
-
-.bg-khaki {
-    background-color: rgb(240, 230, 140);
-}
-.bg-grey, .bg-muted {
-    background-color: #eee;
-}
-
-.bg-black {
-    background-color: black;
-}
-
-.big {
-    font-size: 140%;
-}
-
-.bigger {
-    font-size: 120%;
-}
-
-.xl-big {
-    font-size: 200%;
 }
 
 .tooltip-medium {

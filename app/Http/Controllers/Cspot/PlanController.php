@@ -1,6 +1,14 @@
 <?php
 
-# (C) 2016 Matthias Kuhs, Ireland
+# (C) 2016-2017 Matthias Kuhs, Ireland
+
+
+
+/**
+ * Provide the event data for various event views and API requests
+ */
+
+
 
 namespace App\Http\Controllers\Cspot;
 
@@ -24,6 +32,8 @@ use App\Mailers\AppMailer;
 use Carbon\Carbon;
 use Auth;
 use Log;
+
+
 
 
 class PlanController extends Controller
@@ -278,13 +288,17 @@ class PlanController extends Controller
             }
         }
 
+        $allPlans = $plans->get();
+
         // for pagination, always append the original query string
         $plans = $plans->paginate(20)->appends($querystringArray);
+
 
         return view( 
             $this->view_all, 
             array(
                 'plans' => $plans, 
+                'allPlans' => $allPlans, 
                 'heading' => $heading, 
                 'userIsPlanMember' => $userIsPlanMember,
                 'types' => Type::get()) 
@@ -311,10 +325,22 @@ class PlanController extends Controller
         return view(
             'cspot.calendar', 
             [
-                'plans' => $plans,
+                'allPlans' => $plans,
                 'heading' => 'Events for '.$year,
             ]
         );
+    }
+
+
+
+
+    /**
+     * Provide list of Event Plans which contain SONG items that have not yet been reported to CCLI
+     */
+    public function plansWithUnreportedSongs()
+    {
+        $plans = Plan::with('items', 'items.songs');
+        dd($plans);
     }
 
 

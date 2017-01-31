@@ -483,7 +483,7 @@
         @if (Auth::user()->ownsPlan($plan->id))
             <a href="#" title="" class="ml-4 hidden-sm-down bg-warning rounded px-1" onclick="showYTvideoInModal('w5qbcgW2qSY', this)" 
                 data-toggle="tooltip" data-song-title="Learn how to use this page" data-original-title="Watch this short video to quickly learn how to work on this page.">
-                <i class="fa fa-youtube-play red"></i> How to<span class="hidden-md-down"> use this page</span> P<span class="hidden-md-down">art</span> 1</a>
+                <i class="fa fa-youtube-play red"></i> Learn to<span class="hidden-md-down"> use this page</span>-P<span class="hidden-md-down">art</span> 1</a>
             <a href="#" title="" class="ml-1 hidden-sm-down bg-warning rounded px-1" onclick="showYTvideoInModal('T9Csl2FPO1Y', this)" 
                 data-toggle="tooltip" data-song-title="Learn how to use this page" data-original-title="Watch this short video to quickly learn how to work on this page.">
                 <i class="fa fa-youtube-play red"></i> Part 2</a>
