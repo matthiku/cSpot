@@ -24,7 +24,7 @@
 	{{-- Event List navigation bar 
 	--}}
 	<div class="row mx-0">
-		<div class="col-12 bg-faded">
+		<div class="col-12 bg-faded py-lg-2 py-1">
 
 			@if( Auth::user()->isEditor() )
 				<a class="btn btn-sm btn-outline-success float-right" 
@@ -123,29 +123,29 @@
 
 
 
-		    <h4 class="float-left text-success lora">
+		    <h4 class="float-left text-success lora m-0">
 
 		    	<span>{{ $heading }}</span>
 
-				<small class="small" style="font-size: 50%">
-					<a href="#" onclick="$('.events-table').toggle();setIdealCalendarRowHeight();" class="ml-3">
+				<small class="small ml-3" style="font-size: 50%">
+					<a href="#" onclick="$('.events-table').toggle();setIdealCalendarRowHeight();">
 						&#128197; show 
 						<span class="events-table">as calendar</span>
 						<span class="events-table hidden">list</span></a>
 				</small>
 		    </h4>
 
-			@if ( get_class($plans)=='Illuminate\Pagination\LengthAwarePaginator' && $plans->lastPage() > 1 )
-				<center>Page {{ $plans->currentPage() }} of {{ $plans->lastPage() }}</center>
-			@endif
-
-
-
-			@if ( isset($plans) && count($plans) )
-				@if (get_class($plans)=='Illuminate\Pagination\LengthAwarePaginator')
-					<center><small>(Total: {{ $plans->total() }} Events)</small></center>
+			<center>
+				@if ( get_class($plans)=='Illuminate\Pagination\LengthAwarePaginator' && $plans->lastPage() > 1 )
+					<span class="events-table">Page {{ $plans->currentPage() }} of {{ $plans->lastPage() }}</span>
 				@endif
-			@endif
+
+				@if ( isset($plans) && count($plans) )
+					@if (get_class($plans)=='Illuminate\Pagination\LengthAwarePaginator')
+						<small>(Total: {{ $plans->total() }} Events)</small>
+					@endif
+				@endif
+			</center>
 
 		</div>
 	</div>
@@ -299,8 +299,10 @@
 		</table>
 
 		@if (get_class($plans)=='Illuminate\Pagination\LengthAwarePaginator')
+			<div class="events-table">
 			<div class="d-flex justify-content-center fixed-bottom">
 				{!! $plans->links() !!}
+			</div>
 			</div>
 		@endif
 

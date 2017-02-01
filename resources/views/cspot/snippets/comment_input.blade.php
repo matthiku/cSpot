@@ -19,7 +19,7 @@
             {{-- is this item for leader's eyes only? --}}
             <a      href="#" class="float-right link small{{ $item->forLeadersEyesOnly ? ' bg-danger': '' }}" onclick="changeForLeadersEyesOnly(this)" 
                     data-value="{{ $item->forLeadersEyesOnly }}"
-                    title="Click to make item visible for {{ $item->forLeadersEyesOnly ? 'everyone': "leader's eyes only (useful for personal notes etc.)" }}">
+                    title="Make item visible for {{ $item->forLeadersEyesOnly ? 'everyone': "leader's eyes only (useful for personal notes etc.)" }}">
                 @if ($item->forLeadersEyesOnly)
                     <i class="fa fa-eye-slash"></i>
                 @else
@@ -30,62 +30,63 @@
             </a>
             {{ $item->forLeadersEyesOnly ? "Leader's" : 'General' }} Notes</h5>
 
-            <p class="card-text">
 
-                @if( Auth::user()->ownsPlan($plan->id) )
-                    <pre id="comment-item-id-{{ $item->id }}" class="editable-item-field form-control form-control-success">{{ $item->comment }}</pre>
 
-                @elseif (isset($item))
 
-                    {!! Form::text('comment', $item->comment, ['disabled'=>'disabled']); !!}
-                    <br>
+            @if( Auth::user()->ownsPlan($plan->id) )
 
-                @endif
+                {{-- show link to clear the public note --}}
+                <a      href="#" title="Discard notes text" 
+                        class="btn btn-outline-secondary float-right item-comment-public" id="public-notes-erase-link"
+                        onclick="deleteItemNote('public', 'comment-item-id-{{ $item->id }}', '{{ route('cspot.api.item.update') }}')" 
+                        style="max-width: 150px; display: {{ $item->comment ? 'initial' : 'none' }}">
+                    <i class="fa fa-remove text-muted"></i> erase
+                </a>
 
-                @if (! $item->song_id)
-                    {{-- checkbox to indicate if public note should be shown in the presentation --}}
-                    <span class="btn btn-secondary float-left item-comment-public">
-                        <label class="custom-control custom-checkbox">
-                            <input type="checkbox" id="toggle-show-comment" 
-                                  class="custom-control-input" {{ $item->show_comment ? 'checked="checked"' : '' }}
-                                onclick="toggleShowComment(this, 'show_comment-item-id-{{ $item->id }}', '{{ route('cspot.api.item.update') }}')"
-                                {{ Auth::user()->ownsPlan($plan->id) ? '' : ' disabled' }}>
-                            <span class="custom-control-indicator"></span>
-                            <span class="custom-control-description" id="show_comment-item-id-{{ $item->id }}"
-                                >{{ $item->show_comment ? 'Notes are presented as Title' : 'Show notes as Title' }} in the presentation</span>
-                        </label>
-                    </span>
-                @endif
+                <pre id="comment-item-id-{{ $item->id }}" class="editable-item-field form-control form-control-success w-75 mb-0">{{ $item->comment }}</pre>
 
-                @if( Auth::user()->ownsPlan($plan->id) )
-                    {{-- show link to clear the public note --}}
-                    <a      href="#" class="card-link float-right form-control item-comment-public" id="public-notes-erase-link"
-                            onclick="deleteItemNote('public', 'comment-item-id-{{ $item->id }}', '{{ route('cspot.api.item.update') }}')" 
-                            style="max-width: 150px; display: {{ $item->comment ? 'initial' : 'none' }}">
-                        <small><i class="fa fa-remove text-muted"></i> clear comment</small>
-                    </a>
-                @endif
+            @elseif (isset($item))
 
-                @if (! $item->song_id)
-                    {{-- checkbox to indicate if this item should be used to show the ANNOUNCEMENTS in the presentation --}}
-                    <br>
-                    <br>
-                    <span class="btn btn-secondary float-left item-comment-public">
-                        <label class="custom-control custom-checkbox">
-                            <input type="checkbox" id="toggle-show-announcements" 
-                                  class="custom-control-input" {{ $item->key == 'announcements' ? 'checked="checked"' : '' }}
-                                onclick="toggleShowAnnouncement(this, 'key-item-id-{{ $item->id }}', '{{ route('cspot.api.item.update') }}')"
-                                {{ Auth::user()->ownsPlan($plan->id) ? '' : ' disabled' }}>
-                            <span class="custom-control-indicator"></span>
-                            <span class="custom-control-description" id="key-item-id-{{ $item->id }}"
-                                >{{ $item->key=='announcements' 
-                                    ? 'This item will show the announcements' 
-                                    : 'Use this item to show the announcements' }} in the presentation</span>
-                        </label>
-                    </span>
-                @endif
+                {!! Form::text('comment', $item->comment, ['disabled'=>'disabled']); !!}
+                <br>
 
-            </p>
+            @endif
+
+
+            @if (! $item->song_id)
+                {{-- checkbox to indicate if public note should be shown in the presentation --}}
+                <span class="btn btn-secondary float-left item-comment-public">
+                    <label class="custom-control custom-checkbox mb-0">
+                        <input type="checkbox" id="toggle-show-comment" 
+                              class="custom-control-input" {{ $item->show_comment ? 'checked="checked"' : '' }}
+                            onclick="toggleShowComment(this, 'show_comment-item-id-{{ $item->id }}', '{{ route('cspot.api.item.update') }}')"
+                            {{ Auth::user()->ownsPlan($plan->id) ? '' : ' disabled' }}>
+                        <span class="custom-control-indicator"></span>
+                        <span class="custom-control-description" id="show_comment-item-id-{{ $item->id }}"
+                            >{{ $item->show_comment ? 'Notes are presented as Title' : 'Show notes as Title' }} in the presentation</span>
+                    </label>
+                </span>
+            @endif
+
+
+            @if (! $item->song_id)
+                {{-- checkbox to indicate if this item should be used to show the ANNOUNCEMENTS in the presentation --}}
+                <br>
+                <br>
+                <span class="btn btn-secondary float-left item-comment-public">
+                    <label class="custom-control custom-checkbox">
+                        <input type="checkbox" id="toggle-show-announcements" 
+                              class="custom-control-input" {{ $item->key == 'announcements' ? 'checked="checked"' : '' }}
+                            onclick="toggleShowAnnouncement(this, 'key-item-id-{{ $item->id }}', '{{ route('cspot.api.item.update') }}')"
+                            {{ Auth::user()->ownsPlan($plan->id) ? '' : ' disabled' }}>
+                        <span class="custom-control-indicator"></span>
+                        <span class="custom-control-description" id="key-item-id-{{ $item->id }}"
+                            >{{ $item->key=='announcements' 
+                                ? 'This item will show the announcements' 
+                                : 'Use this item to show the announcements' }} in the presentation</span>
+                    </label>
+                </span>
+            @endif
 
         </div>
 

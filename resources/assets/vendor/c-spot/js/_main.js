@@ -194,28 +194,40 @@ function getLocalStorageItem(key, defaultValue)
 */
 function setIdealCalendarRowHeight()
 {
+    // do nothing if the calendar is not visible
+    if ( ! $('.calendar-container').is(':visible'))
+        return
+
     /* find out remaining white space which can be distrubted to the rows */
     var remainingWhiteSpace = 
         $('.calendar-container').height() 
             - $('#calendar-tabs').height();
 
-    // we want a minimal white space to be distributed
-    if (remainingWhiteSpace < 10 ) return;
+    // we need a minimal amount of white space available to be distributed
+    if (remainingWhiteSpace < 20 ) return;
+
+    // get maximum available space for the calendar
+    var totalAvailableHeight = 
+        $('.calendar-container').height() 
+            - $('.calendar-month-row').parent().height();
+            - $('.calendar-col').parent().height();
+
+    if ($('.calendar-container').parent().hasClass('app-content'))
+        totalAvailableHeight = 
+            $('.app-content').height() 
+                - $('.calendar-month-row').parent().height();
+                - $('.calendar-col').parent().height();
 
     // get current max and total height of all calendar rows
-    var max=0, total=0, height=0, differ=0;
+    var max=0;
     $('.calendar-month').each( function(i) {
         var calendarWeek = $(this).children('.calendar-week');
         var rows = calendarWeek.length;
-        calendarWeek.each( function(j) {
-            height = $(this).height();
-            max    = Math.max(max, height);
-            total += height;
-        });
-        differ = total + remainingWhiteSpace;
-        differ = differ - max * rows;
-        if (differ>0)
-            max = max + differ/rows;
+
+        // make sure each the max heigt per week row is not exceeding the available space
+        max = totalAvailableHeight / rows - 10; // cater for padding or gutter 
+
+        // now assign the height value to each week row
         calendarWeek.each( function(j) {
             $(this).height(max);
         });
@@ -758,7 +770,8 @@ function toogleAllorFuturePlans(selection)
 
     // get current url and query string
     var currUrl = window.location.href.split('?');
-    var newUrl  = currUrl[0];
+    // make sure we have no trailing dash in the URL
+    var newUrl  = currUrl[0].split('#')[0];
 
     /* possible values for selection:
         user-future     My upcoming events (default)

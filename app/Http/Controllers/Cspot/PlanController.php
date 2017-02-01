@@ -288,7 +288,16 @@ class PlanController extends Controller
             }
         }
 
-        $allPlans = $plans->get();
+        // check if request contains a year value
+        $year = date("Y");
+        if ($request->has('year'))
+            $year = $request->year;
+
+        $allPlans = Plan::with('type')
+            ->whereDate('date', '>=', Carbon::parse('first day of january '.$year))
+            ->whereDate('date', '<', Carbon::parse('first day of january '.($year+1)))
+            ->orderby($orderBy, $order)
+            ->get();
 
         // for pagination, always append the original query string
         $plans = $plans->paginate(20)->appends($querystringArray);

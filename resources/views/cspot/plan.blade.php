@@ -271,9 +271,9 @@
                     <p class="mt-1 mb-0">
                         {!! Form::label('type', 'Subtitle:', ['class'=>'d-block']); !!}
                         @if ( isset($plan) )
-                            {!! Form::text('subtitle', $plan->subtitle, ['onchange' => 'enableSaveButton(this)']) !!}</p>
-                        @elseif ( isset($defaultValues) )
-                            {!! Form::text('subtitle', $defaultValues['subtitle'], ['onchange' => 'enableSaveButton(this)']) !!}</p>
+                            {!! Form::text('subtitle', $plan->subtitle, ['onfocus' => 'enableSaveButton(this)']) !!}</p>
+                        @elseif ( isset($defaultValues['type_id']) )
+                            {!! Form::text('subtitle', $defaultValues['subtitle'], ['onfocus' => 'enableSaveButton(this)']) !!}</p>
                         @else
                             {!! Form::text('subtitle') !!}</p>
                         @endif
@@ -292,7 +292,7 @@
                                 'date', $plan->date, 
                                 ['class'    => 'plan-form-minw center', 'onchange' => 'enableSaveButton(this)' ] ) 
                             !!}
-                        @elseif (isset($defaultValues))
+                        @elseif (isset($defaultValues['type_id']))
                             {!! Form::date( 
                                 'date', $defaultValues['date'], 
                                 ['class' => 'plan-form-minw center', 'onchange' => 'enableSaveButton(this)' ] )
@@ -307,14 +307,14 @@
                         <div class="form-group mt-1 mb-0" id="editPlanServiceTimes">
 
                             {!! Form::label('start', 'Event runs from:', ['class'=>'d-block']); !!}
-                            @if (isset($defaultValues))
+                            @if (isset($defaultValues['type_id']))
                                 {!! Form::time( 'start', $defaultValues['start']); !!}
                             @else
                                 {!! Form::time( 'start'); !!}
                             @endif
 
                             {!! Form::label('end', ' to ', ['class'=>'align-baseline']); !!}
-                            @if (isset($defaultValues))
+                            @if (isset($defaultValues['type_id']))
                                 {!! Form::time( 'end', $defaultValues['end']); !!}
                             @else
                                 {!! Form::time( 'end'); !!}
@@ -518,7 +518,7 @@
         <div class="checkbox">
             <label>
                 <input 
-                {{ isset($defaultValues) ? 'checked="checked"' : '' }}
+                {{ isset($defaultValues['type_id']) ? 'checked="checked"' : '' }}
                 type="checkbox" value="Y" name="addAnother">
                 Add another Event Plan after this one?
             </label>
@@ -604,7 +604,11 @@
         @endif
 
     @else
-        <script>document.forms.inputForm.leader_id.focus()</script>
+        @if (isset($defaultValues['type_id']))
+            <script>document.forms.inputForm.leader_id.focus()</script>
+        @else
+            <script>document.forms.inputForm.type_id.focus()</script>
+        @endif
     @endif
 
     

@@ -54,7 +54,7 @@ class Item extends Model
     public function itemType()
     {
         if ($this->song_id)
-            if ($this->song->title_2=='slide' || $this->song->title_2=='video' )
+            if ($this->song->title_2=='slides' || $this->song->title_2=='video' )
                 return $this->song->title_2;
             return 'song';
         return 'other';
