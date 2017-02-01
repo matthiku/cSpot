@@ -143,7 +143,7 @@
                 <p><strong>Training Videos</strong> are links to YouTube videos and will be presented in a particular way within c-SPOT.</p>
                 <p>For the <strong>description</strong>, you can use basic HTML elements like ol, ul etc.</p>
                 <p>The <strong>Book Ref.</strong> field is used to organize and sort the list of training videos.
-                    The syntax you should use is <em>XXnnb</em> where XX are 2 letters, nn are 2 numbers and b is otpional for another indicator.</p>
+                    The syntax you should use is <em>XXnnb</em> where XX are 2 letters, nn are 2 numbers and b is optional for another indicator.</p>
                 <p>Currently, 'tr' is being used to show the basic c-SPOT training videos.</p>
                 <hr>
             </div>

@@ -1322,7 +1322,7 @@ function searchForSongs()
                     noSongFound(search, type);
                     return;
                 }
-                $('#search-action-label').html('<span class="bg-info">Select the desired Song:</span>');
+                $('#search-action-label').html('<span class="bg-info mr-1">Select the desired Song:</span>');
                 $('#search-action-label').append('<span class="pull-xs-right small text-muted">Preview:</span>');
                 $('#searching').hide();
                 $('#searchForSongsSubmit').hide();
@@ -1516,7 +1516,7 @@ function createAndShowSearchResult(elem, result)
 
         // 3. the Label element
         var lbl = document.createElement('label');
-        lbl.className="c-input c-radio";
+        lbl.className="c-input link c-radio";
         lbl.title = result[i].lyrics.replace(/"/g,"&quot;");
         $(lbl).append('<input type="radio" name="searchRadios" value="'+result[i].id+'">');
         $(lbl).append('<span class="c-indicator"> </span>');

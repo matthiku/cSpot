@@ -1,6 +1,7 @@
-{{-- @include( 'cspot/snippets/modal', ['modalContent' => '$modalContent', 'modalTitle' => '$modalTitle' ] ) --}}
+
 
 <!-- # (C) 2016 Matthias Kuhs, Ireland -->
+
 
 <div class="table-responsive">
 	<table class="table table-items

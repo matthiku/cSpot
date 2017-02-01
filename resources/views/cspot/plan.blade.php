@@ -19,6 +19,8 @@
 
     @include('layouts.flashing')
 
+    @include('cspot/snippets/modal')
+
 
 
     {{-- html input form definition 
@@ -464,27 +466,20 @@
 
 
         @if ($plan->songsFreshness()>0 && Auth::user()->ownsPlan( $plan->id ))
-            <?php $modalContent = "
-                <p>In the first place, songs should be selected as appropriate for the occasion, not by statistical considerations.</p>
-                <p>The 'Song Freshness Index' is only provided in order to help better to understand how often the songs 
-                    in this plan have been used before (by all leaders and by you) and when it was the last time they were used in a service.</p>
-                <p>Each song added to this plan receives its own index and the numbers used for the calculation can be looked up by pointing to the individual index.</p>
-                <p>An average 'freshness' index of all songs of this plan is shown at the bottom.</p>
-            "; ?>
-            @include( 'cspot/snippets/modal', ['modalContent' => $modalContent, 'modalTitle' => "Songs Freshness? What's that?", 'id' => 'sfh' ] )
-
             <small class="hidden-sm-down mx-4"><span class="hidden-md-down">Songs </span>overall: 
                     <big>{{ $plan->songsFreshness()>50 ? '&#127823;' : '&#127822;' }}</big> {{ number_format( $plan->songsFreshness(), 0 ) }}% 'freshness'
-                <a href="#" title="What's that?" data-toggle="modal" data-target="#sfh">
+                <a href="#" title="What's that?" onclick="showSongFreshnessHelp()">
                 <i class="fa fa-question-circle fa-lg text-danger"></i></a>
             </small>
         @endif
 
         @if (Auth::user()->ownsPlan($plan->id))
-            <a href="#" title="" class="ml-4 hidden-sm-down bg-warning rounded px-1" onclick="showYTvideoInModal('w5qbcgW2qSY', this)" 
+            <a href="#" title="" class="ml-4 hidden-sm-down bg-warning rounded px-1" 
+                onclick="showYTvideoInModal('{{ App\Models\Song::where('book_ref', 'tr02')->value('youtube_id') }}', this)" 
                 data-toggle="tooltip" data-song-title="Learn how to use this page" data-original-title="Watch this short video to quickly learn how to work on this page.">
-                <i class="fa fa-youtube-play red"></i> Learn to<span class="hidden-md-down"> use this page</span>-P<span class="hidden-md-down">art</span> 1</a>
-            <a href="#" title="" class="ml-1 hidden-sm-down bg-warning rounded px-1" onclick="showYTvideoInModal('T9Csl2FPO1Y', this)" 
+                <i class="fa fa-youtube-play red"></i> Learn to<span class="hidden-md-down"> use this page</span>(P<span class="hidden-md-down">art</span> 1)</a>
+            <a href="#" title="" class="ml-1 hidden-sm-down bg-warning rounded px-1" 
+                onclick="showYTvideoInModal('{{ App\Models\Song::where('book_ref', 'tr02b')->value('youtube_id') }}', this)" 
                 data-toggle="tooltip" data-song-title="Learn how to use this page" data-original-title="Watch this short video to quickly learn how to work on this page.">
                 <i class="fa fa-youtube-play red"></i> Part 2</a>
         @endif
@@ -620,6 +615,24 @@
         @if (isset($types))
             cSpot.serviceTypes = JSON.parse('{!! addslashes( json_encode($types, JSON_HEX_APOS | JSON_HEX_QUOT) ) !!}');
         @endif
+
+        function showSongFreshnessHelp() {
+            var modalContent = "<p>In the first place, songs should be selected as appropriate for the occasion, not by statistical considerations.</p> \
+                <p>The 'Song Freshness Index' is only provided in order to help better to understand how often the songs \
+                    in this plan have been used before (by all leaders and by you) and when it was the last time they were used in a service.</p> \
+                <p>Each song added to this plan receives its own index and the numbers used for the calculation can be looked up by pointing to the individual index.</p> \
+                <p>An average 'freshness' index of all songs of this plan is shown at the bottom.</p> "
+
+            // write the modal title
+            $('#snippet-modal-title').text("Songs Freshness? What's that?");
+
+            // replace the modal content with the help text
+            $('#snippet-modal-content')
+                .html(modalContent);
+
+            // open the modal
+            $('.help-modal').modal();            
+        }
 
     </script>   
 

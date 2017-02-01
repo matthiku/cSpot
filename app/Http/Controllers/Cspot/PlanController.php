@@ -333,18 +333,6 @@ class PlanController extends Controller
 
 
 
-
-    /**
-     * Provide list of Event Plans which contain SONG items that have not yet been reported to CCLI
-     */
-    public function plansWithUnreportedSongs()
-    {
-        $plans = Plan::with('items', 'items.songs');
-        dd($plans);
-    }
-
-
-
     /**
      * Display the plan for a specific date
      *

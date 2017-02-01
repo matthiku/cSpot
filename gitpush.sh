@@ -89,12 +89,6 @@ git push staging master
 
 
 
-echo
-echo ----
-echo "writing route list to helpfile (routelist.txt)"
-echo ----
-php artisan route:list > routelist.txt
-
 
 
 if [ "$PRODUCTION" = "n" ]; then

@@ -9,10 +9,10 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <h4 id="snippet-modal-title">{{ $modalTitle }}</h4>
+                <h4 id="snippet-modal-title">{{ isset($modalTitle) ? $modalTitle : '' }}</h4>
             </div>
             <div id="snippet-modal-content" class="modal-body text-center">
-                {!! $modalContent !!}
+                {!! isset($modalContent) ? $modalContent : '' !!}
             </div>
         </div>
     </div>
