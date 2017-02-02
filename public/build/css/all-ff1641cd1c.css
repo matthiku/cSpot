@@ -13072,6 +13072,8 @@ red {
 }
 .ui-state-disabled {
     opacity: 1 !important;
+    cursor: initial !important;
+    pointer-events: initial !important;
 }
 .ui-state-disabled>.ui-tabs-anchor {
     background-color: white !important;

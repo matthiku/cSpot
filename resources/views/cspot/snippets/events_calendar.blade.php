@@ -22,7 +22,14 @@
 
 
 	<ul class="d-flex flex-wrap">
-		<li class="calendar-month-row"><a href="#calendar-years"><red>{{ $startDay->format("Y") }}</red></a></li>
+		<li class="calendar-month-row">
+			<a href="#calendar-years">
+				<span class="link" onclick="choosePrevNextYearForPlansList();" title="Show previous year">&laquo;</span><red>{{ 
+					$startDay->format("Y") }}</red>@if ($startDay->year < Carbon::today()->year)<span 
+						class="link" onclick="choosePrevNextYearForPlansList('next');" title="Show newer year">&raquo;</span>
+					@endif
+			</a>
+		</li>
 		<li class="calendar-month-row"><a href="#calendar-month-1">Jan<span class="hidden-md-down">uary</span></a></li>
 		<li class="calendar-month-row"><a href="#calendar-month-2">Feb<span class="hidden-md-down">ruary</span></a></li>
 		<li class="calendar-month-row"><a href="#calendar-month-3">Mar<span class="hidden-md-down">ch</span></a></li>

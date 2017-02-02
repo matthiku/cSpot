@@ -118,7 +118,7 @@
         ITEM area 
     -->
     <div class="d-flex justify-content-center">
-        <div id="tabs"  style="max-width: 65rem; ">
+        <div id="tabs"  style="min-width: 60%;">
 
             {{-- 
                     ======================================================================================================    TABS headers 

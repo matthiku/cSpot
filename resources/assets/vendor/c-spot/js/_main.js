@@ -93,15 +93,44 @@ function blink(selector){
         url.pathname ; //(/some/path)
         url.search ; // (?name=value)
         url.hash; //(#anchor)
+        url.href  // full url
+        url.params // object with all search parameters
 */
 function parseURLstring(urlstring)
 {
     urlstring = urlstring || window.location.href;
     var url = document.createElement('a');
     url.href = urlstring;
+
+    // get an object with all the search string parameters as elements
+    var search = url.search.split('?');
+    var param;
+    if (search.length>1)
+        param = search[1].split('&');
+    var params = {};
+    if (param) {
+        $.each(param, function(i) {
+            var spl = param[i].split('=');
+            if (spl.length>1)
+                params[spl[0]] = spl[1];
+        })
+    }
+    url.params = params;
+
     return url;
 }
 
+/* serialize the items of an object into an URL search string
+*/
+function serializeForUrl(obj)
+{
+    var str = '?';
+    $.each(obj, function(elem) {
+        str += elem + '=' + obj[elem] + '&';
+    })
+    // remove trailing &
+    return str.substring(0, str.length-1);
+}
 
 
 /* 
@@ -212,7 +241,8 @@ function setIdealCalendarRowHeight()
             - $('.calendar-month-row').parent().height();
             - $('.calendar-col').parent().height();
 
-    if ($('.calendar-container').parent().hasClass('app-content'))
+    // check if there is no additional NavBar as on the "Upcoming Events" page
+    if ( ! $('.calendar-container').siblings('div.row').length )
         totalAvailableHeight = 
             $('.app-content').height() 
                 - $('.calendar-month-row').parent().height();
@@ -232,6 +262,29 @@ function setIdealCalendarRowHeight()
             $(this).height(max);
         });
     });
+}
+function choosePrevNextYearForPlansList(direction)
+{
+    var myUrl = parseURLstring();
+
+    // we can only move forward if we already have a year
+    if (direction=='next' && ! myUrl.params.year)
+        return
+
+    var today = new Date;
+
+    if (direction=='next')
+        if (myUrl.params.year)
+            myUrl.params.year += 1;
+        else
+            myUrl.params.year = 1*today.getFullYear() + 1;
+    else
+        if (myUrl.params.year)
+            myUrl.params.year -= 1;
+        else
+            myUrl.params.year = 1*today.getFullYear() - 1;
+
+    window.location.href = myUrl.pathname + serializeForUrl(myUrl.params);
 }
 
 
@@ -255,7 +308,7 @@ function autoAdvance()
 
 function startAutoAdvance() 
 {
-    var currUrl = parseURLstring(window.location.href);
+    var currUrl = parseURLstring();
     if (currUrl.search) return;
     location.href = currUrl.baseURI + '?advance=auto';
 }

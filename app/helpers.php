@@ -871,6 +871,139 @@ function getUsersRolesAndInstruments()
 }
 
 
+function getPlans($request)
+{
+    // set default values
+    $filterby    = isset($request->filterby)    ? $request->filterby    : '';
+    $filtervalue = isset($request->filtervalue )? $request->filtervalue : '';
+    $show        = isset($request->show  )      ? $request->show        : 'future';
+    $orderBy     = isset($request->orderby)     ? $request->orderby     : 'date';
+    $order       = isset($request->order)       ? $request->order       : 'asc';
+
+    if ($filtervalue=='[]')
+        $filtervalue='all';
+
+    if ($filterby=='type' && $filtervalue=='all') {
+        $filterby = 'future';
+        $show = 'all';
+    }
+
+
+    // show only plans for certain user ids or all users
+    if ($filterby=='user') 
+    {
+        $plans = Plan::with('type');
+
+        // show all plans, past and future?
+        if (is_numeric($filtervalue))
+            $plans
+                ->where('leader_id', $filtervalue)
+                ->orWhere('teacher_id', $filtervalue);
+
+        if ($show  != 'all') {
+            $plans->whereDate('date', '>', Carbon::yesterday());
+            $heading = 'Upcoming Events for ';
+        }
+        else 
+            $heading = 'All Events for ';
+
+        $plans->orderBy($orderBy, $order);
+
+        if ($filtervalue == 'all')
+            $heading .= 'all users';
+        else 
+            $heading .= User::find($filtervalue)->first_name;
+    }
+
+    // show only plans of certain type
+    elseif ($filterby=='type') 
+    {
+        if (is_numeric($filtervalue)) {
+            if ($show=='all') {
+                $plans = Plan::with('type')
+                    ->where('type_id', $filtervalue)
+                    ->orderBy($orderBy, $order);
+                $heading = 'Show All ';
+            } else {
+                $plans = Plan::with('type')
+                    ->whereDate('date', '>', Carbon::yesterday())
+                    ->where('type_id', $filtervalue)
+                    ->orderBy($orderBy, $order);
+                $heading = 'Show Upcoming ';
+            }
+            $heading .= Type::find($filtervalue)->name.'s';
+        }
+
+        // filtervalue can also be an array of event type id's
+        else {
+            $filtervalue = json_decode($filtervalue);
+            $heading = "Various Upcoming Event Types";
+            
+            if ($show=='all') {
+                $plans = Plan::with('type')
+                    ->whereIn('type_id', $filtervalue)
+                    ->orderBy($orderBy, $order);
+                $heading = "Various Event Types";
+            }
+            else 
+                $plans = Plan::with('type')
+                    ->whereDate('date', '>', Carbon::yesterday())
+                    ->whereIn('type_id', $filtervalue)
+                    ->orderBy($orderBy, $order);
+        }
+    }
+
+    // show all future plans
+    elseif ($filterby=='future') 
+    {
+        // get ALL future plans incl today
+        $plans = Plan::with(['type', 'leader', 'teacher'])
+            ->whereDate('date', '>', Carbon::yesterday())
+            ->orderBy($orderBy, $order);
+
+        // for an API call, return the raw data in json format (without pagination!)
+        if (isset($request->api)) {
+            return json_encode($plans->get());
+        }
+        $heading = 'Upcoming Services';
+    }
+
+    elseif ($filterby=='date') 
+    {
+        // list only plans of a certain date
+        $plans = Plan::with(['type', 'leader', 'teacher'])
+            ->whereDate('date', 'like', '%'.$filtervalue.'%')
+            ->orderBy($orderBy, $order);
+        $heading = 'Events for '.Carbon::parse($filtervalue)->formatLocalized('%A, %d %B %Y');
+    }
+
+    // show only plans of the current user 
+    else
+    {
+        // show only the user's own plans 
+        if ($show  =='all') {
+            // past and future plans
+            $plans = Plan::where('leader_id', Auth::user()->id)
+                       ->orWhere('teacher_id', Auth::user()->id)
+                          ->with('type')
+                       ->orderBy($orderBy, $order);
+            $heading = 'All Events for '.Auth::user()->name;
+        } else {
+            // only future plans
+            $plans = Plan::with('type')
+                    ->whereDate('date', '>', Carbon::yesterday())
+                        ->where(function ($query) {
+                            $query->where('leader_id', Auth::user()->id)
+                                ->orWhere('teacher_id', Auth::user()->id);
+                            })
+                      ->orderBy($orderBy, $order);
+            $heading = 'Upcoming Events for '.Auth::user()->name;
+        }
+    }
+    return [$plans, $heading];
+}
+
+
 /**
  * get list of future plans where the current user is listed as member
  */
