@@ -55,7 +55,7 @@
 
 			<span id="submit-sequence-button" class="btn btn-sm bg-success text-white align-text-top link hidden ml-2" onclick="submitChangedSequence();" 
 			   		title="submit new or changed sequence">
-			   <big>&#128427; </big> Save!</span>
+			   <big>&#128427; </big> Confirm<span class="hidden-lg-down"> new Sequence</span>!</span>
 		</span>
 
 		<span id="create-default-seq-button" class="p-1 ml-2{{ $song->sequence ? ' hidden' : '' }}">
@@ -308,10 +308,12 @@
         				<a onclick="removeNewOnSongRow($(this).parents('.onsong-row'));">
 							<span class="float-right mr-1">&#9660;</span>
 							<span class="float-right">&#9664;</span>
-							{{  $onsong->song_part->name }}
-							@if ($onsong->song_part->code != 'm')
-								<span class="text-white">({{ $onsong->song_part->code }})</span>
-							@endif
+							<span class="song-part-name">								
+								{{  $onsong->song_part->name }}
+								@if ($onsong->song_part->code != 'm')
+									<span class="text-white">({{ $onsong->song_part->code }})</span>
+								@endif
+							</span>
 			        	</a>
       				</h6>
 				</div>
@@ -339,16 +341,20 @@
 	--}}
 	<div class="onsong-row rounded-bottom mb-2 hidden" id="new-onsong-row" role="tablist" aria-multiselectable="true">
 
-		{{-- placeholder to show the part name and code above the onsong data
+		{{-- show the part name and code above the onsong data
 		--}}
-		<div class="bg-info pl-2 rounded-top cell-part-name" role="tab" data-part-code="" id="heading-0">
-			<h5 class="mb-0">
-				<a data-toggle="collapse" data-parent="#onsong-parts" href="#collapse-0"
-										 aria-expanded="true" aria-controls="collapse-0"
-        								 onclick="removeNewOnSongRow($(this).parents('.onsong-row'));">
-					Select song-part name and enter new lyrics/chords or other text:
+		<div class="cell-part-name bg-info pl-2 py-1 link rounded-top" role="tab" data-part-code="" id="heading-0"
+				data-toggle="collapse" data-parent="#onsong-parts" href="#collapse-0"
+										 aria-expanded="true" aria-controls="collapse-0">
+			<h6 class="mb-0">
+				<a onclick="removeNewOnSongRow($(this).parents('.onsong-row'));">
+					<span class="float-right mr-1">&#9660;</span>
+					<span class="float-right">&#9664;</span>
+					<span class="song-part-name">								
+						Select song-part name and enter new lyrics/chords or other text:
+					</span>
 	        	</a>
-			</h5>
+			</h6>
 		</div>
 
 		@include('cspot.snippets.onsong_action', ['newOnsongRow' => true])

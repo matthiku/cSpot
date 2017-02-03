@@ -12955,7 +12955,7 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
 
 
 
-/* Make sure we ue the full viewport */
+/* Make sure we use the full height of the viewport */
 html,
 body {
     height: 100%;
@@ -13175,6 +13175,10 @@ red {
   /* -------------------------------------------*/
  /*        other, page-specific components     */
 /* -------------------------------------------*/
+
+.onsong-instructions {
+    max-width: 60rem;
+}
 
 #song-parts-wastebin-zone {
     cursor: crosshair;

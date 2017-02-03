@@ -112,6 +112,10 @@ function insertNewOnSongRow()
     // make sure this part is not collapsed
     $('#adding-new-song-part > .cell-part-text').addClass('show');
 
+    // make sure to hide the new row if user clicks outside the modal to hide it        
+    $('#selectSongPartCodeModal').on('hidden.bs.modal', function () {
+        removeNewOnSongRow($('#adding-new-song-part'));
+    });
     // make sure all is in the visible viewport
     window.location.href = "#tbl-bottom";
     $('#selectSongPartCodeModal').on('shown.bs.modal', function () {
@@ -121,10 +125,6 @@ function insertNewOnSongRow()
         // set the focus on the part-type selection 
         $('#new-onsong-part-selection').focus();
     })
-    // make sure to hide the new row if user clicks outside the modal to hide it        
-    $('#selectSongPartCodeModal').on('hide.bs.modal', function () {
-        removeNewOnSongRow($('#adding-new-song-part'));
-    });
 
     // call Modal for onsong part name selection
     $('#selectSongPartCodeModal').modal('show');
@@ -150,6 +150,9 @@ function editPartNameForSelection(code, what)
 */
 function insertSelectedPartCode()
 {
+    // remove that event from the modal      
+    $('#selectSongPartCodeModal').off('hidden.bs.modal');
+
     var newCodeId = $('#new-onsong-part-selection').val();
     var newCodeCode = $($('#new-onsong-part-selection :selected')[0]).data('code');
     var newCodeName = $($('#new-onsong-part-selection :selected')[0]).text();
@@ -158,13 +161,13 @@ function insertSelectedPartCode()
         // write html code to show Part name and part code
         var html = '';
         if (newCodeCode!='m')
-            html += newCodeName + '<span>' + (newCodeCode!='m' ? ' <span class="text-white">('+newCodeCode+')</span>' : '') + '</span>';
+            html += newCodeName + (newCodeCode!='m' ? ' <span class="text-white">('+newCodeCode+')</span>' : '');
         else 
             $('.hints-for-onsong-metadata').show();
 
-        $('#adding-new-song-part > .cell-part-name > h5 > a').attr('href', '#collapse-'+newCodeCode);
-        $('#adding-new-song-part > .cell-part-name > h5 > a').attr('aria-controls', 'collapse-'+newCodeCode);
-        $('#adding-new-song-part > .cell-part-name > h5 > a').html(html);
+        $('#adding-new-song-part > .cell-part-name').attr('href', '#collapse-'+newCodeCode);
+        $('#adding-new-song-part > .cell-part-name').attr('aria-controls', 'collapse-'+newCodeCode);
+        $('#adding-new-song-part > .cell-part-name > h6 > a > .song-part-name').html(html);
         $('#selectSongPartCodeModal').modal('hide');
 
         // add selected code id as data attribute to the row
