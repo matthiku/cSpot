@@ -11,7 +11,7 @@
 
 {{-- Show and edit the SEQUENCE 
 --}}
-<div class="row bg-faded rounded mx-1 p-1">
+<div class="row bg-faded rounded mx-1 p-1" id="top-of-sequence">
 
 	<div class="col-12 pl-0">
 		<h5 class="mb-1">
@@ -264,9 +264,10 @@
 
 
 <div class="small text-right mt-1 mr-2">
-	<a href="#" class="link" onclick="
+	<a href="#top-of-sequence" class="link" onclick="
 			$('.cell-part-text').toggleClass('show');
-			$('.collapse-button-text').toggle();">
+			$('.collapse-button-text').toggle();
+		">
 		<span class="collapse-button-text">collapse</span>
 		<span class="collapse-button-text hidden">expand</span>
 		all parts
@@ -299,17 +300,20 @@
 
 				{{-- show the part name and code above the onsong data
 				--}}
-				<div class="cell-part-name bg-info pl-2 rounded-top" role="tab" data-part-code="{{ $onsong->song_part->code }}" id="heading-{{ $onsong->song_part_id }}">
-					<h5 class="mb-0">
-        				<a data-toggle="collapse" data-parent="#onsong-parts" href="#collapse-{{ $onsong->song_part_id }}"
-        										 aria-expanded="true" aria-controls="collapse-{{ $onsong->song_part_id }}"
-        										 onclick="removeNewOnSongRow($(this).parents('.onsong-row'));">
+				<div class="cell-part-name bg-info pl-2 py-1 link rounded-top" role="tab" data-part-code="{{ $onsong->song_part->code }}" 
+        				data-toggle="collapse" data-parent="#onsong-parts" href="#collapse-{{ $onsong->song_part_id }}"
+        									  aria-expanded="true" aria-controls="collapse-{{ $onsong->song_part_id }}"
+						id="heading-{{ $onsong->song_part_id }}">
+					<h6 class="mb-0">
+        				<a onclick="removeNewOnSongRow($(this).parents('.onsong-row'));">
+							<span class="float-right mr-1">&#9660;</span>
+							<span class="float-right">&#9664;</span>
 							{{  $onsong->song_part->name }}
 							@if ($onsong->song_part->code != 'm')
 								<span class="text-white">({{ $onsong->song_part->code }})</span>
 							@endif
 			        	</a>
-      				</h5>
+      				</h6>
 				</div>
 
 				{{-- actual data and editors --}}
@@ -358,16 +362,16 @@
 
 {{-- Row with button to add new song part 
 --}}
-<div class="insertNewOnSongRow-link bg-inverse rounded ">
+<div class="insertNewOnSongRow-link bg-inverse rounded pr-1">
 
 	@if (Auth::user()->isEditor())
 		<span onclick="insertNewOnSongRow();" 
 			class="btn btn-sm btn-success link"><i class="fa fa-plus"></i> Add new Part</span>
 	@endif
 
-	<span class="small float-right">
-		<a href="http://www.logue.net/xp/" target="new"><span class="text-info">Tool for Transposing</span>
-			<i class="fa fa-external-link"></i></a>
+	<span class="small float-right mt-1">
+		<a href="http://www.logue.net/xp/" target="new"><span class="text-info">Transposing Tool</span>
+			<i class="fa fa-external-link text-white"></i></a>
 	</span>
 </div>
 

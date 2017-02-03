@@ -42606,6 +42606,16 @@ function toggleTrashed() {
 
 
 
+
+/*\
+|*|
+|*|
+|*#======================================================================================= ONSONG  EDITOR  TOOLS
+|*|
+|*|
+\*/
+
+
 /*\
 |*|
 |*+------------------------------------------ Convert Chords to OnSong and vice versa
@@ -42874,6 +42884,8 @@ function findChords(text)
     }
     return loc;
 }
+
+
 
 
 /*\
@@ -43697,7 +43709,6 @@ function insertNewOnSongRow()
 
     // make sure all is in the visible viewport
     window.location.href = "#tbl-bottom";
-        
     $('#selectSongPartCodeModal').on('shown.bs.modal', function () {
         // move the part-type selection dialog down to the bottom
         var mo = $('.modal-content.select-songpart-code')[0];
@@ -43705,6 +43716,10 @@ function insertNewOnSongRow()
         // set the focus on the part-type selection 
         $('#new-onsong-part-selection').focus();
     })
+    // make sure to hide the new row if user clicks outside the modal to hide it        
+    $('#selectSongPartCodeModal').on('hide.bs.modal', function () {
+        removeNewOnSongRow($('#adding-new-song-part'));
+    });
 
     // call Modal for onsong part name selection
     $('#selectSongPartCodeModal').modal('show');
@@ -43795,8 +43810,11 @@ function findNextPossibleOnSongPart() {
 
 function removeNewOnSongRow(row)
 {
+    if ($(row).prop('id')!= "adding-new-song-part"  &&  $('#adding-new-song-part').is(':visible'))
+        return;
+
     // make sure we have no "outdated" min-height
-    row.css('min-height', 0);
+    $(row).css('min-height', 0);
 
     $('.show-onsong-format-hint').hide();
     $('.hints-for-chords-over-lyrics-editor').hide();

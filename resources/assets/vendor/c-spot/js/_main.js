@@ -1158,6 +1158,16 @@ function toggleTrashed() {
 
 
 
+
+/*\
+|*|
+|*|
+|*#======================================================================================= ONSONG  EDITOR  TOOLS
+|*|
+|*|
+\*/
+
+
 /*\
 |*|
 |*+------------------------------------------ Convert Chords to OnSong and vice versa
@@ -1426,6 +1436,8 @@ function findChords(text)
     }
     return loc;
 }
+
+
 
 
 /*\
