@@ -2,6 +2,8 @@
 <?php 
 	Use Carbon\Carbon; 
 
+	$today = Carbon::today();
+
 	if ($allPlans->count()) {
 		// get the earliest date we have in the list of events
 		$startDay = $allPlans->first()->date;
@@ -11,6 +13,7 @@
 		$lastMonth  = $allPlans->last()->date;
 	} 
 
+	$calendarYear = $startDay->year;
 	$first = true;
 
 	if ($allPlans->count()) {
@@ -25,7 +28,7 @@
 		<li class="calendar-month-row">
 			<a href="#calendar-years">
 				<span class="link" onclick="choosePrevNextYearForPlansList();" title="Show previous year">&laquo;</span><red>{{ 
-					$startDay->format("Y") }}</red>@if ($startDay->year < Carbon::today()->year)<span 
+					$startDay->format("Y") }}</red>@if ($startDay->year < $today->year)<span 
 						class="link" onclick="choosePrevNextYearForPlansList('next');" title="Show newer year">&raquo;</span>
 					@endif
 			</a>
@@ -84,7 +87,11 @@
 
 				<div class="d-flex mt-1 calendar-week">
 
+
+
 {{-- avoid too many blank-filled lines in the HTML source! --}}
+
+
 {{-- loop through each day for this month' calendar page --}}
 @for ($i = 0; $i < 44; $i++)
 
@@ -92,11 +99,11 @@
 		{{-- after 7 days, start a new row --}}
 </div><div class="d-flex mt-1 calendar-week">
 	@endif
-<div class="calendar-day {{ $firstDay==Carbon::today() ? 'calendar-day-today' : '' }}
+<div class="calendar-day {{ $firstDay==$today ? 'calendar-day-today' : '' }}
 	rounded{{ $startDay->month != $firstDay->month ? ' bg-gray' : ' bg-white' }}{{ $i%7<6 ? ' mr-1' : '' }}">
 
 <h3 class="mb-0 py-0 {{ $startDay->month != $firstDay->month ? ' text-muted' : '' }}">{{ $firstDay->day }}
-	@if ($firstDay >= Carbon::today())
+	@if ($firstDay >= $today)
 <a href="{{ url('cspot/plans/by_date') }}/{{ $firstDay->toDateString() }}" title="Add an event for this day" class="float-right text-muted link small">+</a>
 	@endif
 </h3>
@@ -140,10 +147,10 @@
 </div>
 
 <script>
-$( "#calendar-tabs" ).tabs({
-	active: {{ Carbon::today()->month }},
-	disabled: [0],
-});
+	$( "#calendar-tabs" ).tabs({
+		active: {{ $calendarYear < $today->year ? '12' : $today->month }},
+		disabled: [0],
+	});
 </script>
  
 <?php 

@@ -140,11 +140,11 @@ class PlanController extends Controller
      *
      *
      * @param  filterby     (user|type|date|future) 
-     *                      Show only plans for a certain user, of a certain type a certain date or all future events
+     *                      Show only plans for a certain user, of a certain type, a certain date or all events
      *
      * @param  filtervalue  (user_id|type_id)
      *
-     * @param  show         (all|future)
+     * @param  timeframe    (all|future)
      *                      Show only future plans or all 
      *
      * @param  orderBy      Field by which the list must be sorted by
@@ -161,29 +161,44 @@ class PlanController extends Controller
         if ($request->has('year'))
             $year = $request->year;
 
-        $firstYear = getPlans($request)[0]->first()->date->year;
+        // for the calendar view, get all plans, yet filtered as requested
         $allPlans = getPlans($request)[0]
             ->whereDate('date', '>=', Carbon::parse('first day of january '.$year))
             ->whereDate('date', '<', Carbon::parse('first day of january '.($year+1)))
             ->get();
 
-        $querystringArray = $request->input();
-        
-        // for pagination, always append the original query string
+        // the request determines the heading for the page
         $getPlans = getPlans($request);
         $heading   = $getPlans[1];
-        $somePlans = $getPlans[0]
+
+        // for pagination, always append the original query string
+        $querystringArray = $request->input();
+
+        // limit even the listing of plans if the request contains a year
+        if ($request->has('year')) {
+            $year = $request->year;
+            $somePlans = $getPlans[0]
+                ->whereDate('date', '>=', Carbon::parse('first day of january '.$year))
+                ->whereDate('date', '<', Carbon::parse('first day of january '.($year+1)))
+                ->paginate(20)
+                ->appends($querystringArray);
+        }
+        else $somePlans = $getPlans[0]
             ->paginate(20)
             ->appends($querystringArray);
 
+        // get year of earliest plan
+        $firstYear = Plan::orderBy('date')->first()->date->year;
+
+        // provide all the data to and show the view
         return view( 
             $this->view_all, 
             array(
-                'plans' => $somePlans, 
-                'allPlans' => $allPlans, 
-                'heading' => $heading, 
+                'plans'     => $somePlans, 
+                'allPlans'  => $allPlans, 
+                'heading'   => $heading, 
                 'userIsPlanMember' => listOfPlansForUser(),
-                'types' => Type::get(),
+                'types'     => Type::get(),
                 'firstYear' => $firstYear
             )
         );
@@ -206,11 +221,14 @@ class PlanController extends Controller
             ->orderBy('date')
             ->get();
 
+        $firstYear = Plan::orderBy('date')->first()->date->year;
+
         return view(
             'cspot.calendar', 
             [
-                'allPlans' => $plans,
-                'heading' => 'Events for '.$year,
+                'allPlans'  => $plans,
+                'heading'   => 'Events for '.$year,
+                'firstYear' => $firstYear
             ]
         );
     }

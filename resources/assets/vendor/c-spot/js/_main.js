@@ -212,7 +212,7 @@ function getLocalStorageItem(key, defaultValue)
 /*\
 |*|
 |*|
-|*#======================================================================================= VARIOUS  HELPERS  FOR  SPECIFIC  PAGES
+|*#======================================================================================= HELPERS  FOR  THE PLAN LIST PAGE  OR  EVENT CALENDAR
 |*|
 |*|
 \*/
@@ -263,6 +263,8 @@ function setIdealCalendarRowHeight()
         });
     });
 }
+/* Plans List Calendar view: show results from previous or next year
+*/
 function choosePrevNextYearForPlansList(direction)
 {
     var myUrl = parseURLstring();
@@ -275,7 +277,7 @@ function choosePrevNextYearForPlansList(direction)
 
     if (direction=='next')
         if (myUrl.params.year)
-            myUrl.params.year += 1;
+            myUrl.params.year = 1*myUrl.params.year + 1;
         else
             myUrl.params.year = 1*today.getFullYear() + 1;
     else
@@ -287,8 +289,102 @@ function choosePrevNextYearForPlansList(direction)
     window.location.href = myUrl.pathname + serializeForUrl(myUrl.params);
 }
 
+/* On the Plans List page, provide filter for service types
+*/
+function selectServiceType(that)
+{
+    if (that!='submit') {
+        $('#multi-filter-dropdown').addClass('open');
+        return;
+    }
 
-/*
+    // default is to show only future plans
+    var timeframe = '&timeframe=all';
+
+    // collect all selected options
+    var options = [];
+    $('input.form-check-input').each( function( index ) {
+        if ( $(this).prop('checked') )
+            if (this.value == "futureOnly")
+                timeframe = '';
+            else
+                options.push( this.value.split('-')[1] );
+    })
+    var url = $('#multi-filter-dropdown').data('url');
+    showSpinner();
+    if (options.length)
+        location.href = url + JSON.stringify(options) + timeframe;
+    else location.href = location.pathname;
+}
+/* On the Plans List page, add or remove Year filtering
+*/
+function addYearToPlansListSelection(that)
+{
+    var selected = that.value;
+    var myUrl = parseURLstring();
+    if (selected == 'all' && myUrl.params.year)
+        delete myUrl.params.year;
+    else
+        myUrl.params.year = selected;
+    window.location.href = myUrl.pathname + serializeForUrl(myUrl.params);
+}
+
+/* 
+    List filtering: Reload page with alternate filtering
+    (plans.blade.php)
+*/
+function toogleAllorFuturePlans(selection)
+{
+    console.log('user selected: ' + selection);
+    if (selection=='nothing') return;
+
+    var sel = selection.split('-');
+    if (sel.length!=2) return
+    var user = sel[0];
+    var time = sel[1];
+
+    showSpinner();
+
+    // get current url and query string
+    var currUrl = window.location.href.split('?');
+    // make sure we have no trailing dash in the URL
+    var newUrl  = currUrl[0].split('#')[0];
+
+    /* possible values for selection:
+        user-future     My upcoming events (default)
+        user-all        All my events
+        allusers-future All upcoming events
+        allusers-all    All events
+    */
+    if (selection=='allusers-future')
+        newUrl += '?filterby=future';
+    else {
+        // add new query string 
+        newUrl += '?timeframe='+time;
+
+        if (user=='allusers') 
+            newUrl += '&filterby=user&filtervalue=all';
+    }
+
+    window.location.href = newUrl;
+}
+
+
+
+
+
+/*\
+|*|
+|*|
+|*#======================================================================================= VARIOUS  HELPERS  FOR  SPECIFIC  PAGES
+|*|
+|*|
+\*/
+
+
+
+
+/* On a presentation page, click on the button or element which requests the next plan item
 */
 function autoAdvance()
 {
@@ -353,26 +449,6 @@ function toggleVideoTabs(on, off)
     $('#pill-'+off).removeClass('active');
 }
 
-
-
-function selectServiceType(that)
-{
-    if (that!='submit') {
-        $('#multi-filter-dropdown').addClass('open');
-        return;
-    }
-    // collect all selected options
-    var options = [];
-    $('input.form-check-input').each( function( index ) {
-        if ($(this).prop('checked'))
-            options.push( $(this).val().split('-')[1] );
-    })
-    var url = $('#multi-filter-dropdown').data('url');
-    showSpinner();
-    if (options.length)
-        location.href = url + JSON.stringify(options);
-    else location.href = location.pathname;
-}
 
 
 /* 
@@ -804,46 +880,6 @@ function cancelForm()
     location.href = newLoc;
 }
 
-
-/* 
-    List filtering: Reload page with alternate filtering
-    (plans.blade.php)
-*/
-function toogleAllorFuturePlans(selection)
-{
-    console.log('user selected: ' + selection);
-    if (selection=='nothing') return;
-
-    var sel = selection.split('-');
-    if (sel.length!=2) return
-    var user = sel[0];
-    var time = sel[1];
-
-    showSpinner();
-
-    // get current url and query string
-    var currUrl = window.location.href.split('?');
-    // make sure we have no trailing dash in the URL
-    var newUrl  = currUrl[0].split('#')[0];
-
-    /* possible values for selection:
-        user-future     My upcoming events (default)
-        user-all        All my events
-        allusers-future All upcoming events
-        allusers-all    All events
-    */
-    if (selection=='allusers-future')
-        newUrl += '?filterby=future';
-    else {
-        // add new query string 
-        newUrl += '?show='+time;
-
-        if (user=='allusers') 
-            newUrl += '&filterby=user&filtervalue=all';
-    }
-
-    window.location.href = newUrl;
-}
 
 /* 
     List sorting: Reload page with the 'orderBy' segment and the given field name

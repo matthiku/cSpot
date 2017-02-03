@@ -41,22 +41,21 @@
 			{{-- SINGLE Event type: Drop-Down menu to select which event type to show --}}
 			<form class="form-inline float-right mr-2">
 				<div class="form-group">
-					<select class="custom-select form-control form-control-sm pt-0 pb-0" id="typefilter" 
-						 onchange="showSpinner();location.href='{{url('cspot/plans')}}?filterby=type&filtervalue='+$(this).val()">
+					@php
+						$thisYear = Carbon\Carbon::today()->year;
+						$selectedYear = Request::has('year') ? Request::get('year') : '';
+					@endphp
+					<select class="custom-select form-control form-control-sm pt-0 pb-0" id="selectYear" 
+						 onchange="addYearToPlansListSelection(this)">
 
-						<option 
-							@if ( Request::has('filterby') && Request::get('filterby')=='type' )
-								{{ Request::get('filtervalue')=='all' ? 'selected' : '' }} 
-							@else 
-								selected
-							@endif
-							value="all">Show only: (event type)
+						<option value="all" {{ Request::has('year') ? '' : 'selected' }}>
+							Select Year ... 
 						</option>
 
-						@foreach ($types as $type)
-							<option {{ (Request::has('filterby') && Request::get('filterby')=='type' && strval(Request::get('filtervalue'))==strval($type->id)) ? 'selected' : '' }} 
-								value="{{ $type->id }}">{{ $type->name }}</option>
-						@endforeach
+						@for ($year = $firstYear; $year<=$thisYear; $year++)
+							<option {{ $selectedYear == $year ? 'selected' : '' }} 
+								value="{{ $year }}">{{ $year }}</option>
+						@endfor
 
 					</select>
 				</div>
@@ -82,6 +81,13 @@
 					</button>
 					<div class="dropdown-menu bg-faded padding-half" aria-labelledby="dropdownMenuButton">
 						<h5 class="dropdown-header px-0">Select which types to show:</h5>
+						<div class="form-check justify-content-start">
+		  					<label class="form-check-label label-normal text-warning" onclick="selectServiceType()">
+		    					<input type="checkbox" class="form-check-input" name="multi-filter" checked="true" 
+		    							value="futureOnly">
+		    					(show only future plans)
+		  					</label>
+						</div>
 						@foreach ($types as $type)
 							<div class="form-check justify-content-start">
 			  					<label class="form-check-label label-normal" onclick="selectServiceType()">
