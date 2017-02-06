@@ -556,11 +556,7 @@ function loadFromLocalCache()
             // save in global namespace
             cSpot.presentation.sync = true;
         }
-        // use the offline mode (Local Storage) - Default is: Yes
-        cSpot.presentation.useOfflineMode = getLocalStorageItem('config-OfflineMode', 'true') == 'true';
-        
-        // if the value in LocalStorage was set to 'true', then we activate the checkbox:
-        changeCheckboxIcon('#config-OfflineModeItem', cSpot.presentation.useOfflineMode);
+        checkOfflineMode();
     }
 
 
@@ -579,6 +575,18 @@ function loadFromLocalCache()
     if ( window.location.pathname.indexOf('/present')>10 ) {
         preparePresentation();
     }
+}
+
+
+
+// check if user allowed using of cached items
+function checkOfflineMode()
+{
+    // use the offline mode (Local Storage) - Default is: Yes
+    cSpot.presentation.useOfflineMode = getLocalStorageItem('config-OfflineMode', 'true') == 'true';
+    
+    // if the value in LocalStorage was set to 'true', then we activate the checkbox:
+    changeCheckboxIcon('#config-OfflineModeItem', cSpot.presentation.useOfflineMode);
 }
 
 

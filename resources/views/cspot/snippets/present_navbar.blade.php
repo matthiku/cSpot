@@ -135,12 +135,7 @@ $modalContent = '
         </div>
         {{-- go to next --}}
         <span class="navbar-text my-0 py-0">        
-            <a 
-                @if ($item->id == $item->plan->lastItem()->id)
-                    href="#" disabled="disabled"
-                @else
-                    href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/go/next/'.$type) }}"
-                @endif
+            <a href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/go/next/'.$type) }}"
                 class="nav-item btn btn-sm btn-warning" role="button" id="go-next-item">
                 <i class="fa fa-angle-double-right fa-lg"></i>
             </a>
@@ -222,7 +217,7 @@ $modalContent = '
         {{-- configuration menu --}}
         <div class="nav-item btn-group dropup mx-2">
 
-            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" onclick="checkOfflineMode();" 
                  id="presentConfigDropUpMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <span class="text-muted hidden-md-down">Conf.&nbsp;</span><i class="fa fa-cog"></i>
             </button>
@@ -492,7 +487,7 @@ $modalContent = '
         <ul class="nav navbar-nav hidden-sm-down">
             <li>
                 <a href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/go/next/'.$type) }}"
-                    class="nav-item btn btn-sm btn-warning" role="button" id="go-next-item">
+                  class="nav-item btn btn-sm btn-warning" role="button" id="go-next-item">
                     <i class="fa fa-angle-double-right fa-lg"></i>
                 </a>
             </li>

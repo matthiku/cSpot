@@ -46,7 +46,7 @@ $(document).ready(function() {
                 // load cached presentation data
                 if ( cSpot.presentationType=='lyrics' && cSpot.presentation.plan )
                     loadCachedPresentation(cSpot.presentation.plan.id);
-                if ( cSpot.presentationType=='chords' )
+                if ( cSpot.presentationType=='chords' || cSpot.presentationType=='sheetmusic' )
                     // for chords presentation
                     prepareChordsPresentation(cSpot.presentationType);
             }
@@ -59,6 +59,7 @@ $(document).ready(function() {
 
             // watch blank slide status in presentation
             cSpot.presentation.screenBlank = true;
+            ;;;console.log('**** Config Data loaded from back-end ****');
         })
 
         .fail( function(data) {

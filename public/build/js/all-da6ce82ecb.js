@@ -42004,11 +42004,7 @@ function loadFromLocalCache()
             // save in global namespace
             cSpot.presentation.sync = true;
         }
-        // use the offline mode (Local Storage) - Default is: Yes
-        cSpot.presentation.useOfflineMode = getLocalStorageItem('config-OfflineMode', 'true') == 'true';
-        
-        // if the value in LocalStorage was set to 'true', then we activate the checkbox:
-        changeCheckboxIcon('#config-OfflineModeItem', cSpot.presentation.useOfflineMode);
+        checkOfflineMode();
     }
 
 
@@ -42027,6 +42023,18 @@ function loadFromLocalCache()
     if ( window.location.pathname.indexOf('/present')>10 ) {
         preparePresentation();
     }
+}
+
+
+
+// check if user allowed using of cached items
+function checkOfflineMode()
+{
+    // use the offline mode (Local Storage) - Default is: Yes
+    cSpot.presentation.useOfflineMode = getLocalStorageItem('config-OfflineMode', 'true') == 'true';
+    
+    // if the value in LocalStorage was set to 'true', then we activate the checkbox:
+    changeCheckboxIcon('#config-OfflineModeItem', cSpot.presentation.useOfflineMode);
 }
 
 
@@ -43072,7 +43080,7 @@ $(document).ready(function() {
                 // load cached presentation data
                 if ( cSpot.presentationType=='lyrics' && cSpot.presentation.plan )
                     loadCachedPresentation(cSpot.presentation.plan.id);
-                if ( cSpot.presentationType=='chords' )
+                if ( cSpot.presentationType=='chords' || cSpot.presentationType=='sheetmusic' )
                     // for chords presentation
                     prepareChordsPresentation(cSpot.presentationType);
             }
@@ -43085,6 +43093,7 @@ $(document).ready(function() {
 
             // watch blank slide status in presentation
             cSpot.presentation.screenBlank = true;
+            ;;;console.log('**** Config Data loaded from back-end ****');
         })
 
         .fail( function(data) {
@@ -47408,6 +47417,12 @@ function navigateTo(where)
     // link doesn't exist:
     if (goWhereButton==null) return;
 
+    if (!cSpot.presentation) {
+        alert('c-SPOT not ready yet, please try again!');
+        return;
+    }
+
+
     // fade background and show spinner, but not in presentation mode!
     if ( document.baseURI.search('/present')<10 )
         showSpinner();
@@ -47519,17 +47534,19 @@ function navigateTo(where)
 
     }
 
+    var goWhere = $(goWhereButton).attr('href');
 
-    // make content disappear slowly...
-    $('#main-content').fadeOut();
-    $('#bottom-fixed-navbar>ul').fadeOut();
+    if (goWhere != '#') 
+        // inform server of current position if we are presenter
+        sendShowPosition(where);
+    else {
+        $('#show-spinner').modal('hide');
+        return;
+    }
 
-    // inform server of current position if we are presenter
-    sendShowPosition(where);
-
-    if (goWhereButton.href && goWhereButton.href!='#' ) {
+    if (goWhereButton.href) {
         // try to go to the location defined in href
-        window.location.href = goWhereButton.href;
+        window.location.href = goWhere;
         return;
     }    
     // otherwise, try to simulate a click on this element
@@ -48099,7 +48116,7 @@ function saveMainContentToLocalStorage(what) {
 function checkLocalStorageForPresentation(plan_id) 
 {
     // only if activated ....
-    if ( cSpot.presentation && !cSpot.presentation.useOfflineMode ) {
+    if ( plan_id < 99999  &&  cSpot.presentation && !cSpot.presentation.useOfflineMode ) {
         return;
     }
 

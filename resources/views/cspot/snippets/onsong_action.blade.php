@@ -53,7 +53,7 @@
 
 	{{-- OnSong Editor 
 	--}}
-	<div id="advanced-editor-{{ $newOnsongRow ? '0' : $onsong->id }}" class="advanced-editor rounded bg-info text-white lh-2 px-1"></div>
+	<div id="advanced-editor-{{ $newOnsongRow ? '0' : $onsong->id }}" class="advanced-editor rounded bg-success text-white lh-2 px-1 mt-1"></div>
 
 
 

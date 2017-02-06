@@ -2,6 +2,11 @@
 
 # (C) 2016 Matthias Kuhs, Ireland
 
+
+/**
+ * Provides CRUD access to the list of items of an event plan
+ */
+
 namespace App\Http\Controllers\Cspot;
 
 use Illuminate\Http\Request;
@@ -360,12 +365,13 @@ class ItemController extends Controller
 
                 $today = new Carbon( $item->plan->date );
                 $oneWeek = $today->addDays(7);
-                // get ALL future events incl today
-                $events = Plan::with(['type', 'leader', 'teacher'])
-                    ->whereDate('date', '>', $item->plan->date->subDay())
-                    ->whereDate('date', '<', $oneWeek)
-                    ->where('id', '!=', $item->plan_id) // excluding the current plan
-                    ->orderBy('date', 'asc')
+                // get ALL future events for the next 7 days (starting from and including the plan date)
+                $events = Plan
+                    ::with(    ['type', 'leader', 'teacher'])
+                    ->whereDate('date', '>',  $item->plan->date->subDay())
+                    ->whereDate('date', '<',  $oneWeek)
+                    ->where(    'id',   '!=', $item->plan_id) // excluding the current plan
+                    ->orderBy(  'date', 'asc')
                     ->get();
             }
 
@@ -377,10 +383,10 @@ class ItemController extends Controller
                     'item'          => $item,
                     'events'        => $events,
                     'versionsEnum'  => json_decode(env('BIBLE_VERSIONS')),
-                    'items'         => $item->plan->items->sortBy('seq_no')->all(),   // all items of the plan to which this item belongs      
-                    'type'          => $present,                                // what kind of item presentation is requested
-                    'bibleTexts'    => getBibleTexts($item->comment),       // the bible text if there was any reference in the comment field of the item
-                    'onSongChords'  => $item->song ? $item->song->onSongChords() : []     // prepare OnSong formatted lyrics and chords elements
+                    'type'          => $present,                                        // what kind of item presentation is requested
+                    'bibleTexts'    => getBibleTexts($item->comment),                   // the bible text if there was any reference in the comment field of the item
+                    'items'         => $item->plan->items->sortBy('seq_no')->all(),     // all items of the plan to which this item belongs      
+                    'onSongChords'  => $item->song ? $item->song->onSongChords() : []   // prepare OnSong formatted lyrics and chords elements
                 ]);
         }
 

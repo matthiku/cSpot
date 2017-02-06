@@ -143,10 +143,6 @@
                 --}}
                 <div class="plan-details">
                     <span>
-                        L.:&nbsp;<strong>{{ $plan->leader ? $plan->leader->name : $plan->leader_id }}</strong> &nbsp;
-                        @if ( strtoupper($plan->teacher->name)<>'N/A' )
-                            T.:&nbsp;<strong>{{ $plan->teacher->name }}</strong>
-                        @endif
                         <?php
                             $teamList = ''; // create the list of team members and their roles for this plan
                             foreach ( $plan->teams as $key => $team ) {
@@ -159,12 +155,15 @@
                                 }
                             }
                         ?>
-                        <a href="{{ url('cspot/plans/'.$plan->id.'/team') }}" class="ml-2 nowrap" 
-                            onclick="$('#show-spinner').modal({keyboard: false});" 
+                        <a href="{{ url('cspot/plans/'.$plan->id.'/team') }}" class="ml-2 nowrap"
                             data-template='<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><pre class="tooltip-inner tooltip-medium"></pre></div>'
-                            data-placement="left" data-toggle="tooltip" title="{{ $teamList }}">
+                            data-placement="bottom" data-toggle="tooltip" title="{{ $teamList }}">
                             <i class="fa fa-users"></i>&nbsp;Team<small>({{$plan->teams->count()}})</small>
                         </a> 
+                        L.:&nbsp;<strong>{{ $plan->leader ? $plan->leader->name : $plan->leader_id }}</strong> &nbsp;
+                        @if ( strtoupper($plan->teacher->name)<>'N/A' )
+                            T.:&nbsp;<strong>{{ $plan->teacher->name }}</strong>
+                        @endif
                     </span>
                     <small>
                         <?php
@@ -177,7 +176,7 @@
                             }
                         ?>
                         <a href="{{ url('cspot/plans/'.$plan->id.'/resource') }}" class="ml-2 nowrap" 
-                            onclick="$('#show-spinner').modal({keyboard: false});" title="{{ $resrcList }}">
+                            data-placement="left" data-toggle="tooltip" title="{{ $resrcList }}">
                             <i class="fa fa-cubes"></i>&nbsp;Resources<small>({{$plan->resources->count()}})</small>
                         </a> 
                     </small>

@@ -162,10 +162,11 @@ class PlanController extends Controller
             $year = $request->year;
 
         // for the calendar view, get all plans, yet filtered as requested
-        $allPlans = getPlans($request)[0]
+        $allPlans = getPlans($request)[0];
+        $allPlans
             ->whereDate('date', '>=', Carbon::parse('first day of january '.$year))
-            ->whereDate('date', '<', Carbon::parse('first day of january '.($year+1)))
-            ->get();
+            ->whereDate('date', '<', Carbon::parse('first day of january '.($year+1)));
+
 
         // the request determines the heading for the page
         $getPlans = getPlans($request);
@@ -195,7 +196,7 @@ class PlanController extends Controller
             $this->view_all, 
             array(
                 'plans'     => $somePlans, 
-                'allPlans'  => $allPlans, 
+                'allPlans'  => $allPlans->get(), 
                 'heading'   => $heading, 
                 'userIsPlanMember' => listOfPlansForUser(),
                 'types'     => Type::get(),

@@ -134,10 +134,10 @@
 		    	<span>{{ $heading }}</span>
 
 				<small class="small ml-3" style="font-size: 50%">
-					<a href="#" onclick="$('.events-table').toggle();setIdealCalendarRowHeight();">
+					<a href="#" onclick="$('.events-table').toggle();">
 						&#128197; show 
-						<span class="events-table">as calendar</span>
-						<span class="events-table hidden">list</span></a>
+						<span class="events-table hidden">calendar</span>
+						<span class="events-table">as list</span></a>
 				</small>
 		    </h4>
 
@@ -162,9 +162,9 @@
 
 
 
-		{{-- As an alternative, show the events in a calendar-like table 
+		{{-- show the events in a calendar-like table 
 		--}}
-		<div class="events-table calendar-container hidden">
+		<div class="events-table calendar-container">
 
 			@include ('cspot.snippets.events_calendar')	
 
@@ -173,11 +173,9 @@
 
 
 
-		{{-- show events as a list (table) 
+		{{-- As an alternative, show events as a list (table) 
 		--}}
-		<table class="events-table table table-striped table-hover{{ count($plans)>15 ? ' table-sm' : '' }}">
-
-
+		<table class="events-table hidden table table-striped table-hover{{ count($plans)>15 ? ' table-sm' : '' }}">
 
 			<thead class="thead-default">
 				<tr>
@@ -300,15 +298,14 @@
 	        @endforeach
 
 			</tbody>
-
-
 		</table>
 
+
 		@if (get_class($plans)=='Illuminate\Pagination\LengthAwarePaginator')
-			<div class="events-table">
-			<div class="d-flex justify-content-center fixed-bottom">
-				{!! $plans->links() !!}
-			</div>
+			<div class="events-table hidden">
+				<div class="d-flex justify-content-center fixed-bottom">
+					{!! $plans->links() !!}
+				</div>
 			</div>
 		@endif
 
@@ -319,5 +316,12 @@
 
 	@endif
 
+
+	<script>
+		$(document).ready( function() {
+
+			setIdealCalendarRowHeight();
+		})
+	</script>
 	
 @stop

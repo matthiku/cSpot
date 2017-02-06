@@ -339,6 +339,7 @@ function nextItem($plan_id, $item_id, $direction)
     if ($direction=='previous')
         $orderBy = 'desc';
 
+    // Get list of items for this plan, full or without FLEO items
     if ( Auth::user()->ownsPlan($plan_id) ) {
         // get all the items for this plan
         $items = $plan->items()
@@ -352,6 +353,12 @@ function nextItem($plan_id, $item_id, $direction)
             ->get();
     }
 
+    // what is the highest seq_no in this plan?
+    if ($orderBy=='asc')
+        $last_seq_no = $items->last()->seq_no;
+    else
+        $last_seq_no = $items->first()->seq_no;
+
     // perhaps the item_id is a seq no
     $Ar_seq_no = explode('-', $item_id);
 
@@ -363,8 +370,8 @@ function nextItem($plan_id, $item_id, $direction)
 
         // now find item with the new seq no
         $curItem = Item::where([
-            [ 'plan_id', '=', $plan_id    ], 
-            [ 'seq_no',  '=', $cur_seq_no ]
+            [ 'plan_id',  '=', $plan_id    ], 
+            [ 'seq_no',  '>=', $cur_seq_no ]
         ])->first();
 
         // return the item id of that item (if we found it!)
@@ -383,15 +390,14 @@ function nextItem($plan_id, $item_id, $direction)
     // get seq_no of desired next or previous item
     $new_seq_no = 0;    // to prevent unnassigned exception
     if ($direction == 'next') {
-        if ($curItem->seq_no == count($items)) {
-            $new_seq_no = 1.0;
-        } else {
-            $new_seq_no = $curItem->seq_no+1;
-        }
+        if ($curItem->seq_no == $last_seq_no)  // Are we already at the last item?
+            $new_seq_no = 1.0;                  // then we go back to the first item
+        else
+            $new_seq_no = $curItem->seq_no+1;   // otherwise we select the next item
     }
     elseif ($direction == 'previous') {
         if ($curItem->seq_no == 1.0) {
-            $new_seq_no = count($items);
+            $new_seq_no = $last_seq_no;
         } else {
             $new_seq_no = $curItem->seq_no-1;
         }
@@ -449,8 +455,6 @@ function insertItem( $request )
     // get all the items for this plan, ordered by their seq_no
     $items      = $plan->items()->orderBy('seq_no')->get();
 
-    Log::debug('INSERTITEM - newSeqNo old: '.$new_seq_no);
-
     // We are going to number all the items of this plan, starting with 1.0
     $counter = 1.0;
 
@@ -466,8 +470,6 @@ function insertItem( $request )
     //      seq_no of each item is always 1.0 bigger than the previous
 
     foreach ($items as $item) {
-
-        Log::debug( '$counter - $item->seq_no - $new_seq_no --- '.$counter.' - '.$item->seq_no.' - '.$new_seq_no );
 
         // Is this the position (seq_no) for the NEW ITEM?
         if ( $new_seq_no <= $item->seq_no  &&  $new_seq_no > $counter-1 ) {
@@ -498,8 +500,6 @@ function insertItem( $request )
     if ($new_seq_no >= $counter-1) {
         $new_seq_no  = $counter;
     }
-
-    Log::debug('INSERTITEM - newSeqNo new: '.$new_seq_no);
 
     // create a new Item using the input data from the request
     $newItem         = new Item( $request->except(['seq_no', 'moreItems', '_token']) );

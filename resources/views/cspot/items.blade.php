@@ -311,7 +311,7 @@
 	                    @if ( $item->song->hymnaldotnet_id )
 	                        <a target="new" title="Review song on hymnal.net" data-toggle="tooltip" class="mr-1" 
 	                            href="{{ $item->song->hymnaldotnet_id }}">
-	                            <i class="fa fa-music"></i> </a>
+	                            <img src="{{ url('/') }}/images/hymnal.net-logo.png" width="20"></a>
 	                    @endif
 	                    @if ( $item->song->ccli_no > 1000 && 'MP'.$item->song->ccli_no != $item->song->book_ref && Auth::user()->hasMusician() )
 	                        <a target="new" title="Review song on SongSelect" data-toggle="tooltip" class="mr-1" 

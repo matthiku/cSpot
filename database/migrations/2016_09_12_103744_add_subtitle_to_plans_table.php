@@ -15,7 +15,8 @@ class AddSubtitleToPlansTable extends Migration
         Schema::table('plans', function (Blueprint $table) {
             // add field for a subtitle of a plan
             $table->string('subtitle');
-            $table->boolean('private');
+            // if enabled, this plan will be hidden from the announcements
+            $table->boolean('private')->default(0);
         });
     }
 
