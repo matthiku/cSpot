@@ -142,6 +142,7 @@ class HomeController extends Controller
                 // keep track of current background image
                 'currentBGimage' => 0,
                 'BGimageCount' => 0,
+                'slidesCount' => 0,
 
                 // get relevant ids of current slides
                 'plan_id' => $item->plan_id,

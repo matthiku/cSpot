@@ -272,7 +272,7 @@ class FileController extends Controller
     /**
      * Change seq_no of a file 
      */
-    public function move($item_id, $file_id, $direction)
+    public function move(Request $request, $item_id, $file_id, $direction)
     {
         $item = Item::with('files')->find($item_id);
         if ($item) {
@@ -292,6 +292,9 @@ class FileController extends Controller
 
             // make sure all files atteched to this item have the correct seq no now
             correctFileSequence($item);
+
+            // notify view that the image was moved
+            $request->session()->flash('newFileAdded', $file->id);
 
             return \Redirect::route( 'cspot.items.edit', [$item->plan_id, $item->id] );
         } 

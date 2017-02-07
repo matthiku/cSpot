@@ -20,20 +20,6 @@
 
 
 
-
-{{--     {!! Form::model( $item, array(
-        'route'  => array('cspot.items.update', $item->id), 
-        'method' => 'put', 
-        'id'     => 'inputForm',
-        'class'  => 'form-horizontal',
-        'files'  => true,
-        )) !!}
-
-    {!! Form::hidden('seq_no', $seq_no) !!}
-    {!! Form::hidden('plan_id', isset($plan) ? $plan->id : $item->plan_id ) !!}
- --}}
-
-
     <!-- 
         header area 
     -->
@@ -202,8 +188,6 @@
                     ======================================================================================================   actual TABS 
             --}}
             @if ( $item->song_id )
-
-                {!! Form::hidden('song_id', $item->song_id) !!}
 
                 <div id = "song-details-tab" class="p-0">
 
@@ -485,9 +469,24 @@
                         Add image
                     </span>
 
+
                     {{-- Form to add new (image) file --}}
                     <div id="col-2-file-add" class="mb-1 dropzone hidden">
+
+                        {!! Form::model( $item, array(
+                            'route'  => array('cspot.items.update', $item->id), 
+                            'method' => 'put', 
+                            'id'     => 'inputForm',
+                            'class'  => 'form-horizontal',
+                            'files'  => true,
+                            )) !!}
+                        {!! Form::hidden('seq_no', $seq_no) !!}
+                        {!! Form::hidden('plan_id', isset($plan) ? $plan->id : $item->plan_id ) !!}
+
                         @include('cspot.snippets.add_files')
+
+                        {!! Form::close() !!}
+
                     </div>
                 
                 @else
@@ -677,8 +676,6 @@
     @endif    
 
 
-
-    {{-- {!! Form::close() !!} --}}
 
     {{-- activate the tabs 
     --}}

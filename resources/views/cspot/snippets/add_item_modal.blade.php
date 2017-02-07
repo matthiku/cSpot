@@ -15,9 +15,8 @@
 
                 {{-- M O D A L    H E A D E R - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
                 --}}
-                <div class="modal-body item-modal-header">
-                    One moment please....
-                </div>
+                <div class="modal-body item-modal-header">One moment please....</div>
+                
                 <div class="modal-body item-modal-header center" style="display: none;">
 
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">

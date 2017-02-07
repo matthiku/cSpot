@@ -509,10 +509,11 @@ class ItemController extends Controller
     public function update(Request $request, $id, $seq_no=null)
     {
         $item    = Item::with('files')->find($id);
+
         if (!$item) {
             flashError('Error! Item with ID "' . $id . '" not found! (F:update)');
-            return \Redirect::back();
-        }
+            return \Redirect::back(); }
+
         $plan_id = $item->plan_id;
         $plan    = Plan::find( $plan_id );
 
@@ -539,9 +540,9 @@ class ItemController extends Controller
         }
 
         // check user rights (teachers and leaders can edit items of their own plan)
-        if (! checkRights($plan)) {
+        if (! checkRights($plan))
             return redirect()->back();
-        }
+
 
         // handle file uplaods
         if ($request->hasFile('file')) {
@@ -549,15 +550,13 @@ class ItemController extends Controller
             // file category is mandatory
             if ( ! $request->has('file_category_id')  ){
                 flashError('You must select a category for this file!');
-                return \Redirect::route('items.edit', [$plan_id, $id]);
-            }
+                return \Redirect::route('items.edit', [$plan_id, $id]); }
 
             // only accept valid categories
             $cats = DB::table('file_categories')->find($request->file_category_id);
             if (!$cats) {
                 flashError('No valid category selected for this file!');
-                return \Redirect::route('items.edit', [$plan_id, $id]);
-            }
+                return \Redirect::route('items.edit', [$plan_id, $id]); }
 
             // check if it is a valid file
             if ($request->file('file')->isValid()) {
@@ -573,8 +572,7 @@ class ItemController extends Controller
             }
             else {
                 flashError('Uploaded file could not be validated!');
-                return \Redirect::route('items.edit', [$plan_id, $id]);
-            }
+                return \Redirect::route('items.edit', [$plan_id, $id]); }
         }
 
 
@@ -582,9 +580,9 @@ class ItemController extends Controller
             // get all item fields from the request
             $fields = $request->except('_token', '_method');
             // if a single song was selected above, add it to the array
-            if (isset($songs)) {
+            if (isset($songs))
                 $fields['song_id'] = $songs[0]->id;
-            }
+            
             $item->update( $fields );
         } 
         else {

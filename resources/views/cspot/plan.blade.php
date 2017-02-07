@@ -576,7 +576,7 @@
 
     @if (isset($plan))
 
-        @if (Auth::user()->isEditor()) &nbsp; 
+        @if (Auth::user()->isEditor())
             <span class="has-warning" onclick="showSpinner()">
             {!! Form::submit('Save changes', [
                 'data-toggle' => 'tooltip', 
@@ -597,8 +597,7 @@
             <a class="btn btn-danger btn-sm" type="button" data-toggle="tooltip"  onclick="showSpinner()"
                 title="You can only delete a plan that contains no items." 
                 href="{{ url('cspot/plans/delete/'.$plan->id) }}">
-                <i class="fa fa-trash" > </i>
-                &nbsp; Delete an empty Plan
+                <i class="fa fa-trash" > </i> &nbsp; Delete an empty Plan
             </a>
         @endif
 

@@ -160,7 +160,7 @@ function show_time()
 /**
  * show multiple images as subsequent slides
  *  
- * This function is called in the document.ready method, when it finds this element:
+ * This function is called from the preparePresentation function, when it finds this element:
  *      $('.slide-background-image')
  */
 function prepareImages() 
