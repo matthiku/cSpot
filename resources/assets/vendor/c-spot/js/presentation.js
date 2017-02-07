@@ -1486,18 +1486,13 @@ function navigateTo(where)
         var next_seq_no, prev_seq_no;
 
         // calculate the identifiers for the next or previous item in local storage
-        if (cur_seq_no >= max_seq_no) {
-            next_seq_no = cur_plan_id + '-' + 1;
-        } else {
-            next_seq_no = cur_plan_id + '-' + (1*cur_seq_no+1);
-        }
-        if (cur_seq_no >= 1) {
-            prev_seq_no = cur_plan_id + '-' + (1*cur_seq_no-1);
-        } else {
-            prev_seq_no = cur_plan_id + '-' + max_seq_no;
-        }
+        var fsn = calculateFollowingSeqNos(cur_seq_no, cur_plan_id);
+        next_seq_no = fsn[0];
+        prev_seq_no = fsn[1];
 
         // Rewrite the page content with the cached data from Local Storage (LS)
+        if (where == 'next-item')
+            ;;;console.log('Next page from cache would be: '+next_seq_no);
         
         // test if direction is forward and if next item exists in LS
         if ( where == 'next-item'     && isInLocalStore(next_seq_no) ) {
@@ -1509,11 +1504,7 @@ function navigateTo(where)
             applyLocallyDefinedTextFormatting();
 
             // maintain the correct item sequence number for the just inserted slides
-            if (cSpot.presentation.seq_no == max_seq_no) {
-                cSpot.presentation.seq_no = 1;
-            } else {
-                cSpot.presentation.seq_no = 1.0*cSpot.presentation.seq_no + 1;
-            }
+            cSpot.presentation.seq_no = next_seq_no.split('-')[2];
 
             // modify the next-item button to reflect the new item in the url
             modifyHRefOfJumpbutton(next_seq_no, prev_seq_no)
@@ -1528,6 +1519,9 @@ function navigateTo(where)
             return;
         }
 
+        if (where == 'previous-item')
+            ;;;console.log('Previous page from cache would be: '+prev_seq_no);
+
         // test if direction is backward and if previous item exists in LS
         if ( where == 'previous-item' && isInLocalStore(prev_seq_no) ) {
 
@@ -1538,10 +1532,7 @@ function navigateTo(where)
             applyLocallyDefinedTextFormatting();
 
             // maintain the correct item sequence number for the just inserted slides
-            cSpot.presentation.seq_no -= 1;
-            if (cSpot.presentation.seq_no <= 1) {
-                cSpot.presentation.seq_no = 1*max_seq_no+1;
-            }
+            cSpot.presentation.seq_no = prev_seq_no.split('-')[2];
 
             // modify the previous-item button to reflect the new item in the url
             modifyHRefOfJumpbutton(next_seq_no, prev_seq_no)
@@ -1551,7 +1542,6 @@ function navigateTo(where)
 
             return;
         }
-
     }
 
     var goWhere = $(goWhereButton).attr('href');
@@ -1572,6 +1562,36 @@ function navigateTo(where)
     // otherwise, try to simulate a click on this element
     goWhereButton.click();
 }
+
+function calculateFollowingSeqNos(cur_seq_no, cur_plan_id)
+{
+    var seqNos = [], curIndex;
+
+    // create array of existing sequence numbers
+    cSpot.presentation.items.forEach( function(elem) {
+        seqNos.push(1*elem.seq_no);
+    });
+    // get position in this array of the current seq_no
+    curIndex = seqNos.indexOf(cur_seq_no);
+    // should never happen
+    if (curIndex<0) return [0,0];
+
+    var nextIndex, prevIndex;
+
+    // get position of next or previous seq_no
+    if (curIndex == seqNos.length-1) {
+        nextIndex = 0;
+    } else
+        nextIndex = curIndex + 1;
+
+    if (curIndex >= 1)
+        prevIndex = curIndex - 1;
+    else
+        prevIndex = seqNos.length-1;
+
+    return [cur_plan_id+'-'+(1*seqNos[nextIndex]), cur_plan_id+'-'+(1*seqNos[prevIndex])];
+}
+
 
 // change the item-id to seq-no in the href element of the 'next' and 'previous' buttons 
 function modifyHRefOfJumpbutton(next_seq_no, prev_seq_no)

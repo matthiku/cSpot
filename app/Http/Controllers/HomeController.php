@@ -125,6 +125,8 @@ class HomeController extends Controller
             $item = Item::find( $request->item_id );
 
         if( isset($item) ) {
+            // get list of all items for the corresponding plan
+            $items = $item->plan->allItems();
 
             $cSpot['presentation'] = [
 
@@ -134,6 +136,8 @@ class HomeController extends Controller
                 'mainPresenterSetURL' => route('presentation.mainPresenter.set'),
 
                 'plan' => json_decode( json_encode($item->plan) ),
+
+                'items' => json_decode( json_encode($items) ),
 
                 // keep track of current background image
                 'currentBGimage' => 0,

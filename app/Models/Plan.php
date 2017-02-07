@@ -6,6 +6,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+use App\Models\Item;
+
 use Carbon\Carbon;
 use Auth;
 
@@ -104,15 +106,25 @@ class Plan extends Model
 
 
 
-    /*  get just the first or last item for this plan
+    /*  get all or just the first or just last item for this plan
     */
+    public function allItems() 
+    {
+        $items = Item::where('plan_id', $this->id);
+        // Users without ownership of this plan won't see the FLEO items
+        if ( ! Auth::User()->ownsPlan($this->id) )
+            $items = $items
+                ->where('forLeadersEyesOnly', false);
+
+        return $items->orderBy('seq_no')->get();
+    }
     public function firstItem() 
     {
         // Users without ownership of this plan won't see the FLEO items
         if ( Auth::User()->ownsPlan($this->id) )
-            $items = $items = $this->items;
+            $items = $this->items;
         else 
-            $items = $items = $this->items
+            $items = $this->items
                 ->where('forLeadersEyesOnly', false);
 
         return $items->sortBy('seq_no')->first();
@@ -121,9 +133,9 @@ class Plan extends Model
     {
         // Users without ownership of this plan won't see the FLEO items
         if ( Auth::User()->ownsPlan($this->id) )
-            $items = $items = $this->items;
+            $items = $this->items;
         else 
-            $items = $items = $this->items
+            $items = $this->items
                 ->where('forLeadersEyesOnly', false);
 
     	return $items->sortByDesc('seq_no')->first();

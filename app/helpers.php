@@ -984,6 +984,7 @@ function getPlans($request)
     elseif ($filterby=='future') 
     {
         // get ALL future plans incl today
+        $heading = 'Upcoming Services';
         $plans = Plan::with(['type', 'leader', 'teacher'])
             ->whereDate('date', '>', Carbon::yesterday())
             ->orderBy($orderBy, $order);
@@ -992,7 +993,6 @@ function getPlans($request)
         if (isset($request->api)) {
             return json_encode($plans->get());
         }
-        $heading = 'Upcoming Services';
     }
 
     elseif ($filterby=='date') 
