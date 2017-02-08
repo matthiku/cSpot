@@ -367,7 +367,7 @@
 
             <div id="bg-images-tab" class="px-0 px-sm-1">
 
-                <div class="card bg-images-instructions mb-2 p-1">
+                <div class="card bg-images-instructions mb-2 p-1" style="max-width: 50rem;">
                     <p class="small">You can either upload a new image or select one of the images already stored in cSPOT.<br>
                         <strong>Images</strong> can be used as background for scripture items or song items or for presentations.</p>
                     <p class="small">When used for song- or scripture-items and when more than one image is attached here, the 
@@ -401,31 +401,25 @@
                     <div class="mx-auto" style="max-width: 380px;">
 
                         @foreach ($files as $file)
-                            <div id="file-{{ $file->id }}" style="padding=2px;{{ ($key % 2 == 1) ? 'background-color: #eee;' : 'background-color: #ddd;' }}">
+                            <div class="rounded mb-1" id="file-{{ $file->id }}" style="padding=2px;{{ ($key % 2 == 1) ? 'background-color: #eee;' : 'background-color: #ddd;' }}">
 
-                                <div class="float-left" style="min-width: 60px;">
+                                <div class="mt-1 ml-2 pr-1 float-left">
                                     @if ( $fcount>1 && $key>0 )
-                                        <a href="{{ url("cspot/items/$item->id/movefile/$file->id/up") }}" title="Move up" 
-                                            onclick="showSpinner()" class="btn btn-info btn-sm move-button mb-1" role="button" >
+                                        <div class="mb-2"><a href="{{ url("cspot/items/$item->id/movefile/$file->id/up") }}" title="Move up" 
+                                            onclick="showSpinner()" class="btn btn-info btn-sm move-button" role="button" >
                                             <i class="fa fa-angle-double-up fa-lg"> </i> 
-                                        </a>
-                                    @endif
-                                    @if ( $fcount>1 && $key>0 && $fcount>1 && $key<$fcount-1 )
-                                        <br>
+                                        </a></div>
                                     @endif
                                     @if ( $fcount>1 && $key<$fcount-1 )
-                                        <a href="{{ url("cspot/items/$item->id/movefile/$file->id/down") }}" title="Move down" 
+                                        <div><a href="{{ url("cspot/items/$item->id/movefile/$file->id/down") }}" title="Move down" 
                                             onclick="showSpinner()" class="btn btn-info btn-sm move-button" role="button" >
                                             <i class="fa fa-angle-double-down fa-lg"> </i> 
-                                        </a>
+                                        </a></div>
                                     @endif
                                     @if (session()->has('newFileAdded') && session('newFileAdded') == $file->id )
                                         <br><i class="fa fa-check"></i>Added.
                                     @endif
                                 </div>
-                                @if ( $fcount>1)
-                                    <div class="mx-auto float-right">Order:<br>{{ $file->pivot->seq_no }}</div>
-                                @endif
 
                                 @include ('cspot.snippets.show_files')
 
@@ -458,6 +452,7 @@
                     </div>
 
                     {{-- link to open the Add File dialog --}}
+                    @if ($item->files->count() == 0)
                     <span data-item-type="add-file" class="add-another-image-link link btn btn-sm btn-success float-right" onclick="
                             $('#col-2-file-add').show();
                             $('#show-location-selection').hide();
@@ -468,6 +463,7 @@
                         <i class="fa fa-file"></i>
                         Add image
                     </span>
+                    @endif
 
 
                     {{-- Form to add new (image) file --}}

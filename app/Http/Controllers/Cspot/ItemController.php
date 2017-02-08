@@ -694,7 +694,11 @@ class ItemController extends Controller
                 // use the helper function
                 $file = saveUploadedFile($request);
                 // add the file as a relationship to the song
-                $item->files()->save( $file );
+                $file->save();
+                // correct seq_no of attached files (if more than one)
+                $new_seq_no = getLatestSeqNoOfFilesAttachedToItem($item) + 1;
+                // attach the file as a many-to-many relationship to the song
+                $item->files()->attach( $file->id, ['seq_no' => $new_seq_no] );
                 // as we only attached a file to an existing item, we can return now
                 return $file->filename;
             }
