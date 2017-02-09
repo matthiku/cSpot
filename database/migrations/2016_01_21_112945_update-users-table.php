@@ -23,6 +23,10 @@ class UpdateUsersTable extends Migration
             $table->timestamp('last_access');
             // user to be notified on internal messages
             $table->boolean('notify_by_email')->default(true);
+            
+            // make email address field nullable, but unique if present
+            $table->string('email')->nullable()->change();
+            $table->unique('email');
         });
         DB::table('users')->insert(['id'=>0, 'first_name'=>'none', 'last_name'=>'none']);
     }

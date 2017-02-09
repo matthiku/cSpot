@@ -740,11 +740,15 @@ class PlanController extends Controller
             // is there already a value for that key?
             $cache = PlanCache::where('key', $request->key)->first();
 
+            // NOTE: If the original length and the stored length of the value differs, itmight be because of an 
+            //       invalid charachter (higher Unicode) in the value, which cannot be stored in the database!
+
             if ($cache) {
                 // yes, so just update the existing value
                 $cache->update(['value' => $request->value]);
                 // return ok response
-                return response()->json(['status' => 200, 'data' => "Updated!"], 200);
+                $newCache = PlanCache::where('key', $request->key)->first();
+                return response()->json(['status' => 200, 'data' => strlen($newCache->value)." updated! Value length was ".strlen($cache->value)], 200);
             } 
 
             // extract item id from request
@@ -760,9 +764,12 @@ class PlanController extends Controller
                     'item_id' => $item_id
                 ]);
             $plan->planCaches()->save($cache);
+
+            // reload from the DB (debugging!)
+            $newCache = PlanCache::where('key', $request->key)->first();
             
             // return ok response
-            return response()->json(['status' => 200, 'data' => "Inserted!"], 200);
+            return response()->json(['status' => 200, 'data' => strlen($newCache->value)." inserted! Value length was ".strlen($cache->value)], 200);
         }
 
         return response()->json(['status' => 404, 'data' => "plan with id $plan_id not found"], 404);

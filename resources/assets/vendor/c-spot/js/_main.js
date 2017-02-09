@@ -582,6 +582,9 @@ function loadFromLocalCache()
 // check if user allowed using of cached items
 function checkOfflineMode()
 {
+    if (! cSpot.presentation)
+        return;
+    
     // use the offline mode (Local Storage) - Default is: Yes
     cSpot.presentation.useOfflineMode = getLocalStorageItem('config-OfflineMode', 'true') == 'true';
     

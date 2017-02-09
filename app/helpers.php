@@ -362,24 +362,16 @@ function nextItem($plan_id, $item_id, $direction)
     // perhaps the item_id is a seq no
     $Ar_seq_no = explode('-', $item_id);
 
-    // if item_id actually is a seq_no, then the format is: <text>-<text>-<seq_no>
+    // if item_id actually is a seq_no, then the format is: "offline-<plan_id>-<seq_no>"
     if ( count($Ar_seq_no)==3 ) {
+        // find item with the seq no
         // third element is the actual seq no
-        // but we need to increase it by 1
-        $cur_seq_no = $Ar_seq_no[2] + 1;
-
-        // now find item with the new seq no
         $curItem = Item::where([
-            [ 'plan_id',  '=', $plan_id    ], 
-            [ 'seq_no',  '>=', $cur_seq_no ]
+            [ 'plan_id', $plan_id      ], 
+            [ 'seq_no',  $Ar_seq_no[2] ]
         ])->first();
-
-        // return the item id of that item (if we found it!)
-        if ($curItem) {
-            return $curItem->id;
-        } else {
-            return 0;   // not found!
-        }
+        if (! $curItem->count())
+            return 0;
     } 
 
     // we only received the current item id

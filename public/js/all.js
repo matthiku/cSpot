@@ -42030,6 +42030,9 @@ function loadFromLocalCache()
 // check if user allowed using of cached items
 function checkOfflineMode()
 {
+    if (! cSpot.presentation)
+        return;
+    
     // use the offline mode (Local Storage) - Default is: Yes
     cSpot.presentation.useOfflineMode = getLocalStorageItem('config-OfflineMode', 'true') == 'true';
     
@@ -46140,7 +46143,7 @@ function show_time()
 /**
  * show multiple images as subsequent slides
  *  
- * This function is called in the document.ready method, when it finds this element:
+ * This function is called from the preparePresentation function, when it finds this element:
  *      $('.slide-background-image')
  */
 function prepareImages() 
@@ -48214,8 +48217,11 @@ function saveLocallyAndRemote(plan_id, key, value)
     if (key.search('chords') < 0)
         value = value.replace(/ {2,}/g,' ')
 
+    value = value.trim();
+
     // save locally
-    localStorage.setItem(key, value.trim());
+    localStorage.setItem(key, value);
+    console.log('Saved in LocalStorage, length is: '+localStorage.getItem(key).length);
 
     // save on server
     $.post(
@@ -48223,10 +48229,12 @@ function saveLocallyAndRemote(plan_id, key, value)
         {
             'item_id'   : cSpot.presentation.item_id,
             'key'       : key,
-            'value'     : value.trim() + ' ',       // have at least one blank for server-side validation to work
-        }, 
-        console.log('Cached data saved on server: ' + key)
-    );
+            'value'     : value + ' ',       // have at least one blank for server-side validation to work
+        }
+    )
+    .done( function( data ) {
+        console.log(data);
+    });
 }
 
 // load server-cached pre-rendered items into LocalStorage
@@ -48267,11 +48275,12 @@ function loadCachedPresentation(plan_id)
                 var existingValue = localStorage.getItem(planCache[item].key);
                 // do nothing if identical !
                 if ( existingValue  &&  existingValue.localeCompare(planCache[item].value) == 0 ) {
-                    // ;;;console.log('already in cache: ' + planCache[item].key)
+                    ;;;console.log('already in cache: ' + planCache[item].key)
                     continue;
                 }
                 // now save new item to local store
                 localStorage.setItem( planCache[item].key, planCache[item].value );
+                // ;;;console.log('saved/replaced in cache: ' + planCache[item].key + ' Length: '+ planCache[item].value.length )
             }            
         }
     });
