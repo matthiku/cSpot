@@ -31,7 +31,7 @@ class AddColumnsToFilesTable extends Migration
         Schema::table('files', function (Blueprint $table) {
             // remove new column
             $table->dropColumn('filesize');
-            $table->dropForeign('file_category_id');
+            $table->dropColumn('file_category_id');
         });
         Schema::enableForeignKeyConstraints();
     }

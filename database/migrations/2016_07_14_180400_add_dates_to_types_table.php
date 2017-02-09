@@ -29,9 +29,9 @@ class AddDatesToTypesTable extends Migration
     {
         Schema::table('types', function (Blueprint $table) {
             //
-            $table->dropColunmn('start');
-            $table->dropColunmn('end');
-            $table->dropColunmn('tinyText');
+            $table->dropColumn('start');
+            $table->dropColumn('end');
+            $table->dropColumn('repeat');
         });
     }
 }

@@ -34,8 +34,6 @@ class AddFieldsToTypesTable extends Migration
         Schema::disableForeignKeyConstraints();
         Schema::table('types', function (Blueprint $table) {
             //
-            $table->dropForeign('leader_id');
-            $table->dropForeign('resource_id');
             $table->dropColumn('weekday');
             $table->dropColumn('subtitle');
             $table->dropColumn('generic');
