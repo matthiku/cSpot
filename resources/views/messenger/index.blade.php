@@ -21,7 +21,7 @@
 
                 <h4 class="media-heading">{!! link_to('messages/' . $thread->id, $thread->subject) !!}</h4>
 
-                <div>{!! $thread->latestMessage->body !!}</div>
+                <div>{!! $thread->latestMessage ? $thread->latestMessage->body : 'msg body missing' !!}</div>
 
                 <p><small><strong>Creator:</strong> {!! $thread->creator()->first_name.' '.$thread->creator()->last_name !!}</small></p>
 

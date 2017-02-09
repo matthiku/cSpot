@@ -19,12 +19,10 @@
 
             <center class="mb-2">
 
-                <h4 class="lora">Sign in using your account from one of these service providers:</h4>
-
                 <div class="row">
             
                     <div class="col-md-12">
-                        @include('auth.social')
+                        @include('auth.social', ['showTitle' => 'yes'])
                     </div>
                     
 

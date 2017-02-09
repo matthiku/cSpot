@@ -323,6 +323,19 @@ class PlanController extends Controller
             );
         }
 
+        // was a date given in the URL query string?
+        if ($request->has('date')) {
+            // push plan date to session
+            $request->session()->flash('defaultValues', [
+                'type_id'   => null,
+                'date'      => $request->get('date'),
+                'start'     => '00:00',
+                'end'       => '00:00',
+                'leader_id' => null,
+                'subtitle'  => ''
+            ]);            
+        }
+
         // get list of service types
         $types = Type::get();
         // get list of users

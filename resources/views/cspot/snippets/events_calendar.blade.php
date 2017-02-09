@@ -103,8 +103,8 @@
 	rounded{{ $startDay->month != $firstDay->month ? ' bg-gray' : ' bg-white' }}{{ $i%7<6 ? ' mr-1' : '' }}">
 
 <h3 class="mb-0 py-0 {{ $startDay->month != $firstDay->month ? ' text-muted' : '' }}">{{ $firstDay->day }}
-	@if ($firstDay >= $today)
-<a href="{{ url('cspot/plans/by_date') }}/{{ $firstDay->toDateString() }}" title="Add an event for this day" class="float-right text-muted link small">+</a>
+	@if (Auth::user()->isEditor() && $firstDay >= $today)
+<a href="{{ url('cspot/plans/create') }}?date={{ $firstDay->toDateString() }}" title="Add an event for this day" class="float-right text-muted link small">+</a>
 	@endif
 </h3>
 @foreach ($allPlans as $plan)

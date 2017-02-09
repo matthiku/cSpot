@@ -291,7 +291,7 @@
                                 'date', $plan->date, 
                                 ['class'    => 'plan-form-minw center', 'onchange' => 'enableSaveButton(this)' ] ) 
                             !!}
-                        @elseif (isset($defaultValues['type_id']))
+                        @elseif (isset($defaultValues['date']))
                             {!! Form::date( 
                                 'date', $defaultValues['date'], 
                                 ['class' => 'plan-form-minw center', 'onchange' => 'enableSaveButton(this)' ] )

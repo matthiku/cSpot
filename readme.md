@@ -123,7 +123,8 @@ Out of the box, c-SPOT uses a mySQL database to save all the data. However, Lara
 4. Run `composer update` to install all the dependencies
 5. Create a new (empty) database on your mySQL server with the aforementioned parameters (db name, user name and password etc.).
 6. Run `php artisan migrate` to initialize your c-SPOT database
-7. Modify the predefined list of user roles according to your needs
+7. Edit the file .env and replace all values enclosed in <...> with their proper values!
+8. In order for c-SPOT to be able to send emails, it is mandatory to fill the "MAIL_..." values in the .enf file!
 
 #### Optional Steps
 1. In order for the **social logins** to work, you need to register your own c-SPOT app with some 'service providers' like Google or Faceook and enter the relevant details also into your private .env file.
@@ -132,6 +133,7 @@ Out of the box, c-SPOT uses a mySQL database to save all the data. However, Lara
 4. Modify the list of pre-defined service plan types according to your needs
 5. Add 'default items' for each service plan type
 6. Start creating new plans and add items accordingly
+7. Modify the predefined list of user roles according to your needs
 
 ### Future Enhancements (c-SPOT 2.0)
 

@@ -164,8 +164,8 @@
 
             @if (isset($user))
 
-                <p class="float-xs-right">
-                    {!! Form::submit('&#10003; &nbsp;  Update', ['class'=>'btn btn-outline-success submit-button disabled']); !!}
+                <p class="float-right">
+                    <input class="btn submit-button btn-success disabled" type="submit" value="&#10003; Update">
                     @if (Auth::user()->isAdmin())
                         {{-- disable delete button if user owns plans --}}
                         <a class="btn btn-danger{{ $user->plans_as_leader->count() || $user->plans_as_teacher->count() ? ' disabled' : '' }}"
@@ -176,7 +176,9 @@
                     @endif
                 </p>
             @else
-                <p class="float-xs-right">{!! Form::submit('&#10003; &nbsp;  Submit', ['class'=>'btn btn-outline-success submit-button disabled']); !!}</p>
+                <p class="float-right">
+                    <input class="btn submit-button btn-success disabled" type="submit" value="&#10003; Submit">
+                </p>
             @endif
 
             {!! Form::close() !!}

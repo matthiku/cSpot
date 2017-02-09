@@ -57,11 +57,11 @@
                         </span>
 
                         <button class="btn btn-lg btn-primary md-full mr-2 link"
-                                onclick="location.href='{{ url('cspot/plans?filterby=future') }}'">
+                                onclick="location.href='{{ url('cspot/plans/calendar') }}'">
                             <a href="#" data-container="body" data-toggle="tooltip" data-placement="left" 
                                     class="float-right" title="Show all upcoming Service Plans">
                                 <i class="fa fa-question-circle bg-primary text-white ml-1"></i></a>
-                            Upcoming Events
+                            Events Calendar
                         </button>
 
                         <span class="btn btn-lg btn-info md-full">

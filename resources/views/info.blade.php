@@ -27,9 +27,12 @@
 
                 </div>
 
-                <div class="right lora">
-                    <h4>
-                        <a href="{{url('home')}}">Start using c-SPOT</a>
+                <div>
+                    <h4 class="float-right lora">
+                        <a href="{{ url('home') }}">Start Here</a>
+                    </h4>
+                    <h4 class="lora">
+                        <a href="{{ url('cspot/plans/calendar') }}">Event Calendar</a>
                     </h4>
                 </div>
 

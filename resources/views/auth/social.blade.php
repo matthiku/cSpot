@@ -1,6 +1,12 @@
 
 <!-- # (C) 2016 Matthias Kuhs, Ireland -->
 
+@if (isset($showTitle))
+    @if (env('GOOGLE_CLIENT_ID') || env('FACEBOOK_CLIENT_ID') || env('TWITTER_CLIENT_ID') || env('LINKEDIN_CLIENT_ID') || env('GITHUB_CLIENT_ID'))
+        <h4 class="lora">Sign in using your account from one of these service providers:</h4>
+    @endif
+@endif
+
 @if (env('GOOGLE_CLIENT_ID'))
     <a href="{{ url('social/redirect/google') }}"   class="btn btn-{{ isset($hideLblText) ? 'sm' : 'lg' }} btn-secondary" role="button">
         <i class="fa fa-google"  ></i>
