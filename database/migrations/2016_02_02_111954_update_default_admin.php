@@ -26,7 +26,7 @@ class UpdateDefaultAdmin extends Migration
         
         // TODO: Make sure no user has been created until this moment
         
-        DB::table('users')->insert(['first_name'=>'Administrator', 'email' => $email]);
+        DB::table('users')->where('id', 1)->update(['first_name'=>'Administrator', 'email' => $email]);
         echo "\nYou can modify these values later and should first reset the password for Administrator!\n\n";
 
         // set some default values

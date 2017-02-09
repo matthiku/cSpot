@@ -101,7 +101,7 @@ Chrome's menu and a new icon will appear on your homescreen:
 ## Technical Blah blah
 ### Code
 ##### Backend
-This PHP project is based on the [Laravel 5.2 (now:5.3) framework](https://laravel.com/) with the [Socialite](https://github.com/laravel/socialite) and [LaravelCollective](https://laravelcollective.com) extensions. 
+This PHP project is based on the [Laravel 5.3 framework](https://laravel.com/) with the [Socialite](https://github.com/laravel/socialite) and [LaravelCollective](https://laravelcollective.com) extensions. 
 ##### Frontend
 The design is intended to be fully responsive with a mobile-first approach and uses the [Bootstrap framework](http://v4-alpha.getbootstrap.com/) in version 4. (Which is still in alpha but hopefully will be fully released before this project is out of beta!)
 
@@ -118,19 +118,20 @@ Out of the box, c-SPOT uses a mySQL database to save all the data. However, Lara
 
 #### Mandatory Steps
 1. In the root of your web server's http or html directory (depending on Apache or Nginx), run the command `git clone https://github.com/matthiku/cSpot.git` to download c-SPOT and install it into the folder 'cspot'. (The folder can be renamed to your liking)
-2. Run `composer install` to install all the dependencies
-3. In the root folder of the project, copy the file **.env.example** to **.env** and customize it for your environment. Mainly, configure your database name, db user name and db password for c-SPOT and enter the connectivity details for your mail server in order to be able to send confirmation emails to users.
-4. Create a new (empty) database on your mySQL server with the aforementioned parameters (db name, user name and password etc.).
-5. Run `php artisan migrate` to initialize your c-SPOT database.
-6. Modify the predefined list of user roles according to your needs
-7. Add more users and assign roles to them
+2. In the root folder of the project, copy the file **.env.example** to **.env** and customize it for your environment. Mainly, configure your database name, db user name and db password for c-SPOT and enter the connectivity details for your mail server in order to be able to send confirmation emails to users.
+3. Run `php artisan key:generate` to initialize they key for the Laravel framework
+4. Run `composer update` to install all the dependencies
+5. Create a new (empty) database on your mySQL server with the aforementioned parameters (db name, user name and password etc.).
+6. Run `php artisan migrate` to initialize your c-SPOT database
+7. Modify the predefined list of user roles according to your needs
 
 #### Optional Steps
 1. In order for the **social logins** to work, you need to register your own c-SPOT app with some 'service providers' like Google or Faceook and enter the relevant details also into your private .env file.
 2. Add your songs to the songs list
-3. Modify the list of pre-defined service plan types according to your needs
-4. Add 'default items' for each service plan type
-5. Start creating new plans and add items accordingly
+3. Add more users and assign roles to them
+4. Modify the list of pre-defined service plan types according to your needs
+5. Add 'default items' for each service plan type
+6. Start creating new plans and add items accordingly
 
 ### Future Enhancements (c-SPOT 2.0)
 
