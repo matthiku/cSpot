@@ -31,11 +31,13 @@ class UpdatePlanTeamTable extends Migration
      */
     public function down()
     {
+        Schema::disableForeignKeyConstraints();
         Schema::table('plan_team', function (Blueprint $table) {
             // remove the fields again
             $table->dropColumn('comment');
             $table->dropColumn('available');
             $table->dropColumn('thread_id');
         });
+        Schema::enableForeignKeyConstraints();
     }
 }
