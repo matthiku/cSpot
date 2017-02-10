@@ -2080,7 +2080,7 @@ function writeCachedDataIntoDOM(identifier) {
     $('#lyrics-sequence-nav'    ).html(localStorage.getItem(identifier + '-sequenceNav'));
     $('#item-navbar-label'      ).html(localStorage.getItem(identifier + '-itemNavBar' ));
     $('#item-navbar-next-label' ).html(localStorage.getItem(identifier + '-itemNavBarNext'));
-    // $('#next-item-button'       ).html(localStorage.getItem(identifier + '-itemNBNextItemBtn'));
+    $('#go-edit'       ).parent().html(localStorage.getItem(identifier + '-itemGoEditBtn'));
 
     // in case it was added to identify a blank slide:
     $('#show-blank-screen').removeClass('ui-state-active')
@@ -2147,7 +2147,7 @@ function saveMainContentToLocalStorage(what) {
     // item label 
     saveLocallyAndRemote(plan_id, itemIdentifier +'-itemNavBar',        $('#item-navbar-label').html());
     saveLocallyAndRemote(plan_id, itemIdentifier +'-itemNavBarNext',    $('#item-navbar-next-label').html());
-    // saveLocallyAndRemote(plan_id, itemIdentifier +'-itemNBNextItemBtn', $('#next-item-button').html());
+    saveLocallyAndRemote(plan_id, itemIdentifier +'-itemGoEditBtn',     $('#go-edit').parent().html());
     // whole NavBar for chords and sheetmusic
     saveLocallyAndRemote(plan_id, itemIdentifier +'-present-navbar',    $('#present-navbar').html());
 

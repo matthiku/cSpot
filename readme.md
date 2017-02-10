@@ -2,30 +2,34 @@
 
 c-SPOT is a Collaborative Web Application designed to help (small) churches plan their Sunday and Midweek services as well as other events.
 
-c-SPOT is a collaboration tool which helps to manage all event information and processes - the Order of Service, staff, resources, worship song lists for worship leaders, musicians and every other person involved in the service or event and allows all participants to use, add or modify their relevant information - using the platform or device of their choice!
+c-SPOT is a tool which helps to manage all event information and processes - the Order of Service, staff, resources, worship song lists for worship leaders, musicians and every other person involved in the service or event and allows all participants to use, add or modify their relevant information - using any platform or device of their choice!
 
-It allows the management of song lyrics, music scores, guitar chords, event resources and teams in a user-friendly web application.
+It allows the management of song **lyrics**, **music scores**, **guitar chords**, event resources and teams in a user-friendly web application.
 
-- Frontend: **Responsive design**, runs on *any* device that supports a browser with JavaScript!
-- Create **Order of Service** with all relevant data (team (leaders, musicians, other functions), resources, songs, free slides, embedded videoclips etc)
-- Can be **customized** for your church with logos and external links
+
+#### Features:
+
+- Front-end uses **Responsive design** and runs on *any* device with an up-to-date browser with JavaScript!
+- Create the **Order of Service** with all relevant data (team (leaders, musicians, other functions), resources, songs, free slides, embedded videoclips etc)
+- **Customize** for your church with logos and external links
 - Manage your team (staff) with their **roles**; also manage the **resources** needed for an event (rooms, devices etc.)
-- **Present** your songs in a slideshow fashion via a projector 
-- The slideshow can be done **off-line** with all slides downloaded to the local computer
-- Control the slide show from **any device** using a casting device (like Chromecast) attached to your projector
+- **Present** your songs and other items like a slideshow via a projector 
+- The slideshow can be presented **off-line** with all slides downloaded (cached) to the local computer
+- Control the slideshow from **any device** using a casting device (like Chromecast) attached to your projector
 - Or **control the presentation** from a small device (e.g. smartphone) that syncs with the main device attached to the projector!
-- Provide **chords, lyrics and sheetmusic for musicians** on all kinds of devices using the popular [OnSong](http://www.onsongapp.com/docs/) format
+- Provides **chords, lyrics and sheetmusic for musicians** on all kinds of devices using the popular [OnSong](http://www.onsongapp.com/docs/) format
 - Allows extensive **collaboration** and input from all users, but with full rights management, specified for each user type
 - Allows for a _synchronised presentation_ of lyrics, chords or sheet music _accross all designated devices!_
 - Exchange email and/or internal messages between users
-- Allows fast insertion of songs during the actual presentation!
-- Helps and tracks **reporting** of song usage to CCLI and integrates with SongSelect
+- Allows ad-hoc insertion of songs and other items for the running presentation
+- Helps and tracks **reporting** of song usage to CCLI and integrates with SongSelect (via links)
 
 As a free and open source project, you can download ('clone') the sources, modify (customize) them and run the tool from your own web site hoster.
 
 **Developers**, please feel free to contribute and make pull requests! **Testers**, please send your bug reports and enhancement suggestions!
 
 Check the [Installation instructions](#installation)
+
 
 ### Tutorials
 
@@ -49,10 +53,12 @@ Before, we used **easyslides** as the presentation tool, however, the developer 
 #### History
 In our church, this was first done by the leader of the service, when he handed out his paper-based list of songs to the musicians on a Sunday morning. As things progressed, this was no longer viable, as musicians needed more time to practice the songs and the slides for the projection needed to be prepared. So we switched to sending emails around - but quite often, things were changed after the email went out and then not everyone was up-to-date. 
 
-That's when the development of the predecessor of c-SPOT was started. It was my first trial of a project in PHP, mySQL, HTML and Javascript and therefore, while user-friendly, not very developer-friendly... Additionally, it was never designed to be used on mobile devices. After recently learning a lot about Laravel and Bootstrap, I finally decided to re-write this tool from scratch, with a popular PHP framwork and the mobile-first approach. Due to time constraints, however, it has only a limited "[single page application (SPA)](https://en.wikipedia.org/wiki/Single-page_application)" design!
+That's when the development of the predecessor of c-SPOT was started. It was my first trial of a project in PHP, mySQL, HTML and Javascript and therefore, while user-friendly, not very developer-friendly... Additionally, it was never designed to be used on mobile devices. After recently learning a lot about Laravel and Bootstrap, I finally decided to re-write this tool from the ground up, using the popular PHP framwork Laravel and with the mobile-first approach in mind. Due to time constraints, however, it has not yet a full "[single page application (SPA)](https://en.wikipedia.org/wiki/Single-page_application)" design!
 
 #### New Design
 Out came an online tool, designed for mobile devices and desktop devices, fully responsive to all sizes of screens with the ability to still access and/or modify all the relevant data. Tables are adaptive so that more and more columns with less important information are hidden or their content displayed in a more compact way the smaller a device gets.
+![sample Events Calendar](https://raw.githubusercontent.com/matthiku/cSpot/master/public/images/calendarView-small.png.png)
+[full size](https://raw.githubusercontent.com/matthiku/cSpot/master/public/images/calendarView.png)
 ![sample Order of Service Plan](https://raw.githubusercontent.com/matthiku/cSpot/master/public/images/PlanOverviewNew-Small.png)
 [full size](https://raw.githubusercontent.com/matthiku/cSpot/master/public/images/PlanOverviewNew.png)
 ![plan with embedded YT video in popup](https://raw.githubusercontent.com/matthiku/cSpot/master/public/images/PlanOverviewWithYoutube-small.png)
@@ -60,9 +66,9 @@ Out came an online tool, designed for mobile devices and desktop devices, fully 
 
 
 ### Users
-c-SPOT provides event information and worship song lists to worship leaders, musicians and every other person involved in the service and allows them to add or modify information accordingly.
+c-SPOT provides event information and worship song lists to worship leaders, musicians and every other person involved in the service and allows them to add or modify information accordingly =- within the limits of their assigned role(s):
 
-However, the ability to contribute to the plan items is based on distinct roles given to each user, so that only authorized people can make modifications or even see certain details.
+The ability to contribute to c-SPOT is based on distinct roles given to each user, so that only authorized people can make modifications or even see certain details.
 
 ### Authorization
 By default, c-SPOT is designed to allow for 'self-registration'. Very basic rights are given to a self-registered user. Any further rights must be assigned by a user with an "Administrator" role (see below).
@@ -124,7 +130,7 @@ Out of the box, c-SPOT uses a mySQL database to save all the data. However, Lara
 5. Create a new (empty) database on your mySQL server with the aforementioned parameters (db name, user name and password etc.).
 6. Run `php artisan migrate` to initialize your c-SPOT database
 7. Edit the file .env and replace all values enclosed in <...> with their proper values!
-8. In order for c-SPOT to be able to send emails, it is mandatory to fill the "MAIL_..." values in the .enf file!
+8. In order for c-SPOT to be able to send emails, it is mandatory to fill in the "MAIL_..." values in the .enf file!
 
 #### Optional Steps
 1. In order for the **social logins** to work, you need to register your own c-SPOT app with some 'service providers' like Google or Faceook and enter the relevant details also into your private .env file.

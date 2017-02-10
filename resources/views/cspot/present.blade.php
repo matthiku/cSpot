@@ -407,11 +407,10 @@
                         @endforeach
                         @if (Auth::user()->ownsPlan($item->plan_id))
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" id="go-edit"
-                                href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/edit') }}">
-                                <i class="fa fa-pencil"></i>
-                                Edit this item
-                            </a>
+                            <div><a class="dropdown-item" id="go-edit"
+                                    href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/edit') }}">
+                                    <i class="fa fa-pencil"></i> Edit this item
+                            </a></div>
                         @endif
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" id="go-back"
