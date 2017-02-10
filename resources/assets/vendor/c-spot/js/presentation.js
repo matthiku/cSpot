@@ -959,8 +959,7 @@ function reFormatOnsongLyrics()
 
 
 /*
-    called directly from Present_navbar blade file
-    used by chords.blade.php and sheetmusic.blade.php
+    called from document.ready.js
 
     this MUST run after reDisplayChords!
 */
@@ -2067,7 +2066,10 @@ function writeCachedDataIntoDOM(identifier) {
 
     var type = cSpot.presentation.type || cSpot.presentationType;
 
-    if ( type == 'chords'  || type == 'sheetmusic' ) {
+    if ( type == 'chords'  
+      || type == 'sheetmusic' 
+      || type == 'leader' ) 
+    {
         $('#main-content'       ).html(localStorage.getItem(identifier + '-mainContent-'+ type));
         $('#present-navbar'     ).html(localStorage.getItem(identifier + '-present-navbar' ));
         return;

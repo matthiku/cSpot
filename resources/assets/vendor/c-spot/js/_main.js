@@ -389,6 +389,11 @@ function toogleAllorFuturePlans(selection)
 function autoAdvance()
 {
     var gonext = $('#go-next-item').attr('href');
+
+    // stop after the last slide
+    if (cSpot.presentation.max_seq_no == cSpot.presentation.seq_no)
+        gonext = '#';
+    
     if (gonext  && gonext != '#') {
         console.log("now advancing to next item: " + gonext);
         location.href = gonext + "?advance=auto";
@@ -584,7 +589,7 @@ function checkOfflineMode()
 {
     if (! cSpot.presentation)
         return;
-    
+
     // use the offline mode (Local Storage) - Default is: Yes
     cSpot.presentation.useOfflineMode = getLocalStorageItem('config-OfflineMode', 'true') == 'true';
     
@@ -805,8 +810,10 @@ function fillPlanDefaultValues(that)
     var   end = selSerType.end;
 
     // assign to times input fields
-    $('#start').val(start);
-    $('#end'  ).val(end);
+    if (start != "00:00:00")
+        $('#start').val(start);
+    if (end != "00:00:00")
+        $('#end'  ).val(end);
 
     // propose a date for this event based on the weekday property of the default values
     var n = moment();

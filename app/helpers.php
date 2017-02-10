@@ -886,7 +886,7 @@ function getPlans($request)
 {
     // set default values
     $filterby    = isset($request->filterby)    ? $request->filterby    : 'user';
-    $filtervalue = isset($request->filtervalue )? $request->filtervalue : Auth::user()->id;
+    $filtervalue = isset($request->filtervalue )? $request->filtervalue : 'all';
     $timeframe   = isset($request->timeframe )  ? $request->timeframe   : 'future';
     $orderBy     = isset($request->orderby)     ? $request->orderby     : 'date';
     $order       = isset($request->order)       ? $request->order       : 'asc';

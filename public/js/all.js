@@ -41837,6 +41837,11 @@ function toogleAllorFuturePlans(selection)
 function autoAdvance()
 {
     var gonext = $('#go-next-item').attr('href');
+
+    // stop after the last slide
+    if (cSpot.presentation.max_seq_no == cSpot.presentation.seq_no)
+        gonext = '#';
+    
     if (gonext  && gonext != '#') {
         console.log("now advancing to next item: " + gonext);
         location.href = gonext + "?advance=auto";
@@ -42032,7 +42037,7 @@ function checkOfflineMode()
 {
     if (! cSpot.presentation)
         return;
-    
+
     // use the offline mode (Local Storage) - Default is: Yes
     cSpot.presentation.useOfflineMode = getLocalStorageItem('config-OfflineMode', 'true') == 'true';
     
@@ -42253,8 +42258,10 @@ function fillPlanDefaultValues(that)
     var   end = selSerType.end;
 
     // assign to times input fields
-    $('#start').val(start);
-    $('#end'  ).val(end);
+    if (start != "00:00:00")
+        $('#start').val(start);
+    if (end != "00:00:00")
+        $('#end'  ).val(end);
 
     // propose a date for this event based on the weekday property of the default values
     var n = moment();
@@ -43080,10 +43087,14 @@ $(document).ready(function() {
             // presentation type might have been set in the view
             if (cSpot.presentationType) {
                 cSpot.presentation.type = cSpot.presentationType;
+                
                 // load cached presentation data
                 if ( cSpot.presentationType=='lyrics' && cSpot.presentation.plan )
                     loadCachedPresentation(cSpot.presentation.plan.id);
-                if ( cSpot.presentationType=='chords' || cSpot.presentationType=='sheetmusic' )
+
+                if ( cSpot.presentationType=='chords' 
+                  || cSpot.presentationType=='sheetmusic' 
+                  || cSpot.presentationType=='leader' )
                     // for chords presentation
                     prepareChordsPresentation(cSpot.presentationType);
             }
@@ -46942,8 +46953,7 @@ function reFormatOnsongLyrics()
 
 
 /*
-    called directly from Present_navbar blade file
-    used by chords.blade.php and sheetmusic.blade.php
+    called from document.ready.js
 
     this MUST run after reDisplayChords!
 */
@@ -48050,7 +48060,10 @@ function writeCachedDataIntoDOM(identifier) {
 
     var type = cSpot.presentation.type || cSpot.presentationType;
 
-    if ( type == 'chords'  || type == 'sheetmusic' ) {
+    if ( type == 'chords'  
+      || type == 'sheetmusic' 
+      || type == 'leader' ) 
+    {
         $('#main-content'       ).html(localStorage.getItem(identifier + '-mainContent-'+ type));
         $('#present-navbar'     ).html(localStorage.getItem(identifier + '-present-navbar' ));
         return;

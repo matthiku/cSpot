@@ -38,7 +38,7 @@
             @elseif ($item->song->title_2 != 'video') --}}
             @if ($item->song->title_2 != 'video')
                 <div class="text-song">Sequence: {{ $item->song->sequence ? $item->song->sequence : 'n/a' }}</div>
-                <div class="text-song white-space-pre-wrap mb-3" id="lyrics">{{ $item->song->lyrics }}</div>
+                <div class="text-song white-space-pre-wrap mb-3" id="lyrics">{{ $item->song->onsongs ? $item->song->onSongLyrics() : $item->song->lyrics }}</div>
 
             {{-- insert videoclip or lyrics --}}
             @else

@@ -513,11 +513,12 @@
                             @if (Auth::user()->isEditor()  &&  $item->itemType()=='song')
                                 <small>(Edit the Sequence in the OnSong tab)</small>
                             @endif
+                            @if (Auth::user()->isEditor()  &&  $item->itemType()=='slides')
+                                <br>Edit Slides Sequence:
+                                <span id="sequence-song-id-{{ $item->song->id }}" onclick="$('.show-input-hint').show();" 
+                                   class="editable-song-field lora link">{{ $item->song->sequence }}</span>
+                            @endif
                         </p>
-                        @if ($item->itemType()=='song')
-                            <p class="small"><strong>NOTE: </strong>If there are also <strong>lyrics</strong> defined in the <em>OnSong</em> tab, 
-                                the lyrics here will <strong>not be used!</strong></p>
-                        @endif
 
                         <pre id="lyrics-song-id-{{ $item->song->id }}" {{ (Auth::user()->isEditor()) ? 'class=edit_area' : '' }}>{{ $item->song->lyrics }}</pre>
 

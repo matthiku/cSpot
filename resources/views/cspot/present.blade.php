@@ -481,7 +481,7 @@
 
                 {{-- start auto advance mode --}}
                 <a href="#" title="start auto-advance mode" onclick="startAutoAdvance();" 
-                    class="hidden-sm-down btn btn-sm btn-outline-success mx-0">&#127943;</a>
+                    class="hidden-sm-down btn btn-sm btn-outline-success mx-0">&#9193;</a>
 
 
 

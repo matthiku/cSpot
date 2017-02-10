@@ -46,7 +46,7 @@
                         @endforeach
                     </div>
                 @elseif ($item->song->title_2 != 'video')
-                    <pre class="text-song mb-3" id="lyrics">{{ $item->song->lyrics }}</pre>
+                    <pre class="text-song mb-3" id="lyrics">{{ $item->song->onsongs ? $item->song->onSongLyrics() : $item->song->lyrics }}</pre>
                 @endif
             @endif
 

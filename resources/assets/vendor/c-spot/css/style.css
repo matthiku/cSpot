@@ -198,10 +198,8 @@ red {
     overflow: hidden;
 }
 .calendar-day:hover {
-    border-width: 2px;
     border-style: inset;
-    padding: 2px;
-    margin: 0;
+    background-color: #ccffcc;
 }
 .calendar-day h3 {
     border: 1px solid #eee;
@@ -209,9 +207,10 @@ red {
     padding: .5rem;
 }
 .calendar-day-today {
-    border-width: 4px;
+    border-width: 3px;
     border-style: outset;
     border-color: green;
+    background-color: #ccffff;
     margin: 0;
 }
 .calendar-month-row {

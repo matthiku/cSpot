@@ -142,7 +142,7 @@ class PlanController extends Controller
      * @param  filterby     (user|type|date|future) 
      *                      Show only plans for a certain user, of a certain type, a certain date or all events
      *
-     * @param  filtervalue  (user_id|type_id)
+     * @param  filtervalue  (user_id|type_id|all)
      *
      * @param  timeframe    (all|future)
      *                      Show only future plans or all 
@@ -747,8 +747,7 @@ class PlanController extends Controller
                 // yes, so just update the existing value
                 $cache->update(['value' => $request->value]);
                 // return ok response
-                $newCache = PlanCache::where('key', $request->key)->first();
-                return response()->json(['status' => 200, 'data' => strlen($newCache->value)." updated! Value length was ".strlen($cache->value)], 200);
+                return response()->json(['status' => 200, 'data' => $cache->key." updated! Value length was ".strlen($cache->value)], 200);
             } 
 
             // extract item id from request
@@ -764,12 +763,9 @@ class PlanController extends Controller
                     'item_id' => $item_id
                 ]);
             $plan->planCaches()->save($cache);
-
-            // reload from the DB (debugging!)
-            $newCache = PlanCache::where('key', $request->key)->first();
             
             // return ok response
-            return response()->json(['status' => 200, 'data' => strlen($newCache->value)." inserted! Value length was ".strlen($cache->value)], 200);
+            return response()->json(['status' => 200, 'data' => $cache->key." inserted! Value length was ".strlen($cache->value)], 200);
         }
 
         return response()->json(['status' => 404, 'data' => "plan with id $plan_id not found"], 404);

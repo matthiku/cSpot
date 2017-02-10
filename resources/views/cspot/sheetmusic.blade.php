@@ -53,7 +53,7 @@
                 @include ('cspot.snippets.present_chords')
 
             @else
-                <pre class="big mb-3">{{ $item->song->lyrics }}</pre>
+                <pre class="big mb-3">{{ $item->song->onsongs ? $item->song->onSongLyrics() : $item->song->lyrics }}</pre>
                 
             @endif
         @endif
