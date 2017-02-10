@@ -57,7 +57,7 @@ That's when the development of the predecessor of c-SPOT was started. It was my 
 
 #### New Design
 Out came an online tool, designed for mobile devices and desktop devices, fully responsive to all sizes of screens with the ability to still access and/or modify all the relevant data. Tables are adaptive so that more and more columns with less important information are hidden or their content displayed in a more compact way the smaller a device gets.
-![sample Events Calendar](https://raw.githubusercontent.com/matthiku/cSpot/master/public/images/calendarView-small.png.png)
+![sample Events Calendar](https://raw.githubusercontent.com/matthiku/cSpot/master/public/images/calendarView-small.png)
 [full size](https://raw.githubusercontent.com/matthiku/cSpot/master/public/images/calendarView.png)
 ![sample Order of Service Plan](https://raw.githubusercontent.com/matthiku/cSpot/master/public/images/PlanOverviewNew-Small.png)
 [full size](https://raw.githubusercontent.com/matthiku/cSpot/master/public/images/PlanOverviewNew.png)
