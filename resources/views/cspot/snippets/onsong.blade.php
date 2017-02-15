@@ -72,8 +72,8 @@
 	</div>
 	<div class="small col-12 mt-2 px-0 hidden sequence-help-text">
 		To <span class="text-primary">create/modify</span> the sequence, drag the 
-			<span class="bg-warning text-white rounded px-1">part</span> <span class="bg-warning text-white rounded px-1">codes</span> into the 
-			<span class="bg-danger text-white rounded px-1">red&nbsp;zone (sequence)</span>.
+			<span class="bg-warning text-white rounded px-1">part</span> <span class="bg-warning text-white rounded px-1">codes</span> and drop them into the 
+			<span class="bg-danger text-white rounded px-1">red&nbsp;zone (sequence)</span>. Then move them to the desired place.
 		<br>
 		To <span class="text-primary">remove</span> a part from the sequence, drag it from the 
 			<span class="bg-danger text-white rounded px-1">sequence</span> into the 

@@ -159,10 +159,9 @@ function insertSelectedPartCode()
 
     if (newCodeId) {
         // write html code to show Part name and part code
-        var html = '';
-        if (newCodeCode!='m')
-            html += newCodeName + (newCodeCode!='m' ? ' <span class="text-white">('+newCodeCode+')</span>' : '');
-        else 
+        var html = newCodeName + (newCodeCode!='m' ? ' <span class="text-white">('+newCodeCode+')</span>' : '');
+        
+        if (newCodeCode=='m')
             $('.hints-for-onsong-metadata').show();
 
         $('#adding-new-song-part > .cell-part-name').attr('href', '#collapse-'+newCodeCode);

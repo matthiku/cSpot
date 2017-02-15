@@ -1,27 +1,29 @@
 # The *C*hurch *S*ervices *P*lanning *O*nline *T*ool
 
-c-SPOT is a Collaborative Web Application designed to help (small) churches plan their Sunday and Midweek services as well as other events.
+c-SPOT is a Collaboration Web Application designed to help (small) churches plan their Sunday and Midweek services as well as other events.
 
-c-SPOT is a tool which helps to manage all event information and processes - the Order of Service, staff, resources, worship song lists for worship leaders, musicians and every other person involved in the service or event and allows all participants to use, add or modify their relevant information - using any platform or device of their choice!
+c-SPOT is a tool which helps to manage all event information and processes - the **Order of Service**, staff, resources, worship song lists for worship leaders, musicians and every other person involved in the service or event.
+
+It allows all participants to use, add or modify their relevant information - using any platform or device of their choice!
 
 It allows the management of song **lyrics**, **music scores**, **guitar chords**, event resources and teams in a user-friendly web application.
 
 
-#### Features:
+#### Main Features:
 
-- Front-end uses **Responsive design** and runs on *any* device with an up-to-date browser with JavaScript!
+- Front-end with **Responsive design** - runs on *any* device with an up-to-date browser with JavaScript!
 - Create the **Order of Service** with all relevant data (team (leaders, musicians, other functions), resources, songs, free slides, embedded videoclips etc)
-- **Customize** for your church with logos and external links
-- Manage your team (staff) with their **roles**; also manage the **resources** needed for an event (rooms, devices etc.)
+- Can be **customized** for your church with your own logos and external links
+- Manage your team (staff) with individual **roles**; also manage the **resources** needed for an event (rooms, devices etc.)
 - **Present** your songs and other items like a slideshow via a projector 
 - The slideshow can be presented **off-line** with all slides downloaded (cached) to the local computer
 - Control the slideshow from **any device** using a casting device (like Chromecast) attached to your projector
-- Or **control the presentation** from a small device (e.g. smartphone) that syncs with the main device attached to the projector!
+- Alternatively, **control the presentation** from a small device (e.g. smartphone) that syncs with the main device attached to the projector!
 - Provides **chords, lyrics and sheetmusic for musicians** on all kinds of devices using the popular [OnSong](http://www.onsongapp.com/docs/) format
-- Allows extensive **collaboration** and input from all users, but with full rights management, specified for each user type
-- Allows for a _synchronised presentation_ of lyrics, chords or sheet music _accross all designated devices!_
-- Exchange email and/or internal messages between users
-- Allows ad-hoc insertion of songs and other items for the running presentation
+- Allows extensive **collaboration** and input from all users, but with full rights management, specified for each user type (role)
+- Allows for a _synchronised presentation_ of lyrics, chords or sheet music _accross all designated devices!_ (currently only on Apache Servers!)
+- Exchange emails and/or internal messages between users
+- Allows ad-hoc insertion of songs and other items during the ongoing presentation
 - Helps and tracks **reporting** of song usage to CCLI and integrates with SongSelect (via links)
 
 As a free and open source project, you can download ('clone') the sources, modify (customize) them and run the tool from your own web site hoster.
