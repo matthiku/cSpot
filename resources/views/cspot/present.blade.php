@@ -194,6 +194,253 @@
 
 
 
+
+
+    <!-- 
+        the second navbar is hidden at first 
+    -->
+    <div class="collapse bg-black fixed-bottom justify-content-between pb-4 mb-1" id="lyricsNavbar">
+
+
+        <div>            
+            {{-- go previous and change font size 
+            --}}
+            <div class="btn-group">
+                <a 
+                    @if ($item->id == $item->plan->firstItem()->id)
+                        href="#" disabled="disabled"
+                    @else
+                        href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/go/previous/present') }}"
+                    @endif                        
+                    class="nav-item nav-link btn btn-sm btn-warning" role="button" id="go-previous-item">
+                    <i class="fa fa-angle-double-left fa-lg"></i>
+                </a>
+            </div>
+            <div class="btn-group">
+                <a href="#" title="decrease font size" id="decr-font"
+                    onclick="changeFontSize([
+                        '.announce-text-present', '.text-present', '.bible-text-present', '.bible-text-present>h1', '.bible-text-present>p'
+                            ], 'decrease');"                             
+                        class="nav-item btn btn-sm btn-info" role="button">
+                    A <i class="fa fa-minus fa-lg"></i>
+                </a>
+            </div>
+            <div class="btn-group">
+                <a href="#" title="increase font size" id="incr-font"
+                    onclick="changeFontSize([
+                        '.announce-text-present', '.text-present', '.bible-text-present', '.bible-text-present>h1', '.bible-text-present>p'
+                        ]);"                             
+                        class="ml-0 nav-item btn btn-sm btn-info" role="button">
+                    A <i class="fa fa-plus fa-lg"></i>
+                </a>
+            </div>
+
+            {{-- text alignment 
+            --}}
+            <div class="btn-group">
+                <div class="nav-item dropup">
+                    <button class="nav-link ml-1 py-1 btn btn-sm btn-info dropdown-toggle" href="#" type="button" 
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Align</button>
+                    <div class="dropdown-menu bg-info">
+                        <a onclick="changeTextAlign(['.announce-text-present', '.text-present', '.bible-text-present'], 'left');" 
+                            class="dropdown-item" href="#"><i class="fa fa-align-left fa-lg"></i> Left</a>
+                        <a onclick="changeTextAlign(['.announce-text-present', '.text-present', '.bible-text-present'], 'right');"
+                            class="dropdown-item" href="#"><i class="fa fa-align-right fa-lg"></i> Right</a>
+                        <a onclick="changeTextAlign(['.announce-text-present', '.text-present', '.bible-text-present'], 'center');"
+                            class="dropdown-item" href="#"><i class="fa fa-align-center fa-lg"></i> Center</a>
+                    </div>
+                </div>
+            </div>
+
+            {{-- change text color of lyrics presentation 
+            --}}
+            <div class="btn-group ml-1">
+                <button class="btn btn-sm btn-info narrow">
+                    Text: 
+                    <input onchange="changeColor(['.announce-text-present', '.text-present', '.bible-text-present'], this.value);" type='text' class="colorPicker" />
+                </button class="btn btn-sm btn-info">
+            </div>
+
+            {{-- change BG color of lyrics presentation 
+            --}}
+            <div class="btn-group ml-1">
+                <button class="btn btn-sm btn-info narrow">
+                    BG: 
+                    <input onchange="changeColor(['.main-lyrics-presentation', 'body'], this.value, 'BG');" type='text' class="BGcolorPicker" />
+                </button class="btn btn-sm btn-info">
+            </div>
+
+            {{-- configuration menu 
+            --}}
+            <div class="btn-group dropup">
+
+                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                     id="presentConfigDropUpMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="text-muted hidden-sm-down">Config </span><i class="fa fa-cog"></i>
+                </button>
+
+                <div class="dropdown-menu dropdown-menu-right dropdown-menu-presentation" aria-labelledby="presentConfigDropUpMenu">
+
+                    <a      href="#" class="dropdown-item" onclick="resetLocalFormatting()" 
+                            title="Reset all locally defined formatting values (reload the page then in order to make it have an effect!) ">
+                        &#128472; Reset all locally defined formatting values</a>
+
+                    <h6 class="dropdown-header">Show Configuration</h6>
+
+                    <a      href="#" class="dropdown-item" onclick="changeBlankSlidesConfig()" 
+                            title="Show empty slides between plan items">
+                        <i id="config-BlankSlidesItem" class="fa fa-square-o">&nbsp;</i>insert blank slides between items?</a>
+
+                    <a      href="#" class="dropdown-item" onclick="changeOfflineModeConfig()" 
+                            title="Work off-line and get slides from local storage instead of from the server">
+                        <i id="config-OfflineModeItem" class="fa fa-square-o">&nbsp;</i>use locally cached slides?</a>
+
+                    <a      href="#" class="dropdown-item small" onclick="clearLocalCache();"
+                            title="delete all locally cached items">
+                        <i class="fa fa-trash-o red"></i>&nbsp;</i>delete all locally cached slides</a>
+
+
+                    <div class="dropdown-divider"></div>
+                    <h6 class="dropdown-header">Synchronisation Settings</h6>
+
+                    <a      href="#" class="dropdown-item{{ env('PRESENTATION_ENABLE_SYNC', 'false') ? '' : ' disabled' }}" 
+                            onclick="changeSyncPresentation()" title="Synchronise this presentation with Main Presenter">
+                        <i id="syncPresentationIndicator" class="fa fa-square-o">&nbsp;</i>Sync presentation?
+                        <span class="small">&nbsp;with:</span>
+                        <span class="small showPresenterName"> ({{ $serverSideMainPresenter ? $serverSideMainPresenter['name'] : 'none' }})</span>
+                    </a>
+
+                    <a      href="#" class="dropdown-item{{ env('PRESENTATION_ENABLE_SYNC', 'false') ? '' : ' disabled' }}" 
+                            onclick="changeMainPresenter()" title="Become Main Presenter controlling other presentations">
+                        <i id="setMainPresenterItem" class="fa fa-square-o">&nbsp;</i>Be Main Presenter?
+                        <span class="small showPresenterName"> ({{ $serverSideMainPresenter ? $serverSideMainPresenter['name'] : 'none' }})</span>
+                    </a>
+
+                </div>                    
+            </div>
+        </div>
+            
+            
+        <div>
+            {{-- DropUP Menu Button 
+            --}}       
+            <div id="popup-goto-menu" class="btn-group dropup">
+
+                <button type="button" class="btn btn-sm btn-info dropdown-toggle" 
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Go to
+                </button>
+                <div class="dropdown-menu dropdown-menu-right dropdown-menu-presentation">
+                    @foreach ($items as $menu_item)
+                        @if (! $menu_item->forLeadersEyesOnly)
+                            <a class="dropdown-item nowrap{{ $item->id == $menu_item->id ? ' bg-info' : '' }}"
+                                id="menu-item-seq-no-{{ $menu_item->seq_no }}"
+                                href="{{ url('cspot/items/').'/'.$menu_item->id.'/present' }}">
+                                <small class="hidden-md-down">{{ $menu_item->seq_no }}</small> &nbsp; 
+                                @if ($menu_item->song_id && $menu_item->song->title)
+                                    {!! $menu_item->song->title_2=='slides'
+                                        ? '&#128464;'.$menu_item->song->title
+                                        : ( $menu_item->song->title_2=='video'
+                                            ? '<i class="fa fa-youtube">&nbsp;</i>'.$menu_item->song->title
+                                            : '<i class="fa fa-music">&nbsp;</i><strong>'.$menu_item->song->title.'</strong>' )
+                                    !!}                                    
+                                @else
+                                    {{ substr($menu_item->comment, 0, 45) }}
+                                @endif
+                                <sup id="in-cache-seq-no-{{ $menu_item->seq_no }}" style="display: none">*</sup>
+                            </a>
+                        @endif
+                    @endforeach
+                    @if (Auth::user()->ownsPlan($item->plan_id))
+                        <div class="dropdown-divider"></div>
+                        <div><a class="dropdown-item" id="go-edit"
+                                href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/edit') }}">
+                                <i class="fa fa-pencil"></i> Edit this item
+                        </a></div>
+                    @endif
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" id="go-back"
+                        href="{{ url('cspot/plans/'.$item->plan_id) }}">
+                        <i class="fa fa-undo"></i>
+                        Back to plan overview
+                        <small class="float-right"><span class="font-weight-bold">*</span>item in local cache)</small>
+                    </a>
+                </div>
+            </div>
+       
+            {{-- Add New Item into Plan!  
+            --}}       
+            @if (Auth::user()->ownsPlan($item->plan_id))
+                <div class="btn-group dropup hidden-xs-down ml-2">
+                    {{-- new MODAL POPUP to add song, scripture or comment --}}
+                    <button type="button" class="btn btn-sm btn-outline-info btn-sm" title="Add New Item (Song etc)" 
+                         data-toggle="modal" data-target="#searchSongModal"
+                        data-plan-id="{{$item->plan_id}}" data-item-id="after-{{$item->id}}" 
+                         data-seq-no="after-{{ $item->seq_no }}"
+                               title="Select new Song, Scripture or Comment">
+                        <i class="fa fa-plus"></i> song etc.
+                    </button>
+                </div>
+            @endif
+        </div>
+
+
+        <div>
+            {{-- Personal Notes 
+            --}}
+            <div class="btn-group dropup hidden-xs-down">
+                <button    type="button" title="Your Private Notes"
+                          class="btn btn-sm btn{{ $item->itemNotes->where('user_id', Auth::user()->id)->first() ? '' : '-outline' }}-success dropdown-toggle"                     
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fa fa-sticky-note-o fa-lg"></i>
+                </button>
+
+                <div class="dropdown-menu dropdown-menu-right bg-faded">
+
+                    <h6 class="dropdown-header">Your Private Notes</h6>
+
+                    <pre id="notes-item-id-{{ $item->id }}" class="editable-item-field-present center">{{ 
+                        $item->itemNotes->where('user_id', Auth::user()->id)->first() ? $item->itemNotes->where('user_id', Auth::user()->id)->first()->text : '' }}</pre>
+
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item disabled" href="#">(Click to edit)</a>
+
+                </div>
+            </div>
+
+            {{-- start auto advance mode 
+            --}}
+            <a href="#" title="start auto-advance mode" onclick="startAutoAdvance();" 
+                class="hidden-sm-down btn btn-sm btn-outline-success ml-3">&#9193;</a>
+            
+            {{-- help button to show modal 
+            --}}
+            <a href="#" title="show keyboard shortcuts" data-toggle="modal" data-target=".help-modal"
+                class="hidden-sm-down btn btn-sm btn-outline-success ml-3">
+            <i class="fa fa-question-circle fa-lg"></i></a>
+            {{-- link to song data on CCLI songselect 
+            --}}
+            @if ($item->song_id && $item->song->ccli_no)
+                <div class="btn-group ml-3">                
+                    <a href="{{ env('SONGSELECT_URL', 'https://songselect.ccli.com/Songs/').$item->song->ccli_no }}" 
+                        target="new" class="btn btn-sm btn-info hidden-sm-down py-0">
+                    <img src="{{ url('/') }}/images/songselectlogo.png" width="30"></a>
+                </div>
+            @endif
+        </div>
+
+    </div>
+
+
+
+    {{-- go to first/last slide
+    --}}
+    <a href="{{ url('cspot/items/').'/'.$item->plan->firstItem()->id.'/present' }}" id="go-first-item"></a>
+    <a href="{{ url('cspot/items/').'/'.$item->plan->lastItem()->id.'/present'  }}" id="go-last-item" ></a>
+
+
+
+
     <nav class="navbar navbar-toggleable-sm fixed-bottom navbar-dark bg-black mx-auto lh-1 p-0" id="bottom-fixed-navbar">
 
 
@@ -313,9 +560,7 @@
         
             {{-- button to reveal the second navbar at the bottom 
             --}}
-            <button class="btn btn-sm btn-info px-3" 
-                     type="button" data-toggle="collapse" data-target="#lyricsNavbar">
-                &dArr;
+            <button class="btn btn-sm btn-info px-3" onclick="toggleLyricsNavbar()">&uArr;
             </button>
 
 
@@ -364,244 +609,8 @@
                 </li>
             </ul>
 
-
-
-
-            <!-- 
-                the second navbar is hidden at first 
-            -->
-
-            <div class="collapse" id="lyricsNavbar">
-
-
-                
-                <!-- 
-                    DropUP Menu Button
-                -->
-                <div id="popup-goto-menu" class="btn-group dropup mx-auto">
-
-                    <button type="button" class="btn btn-sm btn-info dropdown-toggle" 
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Go to
-                    </button>
-                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-presentation">
-                        @foreach ($items as $menu_item)
-                            @if (! $menu_item->forLeadersEyesOnly)
-                                <a class="dropdown-item nowrap{{ $item->id == $menu_item->id ? ' bg-info' : '' }}"
-                                    id="menu-item-seq-no-{{ $menu_item->seq_no }}"
-                                    href="{{ url('cspot/items/').'/'.$menu_item->id.'/present' }}">
-                                    <small class="hidden-md-down">{{ $menu_item->seq_no }}</small> &nbsp; 
-                                    @if ($menu_item->song_id && $menu_item->song->title)
-                                        {!! $menu_item->song->title_2=='slides'
-                                            ? '&#128464;'.$menu_item->song->title
-                                            : ( $menu_item->song->title_2=='video'
-                                                ? '<i class="fa fa-youtube">&nbsp;</i>'.$menu_item->song->title
-                                                : '<i class="fa fa-music">&nbsp;</i><strong>'.$menu_item->song->title.'</strong>' )
-                                        !!}                                    
-                                    @else
-                                        {{ substr($menu_item->comment, 0, 45) }}
-                                    @endif
-                                    <sup id="in-cache-seq-no-{{ $menu_item->seq_no }}" style="display: none">*</sup>
-                                </a>
-                            @endif
-                        @endforeach
-                        @if (Auth::user()->ownsPlan($item->plan_id))
-                            <div class="dropdown-divider"></div>
-                            <div><a class="dropdown-item" id="go-edit"
-                                    href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/edit') }}">
-                                    <i class="fa fa-pencil"></i> Edit this item
-                            </a></div>
-                        @endif
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" id="go-back"
-                            href="{{ url('cspot/plans/'.$item->plan_id) }}">
-                            <i class="fa fa-undo"></i>
-                            Back to plan overview
-                            <small class="float-right"><span class="font-weight-bold">*</span>item in local cache)</small>
-                        </a>
-                    </div>
-
-                </div>
-
-
-                <!-- 
-                    Personal Notes 
-                -->
-                <div class="btn-group dropup hidden-xs-down ml-1">
-                    <button    type="button" title="Your Private Notes"
-                              class="btn btn-sm btn{{ $item->itemNotes->where('user_id', Auth::user()->id)->first() ? '' : '-outline' }}-success dropdown-toggle"                     
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fa fa-sticky-note-o fa-lg"></i>
-                    </button>
-
-                    <div class="dropdown-menu dropdown-menu-right bg-faded">
-
-                        <h6 class="dropdown-header">Your Private Notes</h6>
-
-                        <pre id="notes-item-id-{{ $item->id }}" class="editable-item-field-present center">{{ 
-                            $item->itemNotes->where('user_id', Auth::user()->id)->first() ? $item->itemNotes->where('user_id', Auth::user()->id)->first()->text : '' }}</pre>
-
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item disabled" href="#">(Click to edit)</a>
-
-                    </div>
-
-                </div>
-
-
-                <!-- 
-                    Add New Item into Plan! 
-                -->
-                @if (Auth::user()->ownsPlan($item->plan_id))
-                    <div class="btn-group dropup hidden-xs-down ml-1">
-                        {{-- new MODAL POPUP to add song, scripture or comment --}}
-                        <button type="button" class="btn btn-sm btn-outline-info btn-sm" title="Add New Item (Song etc)" 
-                             data-toggle="modal" data-target="#searchSongModal"
-                            data-plan-id="{{$item->plan_id}}" data-item-id="after-{{$item->id}}" 
-                             data-seq-no="after-{{ $item->seq_no }}"
-                                   title="Select new Song, Scripture or Comment">
-                            <i class="fa fa-plus"></i> song etc.
-                        </button>
-                    </div>
-                @endif
-
-
-                {{-- link to song data on CCLI songselect --}}
-                @if ($item->song_id && $item->song->ccli_no)
-                    <a href="{{ env('SONGSELECT_URL', 'https://songselect.ccli.com/Songs/').$item->song->ccli_no }}" 
-                        target="new" class="float-right btn btn-sm btn-info hidden-sm-down ml-1 py-0">
-                    <img src="{{ url('/') }}/images/songselectlogo.png" width="30"></a>
-                @endif
-
-                {{-- help button to show modal --}}
-                <a href="#" title="show keyboard shortcuts" data-toggle="modal" data-target=".help-modal"
-                    class="hidden-sm-down btn btn-sm btn-outline-success">
-                <i class="fa fa-question-circle fa-lg"></i></a>
-
-                {{-- start auto advance mode --}}
-                <a href="#" title="start auto-advance mode" onclick="startAutoAdvance();" 
-                    class="hidden-sm-down btn btn-sm btn-outline-success mx-0">&#9193;</a>
-
-
-
-                {{-- 
-                        go to first/last slide
-                --}}
-                <a href="{{ url('cspot/items/').'/'.$item->plan->firstItem()->id.'/present' }}" id="go-first-item"></a>
-                <a href="{{ url('cspot/items/').'/'.$item->plan->lastItem()->id.'/present'  }}" id="go-last-item" ></a>
-
-
-
-                <ul class="navbar-nav float-left">
-                    <li>
-                        <a 
-                            @if ($item->id == $item->plan->firstItem()->id)
-                                href="#" disabled="disabled"
-                            @else
-                                href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/go/previous/present') }}"
-                            @endif                        
-                            class="nav-item btn btn-sm btn-warning" role="button" id="go-previous-item">
-                            <i class="fa fa-angle-double-left fa-lg"></i>
-                        </a> 
-                        <a href="#" title="decrease font size" id="decr-font"
-                            onclick="changeFontSize([
-                                '.announce-text-present', '.text-present', '.bible-text-present', '.bible-text-present>h1', '.bible-text-present>p'
-                                    ], 'decrease');"                             
-                                class="nav-item btn btn-sm btn-info" role="button">
-                            A <i class="fa fa-minus fa-lg"></i>
-                        </a>
-                        <a href="#" title="increase font size" id="incr-font"
-                            onclick="changeFontSize([
-                                '.announce-text-present', '.text-present', '.bible-text-present', '.bible-text-present>h1', '.bible-text-present>p'
-                                ]);"                             
-                                class="ml-0 nav-item btn btn-sm btn-info" role="button">
-                            A <i class="fa fa-plus fa-lg"></i>
-                        </a>
-                    </li>
-                </ul>
-
-                <div class="nav-item dropup float-left">
-                    <button class="nav-link ml-1 py-1 btn btn-sm btn-info dropdown-toggle" href="#" type="button" 
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Align</button>
-                    <div class="dropdown-menu bg-info">
-                        <a onclick="changeTextAlign(['.announce-text-present', '.text-present', '.bible-text-present'], 'left');" 
-                            class="dropdown-item" href="#"><i class="fa fa-align-left fa-lg"></i> Left</a>
-                        <a onclick="changeTextAlign(['.announce-text-present', '.text-present', '.bible-text-present'], 'right');"
-                            class="dropdown-item" href="#"><i class="fa fa-align-right fa-lg"></i> Right</a>
-                        <a onclick="changeTextAlign(['.announce-text-present', '.text-present', '.bible-text-present'], 'center');"
-                            class="dropdown-item" href="#"><i class="fa fa-align-center fa-lg"></i> Center</a>
-                    </div>
-                </div>
-
-                {{-- change text color of lyrics presentation --}}
-                <div class="navbar-nav float-left ml-1">
-                    <button class="btn btn-sm btn-info narrow">
-                        Text: 
-                        <input onchange="changeColor(['.announce-text-present', '.text-present', '.bible-text-present'], this.value);" type='text' class="colorPicker" />
-                    </button class="btn btn-sm btn-info">
-                </div>
-
-                {{-- change BG color of lyrics presentation --}}
-                <div class="navbar-nav float-left ml-1">
-                    <button class="btn btn-sm btn-info narrow">
-                        BG: 
-                        <input onchange="changeColor(['.main-lyrics-presentation', 'body'], this.value, 'BG');" type='text' class="BGcolorPicker" />
-                    </button class="btn btn-sm btn-info">
-                </div>
-
-
-                {{-- configuration menu 
-                --}}
-                <div class="nav-item btn-group dropup float-left ml-1">
-
-                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
-                         id="presentConfigDropUpMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <span class="text-muted hidden-sm-down">Config </span><i class="fa fa-cog"></i>
-                    </button>
-
-                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-presentation" aria-labelledby="presentConfigDropUpMenu">
-
-                        <a      href="#" class="dropdown-item" onclick="resetLocalFormatting()" 
-                                title="Reset all locally defined formatting values (reload the page then in order to make it have an effect!) ">
-                            &#128472; Reset all locally defined formatting values</a>
-
-                        <h6 class="dropdown-header">Show Configuration</h6>
-
-                        <a      href="#" class="dropdown-item" onclick="changeBlankSlidesConfig()" 
-                                title="Show empty slides between plan items">
-                            <i id="config-BlankSlidesItem" class="fa fa-square-o">&nbsp;</i>insert blank slides between items?</a>
-
-                        <a      href="#" class="dropdown-item" onclick="changeOfflineModeConfig()" 
-                                title="Work off-line and get slides from local storage instead of from the server">
-                            <i id="config-OfflineModeItem" class="fa fa-square-o">&nbsp;</i>use locally cached slides?</a>
-
-                        <a      href="#" class="dropdown-item small" onclick="clearLocalCache();"
-                                title="delete all locally cached items">
-                            <i class="fa fa-trash-o red"></i>&nbsp;</i>delete all locally cached slides</a>
-
-
-                        <div class="dropdown-divider"></div>
-                        <h6 class="dropdown-header">Synchronisation Settings</h6>
-
-                        <a      href="#" class="dropdown-item{{ env('PRESENTATION_ENABLE_SYNC', 'false') ? '' : ' disabled' }}" 
-                                onclick="changeSyncPresentation()" title="Synchronise this presentation with Main Presenter">
-                            <i id="syncPresentationIndicator" class="fa fa-square-o">&nbsp;</i>Sync presentation?
-                            <span class="small">&nbsp;with:</span>
-                            <span class="small showPresenterName"> ({{ $serverSideMainPresenter ? $serverSideMainPresenter['name'] : 'none' }})</span>
-                        </a>
-
-                        <a      href="#" class="dropdown-item{{ env('PRESENTATION_ENABLE_SYNC', 'false') ? '' : ' disabled' }}" 
-                                onclick="changeMainPresenter()" title="Become Main Presenter controlling other presentations">
-                            <i id="setMainPresenterItem" class="fa fa-square-o">&nbsp;</i>Be Main Presenter?
-                            <span class="small showPresenterName"> ({{ $serverSideMainPresenter ? $serverSideMainPresenter['name'] : 'none' }})</span>
-                        </a>
-
-                    </div>                    
-                </div>
-            </div>
         </div>
     </nav>
-
 
 
     <script>        
@@ -612,6 +621,14 @@
             // control the activation of a blank screen
             var screenBlank = true;
         });
+
+        function toggleLyricsNavbar()
+        {
+            if ($('#lyricsNavbar').is(':visible'))
+                $('#lyricsNavbar').css('display', 'none')
+            else
+                $('#lyricsNavbar').css('display', 'flex')
+        }
 
     </script>
 

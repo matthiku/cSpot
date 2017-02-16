@@ -407,14 +407,15 @@
                 <div class="panel-heading" role="tab" id="lyrics-panel">
                     <h4 class="panel-title">
 
-                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseLyrics" aria-expanded="true" aria-controls="collapseLyrics">
+                        <a href="#collapseLyrics" data-toggle="collapse" data-parent="#accordion"
+                            aria-expanded="true" aria-controls="collapseLyrics">
                             <span class="song-only">Lyrics</span><span 
                                 class="slides-only" style="display: none;">Slides</span><span 
                                 class="training-show" style="display: none;">Description</span>:
                         </a>
 
                         @if ( !isset($song) || (isset($song) && $song->title_2!='slides') )
-                            <a  tabindex="0" href="#" data-container="body" data-toggle="tooltip"
+                            <a  tabindex="0" href="#" data-container="body" data-toggle="tooltip" data-placement="bottom"
                                 data-template='<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><pre class="tooltip-inner tooltip-wide"></pre></div>'
                                 title="{{ "Song parts indicators must be enclosed with [],\nlike [1] for verse 1 or [chorus] for a chorus.\n\nBlank lines force a new slide\nwhen the song is presented.\n\nDon't use that if you plan to use the OnSong\nformat as lyrics will be taken from the OnSong data!" }}"
                                 <i class="fa fa-info-circle ml-2"></i>
