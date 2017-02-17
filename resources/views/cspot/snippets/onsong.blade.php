@@ -366,6 +366,7 @@
 
 
 
+
 {{-- Row with button to add new song part 
 --}}
 <div class="insertNewOnSongRow-link bg-inverse rounded pr-2" style="padding: 2px;">
@@ -375,7 +376,9 @@
 			class="btn btn-sm btn-success link"><i class="fa fa-plus"></i> Add new Part</span>
 		@if (isset($song) && ! $song->onsongs->count())
 			<span onclick="$('.show-onsong-upload-hint').show();$('#onsong-submit-method').val('POST');" 
-				class="btn btn-sm btn-info link ml-1">&#9088; Import OnSong File</span>
+				class="btn btn-sm btn-info link ml-2 onsong-import-buttons">&#9088; Import OnSong File</span>
+			<span onclick="$('.show-onsong-paste-hint').show();" 
+				class="btn btn-sm btn-info link ml-2 onsong-import-buttons">&#9088; Paste Whole Song</span>
 		@endif
 	@endif
 
@@ -386,8 +389,10 @@
 </div>
 
 
-<div class="show-onsong-upload-hint hidden rounded-bottom py-2 px-3 bg-faded text-right text-primary small">
-	Select (or drop here) a valid OnSong file to be processed for this song:
+{{-- provide UPLOAD facility for a full song 
+--}}
+<div class="show-onsong-upload-hint hidden rounded-bottom py-2 px-3 bg-faded text-primary small">
+	Select (or drop here) a <strong>valid OnSong file</strong> to be processed for this song:
 	<input id="fileupload" type="file" name="onsongfile" data-url="{{ route('uploadonsongfiles', isset($song) ? $song->id : '0') }}">
 	<input id="onsong-submit-method" type="hidden" name="_method" value="PUT">
 	<div id="progress">
@@ -395,9 +400,25 @@
 	</div>
 </div>
 
+
+{{-- provide textarea to PASTE full song 
+--}}
+<div class="show-onsong-paste-hint hidden rounded-bottom py-2 px-3 bg-faded text-center text-primary small">
+
+	Copy a complete <strong>OnSong-formatted</strong> or <strong>Chords-over-Lyrics</strong>-formatted song into the input area below:
+
+	<textarea id="onsong-paste-song" class="fully-width rounded" 
+		onclick="calculateTextAreaHeight(this);" style="min-height: 10rem;"></textarea>
+
+	Make sure everything is correct then: 
+	<button type="button" class="btn btn-primary" onclick="submitPastedOnSongText();">Submit</button>
+</div>
+
+
+
 <div class="show-onsong-format-hint hidden rounded-bottom py-2 px-3 bg-faded text-right text-primary small">
 	If the imported text contains tab-stopps, define how many spaces they should be replaced with:
-	<input type="number" id="onsong-import-tab-size" value=4 style="width: 2rem" onchange="updateTabToSpacesRatio(this)">
+	<input type="number" id="onsong-import-tab-size" value=4 style="width: 2rem" onchange="updateTabToSpacesRatio(this);">
 </div>
 
 

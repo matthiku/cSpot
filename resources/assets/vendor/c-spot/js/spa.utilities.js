@@ -69,15 +69,27 @@ function userAvailableForPlan(that, plan_id) {
 \*/
 
 
+function submitPastedOnSongText()
+{
+    var text = $('#onsong-paste-song').val();
+    if (!text.trim())
+        return;
+
+    processOnSongFile(text);
+    $('#onsong-paste-song').val('');
+    $('.show-onsong-paste-hint')
+        .html('<p class="bg-warning text-center text-danger big">Check each part to make sure it was imported correctly!</p>');
+}
+
 function processOnSongFile(data)
 {
-    var onsong = data.split('\n');    
-    var hdr, partName='m', verse='', tmp;
-
     $('.show-onsong-format-hint').hide(); // those hints not needed here
 
     // needed in the context of the Song Details page
     $('#onsong-submit-method').val('PUT');
+
+    var onsong = data.split('\n');    
+    var hdr, partName='m', verse='', tmp;
 
     // if response was empty, warn the user and stop
     if (!onsong.length  ||  !data.trim() ) {
@@ -119,6 +131,7 @@ function processOnSongFile(data)
     if (verse)
         writePartCodeAndSaveVerse(partName, verse);
 
+    $('.onsong-import-buttons').hide();
     $('.show-onsong-upload-hint')
         .html('<p class="bg-warning text-center text-danger big">Check each part to make sure it was imported correctly!</p>');
 }
@@ -133,13 +146,18 @@ function identifyPartCode(str)
     patt = /^(Verse)/i;
     if ( patt.test(str) ) {
         var nm=''; var n=str.split(' '); 
-        if (n.length>1) {
+        if (n.length>1)
             nm=n[1].substr(0,1); 
-        }
+        else
+            nm='1';
         return nm; 
     }
     patt = /^(Chorus)/i;
     if ( patt.test(str) ) {
+        var num=str.split(' '); 
+        if (num.length>1 && num[1]=='2') {
+            return 't'; 
+        }
         return 'c';
     }
     patt = /^(Pre-Chorus)/i;
