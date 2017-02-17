@@ -69,13 +69,143 @@ function userAvailableForPlan(that, plan_id) {
 \*/
 
 
+function processOnSongFile(data)
+{
+    var onsong = data.split('\n');    
+    var hdr, partName='m', verse='', tmp;
+
+    $('.show-onsong-format-hint').hide(); // those hints not needed here
+
+    // needed in the context of the Song Details page
+    $('#onsong-submit-method').val('PUT');
+
+    // if response was empty, warn the user and stop
+    if (!onsong.length  ||  !data.trim() ) {
+        $('.show-onsong-upload-hint')
+            .append('<p class="bg-warning text-center text-danger big">File Upload Failed! File might contain unreadable characters!</p>');
+        return;
+    }
+
+    // loop through each line of the file and start the importing of the song parts
+    for (var i = 0; i <= onsong.length - 1; i++) {
+        // ignore empty lines etc
+        if (onsong[i].length==0  || onsong[i].trim()=='') 
+            continue;
+
+        // check if we have a new part name
+        hdr = identifyPartCode(onsong[i]);
+
+        // lines starting with any kind of brackets are not to be treated as headers
+        var patt = /^(\(|\[|\{)/;
+        if ( patt.test(onsong[i].trim()) )
+            hdr = '';
+
+        if (hdr) {
+            if (verse) {
+                writePartCodeAndSaveVerse(partName, verse);
+                verse = '';
+            }
+            partName = hdr;
+            // intro data could be on the same line!
+            if (hdr=='Intro') {
+                tmp = onsong[i].split(':');
+                if (tmp.length>1)
+                    verse = tmp[1];
+            }
+            continue;
+        }
+        verse += onsong[i]+"\n";
+    }
+    if (verse)
+        writePartCodeAndSaveVerse(partName, verse);
+
+    $('.show-onsong-upload-hint')
+        .html('<p class="bg-warning text-center text-danger big">Check each part to make sure it was imported correctly!</p>');
+}
+
+// identify headers by the first word in a line, case-insensitive
+function identifyPartCode(str)
+{
+    var patt = /^(coda|end)/i;
+    if ( patt.test(str) ) 
+        return 'e';
+
+    patt = /^(Verse)/i;
+    if ( patt.test(str) ) {
+        var nm=''; var n=str.split(' '); 
+        if (n.length>1) {
+            nm=n[1].substr(0,1); 
+        }
+        return nm; 
+    }
+    patt = /^(Chorus)/i;
+    if ( patt.test(str) ) {
+        return 'c';
+    }
+    patt = /^(Pre-Chorus)/i;
+    if ( patt.test(str) ) {
+        return 'p';
+    }
+    patt = /^(bridge)/i;
+    if ( patt.test(str) ) {
+        return 'b';
+    }
+    patt = /^(instrumental)/i;
+    if ( patt.test(str) ) {
+        return 's';
+    }
+
+    patt = /^(Intro|Other|\()/;
+    if ( patt.test(str) ) 
+        return 'i';
+
+    return '';
+}
+
+// this function emulates the manual adding of onsong parts
+function writePartCodeAndSaveVerse(partName, text)
+{
+    // check if this partName is valid and still exists
+    console.log('Checking in new OnSong part: '+ partName);
+    var partNo = cSpot.song_parts_by_code[partName].id
+    $('#new-onsong-part-selection').val(partNo);
+
+    if (!partNo  || $('#new-onsong-part-selection').val() != partNo ) {
+        console.log('This part code is invalid or has already been used.')
+        return;
+    }
+
+    // add a new OnSong row with the new part name
+    insertNewOnSongRow(partNo);
+    // insert the 'selected' part code and text into the new row
+    insertSelectedPartCode();
+
+    // get handle on new row
+    var new_row = $('#adding-new-song-part');
+
+    // insert the OnSong text into the teaxtarea input field
+    new_row.children('.cell-part-text').children('.plaintext-editor').val(text)
+
+    // now submit the new OnSong part
+    saveNewOnSongText(new_row);
+
+    // clear the textarea again
+    new_row.children('.cell-part-text').children('.plaintext-editor').val('');
+
+    // remove this part code from the selection to avoid adding duplicates
+    editPartNameForSelection(partNo, 'remove');
+}
+
+
 /*
     Prepare New OnSong Row 
     - launch modal for user to select the part code
     - prepare textarea for user to enter actual onsong data
     - save as a new row in the list of onSong parts
+
+    param art_id (optional, used for automation)
 */
-function insertNewOnSongRow()
+function insertNewOnSongRow(part_id)
 {
     // make sure no other element with this ID exists (from a previous adding)
     $('#adding-new-song-part').attr('id', '');
@@ -88,14 +218,14 @@ function insertNewOnSongRow()
     $('#new-onsong-row').attr('id', 'adding-new-song-part');
     // restore the original row again
     $('#very-new-onsong-row').attr('id', 'new-onsong-row');
-
     $('#adding-new-song-part').fadeIn();
+
     // make sure no other row has this class
     $('#adding-new-song-part').siblings('div').removeClass('table-success');
     $('#adding-new-song-part').addClass('table-success');
 
     // pre-select next possible OnSong part
-    $('#new-onsong-part-selection').val( findNextPossibleOnSongPart() );
+    $('#new-onsong-part-selection').val( part_id || findNextPossibleOnSongPart());
 
     // hide all other action buttons
     $('.cell-part-action').hide();
@@ -116,8 +246,15 @@ function insertNewOnSongRow()
     $('#selectSongPartCodeModal').on('hidden.bs.modal', function () {
         removeNewOnSongRow($('#adding-new-song-part'));
     });
+
+    // do not trigger the modal if this was called programmatically (and not by the user)
+    if (part_id)
+        return
+
     // make sure all is in the visible viewport
     window.location.href = "#tbl-bottom";
+
+    // define activity that gets executed _after_ Modal becomes visible
     $('#selectSongPartCodeModal').on('shown.bs.modal', function () {
         // move the part-type selection dialog down to the bottom
         var mo = $('.modal-content.select-songpart-code')[0];
@@ -126,7 +263,7 @@ function insertNewOnSongRow()
         $('#new-onsong-part-selection').focus();
     })
 
-    // call Modal for onsong part name selection
+    // call (show) Modal for onsong part name selection
     $('#selectSongPartCodeModal').modal('show');
 }
 
@@ -217,7 +354,10 @@ function findNextPossibleOnSongPart() {
 
 function removeNewOnSongRow(row)
 {
-    if ($(row).prop('id')!= "adding-new-song-part"  &&  $('#adding-new-song-part').is(':visible'))
+    var onsong_id = $(row).data('onsong-id') || 0; // (undefined for new elements)
+
+    // not sure why this is necessary!
+    if ( 2 == 3  &&  $(row).prop('id')!= "adding-new-song-part"  &&  $('#adding-new-song-part').is(':visible'))
         return;
 
     // make sure we have no "outdated" min-height
@@ -231,8 +371,6 @@ function removeNewOnSongRow(row)
     $('.insertNewOnSongRow-link').show();
     $('.for-existing-items').show();
     $('.toggle-onsong-buttons').show(); 
-    
-    var onsong_id = $(row).data('onsong-id') || 0; // (undefined for new elements)
 
     // remove row in case of a just added, empty row
     if (!onsong_id) {
@@ -511,6 +649,13 @@ function saveNewOnSongText(row, del)
         text = $(textarea[1]).val() || $(textarea[0]).val();
     else 
         text = $(textarea).val();
+
+    // no valid pard name (id) provided
+    if (!part_id) {
+        $(textarea).focus();
+        row.children('.cell-part-text').children('.error-msg').show();
+        return;
+    }
 
     // no chords text provided
     if (!text) {

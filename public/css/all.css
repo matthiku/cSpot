@@ -13175,6 +13175,12 @@ red {
  /*        other, page-specific components     */
 /* -------------------------------------------*/
 
+/* file upload progress bar */
+.bar {
+    height: 18px;
+    background: green;
+}
+
 .onsong-instructions {
     max-width: 60rem;
 }
@@ -13583,6 +13589,10 @@ pre.text-present {
     text-align: right;
 }
 
+ul.pagination {
+    margin-bottom: 0;
+}
+
 
 label {
     font-weight: 700;
@@ -13664,10 +13674,6 @@ label {
     }
     .md-center {
         text-align: center;
-    }
-
-    .pagination {
-        margin-bottom: 0;
     }
 }
 

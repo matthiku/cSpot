@@ -92,7 +92,7 @@
         
             {{-- SAVE or SUBMIT button --}}
             @if (isset($song))
-                <big class="mr-1" onclick="showSpinner()">
+                <big class="mr-1">
                     {!! Form::submit('Save changes', ['class' => 'btn btn-success submit-button disabled']); !!}
                 </big>
             @else            
@@ -371,7 +371,8 @@
             {{-- SAVE or SUBMIT button --}}
             <div class="hidden-lg-down">    
                 @if (isset($song))
-                    <big class="mr-1" onclick="showSpinner()">
+                    <hr class="hr-big">
+                    <big class="mr-1">
                         {!! Form::submit('Save changes', ['class' => 'btn btn-success submit-button disabled']); !!}
                     </big>
                 @else            
@@ -454,7 +455,7 @@
                     <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseChords" aria-expanded="false" aria-controls="collapseChords">
                         Chords:</a>
                         <a 
-                            tabindex="0" href="#" data-container="body" data-toggle="tooltip"
+                            tabindex="0" href="#" data-container="body" data-toggle="tooltip" data-placement="bottom"
                             data-template='<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><pre class="tooltip-inner tooltip-wide"></pre></div>'
                             title='{{ isset($song) ? "(Click on title 'Chords' to open!)\n" : '' }}{{ 
                                     "Song parts indicators must be on separate\nlines and end with a colon (:).\nBlank lines will be ignored.\n\nPut instructions on separate lines and\nenclose them in brackets,\nlike '(repeat chorus!)'\n\nDon't fill that in if you plan to use the OnSong format!" }}'>
@@ -564,7 +565,8 @@
     {{-- SAVE or SUBMIT button --}}
     <div class="hidden-xl-up">    
         @if (isset($song))
-            <big class="mr-1" onclick="showSpinner()">
+            <hr class="hr-big">
+            <big class="mr-1">
                 {!! Form::submit('Save changes', ['class' => 'btn btn-success submit-button disabled']); !!}
             </big>
         @else            

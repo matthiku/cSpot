@@ -30,6 +30,7 @@ var path = {
     'moment'        : bower_path + '/moment',
     'jeditable'     : bower_path + '/jeditable',
     'spectrum'      : bower_path + '/spectrum',
+    'file_upload'   : bower_path + '/blueimp-file-upload',
     'c_spot'        : bower_path + '/c-spot',
 };
 
@@ -70,6 +71,9 @@ elixir(function(mix) {
         path.moment         + '/moment.js',
         path.jeditable      + '/jquery.jeditable.js',
         path.spectrum       + '/spectrum.js',
+        // path.file_upload    + '/js/vendor/jquery.ui.widget.js',
+        path.file_upload    + '/js/jquery.iframe-transport.js',
+        path.file_upload    + '/js/jquery.fileupload.js',
 
         path.c_spot         + '/js/_main.js',
         path.c_spot         + '/js/document.ready.js',

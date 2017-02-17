@@ -554,6 +554,38 @@ class SongController extends Controller
     }
 
 
+    public function APIuploadOnSongFiles(Request $request, $song_id)
+    {
+        // check authentication
+        if ( ! Auth::user()->isEditor() )  {
+            return response()->json(['status' => 401, 'data' => 'Not authorized'], 401);
+        }
+
+        $song = Song::find($song_id);
+
+        // do not accept a new OnSong file for a song which already has OnSong parts!
+        if ($song->onsong)
+            return response()->json(['status' => 400, 'data' => 'API: Song already has OnSong parts, delete them first!'], 400);
+
+        if ( ! $song  ) 
+            return response()->json(['status' => 409, 'data' => 'API: song not found: '.$song_id], 409);
+        if ( ! $request->hasFile('onsongfile') ) 
+            return response()->json(['status' => 409, 'data' => 'API: no file submitted!'], 409);
+
+        if ( $request->file('onsongfile')->isValid() ) {
+            // get the uploaded file
+            $path = $request->onsongfile->path();
+
+            $file = htmlspecialchars(file_get_contents($path));
+
+            // return a success response with the content of the file
+            return response()->json(['status' => 201, 'data' => json_encode( $file )], 201);
+        }
+        
+        // provided or local data was incoherent
+        return response()->json(['status' => 409, 'data' => 'API: File could not be validated!'], 409);
+    }
+
 
     /**
      * API - get list of song titles for easy search

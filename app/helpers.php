@@ -316,6 +316,21 @@ function getLastSongUpdated_at()
     return null;
 }
 
+/**
+ * Divide an uploaded OnSong file into OnSong parts
+ *
+ * @param  string $filepath
+ * @return collection $songs
+ *
+ */
+function readOnSongFile($path)
+{
+    $parts = collect();    
+}
+
+
+
+
 /*\ __________________________________________________
  *  
  *                  I T E M S

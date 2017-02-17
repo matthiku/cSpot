@@ -116,7 +116,7 @@
 
 	@if (count($songs))
 
-		<table class="table table-striped table-bordered {{ count($songs)>10 ? 'table-sm' : '' }}">
+		<table class="table table-striped table-bordered mb-0 {{ count($songs)>10 ? 'table-sm' : '' }}">
 
 
 			<thead class="thead-default">
@@ -286,9 +286,9 @@
 
 
 		@if ($currentPage!=0)
-			<center>
+			<div class="d-flex justify-content-center">
 				{!! $songs->links() !!}
-			</center>
+			</div>
 		@endif
 
 

@@ -258,6 +258,9 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     // OnSong-type song parts
     Route::post('api/songs/updateonsongparts', 'Cspot\SongController@APIupdateOnSongParts')->name('updateonsongparts');
 
+    // Upload and process OnSong files
+    Route::post('api/songs/uploadonsongfiles/{song_id}', 'Cspot\SongController@APIuploadOnSongFiles')->name('uploadonsongfiles');
+
 
 
     // list of training videos

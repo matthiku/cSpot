@@ -368,11 +368,15 @@
 
 {{-- Row with button to add new song part 
 --}}
-<div class="insertNewOnSongRow-link bg-inverse rounded pr-1">
+<div class="insertNewOnSongRow-link bg-inverse rounded pr-2" style="padding: 2px;">
 
 	@if (Auth::user()->isEditor())
 		<span onclick="insertNewOnSongRow();" 
 			class="btn btn-sm btn-success link"><i class="fa fa-plus"></i> Add new Part</span>
+		@if (isset($song) && ! $song->onsongs->count())
+			<span onclick="$('.show-onsong-upload-hint').show();$('#onsong-submit-method').val('POST');" 
+				class="btn btn-sm btn-info link ml-1">&#9088; Import OnSong File</span>
+		@endif
 	@endif
 
 	<span class="small float-right mt-1">
@@ -381,6 +385,15 @@
 	</span>
 </div>
 
+
+<div class="show-onsong-upload-hint hidden rounded-bottom py-2 px-3 bg-faded text-right text-primary small">
+	Select (or drop here) a valid OnSong file to be processed for this song:
+	<input id="fileupload" type="file" name="onsongfile" data-url="{{ route('uploadonsongfiles', isset($song) ? $song->id : '0') }}">
+	<input id="onsong-submit-method" type="hidden" name="_method" value="PUT">
+	<div id="progress">
+	    <div class="bar" style="width: 0%;"></div>
+	</div>
+</div>
 
 <div class="show-onsong-format-hint hidden rounded-bottom py-2 px-3 bg-faded text-right text-primary small">
 	If the imported text contains tab-stopps, define how many spaces they should be replaced with:
@@ -391,3 +404,30 @@
 
 
 <a id="tbl-bottom"></a>
+
+
+<script>
+ 	// see: https://github.com/blueimp/jQuery-File-Upload/wiki/Basic-plugin
+	$(function () {
+	    $('#fileupload').fileupload({
+	    	type: 'POST',
+	    	dataType: 'json',
+		    /* show progress */
+		    progressall: function (e, data) {
+		        var progress = parseInt(data.loaded / data.total * 100, 10);
+		        $('#progress .bar').css(
+		            'width',
+		            progress + '%'
+		        );
+		    },
+		    done: function (e, data) {
+		    	if (data.textStatus=='success') {
+		    		var data = JSON.parse(data.result.data);
+		    		processOnSongFile(data);
+		    	}
+		    	else
+		    		console.log(data);		    		
+		    },
+	    });
+	});
+</script>
