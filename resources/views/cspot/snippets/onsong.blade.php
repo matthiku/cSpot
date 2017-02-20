@@ -387,11 +387,13 @@
 					$('.show-onsong-paste-hint').toggle();" 
 				title="Past a complete song with chords (of any format) and convert it into OnSong parts"
 				class="btn btn-sm btn-info link ml-2 onsong-import-buttons">&#9088; Paste Whole Song</span>
-			<span onclick="
-					$('.onsong-import-areas').hide();
-					convertChordsToOnSongParts();" 
-				title="Use the existing chords data of this song and convert it into OnSong parts"
-				class="btn btn-sm btn-info link ml-2 onsong-import-buttons">&#9088; Convert Existing Chords</span>
+			@if ($song->chords)
+				<span onclick="
+						$('.onsong-import-areas').hide();
+						convertChordsToOnSongParts();" 
+					title="Use the existing chords data of this song and convert it into OnSong parts"
+					class="btn btn-sm btn-info link ml-2 onsong-import-buttons">&#9088; Convert Existing Chords</span>
+			@endif
 		@endif
 	@endif
 
@@ -443,27 +445,30 @@
 {{-- file-upload function 
 	see: https://github.com/blueimp/jQuery-File-Upload/wiki/Basic-plugin 
 --}}
-<script>
-	$(function () {
-	    $('#fileupload').fileupload({
-	    	type: 'POST',
-	    	dataType: 'json',
-		    /* show progress */
-		    progressall: function (e, data) {
-		        var progress = parseInt(data.loaded / data.total * 100, 10);
-		        $('#progress .bar').css(
-		            'width',
-		            progress + '%'
-		        );
-		    },
-		    done: function (e, data) {
-		    	if (data.textStatus=='success') {
-		    		var data = JSON.parse(data.result.data);
-		    		processOnSongFile(data);
-		    	}
-		    	else
-		    		console.log(data);		    		
-		    },
-	    });
-	});
-</script>
+@if (isset($song) && ! $song->onsongs->count())
+	<script>
+		$(function () {
+		    $('#fileupload').fileupload({
+		    	dropZone: $('.show-onsong-upload-hint'),
+		    	type: 'POST',
+		    	dataType: 'json',
+			    /* show progress */
+			    progressall: function (e, data) {
+			        var progress = parseInt(data.loaded / data.total * 100, 10);
+			        $('#progress .bar').css(
+			            'width',
+			            progress + '%'
+			        );
+			    },
+			    done: function (e, data) {
+			    	if (data.textStatus=='success') {
+			    		var data = JSON.parse(data.result.data);
+			    		processOnSongFile(data);
+			    	}
+			    	else
+			    		console.log(data);		    		
+			    },
+		    });
+		});
+	</script>
+@endif

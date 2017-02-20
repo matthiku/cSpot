@@ -286,7 +286,7 @@ class SongController extends Controller
         // find plans using this song
         $plans = $song->plansUsingThisSong();
 
-        if ($plans) {
+        if ($plans->count()) {
             $heading = 'Show Plans using the Song "'.$song->title.'"';
             return view( 'cspot.plans', [
                 'plans' => $plans, 
@@ -296,7 +296,7 @@ class SongController extends Controller
             ]);
         }
 
-        flash('No plans for this song found!');
+        flash('No plans found that are using this song!');
         return \Redirect::back();        
     }
 

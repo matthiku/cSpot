@@ -224,7 +224,7 @@ class FileController extends Controller
             // delete the database record
             $file->delete();
             // return to sender
-            return response()->json(['status' => 200, 'data' => $file->filename.' deleted.']);
+            return response()->json(['status' => 200, 'data' => 'File "'.$file->filename.'" was deleted.']);
         }
         return response()->json(['status' => 404, 'data' => 'Not found'], 404);
     }

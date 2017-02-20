@@ -112,8 +112,7 @@ function submitPastedOnSongText()
 
     processOnSongFile(text);
     $('#onsong-paste-song').val('');
-    $('.show-onsong-paste-hint')
-        .html('<p class="bg-warning text-center text-danger big">Check each part to make sure it was imported correctly!</p>');
+    $('.show-onsong-paste-hint').html('');
 }
 
 function processOnSongFile(data)
@@ -171,8 +170,7 @@ function processOnSongFile(data)
 
     $('.onsong-import-buttons').hide();
     $('.show-onsong-upload-hint')
-        .html('<p class="bg-warning text-center text-danger big">Check each part to make sure it was imported correctly!</p>')
-        .show();
+        .html('<p class="bg-warning text-center text-danger big">Check each part to make sure it was imported correctly!</p>');
 }
 
 // identify headers by the first word in a line, case-insensitive
@@ -467,6 +465,10 @@ function removeNewOnSongRow(row)
         $('#submit-sequence-button').hide();
     else 
         $('#submit-sequence-button').show();
+
+    // show post-import hints, if available:
+    if ($('.show-onsong-upload-hint').text().trim())
+        $('.show-onsong-upload-hint').show();
 }
 
 function closeAdvOnSongEditor(row)
@@ -803,90 +805,10 @@ function saveNewOnSongText(row, del)
                 row.children('.cell-part-text').children('.write-onsong-text').html('You are not authorised for this request.').show();
                 row.children('.cell-part-text').children('textarea').hide();
                 row.children('.cell-part-text').children('.cell-part-action').hide();
-                return false;
-            }
+                return false; }
 
-            // post-processing after successfully submitting OnSong data
-            //TODO: move below into separate function!
-            // postPrecessingOnSongSubmission(row, data, textarea, onsong_id)
-
-            // make sure this is visible now 
-            $('.show-collapse-expand-parts-link').show();
-            // on the Song Details page, make sure the old-style sequence field is not longer used!
-            $('.old-style-song-sequence-input-field').remove();
-
-            // insert success data into the new table row or the existing row (for updates)
-            row.children('.cell-part-text').children('.write-onsong-text').html(data.data.text).show();
-
-            // show it as chords over lyrics (unless it's the meta data)
-            if (data.data.song_part  &&  data.data.song_part.code != 'm')
-                rewriteOnsong(row.children('.cell-part-text').children('.show-onsong-text'));
-
-            // also write it into the textarea for further edits in this session
-            if ( textarea.length>1) {
-                $(textarea[0]).val(data.data.text);
-                $(textarea[1]).val('');
-            } else
-                $(textarea).val(data.data.text);
-
-            // specific action for  NEW  rows
-            if (!onsong_id) {
-                // add this to the local representation of the song
-                cSpot.item.song.onsongs.push(data.data);
-
-                // write new onsong id into the data and other attributes of the new row and sub-cells
-                row.data('onsong-id', data.data.id);
-                row.data('part-id', data.data.song_part_id);
-                row.children('.cell-part-text').children('advanced-editor').attr('id', 'advanced-editor-'+data.data.id);
-                row.children('.cell-part-text').attr('id', 'collapse-'+data.data.song_part.code);
-                row.children('.cell-part-name').data('partCode', data.data.song_part.code);
-
-                // add the new part codes to the list of draggable codes
-                $('#song-parts-drag-zone').append('<span class="p-1 rounded edit-chords partcodes-draggable bg-warning text-white mr-1" id="partcodes-draggable-' +
-                    data.data.song_part.code+'">' + data.data.song_part.code+"</span>\n");
-                makePartCodesDraggable();
-                $('#song-parts-sequence').show();   // make sure the sequence area is visible
-                $('.no-onsong-sequence-help-text').hide(); // hide the help text for adding new parts
-
-                // make sure this part name isn't used a 2nd time for this song
-                editPartNameForSelection(data.data.song_part_id, 'remove');
-
-
-                window.location.href = '#tbl-bottom';
-            }
-            // for existing rows
-            else  {
-                // was it a delete request?
-                if (data.data == '_') {
-                    // remove this part from the local object also
-                    removeFromLocalOnSongParts( row.data('onsongId') );
-                    // we can put this partname back into the selection
-                    editPartNameForSelection(code, 'add');
-
-                    // remove from draggable list and show save button
-                    $('#partcodes-draggable-'+cd).remove();
-
-                    // drop from out of the global cSPOT variable
-                    //TODO TODO
-
-                    row.remove();
-                } 
-                else {
-                    row.children('.cell-part-text').children('textarea').hide();
-                    $('.cell-part-action').hide();
-                    // if we used the Adv. ONSong editor:
-                    closeAdvOnSongEditor(row);
-                }
-            }
-
-            // remove the editor hints and buttons
-            removeNewOnSongRow(row); 
-
-            // enable ADD button
-            $('.insertNewOnSongRow-link').show();
-            row.removeClass('table-warning');
-            row.addClass('table-success');
-            hideSpinner();
+            // post-processing returned data after submitting OnSong updates
+            postPrecessingOnSongSubmission(row, data, textarea, onsong_id, code, cd)
         })
         .fail(function(data) {
             // show error
@@ -905,6 +827,86 @@ function removeFromLocalOnSongParts(which)
     });
 }
 
+function postPrecessingOnSongSubmission(row, data, textarea, onsong_id, code, cd)
+{
+    // make sure this is visible now 
+    $('.show-collapse-expand-parts-link').show();
+    // on the Song Details page, make sure the old-style sequence field is not longer used!
+    $('.old-style-song-sequence-input-field').remove();
+
+    // insert success data into the new table row or the existing row (for updates)
+    row.children('.cell-part-text').children('.write-onsong-text').html(data.data.text).show();
+
+    // show it as chords over lyrics (unless it's the meta data)
+    if (data.data.song_part  &&  data.data.song_part.code != 'm')
+        rewriteOnsong(row.children('.cell-part-text').children('.show-onsong-text'));
+
+    // also write it into the textarea for further edits in this session
+    if ( textarea.length>1) {
+        $(textarea[0]).val(data.data.text);
+        $(textarea[1]).val('');
+    } else
+        $(textarea).val(data.data.text);
+
+    // specific action for  NEW  rows
+    if (!onsong_id) {
+        // add this to the local representation of the song
+        cSpot.item.song.onsongs.push(data.data);
+
+        // write new onsong id into the data and other attributes of the new row and sub-cells
+        row.data('onsong-id', data.data.id);
+        row.data('part-id', data.data.song_part_id);
+        row.children('.cell-part-text').children('advanced-editor').attr('id', 'advanced-editor-'+data.data.id);
+        row.children('.cell-part-text').attr('id', 'collapse-'+data.data.song_part.code);
+        row.children('.cell-part-name').data('partCode', data.data.song_part.code);
+
+        // add the new part codes to the list of draggable codes
+        $('#song-parts-drag-zone').append('<span class="p-1 rounded edit-chords partcodes-draggable bg-warning text-white mr-1" id="partcodes-draggable-' +
+            data.data.song_part.code+'">' + data.data.song_part.code+"</span>\n");
+        makePartCodesDraggable();
+        $('#song-parts-sequence').show();   // make sure the sequence area is visible
+        $('.no-onsong-sequence-help-text').hide(); // hide the help text for adding new parts
+
+        // make sure this part name isn't used a 2nd time for this song
+        editPartNameForSelection(data.data.song_part_id, 'remove');
+
+
+        window.location.href = '#tbl-bottom';
+    }
+    // for existing rows
+    else  {
+        // was it a delete request?
+        if (data.data == '_') {
+            // remove this part from the local object also
+            removeFromLocalOnSongParts( row.data('onsongId') );
+            // we can put this partname back into the selection
+            editPartNameForSelection(code, 'add');
+
+            // remove from draggable list and show save button
+            $('#partcodes-draggable-'+cd).remove();
+
+            // drop from out of the global cSPOT variable
+            //TODO TODO
+
+            row.remove();
+        } 
+        else {
+            row.children('.cell-part-text').children('textarea').hide();
+            $('.cell-part-action').hide();
+            // if we used the Adv. ONSong editor:
+            closeAdvOnSongEditor(row);
+        }
+    }
+
+    // remove the editor hints and buttons
+    removeNewOnSongRow(row); 
+
+    // enable ADD button
+    $('.insertNewOnSongRow-link').show();
+    row.removeClass('table-warning');
+    row.addClass('table-success');
+    hideSpinner();
+}
 
 /* get the changed data from the OnSong editor back into the textarea
 */
@@ -1053,6 +1055,13 @@ function unlinkSongFile(song_id, file_id)
 {
     // show wait spinner
     $('#file-figure-'+file_id).html('<i class="fa fa-spinner fa-spin fa-fw"></i>');
+
+    // wait until cSPOT is fully ready ....
+    if ( cSpot.song_parts_by_code  == undefined ) {
+        console.log('waiting for c-SPOT to get ready');
+        setTimeout(unlinkSongFile,900, song_id, file_id);
+        return
+    }
 
     $.ajax({
         url:    cSpot.routes.apiSongsFileUnlink,
@@ -2540,7 +2549,6 @@ function uploadNewFile()
         successfullyAddedFileToItem(data);
     })
     .fail(function( data ) {
-
         console.log("AJAX Error Output:");
         console.log( data );        
         $('#search-result').html('Error! '+data);

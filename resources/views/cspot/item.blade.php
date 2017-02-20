@@ -432,7 +432,7 @@
                     <br>
                     
                     {{-- link to open the Add File dialog --}}
-                    @if ($item->files->count() > 1)
+                    @if ($item->files->count() >= 1)
                         <span data-item-type="add-file" class="add-another-image-link btn btn-secondary" onclick="
                                 $('.add-another-image-link').hide();
                                 $('#col-2-file-add').show();

@@ -35,12 +35,17 @@
 
     <input type="hidden" name="currentPage" value="{{ $currentPage }}">
 
+
+
+
+    {{-- title row and navigation 
+    --}}
     <div class="row mx-0">
 
+        {{-- PAGE TITLE  
+        --}}
         <div class="col-md-6">
 
-            {{-- PAGE TITLE  
-            --}}
             @if (isset($song))
 
                 <h2 class="hidden-xs-down text-success lora">Song/Item Details</h2>
@@ -114,8 +119,12 @@
     <hr>
 
 
-
+    {{-- song details  
+    --}}
     <div class="row mx-0">
+
+        {{-- left part of song details 
+        --}}
         <div class="col-xl-6">
 
             <div class="slides-only mb-2" style="display: none;">
@@ -149,13 +158,16 @@
             </div>
 
 
-            
+            {{-- song-title 
+            --}}
             <div class="row form-group mb-0">
                 {!! Form::label('title', 'Title', ['class' => 'col-sm-4 col-md-3 col-lg-2 col-xl-4 text-sm-right']); !!}
                 <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width">{!! Form::text('title'); !!}</div>
             </div>
 
 
+            {{-- song sub-title 
+            --}}
             <div class="row form-group song-only">
                 <div class='col-sm-4 col-md-3 col-lg-2 col-xl-4 text-sm-right'>                    
                     {!! Form::label('title_2', 'Subtitle'); !!}
@@ -164,12 +176,16 @@
             </div>
 
 
+            {{-- song author 
+            --}}
             <div class="row form-group song-only training-show">
                 {!! Form::label('author', 'Author/Copyright', ['class' => 'col-sm-4 col-md-3 col-lg-2 col-xl-4 text-sm-right']); !!}
                 <div class="col-sm-8 col-md-9 col-lg-10 col-xl-8 full-width">{!! Form::text('author'); !!}</div>
             </div>
 
 
+            {{-- song book ref 
+            --}}
             <div class="row form-group song-only training-show bg-muted">
                 <div class='col-sm-4 col-md-3 col-lg-2 col-xl-4 text-sm-right'>                    
                     {!! Form::label('book_ref', 'Book Ref.'); !!}                    
@@ -181,6 +197,8 @@
             </div>
 
 
+            {{-- song license  
+            --}}
             <div class="row form-group song-only">
                 <div class="col-sm-4 col-md-3 col-lg-2 col-xl-4 text-sm-right">                    
                     {!! Form::label('license', 'License type:'); !!}
@@ -214,6 +232,8 @@
             </div>
 
 
+            {{-- hymnal.net link etc 
+            --}}
             <div class="row form-group song-only bg-muted">
                 <div class='col-sm-4 col-md-3 col-lg-2 col-xl-4 text-sm-right'>
                     {!! Form::label('hymnaldotnet_id', 'Hymnal.Net URL (link)'); !!}
@@ -247,11 +267,12 @@
                     <textarea class="bg-warning drop-target">drop Hymnal.Net link address here ....</textarea>
                     <a href="#" onclick="$('#hdn-link-input-field').show();$('#hdn-drop-target').hide()">Cancel</a>
                 </div>
-
             </div>
 
 
 
+            {{-- CCLI data 
+            --}}
             <div class="row form-group song-only">
                 <div class='col-sm-4 col-md-3 col-lg-2 col-xl-4 text-sm-right'>
                     <label for="ccli_no">CCLI Song N<sup>o</sup></label>
@@ -299,6 +320,8 @@
 
 
 
+            {{-- YouTube data 
+            --}}
             <div class="row form-group song-or-video-only training-show mt-1 bg-muted">
 
                 <div class='col-sm-4 col-md-3 col-lg-2 col-xl-4 text-sm-right'>
@@ -335,6 +358,8 @@
             </div>
 
 
+            {{-- other links etc 
+            --}}
             <div class="row form-group song-or-video-only training-show">
                 <div class='col-sm-4 col-md-3 col-lg-2 col-xl-4 text-sm-right'>
                     {!! Form::label('link', 'Further link(s)'); !!}
@@ -348,6 +373,9 @@
             </div>
 
 
+            
+            {{-- attach file(s) to this song 
+            --}}
             <div class="row form-group mt-1 bg-muted">
                 <div class="col-sm-4 col-md-3 col-lg-2 col-xl-4 text-sm-right l-h-1">
                     {!! Form::label('file', 'Attach Sheet Music:'); !!}
@@ -368,7 +396,8 @@
             @endif
 
 
-            {{-- SAVE or SUBMIT button --}}
+            {{-- SAVE or SUBMIT button 
+            --}}
             <div class="hidden-lg-down">    
                 @if (isset($song))
                     <hr class="hr-big">

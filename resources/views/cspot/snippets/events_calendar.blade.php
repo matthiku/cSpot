@@ -89,7 +89,7 @@
 
 
 
-{{-- avoid too many blank-filled lines in the HTML source! --}}
+{{-- no indentation below in order to avoid too many blank-filled lines in the HTML source! --}}
 
 
 {{-- loop through each day for this month' calendar page --}}
@@ -99,8 +99,19 @@
 		{{-- after 7 days, start a new row --}}
 </div><div class="d-flex mt-1 calendar-week">
 	@endif
-<div class="calendar-day {{ $firstDay==$today ? 'calendar-day-today' : '' }}
-	rounded{{ $startDay->month != $firstDay->month ? ' bg-gray' : ' bg-white' }}{{ $i%7<6 ? ' mr-1' : '' }}">
+<div class="calendar-day{{
+		($firstDay < $today && $startDay->month == $firstDay->month) 
+	   		? ' calendar-day-past' 
+	   		: '' }}{{ 
+		$firstDay==$today 
+			? ' calendar-day-today' 
+			: '' }}{{ 
+		$startDay->month != $firstDay->month 
+			? ' bg-gray' 
+			: ' bg-white' }}{{
+		$i%7<6 
+			? ' mr-1' 
+			: '' }} rounded">
 
 <h3 class="mb-0 py-0 {{ $startDay->month != $firstDay->month ? ' text-muted' : '' }}">{{ $firstDay->day }}
 	@if (Auth::user()->isEditor() && $firstDay >= $today)

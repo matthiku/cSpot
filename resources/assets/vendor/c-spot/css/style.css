@@ -206,6 +206,9 @@ red {
     margin-bottom: 0;
     padding: .5rem;
 }
+.calendar-day-past {
+    background-color: #eee;
+}
 .calendar-day-today {
     border-width: 3px;
     border-style: outset;
