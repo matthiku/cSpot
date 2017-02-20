@@ -263,7 +263,7 @@
 
 
 
-<div class="small text-right mt-1 mr-2">
+<div class="show-collapse-expand-parts-link {{ $song->onsongs->count() ? '' : 'hidden'}} small text-right mt-1 mr-2">
 	<a href="#top-of-sequence" class="link" onclick="
 			$('.cell-part-text').toggleClass('show');
 			$('.collapse-button-text').toggle();
@@ -373,12 +373,25 @@
 
 	@if (Auth::user()->isEditor())
 		<span onclick="insertNewOnSongRow();" 
+			title="Manually add (or paste) a singe OnSong part to this song" 
 			class="btn btn-sm btn-success link"><i class="fa fa-plus"></i> Add new Part</span>
 		@if (isset($song) && ! $song->onsongs->count())
-			<span onclick="$('.show-onsong-upload-hint').show();$('#onsong-submit-method').val('POST');" 
+			<span onclick="
+					$('.show-onsong-paste-hint').hide();
+					$('.show-onsong-upload-hint').toggle();
+					$('#onsong-submit-method').val('POST');" 
+				title="Import an existing OnSong or ChordPro file from your computer"
 				class="btn btn-sm btn-info link ml-2 onsong-import-buttons">&#9088; Import OnSong File</span>
-			<span onclick="$('.show-onsong-paste-hint').show();" 
+			<span onclick="
+					$('.show-onsong-upload-hint').hide();
+					$('.show-onsong-paste-hint').toggle();" 
+				title="Past a complete song with chords (of any format) and convert it into OnSong parts"
 				class="btn btn-sm btn-info link ml-2 onsong-import-buttons">&#9088; Paste Whole Song</span>
+			<span onclick="
+					$('.onsong-import-areas').hide();
+					convertChordsToOnSongParts();" 
+				title="Use the existing chords data of this song and convert it into OnSong parts"
+				class="btn btn-sm btn-info link ml-2 onsong-import-buttons">&#9088; Convert Existing Chords</span>
 		@endif
 	@endif
 
@@ -391,7 +404,7 @@
 
 {{-- provide UPLOAD facility for a full song 
 --}}
-<div class="show-onsong-upload-hint hidden rounded-bottom py-2 px-3 bg-faded text-primary small">
+<div class="show-onsong-upload-hint onsong-import-areas hidden rounded-bottom py-2 px-3 bg-faded text-primary small">
 	Select (or drop here) a <strong>valid OnSong file</strong> to be processed for this song:
 	<input id="fileupload" type="file" name="onsongfile" data-url="{{ route('uploadonsongfiles', isset($song) ? $song->id : '0') }}">
 	<input id="onsong-submit-method" type="hidden" name="_method" value="PUT">
@@ -403,12 +416,12 @@
 
 {{-- provide textarea to PASTE full song 
 --}}
-<div class="show-onsong-paste-hint hidden rounded-bottom py-2 px-3 bg-faded text-center text-primary small">
+<div class="show-onsong-paste-hint onsong-import-areas hidden rounded-bottom py-2 px-3 bg-faded text-center text-primary small">
 
 	Copy a complete <strong>OnSong-formatted</strong> or <strong>Chords-over-Lyrics</strong>-formatted song into the input area below:
 
 	<textarea id="onsong-paste-song" class="fully-width rounded" 
-		onclick="calculateTextAreaHeight(this);" style="min-height: 10rem;"></textarea>
+		onkeyup="calculateTextAreaHeight(this);" style="min-height: 10rem;"></textarea>
 
 	Make sure everything is correct then: 
 	<button type="button" class="btn btn-primary" onclick="submitPastedOnSongText();">Submit</button>
@@ -427,8 +440,10 @@
 <a id="tbl-bottom"></a>
 
 
+{{-- file-upload function 
+	see: https://github.com/blueimp/jQuery-File-Upload/wiki/Basic-plugin 
+--}}
 <script>
- 	// see: https://github.com/blueimp/jQuery-File-Upload/wiki/Basic-plugin
 	$(function () {
 	    $('#fileupload').fileupload({
 	    	type: 'POST',

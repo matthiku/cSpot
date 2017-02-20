@@ -392,7 +392,8 @@
 
             {{-- show the sequence here only if there is no OnSong data --}}
             @if ( isset($song)  &&  ! $song->onsongs->count() )
-                <div class="form-group mb-0 lh-1 song-only" title="(The sequence determines how the lyrics are presented)">
+                <div class="old-style-song-sequence-input-field form-group mb-0 lh-1 song-only" 
+                     title="(The sequence determines how the lyrics are presented)">
                     {!! Form::label('sequence', 'Sequence: ', ['class' => 'baseline']); !!}
                     {!! Form::text('sequence'); !!}
                     <small class="hidden-sm-down">

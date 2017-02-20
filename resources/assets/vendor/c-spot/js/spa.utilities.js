@@ -69,6 +69,41 @@ function userAvailableForPlan(that, plan_id) {
 \*/
 
 
+
+function convertChordsToOnSongParts()
+{
+    // wait until cSPOT is fully ready ....
+    if ( cSpot.song_parts_by_code  == undefined ) {
+        showSpinner();
+        console.log('waiting for c-SPOT to get ready');
+        setTimeout( convertChordsToOnSongParts,500)
+        return
+    }
+
+    // First, get the chords field of the current song
+
+    // if we are on the Song Details page, the data is here:
+    var chords = $('#chords-textarea').val();
+    // else we are on the Item Details page:
+    if (!chords)
+        chords = $('.edit_area.show-chords').html();
+    if (!chords  ||  !chords.trim()) {
+        alert('No chords data found, either there is none or you are currently editing it on the Items Detail page Chords tab. Please review!');
+        return;
+    }
+
+    // the first line of the 'chords' field should either be proper chords or "Capo" instructions or a parts header
+    var lines = chords.split('\n');
+
+    if ( ! identifyHeadings(lines[0]) ) {
+        lines.unshift('Verse');
+        chords = lines.join('\n');
+    }
+
+    // now send it to the converter
+    processOnSongFile(chords);
+}
+
 function submitPastedOnSongText()
 {
     var text = $('#onsong-paste-song').val();
@@ -83,6 +118,8 @@ function submitPastedOnSongText()
 
 function processOnSongFile(data)
 {
+    showSpinner();
+
     $('.show-onsong-format-hint').hide(); // those hints not needed here
 
     // needed in the context of the Song Details page
@@ -109,7 +146,8 @@ function processOnSongFile(data)
 
         // lines starting with any kind of brackets are not to be treated as headers
         var patt = /^(\(|\[|\{)/;
-        if ( patt.test(onsong[i].trim()) )
+        var pat2 = /^\[[1-9]\]$/; // allow for easislides-derived headers (like: "[1]", "[2]" etc)
+        if ( patt.test(onsong[i].trim())  &&  ! pat2.test(onsong[i].trim()) )
             hdr = '';
 
         if (hdr) {
@@ -133,7 +171,8 @@ function processOnSongFile(data)
 
     $('.onsong-import-buttons').hide();
     $('.show-onsong-upload-hint')
-        .html('<p class="bg-warning text-center text-danger big">Check each part to make sure it was imported correctly!</p>');
+        .html('<p class="bg-warning text-center text-danger big">Check each part to make sure it was imported correctly!</p>')
+        .show();
 }
 
 // identify headers by the first word in a line, case-insensitive
@@ -152,6 +191,12 @@ function identifyPartCode(str)
             nm='1';
         return nm; 
     }
+    // also allow verse codes from easislides
+    patt = /^\[[1-9]\]$/;
+    if ( patt.test(str) ) {
+        return str.substr(1,1);
+    }
+
     patt = /^(Chorus)/i;
     if ( patt.test(str) ) {
         var num=str.split(' '); 
@@ -205,6 +250,7 @@ function writePartCodeAndSaveVerse(partName, text)
     new_row.children('.cell-part-text').children('.plaintext-editor').val(text)
 
     // now submit the new OnSong part
+    showSpinner();
     saveNewOnSongText(new_row);
 
     // clear the textarea again
@@ -411,6 +457,16 @@ function removeNewOnSongRow(row)
     $('.cell-part-action').hide();
     var cell =  $(onsongArea).children('.cell-part-action');
     $(cell).children('.for-existing-items').show(); 
+
+    // show Submit Sequence Button if existing sequence and new sequence is identical
+    var oldseq = $('.editable-song-field').text().trim();
+    if (oldseq) oldseq = oldseq.split(',');
+    if (oldseq.length) oldseq = oldseq.join('');
+    var newseq = $('#sequence-drop-zone').children().text();
+    if (oldseq == newseq)
+        $('#submit-sequence-button').hide();
+    else 
+        $('#submit-sequence-button').show();
 }
 
 function closeAdvOnSongEditor(row)
@@ -456,6 +512,7 @@ function toggleOnSongEditButtons(row)
             // get handle on input elements etc
             var cell = row.children('.cell-part-text');
             var text = cell.children('.plaintext-editor').val();
+            var partCode = $(row.children('.cell-part-name')[0]).data('partCode');
 
             // write original song text into a data attribute
             //  in order to later be able see if anything was changed 
@@ -471,8 +528,10 @@ function toggleOnSongEditButtons(row)
             // check if this song part is still part of the SEQUENCE code list
             isThisPartInSequenceListThenHideDeleteBtn(row)
 
-            // check if the original text and the converted text are the same (indicating that it contains no chords)
-            if (text.trim() == convertOnSongToChordsOverLyrics(text).trim()) {
+            // Use Plaintext Editor -
+            //    - if the original text and the converted text are the same (indicating that it contains no chords)
+            //    - or if it's the meta data part
+            if (text.trim() == convertOnSongToChordsOverLyrics(text).trim()  ||  partCode == 'm'  ) {
                 // also show the delete button now
                 $('.text-editor-delete-button').show();
 
@@ -511,7 +570,7 @@ function isThisPartInSequenceListThenHideDeleteBtn(row)
         $('.text-editor-delete-button').show();
 }
 
-/* show the Advanced OnSong editor
+/* Activate the Advanced OnSong editor
 */
 function showAdvOnSongEditor(row) 
 {
@@ -553,7 +612,7 @@ function showAdvOnSongEditor(row)
 }
 
 
-/* show OnSong Plaintext Editor
+/* Activate OnSong Plaintext Editor
 */
 function showPlaintextEditor(row)
 {
@@ -583,7 +642,7 @@ function showPlaintextEditor(row)
 }
 
 
-/*  Show "Chords-over-Lyrics" Editor
+/*  Activate "Chords-over-Lyrics" Editor
 
     Converts the OnSong data into chords-over-lyrics format.
 
@@ -633,6 +692,8 @@ function deleteOnSongText(row)
 
 function saveNewOnSongText(row, del)
 {
+    showSpinner();
+
     // make sure we have no "outdated" min-height
     row.css('min-height', 0);
 
@@ -655,9 +716,9 @@ function saveNewOnSongText(row, del)
     // verify input data from a newly added row
     var part_id = $($('#adding-new-song-part')[0]).data('part-id');
 
-    var onsong_id = row.data('onsong-id') || false; // (undefined for new elements)
-    if (onsong_id && !part_id)
-        part_id = $(row).data('part-id') || false;   // for existing elements
+    var onsong_id = row.data('onsongId'); // (undefined for new elements)
+    if (onsong_id && !part_id) 
+        part_id = $(row).data('partId').toString();   // for existing elements (can be 0 and that is still valid!)
 
     // is the text from the plaintext or the Chords-over-Lyrics editor?
     var textarea = row.children('.cell-part-text').children('textarea');
@@ -672,6 +733,7 @@ function saveNewOnSongText(row, del)
     if (!part_id) {
         $(textarea).focus();
         row.children('.cell-part-text').children('.error-msg').show();
+        hideSpinner();
         return;
     }
 
@@ -680,6 +742,7 @@ function saveNewOnSongText(row, del)
         $(textarea).focus();
         row.children('.cell-part-text').children('.error-msg').show();
         $(textarea).css('background-color', 'red');
+        hideSpinner();
         return;
     }
 
@@ -693,6 +756,7 @@ function saveNewOnSongText(row, del)
         $(textarea).focus();
         row.children('.cell-part-text').children('.error-msg').text('Nothing was changed.');
         row.children('.cell-part-text').children('.error-msg').show();
+        hideSpinner();
         return;
     }
 
@@ -722,13 +786,12 @@ function saveNewOnSongText(row, del)
     var song_id = $(table).data('song-id');
     var save_onsong_url = $(table).data('update-onsong-url');
 
-    $.post(save_onsong_url, {
+    $.post( save_onsong_url, {
             'onsong_id' : onsong_id,
             'song_id' : song_id,
             'part_id' : part_id,
             'text'    : text,
         })
-
         .done( function(data) {
 
             // remove waitspinner
@@ -743,10 +806,22 @@ function saveNewOnSongText(row, del)
                 return false;
             }
 
+            // post-processing after successfully submitting OnSong data
+            //TODO: move below into separate function!
+            // postPrecessingOnSongSubmission(row, data, textarea, onsong_id)
+
+            // make sure this is visible now 
+            $('.show-collapse-expand-parts-link').show();
+            // on the Song Details page, make sure the old-style sequence field is not longer used!
+            $('.old-style-song-sequence-input-field').remove();
+
             // insert success data into the new table row or the existing row (for updates)
             row.children('.cell-part-text').children('.write-onsong-text').html(data.data.text).show();
-            // show it as chords over lyrics
-            rewriteOnsong(row.children('.cell-part-text').children('.show-onsong-text'));
+
+            // show it as chords over lyrics (unless it's the meta data)
+            if (data.data.song_part  &&  data.data.song_part.code != 'm')
+                rewriteOnsong(row.children('.cell-part-text').children('.show-onsong-text'));
+
             // also write it into the textarea for further edits in this session
             if ( textarea.length>1) {
                 $(textarea[0]).val(data.data.text);
@@ -754,7 +829,7 @@ function saveNewOnSongText(row, del)
             } else
                 $(textarea).val(data.data.text);
 
-            // for new rows
+            // specific action for  NEW  rows
             if (!onsong_id) {
                 // add this to the local representation of the song
                 cSpot.item.song.onsongs.push(data.data);
@@ -770,14 +845,12 @@ function saveNewOnSongText(row, del)
                 $('#song-parts-drag-zone').append('<span class="p-1 rounded edit-chords partcodes-draggable bg-warning text-white mr-1" id="partcodes-draggable-' +
                     data.data.song_part.code+'">' + data.data.song_part.code+"</span>\n");
                 makePartCodesDraggable();
-                $('#submit-sequence-button').show(); // show save seq. button
                 $('#song-parts-sequence').show();   // make sure the sequence area is visible
                 $('.no-onsong-sequence-help-text').hide(); // hide the help text for adding new parts
 
                 // make sure this part name isn't used a 2nd time for this song
                 editPartNameForSelection(data.data.song_part_id, 'remove');
 
-                removeNewOnSongRow(row); // remove the editor hints and buttons
 
                 window.location.href = '#tbl-bottom';
             }
@@ -792,7 +865,6 @@ function saveNewOnSongText(row, del)
 
                     // remove from draggable list and show save button
                     $('#partcodes-draggable-'+cd).remove();
-                    $('#submit-sequence-button').show();
 
                     // drop from out of the global cSPOT variable
                     //TODO TODO
@@ -805,18 +877,23 @@ function saveNewOnSongText(row, del)
                     // if we used the Adv. ONSong editor:
                     closeAdvOnSongEditor(row);
                 }
-                removeNewOnSongRow(row);
             }
+
+            // remove the editor hints and buttons
+            removeNewOnSongRow(row); 
+
             // enable ADD button
             $('.insertNewOnSongRow-link').show();
             row.removeClass('table-warning');
             row.addClass('table-success');
+            hideSpinner();
         })
         .fail(function(data) {
             // show error
             console.log(data);
             cell.html(oldCellHtml);
-    });
+            hideSpinner();
+        });
 }
 
 
@@ -902,6 +979,8 @@ function createNewSpan(ch, isChord) {
         span += '>'+ch+'</span>';
     return span;
 }
+
+
 
 
 

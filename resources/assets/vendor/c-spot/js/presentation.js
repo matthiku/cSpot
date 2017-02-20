@@ -1059,7 +1059,7 @@ function identifyHeadings(str)
         return ' pl-3 bg-info$bridge';
     }
 
-    patt = /^(Capo|Key|\()/;
+    patt = /^(Capo|Key|Timing|\()/;
     if ( patt.test(str) ) 
         return ' big text-primary$';
 

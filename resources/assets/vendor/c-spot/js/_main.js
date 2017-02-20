@@ -52,6 +52,9 @@ $.ajaxSetup({
 function showSpinner() {
     $('#show-spinner').modal({keyboard: false});
 }
+function hideSpinner() {
+    $('#show-spinner').modal('hide');
+}
 
 
 
@@ -1258,7 +1261,7 @@ function checkForSingerInstructions(text)
     return text;
 }
 
-/* convert a OnSong text (lyrics with chords in squasre brackets) into the Chords-over-lyrics format
+/* convert a OnSong text (lyrics with chords in square brackets) into the Chords-over-lyrics format
 */
 function convertOnSongToChordsOverLyrics(text)
 {
