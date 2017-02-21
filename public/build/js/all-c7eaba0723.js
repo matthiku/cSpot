@@ -48104,6 +48104,9 @@ function show_time()
  */
 function prepareImages() 
 {
+    // do nothing if cSpot is not active
+    if (!cSpot.presentation) return;
+
     // make sure the images have the correct size, filling either width or height
     $('#main-content'           ).css('text-align', 'center');
     if ( $('#bottom-fixed-navbar').length )
@@ -48114,11 +48117,18 @@ function prepareImages()
     // get list of all images and prepare them as individual slides
     var bgImages = $('.slide-background-image');
 
+    // add each image as a link into the Sequence Indicator element
     $.each(bgImages, function(entry) {
-        insertSeqNavInd( 1*entry+1, entry, 'slides' );
+        // if the images are controled by the slides, make that insertion invisble (yet still active)
+        insertSeqNavInd( 1*entry+1, entry, 'slides', cSpot.presentation.BGimageControl=='defined' ? 'true' : 0 );
         // background image counter
         cSpot.presentation.BGimageCount += 1;
     });
+
+
+    // if the BG images are controlled via the slides, do not show the BG image yet
+    if (cSpot.presentation.BGimageControl == 'defined' )
+        return;
 
     // activate (show) the first image
     var todo = $('#slides-progress-0').attr('onclick');
@@ -48661,7 +48671,7 @@ function createDefaultLyricSequence()
     {
         var id = $(this).attr('id');  // get name of that lyric part
         var pname = id.substr(0,5);
-        if ( pname == 'verse' ) {
+        if ( pname == 'verse'  ||  pname == 'image' ) {
             var verseNum = id.substr(5);
             verseNumInt = 1*id.substr(5,1);
             if (chorus && verseNumInt > insChorus) {
@@ -48672,12 +48682,14 @@ function createDefaultLyricSequence()
                 insChorus = verseNumInt;
             }
             sequence += verseNum + ',';
+            if (pname=='image')
+                verseNum='s'+verseNum;
             insertSeqNavInd(verseNum, nr++);
         }
         // some lyrics don't conaint any headers so we show the first part under 'start-lyrics'
         if (pname == 'start') {
-            sequence += 's,';
-            insertSeqNavInd('s', nr++);
+            sequence += 'z,';
+            insertSeqNavInd('z', nr++);
         }
         // collect all chorus parts until we insert them before the next verse or at the end
         if (pname == 'choru') {
@@ -48723,7 +48735,7 @@ function reDisplayLyrics()
 
     var newLyr = '';
     var lines  = 0;         // counter for number of lines per each song part 
-    var headerCode = 's'    // identifies the code within the sequence data
+    var headerCode = 'z'    // identifies the code within the sequence data
     // default song part if there are no headings
     var newDiv = '<div id="start-lyrics" class="lyrics-parts" ';
     var divNam = 'start-lyrics';
@@ -48731,6 +48743,7 @@ function reDisplayLyrics()
     var region2= false;
     var apdxNam= 97; // char cod 97 = 'a' - indicates sub-parts of verses or chorusses etc
     var lyricsLine;
+    var imageNo, slideWithBG;
 
     // analyse each line and put it back into single pre tags
     for (var i = 0; i <= lyrics.length - 1; i++) {
@@ -48744,7 +48757,7 @@ function reDisplayLyrics()
         // treat empty lines as start for a new slide!
         if ((lyrics[i]).trim().length==0) {
             if (i==0) continue; // but not a leading empty line....
-            // we have no headings in this lyris, so we invent one....
+            // if there is no heading in this lyris - invent one
             if (curPart == '') { 
                 hdr = curPart = 'verse1';
                 insertNewLyricsSlide(newDiv, newLyr, divNam, lines);
@@ -48773,6 +48786,17 @@ function reDisplayLyrics()
             }
         }
 
+        // if line starts with an image request, add the BG image number to the dataset of the slide element
+        if (lyricsLine  &&  lyricsLine.substr(0,6)=='[image') {
+            cSpot.presentation.BGimageControl = 'defined';
+            imageNo = lyricsLine.substr(6).split(']');
+            if (imageNo.length>1)
+                lyricsLine = imageNo[1];
+            else 
+                lyricsLine = undefined;
+            imageNo = imageNo[0].trim();
+        }
+
         // if line starts with a dot, it will be visible here (and ignored in chords presentation!)
         if (lyrics[i].substr(0,1)=='.')
             lyricsLine = lyricsLine.substr(1, lyricsLine.length-1);
@@ -48786,12 +48810,13 @@ function reDisplayLyrics()
         // check if we have a header or the actual lyrics
         if (hdr.length>0) {
             // insert identifiable blocks
-            insertNewLyricsSlide(newDiv, newLyr, divNam, lines);
+            insertNewLyricsSlide(newDiv, newLyr, divNam, lines, imageNo);
             divNam = hdr;
             newLyr = '';
             lines  = 0;
             region2= false;
             newDiv = '</div><div id="'+hdr+'" class="lyrics-parts" ';
+            imageNo = ''
         }
 
         // actual lyrics - insert as P element
@@ -48823,7 +48848,7 @@ function reDisplayLyrics()
         }
     }
     // insert the last lyrics part
-    insertNewLyricsSlide(newDiv, newLyr, divNam, lines);
+    insertNewLyricsSlide(newDiv, newLyr, divNam, lines, imageNo);
 }
 
 // extract style codes from a single lyrics line (must be at the start of line!)
@@ -48850,13 +48875,17 @@ function checkForAlternateLyricsOrSingerInstructions(text)
 }
 
 // insert new SLIDE into the presentation
-function insertNewLyricsSlide(newDiv, newLyr, divNam, lines)
+function insertNewLyricsSlide(newDiv, newLyr, divNam, lines, imageNo)
 {
     // only if the part is not empty..
-    if (lines == 0) return;
+    if (lines == 0  &&  !imageNo) return;
 
     // don't insert the same verse (or verse part) twice!
     if ($('#'+divNam).length) return;
+
+    // add the image number to be shown for the current slide to the header ID 
+    if (imageNo)
+        newDiv += ' data-show-image="'+imageNo+'"';
 
     newDiv += ' data-header-code="'+headerCode(divNam)+'">';
 
@@ -49102,7 +49131,7 @@ function getProgressIDnumber(fromWhat)
 
 
 // Insert the Sequence Navigation indicators into the navbar 
-function insertSeqNavInd(what, nr, where)
+function insertSeqNavInd(what, nr, where, hidden)
 {
     // do not add the same number again...
     if ( $('#bible-progress-'+nr ).length )
@@ -49110,6 +49139,10 @@ function insertSeqNavInd(what, nr, where)
 
     // set default action
     where = where || 'lyrics';
+
+    // might be hidden (but not inactive (e.g for BG images))
+    if (hidden)
+        where = 'hidden '+where;
 
     console.log('inserting sequence NavBar indicator for '+ what + ' as '+where+' part # ' + nr);
 
@@ -49672,7 +49705,7 @@ function lyricsShow(what)
 
     console.log('showing song part called '+what);
 
-    if (cSpot.presentation.BGimageCount > 0)
+    if (cSpot.presentation.BGimageControl!='defined'  &&  cSpot.presentation.BGimageCount > 0)
         showNextBGimage();
     
     // inform server accordingly
@@ -49680,6 +49713,11 @@ function lyricsShow(what)
     
     // first, fade out the currently shown text, then fade in the new text
     $('.lyrics-parts').fadeOut().promise().done( function() { $('#'+what).fadeIn() } );
+
+    // check if we need to show a BG image
+    if (cSpot.presentation.BGimageControl=='defined'  &&  $('#'+what).data().showImage)
+        slidesShow($('#'+what).data().showImage);
+
 
     // elevate the currently used button
     if ($('#btn-show-'+what).length)
@@ -49715,7 +49753,7 @@ function identifyLyricsHeadings(str)
         case '[9]': return 'verse9';
         case '[prechorus]': return 'prechorus';
         case '[p]': return 'prechorus';
-        case '[s]': return 'start-lyrics';
+        case '[z]': return 'start-lyrics';
         case '[chorus 2]': return 'chorus2';
         case '[t]': return 'chorus2';
         case '[chorus]': return 'chorus1';
