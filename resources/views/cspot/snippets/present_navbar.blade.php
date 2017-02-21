@@ -91,46 +91,48 @@ $modalContent = '
                 Go<span class="hidden-lg-down"> to</span>
             </button>
             <div class="dropdown-menu dropdown-menu-left bg-faded">
-                @foreach ($items as $menu_item)
-                    @if ( Auth::user()->ownsPlan($item->plan_id)  ||  ! $menu_item->forLeadersEyesOnly )
-                        <a class="dropdown-item nowrap 
-                            {{ $item->id == $menu_item->id ? 'bg-info' : '' }}
-                            {{ ! $menu_item->song_id || $menu_item->song->title_2=='slide' ? 'hidden-md-down' : '' }}
-                            {{ count($items) > 15 ? 'dropup-menu-item' : '' }}"
-                            href="{{ url('cspot/items/').'/'.$menu_item->id.'/'.$type }}">
-                            <small class="hidden-xs-down">{{ $menu_item->seq_no }} &nbsp;</small> 
-                            @if ( $menu_item->song_id && $menu_item->song->title )
-                                {!! $menu_item->song->title_2=='slides'
-                                    ? '&#128464;'.$menu_item->song->title
-                                    : ( $menu_item->song->title_2=='video'
-                                        ? '<i class="fa fa-youtube">&nbsp;</i>'.$menu_item->song->title
-                                        : '<i class="fa fa-music">&nbsp;</i><strong>'.$menu_item->song->title.'</strong>' )
-                                    !!}
-                            @else
-                                {{ $menu_item->comment }}
-                            @endif
+                <div class="dropdown-menu scroll-menu">
+                    @foreach ($items as $menu_item)
+                        @if ( Auth::user()->ownsPlan($item->plan_id)  ||  ! $menu_item->forLeadersEyesOnly )
+                            <a class="dropdown-item nowrap 
+                                {{ $item->id == $menu_item->id ? 'bg-info' : '' }}
+                                {{ ! $menu_item->song_id || $menu_item->song->title_2=='slide' ? 'hidden-md-down' : '' }}
+                                {{ count($items) > 15 ? 'dropup-menu-item' : '' }}"
+                                href="{{ url('cspot/items/').'/'.$menu_item->id.'/'.$type }}">
+                                <small class="hidden-xs-down">{{ $menu_item->seq_no }} &nbsp;</small> 
+                                @if ( $menu_item->song_id && $menu_item->song->title )
+                                    {!! $menu_item->song->title_2=='slides'
+                                        ? '&#128464;'.$menu_item->song->title
+                                        : ( $menu_item->song->title_2=='video'
+                                            ? '<i class="fa fa-youtube">&nbsp;</i>'.$menu_item->song->title
+                                            : '<i class="fa fa-music">&nbsp;</i><strong>'.$menu_item->song->title.'</strong>' )
+                                        !!}
+                                @else
+                                    {{ $menu_item->comment }}
+                                @endif
+                            </a>
+                        @endif
+                    @endforeach
+                    @if (Auth::user()->ownsPlan($item->plan_id))
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/edit') }}">
+                            <i class="fa fa-pencil"></i>
+                            Edit this item
                         </a>
                     @endif
-                @endforeach
-                @if (Auth::user()->ownsPlan($item->plan_id))
+                    @if ($item->song_id && $item->song->youtube_id)
+                        <a class="dropdown-item" target="new" 
+                            href="{{ env('YOUTUBE_PLAY', 'https://www.youtube.com/watch?v=').$item->song->youtube_id }}">
+                            <i class="red fa fa-youtube-play fa-lg"></i>Play on Youtube
+                        </a>
+                    @endif
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/edit') }}">
-                        <i class="fa fa-pencil"></i>
-                        Edit this item
+                    <a      class="dropdown-item" id="go-back"
+                            href="{{ url('cspot/plans/'.$item->plan_id) }}">
+                        <i class="fa fa-undo"></i>
+                        Back to plan overview
                     </a>
-                @endif
-                @if ($item->song_id && $item->song->youtube_id)
-                    <a class="dropdown-item" target="new" 
-                        href="{{ env('YOUTUBE_PLAY', 'https://www.youtube.com/watch?v=').$item->song->youtube_id }}">
-                        <i class="red fa fa-youtube-play fa-lg"></i>Play on Youtube
-                    </a>
-                @endif
-                <div class="dropdown-divider"></div>
-                <a      class="dropdown-item" id="go-back"
-                        href="{{ url('cspot/plans/'.$item->plan_id) }}">
-                    <i class="fa fa-undo"></i>
-                    Back to plan overview
-                </a>
+                </div>
             </div>
         </div>
         {{-- go to next --}}
@@ -433,49 +435,50 @@ $modalContent = '
                 Go<span class="hidden-lg-down"> to</span>
             </button>
             <div class="dropdown-menu dropdown-menu-right bg-faded">
-                @foreach ($items as $menu_item)
-                    @if ( Auth::user()->ownsPlan($item->plan_id)  ||  ! $menu_item->forLeadersEyesOnly )
-                        <a class="dropdown-item nowrap 
-                            {{ $item->id == $menu_item->id ? 'bg-info' : '' }}
-                            {{ ! $menu_item->song_id || $menu_item->song->title_2=='slide' ? 'hidden-md-down' : '' }}
-                            {{ count($items) > 15 ? 'dropup-menu-item' : '' }}"
-                            href="{{ url('cspot/items/').'/'.$menu_item->id.'/'.$type }}">
-                            <small class="hidden-xs-down">{{ $menu_item->seq_no }} &nbsp;</small> 
-                            @if ( $menu_item->song_id && $menu_item->song->title )
-                                {!! $menu_item->song->title_2=='slides'
-                                    ? '&#128464;'.$menu_item->song->title
-                                    : ( $menu_item->song->title_2=='video'
-                                        ? '<i class="fa fa-youtube">&nbsp;</i>'.$menu_item->song->title
-                                        : '<i class="fa fa-music">&nbsp;</i><strong>'.$menu_item->song->title.'</strong>' )
-                                    !!}
-                            @else
-                                {{ $menu_item->comment }}
-                            @endif
-                            <sup id="in-cache-seq-no-{{ $menu_item->seq_no }}" style="display: none">*</sup>
+                <div class="dropdown-menu scroll-menu">
+                    @foreach ($items as $menu_item)
+                        @if ( Auth::user()->ownsPlan($item->plan_id)  ||  ! $menu_item->forLeadersEyesOnly )
+                            <a class="dropdown-item nowrap 
+                                {{ $item->id == $menu_item->id ? 'bg-info' : '' }}
+                                {{ ! $menu_item->song_id || $menu_item->song->title_2=='slide' ? 'hidden-md-down' : '' }}"
+                                href="{{ url('cspot/items/').'/'.$menu_item->id.'/'.$type }}">
+                                <small class="hidden-xs-down">{{ $menu_item->seq_no }} &nbsp;</small> 
+                                @if ( $menu_item->song_id && $menu_item->song->title )
+                                    {!! $menu_item->song->title_2=='slides'
+                                        ? '&#128464;'.$menu_item->song->title
+                                        : ( $menu_item->song->title_2=='video'
+                                            ? '<i class="fa fa-youtube">&nbsp;</i>'.$menu_item->song->title
+                                            : '<i class="fa fa-music">&nbsp;</i><strong>'.$menu_item->song->title.'</strong>' )
+                                        !!}
+                                @else
+                                    {{ $menu_item->comment }}
+                                @endif
+                                <sup id="in-cache-seq-no-{{ $menu_item->seq_no }}" style="display: none">*</sup>
+                            </a>
+                        @endif
+                    @endforeach
+                    @if (Auth::user()->ownsPlan($item->plan_id))
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" id="go-edit"
+                            href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/edit') }}">
+                            <i class="fa fa-pencil"></i>
+                            Edit this item
                         </a>
                     @endif
-                @endforeach
-                @if (Auth::user()->ownsPlan($item->plan_id))
+                    @if ($item->song_id && $item->song->youtube_id)
+                        <a class="dropdown-item" target="new" 
+                            href="{{ env('YOUTUBE_PLAY', 'https://www.youtube.com/watch?v=').$item->song->youtube_id }}">
+                            <i class="red fa fa-youtube-play fa-lg"></i>Play on Youtube
+                        </a>
+                    @endif
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" id="go-edit"
-                        href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/edit') }}">
-                        <i class="fa fa-pencil"></i>
-                        Edit this item
+                    <a      class="dropdown-item" id="go-back"
+                            href="{{ url('cspot/plans/'.$item->plan_id) }}">
+                        <i class="fa fa-undo"></i>
+                        Back to plan overview
+                        <small class="float-right">(* = item in local cache)</small>
                     </a>
-                @endif
-                @if ($item->song_id && $item->song->youtube_id)
-                    <a class="dropdown-item" target="new" 
-                        href="{{ env('YOUTUBE_PLAY', 'https://www.youtube.com/watch?v=').$item->song->youtube_id }}">
-                        <i class="red fa fa-youtube-play fa-lg"></i>Play on Youtube
-                    </a>
-                @endif
-                <div class="dropdown-divider"></div>
-                <a      class="dropdown-item" id="go-back"
-                        href="{{ url('cspot/plans/'.$item->plan_id) }}">
-                    <i class="fa fa-undo"></i>
-                    Back to plan overview
-                    <small class="float-right">(* = item in local cache)</small>
-                </a>
+                </div>
             </div>
         </div>
 

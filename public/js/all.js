@@ -48930,6 +48930,8 @@ function reFormatOnsongLyrics()
     called from document.ready.js
 
     this MUST run after reDisplayChords!
+
+    'what' can be 'chords', 'sheetmusic' or 'leader'
 */
 function prepareChordsPresentation(what)
 {
@@ -48944,6 +48946,9 @@ function prepareChordsPresentation(what)
 
     // make sure the main content covers all the display area
     //$('#main-content').css('min-height', window.screen.height);
+
+    // use the visible height for the Goto DropUp menu
+    $('div.scroll-menu').css('max-height', $('.app-content').height());
 
     // intercept mouse clicks into the presentation area
     $('body').contextmenu( function() {
@@ -50237,6 +50242,9 @@ function saveLocallyAndRemote(plan_id, key, value)
 // (this is called from the presentation view file)
 function loadCachedPresentation(plan_id)
 {
+    // allow DropUp menu to use all available height, buit with scrolling
+    $('div.scroll-menu').css('max-height', $('.app-content').height());
+
     // validate plan id ?
     if (!plan_id || isNaN(parseInt(plan_id)))
         return;

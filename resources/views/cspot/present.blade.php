@@ -331,40 +331,42 @@
                     Go to
                 </button>
                 <div class="dropdown-menu dropdown-menu-right dropdown-menu-presentation">
-                    @foreach ($items as $menu_item)
-                        @if (! $menu_item->forLeadersEyesOnly)
-                            <a class="dropdown-item nowrap{{ $item->id == $menu_item->id ? ' bg-info' : '' }}"
-                                id="menu-item-seq-no-{{ $menu_item->seq_no }}"
-                                href="{{ url('cspot/items/').'/'.$menu_item->id.'/present' }}">
-                                <small class="hidden-md-down">{{ $menu_item->seq_no }}</small> &nbsp; 
-                                @if ($menu_item->song_id && $menu_item->song->title)
-                                    {!! $menu_item->song->title_2=='slides'
-                                        ? '&#128464;'.$menu_item->song->title
-                                        : ( $menu_item->song->title_2=='video'
-                                            ? '<i class="fa fa-youtube">&nbsp;</i>'.$menu_item->song->title
-                                            : '<i class="fa fa-music">&nbsp;</i><strong>'.$menu_item->song->title.'</strong>' )
-                                    !!}                                    
-                                @else
-                                    {{ substr($menu_item->comment, 0, 45) }}
-                                @endif
-                                <sup id="in-cache-seq-no-{{ $menu_item->seq_no }}" style="display: none">*</sup>
-                            </a>
+                    <div class="dropdown-menu scroll-menu">
+                        @foreach ($items as $menu_item)
+                            @if (! $menu_item->forLeadersEyesOnly)
+                                <a class="dropdown-item nowrap{{ $item->id == $menu_item->id ? ' bg-info' : '' }}"
+                                    id="menu-item-seq-no-{{ $menu_item->seq_no }}"
+                                    href="{{ url('cspot/items/').'/'.$menu_item->id.'/present' }}">
+                                    <small class="hidden-md-down">{{ $menu_item->seq_no }}</small> &nbsp; 
+                                    @if ($menu_item->song_id && $menu_item->song->title)
+                                        {!! $menu_item->song->title_2=='slides'
+                                            ? '&#128464;'.$menu_item->song->title
+                                            : ( $menu_item->song->title_2=='video'
+                                                ? '<i class="fa fa-youtube">&nbsp;</i>'.$menu_item->song->title
+                                                : '<i class="fa fa-music">&nbsp;</i><strong>'.$menu_item->song->title.'</strong>' )
+                                        !!}                                    
+                                    @else
+                                        {{ substr($menu_item->comment, 0, 45) }}
+                                    @endif
+                                    <sup id="in-cache-seq-no-{{ $menu_item->seq_no }}" style="display: none">*</sup>
+                                </a>
+                            @endif
+                        @endforeach
+                        @if (Auth::user()->ownsPlan($item->plan_id))
+                            <div class="dropdown-divider"></div>
+                            <div><a class="dropdown-item" id="go-edit"
+                                    href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/edit') }}">
+                                    <i class="fa fa-pencil"></i> Edit this item
+                            </a></div>
                         @endif
-                    @endforeach
-                    @if (Auth::user()->ownsPlan($item->plan_id))
                         <div class="dropdown-divider"></div>
-                        <div><a class="dropdown-item" id="go-edit"
-                                href="{{ url('cspot/plans/'.$item->plan_id.'/items/'.$item->id.'/edit') }}">
-                                <i class="fa fa-pencil"></i> Edit this item
-                        </a></div>
-                    @endif
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" id="go-back"
-                        href="{{ url('cspot/plans/'.$item->plan_id) }}">
-                        <i class="fa fa-undo"></i>
-                        Back to plan overview
-                        <small class="float-right"><span class="font-weight-bold">*</span>item in local cache)</small>
-                    </a>
+                        <a class="dropdown-item" id="go-back"
+                            href="{{ url('cspot/plans/'.$item->plan_id) }}">
+                            <i class="fa fa-undo"></i>
+                            Back to plan overview
+                            <small class="float-right"><span class="font-weight-bold">*</span>item in local cache)</small>
+                        </a>
+                    </div>
                 </div>
             </div>
        
