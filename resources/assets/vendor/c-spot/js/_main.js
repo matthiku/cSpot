@@ -1065,13 +1065,15 @@ function showFilterField(field, that)
             showSpinner();
 
             var search =  $('#filter-'+field+'-input').val();
-            currUrl  = window.location.href.replace('#','');
-            if (currUrl.indexOf('?')>1) {
-                newUrl = currUrl + '&filterby='+field+'&filtervalue='+search;
-            } else {
-                newUrl = currUrl + '?filterby='+field+'&filtervalue='+search;
-            }
-            window.location.href = newUrl;
+
+            // construct a new URL with all existing params, excluding the page!
+            currUrl  = parseURLstring();
+            if (currUrl.params.page)
+                delete currUrl.params.page;
+            currUrl.params.filterby = field;
+            currUrl.params.filtervalue = search;
+
+            window.location.href = currUrl.pathname + serializeForUrl(currUrl.params);
             return;
         }
         $('#filter-'+field+'-input').remove();
@@ -1081,23 +1083,6 @@ function showFilterField(field, that)
 }
 
 
-
-/*
-    On the Songs Detail page, 
-    show the previously hidden song search input field
-    and set the focus on it
-*/
-function showSongSearchInput(that, selector)
-{
-    // hide the triggering item
-    $(that).hide();
-    // show the desired element 
-    $(selector).show();
-    $("input[name='search']").focus();
-
-    // make sure the form can be submitted without a mandatory 'file_category_id' field
-    $('#file_category_id').removeAttr('required')
-}
 
 
 /**

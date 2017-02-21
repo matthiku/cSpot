@@ -67,7 +67,10 @@ class SongController extends Controller
             // first, we need to set the Pagination currentPage to 0,
             // otherwise we would not see the search results
             if (isset($request->page)) {
-                $currentPage = 0;
+                if (isset($request->page))
+                    $currentPage = $request->page;
+                else 
+                    $currentPage = 0;
                 Paginator::currentPageResolver(function() use ($currentPage) {
                     return $currentPage;
                 });
