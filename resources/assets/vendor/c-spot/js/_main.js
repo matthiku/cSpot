@@ -271,11 +271,6 @@ function setIdealCalendarRowHeight()
 function choosePrevNextYearForPlansList(direction)
 {
     var myUrl = parseURLstring();
-
-    // we can only move forward if we already have a year
-    if (direction=='next' && ! myUrl.params.year)
-        return
-
     var today = new Date;
 
     if (direction=='next')

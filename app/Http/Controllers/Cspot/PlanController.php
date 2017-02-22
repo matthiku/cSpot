@@ -141,11 +141,14 @@ class PlanController extends Controller
      *
      * @param  filterby     (user|type|date|future) 
      *                      Show only plans for a certain user, of a certain type, a certain date or all events
+     *                      default is 'user'
      *
      * @param  filtervalue  (user_id|type_id|all)
+     *                      default is plans for current user only
      *
      * @param  timeframe    (all|future)
      *                      Show only future plans or all 
+     *                      default is only future plans
      *
      * @param  orderBy      Field by which the list must be sorted by
      * @param  order        (desc|asc) default is 'asc' = ascending order

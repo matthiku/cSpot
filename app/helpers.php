@@ -884,14 +884,16 @@ function getUsersRolesAndInstruments()
  * Create a List of Service Plans 
  *    filtered by user (leader/teacher) or by plan type and/or ordered by certain fields
  *
+ * @param  filterby     (user|type|date|future) 
+ *                      Show only plans for a certain user, of a certain type, a certain date or all events
+ *                      default is 'user'
  *
- * @param  filterby     (user|type|date|future) Default: user
- *                      Show only plans for a certain user, of a certain type, a certain date or all upcoming events
+ * @param  filtervalue  (user_id|type_id|all)
+ *                      default is plans for current user only
  *
- * @param  filtervalue  (user_id|type_id) Default: current user id
- *
- * @param  timeframe    (all|future) Default: future
+ * @param  timeframe    (all|future)
  *                      Show only future plans or all 
+ *                      default is only future plans
  *
  * @param  orderBy      Field by which the list must be sorted by. Default: Date
  * @param  order        (desc|asc) default is 'asc' = ascending order. Default: Asc
@@ -901,7 +903,7 @@ function getPlans($request)
 {
     // set default values
     $filterby    = isset($request->filterby)    ? $request->filterby    : 'user';
-    $filtervalue = isset($request->filtervalue )? $request->filtervalue : 'all';
+    $filtervalue = isset($request->filtervalue )? $request->filtervalue : Auth::user()->id;
     $timeframe   = isset($request->timeframe )  ? $request->timeframe   : 'future';
     $orderBy     = isset($request->orderby)     ? $request->orderby     : 'date';
     $order       = isset($request->order)       ? $request->order       : 'asc';

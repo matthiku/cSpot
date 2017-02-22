@@ -143,13 +143,11 @@
 
 			<center>
 				@if ( get_class($plans)=='Illuminate\Pagination\LengthAwarePaginator' && $plans->lastPage() > 1 )
-					<span class="events-table">Page {{ $plans->currentPage() }} of {{ $plans->lastPage() }}</span>
+					<span class="events-table hidden">Page {{ $plans->currentPage() }} of {{ $plans->lastPage() }}</span>
 				@endif
 
-				@if ( isset($plans) && count($plans) )
-					@if (get_class($plans)=='Illuminate\Pagination\LengthAwarePaginator')
-						<small>(Total: {{ $plans->total() }} Events)</small>
-					@endif
+				@if ( isset($plans) )
+					<small>(Total: {{ $plans->total() }} Events)</small>
 				@endif
 			</center>
 
@@ -158,19 +156,20 @@
 
 
 
+
+
+	{{-- show the events in a calendar-like table 
+	--}}
+	<div class="events-table calendar-container">
+
+		@include ('cspot.snippets.events_calendar')	
+
+	</div>
+
+
+
+
 	@if ( isset($plans) && count($plans) )
-
-
-
-		{{-- show the events in a calendar-like table 
-		--}}
-		<div class="events-table calendar-container">
-
-			@include ('cspot.snippets.events_calendar')	
-
-		</div>
-
-
 
 
 		{{-- As an alternative, show events as a list (table) 

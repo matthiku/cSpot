@@ -3,20 +3,22 @@
 	Use Carbon\Carbon; 
 
 	$today = Carbon::today();
-
-	if ($allPlans->count()) {
-		// get the earliest date we have in the list of events
-		$startDay = $allPlans->first()->date;
-
-		// get the current month
-		$startMonth = $allPlans->first()->date->day(1);
-		$lastMonth  = $allPlans->last()->date;
+	
+	if (Request::has('year')) {
+		$calendarYear = Request::get('year');
+		$startDay  = Carbon::parse('first day of January '. $calendarYear);
 	} 
+	else
+		$startDay  = Carbon::parse('first day of January '. $today->year);
 
 	$calendarYear = $startDay->year;
-	$first = true;
+	
+	$lastMonth  = Carbon::parse('last day of December '. $calendarYear);
 
-	if ($allPlans->count()) {
+	// get the current month
+	$startMonth = $startDay->day(1);
+
+	$first = true;
 ?>
 
 
@@ -28,9 +30,8 @@
 		<li class="calendar-month-row">
 			<a href="#calendar-years">
 				<span class="link" onclick="choosePrevNextYearForPlansList();" title="Show previous year">&laquo;</span><red>{{ 
-					$startDay->format("Y") }}</red>@if ($startDay->year < $today->year)<span 
-						class="link" onclick="choosePrevNextYearForPlansList('next');" title="Show newer year">&raquo;</span>
-					@endif
+					$calendarYear }}</red><span 
+						class="link" onclick="choosePrevNextYearForPlansList('next');" title="Show next year">&raquo;</span>
 			</a>
 		</li>
 		<li class="calendar-month-row"><a href="#calendar-month-1">Jan<span class="hidden-md-down">uary</span></a></li>
@@ -163,7 +164,3 @@
 		disabled: [0],
 	});
 </script>
- 
-<?php 
-	}
-?>
