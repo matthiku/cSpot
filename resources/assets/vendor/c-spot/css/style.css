@@ -28,22 +28,22 @@ body {
 
 
 .bg-khaki {
-    background-color: rgb(240, 230, 140);
+    background-color: rgb(240, 230, 140) !important;
 }
 .bg-grey, .bg-muted {
-    background-color: #eee;
+    background-color: #eee !important;
 }
 .bg-black {
-    background-color: black;
+    background-color: black !important;
 }
 .bg-white {
-    background-color: #fff;
+    background-color: #fff !important;
 }
 .bg-gray, .bg-grey {
-    background-color: #ccc;
+    background-color: #ccc !important;
 }
 red {
-    color: red;
+    color: red !important;
 }
 .text-shadow {
     text-shadow: 4px 4px 4px #aaa;

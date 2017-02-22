@@ -224,11 +224,12 @@ class PlanController extends Controller
             $year = $request->year;
 
         $plans = Plan::with('type')
-            ->whereDate('date', '>=', Carbon::createFromDate($year, 1, 1))
-            ->whereDate('date', '<=', Carbon::createFromDate($year, 12, 31))
+            ->whereDate('date', '>=', Carbon::parse('first day of january '.$year))
+            ->whereDate('date', '<=', Carbon::createFromDate($year, 12, 31)->setTime(23,59,59))
             ->orderBy('date')
             ->get();
 
+        //get the earliest year in which we have a plan
         $firstYear = Plan::orderBy('date')->first()->date->year;
 
         return view(

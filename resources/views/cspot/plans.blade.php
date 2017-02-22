@@ -315,12 +315,5 @@
 
 	@endif
 
-
-	<script>
-		$(document).ready( function() {
-
-			setIdealCalendarRowHeight();
-		})
-	</script>
 	
 @stop

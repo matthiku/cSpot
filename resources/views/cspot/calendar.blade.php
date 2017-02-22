@@ -23,13 +23,5 @@
 
 	</div>
 
-
-
-
-	<script>
-		$( document ).ready( function() {
-			setIdealCalendarRowHeight();
-		});
-	</script>
  
 @stop

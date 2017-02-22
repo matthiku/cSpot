@@ -26,26 +26,26 @@
 
 
 
-	<ul class="d-flex flex-wrap">
-		<li class="calendar-month-row">
-			<a href="#calendar-years">
+	<ul class="d-flex flex-wrap month-names-row">
+		<li class="calendar-month-row calendar-year bg-white lh-1">
+			<a href="#calendar-years" class="mt-2">
 				<span class="link" onclick="choosePrevNextYearForPlansList();" title="Show previous year">&laquo;</span><red>{{ 
 					$calendarYear }}</red><span 
 						class="link" onclick="choosePrevNextYearForPlansList('next');" title="Show next year">&raquo;</span>
 			</a>
 		</li>
-		<li class="calendar-month-row"><a href="#calendar-month-1">Jan<span class="hidden-md-down">uary</span></a></li>
-		<li class="calendar-month-row"><a href="#calendar-month-2">Feb<span class="hidden-md-down">ruary</span></a></li>
-		<li class="calendar-month-row"><a href="#calendar-month-3">Mar<span class="hidden-md-down">ch</span></a></li>
-		<li class="calendar-month-row"><a href="#calendar-month-4">Apr<span class="hidden-md-down">il</span></a></li>
-		<li class="calendar-month-row"><a href="#calendar-month-5">May</a></li>
-		<li class="calendar-month-row"><a href="#calendar-month-6">Jun<span class="hidden-md-down">e</span></a></li>
-		<li class="calendar-month-row"><a href="#calendar-month-7">Jul<span class="hidden-md-down">y</span></a></li>
-		<li class="calendar-month-row"><a href="#calendar-month-8">Aug<span class="hidden-md-down">ust</span></a></li>
-		<li class="calendar-month-row"><a href="#calendar-month-9">Sep<span class="hidden-md-down">tember</span></a></li>
-		<li class="calendar-month-row"><a href="#calendar-month-10">Oct<span class="hidden-md-down">ober</span></a></li>
-		<li class="calendar-month-row"><a href="#calendar-month-11">Nov<span class="hidden-md-down">ember</span></a></li>
-		<li class="calendar-month-row"><a href="#calendar-month-12">Dec<span class="hidden-md-down">ember</span></a></li>
+		<li class="calendar-month-row calendar-month-1"><a href="#calendar-month-1">Jan<span class="hidden-md-down">uary</span></a></li>
+		<li class="calendar-month-row calendar-month-2"><a href="#calendar-month-2">Feb<span class="hidden-md-down">ruary</span></a></li>
+		<li class="calendar-month-row calendar-month-3"><a href="#calendar-month-3">Mar<span class="hidden-md-down">ch</span></a></li>
+		<li class="calendar-month-row calendar-month-4"><a href="#calendar-month-4">Apr<span class="hidden-md-down">il</span></a></li>
+		<li class="calendar-month-row calendar-month-5"><a href="#calendar-month-5">May</a></li>
+		<li class="calendar-month-row calendar-month-6"><a href="#calendar-month-6">Jun<span class="hidden-md-down">e</span></a></li>
+		<li class="calendar-month-row calendar-month-7"><a href="#calendar-month-7">Jul<span class="hidden-md-down">y</span></a></li>
+		<li class="calendar-month-row calendar-month-8"><a href="#calendar-month-8">Aug<span class="hidden-md-down">ust</span></a></li>
+		<li class="calendar-month-row calendar-month-9"><a href="#calendar-month-9">Sep<span class="hidden-md-down">tember</span></a></li>
+		<li class="calendar-month-row calendar-month-10"><a href="#calendar-month-10">Oct<span class="hidden-md-down">ober</span></a></li>
+		<li class="calendar-month-row calendar-month-11"><a href="#calendar-month-11">Nov<span class="hidden-md-down">ember</span></a></li>
+		<li class="calendar-month-row calendar-month-12"><a href="#calendar-month-12">Dec<span class="hidden-md-down">ember</span></a></li>
 	</ul>
 
 
@@ -120,9 +120,9 @@
 	@endif
 </h3>
 @foreach ($allPlans as $plan)
-@if ($plan->date->toDateString() == $firstDay->toDateString())
+  @if ($plan->date->toDateString() == $firstDay->toDateString())
 	<a href="{{ url('cspot/plans/'.$plan->id) }}/edit" class="d-block"
-		title="Click to open. Leader: {{ $plan->leader ? $plan->leader->name : 'unknown' }}, Teacher: {{ $plan->teacher ? $plan->teacher->name : 'n/a' }}">
+		title="Click to open. Leader: {{ $plan->leader ? $plan->leader->name : 'unknown' }}{{ $plan->teacher ? ', Teacher: '.$plan->teacher->name : '' }}">
 		<span class="hidden-sm-down text-success font-weight-bold">{{ $plan->date->format("H:i") }}</span>
 		@if ($plan->type->generic)
 			{{ $plan->subtitle }}
@@ -131,7 +131,7 @@
 			{!! $plan->subtitle ? '<small>('.$plan->subtitle.')</small>' : '' !!}
 		@endif
 	</a>
-@endif
+  @endif
 @endforeach
 	</div>
 
@@ -159,8 +159,67 @@
 </div>
 
 <script>
+	// activate the jQuery ui TABS element
 	$( "#calendar-tabs" ).tabs({
 		active: {{ $calendarYear < $today->year ? '12' : $today->month }},
 		disabled: [0],
+		activate: function() {
+			calculateEventsPerMonth();
+		}
 	});
+
+	// calculate and show the amount of events per month
+	function calculateEventsPerMonth()
+	{
+		var inmonth, outmonth, allyear=0;
+		for (var i = 1; i < 13; i++) {
+			// do we already have the count being shown?
+			if ($('li.calendar-month-'+i+'>.calendar-month-show-events-count').length==0) {
+				outmonth = $('#calendar-month-'+i+'>div>.calendar-week>.calendar-day.bg-gray>a.d-block').length;
+				inmonth  = $('#calendar-month-'+i+'>div>.calendar-week>.calendar-day>a.d-block').length;
+				allyear += inmonth - outmonth;
+				jQuery('<small/>', { 
+						text: '('+(inmonth-outmonth)+')',
+						class: 'calendar-month-show-events-count',
+						title: 'events count for this month'
+					})
+					.appendTo('li.calendar-month-'+i)
+			}
+
+			// correctly position the counter in the top-right corner
+			$('li.calendar-month-'+i+'>.calendar-month-show-events-count')
+				.position({ 
+					my: 'right-2 top-1',
+					at: 'right top',
+					of: 'li.calendar-month-'+i 
+				});
+		}		
+		// add the counter for the whole year
+		if ( $('li.calendar-year>.calendar-year-show-events-count').length == 0 )
+			jQuery('<small/>', { 
+					text: '('+(allyear)+')',
+					class: 'calendar-year-show-events-count',
+					title: 'events count for the whole year'
+				})
+				.appendTo('li.calendar-year')
+		// correctly position the counter in the top-right corner
+		$('li.calendar-year>.calendar-year-show-events-count')
+			.position({ 
+				my: 'right-1 top-1',
+				at: 'right top',
+				of: 'li.calendar-year'
+			});
+	}
+
+	// once the page is fully loaded, properly format the calendar and show the events counters
+	$(document).ready( function() 
+	{
+		setIdealCalendarRowHeight();
+
+		calculateEventsPerMonth();
+		$(window).resize( function() {
+			calculateEventsPerMonth();
+		})
+	})
+
 </script>
