@@ -367,6 +367,7 @@
 
 
 
+
 {{-- Row with button to add new song part 
 --}}
 <div class="insertNewOnSongRow-link bg-inverse rounded pr-2" style="padding: 2px;">
@@ -374,7 +375,8 @@
 	@if (Auth::user()->isEditor())
 		<span onclick="insertNewOnSongRow();" 
 			title="Manually add (or paste) a singe OnSong part to this song" 
-			class="btn btn-sm btn-success link"><i class="fa fa-plus"></i> Add new Part</span>
+			class="btn btn-sm btn-success link onsong-add-button"><i class="fa fa-plus"></i> Add new Part</span>
+
 		@if (isset($song) && ! $song->onsongs->count())
 			<span onclick="
 					$('.show-onsong-paste-hint').hide();
@@ -382,11 +384,13 @@
 					$('#onsong-submit-method').val('POST');" 
 				title="Import an existing OnSong or ChordPro file from your computer"
 				class="btn btn-sm btn-info link ml-2 onsong-import-buttons">&#9088; Import OnSong File</span>
+
 			<span onclick="
 					$('.show-onsong-upload-hint').hide();
 					$('.show-onsong-paste-hint').toggle();" 
 				title="Past a complete song with chords (of any format) and convert it into OnSong parts"
 				class="btn btn-sm btn-info link ml-2 onsong-import-buttons">&#9088; Paste Whole Song</span>
+
 			@if ($song->chords)
 				<span onclick="
 						$('.onsong-import-areas').hide();
@@ -397,11 +401,22 @@
 		@endif
 	@endif
 
-	<span class="small float-right mt-1">
+	<span class="small float-right mt-1">		
 		<a href="http://www.logue.net/xp/" target="new"><span class="text-info">Transposing Tool</span>
 			<i class="fa fa-external-link text-white"></i></a>
 	</span>
+
+	@if (isset($song) && $song->onsongs->count())
+		<span onclick="
+				$('.onsong-import-areas').hide();
+				$('.show-onsong-transpose-hint').toggle();
+				location.href = '#tbl-bottom';
+				$('#transpose-oldkey').focus();" 
+			title="Transpose this song"
+			class="btn btn-sm btn-info link mx-2 onsong-import-buttons">&#9088; Transpose Song</span>
+	@endif
 </div>
+
 
 
 {{-- provide UPLOAD facility for a full song 
@@ -416,6 +431,7 @@
 </div>
 
 
+
 {{-- provide textarea to PASTE full song 
 --}}
 <div class="show-onsong-paste-hint onsong-import-areas hidden rounded-bottom py-2 px-3 bg-faded text-center text-primary small">
@@ -428,6 +444,15 @@
 	Make sure everything is correct then: 
 	<button type="button" class="btn btn-primary" onclick="submitPastedOnSongText();">Submit</button>
 </div>
+
+
+
+{{-- provide selection of from-key and to-key for TRANSPOSING
+--}}
+<div class="show-onsong-transpose-hint hidden rounded-bottom py-2 px-3 bg-faded text-right text-primary small">
+	@include ('cspot.snippets.onsong_transpose')
+</div>
+
 
 
 

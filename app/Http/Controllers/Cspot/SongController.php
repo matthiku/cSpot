@@ -567,7 +567,7 @@ class SongController extends Controller
         $song = Song::find($song_id);
 
         // do not accept a new OnSong file for a song which already has OnSong parts!
-        if ($song->onsong)
+        if ($song->onsongs)
             return response()->json(['status' => 400, 'data' => 'API: Song already has OnSong parts, delete them first!'], 400);
 
         if ( ! $song  ) 

@@ -1269,7 +1269,7 @@ function convertOnSongToChordsOverLyrics(text)
 }
 
 
-/* Split OnSong code into chords and lyrics
+/* Split OnSong (ChordPro) code into chords and lyrics
  *
  * @param onsong string line with lyrics and interspersed chords
  *

@@ -69,7 +69,107 @@ function userAvailableForPlan(that, plan_id) {
 \*/
 
 
+function transposeSongChords() {
+    var oldkey = $('#transpose-oldkey').val();
+    var newkey = $('#transpose-newkey').val();
+    if (oldkey=='SelectOldKey') {
+        $('#show-transpose-form-errors').html('You must select the old key of the current chords!');
+        return;
+    }
+    if (newkey=='SelectNewKey') {
+        $('#show-transpose-form-errors').html('You must select a new key!');
+        return;
+    }
 
+    $('#show-transpose-form-errors').html('One moment, song will be transposed.');
+    console.log('Transposing song from '+oldkey +' to ' + newkey);
+
+    // get the current chords from each song part
+    var songParts = $('#onsong-parts>.onsong-row');
+    // transpose each chord in a chords line
+    songParts.each( function(i) {
+        var row, cell, plaintext, lines, chols='', elm, chords, nwk, newText;
+        row = $(songParts[i]);
+        
+        // continue with next child if this is not a song part
+        if (row.hasClass('onsong-meta-data')  || row.attr('id')=='new-onsong-row') return true;
+
+        // get access to the data
+        cell = row.children('.cell-part-text');
+        plaintext = cell.children('.plaintext-editor').val();
+        // split the chordpro data into individual lines
+        lines = plaintext.split('\n');
+        // turn each key (and lyrics character) into its own SPAN element (for better individual handling)
+        lines.forEach( function(elem) {
+            chols += splitOnSongLines(elem)+"\n";
+        });
+        // create a new element that will temporarily hold the new spans
+        elm = document.createElement('div');
+        // attach the spans to the new element
+        $(elm).html(chols);
+        // now we can get proper access to each key - chords is an array of all keys in that song part
+        chords = $(elm).children('.edit-chords');
+        // now we can transpose each key individually
+        $(chords).each( function(j) {
+            nwk = $(chords[j]).text();
+            nwk = nwk.substr(1,nwk.length-2);
+            $(chords[j]).text('['+transposeChord(nwk, oldkey, newkey)+']');
+        });
+        newText = $(elm).text().trim();
+        // remove any excess newline at the end of the new data
+        newText = newText.replace(/\n$/m, '');
+        // write the new text back into the editor and save it
+        cell.children('.plaintext-editor').val(newText);
+        // save the updated plaintext data
+        saveNewOnSongText(row);
+    });
+    // close the transpose area
+    $('.onsong-import-areas').hide();
+    $('.show-onsong-transpose-hint').hide();
+    $('.show-onsong-upload-hint')
+        .html('<p class="bg-warning text-center text-danger big">Chords have been transposed from <strong>'
+            +oldkey+'</strong> to <strong>'+newkey+'</strong>. You still have to review each key!</p>');
+    location.href = '#tbl-bottom';
+}
+/* 
+see: http://stackoverflow.com/questions/7936843 */
+function transposeChord(chord, oldkey, newkey) 
+{
+    var scales = {
+        // scale_form = [1-7, #1-7, b1-7, *1-7, bb1-7]
+        "CScale": ["C", "D", "E", "F", "G", "A", "B", "C#", "D#", "E#", "F#", "G#", "A#", "B#", "Cb", "Db", "Eb", "Fb", "Gb", "Ab", "Bb", "C*", "D*", "E*", "F*", "G*", "A*", "B*", "Cbb", "Dbb", "Ebb", "Fbb", "Gbb", "Abb", "Bbb"],
+        "GScale": ["G", "A", "B", "C", "D", "E", "F#", "G#", "A#", "B#", "C#", "D#", "E#", "F*", "Gb", "Ab", "Bb", "Cb", "Db", "Eb", "F", "G*", "A*", "B*", "C*", "D*", "E*", "F#*", "Gbb", "Abb", "Bbb", "Cbb", "Dbb", "Ebb", "Fb"],
+        "DScale": ["D", "E", "F#", "G", "A", "B", "C#", "D#", "E#", "F*", "G#", "A#", "B#", "C*", "Db", "Eb", "F", "Gb", "Ab", "Bb", "C", "D*", "E*", "F#*", "G*", "A*", "B*", "C#*", "Dbb", "Ebb", "Fb", "Gbb", "Abb", "Bbb", "Cb"],
+        "AScale": ["A", "B", "C#", "D", "E", "F#", "G#", "A#", "B#", "C*", "D#", "E#", "F*", "G*", "Ab", "Bb", "C", "Db", "Eb", "F", "G", "A*", "B*", "C#*", "D*", "E*", "F#*", "G#*", "Abb", "Bbb", "Cb", "Dbb", "Ebb", "Fb", "Gb"],
+        "EScale": ["E", "F#", "G#", "A", "B", "C#", "D#", "E#", "F*", "G*", "A#", "B#", "C*", "D*", "Eb", "F", "G", "Ab", "Bb", "C", "D", "E*", "F#*", "G#*", "A*", "B*", "C#*", "D#*", "Ebb", "Fb", "Gb", "Abb", "Bbb", "Cb", "Db"],
+        "BScale": ["B", "C#", "D#", "E", "F#", "G#", "A#", "B#", "C*", "D*", "E#", "F*", "G*", "A*", "Bb", "C", "D", "Eb", "F", "G", "A", "B*", "C#*", "D#*", "E*", "F#*", "G#*", "A#*", "Bbb", "Cb", "Db", "Ebb", "Fb", "Gb", "Ab"],
+        "F#Scale": ["F#", "G#", "A#", "B", "C#", "D#", "E#", "F*", "G*", "A*", "B#", "C*", "D*", "E*", "F", "G", "A", "Bb", "C", "D", "E", "F#*", "G#*", "A#*", "B*", "C#*", "D#*", "E#*", "Fb", "Gb", "Ab", "Bbb", "Cb", "Db", "Eb"],
+        "C#Scale": ["C#", "D#", "E#", "F#", "G#", "A#", "B#", "C*", "D*", "E*", "F*", "G*", "A*", "B*", "C", "D", "E", "F", "G", "A", "B", "C#*", "D#*", "E#*", "F#*", "G#*", "A#*", "B#*", "Cb", "Db", "Eb", "Fb", "Gb", "Ab", "Bb"],
+        "G#Scale": ["G#", "A#", "B#", "C#", "D#", "E#", "F*", "G*", "A*", "B*", "C*", "D*", "E*", "F#*", "G", "A", "B", "C", "D", "E", "F#", "G#*", "A#*", "B#*", "C#*", "D#*", "E#*", "F**", "Gb", "Ab", "Bb", "Cb", "Db", "Eb", "F"],
+        "D#Scale": ["D#", "E#", "F*", "G#", "A#", "B#", "C*", "D*", "E*", "F#*", "G*", "A*", "B*", "C#*", "D", "E", "F#", "G", "A", "B", "C#", "D#*", "E#*", "F**", "G#*", "A#*", "B#*", "C**", "Db", "Eb", "F", "Gb", "Ab", "Bb", "C"],
+        "A#Scale": ["A#", "B#", "C*", "D#", "E#", "F*", "G*", "A*", "B*", "C#*", "D*", "E*", "F#*", "G#*", "A", "B", "C#", "D", "E", "F#", "G#", "A#*", "B#*", "C**", "D#*", "E#*", "F**", "G**", "Ab", "Bb", "C", "D#", "Eb", "F", "G"],
+        "FScale" : ["F", "G", "A", "Bb", "C", "D", "E", "F#", "G#", "A#", "B", "C#", "D#", "E#", "Fb", "Gb", "Ab", "Bbb", "Cb", "Db", "Eb", "F*", "G*", "A*", "B#", "C*", "D*", "E*", "Fbb", "Gbb", "Abb", "Bbbb", "Cbb", "Dbb", "Ebb"],
+        "BbScale": ["Bb", "C", "D", "Eb", "F", "G", "A", "B", "C#", "D#", "E", "F#", "G#", "A#", "Bbb", "Cb", "Db", "Ebb", "Fb", "Gb", "Ab", "B#", "C*", "D*", "E#", "F*", "G*", "A*", "Bbbb", "Cbb", "Dbb", "Ebbb", "Fbb", "Gbb", "Abb"],
+        "EbScale": ["Eb", "F", "G", "Ab", "Bb", "C", "D", "E", "F#", "G#", "A", "B", "C#", "D#", "Ebb", "Fb", "Gb", "Abb", "Bbb", "Cb", "Db", "E#", "F*", "G*", "A#", "B#", "C*", "D*", "Ebbb", "Fbb", "Gbb", "Abbb", "Bbbb", "Cbb", "Dbb"],
+        "AbScale": ["Ab", "Bb", "C", "Db", "Eb", "F", "G", "A", "B", "C#", "D", "E", "F#", "G#", "Abb", "Bbb", "Cb", "Dbb", "Ebb", "Fb", "Gb", "A#", "B#", "C*", "D#", "E#", "F*", "G*", "Abbb", "Bbbb", "Cbb", "Dbbb", "Ebbb", "Fbb", "Gbb"],
+        "DbScale": ["Db", "Eb", "F", "Gb", "Ab", "Bb", "C", "D", "E", "F#", "G", "A", "B", "C#", "Dbb", "Ebb", "Fb", "Gbb", "Abb", "Bbb", "Cb", "D#", "E#", "F*", "G#", "A#", "B#", "C*", "Dbbb", "Ebbb", "Fbb", "Gbbb", "Abbb", "Bbbb", "Cbb"],
+        "GbScale": ["Gb", "Ab", "Bb", "Cb", "Db", "Eb", "F", "G", "A", "B", "C", "D", "E", "F#", "Gbb", "Abb", "Bbb", "Cbb", "Dbb", "Ebb", "Fb", "G#", "A#", "B#", "C#", "D#", "E#", "F*", "Gbbb", "Abbb", "Bbbb", "Cbbb", "Dbbb", "Ebbb", "Fbb"]
+    };
+    var oldKeyScale = scales[oldkey + "Scale"];
+    var newKeyScale = scales[newkey + "Scale"];
+    var transposedChord;
+
+    transposedChord = chord.replace(/(([CDEFGAB]#\*)|([CDEFGAB]#)|([CDEFGAB]b+)|([CDEFGAB]\**))/g, 
+        function(match) {
+            var i = oldKeyScale.indexOf(match);
+            return newKeyScale[i];
+        })
+
+    return transposedChord;
+}
+
+/* Convert the existing chords of this song into the ChordPro format with single song parts
+*/
 function convertChordsToOnSongParts()
 {
     // wait until cSPOT is fully ready ....
@@ -467,7 +567,7 @@ function removeNewOnSongRow(row)
         $('#submit-sequence-button').show();
 
     // show post-import hints, if available:
-    if ($('.show-onsong-upload-hint').text().trim())
+    if ($('.show-onsong-upload-hint>p.bg-warning').text().trim())
         $('.show-onsong-upload-hint').show();
 }
 
@@ -808,7 +908,7 @@ function saveNewOnSongText(row, del)
                 return false; }
 
             // post-processing returned data after submitting OnSong updates
-            postPrecessingOnSongSubmission(row, data, textarea, onsong_id, code, cd)
+            postProcessingOnSongSubmission(row, data, textarea, onsong_id, code, cd)
         })
         .fail(function(data) {
             // show error
@@ -827,7 +927,7 @@ function removeFromLocalOnSongParts(which)
     });
 }
 
-function postPrecessingOnSongSubmission(row, data, textarea, onsong_id, code, cd)
+function postProcessingOnSongSubmission(row, data, textarea, onsong_id, code, cd)
 {
     // make sure this is visible now 
     $('.show-collapse-expand-parts-link').show();
@@ -960,7 +1060,6 @@ function splitOnSongLines(line) {
 
     return spans;
 }
-
 function splitLyricsToSpans(line) {
     var spans = '';
     var chars = line.split('');
@@ -969,7 +1068,6 @@ function splitLyricsToSpans(line) {
     }
     return spans;
 }
-
 function createNewSpan(ch, isChord) {
     var span = '<span';
     if (isChord) {
@@ -2251,8 +2349,8 @@ function insertNewItemIntoPlan( plan_id, seq_no, song_id, comment )
 */
 function removeItem(that)
 {
-    myTR = that.parentElement.parentElement.parentElement.parentElement; // get handle on whole TABLE ROW
-    myTD = that.parentElement.parentElement.parentElement;              // get handle on table CELL
+    var myTR = that.parentElement.parentElement.parentElement.parentElement; // get handle on whole TABLE ROW
+    var myTD = that.parentElement.parentElement.parentElement;              // get handle on table CELL
     $(myTR).addClass('text-muted');                                    // 'mute' table row
     $(myTD).children().hide();                                        // hide action buttons
     $(myTD).append('<i class="fa fa-spinner fa-spin fa-fw"></i>');   // show spinner while updating

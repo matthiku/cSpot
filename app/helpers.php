@@ -1284,6 +1284,7 @@ function getRemainingSongParts($song)
 
 
 
+
 /**
  * get current Main Presenter for Presentation Synchronisation
  */
