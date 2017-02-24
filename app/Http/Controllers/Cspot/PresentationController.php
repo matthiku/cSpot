@@ -35,7 +35,7 @@ class PresentationController extends Controller
     public function syncPresentation()
     {
 
-        Log::info('setting: '.env('PRESENTATION_ENABLE_SYNC', 'false'));
+        // Log::info('setting: '.env('PRESENTATION_ENABLE_SYNC', 'false'));
         if ( ! env('PRESENTATION_ENABLE_SYNC', 'false') ) {
             return;
         }

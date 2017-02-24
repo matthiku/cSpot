@@ -502,7 +502,7 @@ a[disabled] {
 }
 
 .text-present-region2 {
-    color: red !important;
+    color: cyan !important;
 }
 .text-present, .announce-text-present {
     color: yellow;
