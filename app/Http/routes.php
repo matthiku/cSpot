@@ -261,6 +261,9 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     // Upload and process OnSong files
     Route::post('api/songs/uploadonsongfiles/{song_id}', 'Cspot\SongController@APIuploadOnSongFiles')->name('uploadonsongfiles');
 
+    // Upload sheetmusic for a song
+    Route::post('api/songs/uploadsheetmusicfile/{song_id}', 'Cspot\SongController@APIuploadSheetMusicFile')->name('uploadsheetmusicfile');
+
 
 
     // list of training videos

@@ -665,6 +665,21 @@
                                 <span>(copyrighted material)</span>
                             @endif
                         @endforeach
+                        @if (! $item->song->files->count())
+                            <span class="nofile-attached">No sheetmusic attached yet</span>
+                        @endif
+
+                        {{-- provide UPLOAD facility for a full song 
+                        --}}
+                        <div class="show-sheetmusic-upload-form rounded-bottom py-2 px-3 bg-faded text-primary small">
+                            Select (or drop here) an image file containing sheet music for this song:
+                            <input id="fileuploadsheetmusic" type="file" name="file" data-url="{{ route('uploadsheetmusicfile', isset($song) ? $song->id : '0') }}">
+                            <input id="sheetmusicfile-submit-method" type="hidden" name="_method" value="POST">
+                            <div id="upload-progress">
+                                <div class="bar" style="width: 0%;"></div>
+                            </div>
+                        </div>
+
                     </div>
 
                 @endif
@@ -686,15 +701,54 @@
 
 
 
-    {{-- activate the tabs 
-    --}}
     <script>
+        {{-- activate the tabs 
+        --}}
         $(document).ready( function() {
             $( "#tabs" ).tabs({
                 // event: "mouseover",
                 active: {{ session()->has('newFileAdded') ? ($item->song_id ? '2' : '1') : '0' }}
             });
         });
+
+        @if (isset($song))
+            $(function () {
+                $('#fileuploadsheetmusic').fileupload({
+                    dropZone: $('.show-sheetmusic-upload-form'),
+                    type: 'POST',
+                    dataType: 'json',
+                    /* show progress */
+                    progressall: function (e, data) {
+                        var progress = parseInt(data.loaded / data.total * 100, 10);
+                        $('#upload-progress .bar').css(
+                            'width',
+                            progress + '%'
+                        );
+                    },
+                    done: function (e, data) {
+                        if (data.textStatus=='success') {
+                            //TODO: show file in the UI
+                            var file = JSON.parse(data.result.data);
+                            console.log(file);
+                            $('#upload-progress').html('<div>Success! File uploaded.</div>');
+                            $('.nofile-attached').hide();
+                            var showfile = document.createElement('div');
+                            $(showfile).html('<span>File attached as <strong>' + file.filename + '</strong> File size: <i>' + file.filesize + ' bytes</i></span>');
+                            var img = document.createElement('img');
+                            $(img).addClass('mb-0 figure-img img-fluid img-rounded img-thumbnail');
+                            $(img).attr('src', '/'+file.webpath+'/thumb-'+file.token);
+                            var a = document.createElement('a');
+                            $(a).attr('href', '/'+file.webpath+'/'+file.token);
+                            $(a).append(img);
+                            $('#sheet-tab').append(a);
+                            $('#sheet-tab').append(showfile);
+                        }
+                        else
+                            console.log(data);                  
+                    },
+                });
+            });
+        @endif
 
         // provide item data on the client side
         cSpot.item = {!! json_encode($item, JSON_HEX_APOS | JSON_HEX_QUOT ) !!};

@@ -16,7 +16,7 @@
                 @endif
         </a>
         <div>
-            <small class="text-muted" title="Category">{{ $file->file_category->name }}</small> -
+            <small class="text-muted" title="Category">{{ isset($song->id) ? '' : $file->file_category->name.' -' }}</small>
             {{ $file->filename }}
         </div>
     </div>

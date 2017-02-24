@@ -557,6 +557,9 @@ class SongController extends Controller
     }
 
 
+    /**
+     * Receive an uploaded text file and send the content back to the client for further processing
+     */
     public function APIuploadOnSongFiles(Request $request, $song_id)
     {
         // check authentication
@@ -583,6 +586,45 @@ class SongController extends Controller
 
             // return a success response with the content of the file
             return response()->json(['status' => 201, 'data' => json_encode( $file )], 201);
+        }
+        
+        // provided or local data was incoherent
+        return response()->json(['status' => 409, 'data' => 'API: File could not be validated!'], 409);
+    }
+
+
+    /**
+     * Receive an uploaded image file and attach it as sheetmusic to the song
+     */
+    public function APIuploadSheetMusicFile(Request $request, $song_id)
+    {
+        // check authentication
+        if ( ! Auth::user()->isEditor() )  {
+            return response()->json(['status' => 401, 'data' => 'Not authorized'], 401);
+        }
+
+        $song = Song::find($song_id);
+
+        if ( ! $song  ) 
+            return response()->json(['status' => 409, 'data' => 'API: song not found: '.$song_id], 409);
+        if ( ! $request->hasFile('file') ) 
+            return response()->json(['status' => 409, 'data' => 'API: no file submitted!'], 409);
+
+        if ( $request->file('file')->isValid() ) {
+
+            // user helper function, save attached file and assign a file category of id 1 (song)
+            $file = saveUploadedFile($request);
+            // add the file as a relationship to the song
+            $song->files()->save($file);
+            // set filename as Book Ref plus Song Title
+            $file->filename = ($song->book_ref ? $song->book_ref : '') . ' - ' . $song->title;
+            $file->save();
+
+            // add global path (for reference to mini version)
+            $file->webpath = config('files.uploads.webpath');
+
+            // return a success response with the content of the file
+            return response()->json(['status' => 201, 'data' => json_encode($file)], 201);
         }
         
         // provided or local data was incoherent
