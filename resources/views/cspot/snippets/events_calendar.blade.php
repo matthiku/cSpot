@@ -101,15 +101,15 @@
 </div><div class="d-flex mt-1 calendar-week">
 	@endif
 <div class="calendar-day{{
-		($firstDay < $today && $startDay->month == $firstDay->month) 
-	   		? ' calendar-day-past' 
-	   		: '' }}{{ 
 		$firstDay==$today 
 			? ' calendar-day-today' 
 			: '' }}{{ 
 		$startDay->month != $firstDay->month 
 			? ' bg-gray' 
 			: ' bg-white' }}{{
+		($firstDay < $today && $startDay->month == $firstDay->month) 
+	   		? ' calendar-day-past' 
+	   		: '' }}{{ 
 		$i%7<6 
 			? ' mr-1' 
 			: '' }} rounded">

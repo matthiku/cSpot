@@ -13126,7 +13126,7 @@ red {
     border-width: 3px;
 }
 #calendar {
-    box-sizing: border-box;   
+    box-sizing: border-box;
     height: 90%; 
 }
 .calendar-day, .calendar-col {
@@ -13153,7 +13153,7 @@ red {
     padding: .5rem;
 }
 .calendar-day-past {
-    background-color: #eee;
+    background-color: #eee !important;
 }
 .calendar-day-today {
     border-width: 3px;
