@@ -28,9 +28,9 @@
 
             @if ($onsong->song_part->code!='m')
                 @if ($repeat)
-                    <span class="ml-2 bg-faded text-info">{{ $then ? 'Then play' : 'Repeat' }} 
+                    <strong class="ml-2 bg-faded">{{ $then ? 'Then play' : 'Repeat' }} 
                     <span class="font-weight-bold text-white rounded px-1 {{ 
-                        is_numeric($onsong->song_part->code) ? 'bg-success' : 'bg-info' }}">{{ $onsong->song_part->name }}</span>! </span>
+                        is_numeric($onsong->song_part->code) ? 'bg-success' : 'bg-info' }}">{{ $onsong->song_part->name }}</span> </strong>
                 @else
                     <div class="keeptogether"> 
                         <div class="chords-header pl-3 text-white {{ is_numeric($onsong->song_part->code) ? 'bg-success' : 'bg-info' }}" 

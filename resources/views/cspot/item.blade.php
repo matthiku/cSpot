@@ -579,7 +579,7 @@
 
                         <div class="card onsong-instructions small">
                             <div class="card-block">
-                                <h6>Why is c-SPOT using the OnSong Format?</h6>
+                                <h6>Why is c-SPOT using the OnSong (also called ChordPro) Format?</h6>
 
                                 <p> To provide musical information about a song for the musicians, various formats are available. 
                                     Many musicians are familiar with and use the <strong>"Chords-over-Lyrics" format</strong> 
@@ -589,11 +589,23 @@
                                     place but can use the lyrics of this format for the presentation to the congregation and the 
                                     chords-over-lyrics-format for the musicians, both drawing <strong>from the same source</strong>.</p>
 
-                                <p> <strong>OnSong</strong> encoded chords is a way to store these chords and lyrics in music apps. (More info 
+                                <div class="card float-right">
+                                    <div class="card-block bg-white p-1 rounded mb-3">
+                                        <i>Amazing [D]Grace, how [G]sweet the [D]sound</i>
+                                    </div>
+                                    <div class="card-block bg-white p-1 rounded">
+                                        Will be presented like this:
+                                        <pre class="mx-4 m-0 red">        D          G         D    </pre>
+                                        <pre class="mx-4 m-0    ">Amazing Grace, how sweet the sound</pre>
+                                    </div></div>
+
+                                <p> The main difference to the popular 'chords-over-lyrics' format (which we still use for <i>presenting</i> the chords!)
+                                    is that the chords are interspersed within the lyrics
+                                    and enclosed in square brackets.</p>
+
+                                <p> The <strong>OnSong</strong> (or ChordPro) format is a common way to store chords and lyrics together in music apps. (More info 
                                     <a target="new" href="http://www.onsongapp.com/docs/features/formats/onsong/" class="text-info">here <i class="fa fa-external-link"></i></a>).
-                                    c-SPOT uses this format but retains each song part (like verses, chorus, bridge etc) in seperate blocks (called <strong>song parts</strong>).
-                                    The main difference to the popular 'chords-over-lyrics' format is that the chords are interspersed within the lyrics,
-                                    enclosed in square brackets, like this:<br><i>Amazing [D]Grace, how [G]sweet the [D]sound</i></p>
+                                    While using this format, we still keep each <strong>song part</strong> (like verses, chorus, bridge etc) in seperate blocks.
 
                                 @if (Auth::user()->isEditor())
                                     <h6>How to Add New Parts or Edit Existing Parts</h6>

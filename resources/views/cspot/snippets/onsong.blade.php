@@ -5,13 +5,14 @@
 --}}
 
 
+
 @include('cspot.snippets.onsong_modals')
 
 
 
 {{-- Show and edit the SEQUENCE 
 --}}
-<div class="row bg-faded rounded mx-1 p-1" id="top-of-sequence">
+<div class="row bg-faded rounded mx-1 p-1">
 
 	<div class="col-12 pl-0">
 		<h5 class="mb-1">
@@ -49,7 +50,7 @@
 				@endif
 			</span>
 
-			<span id="song-parts-wastebin-zone" class="btn btn-sm bg-inverse text-white align-top"
+			<span id="song-parts-wastebin-zone" class="btn btn-sm bg-faded text-white align-top"
 				title="drag codes from the red drop-zone into the waste bin to remove them from the sequence">
 				<big>&#128465;</big> Bin</span>
 
@@ -88,7 +89,7 @@
 
 
 <script>
-	// function to auto-size the drop-zone if there are more tha 6 items
+	// function to auto-size the drop-zone if there are more than 6 items
 	function adaptMinWidthOfDropZone(elem) {
 		if (!elem) return;
 		var dropZone = $(elem);
@@ -255,6 +256,11 @@
 	  			}, 500);
 	  		},
 		});
+
+	$("#sequence-drop-zone" ).on('mouseover', function() {
+        $('#song-parts-wastebin-zone').removeClass('bg-faded');
+        $('#song-parts-wastebin-zone').addClass('bg-inverse');
+	});
 	
 </script>
 
@@ -264,10 +270,10 @@
 
 
 <div class="show-collapse-expand-parts-link {{ $song->onsongs->count() ? '' : 'hidden'}} small text-right mt-1 mr-2">
-	<a href="#top-of-sequence" class="link" onclick="
+	<a href="#" class="link text-info" onclick="
 			$('.cell-part-text').toggleClass('show');
 			$('.collapse-button-text').toggle();
-		">
+			document.body.scrollTop = document.documentElement.scrollTop = 0;">
 		<span class="collapse-button-text">collapse</span>
 		<span class="collapse-button-text hidden">expand</span>
 		all parts

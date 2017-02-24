@@ -18,9 +18,9 @@
 
 
 			@if( Auth::user()->isEditor() )
-				<a class="btn btn-sm btn-outline-primary float-xs-right" href='{{ url('admin/song_parts/create') }}'>
+				<a class="btn btn-sm btn-outline-primary float-right" href='{{ url('admin/song_parts/create') }}'>
 					<i class="fa fa-plus"> </i>
-					<span class="hidden-sm-down"> &nbsp; Add New OnSong Part</span>
+					<span class="hidden-sm-down"> &nbsp; Add New Song Part</span>
 					<span class="hidden-md-up">Add New</span>
 				</a>
 			@endif
@@ -49,7 +49,7 @@
 							<th>Name</th>
 							<th>Code</th>
 							<th>Edit
-								<div class="float-xs-right small">Songs</div>
+								<div class="float-right small">Songs</div>
 							</th>
 						</tr>
 					</thead>
@@ -67,7 +67,7 @@
 									@endif
 								@endif
 								{{-- show amount of songs using that song part type and a link to all these songs --}}
-								<div class="float-xs-right link small" 
+								<div class="float-right link small" 
 									onclick="location.href='{{ route('songs.index') }}?filterby=onsong&filtervalue={{ $song_part->code }}'">{{ 
 										$song_part->onsongs->count() }}</div>
 							</td>
