@@ -48357,7 +48357,7 @@ function reFormatBibleText()
         }
 
         // find other translations and re-format the text
-        else if ( cl1=='p' || cl1=='q' || cl1=='m' ) {
+        else if ( cl1=='p' || cl1=='q' || cl1=='m'  || cl1=='n' ) {
             // get all elements in one array
             elem = $(this).contents();
             // analyze each elements and separate verse numbers and bible text
