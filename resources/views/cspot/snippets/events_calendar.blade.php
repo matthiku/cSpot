@@ -19,6 +19,9 @@
 	$startMonth = $startDay->day(1);
 
 	$first = true;
+
+	$thisYear = $today->year;
+	$selectedYear = $calendarYear;
 ?>
 
 
@@ -29,25 +32,38 @@
 	<ul class="d-flex flex-wrap month-names-row">
 		<li class="calendar-month-row calendar-year bg-white lh-1">
 			<a href="#calendar-years" class="mt-2">
-				<span class="link" onclick="choosePrevNextYearForPlansList();" title="Show previous year">&laquo;</span><red>{{ 
-					$calendarYear }}</red><span 
-						class="link" onclick="choosePrevNextYearForPlansList('next');" title="Show next year">&raquo;</span>
+				<span class="link hidden-md-down" onclick="choosePrevNextYearForPlansList();" title="Show previous year">&laquo;</span
+				><span class="link" onclick="$('.select-year').show();"
+					><red class="hidden-md-down">{{ $calendarYear }}</red
+					><red class="hidden-lg-up smaller">{{ $calendarYear }}</red></span
+					><span class="link hidden-md-down" onclick="choosePrevNextYearForPlansList('next');" title="Show next year">&raquo;</span>
 			</a>
 		</li>
-		<li class="calendar-month-row calendar-month-1"><a href="#calendar-month-1">Jan<span class="hidden-md-down">uary</span></a></li>
-		<li class="calendar-month-row calendar-month-2"><a href="#calendar-month-2">Feb<span class="hidden-md-down">ruary</span></a></li>
-		<li class="calendar-month-row calendar-month-3"><a href="#calendar-month-3">Mar<span class="hidden-md-down">ch</span></a></li>
-		<li class="calendar-month-row calendar-month-4"><a href="#calendar-month-4">Apr<span class="hidden-md-down">il</span></a></li>
-		<li class="calendar-month-row calendar-month-5"><a href="#calendar-month-5">May</a></li>
-		<li class="calendar-month-row calendar-month-6"><a href="#calendar-month-6">Jun<span class="hidden-md-down">e</span></a></li>
-		<li class="calendar-month-row calendar-month-7"><a href="#calendar-month-7">Jul<span class="hidden-md-down">y</span></a></li>
-		<li class="calendar-month-row calendar-month-8"><a href="#calendar-month-8">Aug<span class="hidden-md-down">ust</span></a></li>
-		<li class="calendar-month-row calendar-month-9"><a href="#calendar-month-9">Sep<span class="hidden-md-down">tember</span></a></li>
-		<li class="calendar-month-row calendar-month-10"><a href="#calendar-month-10">Oct<span class="hidden-md-down">ober</span></a></li>
-		<li class="calendar-month-row calendar-month-11"><a href="#calendar-month-11">Nov<span class="hidden-md-down">ember</span></a></li>
-		<li class="calendar-month-row calendar-month-12"><a href="#calendar-month-12">Dec<span class="hidden-md-down">ember</span></a></li>
+		<li class="calendar-month-row calendar-month-1"><a href="#calendar-month-1">J<span class="hidden-sm-down">an</span><span class="hidden-lg-down">uary</span></a></li>
+		<li class="calendar-month-row calendar-month-2"><a href="#calendar-month-2">F<span class="hidden-sm-down">eb</span><span class="hidden-lg-down">ruary</span></a></li>
+		<li class="calendar-month-row calendar-month-3"><a href="#calendar-month-3">M<span class="hidden-sm-down">ar</span><span class="hidden-lg-down">ch</span></a></li>
+		<li class="calendar-month-row calendar-month-4"><a href="#calendar-month-4">A<span class="hidden-sm-down">pr</span><span class="hidden-lg-down">il</span></a></li>
+		<li class="calendar-month-row calendar-month-5"><a href="#calendar-month-5">M<span class="hidden-sm-down">ay</span></a></li>
+		<li class="calendar-month-row calendar-month-6"><a href="#calendar-month-6">J<span class="hidden-sm-down">un</span><span class="hidden-lg-down">e</span></a></li>
+		<li class="calendar-month-row calendar-month-7"><a href="#calendar-month-7">J<span class="hidden-sm-down">ul</span><span class="hidden-lg-down">y</span></a></li>
+		<li class="calendar-month-row calendar-month-8"><a href="#calendar-month-8">A<span class="hidden-sm-down">ug</span><span class="hidden-lg-down">ust</span></a></li>
+		<li class="calendar-month-row calendar-month-9"><a href="#calendar-month-9">S<span class="hidden-sm-down">ep</span><span class="hidden-lg-down">tember</span></a></li>
+		<li class="calendar-month-row calendar-month-10"><a href="#calendar-month-10">O<span class="hidden-sm-down">ct</span><span class="hidden-lg-down">ober</span></a></li>
+		<li class="calendar-month-row calendar-month-11"><a href="#calendar-month-11">N<span class="hidden-sm-down">ov</span><span class="hidden-lg-down">ember</span></a></li>
+		<li class="calendar-month-row calendar-month-12"><a href="#calendar-month-12">D<span class="hidden-sm-down">ec</span><span class="hidden-lg-down">ember</span></a></li>
 	</ul>
 
+
+	<span class="hidden select-year form-inline bg-info rounded p-1" style="z-index: 555; position: absolute; top: 10px; left: 5px; max-width: 170px;">
+		<span class="ml-3 link float-right" onclick="$('.select-year').hide();">X</span>
+		<select class="custom-select form-control form-control-sm pt-0 pb-0" 
+				onchange="addYearToPlansListSelection(this)">
+			@for ($year = $firstYear; $year<=$thisYear; $year++)
+				<option {{ $selectedYear == $year ? 'selected' : '' }} 
+					value="{{ $year }}">{{ $year }}</option>
+			@endfor
+		</select>
+	</span>
 
 
 	@while ($startMonth->timestamp < $lastMonth->timestamp)
