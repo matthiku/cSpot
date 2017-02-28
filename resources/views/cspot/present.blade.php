@@ -258,7 +258,11 @@
                 <button class="btn btn-sm btn-info narrow">
                     Text: 
                     <input onchange="changeColor(['.announce-text-present', '.text-present', '.bible-text-present'], this.value);" type='text' class="colorPicker" />
-                </button class="btn btn-sm btn-info">
+                </button>
+                <button class="btn btn-sm btn-info narrow ml-1" title="Change colour of Region 2 text">
+                    Reg2: 
+                    <input onchange="changeColor('.text-present-region2', this.value);" type='text' class="Reg2colorPicker" />
+                </button>
             </div>
 
             {{-- change BG color of lyrics presentation 
@@ -267,7 +271,7 @@
                 <button class="btn btn-sm btn-info narrow">
                     BG: 
                     <input onchange="changeColor(['.main-lyrics-presentation', 'body'], this.value, 'BG');" type='text' class="BGcolorPicker" />
-                </button class="btn btn-sm btn-info">
+                </button>
             </div>
 
             {{-- configuration menu 
@@ -562,7 +566,7 @@
         
             {{-- button to reveal the second navbar at the bottom 
             --}}
-            <button class="btn btn-sm btn-info px-3" onclick="toggleLyricsNavbar()">&uArr;
+            <button class="btn btn-sm btn-info px-3" onclick="toggleLyricsNavbar(this)">&uArr;
             </button>
 
 
@@ -624,12 +628,16 @@
             var screenBlank = true;
         });
 
-        function toggleLyricsNavbar()
+        function toggleLyricsNavbar(that)
         {
-            if ($('#lyricsNavbar').is(':visible'))
+            if ($('#lyricsNavbar').is(':visible')) {
                 $('#lyricsNavbar').css('display', 'none')
-            else
+                $(that).html('&uArr;');
+            }
+            else {
                 $('#lyricsNavbar').css('display', 'flex')
+                $(that).html('&dArr;');
+            }
         }
 
     </script>

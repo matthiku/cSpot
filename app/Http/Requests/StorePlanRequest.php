@@ -46,7 +46,7 @@ class StorePlanRequest extends Request
     public function messages()
     {
         return [
-            'type_id.numeric' => 'You must select a valid Service Type',
+            'type_id.numeric' => 'First, select a Service Type',
             'leader_id.numeric' => 'You must select a leader',
             'teacher_id.numeric' => 'You must select a teacher or \'none\'',
         ];

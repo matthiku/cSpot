@@ -792,6 +792,7 @@ function fillPlanDefaultValues(that)
 {
     // make sure the Submit button is enabled
     enableSaveButton(that);
+    enableSubmitButton();
 
     // get selected service type
     var selSerType = $(that).val();
@@ -1189,7 +1190,7 @@ function rewriteOnsong(element)
 
         var tx = splitOnSong(textblocks[i]);
 
-        // in Presentation mode, ignore lyric lines starting with a dot ('.') and lines indicating the display region
+        // in Presentation mode, ignore lyrics lines starting with a dot ('.') and lines indicating the display region
         if ( location.href.indexOf('chords')>10 ) {
             if ( tx.lyrics.substr(0,1)=='.'  ||  tx.chords.substr(0,6)=='region' ) {
                 region2 = true;
@@ -1197,8 +1198,11 @@ function rewriteOnsong(element)
             }
         }
 
-        if ( tx.chords.trim()!='' ) // don't add an empty line
+        // don't add an empty line 
+        if ( tx.chords.trim()!='' ) {
             newText += '<pre class="chords">' + tx.chords + '</pre>';
+            region2 = false;    // if there are chords, we can't be in region2
+        }
         
         if ( tx.lyrics.trim()=='' )
             region2 = false; // region 2 ends when a new slide begins
