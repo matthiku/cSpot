@@ -1375,6 +1375,32 @@ function changeForLeadersEyesOnly(that) {
 }
 
 
+function rearrangeItem() {
+    // get before-or-after value
+    var where = $("input[name=before-or-after][type=radio]");
+    var before = where[0].checked;
+    var after  = where[1].checked;
+    if ( ! (before || after) ) return;
+    where = 'before';
+    if (after) where = 'after';
+
+    // get this item id and target item id
+    var item_id = $('#item-id').val();
+    var seq_no = $('.rearrange-select-item').val();
+
+    $('.rearrange-item-title').text('Now re-arranging this item '+where+' item '+seq_no+'...');
+
+    // create new sequence number for this item
+    if (before)
+        seq_no = 1*seq_no - 0.5;
+    else
+        seq_no = 1*seq_no + 0.5;
+
+    console.log('Move item "'+item_id+'" '+where+' '+ seq_no);
+
+    location.href = cSpot.appURL + '/cspot/items/'+ item_id + '/seq_no/' + seq_no;
+}
+
 
 /*\____________________________________________________________________________  PLAN  Details Page = Items List page
 \*/

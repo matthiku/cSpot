@@ -475,8 +475,9 @@
         @if (Auth::user()->ownsPlan($plan->id))
             <a href="#" title="" class="ml-4 hidden-sm-down bg-warning rounded px-1" 
                 onclick="showYTvideoInModal('{{ App\Models\Song::where('book_ref', 'tr02')->value('youtube_id') }}', this)" 
-                data-toggle="tooltip" data-song-title="Learn how to use this page" data-original-title="Watch this short video to quickly learn how to work on this page.">
-                <i class="fa fa-youtube-play red"></i> Learn to<span class="hidden-md-down"> use this page</span>(P<span class="hidden-md-down">art</span> 1)</a>
+                data-toggle="tooltip" data-song-title="Learn how to use this page" data-original-title="Watch this short video to quickly learn how to work on this page."
+                ><span class="nowrap"
+                ><i class="fa fa-youtube-play red"></i> Learn <span class="hidden-lg-down">to use this page</span>(P<span class="hidden-lg-down">art</span> 1)</span></a>
             <a href="#" title="" class="ml-1 hidden-sm-down bg-warning rounded px-1" 
                 onclick="showYTvideoInModal('{{ App\Models\Song::where('book_ref', 'tr02b')->value('youtube_id') }}', this)" 
                 data-toggle="tooltip" data-song-title="Learn how to use this page" data-original-title="Watch this short video to quickly learn how to work on this page.">

@@ -598,7 +598,7 @@ class ItemController extends Controller
         // notify event listener that an item was updated
         event( new CspotItemUpdated($item) );
 
-        // redirect back to the item
+        // redirect back to the item Editor
         return redirect()->action('Cspot\ItemController@edit', ['plan_id' => $plan_id, 'item_id' => $id]);
 
     }

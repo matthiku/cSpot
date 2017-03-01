@@ -117,10 +117,10 @@ $(document).ready(function() {
         onblur      : 'cancel',
     });
 
+
     // comment field or private notes on the Item Detail page
     $('.editable-item-field').editable(cSpot.appURL + '/cspot/api/items/update', {
         type        : 'textarea',
-        event       : 'mouseover',
         width       : '100%',
         rows        : '3',
         cancel      : 'Cancel',

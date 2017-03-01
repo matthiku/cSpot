@@ -94,7 +94,7 @@
     </div>
 
 
-
+    <input type="hidden" id="item-id" value="{{ $item->id }}">
 
 
 

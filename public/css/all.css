@@ -12972,7 +12972,14 @@ body {
  /*   Bootstrap-like generic classes           */
 /* -------------------------------------------*/
 
-
+.angled-left {
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+}
+.angled-right {
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+}
 .bg-khaki {
     background-color: rgb(240, 230, 140) !important;
 }

@@ -121,6 +121,58 @@
 
 
 
+    {{-- _______________________________________________
+
+          Option to re-arrange item within the plan  
+        ________________________________________________
+    --}}
+    <div class="card mx-auto mt-2 item-rearrange" style="max-width: 40rem;">
+        <div class="card-block">
+
+            <h5 class="card-title rearrange-item-title">Re-Arrange this Item:</h5>
+
+            <p class="card-text">
+
+                <div class="btn-group mt-0" data-toggle="buttons">
+                    <label class="btn btn-outline-primary" onclick="$('.rearrange-select-item').removeAttr('disabled');">
+                        <input type="radio" name="before-or-after" id="before" autocomplete="off"> before
+                    </label>
+                    <label class="btn btn-outline-primary" onclick="$('.rearrange-select-item').removeAttr('disabled');">
+                        <input type="radio" name="before-or-after" id="after"  autocomplete="off"> after
+                    </label>
+                     
+                    <select class="rearrange-select-item custom-select angled-left" disabled onchange="$('.rearrange-submit-button').removeAttr('disabled');">
+                        <option selected>(select item ...)</option>
+                        @foreach ($items as $selItem)
+                            @if($selItem->id != $item->id)
+                                <option value="{{ $selItem->seq_no }}">{{ $selItem->seq_no }}
+                                    @php 
+                                        if ($selItem->song_id && $selItem->song->title) {
+                                            if ( $selItem->song->title_2=='slides' || $selItem->song->title_2=='video' )
+                                                $text = '(' . ucfirst($selItem->song->title_2) . ') ' . $selItem->song->title;
+                                            else
+                                                $text = '&#127926;' . $selItem->song->title; 
+                                        } else
+                                            $text = $selItem->comment;
+                                        echo substr($text, 0, 45);
+                                    @endphp
+                                </option>
+                            @endif
+                        @endforeach
+                    </select>
+
+                </div>
+
+                <button type="button" disabled onclick="rearrangeItem();" 
+                    class="rearrange-submit-button btn btn-primary btn-sm btn-block">Submit</button>
+            </p>
+
+        </div>
+    </div>
+
+
+
+
 
 </div> 
 
