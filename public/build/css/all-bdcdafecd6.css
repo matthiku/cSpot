@@ -13640,9 +13640,18 @@ label {
 }
 
 
+/*
+    Viewport Size Dependent settings
+*/
+
+
 /* Large devices */
 @media (max-width: 62em) {
-    
+
+    .items-calendar-day {
+        font-size: 80%;
+    }
+
     .lyrics-show-btns {
         margin-left: 0 !important;
     }
@@ -13667,6 +13676,22 @@ label {
 }
 
 
+/* SMALL devices */
+@media (max-width: 48em) {
+
+    .items-calendar-day {
+        font-size: 65%;
+    }
+
+    .md-full {
+        /* fill the whole width on small devices */
+        width: 100%;
+    }
+    .md-center {
+        text-align: center;
+    }
+}
+
 /*Extra SMALL devices*/
 @media (max-width: 34em) {
 
@@ -13679,6 +13704,9 @@ label {
         width: 100%;
     }
 
+    .items-calendar-day {
+        font-size: 40%;
+    }
     
     .btn-select {
         margin-bottom: 2px;
@@ -13702,18 +13730,6 @@ label {
 
     .xs-widht-half {
         min-width: 50%;
-    }
-}
-
-/* Extra SMALL devices */
-@media (max-width: 48em) {
-
-    .md-full {
-        /* fill the whole width on small devices */
-        width: 100%;
-    }
-    .md-center {
-        text-align: center;
     }
 }
 

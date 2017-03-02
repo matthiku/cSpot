@@ -236,7 +236,8 @@ function setIdealCalendarRowHeight()
             - $('#calendar-tabs').height();
 
     // we need a minimal amount of white space available to be distributed
-    if (remainingWhiteSpace < 20 ) return;
+    if (remainingWhiteSpace < 6 ) 
+        remainingWhiteSpace = 5;
 
     // get maximum available space for the calendar
     var totalAvailableHeight = 

@@ -96,7 +96,7 @@
 					<div class="calendar-col pt-1 bg-info rounded mr-1"><h3>Monday</h3></div>
 					<div class="calendar-col pt-1 bg-info rounded mr-1"><h3>Tues<span class="hidden-xs-down">day</span></h3></div>
 					<div class="calendar-col pt-1 bg-info rounded mr-1"><h3>Wed<span class="hidden-sm-down">nesday</span></h3></div>
-					<div class="calendar-col pt-1 bg-info rounded mr-1"><h3>Thurs<span class="hidden-xs-down">day</span></h3></div>
+					<div class="calendar-col pt-1 bg-info rounded mr-1"><h3>Thurs<span class="hidden-sm-down">day</span></h3></div>
 					<div class="calendar-col pt-1 bg-info rounded mr-1"><h3>Friday</h3></div>
 					<div class="calendar-col pt-1 bg-info rounded">	   <h3>Sat<span class="hidden-sm-down">urday</span></h3></div>
 				</div>
@@ -137,14 +137,14 @@
 </h3>
 @foreach ($allPlans as $plan)
   @if ($plan->date->toDateString() == $firstDay->toDateString())
-	<a href="{{ url('cspot/plans/'.$plan->id) }}/edit" class="d-block"
+	<a href="{{ url('cspot/plans/'.$plan->id) }}/edit" class="d-block items-calendar-day"
 		title="Click to open. Leader: {{ $plan->leader ? $plan->leader->name : 'unknown' }}{{ ($plan->teacher_id>0) ? ', Teacher: '.$plan->teacher->name : '' }}">
 		<span class="hidden-sm-down text-success font-weight-bold">{{ $plan->date->format("H:i") }}</span>
 		@if ($plan->type->generic)
 			{{ $plan->subtitle }}
 		@else
 			{{ $plan->type->name }}
-			{!! $plan->subtitle ? '<small>('.$plan->subtitle.')</small>' : '' !!}
+			{!! $plan->subtitle ? '<small class="hidden-md-down">('.$plan->subtitle.')</small>' : '' !!}
 		@endif
 	</a>
   @endif
