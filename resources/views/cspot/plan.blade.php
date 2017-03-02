@@ -448,10 +448,10 @@
 
 
     @if (isset($plan))
-    {{-- 
-        Show items for existing plan 
-        ____________________________
-    --}}
+        {{-- 
+            Show items for existing plan 
+            ____________________________
+        --}}
 
 
 
@@ -499,10 +499,10 @@
         <div class="checkbox">
             <label>
                 <input checked="checked" type="checkbox" value="Y" name="defaultItems">
-                Insert default items for this plan?
+                Insert default items for this plan? (See list of <a target="new" href="{{ url('admin/default_items') }}">Default Items</a>)
             </label>
         </div>    
-        <!-- Checkbox to add default TIMES into NEW plan -->
+        {{-- Checkbox to add default TIMES into NEW plan / CURRENTLY NOT NEEDED as we insert the default values via JavaScript into this form
         <input type="hidden" name="defaultValues" value="false">
         <div class="checkbox">
             <label>
@@ -511,7 +511,7 @@
                 Insert other default values (times, resources) for this plan?
                 <br><small class="text-muted">(see: <a href="{{ url('admin/types') }}">List of event types</a>)</small>
             </label>
-        </div>
+        </div> --}}
 
         <!-- what to do after creating this plan? Either go to the new plan or add another one of this type -->
         <input type="hidden" name="addAnother" value="false">
@@ -520,7 +520,7 @@
                 <input 
                 {{ isset($defaultValues['type_id']) ? 'checked="checked"' : '' }}
                 type="checkbox" value="Y" name="addAnother">
-                Add another Event Plan after this one?
+                Keep adding new Event Plans after this one?
             </label>
         </div>                
 

@@ -15,7 +15,7 @@
     @include('layouts.flashing')
 
     @if(Auth::user()->isEditor())
-    <a class="btn btn-outline-primary float-xs-right" href="{{ url('admin/types/create') }}">
+    <a class="btn btn-outline-primary float-right" href="{{ url('admin/types/create') }}">
         <i class="fa fa-plus"> </i> &nbsp; Add new type
     </a>
     @endif

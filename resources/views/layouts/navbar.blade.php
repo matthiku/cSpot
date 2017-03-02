@@ -18,7 +18,6 @@
 
 
 
-
 <div class="collapse navbar-collapse" id="navbarSupportedContent">
 
 
@@ -27,7 +26,7 @@
                     LEFT - Main menu items
         ________________________________________________________
     --}}
-    <ul class="navbar-nav">
+    <ul class="navbar-nav mt-2">
 
         @if (Auth::user())
 
@@ -71,8 +70,7 @@
                     @endif
                 </div>
             </li>
-
-
+    
             <li class="nav-item hidden-sm-down">
                 <a class="nav-link {{ Request::is('cspot/plans/next') ? 'active' : '' }}" href="{{ url('cspot/plans/next') }}">Next Sunday</a>
             </li>
@@ -138,7 +136,7 @@
         ___________________________________________________________
     --}}
 
-    <ul class="navbar-nav ml-auto">
+    <ul class="navbar-nav mt-2 ml-auto">
 
 
 
@@ -163,7 +161,7 @@
 
 
             {{-- show modal popup for feedback on current page --}}
-            <li class="nav-item hidden-xs-down">
+            <li class="nav-item hidden-md-down">
                 <a class="nav-link" href="#" data-toggle="modal" data-target="#createMessage">
                     <i class="fa fa-pencil-square-o" aria-hidden="true"></i> 
                     Page Feedback</a>

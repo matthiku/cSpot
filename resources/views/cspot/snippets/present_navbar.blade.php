@@ -96,7 +96,7 @@ $modalContent = '
                         @if ( Auth::user()->ownsPlan($item->plan_id)  ||  ! $menu_item->forLeadersEyesOnly )
                             <a class="dropdown-item nowrap 
                                 {{ $item->id == $menu_item->id ? 'bg-info' : '' }}
-                                {{ ! $menu_item->song_id || $menu_item->song->title_2=='slide' ? 'hidden-md-down' : '' }}
+                                {{ ! $menu_item->song_id || $menu_item->song->title_2=='slide' ? 'hidden-xs-down' : '' }}
                                 {{ count($items) > 15 ? 'dropup-menu-item' : '' }}"
                                 href="{{ url('cspot/items/').'/'.$menu_item->id.'/'.$type }}">
                                 <small class="hidden-xs-down">{{ $menu_item->seq_no }} &nbsp;</small> 
@@ -440,7 +440,7 @@ $modalContent = '
                         @if ( Auth::user()->ownsPlan($item->plan_id)  ||  ! $menu_item->forLeadersEyesOnly )
                             <a class="dropdown-item nowrap 
                                 {{ $item->id == $menu_item->id ? 'bg-info' : '' }}
-                                {{ ! $menu_item->song_id || $menu_item->song->title_2=='slide' ? 'hidden-md-down' : '' }}"
+                                {{ ! $menu_item->song_id || $menu_item->song->title_2=='slide' ? 'hidden-sm-down' : '' }}"
                                 href="{{ url('cspot/items/').'/'.$menu_item->id.'/'.$type }}">
                                 <small class="hidden-xs-down">{{ $menu_item->seq_no }} &nbsp;</small> 
                                 @if ( $menu_item->song_id && $menu_item->song->title )

@@ -15,7 +15,7 @@
 	@include('layouts.flashing')
 
 	@if( Auth::user()->isEditor() )
-	<a class="btn btn-outline-primary float-xs-right" href="{{ url('admin/file_categories/create') }}">
+	<a class="btn btn-outline-primary float-right" href="{{ url('admin/file_categories/create') }}">
 		<i class="fa fa-plus"> </i> &nbsp; Add a new File Category
 	</a>
 	@endif
