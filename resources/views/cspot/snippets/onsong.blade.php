@@ -257,6 +257,7 @@
 	  		},
 		});
 
+	// highlight the waste bin once the cursor moves over the drag zone
 	$("#sequence-drop-zone" ).on('mouseover', function() {
         $('#song-parts-wastebin-zone').removeClass('bg-faded');
         $('#song-parts-wastebin-zone').addClass('bg-inverse');
@@ -299,10 +300,10 @@
 	--}}
     @if ( isset($song) )
 
-		@foreach ($song->onsongs as $onsong)
+		@foreach ($song->onsongs->sortBy('song_part.sequence') as $onsong)
 			<div class="onsong-row rounded-bottom mb-2 {{ $onsong->song_part->code=='m' ? ' onsong-meta-data bg-faded' : '' }}"
 			 	 id="tbl-row-{{ $onsong->id }}" role="tablist" aria-multiselectable="true"
-				 data-onsong-id="{{ $onsong->id }}" data-part-id="{{ $onsong->song_part_id }}">
+				 data-onsong-id="{{ $onsong->id }}" data-part-id="{{ $onsong->song_part_id }}" data-seq-no="{{ $onsong->song_part->sequence }}">
 
 				{{-- show the part name and code above the onsong data
 				--}}
@@ -334,7 +335,8 @@
 		<script>
 			// make sure the Meta-Data row is always at the top of the other OnSong parts
 			row = $(".onsong-meta-data");
-			row.insertBefore(row.prevAll().last());
+			if (row.length)
+				row.insertBefore(row.prevAll().last());
 		</script>
 
 	@endif
