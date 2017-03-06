@@ -267,7 +267,7 @@
                         </span>
                     @endif
                     
-                    <p class="mt-1 mb-0">
+                    <p class="mt-1 mb-0" id="edit-subtitle">
                         <label for="type" class="d-block">Subtitle <span class="text-muted">(or: Title for generic events)</span>:</label>
                         
                         @if ( isset($plan) )

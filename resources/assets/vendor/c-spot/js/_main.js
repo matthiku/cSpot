@@ -828,11 +828,19 @@ function fillPlanDefaultValues(that)
     }
 
     // fill default leader name
-    if (selSerType.leader_id !== null) {
-
+    if (selSerType.leader_id !== null) 
+    {
         $('#leader_id').val(selSerType.leader_id);
-        
     }
+
+    // if the selected service type is a "generic type", then the subtitle field is mandatory!
+    $('#edit-subtitle').children('input').attr('id', 'edit-subtitle-inputfield');
+    if (selSerType.generic) {
+        $('#edit-subtitle-inputfield').attr('required', 'required');
+        $('#edit-subtitle').children('label').html('Event Title <span class="text-muted">(required for generic events):</span>');
+    }
+    else
+        $('#edit-subtitle-inputfield').removeAttr('required');
 }
 
 

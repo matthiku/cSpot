@@ -20,6 +20,8 @@ use App\Events\UserLogin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Support\Facades\Lang;
+
 
 class LoginController extends Controller
 {
@@ -67,6 +69,25 @@ class LoginController extends Controller
             'password' => $request->password,
             'verified' => 1,
         ];
+    }
+
+    /**
+     * Get the failed login response instance.
+     * (Override the default function from \Illuminate\Foundation\Auth\AuthenticatesUsers)
+     *
+     * @param \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    protected function sendFailedLoginResponse(Request $request)
+    {
+        Log::info('Failed login attempt from '.$request->ip().' with email '.$request->input('email').' and PW '
+            . ($request->has('password') ? $request->input('password') : '(missing'));
+
+        return redirect()->back()
+            ->withInput($request->only($this->username(), 'remember'))
+            ->withErrors([
+                $this->username() => Lang::get('auth.failed'),
+            ]);
     }
 
 
@@ -133,7 +154,7 @@ class LoginController extends Controller
 
 
     /**
-     * Redirect the user to the GitHub authentication page.
+     * Redirect the user to the selected Authentication Provider's authentication page
      *
      * @return Response
      */
@@ -143,7 +164,7 @@ class LoginController extends Controller
     }
 
     /**
-     * Obtain the user information from GitHub.
+     * Obtain the user information from selected Authentication Provider
      *
      * @return Response
      */

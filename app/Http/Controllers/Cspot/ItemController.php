@@ -842,7 +842,7 @@ class ItemController extends Controller
         $item = Item::find($item_id);
         if ($item) {
             if ($item->song_id==$song_id) {
-                $item->song_id = 0;
+                $item->song_id = null; // must not be '0' as this would also be a foreign key!
                 $item->save();
 
                 // notify event listener that an item was updated
