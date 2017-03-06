@@ -34,6 +34,8 @@ class StorePlanRequest extends Request
             'type_id'     => 'numeric|required|exists:types,id',
             'leader_id'   => 'numeric|required|min:1',
             'teacher_id'  => 'numeric',
+            'start'       => 'date_format:H:i',
+            'end'         => 'date_format:H:i',
         ];
     }
 

@@ -31,6 +31,7 @@ var path = {
     'jeditable'     : bower_path + '/jeditable',
     'spectrum'      : bower_path + '/spectrum',
     'file_upload'   : bower_path + '/blueimp-file-upload',
+    'timepicker'    : bower_path + '/timepicker',
     'c_spot'        : bower_path + '/c-spot',
 };
 
@@ -52,9 +53,11 @@ elixir(function(mix) {
         path.font_awesome   + '/css/font-awesome.css',
         path.jquery_ui      + '/themes/base/core.css',
         path.jquery_ui      + '/themes/base/datepicker.css',
+        path.jquery_ui      + '/themes/base/slider.css',
         path.jquery_ui      + '/themes/base/tabs.css',
         path.jquery_ui      + '/themes/'+ui_theme+'/theme.css',
         path.spectrum       + '/spectrum.css',
+        path.timepicker     + '/jquery-ui-timepicker-addon.css',
 
         path.c_spot         + '/css/style.css',
         path.c_spot         + '/css/signin.css',
@@ -67,6 +70,8 @@ elixir(function(mix) {
         path.tether         + '/dist/js/tether.js',
         path.jquery         + '/dist/jquery.js',
         path.jquery_ui      + '/jquery-ui.js',
+        path.jquery_ui      + '/ui/widgets/datepicker.js',
+        path.jquery_ui      + '/ui/widgets/slider.js',
         path.bootstrap      + '/dist/js/bootstrap.js',
         path.moment         + '/moment.js',
         path.jeditable      + '/jquery.jeditable.js',
@@ -74,6 +79,7 @@ elixir(function(mix) {
         // path.file_upload    + '/js/vendor/jquery.ui.widget.js',
         path.file_upload    + '/js/jquery.iframe-transport.js',
         path.file_upload    + '/js/jquery.fileupload.js',
+        path.timepicker     + '/jquery-ui-timepicker-addon.js',
 
         path.c_spot         + '/js/_main.js',
         path.c_spot         + '/js/document.ready.js',

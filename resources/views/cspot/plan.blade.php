@@ -268,7 +268,8 @@
                     @endif
                     
                     <p class="mt-1 mb-0">
-                        {!! Form::label('type', 'Subtitle:', ['class'=>'d-block']); !!}
+                        <label for="type" class="d-block">Subtitle <span class="text-muted">(or: Title for generic events)</span>:</label>
+                        
                         @if ( isset($plan) )
                             {!! Form::text('subtitle', $plan->subtitle, ['onfocus' => 'enableSaveButton(this)']) !!}</p>
                         @elseif ( isset($defaultValues['type_id']) )
@@ -284,46 +285,83 @@
         
             <div class="col-xl-3 col-lg-6 mb-1">
                 <div class="card-block narrower bg-muted">
-                    <div class="form-group mb-0">
+                    <div class="form-group mb-0 text-center" id="editPlanDate">
                         {!! Form::label('date', 'Event Date and Times: ', ['class'=>'d-block']); !!}
                         @if ( isset($plan) )
-                            {!! Form::date( 
+                            {!! Form::text( 
                                 'date', $plan->date, 
-                                ['class'    => 'plan-form-minw center', 'onchange' => 'enableSaveButton(this)' ] ) 
+                                ['class'    => 'plan-form-minw center' ] ) 
                             !!}
                         @elseif (isset($defaultValues['date']))
-                            {!! Form::date( 
+                            {!! Form::text( 
                                 'date', $defaultValues['date'], 
-                                ['class' => 'plan-form-minw center', 'onchange' => 'enableSaveButton(this)' ] )
+                                ['class' => 'plan-form-minw center' ] )
                             !!}
                         @else
-                            {!! Form::date( 
+                            {!! Form::text( 
                                 'date', \Carbon\Carbon::now(), 
-                                ['class' => 'plan-form-minw center', 'onchange' => 'enableSaveButton(this)' ] )
+                                ['class' => 'plan-form-minw center' ] )
                             !!}
                         @endif
 
                         <div class="form-group mt-1 mb-0" id="editPlanServiceTimes">
 
-                            {!! Form::label('start', 'Event runs from:', ['class'=>'d-block']); !!}
+                            {!! Form::label('start', 'Begin and End:', ['class'=>'d-block']); !!}
                             @if (isset($defaultValues['type_id']))
-                                {!! Form::time( 'start', $defaultValues['start']); !!}
+                                {!! Form::text( 'start', $defaultValues['start']); !!}
                             @else
-                                {!! Form::time( 'start'); !!}
+                                {!! Form::text( 'start'); !!}
                             @endif
 
                             {!! Form::label('end', ' to ', ['class'=>'align-baseline']); !!}
                             @if (isset($defaultValues['type_id']))
-                                {!! Form::time( 'end', $defaultValues['end']); !!}
+                                {!! Form::text( 'end', $defaultValues['end']); !!}
                             @else
-                                {!! Form::time( 'end'); !!}
+                                {!! Form::text( 'end' ); !!}
                             @endif
 
                         </div>
 
                         <script>
-                            $($('#editPlanServiceTimes').children('input')[0]).attr('onchange', 'enableSaveButton(this)');
-                            $($('#editPlanServiceTimes').children('input')[1]).attr('onchange', 'enableSaveButton(this)');
+                            // assign IDs to the date+time input fields
+                            $($('#editPlanDate').children('input')[0]).attr('id', 'plan-date');
+                            $($('#editPlanServiceTimes').children('input')[0]).attr('id', 'plan-date-start-time');
+                            $($('#editPlanServiceTimes').children('input')[1]).attr('id', 'plan-date-end-time');
+
+                            // set width of time input fields
+                            $('#plan-date').css('width', '10rem');
+                            $('#plan-date-start-time').css('width', '4rem');
+                            $('#plan-date-end-time'  ).css('width', '4rem');
+
+                            // limit plan date to date (without time)
+                            $('#plan-date').val($('#plan-date').val().substr(0,10));
+                            // limit times to hour and minute
+                            if ($('#plan-date-end-time').val().length>5)
+                                $('#plan-date-end-time').val($('#plan-date-end-time').val().substr(0,5));
+                            if ($('#plan-date-start-time').val().length>5)
+                                $('#plan-date-start-time').val($('#plan-date-start-time').val().substr(0,5));
+
+                            $('#plan-date').datepicker({
+                                dateFormat: "yy-mm-dd",
+                                showAnim: "slideDown",
+                                onSelect: 'enableSaveButton(this)',
+                            });
+
+                            // activate the timepicker for Plan start- and end-time
+                            $('#plan-date-start-time').timepicker({
+                                showSecond: false,
+                                stepMinute: 5,
+                                timeOnlyTitle: 'Select Start Time',
+                                closeText: 'Set',
+                                onSelect: 'enableSaveButton(this)',
+                            });
+                            $('#plan-date-end-time').timepicker({
+                                showSecond: false,
+                                stepMinute: 5,
+                                timeOnlyTitle: 'Select End Time',
+                                closeText: 'Set',
+                                onSelect: 'enableSaveButton(this)',
+                            });
                         </script>
                     </div>
                 </div>                    
@@ -499,19 +537,9 @@
         <div class="checkbox">
             <label>
                 <input checked="checked" type="checkbox" value="Y" name="defaultItems">
-                Insert default items for this plan? (See list of <a target="new" href="{{ url('admin/default_items') }}">Default Items</a>)
+                Insert default items for this plan? <span class="text-muted">(See list of <a target="new" href="{{ url('admin/default_items') }}">Default Items</a>)</span>
             </label>
         </div>    
-        {{-- Checkbox to add default TIMES into NEW plan / CURRENTLY NOT NEEDED as we insert the default values via JavaScript into this form
-        <input type="hidden" name="defaultValues" value="false">
-        <div class="checkbox">
-            <label>
-                <input checked="checked" type="checkbox" value="Y" name="defaultValues"
-                    onclick="$('#planServiceTimes').toggle()">
-                Insert other default values (times, resources) for this plan?
-                <br><small class="text-muted">(see: <a href="{{ url('admin/types') }}">List of event types</a>)</small>
-            </label>
-        </div> --}}
 
         <!-- what to do after creating this plan? Either go to the new plan or add another one of this type -->
         <input type="hidden" name="addAnother" value="false">
@@ -520,7 +548,7 @@
                 <input 
                 {{ isset($defaultValues['type_id']) ? 'checked="checked"' : '' }}
                 type="checkbox" value="Y" name="addAnother">
-                Keep adding new Event Plans after this one?
+                Keep adding new Event Plans of the same type after this one?
             </label>
         </div>                
 
@@ -641,15 +669,5 @@
 
 
     <div id="bottom">&nbsp;</div>
-
-
-    {{-- should be moved into the form when needed 
-    --}}
-    <div id="planServiceTimes" style="display: none">
-        {!! Form::label('start', 'New times:'); !!}
-        {!! Form::time( 'start'); !!}
-        {!! Form::label('end', ' - '); !!}
-        {!! Form::time( 'end');   !!}      
-    </div>
 
 @stop

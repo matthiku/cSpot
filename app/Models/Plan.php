@@ -37,7 +37,6 @@ class Plan extends Model
 	protected $dates = [
 		'date', 'date_end', 'created_at', 'updated_at'
 	];
-	// protected $dateFormat = 'U';
 
 
 
