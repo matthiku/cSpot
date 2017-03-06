@@ -77,7 +77,7 @@
                             <a title="Show guitar chords (if available) for the songs on this plan" 
                                 onclick="$('#show-spinner').modal({keyboard: false});" 
                                 href="{{ url('cspot/items/').'/'.$plan->firstItem()->id }}/chords">
-                                &#127928;</i>Chords</a>
+                                &#127928;Chords</a>
                         </div>
                     @endif
 
@@ -85,15 +85,15 @@
                         <a title="Start projector-enabled presentation of each song and scripture reading in this plan" 
                             onclick="$('#show-spinner').modal({keyboard: false});" 
                             href="{{ url('cspot/items/'.$plan->firstItem()->id.'/present/') }}">
-                            &#127909;</i>Present</a>
+                            <i class="fa fa-tv fa-lg"></i>Present</a>
                     </div>
 
                     @if (Auth::user()->ownsPlan( $plan->id ))
-                        <div class="float-right mr-1">
+                        <div class="float-right mr-2">
                             <a title="for the Leader: Event script with all items, slides and details" 
                                 onclick="$('#show-spinner').modal({keyboard: false});" 
                                 href="{{ url('cspot/items/'.$plan->firstItem()->id.'/leader/') }}">
-                                &#128483;</i>Lead</a>
+                                &#128483;Lead</a>
                         </div>
                     @endif
 

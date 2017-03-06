@@ -137,7 +137,7 @@
 </h3>
 @foreach ($allPlans as $plan)
   @if ($plan->date->toDateString() == $firstDay->toDateString())
-	<a href="{{ url('cspot/plans/'.$plan->id) }}/edit" class="d-block items-calendar-day"
+	<a href="{{ url('cspot/plans/'.$plan->id) }}/edit" class="d-block items-calendar-day{{ $firstDay < $today ? ' text-muted' : '' }}"
 		title="Click to open. Leader: {{ $plan->leader ? $plan->leader->name : 'unknown' }}{{ ($plan->teacher_id>0) ? ', Teacher: '.$plan->teacher->name : '' }}">
 		<span class="hidden-sm-down text-success font-weight-bold">{{ $plan->date->format("H:i") }}</span>
 		@if ($plan->type->generic)

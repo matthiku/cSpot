@@ -286,9 +286,9 @@
                     <div class="float-sm-right">
 
                         @if (isset($type))
-                            {!! Form::submit('&#10003; Update', ['class'=>'btn btn-sm btn-outline-success submit-button disabled']); !!}
+                            <button type="submit" class="btn btn-sm btn-outline-success submit-button disabled">&#10003; Update</button>
                         @else
-                            {!! Form::submit('&#10004; Submit', ['class'=>'btn btn-sm btn-outline-success submit-button disabled']); !!}
+                            <button type="submit" class="btn btn-sm btn-outline-success submit-button disabled">&#10004; Submit</button>
                         @endif
 
                     </div>
@@ -301,7 +301,7 @@
                         </a>
                     @endif
 
-                    <a href="{{url('admin/types')}}">{!! Form::button('&#10008; Cancel', ['class'=>'btn btn-sm btn-secondary cancel-button']); !!}</a></p>
+                    <a href="{{url('admin/types')}}">{!! Form::button('&#10008; Cancel', ['class'=>'btn btn-sm btn-secondary link cancel-button']); !!}</a></p>
 
                </div>
             </div>
