@@ -17,6 +17,11 @@ use StdClass;
 
 use Snap\BibleBooks\BibleBooks;
 
+// for our own Bible database
+use App\Models\Bibleversion;
+use App\Models\Biblebook;
+use App\Models\Bible;
+
 
 class BibleController extends Controller
 {
@@ -264,6 +269,53 @@ class BibleController extends Controller
 
 
     /**
+     * get scripotre text from bibleversion stored in local database
+     */
+    protected function getLocallyStoredBibletext($version_id, $book, $chapter, $verseFrom, $verseTo)
+    {
+        // verseTo defaults to the last verse of this chapter
+        if (! $verseTo) $verseTo = $this->verses($book, $chapter);
+        // find the relvant book id
+        $book_id = Biblebook::where('name', $book)->first()->id;
+
+        // get the actually requested bible text (as a collection)
+        $text = Bible::where('bibleversion_id', $version_id)
+                     ->where('biblebook_id', $book_id)
+                     ->where('chapter', $chapter)
+                     ->where('verse', '>=', $verseFrom)
+                     ->where('verse', '<=', $verseTo)
+                     ->get();
+
+        // turn the collection into a html string (simple formatting like an ESV text!)
+        $html = '<div class="chap"><p class="p">';
+        foreach ($text as $verse) {
+            $html .= '<span class="v"><b>'.$verse->verse.'</b></span>';
+            $html .= $verse->text.'</p><p class="p">';
+        }
+        $html .= '</p></div>';
+
+        // create a new object to return (in accordance with other bibletext-acquiring-options)
+        $p = [];
+        $p[0] = new StdClass;
+        $p[0]->copyright = Bibleversion::find($version_id)->copyright;
+        $p[0]->text = $html;
+        $p[0]->display = $book.' '.$chapter.':'.$verseFrom.'-'.$verseTo;
+        $p[0]->version_abbreviation = Bibleversion::find($version_id)->name;
+        $result = new StdClass;
+        $result->passages = $p;
+        $search = new StdClass;
+        $search->result = $result;
+        $response = new StdClass;
+        $response->search = $search;
+        $rr = new StdClass;
+        $rr->response = $response;
+
+        return response()->json( $rr );
+    }
+
+
+
+    /**
      * save data to cache
      * 
      * param $key string key to identify the data
@@ -306,6 +358,11 @@ class BibleController extends Controller
                 return response()->json( $text->response );
         } 
 
+
+        /* Alternative:
+            https://www.biblegateway.com/passage/?search=1%20Timothy+2&version=NIVUK
+        */
+
         // try biblehub for other translations/versions
         $url  = 'http://biblehub.com/'.strtolower($version).'/'.strtolower($book).'/'.$chapter.'.htm';
 
@@ -326,11 +383,11 @@ class BibleController extends Controller
     /**
      * Get bible text (whole passages or single verses) via API from bibles.org
      */
-    public function getBibleText($version, $book, $chapter, $verseFrom, $verseTo)
+    public function getBibleText($version, $book, $chapter, $verseFrom=1, $verseTo=null)
     {
         $versions = array( 'NASB', 'ESV', 'MSG', 'AMP', 'CEVUK', 'KJVA');
 
-        // only certain versions are accessible via the API
+        // only certain versions are accessible via the bibles.org API
         if ( in_array($version, $versions) ) {
             // create the url and query string
             $book = str_replace(' ', '+', $book);
@@ -347,7 +404,13 @@ class BibleController extends Controller
             if ($result) {
                 return response()->json( $result );
             }                
-        } 
+        }
+
+        // check to see if this version is available in our DB
+        $version_id = Bibleversion::where('name', $version)->first()->id;
+        
+        if ($version_id)
+            return $this->getLocallyStoredBibletext($version_id, $book, $chapter, $verseFrom, $verseTo);
 
         // book name needs to be corrected for use on biblehub.com
         if ($book=='Psalm') $book = 'Psalms';

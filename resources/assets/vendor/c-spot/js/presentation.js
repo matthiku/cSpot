@@ -263,7 +263,9 @@ function reFormatBibleText()
     $(p).each( function() {
         var text = $(this).text();
         var clas = $(this).attr('class')
-        // ;;;console.log( 'CLASS: ' + clas + ' CONTENT: ' + $(this).html() );
+        ;;;console.log( 'CLASS: ' + clas + ' CONTENT: ' + $(this).html() );
+
+        if (!clas) return;
 
         // write the bible ref as title
         if (clas=='bible-text-present-ref') {
