@@ -101,8 +101,7 @@ class BibleController extends Controller
 
     protected function getBible()
     {
-    	$bibleBooks = new BibleBooks();
-    	return $bibleBooks;
+    	return new BibleBooks();
 	}
 
 
@@ -289,7 +288,7 @@ class BibleController extends Controller
         // turn the collection into a html string (simple formatting like an ESV text!)
         $html = '<div class="chap"><p class="p">';
         foreach ($text as $verse) {
-            $html .= '<span class="v"><b>'.$verse->verse.'</b></span>';
+            $html .= '<sup class="v"><b>'.$verse->verse.'</b></sup>';
             $html .= $verse->text.'</p><p class="p">';
         }
         $html .= '</p></div>';
@@ -407,10 +406,12 @@ class BibleController extends Controller
         }
 
         // check to see if this version is available in our DB
-        $version_id = Bibleversion::where('name', $version)->first()->id;
-        
-        if ($version_id)
+        $version_id = Bibleversion::where('name', $version)->first();
+
+        if ($version_id) {
+            $version_id = $version_id->id;
             return $this->getLocallyStoredBibletext($version_id, $book, $chapter, $verseFrom, $verseTo);
+        }
 
         // book name needs to be corrected for use on biblehub.com
         if ($book=='Psalm') $book = 'Psalms';
@@ -425,7 +426,7 @@ class BibleController extends Controller
             $result = $this->getBibleHubText( $url, $book, $chapter );
         }
 
-        if ($result) {
+        if (gettype($result)==='object') {
             return response()->json( $result );
         }                
 

@@ -24,7 +24,7 @@ class CreateBiblesTable extends Migration
             $table->foreign('biblebook_id')->references('id')->on('biblebooks');
             $table->integer('chapter');
             $table->integer('verse');
-            $table->string('text');
+            $table->string('text', 500);
             
             $table->index('bibleversion_id');
             $table->index('biblebook_id');
