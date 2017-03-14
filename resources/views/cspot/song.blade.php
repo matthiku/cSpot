@@ -458,16 +458,16 @@
                     <div id="collapseLyrics" class="panel-collapse collapse{{ ( !isset($song) || (isset($song) && $song->title_2=='slides') ) ? ' in' : '' }}" 
                             role="tabpanel" aria-labelledby="lyrics-panel">
 
-                        <textarea name="lyrics" rows=4 onkeyup="calculateTextAreaHeight(this);">{{ isset($song) ? $song->lyrics : '' }}</textarea>
+                        <textarea name="lyrics" class="md-full" rows=4 onkeyup="calculateTextAreaHeight(this);">{{ isset($song) ? $song->lyrics : '' }}</textarea>
 
                         <button id="lyrics-copy-btn" class="float-right"><i class="fa fa-copy"></i>&nbsp;copy text</button>
 
                         {{-- zoom size of textarea --}}
                         <small id="zoom-lyrics-textarea" style="display: none;">textbox size:
-                            <span class="btn btn-sm btn-outline-info narrow baseline" onclick="resizeTextArea('plus', 'lyrics')"> 
+                            <span class="btn btn-sm btn-outline-info link narrow baseline" onclick="resizeTextArea('plus', 'lyrics')"> 
                                 <small>&#10133;</small>
                             </span>
-                            <span class="btn btn-sm btn-outline-info narrow baseline" onclick="resizeTextArea('minus', 'lyrics')"> 
+                            <span class="btn btn-sm btn-outline-info link narrow baseline" onclick="resizeTextArea('minus', 'lyrics')"> 
                                 <small>&#10134;</small>
                             </span>
                         </small>
@@ -496,7 +496,7 @@
 
                 <div id="collapseChords" class="panel-collapse collapse{{!isset($song) ? ' in' : ''}}" role="tabpanel" aria-labelledby="chords-panel">
 
-                    <textarea name="chords" id="chords-textarea" rows=4 onkeyup="calculateTextAreaHeight(this);">{{ isset($song) ? $song->chords : '' }}</textarea>
+                    <textarea name="chords" class="md-full" id="chords-textarea" rows=4 onkeyup="calculateTextAreaHeight(this);">{{ isset($song) ? $song->chords : '' }}</textarea>
                     
                     <button id="chords-copy-btn" class="float-right"><i class="fa fa-copy"></i>&nbsp;copy chords</button>
 
@@ -508,10 +508,10 @@
 
                     {{-- zoom size of textarea --}}
                     <small id="zoom-chords-textarea" style="display: none;">textbox size:
-                        <span class="btn btn-sm btn-outline-info narrow baseline" onclick="resizeTextArea('plus', 'chords')"> 
+                        <span class="btn btn-sm btn-outline-info link narrow baseline" onclick="resizeTextArea('plus', 'chords')"> 
                             <small>&#10133;</small>
                         </span>
-                        <span class="btn btn-sm btn-outline-info narrow baseline" onclick="resizeTextArea('minus', 'chords')"> 
+                        <span class="btn btn-sm btn-outline-info link narrow baseline" onclick="resizeTextArea('minus', 'chords')"> 
                             <small>&#10134;</small>
                         </span>
                     </small>

@@ -13739,11 +13739,17 @@ ul.pagination {
     margin-bottom: 0;
 }
 
-
 label {
     font-weight: 700;
     vertical-align: sub;
 }
+
+/* mainly for songs details page */
+textarea.md-full {
+    min-width: 45em;
+}
+
+
 
 
 /*
