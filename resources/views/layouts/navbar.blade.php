@@ -83,7 +83,7 @@
 
 
             <li class="nav-item hidden-lg-down">
-                <a class="nav-link{{ Request::is('cspot/plans') && ! Request::has('filterby')  ? ' active' : '' }}" href="{{ url('cspot/plans') }}">My Events</a>
+                <a class="nav-link{{ Request::is('cspot/plans') && ! Request::has('filterby')  ? ' active' : '' }}" href="{{ url('cspot/plans') }}">Your Events</a>
             </li>
 
         @endif

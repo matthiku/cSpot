@@ -137,9 +137,17 @@
 </h3>
 @foreach ($allPlans as $plan)
   @if ($plan->date->toDateString() == $firstDay->toDateString())
-	<a href="{{ url('cspot/plans/'.$plan->id) }}/edit" class="d-block items-calendar-day{{ $firstDay < $today ? ' text-muted' : '' 
-		}}{{ $plan->leader_id==Auth::user()->id || $plan->teacher_id==Auth::user()->id ? ' text-info' : '' }}"
-		title="Click to open. Leader: {{ $plan->leader ? $plan->leader->name : 'unknown' }}{{ ($plan->teacher_id>0) ? ', Teacher: '.$plan->teacher->name : '' }}">
+	<a href="{{ url('cspot/plans/'.$plan->id) }}/edit" class="d-block items-calendar-day{{ 
+		$firstDay < $today ? ' text-muted' : '' 
+			}}{{ $plan->leader_id==Auth::user()->id || $plan->teacher_id==Auth::user()->id ? ' text-info' : '' }}"
+		title="Click to open. Leader: {{ 
+			$plan->leader 
+				? $plan->leader_id==Auth::user()->id ? 'You' : $plan->leader->name 
+				: 'unknown' 
+			}}{{ 
+				$plan->teacher_id>0
+					? ', Teacher: '.($plan->teacher_id==Auth::user()->id ? 'You' : $plan->teacher->name)
+					: '' }}">
 		<span class="hidden-sm-down text-success font-weight-bold mr-1">{{ $plan->date->format("H:i") }}</span>{!!
 			$plan->type->generic
 				? ($plan->items->count() ? '<sup>'.$plan->items->count().'</sup> ' : ' ') . $plan->subtitle
