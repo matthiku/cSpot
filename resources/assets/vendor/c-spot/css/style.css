@@ -746,6 +746,7 @@ textarea.md-full {
     .md-full {
         /* fill the whole width on small devices */
         width: 100%;
+        min-width: inherit !important;
     }
     .md-center {
         text-align: center;

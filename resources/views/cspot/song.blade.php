@@ -745,6 +745,9 @@
         // repeat after each resizing of the browser window
         $(window).on('resize', function(){ 
             extLinksPosition();
+            // reposition zoom buttons of chords andlyrics textarea
+            positionZoomButtons('lyrics');
+            positionZoomButtons('chords');
         });
 
 

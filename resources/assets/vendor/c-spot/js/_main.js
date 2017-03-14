@@ -426,7 +426,11 @@ function calculateTextAreaHeight(that)
 function positionZoomButtons(what) {
     $('#zoom-'+what+'-textarea').show();
     if ($('#zoom-'+what+'-textarea').is(':visible'))
-        $('#zoom-'+what+'-textarea').position({my: 'right bottom', at: 'right top', of: 'textarea[name="'+what+'"]'});
+        $('#zoom-'+what+'-textarea').position({
+            my: 'right bottom', 
+            at: 'right top', 
+            of: 'textarea[name="'+what+'"]'
+        });
 }
 
 // called from the zoom buttons - increase or decrease height of textarea
