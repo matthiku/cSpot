@@ -344,7 +344,9 @@
                             $('#plan-date').datepicker({
                                 dateFormat: "yy-mm-dd",
                                 showAnim: "slideDown",
-                                onSelect: 'enableSaveButton(this)',
+                                onSelect: function(dt,elem){
+                                    enableSaveButton(elem);
+                                },
                             });
 
                             // activate the timepicker for Plan start- and end-time
@@ -353,14 +355,18 @@
                                 stepMinute: 5,
                                 timeOnlyTitle: 'Select Start Time',
                                 closeText: 'Set',
-                                onSelect: 'enableSaveButton(this)',
+                                onSelect: function(dt,elem){
+                                    enableSaveButton(elem);
+                                },
                             });
                             $('#plan-date-end-time').timepicker({
                                 showSecond: false,
                                 stepMinute: 5,
                                 timeOnlyTitle: 'Select End Time',
                                 closeText: 'Set',
-                                onSelect: 'enableSaveButton(this)',
+                                onSelect: function(dt,elem){
+                                    enableSaveButton(elem);
+                                },
                             });
                         </script>
                     </div>
