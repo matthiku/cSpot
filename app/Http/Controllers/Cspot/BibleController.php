@@ -225,8 +225,7 @@ class BibleController extends Controller
         $p[0] = new StdClass;
         $p[0]->copyright = '';
         $p[0]->text = '';
-        $p[0]->display = $book.' '.$chapter;
-        $p[0]->version_abbreviation = 'NIV';
+
         $result = new StdClass;
         $result->passages = $p;
         $search = new StdClass;
@@ -235,6 +234,9 @@ class BibleController extends Controller
         $response->search = $search;
         $rr = new StdClass;
         $rr->response = $response;
+
+        $p[0]->display = $book.' '.$chapter;
+        $p[0]->version_abbreviation = 'NIV';
 
         // return now if for some reason (offline?) the html document could not be received
         if (! $html) return $rr;
@@ -300,16 +302,8 @@ class BibleController extends Controller
         $p[0]->text = $html;
         $p[0]->display = $book.' '.$chapter.':'.$verseFrom.'-'.$verseTo;
         $p[0]->version_abbreviation = Bibleversion::find($version_id)->name;
-        $result = new StdClass;
-        $result->passages = $p;
-        $search = new StdClass;
-        $search->result = $result;
-        $response = new StdClass;
-        $response->search = $search;
-        $rr = new StdClass;
-        $rr->response = $response;
 
-        return response()->json( $rr );
+        return response()->json( $this->createReturnObj($p) );
     }
 
 
@@ -420,19 +414,46 @@ class BibleController extends Controller
         // Try to get other versions via BLB 
         $url  = 'http://biblehub.com/'.strtolower($version).'/'.strtolower($book).'/'.$chapter.'.htm';
 
+
+        // get result from cache if possible or from requesting the URL
         if (Cache::has($url)) {
             $result = Cache::get($url);
         } else {
             $result = $this->getBibleHubText( $url, $book, $chapter );
         }
 
-        if (gettype($result)==='object') {
+        // return the bible text if it was a proper result
+        if ( gettype($result)==='object'  
+            && strlen($result->response->search->result->passages[0]->text) )
+        {
             return response()->json( $result );
-        }                
+        }
 
-        return response()->json("request failed, no bible text fetched!", 404);
+        // create a new object to return (in accordance with other bibletext-acquiring-options)
+        $p = [];
+        $p[0] = new StdClass;
+        $p[0]->copyright = 'bible version '.$version . ' not found!';
+        $p[0]->text = "request failed, no bible text fetched!";
+        $p[0]->display = $book.' '.$chapter.':'.$verseFrom.'-'.$verseTo;
+        $p[0]->version_abbreviation = $version;
+        
+        return response()->json($this->createReturnObj($p), 404);
     }
 
+
+    protected function createReturnObj($pp)
+    {
+        $result = new StdClass;
+        $result->passages = $pp;
+        $search = new StdClass;
+        $search->result = $result;
+        $response = new StdClass;
+        $response->search = $search;
+
+        $rr = new StdClass;        
+        $rr->response = $response;
+        return $rr;
+    }
 
 
 }
