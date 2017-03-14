@@ -15,6 +15,8 @@ class DefaultItem extends Model
         'file_id',
         'seq_no',
         'forLeadersEyesOnly',
+        'showItemText',
+        'showAnnouncements',
         'text',
     ];
 

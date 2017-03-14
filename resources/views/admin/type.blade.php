@@ -74,7 +74,7 @@
                 </div>
 
                 <div class="col-sm-6">    
-                    <div class="btn btn-secondary float-xs-left mr-1" onclick="changeGeneric(this);">
+                    <div class="btn btn-secondary float-xs-left mr-1" onclick="toggleBooleanButton(this);">
                         {!! Form::hidden('generic', '0') !!}
                         {!! Form::hidden('generic') !!}
                         <span>{!! isset($type) ? $type->generic ? '&#10004;' : '&#10008;' : '&#10008;' !!}</span>
@@ -350,26 +350,7 @@
         @if (isset($type) && $type->generic)
             $('.other-stuff').toggle();
         @endif
-
-        // user clicked the surrounding button, so we toggle the checkbox
-        function changeGeneric(that){
-            // enable submit button
-            $('.disabled').removeClass('disabled');
-            // toggle input field value and toggle visibility of "other fields"
-            if (that.nodeName!='INPUT') {
-                if ( $($(that).children('input')[1]).val()==0 ) {
-                    $('.other-stuff').toggle();
-                    $($(that).children('span')[0]).html('&#10004;');
-                    $($(that).children('input')[1]).val(1);
-                }
-                else {
-                    $('.other-stuff').toggle();
-                    $($(that).children('span')[0]).html('&#10008;');
-                    $($(that).children('input')[1]).val(0);
-                }
-            }
-        }
-
+        
     </script>
 
   

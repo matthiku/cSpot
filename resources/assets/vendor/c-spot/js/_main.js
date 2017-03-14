@@ -848,6 +848,30 @@ function fillPlanDefaultValues(that)
 }
 
 
+/*  Used in details forms:
+    Toggle the state of a True/False button
+    user clicked the surrounding button, so we toggle the checkbox
+*/
+function toggleBooleanButton(that){
+    // also enable a potential submit button
+    enableSubmitButton();
+
+    // toggle input field value and toggle visibility of "other fields"
+    if (that.nodeName!='INPUT') {
+        if ( $($(that).children('input')[1]).val()==0 ) {
+            $('.other-stuff').toggle();
+            $($(that).children('span')[0]).html('&#10004;');
+            $($(that).children('input')[1]).val(1);
+        }
+        else {
+            $('.other-stuff').toggle();
+            $($(that).children('span')[0]).html('&#10008;');
+            $($(that).children('input')[1]).val(0);
+        }
+    }
+}
+
+
 /*  On Plan Details page, enable the save button when user changes a plan detail
 */
 function enableSaveButton(that) {

@@ -74,6 +74,8 @@
 					<th>Text</th>
 					<th>Default Image</th>
 					<th class="center" title="Is this item to be visible only for the Leader?">FLEO?</th>
+					<th class="center" title="Show item text in the presentation?">Show text?</th>
+					<th class="center" title="Use this item to show the announcements?">&#128364; ?</th>
 					<th class="center">Action</th>
 				</tr>
 			</thead>
@@ -104,6 +106,14 @@
 						>{{ $default_item->file ? $default_item->file->filename : '' }}</td>
 
 					<td class="center">{!! $default_item->forLeadersEyesOnly 
+							? '&#10004;'
+							: '' !!}</td>
+
+					<td class="center">{!! $default_item->showItemText 
+							? '&#10004;'
+							: '' !!}</td>
+
+					<td class="center">{!! $default_item->showAnnouncements 
 							? '&#10004;'
 							: '' !!}</td>
 

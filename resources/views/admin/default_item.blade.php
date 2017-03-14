@@ -53,13 +53,11 @@
                     The next time this event type will be created, the Default Items for this type will be added to this new event automatically.</p>
                 </div>
             </div>
-        @else
-            <hr>
         @endif
 
 
 
-        <div class="row mb-1 bg-muted">
+        <div class="row mt-2 mb-1 pt-1 bg-muted">
         
             <div class="col-sm-6">
                 <div class="float-sm-right">
@@ -108,7 +106,7 @@
 
 
 
-        <div class="row mb-1 bg-muted">
+        <div class="row mb-1 pt-1 bg-muted">
             <div class="col-sm-6">
                 <div class="float-sm-right">
 
@@ -146,6 +144,45 @@
                     <span class="custom-control-indicator"></span>
                     <span class="custom-control-description"><i class="fa fa-eye-slash"></i> for Leader's eyes only!</span>
                 </label>
+
+           </div>
+        </div>
+
+
+        <div class="row mb-1 py-1 bg-muted">
+            <div class="col-sm-6">
+                <div class="float-sm-right">
+
+                    {!! Form::label('text', 'Show item text as title in the presentation?'); !!} 
+
+                </div>
+            </div>
+            <div class="col-sm-6">
+
+                <div class="btn btn-secondary btn-sm link float-xs-left mr-1" onclick="toggleBooleanButton(this);">
+                    {!! Form::hidden('showItemText', '0') !!}
+                    {!! Form::hidden('showItemText') !!}
+                    <span>{!! isset($default_item) ? $default_item->showItemText ? '&#10004;' : '&#10008;' : '&#10008;' !!}</span>
+                </div>    
+
+           </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="float-sm-right">
+
+                    {!! Form::label('text', 'use this item to show the Announcements?'); !!} 
+
+                </div>
+            </div>
+            <div class="col-sm-6">
+
+                <div class="btn btn-secondary btn-sm link float-xs-left mr-1" onclick="toggleBooleanButton(this);">
+                    {!! Form::hidden('showAnnouncements', '0') !!}
+                    {!! Form::hidden('showAnnouncements') !!}
+                    <span>{!! isset($default_item) ? $default_item->showAnnouncements ? '&#10004;' : '&#10008;' : '&#10008;' !!}</span>
+                </div>    
 
            </div>
         </div>
@@ -215,9 +252,9 @@
                 <div class="float-sm-right">
 
                     @if (isset($default_item))
-                        {!! Form::submit('&#10003; Update', ['class'=>'btn btn-outline-success submit-button disabled']); !!}
+                        {!! Form::submit('Update', ['class'=>'btn btn-outline-success submit-button disabled']); !!}
                     @else
-                        {!! Form::submit('&#10003; Submit', ['class'=>'btn btn-outline-success submit-button disabled']); !!}
+                        {!! Form::submit('Submit', ['class'=>'btn btn-outline-success submit-button disabled']); !!}
                     @endif
 
                 </div>

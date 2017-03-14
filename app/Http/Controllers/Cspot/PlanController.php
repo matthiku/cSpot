@@ -396,23 +396,28 @@ class PlanController extends Controller
 
         // insert default items if requested
         if ($request->input('defaultItems')=='Y') {
+
+            // get list of all default items for this plan type
             $dItems = DefaultItem::where('type_id', $plan->type_id)->get();
-            // $newItems = [];
+            
+            // add each default item as new item to the new plan
             foreach ($dItems as $dItem) {
                 // get single default item to create a nwe Item object
                 $iNew = new Item([
-                    'seq_no'=>$dItem->seq_no, 
-                    'comment'=>$dItem->text,
-                    'forLeadersEyesOnly'=>$dItem->forLeadersEyesOnly
+                    'seq_no'            => $dItem->seq_no, 
+                    'comment'           => $dItem->text,
+                    'forLeadersEyesOnly'=> $dItem->forLeadersEyesOnly,
+                    'show_comment'      => $dItem->showItemText,
+                    'key'               => $dItem->showAnnouncements ? 'announcements' : '',
                 ]);
                 // save the new item to the new plan
                 $plan->items()->save($iNew);
                 // if default item contains a default image, link the new Plan item to the image
                 if ($dItem->file_id) {
                     $file = File::find($dItem->file_id);
-                    $iNew->files()->save( $file );
+                    if ($file)
+                        $iNew->files()->save( $file );
                 }
-                // array_push( $newItems, $iNew );
             }
         }
 

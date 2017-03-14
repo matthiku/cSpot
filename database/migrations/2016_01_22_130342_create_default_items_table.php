@@ -21,6 +21,8 @@ class CreateDefaultItemsTable extends Migration
             $table->float('seq_no', 3, 1);
             $table->string('text', 250);
             $table->boolean('forLeadersEyesOnly')->default(false);
+            $table->boolean('showItemText')->default(false);
+            $table->boolean('showAnnouncements')->default(false);
             $table->timestamps();
         });
     }
