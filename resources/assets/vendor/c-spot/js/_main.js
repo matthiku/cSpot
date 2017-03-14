@@ -813,11 +813,11 @@ function fillPlanDefaultValues(that)
     var start = selSerType.start;
     var   end = selSerType.end;
 
-    // assign to times input fields
+    // assign to times input fields (only "hh:mm")
     if (start != "00:00:00")
-        $('#start').val(start);
+        $('#plan-date-start-time').val(start.substring(0,5));
     if (end != "00:00:00")
-        $('#end'  ).val(end);
+        $('#plan-date-end-time'  ).val(end.substring(0,5));
 
     // propose a date for this event based on the weekday property of the default values
     var n = moment();

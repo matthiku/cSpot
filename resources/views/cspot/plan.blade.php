@@ -97,7 +97,9 @@
                         </div>
                     @endif
 
-                    {{-- currently not used
+                    {{-- 
+                        currently not used (see GitHub issue # 174!)
+
                     <div class="float-right mr-1">
                         <a title="YouTube playlist of all songs" target="new" 
                             href="{{ env('YOUTUBE_PLAYLIST_URL', 'https://www.youtube.com/playlist?list=').env('CHURCH_YOUTUBE_PLAYLIST_ID', '') }}">
