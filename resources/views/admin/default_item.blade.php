@@ -122,31 +122,24 @@
         </div>
 
 
+
         <div class="row">
             <div class="col-sm-6">
                 <div class="float-sm-right">
 
-                    {!! Form::label('text', 'Item always visible for all?'); !!} 
+                    {!! Form::label('text', 'Item visible only to the Leader?'); !!}
 
                 </div>
             </div>
             <div class="col-sm-6">
-
-                <label class="custom-control custom-radio">
-                    <input id="radio1" name="forLeadersEyesOnly" type="radio" class="custom-control-input"
-                        {{ isset($default_item) ? ($default_item->forLeadersEyesOnly ? '' : 'checked="checked"') : '' }}>
-                    <span class="custom-control-indicator"></span>
-                    <span class="custom-control-description"><i class="fa fa-eye"></i> visible for everyone</span>
-                </label>
-                <label class="custom-control custom-radio">
-                    <input id="radio2" name="forLeadersEyesOnly" type="radio" class="custom-control-input"
-                        {{ isset($default_item) ? ($default_item->forLeadersEyesOnly ? 'checked="checked"' : '') : '' }}>
-                    <span class="custom-control-indicator"></span>
-                    <span class="custom-control-description"><i class="fa fa-eye-slash"></i> for Leader's eyes only!</span>
-                </label>
-
+                <div class="btn btn-secondary btn-sm link float-xs-left mr-1" onclick="toggleBooleanButton(this);">
+                    {!! Form::hidden('forLeadersEyesOnly', '0') !!}
+                    {!! Form::hidden('forLeadersEyesOnly') !!}
+                    <span>{!! isset($default_item) ? $default_item->forLeadersEyesOnly ? '&#10004;' : '&#10008;' : '&#10008;' !!}</span>
+                </div>
            </div>
         </div>
+
 
 
         <div class="row mb-1 py-1 bg-muted">
@@ -158,15 +151,15 @@
                 </div>
             </div>
             <div class="col-sm-6">
-
                 <div class="btn btn-secondary btn-sm link float-xs-left mr-1" onclick="toggleBooleanButton(this);">
                     {!! Form::hidden('showItemText', '0') !!}
                     {!! Form::hidden('showItemText') !!}
                     <span>{!! isset($default_item) ? $default_item->showItemText ? '&#10004;' : '&#10008;' : '&#10008;' !!}</span>
-                </div>    
-
+                </div>
            </div>
         </div>
+
+
 
         <div class="row">
             <div class="col-sm-6">
@@ -177,13 +170,11 @@
                 </div>
             </div>
             <div class="col-sm-6">
-
                 <div class="btn btn-secondary btn-sm link float-xs-left mr-1" onclick="toggleBooleanButton(this);">
                     {!! Form::hidden('showAnnouncements', '0') !!}
                     {!! Form::hidden('showAnnouncements') !!}
                     <span>{!! isset($default_item) ? $default_item->showAnnouncements ? '&#10004;' : '&#10008;' : '&#10008;' !!}</span>
-                </div>    
-
+                </div>
            </div>
         </div>
 
