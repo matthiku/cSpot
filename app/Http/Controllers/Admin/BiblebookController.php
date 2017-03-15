@@ -4,21 +4,23 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 
-use App\Models\Bibleversion;
+use DB;
+
+use App\Models\Biblebook;
 use App\Models\Bible;
 use Illuminate\Http\Request;
 
-class BibleversionController extends Controller
+class BiblebookController extends Controller
 {
 
 
     /**
      * define view names
      */
-    protected $index    = 'bibleversions.index';
-    protected $view_idx = 'admin.bibleversions';
-    protected $view_one = 'admin.bibleversion';
-    protected $create   = 'bibleversions.create';
+    protected $index    = 'biblebooks.index';
+    protected $view_idx = 'admin.biblebooks';
+    protected $view_one = 'admin.biblebook';
+    protected $create   = 'biblebooks.create';
 
 
 
@@ -27,14 +29,15 @@ class BibleversionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        // get all versions
-        $bibleversions = Bibleversion::get();
+        // get all books
+        $biblebooks = Biblebook::get();
 
         return view($this->view_idx, [
-            'bibleversions' => $bibleversions, 
-            'heading'   => 'Show Bible Versions'
+            'biblebooks' => $biblebooks, 
+            'request'    => $request, 
+            'heading'    => 'Show Bible Books'
         ]);
     }
 
@@ -47,7 +50,7 @@ class BibleversionController extends Controller
     {
         //
         return view($this->view_one, [
-            'heading'   => 'Add new Bible Version Name'
+            'heading'   => 'Add new Bible Book Name'
         ]);
     }
 
@@ -63,10 +66,10 @@ class BibleversionController extends Controller
         // check if name was given
         if (! $request->has('name'))
             return \Redirect::route($this->create)
-                        ->with(['status' => $status, 'heading' => 'Add a new Bible Version Name']);                        
+                        ->with(['status' => $status, 'heading' => 'Add a new Bible Book Name']);                        
 
-        Bibleversion::create($request->all());
-        $status = 'New Bible Version added: '.$request->name;
+        Biblebook::create($request->all());
+        $status = 'New Bible Book added: '.$request->name;
         return \Redirect::route($this->index)
                         ->with(['status' => $status]);
     }
@@ -74,10 +77,10 @@ class BibleversionController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Bibleversion  $bibleversion
+     * @param  \App\Models\Biblebook  $biblebook
      * @return \Illuminate\Http\Response
      */
-    public function show(Bibleversion $bibleversion)
+    public function show(Biblebook $biblebook)
     {
         // 'show' not really used
         return redirect()->back()->withInput();
@@ -88,17 +91,17 @@ class BibleversionController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Bibleversion  $bibleversion
+     * @param  \App\Models\Biblebook  $biblebook
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
     {
-        // get this version
-        $bibleversion = Bibleversion::find($id);
+        // get this book
+        $biblebook = Biblebook::find($id);
 
         return view($this->view_one, [
-            'bibleversion' => $bibleversion, 
-            'heading'   => 'Edit Bible Version Name'
+            'biblebook' => $biblebook, 
+            'heading'   => 'Edit Bible Book Name'
         ]);
     }
 
@@ -106,7 +109,7 @@ class BibleversionController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Bibleversion  $bibleversion
+     * @param  \App\Models\Biblebook  $biblebook
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -116,13 +119,13 @@ class BibleversionController extends Controller
         // check if name was given
         if (! $request->has('name'))
             return \Redirect::route($this->edit, ['id'=>$id])
-                        ->with(['status' => $status, 'heading' => 'Add a new Bible Version Name']);                        
+                        ->with(['status' => $status, 'heading' => 'Add a new Bible Book Name']);                        
 
-        $bibleversion = Bibleversion::find($id);
-        $bibleversion->name = $request->name;
-        $bibleversion->save();
+        $biblebook = Biblebook::find($id);
+        $biblebook->name = $request->name;
+        $biblebook->save();
 
-        $status = 'New Bible Version updated: '.$request->name;
+        $status = 'New Bible Book updated: '.$request->name;
         return \Redirect::route($this->index)
                         ->with(['status' => $status]);
     }
@@ -130,22 +133,22 @@ class BibleversionController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Bibleversion  $bibleversion
+     * @param  \App\Models\Biblebook  $biblebook
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
-        // first check if there are bible texts using this version
-        $status = "You cannot delete a Version of a Bible that is still being used in the storage!";
-        $bible = Bible::where('bibleversion_id', $id)->first();
+        // first check if there are bible texts using this book
+        $status = "You cannot delete a Book of a Bible that is still being used in the storage!";
+        $bible = Bible::where('biblebook_id', $id)->first();
         if ($bible)
             return \Redirect::route($this->index)
-                        ->with(['status' => $status, 'heading' => 'Show Bible Versions']);                        
+                        ->with(['status' => $status, 'heading' => 'Show Bible Books']);                        
 
-        // now delete this version name
-        $bibleversion = Bibleversion::find($id);
-        $status = "Bible version deleted: ".$bibleversion->name;
-        $bibleversion = Bibleversion::destroy($id);
+        // now delete this book name
+        $biblebook = Biblebook::find($id);
+        $status = "Bible book deleted: ".$biblebook->name;
+        $biblebook = Biblebook::destroy($id);
         return \Redirect::route($this->index)
                         ->with(['status' => $status]);
     }

@@ -468,5 +468,28 @@ class BibleController extends Controller
     }
 
 
+
+    public function index(Request $request)
+    {
+        // request MUST contain version
+        if (!$request->has('version'))
+            return redirect()->back();
+        $version = $request->version;
+
+        // request CAN contain book, chapter and verse
+        $book    = $request->get('book')    || '1';
+        $chapter = $request->get('chapter') || '1';
+        $verse   = $request->get('verse')   || '1';
+
+        $verses = Bible::with(['bibleversion', 'biblebook'])
+                        ->where('bibleversion_id', $version)
+                        ->where('biblebook_id', $book)
+                        ->where('chapter', $chapter)
+                        ->get();
+        return view('admin.bible', [
+                'verses' => $verses,
+                'heading' => 'Show Bible Verses for '.Bibleversion::find($version)->name,
+            ]);
+    }
 }
 

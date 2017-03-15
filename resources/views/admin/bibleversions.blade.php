@@ -27,28 +27,35 @@
 
 	@if (count($bibleversions))
 
-		<table class="table table-striped table-bordered 
-					@if(count($bibleversions)>15)
-					 table-sm
-					@endif
-					 ">
+		<table class="table table-striped table-bordered{{ count($bibleversions)>15 ? ' table-sm' : '' }}">
 			<thead class="thead-default">
 				<tr>
-					<th>#</th>
+					<th>id</th>
 					<th>Name</th>
+					<th># Verses</th>
 					<th>Action</th>
 				</tr>
 			</thead>
 			<tbody>
 	        @foreach( $bibleversions as $bibleversion )
-				<tr class="link" onclick="location.href='{{ url('/admin/bibleversions/' . $bibleversion->id) }}/edit'">
+	        	@php $versecount = $bibleversion->bibles->count(); @endphp
+				<tr>
 					<td scope="row">{{ $bibleversion->id }}</td>
-					<td>{{ $bibleversion->name }}</td>
+					<td class="link" onclick="location.href='{{ url('/admin/bibleversions/' . $bibleversion->id) }}/edit'">{{ $bibleversion->name }}</td>
+					<td>@if ($versecount>0)
+							<a class="btn btn-secondary btn-sm" title="Show Books in this Version" href='{{ url('admin/biblebooks?version='.$bibleversion->id) }}'>
+								{{ $versecount }}
+							</a>
+						@else
+							0
+						@endif
+					</td>
 					<td class="nowrap">
-						<a class="btn btn-secondary btn-sm" title="Show Bible" href='{{ url('admin/bibleversions/'.$bibleversion->id) }}'><i class="fa fa-book"></i></a>
-						 @if( Auth::user()->isEditor() )
+						@if( Auth::user()->isEditor() )
 							<a class="btn btn-outline-primary btn-sm" title="Edit" href='{{ url('admin/bibleversions/'.$bibleversion->id) }}/edit'><i class="fa fa-pencil"></i></a>
-							<a class="btn btn-danger btn-sm" title="Delete!" href='{{ url('admin/bibleversions/'.$bibleversion->id) }}/delete'><i class="fa fa-trash"></i></a>
+							@if ($versecount==0)
+								<a class="btn btn-danger btn-sm" title="Delete!" href='{{ url('admin/bibleversions/'.$bibleversion->id) }}/delete'><i class="fa fa-trash"></i></a>
+							@endif
 						@endif
 					</td>
 				</tr>

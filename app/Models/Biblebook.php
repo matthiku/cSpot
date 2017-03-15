@@ -10,9 +10,13 @@ class Biblebook extends Model
  	protected $fillable = ['name'];
 
 
+ 	// timestamps not needed
+    public $timestamps = false;
+
+
     public function bibles()
     {
-        return $this->belongsToMany('App\Models\Bible');
+        return $this->hasMany('App\Models\Bible');
     }
 
 
