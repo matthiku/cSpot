@@ -63,7 +63,7 @@
                             {{ Auth::user()->ownsPlan($plan->id) ? '' : ' disabled' }}>
                         <span class="custom-control-indicator"></span>
                         <span class="custom-control-description" id="show_comment-item-id-{{ $item->id }}"
-                            >{{ $item->show_comment ? 'Notes are presented as Title' : 'Show notes as Title' }} in the presentation</span>
+                            >{{ $item->show_comment ? 'Notes are shown as Title' : 'Show notes as Title' }} in the presentation</span>
                     </label>
                 </span>
             @endif

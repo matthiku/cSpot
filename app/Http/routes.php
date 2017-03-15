@@ -309,34 +309,50 @@ Route::group(['prefix' => 'messages', 'middleware' => ['web', 'auth']], function
 Route::group(['prefix' => 'admin', 'middleware' => ['web']], function() {
 
     // admin only: CRUD for users
-    Route::resource('users',    'Admin\UserController');    
-    Route::resource('roles',     'Admin\RoleController');    
-    Route::resource('resources',  'Admin\ResourceController');    
-    Route::resource('instruments', 'Admin\InstrumentController');    
-    Route::resource('types',        'Admin\TypeController');    
-    Route::resource('song_parts',    'Admin\SongPartController');    
-    Route::resource('default_items',  'Admin\DefaultItemController');    
-    Route::resource('file_categories', 'Admin\FileCategoryController');    
+    Route::resource('users',    'Admin\UserController');
+    Route::resource('roles',     'Admin\RoleController');
+    Route::resource('resources',  'Admin\ResourceController');
+    Route::resource('instruments', 'Admin\InstrumentController');
+    Route::resource('types',        'Admin\TypeController');
+    Route::resource('song_parts',    'Admin\SongPartController');
+    Route::resource('default_items',  'Admin\DefaultItemController');
+    Route::resource('file_categories', 'Admin\FileCategoryController');
     // as forms cannot use DELETE method, we implement it as GET
-    Route::get('users/{id}/delete',    'Admin\UserController@destroy');    
-    Route::get('roles/{id}/delete',     'Admin\RoleController@destroy');    
-    Route::get('resources/{id}/delete',  'Admin\ResourceController@destroy');    
-    Route::get('instruments/{id}/delete', 'Admin\InstrumentController@destroy');    
-    Route::get('types/{id}/delete',        'Admin\TypeController@destroy');    
-    Route::get('default_items/{id}/delete', 'Admin\DefaultItemController@destroy');    
-    Route::get('file_categories/{id}/delete','Admin\FileCategoryController@destroy');    
+    Route::get('users/{id}/delete',    'Admin\UserController@destroy');
+    Route::get('roles/{id}/delete',     'Admin\RoleController@destroy');
+    Route::get('resources/{id}/delete',  'Admin\ResourceController@destroy');
+    Route::get('instruments/{id}/delete', 'Admin\InstrumentController@destroy');
+    Route::get('types/{id}/delete',        'Admin\TypeController@destroy');
+    Route::get('default_items/{id}/delete', 'Admin\DefaultItemController@destroy');
+    Route::get('file_categories/{id}/delete','Admin\FileCategoryController@destroy');
 
     // user wants to set current page as their homepage
     Route::post('users/{user_id}/setstartpage',         'Admin\UserController@setStartPage')->name('user.setstartpage');
 
-    // run a specific job
-    Route::get('runjob/batch', function() {
-        dispatch(new App\Jobs\BatchJobs);
-        flash( 'Done!');
-        return redirect()->back();
-    });
+    // // run a specific job
+    // Route::get('runjob/batch', function() {
+    //     dispatch(new App\Jobs\BatchJobs);
+    //     flash( 'Done!');
+    //     return redirect()->back();
+    // });
+
+
+    /*
+        BIBLES
+        
+        providing access to manage Bible versions, Bible books and Bible texts
+    */
+    Route::resource('bibles',        'Cspot\BibleController');
+    Route::resource('biblebooks',    'Admin\BiblebookController');
+    Route::resource('bibleversions', 'Admin\BibleversionController');
 
 });
+
+
+
+/*
+    Special Routes
+*/
 
 Route::group(['middleware' => ['web', 'auth']], function() {
     Route::get('admin/logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');

@@ -276,8 +276,23 @@ class BibleController extends Controller
     {
         // verseTo defaults to the last verse of this chapter
         if (! $verseTo) $verseTo = $this->verses($book, $chapter);
+
+        if ($book=='Psalm')  $book = 'Psalms';
+
+        // create a new object to return (in accordance with other bibletext-acquiring-options)
+        $p = [];
+        $p[0] = new StdClass;
+        $p[0]->text = '';
+        $p[0]->display = $book.' '.$chapter.':'.$verseFrom.'-'.$verseTo;
+
         // find the relvant book id
-        $book_id = Biblebook::where('name', $book)->first()->id;
+        $book_id = Biblebook::where('name', $book)->first();
+        if ($book_id->count()) $book_id = $book_id->id;
+        else {        
+            $p[0]->copyright = 'Unable to find this bible book: '.$book;
+            $p[0]->version_abbreviation = Bibleversion::find($version_id)->name;
+            return response()->json( $this->createReturnObj($p) );
+        } 
 
         // get the actually requested bible text (as a collection)
         $text = Bible::where('bibleversion_id', $version_id)
@@ -295,13 +310,10 @@ class BibleController extends Controller
         }
         $html .= '</p></div>';
 
-        // create a new object to return (in accordance with other bibletext-acquiring-options)
-        $p = [];
-        $p[0] = new StdClass;
+        // assign the scripture HTML to the return object
         $p[0]->copyright = Bibleversion::find($version_id)->copyright;
-        $p[0]->text = $html;
-        $p[0]->display = $book.' '.$chapter.':'.$verseFrom.'-'.$verseTo;
         $p[0]->version_abbreviation = Bibleversion::find($version_id)->name;
+        $p[0]->text = $html;
 
         return response()->json( $this->createReturnObj($p) );
     }

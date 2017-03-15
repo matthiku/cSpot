@@ -192,15 +192,19 @@
                     <hr>
                     <a class="dropdown-item" href="{{ url('admin/resources') }}"><i class="fa fa-btn fa-cubes fa-lg"></i> &nbsp; Resources</a>
                     <hr>
+                    <a class="dropdown-item" href="{{ url('admin/bibleversions') }}"><i class="fa fa-btn fa-book fa-lg"></i> &nbsp; Bible Versions</a>
+                    <a class="dropdown-item" href="{{ url('admin/biblebooks') }}"><i class="fa fa-btn fa-book fa-lg"></i> &nbsp; Bible Books</a>
+                    <a class="dropdown-item" href="{{ url('cspot/bibles') }}"><i class="fa fa-btn fa-book fa-lg"></i> &nbsp; Bibles</a>
+                    <hr>
                     <a class="dropdown-item" href="{{ route('trainingVideos') }}"><big>&#127979;</big> &nbsp; Training Videos</a>
 
                     @if (Auth::user()->isAdmin())
                         <hr>
                         <a target="_new" class="dropdown-item" href="{{ url('admin/logs')  }}">
                             <i class="fa fa-btn fa-file-zip-o fa-lg"></i> &nbsp; Laravel Logs</a>
-                        <a class="dropdown-item" href="{{ url('admin/runjob/batch')  }}">
-                            <i class="fa fa-btn fa-cubes"></i> &nbsp; Run Batch Job(s)</a>
-                        <a class="dropdown-item" href="{{ url('admin/customize')  }}">
+{{--                         <a class="dropdown-item" href="{{ url('admin/runjob/batch')  }}">
+                            <i class="fa fa-btn fa-cubes"></i> &nbsp; Run Batch Job(s)</a> --}}
+                            <a class="dropdown-item" href="{{ url('admin/customize')  }}">
                             <i class="fa fa-btn fa-cog fa-lg"></i> &nbsp; Customisation</a>
                     @endif
                 </div>
