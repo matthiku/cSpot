@@ -21,6 +21,7 @@ use Snap\BibleBooks\BibleBooks;
 use App\Models\Bibleversion;
 use App\Models\Biblebook;
 use App\Models\Bible;
+use DB;
 
 
 class BibleController extends Controller
@@ -471,25 +472,79 @@ class BibleController extends Controller
 
     public function index(Request $request)
     {
-        // request MUST contain version
-        if (!$request->has('version'))
-            return redirect()->back();
-        $version = $request->version;
+        // if request doesn't contain version, we use the first available
+        if (!$request->has('version')) {
+            $version = Bibleversion::first();
+            if ($version->count()) 
+                $version = $version->id;
+            else
+                return redirect()->back();
+        }
+        else 
+            $version = $request->version;
 
         // request CAN contain book, chapter and verse
-        $book    = $request->get('book')    || '1';
-        $chapter = $request->get('chapter') || '1';
-        $verse   = $request->get('verse')   || '1';
+        $book    = $request->has('book')    ? $request->book    : 1;
+        $chapter = $request->has('chapter') ? $request->chapter : 1;
+        $verse   = $request->has('verse')   ? $request->verse   : 1;
 
-        $verses = Bible::with(['bibleversion', 'biblebook'])
+        // get the verses for this chapter
+        $verses  = Bible::with(['bibleversion', 'biblebook'])
                         ->where('bibleversion_id', $version)
                         ->where('biblebook_id', $book)
                         ->where('chapter', $chapter)
                         ->get();
+        if (!$verses->count())
+            return redirect()->route('bibleversions.index')->with('status', 'The default version has no content yet! Select a another version!');
+
+        // send the view
         return view('admin.bible', [
-                'verses' => $verses,
-                'heading' => 'Show Bible Verses for '.Bibleversion::find($version)->name,
+                'versions' => Bibleversion::get(),
+                'books'    => Biblebook::get(),
+                'chapters' => Biblebook::find($book)->chapters,
+                'verses'   => $verses,
+                'heading'  => 'Show Bible Verses for '.Bibleversion::find($version)->name,
             ]);
     }
+
+
+
+    public function apiUpdateBibleText(Request $request)
+    {
+        // request must contain: version_id, book_id, chapter, verse and actual text
+        if ($request->has('value')  && $request->has('id'))
+        {
+            $newText = $request->value;
+            $fields = explode('-', $request->id);
+            if (count($fields)!=5)
+                return 'Update failed, invalid number of fields in ID!';
+
+            $text = Bible::where('bibleversion_id', $fields[1])
+                         ->where('biblebook_id', $fields[2])
+                         ->where('chapter', $fields[3])
+                         ->where('verse', $fields[4])
+                         ->first();
+            if ($text->count())
+                $result = DB::update(
+                    'update bibles set text=? where bibleversion_id=? and biblebook_id=? and chapter=? and verse=?', 
+                    [$newText, $fields[1], $fields[2], $fields[3], $fields[4]]);
+            else 
+                return 'Update failed, verse not found!';
+
+            if ($result==1) {
+                // all good, return the new text 
+                $text = Bible::where('bibleversion_id', $fields[1])
+                             ->where('biblebook_id', $fields[2])
+                             ->where('chapter', $fields[3])
+                             ->where('verse', $fields[4])
+                             ->first();
+                return $text->text;
+            }
+            return 'Update failed, Database update statement returned invalid row count!';
+        }
+        return 'Update failed, parameters ID or VALUE are missing or both!';
+    }
+
+
 }
 

@@ -194,7 +194,7 @@
                     <hr>
                     <a class="dropdown-item" href="{{ url('admin/bibleversions') }}"><i class="fa fa-btn fa-book fa-lg"></i> &nbsp; Bible Versions</a>
                     <a class="dropdown-item" href="{{ url('admin/biblebooks') }}"><i class="fa fa-btn fa-book fa-lg"></i> &nbsp; Bible Books</a>
-                    <a class="dropdown-item" href="{{ url('cspot/bibles') }}"><i class="fa fa-btn fa-book fa-lg"></i> &nbsp; Bibles</a>
+                    <a class="dropdown-item" href="{{ url('admin/bibles') }}"><i class="fa fa-btn fa-book fa-lg"></i> &nbsp; Bibles</a>
                     <hr>
                     <a class="dropdown-item" href="{{ route('trainingVideos') }}"><big>&#127979;</big> &nbsp; Training Videos</a>
 

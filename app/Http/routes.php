@@ -345,6 +345,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['web']], function() {
     Route::resource('bibles',        'Cspot\BibleController');
     Route::resource('biblebooks',    'Admin\BiblebookController');
     Route::resource('bibleversions', 'Admin\BibleversionController');
+    Route::post('api/bible/update',  'Cspot\BibleController@apiUpdateBibleText');
     Route::get('biblebooks/{id}/delete',    'Admin\BiblebookController@destroy');
     Route::get('bibleversions/{id}/delete', 'Admin\BibleversionController@destroy');
 

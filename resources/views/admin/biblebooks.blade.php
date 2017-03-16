@@ -8,11 +8,16 @@
 @section('setup', 'active')
 
 @php
-	$version = '';
+	$versionText = '';
+	// if version was not selected, we just use the first available one for the next step
+	$vers = \App\Models\Bibleversion::first();
+
 	if (isset($request->version)) {
 		$vers = \App\Models\Bibleversion::find($request->version);
-		if ($vers) $version = ' for '.$vers->name;
+		if ($vers) $versionText = ' for '.$vers->name;
 	}
+	// get all bible versions for selection box
+	$versions = \App\Models\Bibleversion::get();
 @endphp
 
 @section('content')
@@ -26,24 +31,39 @@
 		</a>
 	@endif
 
+	<select class="custom-select float-right mr-2" onchange="location.href=location.pathname+'?version='+this.value">
+		<option selected>Select Version...</option>
+		@foreach ($versions as $version)
+			<option{{ isset($request->version) && $version->id==$request->version ? ' disabled' : '' }} value="{{ $version->id }}">{{ $version->name }}</option>
+		@endforeach
+	</select>
 
-    <h2>{{ $heading . $version }}</h2>
+	
+
+    <h2>{{ $heading . $versionText }}</h2>
+
 
 
 
 	@if (count($biblebooks))
 
+
 		<table class="table table-striped table-bordered{{ count($biblebooks)>15 ? ' table-sm' : '' }}">
+
 			<thead class="thead-default">
 				<tr>
 					<th>#</th>
 					<th>Name</th>
 					<th># Verses</th>
-					<th>Action</th>
+					<th># Chapters</th>
+					@if( Auth::user()->isEditor() )
+						<th>Action</th>
+					@endif
 				</tr>
 			</thead>
-			<tbody>
-	        @foreach( $biblebooks as $biblebook )
+
+
+			<tbody>@foreach( $biblebooks as $biblebook )
 	        	@php
 	        	    if (isset($request->version))
             			$versecount = \App\Models\Bible::where('bibleversion_id', $request->version)
@@ -52,23 +72,61 @@
         			else 
 	        	    	$versecount = $biblebook->bibles->count();
 	        	@endphp
+
 				<tr>
+
 					<td scope="row">{{ $biblebook->id }}</td>
-					<td class="link" onclick="location.href='{{ url('/admin/biblebooks/' . $biblebook->id) }}/edit'">{{ $biblebook->name }}</td>
-					<td>{{ $versecount }}</td>
-					<td class="nowrap">
-						<a class="btn btn-secondary btn-sm" title="Show Chapters" href='{{ url('admin/biblebooks/'.$biblebook->id) }}'><i class="fa fa-book"></i></a>
-						 @if( Auth::user()->isEditor() )
+
+
+					@if( Auth::user()->isEditor() )
+						<td class="link" title="Edit this name" onclick="location.href='{{ url('/admin/biblebooks/' . $biblebook->id) }}/edit'">{{ $biblebook->name }}</td>
+					@elseif ($versecount>0)
+						<td>
+							<a class="btn btn-secondary btn-sm" title="Show Bible Text" href='{{ url('admin/bibles?version='.$vers->id.'&book='.$biblebook->id) }}'>
+								{{ $biblebook->name }}</a>
+						</td>
+					@else
+						<td>{{ $biblebook->name }}</td>
+					@endif
+
+
+					<td>
+						@if ($versecount>0)
+							<a class="btn btn-secondary btn-sm" title="Show Bible Text" href='{{ url('admin/bibles?version='.$vers->id.'&book='.$biblebook->id) }}'>
+								{{ $versecount }}</a>
+						@else
+							{{ $versecount }}
+						@endif
+					</td>
+
+
+					<td>
+						@if ($versecount>0)
+							<a class="btn btn-secondary btn-sm" title="Show Bible Text" href='{{ url('admin/bibles?version='.$vers->id.'&book='.$biblebook->id) }}'>
+								{{ $biblebook->chapters }}</a>
+						@else
+							{{ $biblebook->chapters }}
+						@endif
+					</td>
+
+					
+					@if( Auth::user()->isEditor() )
+						<td class="nowrap">
 							<a class="btn btn-outline-primary btn-sm" title="Edit" href='{{ url('admin/biblebooks/'.$biblebook->id) }}/edit'><i class="fa fa-pencil"></i></a>
 							@if ($versecount==0)
 								<a class="btn btn-danger btn-sm" title="Delete!" href='{{ url('admin/biblebooks/'.$biblebook->id) }}/delete'><i class="fa fa-trash"></i></a>
 							@endif
-						@endif
-					</td>
+						</td>
+					@endif
+
 				</tr>
-	        @endforeach
-			</tbody>
+
+
+	        @endforeach</tbody>
+
 		</table>
+
+
 
     @else
 

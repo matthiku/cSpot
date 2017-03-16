@@ -50094,6 +50094,20 @@ $(document).ready(function() {
     });
 
 
+    // update Bible texts of server-based bibles
+    $('.editable-bible-text').editable(cSpot.appURL + '/admin/api/bible/update', {
+        type        : 'textarea',
+        cancel      : 'Cancel',
+        width       : '100%',
+        rows        : '3',
+        submit      : 'Update',
+        onblur      : 'ignore',
+        indicator   : '<span class="fa fa-refresh fa-spin"> </span> saving...',
+        placeholder : '<span class="fa fa-edit">&nbsp;</span>',
+    });
+
+
+
     /**
      * Show WAIT spinner for all navbar anchor items
      */

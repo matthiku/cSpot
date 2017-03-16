@@ -281,7 +281,7 @@ div.scroll-menu {
     background: green;
 }
 
-.onsong-instructions {
+.onsong-instructions, .mw-60 {
     max-width: 60rem;
 }
 
@@ -466,10 +466,12 @@ a[disabled] {
 
 /* show certain elements only when hovering over another element */
 .hover-only {
-    display: none;
+    visibility: hidden;
+    /* display: none; */
 }
 .hover-show:hover + .hover-only {
-    display: inline-block;
+    visibility: visible;
+    /*display: inline-block;*/
 }
 
 .action-col {
