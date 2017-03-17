@@ -32,7 +32,7 @@ class BiblebookController extends Controller
     public function index(Request $request)
     {
         // get all books
-        $biblebooks = Biblebook::get();
+        $biblebooks = Biblebook::orderBy('id')->get();
 
         return view($this->view_idx, [
             'biblebooks' => $biblebooks, 

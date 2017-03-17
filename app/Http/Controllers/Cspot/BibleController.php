@@ -503,7 +503,7 @@ class BibleController extends Controller
         // send the view
         return view('cspot.bible', [
                 'versions' => Bibleversion::get(),
-                'books'    => Biblebook::get(),
+                'books'    => Biblebook::orderBy('id')->get(),
                 'chapters' => Biblebook::find($book)->chapters,
                 'verses'   => $verses,
                 'heading'  => 'Show Bible Verses for '.Bibleversion::find($version)->name,
