@@ -796,8 +796,16 @@ function getBibleTexts($refString, $local=false)
             if ($local) {
                 // first check version availability
                 $bvers = Bibleversion::where('name', $version[0])->first();
-                $bbook = Biblebook::where('name', $book)->first();
-                if ($bvers) {
+
+                // get the Book as Eloquent object
+                //      while avoiding conflicts like "Psalms" vs. "Psalm" or "Song of Songs" vs "Song of Solomon"
+                if (strlen($book)>4)
+                    $bbook = Biblebook::where('name', 'like', substr($book,0,5).'%')->first();
+                else 
+                    $bbook = Biblebook::where('name', $book)->first();
+
+                // get the actual collection of verses
+                if ($bvers && $bbook) {
                     $verses  = Bible::with(['bibleversion', 'biblebook'])
                                     ->where('bibleversion_id', $bvers->id)
                                     ->where('biblebook_id', $bbook->id)

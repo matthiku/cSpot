@@ -25,11 +25,7 @@
 
 	@include('layouts.flashing')
 
-	@if( Auth::user()->isEditor() )
-		<a class="btn btn-outline-primary btn-sm float-right" href='{{ url('admin/biblebooks/create') }}'>
-			<i class="fa fa-plus"> </i> &nbsp; Add a new Book Name
-		</a>
-	@endif
+
 
 	<select class="custom-select float-right mr-2" onchange="location.href=location.pathname+'?version='+this.value">
 		<option selected>Select Version...</option>

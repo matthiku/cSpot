@@ -30,7 +30,7 @@ class CreateBiblesTable extends Migration
             $table->index('biblebook_id');
             $table->index('chapter');
             $table->index('verse');
-            $table->index(['bibleversion_id', 'biblebook_id', 'chapter', 'verse']);
+            $table->index(['bibleversion_id', 'biblebook_id', 'chapter', 'verse'])->unique();
         });
     }
 
