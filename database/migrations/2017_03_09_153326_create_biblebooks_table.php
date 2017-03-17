@@ -16,6 +16,7 @@ class CreateBiblebooksTable extends Migration
         Schema::create('biblebooks', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
+            $table->unique('name');
         });
 
         // start inserting these static values ...

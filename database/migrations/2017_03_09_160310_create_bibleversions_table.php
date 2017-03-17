@@ -16,6 +16,7 @@ class CreateBibleversionsTable extends Migration
         Schema::create('bibleversions', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
+            $table->unique('name');
             $table->string('copyright');
         });
     }
