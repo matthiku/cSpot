@@ -60,7 +60,8 @@
 
 
                 {{-- DropDown Selection of all books --}}
-                <select class="custom-select float-right mr-2" onchange="showSpinner();location.href=location.pathname+'?version={{ Request::get('version') }}&book='+this.value">
+                <select class="custom-select float-right mr-2" 
+                        onchange="showSpinner();location.href=location.pathname+'?version={{ Request::get('version') }}&book='+this.value">
                     <option selected>Select Book...</option>
                     @foreach ($books as $book)
                         <option value="{{ $book->id }}"{{ $book->id == $bookID ? 'disabled' : '' }}>{{ 
@@ -69,7 +70,8 @@
                 </select>
 
                 {{-- DropDown selection of all available Versions --}}
-                <select class="custom-select float-right mr-2" onchange="showSpinner();location.href=location.pathname+'?version='+this.value">
+                <select class="custom-select float-right mr-2" 
+                        onchange="showSpinner();location.href=location.pathname+'?version='+this.value+'&book={{ $bookID }}&chapter={{ $chapter }}';">
                     <option selected>Select Version...</option>
                     @foreach ($versions as $version)
                         <option value="{{ $version->id }}"{{ $version->id == $versionID ? 'disabled' : '' }}>{{ 
