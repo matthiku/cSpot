@@ -31,12 +31,13 @@
             aria-controls="navbarBiblesText" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <a class="navbar-brand" href="#">{{ $bookName . ' ' . $chapter . ' (' . $versionName . ')' }}</a>
+        <a class="navbar-brand" href="{{ route('bibleversions.index') }}">{{ $bookName . ' ' . $chapter . ' (' . $versionName . ')' }}</a>
 
         <div class="collapse navbar-collapse" id="navbarBiblesText">
             <form class="form-inline my-2 my-lg-0 ml-auto">
             
                 {{-- Create a Drop-Down Selection for the chapters --}}
+                @if ($chapters>1)
                 <div class="dropdown float-right mr-2">
                     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Select Chapter...
@@ -55,6 +56,7 @@
                         </div>
                     </div>
                 </div>
+                @endif
 
 
                 {{-- DropDown Selection of all books --}}
@@ -87,15 +89,7 @@
 
         <div class="mw-60 ml-lg-3 pt-2">
 
-            @foreach ($verses as $verse)
-                <p class="mb-1"><sup>{{ $verse->verse }}</sup> 
-                    <span class="hover-show{{ Auth::user()->isEditor() ? ' editable-bible-text' : '' }}" id="verse-{{ $versionID.'-'.$bookID.'-'.$chapter.'-'.$verse->verse }}"
-                    >{{ $verse->text }}</span>
-                    @if (Auth::user()->isEditor())
-                        <span class="hover-only fa fa-pencil text-muted"></span>
-                    @endif
-                </p>
-            @endforeach
+            @include ('cspot.snippets.show_verses')
 
         </div>
 

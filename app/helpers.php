@@ -15,6 +15,9 @@ use App\Models\File;
 use App\Models\User;
 use App\Models\Team;
 use App\Models\DefaultItem;
+use App\Models\Bible;
+use App\Models\Biblebook;
+use App\Models\Bibleversion;
 
 use App\Events\CspotItemUpdated;
 
@@ -743,7 +746,7 @@ function restoreItem($id)
  * @param string $refString
  * @return array bible text from bibles.org
  */
-function getBibleTexts($refString) 
+function getBibleTexts($refString, $local=false) 
 {
     // regex pattern to match bible references (http://stackoverflow.com/questions/22254746/bible-verse-regex)
     $pattern = '/(\d*)\s*([a-z]+)\s*(\d+)(?::(\d+))?(\s*-\s*(\d+)(?:\s*([a-z]+)\s*(\d+))?(?::(\d+))?)?/i';
@@ -788,20 +791,41 @@ function getBibleTexts($refString)
             if ( $verseTo == '' || ! is_numeric($verseTo) ) {
                 $verseTo = $verseFr;
             } 
-            // execute the text search
-            $text = $bb->getBibleText($version[0], $book, $chapter, $verseFr, $verseTo);
 
-            // was the search successful? then it should contain at least one passage array
-            try {
-                $result = json_decode( $text->getContent())->response->search->result->passages ;
-                if ( count($result) > 0 ) {
-                    $text = $result[0];
-                    $text->text = str_ireplace( 'h3', 'strong', $text->text );
-                    $text->text = str_ireplace( 'h2', 'i', $text->text );
-                    $bibleTexts[] = $text;
+            // if bible version is stored locally, we can get it directly from our DB
+            if ($local) {
+                // first check version availability
+                $bvers = Bibleversion::where('name', $version[0])->first();
+                $bbook = Biblebook::where('name', $book)->first();
+                if ($bvers) {
+                    $verses  = Bible::with(['bibleversion', 'biblebook'])
+                                    ->where('bibleversion_id', $bvers->id)
+                                    ->where('biblebook_id', $bbook->id)
+                                    ->where('chapter',      $chapter)
+                                    ->where('verse', '>=', $verseFr)
+                                    ->where('verse', '<=', $verseTo)
+                                    ->get();
+                    if ($verses->count())
+                        $bibleTexts[] = $verses;
                 }
             }
-            catch(Exception $e) { echo 'failed to convert '.$text->__toString(); }
+
+            else {
+                // execute the WWW text search
+                $text = $bb->getBibleText($version[0], $book, $chapter, $verseFr, $verseTo);
+
+                // was the search successful? then it should contain at least one passage array
+                try {
+                    $result = json_decode( $text->getContent())->response->search->result->passages ;
+                    if ( count($result) > 0 ) {
+                        $text = $result[0];
+                        $text->text = str_ireplace( 'h3', 'strong', $text->text );
+                        $text->text = str_ireplace( 'h2', 'i', $text->text );
+                        $bibleTexts[] = $text;
+                    }
+                }
+                catch(Exception $e) { echo 'failed to convert '.$text->__toString(); }
+            }
         }
     }
     return $bibleTexts;

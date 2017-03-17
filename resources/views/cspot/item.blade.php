@@ -355,7 +355,11 @@
                 @foreach ($bibleTexts as $btext)
                     <h5>{{ $btext->display }} ({{ $btext->version_abbreviation }})</h5>
                     <div>
-                        {!! $btext->text !!}
+                        @if (isset($verses)  && count($verses))
+                            @include ('cspot.snippets.show_verses')
+                        @else 
+                            {!! $btext->text !!}
+                        @endif
                     </div>
                     <div class="small">
                         {!! $btext->copyright !!}

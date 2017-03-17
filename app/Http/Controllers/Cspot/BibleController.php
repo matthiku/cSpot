@@ -469,7 +469,9 @@ class BibleController extends Controller
     }
 
 
-
+    /**
+     * Show a single chapter, divided into verses (array)
+     */
     public function index(Request $request)
     {
         // if request doesn't contain version, we use the first available
@@ -494,11 +496,12 @@ class BibleController extends Controller
                         ->where('biblebook_id', $book)
                         ->where('chapter', $chapter)
                         ->get();
+
         if (!$verses->count())
             return redirect()->route('bibleversions.index')->with('status', 'The default version has no content yet! Select a another version!');
 
         // send the view
-        return view('admin.bible', [
+        return view('cspot.bible', [
                 'versions' => Bibleversion::get(),
                 'books'    => Biblebook::get(),
                 'chapters' => Biblebook::find($book)->chapters,

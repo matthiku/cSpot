@@ -458,10 +458,6 @@ class ItemController extends Controller
             $plan_id=$item->plan->id;
         $plan = Plan::find( $plan_id );
 
-        $seq_no = $item->seq_no;
-
-        $versionsEnum = json_decode(env('BIBLE_VERSIONS'));
-
         // If this is a song, find out the last time it was used, 
         // that is: Find the newest plan containing an item with this song
         $newestUsage = [];
@@ -471,29 +467,23 @@ class ItemController extends Controller
             $usageCount  = count($plans);
             $newestUsage = $plans->first();
         } 
-
-        // check if comment contains a bible reference, then get the bible text
-        $bibleTexts = getBibleTexts($item->comment);
-
-        // array of books of the bible
-        $bibleBooks = new BibleBooks();
         
-        // get list of items for this plan, each with a proper 'title'
+        // get list of all items for this plan, each with a proper 'title'
         $items = $item->plan->items->sortBy('seq_no')->all();
 
-        $songs = []; # send empty song array
         // send the form
         return view( 'cspot.item', [
+                'songs'        => [], 
                 'plan'         => $plan, 
-                'seq_no'       => $seq_no, 
                 'item'         => $item, 
+                'seq_no'       => $item->seq_no, 
                 'items'        => $items, 
-                'songs'        => $songs, 
-                'versionsEnum' => $versionsEnum,
                 'usageCount'   => $usageCount,
                 'newestUsage'  => $newestUsage,
-                'bibleBooks'   => $bibleBooks,
-                'bibleTexts'   => $bibleTexts,
+                'verses'       => getBibleTexts($item->comment, true),  // returns the bible text from DB  if comment contains bible refs
+                'bibleTexts'   => getBibleTexts($item->comment),        // returns the bible text from WWW if comment contains bible refs
+                'versionsEnum' => json_decode(env('BIBLE_VERSIONS')),   // array of all supported bible versions
+                'bibleBooks'   => new BibleBooks(),                     // array of bible books which chapter coutn and verse count
             ]);
     }
 
