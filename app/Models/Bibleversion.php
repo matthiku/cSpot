@@ -11,7 +11,7 @@ use Snap\BibleBooks\BibleBooks;
 class Bibleversion extends Model
 {
     // only opne field to fill out...
- 	protected $fillable = ['name'];
+ 	protected $fillable = ['name', 'copyright'];
 
 
  	// timestamps not needed

@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 
+use App\Http\Requests\StoreBibleversionRequest;
+
 use App\Models\Bibleversion;
 use App\Models\Bible;
 use Illuminate\Http\Request;
@@ -57,7 +59,7 @@ class BibleversionController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreBibleversionRequest $request)
     {
         $status = "You must provide a name!";
         // check if name was given
@@ -66,6 +68,7 @@ class BibleversionController extends Controller
                         ->with(['status' => $status, 'heading' => 'Add a new Bible Version Name']);                        
 
         Bibleversion::create($request->all());
+        
         $status = 'New Bible Version added: '.$request->name;
         return \Redirect::route($this->index)
                         ->with(['status' => $status]);
@@ -109,17 +112,11 @@ class BibleversionController extends Controller
      * @param  \App\Models\Bibleversion  $bibleversion
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(StoreBibleversionRequest $request, $id)
     {
-        //
-        $status = "You must provide a name!";
-        // check if name was given
-        if (! $request->has('name'))
-            return \Redirect::route($this->edit, ['id'=>$id])
-                        ->with(['status' => $status, 'heading' => 'Add a new Bible Version Name']);                        
-
         $bibleversion = Bibleversion::find($id);
         $bibleversion->name = $request->name;
+        $bibleversion->copyright = $request->copyright;
         $bibleversion->save();
 
         $status = 'New Bible Version updated: '.$request->name;

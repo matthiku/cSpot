@@ -33,6 +33,10 @@
        {!! Form::text('name'); !!}</p>
 
 
+    <p>{!! Form::label('copyright', 'Copyright'); !!} <i class="red">*</i><br>
+       {!! Form::textarea('copyright'); !!}</p>
+
+
 
     @if (isset($bibleversion))
         <p>{!! Form::submit('Update', ['class'=>'btn btn-outline-success submit-button disabled']); !!}</p>
