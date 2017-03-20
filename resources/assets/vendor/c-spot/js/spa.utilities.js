@@ -298,7 +298,7 @@ function identifyPartCode(str)
     patt = /^(Chorus)/i;
     if ( patt.test(str) ) {
         var num=str.split(' '); 
-        if (num.length>1 && num[1]=='2') {
+        if (num.length>1 && num[1].substr(0,1)=='2') {
             return 't'; 
         }
         return 'c';
