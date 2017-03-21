@@ -303,7 +303,7 @@ function identifyPartCode(str)
         }
         return 'c';
     }
-    patt = /^(Pre-Chorus)/i;
+    patt = /^(pre-chorus|prechorus|pre chorus)/i;
     if ( patt.test(str) ) {
         return 'p';
     }
