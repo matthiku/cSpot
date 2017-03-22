@@ -17,7 +17,7 @@
 
 	{{-- show action buttons 
 	--}}
-	<div class="cell-part-action m-1 p-1 float-right small hidden">
+	<div class="cell-part-action mx-1 p-1 float-right small hidden">
 
 		<span class="float-right for-existing-items">
 			<a href="javascript:void(0);" onclick="deleteOnSongText($(this).parents('.onsong-row'));" title="delete this part" 
