@@ -119,7 +119,7 @@
 					<a href="javascript:void(0);" onclick="saveNewOnSongText($(this).parents('.onsong-row'));" title="Save your changes"   tabindex=2 
 					  class="btn btn-sm btn-success"><big>&#128427;</big><span class="hidden-xs-down text-white px-1">Save</span></a>
 
-					<a href="javascript:void(0);" onclick="removeNewOnSongRow($(this).parents('.onsong-row'));" title="cancel" tabindex=3 
+					<a href="javascript:void(0);" onclick="removeNewOnSongRow($(this).parents('.onsong-row'), 'cancel');" title="cancel" tabindex=3 
 					  class="btn btn-sm btn-secondary my-1"><big>&#10007;</big><span class="hidden-xs-down"> Cancel </span></a>
 
 					<a href="javascript:void(0);" onclick="deleteOnSongText($(this).parents('.onsong-row'));" title="delete this part" tabindex=4 

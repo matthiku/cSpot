@@ -51044,7 +51044,7 @@ function findNextPossibleOnSongPart() {
 }
 
 
-function removeNewOnSongRow(row)
+function removeNewOnSongRow(row, cancel)
 {
     var onsong_id = $(row).data('onsong-id') || 0; // (undefined for new elements)
 
@@ -51078,6 +51078,22 @@ function removeNewOnSongRow(row)
     $(onsongArea).children('.show-onsong-text').show();
     $(onsongArea).children('.write-onsong-text').show();
     $(onsongArea).children('textarea').hide();
+    
+    // if the user was editing an existing song part but aborted 
+    //      the action, we need to reset the textarea content
+    if (cancel=='cancel') {
+        // NOTE: val()  is the content as perhaps modified by the user 
+        //       html() is the original content that will not change by edits in the textarea
+        $(onsongArea).children('.plaintext-editor').val($(onsongArea).children('.plaintext-editor').html());
+        $(onsongArea).children('.chords-over-lyrics-editor').val($(onsongArea).children('.chords-over-lyrics-editor').html());
+    }
+    
+    // if the user was editing an existing song part and the result was 
+    //      saved successfully, we need to also update the original values
+    if (cancel=='save') {
+        $(onsongArea).children('.plaintext-editor').html($(onsongArea).children('.plaintext-editor').val());
+        $(onsongArea).children('.chords-over-lyrics-editor').html($(onsongArea).children('.chords-over-lyrics-editor').val());
+    }
 
     $('.show-onsong-text').addClass('link');
 
@@ -51529,7 +51545,7 @@ function postProcessingOnSongSubmission(row, data, textarea, onsong_id, code, cd
     }
 
     // remove the editor hints and buttons
-    removeNewOnSongRow(row); 
+    removeNewOnSongRow(row, 'save'); 
 
     // enable ADD button
     $('.insertNewOnSongRow-link').show();
