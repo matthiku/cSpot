@@ -88,7 +88,7 @@
 
 					<td>
 						@if ($versecount>0)
-							<a class="btn btn-secondary btn-sm" title="Show Bible Text" href='{{ url('admin/bibles?version='.$vers->id.'&book='.$biblebook->id) }}'>
+							<a class="btn btn-secondary btn-sm" title="Show Bible Text (ch. 1)" href='{{ url('admin/bibles?version='.$vers->id.'&book='.$biblebook->id) }}'>
 								{{ $versecount }}</a>
 						@else
 							{{ $versecount }}
@@ -98,7 +98,7 @@
 
 					<td>
 						@if ($versecount>0)
-							<a class="btn btn-secondary btn-sm" title="Show Bible Text" href='{{ url('admin/bibles?version='.$vers->id.'&book='.$biblebook->id) }}'>
+							<a class="btn btn-secondary btn-sm" title="Show Bible Text (ch. 1)" href='{{ url('admin/bibles?version='.$vers->id.'&book='.$biblebook->id) }}'>
 								{{ $biblebook->chapters }}</a>
 						@else
 							{{ $biblebook->chapters }}

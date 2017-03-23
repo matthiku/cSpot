@@ -63,7 +63,7 @@
 					@endif
 
 					<td>@if ($verseCount>0)
-							<a class="btn btn-secondary btn-sm" title="Show Books in this Version" href='{{ url('admin/biblebooks?version='.$bibleversion->id) }}'>
+							<a class="btn btn-secondary" title="Show Books in this Version" href='{{ url('admin/biblebooks?version='.$bibleversion->id) }}'>
 								{{ $booksCount }}
 							</a>
 			                {{-- DropDown Selection of all books --}}
@@ -82,7 +82,7 @@
 					</td>
 
 					<td>@if ($verseCount>0)
-							<a class="btn btn-secondary btn-sm" title="Show Books in this Version" href='{{ url('admin/biblebooks?version='.$bibleversion->id) }}'>
+							<a class="btn btn-secondary" title="Show Books in this Version" href='{{ url('admin/biblebooks?version='.$bibleversion->id) }}'>
 								{{ $verseCount }}
 							</a>
 							</a>
@@ -93,7 +93,7 @@
 
 					<td class="nowrap">
 						@if( Auth::user()->isEditor() )
-							<a class="btn btn-outline-primary btn-sm" title="Edit" href='{{ url('admin/bibleversions/'.$bibleversion->id) }}/edit'><i class="fa fa-pencil"></i></a>
+							<a class="btn btn-outline-primary" title="Edit" href='{{ url('admin/bibleversions/'.$bibleversion->id) }}/edit'><i class="fa fa-pencil"></i></a>
 							@if ($verseCount==0)
 								<a class="btn btn-danger btn-sm" title="Delete!" href='{{ url('admin/bibleversions/'.$bibleversion->id) }}/delete'><i class="fa fa-trash"></i></a>
 							@endif

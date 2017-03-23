@@ -277,7 +277,7 @@ function processOnSongFile(data)
 function identifyPartCode(str)
 {
     var patt = /^(coda|end)/i;
-    if ( patt.test(str) ) 
+    if ( patt.test(str)  &&  str.length < 10 ) 
         return 'e';
 
     patt = /^(Verse)/i;

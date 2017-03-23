@@ -86,11 +86,13 @@
 	</div>
 
 
-	<div class="small col-12 mt-2 px-0{{ $partCodeMissing ? '' : ' hidden'}} missing-parts-help-text">
-		<span class="text-danger big">Warning! </span>This sequence contains code(s)<span 
-			  class="bg-success mx-1 px-1 rounded text-white">{{ substr($missingCodes, 0, strlen($missingCodes)-2) }}</span>
-			  for which the corresponding song parts (below) are missing!
-	</div>
+	@if ($song->onsongs->count())
+		<div class="small col-12 mt-2 px-0{{ $partCodeMissing ? '' : ' hidden'}} missing-parts-help-text">
+			<span class="text-danger big">Warning! </span>This sequence contains code(s)<span 
+				  class="bg-success mx-1 px-1 rounded text-white">{{ substr($missingCodes, 0, strlen($missingCodes)-2) }}</span>
+				  for which the corresponding song parts (below) are missing!
+		</div>
+	@endif
 
 
 	<div class="small col-12 mt-2 px-0{{ $song->onsongs->count() ? ' hidden' : '' }} no-onsong-sequence-help-text">
