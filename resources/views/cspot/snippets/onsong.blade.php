@@ -54,9 +54,13 @@
 				title="drag codes from the red drop-zone into the waste bin to remove them from the sequence">
 				<big>&#128465;</big> Bin</span>
 
+			<span id="clear-sequence-btn" class="btn btn-sm btn-outline-danger link align-top" onclick="clearSequenceArea(this)" 
+				title="clear the whole the sequence (you still have to save this!)">
+				<big>&#128497;</big> Clear Seq.</span>
+
 			<span id="submit-sequence-button" class="btn btn-sm bg-success text-white align-text-top link hidden ml-2" onclick="submitChangedSequence();" 
 			   		title="submit new or changed sequence">
-			   <big>&#128427; </big> Confirm<span class="hidden-lg-down"> new Sequence</span>!</span>
+			   <big>&#128427; </big> Confirm!</span>
 		</span>
 
 		<span id="create-default-seq-button" class="p-1 ml-2{{ $song->sequence ? ' hidden' : '' }}">
@@ -78,7 +82,7 @@
 		<br>
 		To <span class="text-primary">remove</span> a part from the sequence, drag it from the 
 			<span class="bg-danger text-white rounded px-1">sequence</span> into the 
-			<span class="bg-inverse text-white rounded px-1">bin</span>.
+			<span class="bg-inverse text-white rounded px-1">bin</span>. To remove all, click on the "Clear Seq" button.
 		<br>
 		<strong>Note:</strong> You can't delete a song part from the list below while it's still listed in the
 			<span class="bg-danger text-white rounded px-1">sequence</span> above!
@@ -100,6 +104,16 @@
 		}
 		$('#submit-sequence-button').show();
 	}
+
+
+	// remove all part codes from the sequence area
+	function clearSequenceArea(that) {
+		$('#sequence-drop-zone').html('');
+		$(that).hide();
+		$('#create-default-seq-button').show();
+		$('#submit-sequence-button').show();
+	}
+
 
 	// auto-create default sequence (works only for simple songs without bridge)
 	function createDefaultSequence() {
@@ -127,6 +141,7 @@
 
 	    // hide the button who called this function
 		$('#create-default-seq-button').hide();	
+		$('#clear-sequence-btn').show();
 
 		adaptMinWidthOfDropZone($('#sequence-drop-zone'));
 	}
@@ -150,6 +165,7 @@
 		$($('.editable-song-field > form > button')[0]).click();
 		// hide the 'Save' button again
 		$('#submit-sequence-button').hide();		
+		$('#clear-sequence-btn').show();
 	}
 
 	function getPartsSequenceListFromDragZone() {
@@ -180,8 +196,9 @@
 	$("#sequence-drop-zone" ).droppable({
 	  	drop: 
 		  	function(event, ui) { 
-		  		// hide auto-creation button now
+		  		// hide auto-creation button now but make sure Clear btn is visible
 		  		$('#create-default-seq-button').hide();
+				$('#clear-sequence-btn').show();
 
 		  		// no cloning for items already in this zone
 		  		if (ui.draggable[0].classList.contains('item'))
@@ -242,6 +259,7 @@
 		  		setTimeout( function() {
 	            	if ( ! $('#sequence-drop-zone').children().length )
 		  				$('#create-default-seq-button').show();
+		  				$('#clear-sequence-btn').hide();
 		  		}, 900);
 		  	},
 	  	activate:
