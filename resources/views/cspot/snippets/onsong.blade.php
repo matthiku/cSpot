@@ -33,10 +33,17 @@
 	<div id="song-parts-sequence" class="col-12{{ $song->onsongs->count() ? '' : ' hidden' }}">
 
 		<span id="song-parts-drag-zone" class="pt-1">
+			@php 
+				$partCodeMissing = false; 
+				$missingCodes  = '';
+				$existingCodes = '';
+			@endphp
 			@foreach ($song->onsongs as $onsong)
-				@if ($onsong->song_part->code!='m')
+				@php $partCode = $onsong->song_part->code; @endphp
+				@if ($partCode != 'm')
 					<span class="p-1 rounded edit-chords partcodes-draggable bg-warning text-white mr-1" 
-						id="partcodes-draggable-{{ $onsong->song_part->code }}">{{ $onsong->song_part->code }}</span>
+						id="partcodes-draggable-{{ $partCode }}">{{ $partCode }}</span>
+					@php $existingCodes .= $partCode . ', '; @endphp
 				@endif
 			@endforeach
 		</span>
@@ -46,6 +53,13 @@
 				@if ($song->sequence)
 					@foreach (explode(',', $song->sequence) as $seq)
 						<span class="p-1 rounded edit-chords item bg-success text-white mr-1" id="partcodes-sequence-{{ $seq }}">{{ $seq }}</span>
+						@php 
+							if (strpos($existingCodes, $seq) === false) {
+								$partCodeMissing = true; 
+								if (strpos($missingCodes, $seq) === false)
+									$missingCodes .= $seq . ', ';
+							}
+						@endphp
 					@endforeach
 				@endif
 			</span>
@@ -72,9 +86,17 @@
 	</div>
 
 
+	<div class="small col-12 mt-2 px-0{{ $partCodeMissing ? '' : ' hidden'}} missing-parts-help-text">
+		<span class="text-danger big">Warning! </span>This sequence contains code(s)<span 
+			  class="bg-success mx-1 px-1 rounded text-white">{{ substr($missingCodes, 0, strlen($missingCodes)-2) }}</span>
+			  for which the corresponding song parts (below) are missing!
+	</div>
+
+
 	<div class="small col-12 mt-2 px-0{{ $song->onsongs->count() ? ' hidden' : '' }} no-onsong-sequence-help-text">
 		Start adding OnSong parts in order to be able to create the sequence!
 	</div>
+
 	<div class="small col-12 mt-2 px-0 hidden sequence-help-text">
 		To <span class="text-primary">create/modify</span> the sequence, drag the 
 			<span class="bg-warning text-white rounded px-1">part</span> <span class="bg-warning text-white rounded px-1">codes</span> and drop them into the 
