@@ -92,6 +92,12 @@
 				  class="bg-success mx-1 px-1 rounded text-white">{{ substr($missingCodes, 0, strlen($missingCodes)-2) }}</span>
 				  for which the corresponding song parts (below) are missing!
 		</div>
+	@else
+		<div class="small col-12 mt-2 px-0 hidden missing-parts-help-text">
+			<span class="text-danger big">Warning! </span>This sequence contains code(s)<span 
+				  class="bg-success mx-1 px-1 rounded text-white show-missing-codes"></span>
+				  for which the corresponding song parts (below) are missing!
+		</div>
 	@endif
 
 
@@ -136,6 +142,7 @@
 		$(that).hide();
 		$('#create-default-seq-button').show();
 		$('#submit-sequence-button').show();
+		$('.missing-parts-help-text').hide();
 	}
 
 

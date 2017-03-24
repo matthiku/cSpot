@@ -50564,7 +50564,8 @@ function setCurrentPageAsStartupPage(that)
 
 /* Record a user's availability for a certain plan
  * (called when user clicks on the 'available' icon on plans.blade.php) */
-function userAvailableForPlan(that, plan_id) {
+function userAvailableForPlan(that, plan_id) 
+{
     // make sure the tooltip is hidden now
     $(that).parent().parent().tooltip('hide')
     $('#user-available-for-plan-id-'+plan_id).html( cSpot.const.waitspinner );
@@ -50599,7 +50600,8 @@ function userAvailableForPlan(that, plan_id) {
 \*/
 
 
-function transposeSongChords() {
+function transposeSongChords() 
+{
     var oldkey = $('#transpose-oldkey').val();
     var newkey = $('#transpose-newkey').val();
     if (oldkey=='SelectOldKey') {
@@ -50757,6 +50759,9 @@ function processOnSongFile(data)
     var onsong = data.split('\n');    
     var hdr, partName='m', verse='', tmp;
 
+    // monitor list of created parts by their code
+    var existingCodes='';
+
     // if response was empty, warn the user and stop
     if (!onsong.length  ||  !data.trim() ) {
         $('.show-onsong-upload-hint')
@@ -50782,6 +50787,7 @@ function processOnSongFile(data)
         if (hdr) {
             if (verse) {
                 writePartCodeAndSaveVerse(partName, verse);
+                existingCodes += partName +',';
                 verse = '';
             }
             partName = hdr;
@@ -50795,8 +50801,14 @@ function processOnSongFile(data)
         }
         verse += onsong[i]+"\n";
     }
-    if (verse)
+    if (verse) {
         writePartCodeAndSaveVerse(partName, verse);
+        existingCodes += partName +',';
+    }
+
+    // find out if there are part codes in the sequence that do no exist as new OnSong parts
+    identifyMissingParts(existingCodes);
+
 
     $('.onsong-import-buttons').hide();
     $('.show-onsong-upload-hint')
@@ -50852,6 +50864,23 @@ function identifyPartCode(str)
 
     return '';
 }
+
+
+// find out if there are part codes in the sequence that do no exist as new OnSong parts
+function identifyMissingParts(existingCodes)
+{
+    var missingCodes='';
+    var seq = cSpot.item.song.sequence.split(',');
+    for (var i = 0; i < seq.length; i++) {
+        if ( existingCodes.indexOf(seq[i]) < 0 )
+            missingCodes += seq[i] + ', ';
+    }
+    if (missingCodes) {
+        $('.missing-parts-help-text').show();
+        $('.show-missing-codes').text(missingCodes);
+    }
+}
+
 
 // this function emulates the manual adding of onsong parts
 function writePartCodeAndSaveVerse(partName, text)
