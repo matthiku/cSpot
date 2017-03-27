@@ -13101,6 +13101,9 @@ body {
 .bg-gray, .bg-grey {
     background-color: #ccc !important;
 }
+.cursor-deny {
+    cursor: not-allowed;
+}
 red {
     color: red !important;
 }
@@ -13347,6 +13350,10 @@ div.scroll-menu {
     display: inline-block;
 }
 
+
+.bible-text-present-parts {
+    margin-bottom: .1rem;
+}
 
 .edit-chords {
     cursor: move;

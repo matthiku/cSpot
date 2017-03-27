@@ -276,7 +276,7 @@
 
             {{-- configuration menu 
             --}}
-            <div class="btn-group dropup">
+            <div class="btn-group dropup presentation-config-dropup">
 
                 <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
                      id="presentConfigDropUpMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -289,7 +289,17 @@
                             title="Reset all locally defined formatting values (reload the page then in order to make it have an effect!) ">
                         &#128472; Reset all locally defined formatting values</a>
 
-                    <h6 class="dropdown-header">Show Configuration</h6>
+                    <h6 class="dropdown-header">Presentation Configuration:</h6>
+
+                    <p class="dropdown-item mb-0">Number of verses per slide:
+                        <span class="bg-info text-white cursor-deny px-1 rounded decrease-number-of-verses" 
+                                title="Increase number of verses to be shown per slide" 
+                                onclick="changeNumberOfVersesPerSlide('decrease')">&#10134;</span>
+                        <span id="config-ShowVersCount" class="bg-inverse text-white px-2 rounded">1</span>
+                        <span class="bg-info text-white link px-1 rounded increase-number-of-verses" 
+                                title="Reduce number of verses to be shown per slide" 
+                                onclick="changeNumberOfVersesPerSlide('increase')">&#10133;</span>
+                    </p>
 
                     <a      href="#" class="dropdown-item" onclick="changeBlankSlidesConfig()" 
                             title="Show empty slides between plan items">
@@ -622,7 +632,11 @@
     <script>        
         // make type of presentation globally available
         $(document).ready(function() {
-            cSpot.presentationType = 'lyrics';
+            @if ($bibleTexts)
+                cSpot.presentationType = 'verses';
+            @else
+                cSpot.presentationType = 'lyrics';
+            @endif
 
             // control the activation of a blank screen
             var screenBlank = true;

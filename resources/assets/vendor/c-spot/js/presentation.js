@@ -621,7 +621,7 @@ function findVerse(element, index, array)
 */
 function appendBibleText(type, text, verno, show)
 {
-    // do not add the same verse twise...
+    // do not add the same verse twice...
     if ( $('#bible-progress-'+verno ).length )
         return;
 
@@ -1351,6 +1351,7 @@ function advancePresentation(direction)
 
     // we are showing a bible text
     else if ($('.bible-text-present').length>0) {
+        // array of all bible verses
         seq = $('.bible-progress-indicator');
         // check if there is a bible text
         if (seq.length===0) {
@@ -1715,31 +1716,54 @@ function slidesShow(what)
     }
 }
 
+/* loop through all bible verses and make the requested one visible
+ */
 function bibleShow(what)
 {
     var parts = $('.bible-text-present-parts');
     var indic = $('.bible-progress-indicator');
     var found = -1;
+
+    // check if there is a setting to show more than one bible verse at a time
+    var howMany = localStorage.getItem('config-ShowVersCount') || 1;
+
     // loop through all bible verses until number 'what' is found...
     for (var i=0; i<parts.length; i++) 
     {
+        // is this the next verse to be shown?
         if ($(parts[i]).attr('id') == what)
         {
             found = i;
             $(parts[i]).show();
             $(indic[i]).addClass('bg-danger');
             $(indic[i]).data('showStatus', 'done');
+            // check if we need to show more than one verse per slide
+            if (howMany > 1) {
+                // also show the previous verses (if any) if configured
+                for (var j = i+1; (j < parts.length  &&  howMany > 1); j++) {
+                    $(parts[j]).show();
+                    $(indic[j]).addClass('bg-danger');
+                    $(indic[j]).data('showStatus', 'done');
+                    howMany -= 1;
+                }
+                // sync with the outer loop
+                i = j;
+            }
         } 
+        // otherwise, if the target verse was already found,
+        //      mark the other (future) verses as unshown and hide them
         else if ( found>=0 ) {
             if ($(indic[i]).data())
                 $(indic[i]).data('showStatus', 'unshown');
             $(parts[i]).hide();
         }
-        else 
+        // hide all previous verses
+        else
         {
             $(parts[i]).hide();
             $(indic[i]).removeClass('bg-danger');
             $(indic[i]).data('showStatus', 'done');
+            console.log('hiding previous BV slide '+i);
         }
     }
 }
@@ -1938,11 +1962,16 @@ function getLocalConfiguration()
     changeCheckboxIcon('#config-OfflineModeItem', cSpot.presentation.useOfflineMode);
 
 
-    // OnSong "chords-over-lyrics" import: user-defined tab-size (default is 4)
-    var howManyVersesPerSlide = localStorage.getItem('config-ShowVersCount');
-    // if the value in LocalStorage was set to 'true', then we activate the checkbox:
-    if (howManyVersesPerSlide>0 && howManyVersesPerSlide<6) {
-        $('#config-ShowVersCount').val( howManyVersesPerSlide );
+    // Define how many bible verses should be shown per slide (default is 1)
+    cSpot.presentation.howManyVersesPerSlide = localStorage.getItem('config-ShowVersCount') || 1;
+    // reflect this in the navbar
+    var vps = cSpot.presentation.howManyVersesPerSlide;
+    if (vps > 0  && vps < 6) {
+        $('#config-ShowVersCount').text( vps );
+        if (vps > 1) {
+            $('.decrease-number-of-verses').addClass('link');
+            $('.decrease-number-of-verses').removeClass('cursor-deny');
+        }
     }
 
     applyLocallyDefinedTextFormatting();
@@ -2076,6 +2105,39 @@ function changeFontSize(selectorList, how) {
             ;;;console.log('LocalStorage for "'+selector+'" was set to "'+localStorage.getItem('format_'+selector+'_font-size')+'"');
         }
     });
+}
+
+
+/**
+ * Increase or decrease number of bible verses per slide
+ */
+function changeNumberOfVersesPerSlide(how)
+{
+    var curVal = 1 * $('#config-ShowVersCount').text();
+
+    if (how == 'increase')
+        curVal += 1;
+
+    if (curVal > 1  &&  how == 'decrease') {
+        curVal -= 1;
+        if (curVal > 1) {
+            $('.decrease-number-of-verses').addClass('link');
+            $('.decrease-number-of-verses').removeClass('cursor-deny');
+        } else {
+            $('.decrease-number-of-verses').removeClass('link');
+            $('.decrease-number-of-verses').addClass('cursor-deny');        
+        }
+    }
+
+    localStorage.setItem('config-ShowVersCount', curVal);
+    ;;;console.log('LocalStorage was set to "'+localStorage.getItem('config-ShowVersCount')+'"');
+
+    $('#config-ShowVersCount').text(curVal);
+    cSpot.presentation.howManyVersesPerSlide = curVal;
+
+    // refresh the page in order to show the new amount of verses
+    if (cSpot.presentation.type == 'verses')
+        location.reload();
 }
 
 
