@@ -69,7 +69,7 @@
                                     title="Show (future) plans where you are leader or teacher">
                                 &nbsp; <i class="fa fa-question-circle"></i></a>
                             <a href="{{ url('cspot/plans') }}" class="link">
-                                My Services/Events
+                                Your Services/Events
                             </a>
                         </span>
 
@@ -85,6 +85,17 @@
                                 <i class="fa fa-btn fa-music fa-lg float-right hidden-md-up"></i>
                             </a>
                         </span>
+
+                        @if (Auth::user()->isAdmin())
+                            <span class="btn btn-outline-success md-full mr-2" 
+                                    title="Available Bible versions stored on the server: {{ DB::table('bibleversions')->select('name')->get()->implode('name', ',') }}">
+                                <a href="{{ url('admin/bibles') }}">
+                                    <i class="fa fa-btn fa-book fa-lg float-left"> </i>
+                                    &nbsp; Bibles ({{ DB::table('bibleversions')->count() }})
+                                    <i class="fa fa-btn fa-book fa-lg float-right hidden-md-up"></i>
+                                </a>
+                            </span>
+                        @endif
 
                         <button class="btn btn-outline-primary md-full mr-2">
                             <a href="{{ url('cspot/songs?only=slides') }}">
