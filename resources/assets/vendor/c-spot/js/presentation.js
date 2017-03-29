@@ -112,6 +112,13 @@ function preparePresentation()
     getLocalConfiguration()
 
 
+
+    if ($('.bible-text-present').length) {
+        // all is set and we can show the first verse
+        advancePresentation(); 
+    }
+
+
     // check if we have a predefined sequence from the DB
     var sequence = ($('#sequence').text()).split(',');
 
@@ -376,11 +383,6 @@ function reFormatBibleText()
     else if ( verse !== undefined  &&  verse.length > 2  &&  $.isNumeric(verno) ) {
         appendBibleText( 'p', verse, verno, false ) 
     }
-
-
-    // all is set and we can show the first verse
-    advancePresentation();
-
 }
 /* create array of numbers taken from the arguments 'from' and 'to' */
 function updateVerseList(fr,to)
@@ -1724,8 +1726,24 @@ function bibleShow(what)
     var indic = $('.bible-progress-indicator');
     var found = -1;
 
+    if (! parts.length) return; // only run this if there are verses to show
+
+    if (!what) { // this is used to re-draw the verses slides 
+        what = $(parts[0]).attr('id');
+        $(parts).hide();
+        $(indic).data('showStatus', 'unshown');
+    }
+
+    // remove current indicator colours
+    $(indic).removeClass('bg-danger')
+
     // check if there is a setting to show more than one bible verse at a time
     var howMany = localStorage.getItem('config-ShowVersCount') || 1;
+
+    // how much space do we have to show verses?
+    var availHeight = $('.app-content').height();
+    // counter to collect the heights of all visible verses
+    var usedHeight = $('#bible-text-ref-header').height(); 
 
     // loop through all bible verses until number 'what' is found...
     for (var i=0; i<parts.length; i++) 
@@ -1737,14 +1755,20 @@ function bibleShow(what)
             $(parts[i]).show();
             $(indic[i]).addClass('bg-danger');
             $(indic[i]).data('showStatus', 'done');
+            console.log('showing BV slide '+i);
+            usedHeight += $(parts[i]).height();
             // check if we need to show more than one verse per slide
             if (howMany > 1) {
                 // also show the previous verses (if any) if configured
                 for (var j = i+1; (j < parts.length  &&  howMany > 1); j++) {
+                    usedHeight += $(parts[i]).height();
+                    if (usedHeight > availHeight)  // don't show another verse if we would exceed the available height
+                        break;
                     $(parts[j]).show();
                     $(indic[j]).addClass('bg-danger');
                     $(indic[j]).data('showStatus', 'done');
                     howMany -= 1;
+                    console.log('showing BV slide '+j);
                 }
                 // sync with the outer loop
                 i = j;
@@ -1756,6 +1780,7 @@ function bibleShow(what)
             if ($(indic[i]).data())
                 $(indic[i]).data('showStatus', 'unshown');
             $(parts[i]).hide();
+            console.log('hiding future BV slide '+i);
         }
         // hide all previous verses
         else
@@ -2105,6 +2130,9 @@ function changeFontSize(selectorList, how) {
             ;;;console.log('LocalStorage for "'+selector+'" was set to "'+localStorage.getItem('format_'+selector+'_font-size')+'"');
         }
     });
+
+    // redraw the slide in order to show the new amount of verses
+    bibleShow();   // will do nothing if we are not on a scriptures slide
 }
 
 
@@ -2135,9 +2163,8 @@ function changeNumberOfVersesPerSlide(how)
     $('#config-ShowVersCount').text(curVal);
     cSpot.presentation.howManyVersesPerSlide = curVal;
 
-    // refresh the page in order to show the new amount of verses
-    if (cSpot.presentation.type == 'verses')
-        location.reload();
+    // redraw the slide in order to show the new amount of verses
+    bibleShow();   // will do nothing if we are not on a scriptures slide
 }
 
 

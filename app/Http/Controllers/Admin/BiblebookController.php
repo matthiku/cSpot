@@ -23,6 +23,16 @@ class BiblebookController extends Controller
     protected $create   = 'biblebooks.create';
 
 
+    /**
+     * Authentication
+     */
+    public function __construct() {
+        $this->middleware('auth');
+        $this->middleware('role:editor', ['except' => ['index', 'show']]);
+        $this->middleware('role:administrator', ['only' => ['destroy', 'create']]);
+    }
+
+
 
     /**
      * Display a listing of the resource.

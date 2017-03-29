@@ -10,7 +10,7 @@
 @section('content')
 
 
-    <div class="row">
+    <div class="row mx-0">
         <div class="container signin-body">
 
             @include('layouts.flashing')
