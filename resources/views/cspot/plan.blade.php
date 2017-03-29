@@ -229,6 +229,9 @@
 
         @if (Auth::user()->isEditor())
 
+
+            {{-- Event Type and Subtitle 
+            --}}
             <div class="col-xl-4 col-lg-6">
                 <div class="card-block narrower bg-muted mb-1">
 
@@ -284,11 +287,13 @@
                 </div>
             </div>
 
-        
+
+            {{-- Date, Start- and End times 
+            --}}
             <div class="col-xl-3 col-lg-6 mb-1">
                 <div class="card-block narrower bg-muted">
                     <div class="form-group mb-0 text-center" id="editPlanDate">
-                        {!! Form::label('date', 'Event Date and Times: ', ['class'=>'d-block']); !!}
+                        {!! Form::label('date', 'Date and Times: ', ['class'=>'d-block']); !!}
                         @if ( isset($plan) )
                             {!! Form::text( 
                                 'date', $plan->date, 
@@ -329,11 +334,12 @@
                             $($('#editPlanDate').children('input')[0]).attr('id', 'plan-date');
                             $($('#editPlanServiceTimes').children('input')[0]).attr('id', 'plan-date-start-time');
                             $($('#editPlanServiceTimes').children('input')[1]).attr('id', 'plan-date-end-time');
-
+                            
                             // set width of time input fields
                             $('#plan-date').css('width', '10rem');
                             $('#plan-date-start-time').css('width', '4rem');
                             $('#plan-date-end-time'  ).css('width', '4rem');
+                            $('#editPlanServiceTimes').children('input').addClass('center');
 
                             // limit plan date to date (without time)
                             $('#plan-date').val($('#plan-date').val().substr(0,10));
@@ -370,6 +376,18 @@
                                     enableSaveButton(elem);
                                 },
                             });
+
+                            // preserve the initial value
+                            var eventEndTime = $('#plan-date-start-time').val().substr(0,5);
+                            // when chaning start time and endtime wasn't set, then adapt the endtime accordingly
+                            $('#plan-date-start-time').on('change', function() {
+                                if (eventEndTime=='00:00')
+                                    $('#plan-date-end-time').val();
+                            });
+
+                            $(document).ready(function() {
+                                $('#plan-date').addClass('center');                                
+                            })
                         </script>
                     </div>
                 </div>                    
