@@ -28,6 +28,14 @@ class BibleController extends Controller
 {
 
 
+    /**
+     * Authentication
+     */
+    public function __construct() {
+        $this->middleware('auth');
+    }
+
+
     protected $booksShort = array(
         'genesis' => 'gen',
         'exodus' => 'ex',

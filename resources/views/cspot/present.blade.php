@@ -117,17 +117,7 @@
                 @endif
 
                 @if ($bibleTexts)
-                    <div class="bible-text-present" id="bible-text-present-all" 
-                         style="position: absolute; left: auto; top: 0px; width: 100%; display: none;" >
-                        @foreach ($bibleTexts as $btext)
-                            <p class="item-comment" id="item-comment" style="display: none;" >{{ $item->comment }}</p>
-                            <p class="bible-text-present-ref" style="display: none;" >{{ $btext->display }}</p>
-                            <h1>{{ $btext->display }}</h1> 
-                            <div class="bible-text-present" style="display: none;" >{!! $btext->text !!}</div>
-                            <!-- {!! $btext->copyright !!} -->
-                            <hr>
-                        @endforeach
-                    </div>
+                    @include('cspot.snippets.show_bibletext', ['positioned' => 'yes'])
                 @endif
 
             </div>
@@ -145,17 +135,7 @@
         {{-- ========================== Bibletexts ====================
         --}}
         @elseif ( $bibleTexts )
-
-            <div class="bible-text-present" id="bible-text-present-all" style="display: none;" >
-                @foreach ($bibleTexts as $btext)
-                    <p class="item-comment" id="item-comment" style="display: none;" >{{ $item->comment }}</p>
-                    <p class="bible-text-present-ref" style="display: none;" >{{ $btext->display }}</p>
-                    <h1>{{ $btext->display }}</h1> 
-                    <div class="bible-text-present" style="display: none;" >{!! $btext->text !!}</div>
-                    <!-- {!! $btext->copyright !!} -->
-                    <hr>
-                @endforeach
-            </div>
+            @include('cspot.snippets.show_bibletext', ['positioned' => 'no'])
 
 
         {{-- ========================== Announcements Slide ====================

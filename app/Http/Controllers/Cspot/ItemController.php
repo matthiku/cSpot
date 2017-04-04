@@ -380,13 +380,14 @@ class ItemController extends Controller
                 $present = 'chords';
 
             return view('cspot.'.$present, [
-                    'item'          => $item,
-                    'events'        => $events,
-                    'versionsEnum'  => json_decode(env('BIBLE_VERSIONS')),
-                    'type'          => $present,                                        // what kind of item presentation is requested
-                    'bibleTexts'    => getBibleTexts($item->comment),                   // the bible text if there was any reference in the comment field of the item
-                    'items'         => $item->plan->items->sortBy('seq_no')->all(),     // all items of the plan to which this item belongs      
-                    'onSongChords'  => $item->song ? $item->song->onSongChords() : []   // prepare OnSong formatted lyrics and chords elements
+                    'item'         => $item,
+                    'events'       => $events,
+                    'versionsEnum' => json_decode(env('BIBLE_VERSIONS')),
+                    'type'         => $present,                                      // what kind of item presentation is requested
+                    'verses'       => getBibleTexts($item->comment, true),           // returns the bible text from our own DB if comment contains bible refs
+                    'bibleTexts'   => getBibleTexts($item->comment, false),          // the bible text if there was any reference in the comment field of the item
+                    'items'        => $item->plan->items->sortBy('seq_no')->all(),   // all items of the plan to which this item belongs      
+                    'onSongChords' => $item->song ? $item->song->onSongChords() : [] // prepare OnSong formatted lyrics and chords elements
                 ]);
         }
 
@@ -480,7 +481,7 @@ class ItemController extends Controller
                 'items'        => $items, 
                 'usageCount'   => $usageCount,
                 'newestUsage'  => $newestUsage,
-                'verses'       => getBibleTexts($item->comment, true),  // returns the bible text from DB  if comment contains bible refs
+                'verses'       => getBibleTexts($item->comment, true),  // returns the bible text from our own DB if comment contains bible refs
                 'bibleTexts'   => getBibleTexts($item->comment),        // returns the bible text from WWW if comment contains bible refs
                 'versionsEnum' => json_decode(env('BIBLE_VERSIONS')),   // array of all supported bible versions
                 'bibleBooks'   => new BibleBooks(),                     // array of bible books which chapter coutn and verse count
