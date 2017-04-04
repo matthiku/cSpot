@@ -50595,6 +50595,49 @@ function userAvailableForPlan(that, plan_id)
 
 
 
+/* When creating a new plan, provide list of plans for a certain date
+*/
+function getListOfPlansByDate()
+{
+    // wait for cSpot to get ready
+    if (cSpot.routes === undefined) {
+        console.log('waiting for c-SPOT to get ready');
+        setTimeout( getListOfPlansByDate, 500);
+        return;
+    }
+    // do nothing if we have no route
+    if (cSpot.routes.apiGetPlanList === undefined) return;
+
+    var planDate = $('#plan-date').val();
+    var momentDt = moment(planDate, "YYYY-MM-DD");
+
+    // do nothing if we have no valid date set
+    if (! momentDt._isAMomentObject) return
+
+    var planDtFm = momentDt.format("dddd, Do MMMM YYYY");
+    var elem = $('.show-list-of-plans-for-this-day');
+    elem.text('Searching for existing events on ' + planDtFm + ' ...');
+
+    $.ajax({
+        url:    cSpot.routes.apiGetPlanList, 
+        method: 'GET',
+        data: { date: planDate}
+    })
+    .done(function(data) {
+        ;;;console.log(data);
+        if (data.length) {
+            elem.html('<h6>'+data.length + ' existing plan'+ (data.length>1 ? '(s)' : '') + ' found for '+ planDtFm +':</h6>');
+            for (var i = 0; i < data.length; i++) {
+                elem.append('<strong>' + data[i].date.split(' ')[1].substr(0,5) + '</strong> ');
+                elem.append(data[i].type.name + '<br>');
+            }
+        }
+        else 
+            elem.text('No plans found for ' + planDtFm);
+    });
+}
+
+
 
 /*\__________________________________________________________________________  ONSONG data handling
 \*/
@@ -52016,7 +52059,6 @@ function resetSearchForSongs()
     $('#show-images-for-selection').html('');
     $('#comment').val('');
     $('#show-video-clip').children('div').html(''); // reset video preview
-    
 }
 
                 

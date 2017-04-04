@@ -132,6 +132,23 @@ class PlanController extends Controller
 
 
 
+    /**
+     * API: Get List of Plans
+     *
+     * date - get plans for a certain date
+     */
+    public function APIgetPlanList(Request $request)
+    {
+        if (! $request->has(('date')))
+            return response()->json(['status' => 405, 'data' => 'APIgetPlanList: : missing date parameter!']);
+
+        $plans = Plan::where('date', 'like', $request->date.'%')->with('type')->get();
+
+        return response()->json($plans);
+    }
+
+
+
 
 
     /**
@@ -247,7 +264,7 @@ class PlanController extends Controller
     /**
      * Display the plan for a specific date
      *
-     * TODO: What happens if there is more than one event per day?
+     * Show list of plans when there is more than one event per day
      *
      * @param  date  $date
      * @return \Illuminate\Http\Response

@@ -95,6 +95,8 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     Route::get(  'plan/{plan_id}/cache',           'Cspot\PlanController@getCache');
     Route::post( 'plan/{plan_id}/cache/delete',    'Cspot\PlanController@deleteCache');
 
+    // API get list of plans    
+    Route::get('api/plans/get',                    'Cspot\PlanController@APIgetPlanList')->name('api.plans.get');
     // API get plan    
     Route::post('api/plan/get',                    'Cspot\PlanController@APIgetPlan')->name('api.plan.get');
     // API update    

@@ -93,6 +93,7 @@ class HomeController extends Controller
                 'apiUpload'     => route('cspot.api.upload'      ),
                 'apiItems'      => route('cspot.api.item'        ),
                 'apiGetPlan'    => route('api.plan.get'          ),
+                'apiGetPlanList'=> route('api.plans.get'         ),
                 'apiItemUpdate' => route('cspot.api.item.update' ),
                 'apiPlanUpdate' => route('api.plan.update'       ),
                 'apiGetSongList'=> route('getsonglist'           ),

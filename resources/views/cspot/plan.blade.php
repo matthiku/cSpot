@@ -354,6 +354,7 @@
                                 showAnim: "slideDown",
                                 onSelect: function(dt,elem){
                                     enableSaveButton(elem);
+                                    getListOfPlansByDate();
                                 },
                             });
 
@@ -386,7 +387,7 @@
                             });
 
                             $(document).ready(function() {
-                                $('#plan-date').addClass('center');                                
+                                $('#plan-date').addClass('center');
                             })
                         </script>
                     </div>
@@ -492,7 +493,7 @@
                     </div>
                 </div>
         
-                 @if (isset($plan))
+                @if (isset($plan))
                     <div class="col-xs-12 reasonForChange mb-1" style="display: none;">                
                         <span class="label label-default">Please provide reason for this change:</span>
                         <input type="text" name="reasonForChange" class="fully-width">
@@ -558,25 +559,36 @@
     @else
 
         <hr>
-        <!-- Checkbox to add default items into NEW plan -->
-        <input type="hidden" name="defaultItems" value="false">
-        <div class="checkbox">
-            <label>
-                <input checked="checked" type="checkbox" value="Y" name="defaultItems">
-                Insert default items for this plan? <span class="text-muted">(See list of <a target="new" href="{{ url('admin/default_items') }}">Default Items</a>)</span>
-            </label>
-        </div>    
+        {{-- show list of existing plans for the selected date here --}}
+        <div class="container">
+            <div class="show-list-of-plans-for-this-day">
+                (waiting for data ....)
+            </div>
+        </div>
 
-        <!-- what to do after creating this plan? Either go to the new plan or add another one of this type -->
-        <input type="hidden" name="addAnother" value="false">
-        <div class="checkbox">
-            <label>
-                <input 
-                {{ isset($defaultValues['type_id']) ? 'checked="checked"' : '' }}
-                type="checkbox" value="Y" name="addAnother">
-                Keep adding new Event Plans of the same type after this one?
-            </label>
-        </div>                
+        <hr>
+
+        <div class="container">
+            <!-- Checkbox to add default items into NEW plan -->
+            <input type="hidden" name="defaultItems" value="false">
+            <div class="checkbox">
+                <label>
+                    <input checked="checked" type="checkbox" value="Y" name="defaultItems">
+                    Insert default items for this plan? <span class="text-muted">(See list of <a target="new" href="{{ url('admin/default_items') }}">Default Items</a>)</span>
+                </label>
+            </div>    
+
+            <!-- what to do after creating this plan? Either go to the new plan or add another one of this type -->
+            <input type="hidden" name="addAnother" value="false">
+            <div class="checkbox">
+                <label>
+                    <input 
+                    {{ isset($defaultValues['type_id']) ? 'checked="checked"' : '' }}
+                    type="checkbox" value="Y" name="addAnother">
+                    Keep adding new Event Plans of the same type after this one?
+                </label>
+            </div>
+        </div>
 
         <hr>
 
@@ -587,42 +599,42 @@
 
     {{-- =================   Plan Notes 
     --}}
-    <div style="clear:both; max-width: 50rem;" class="card mt-3">
+    <div class="container">
+        <div style="clear:both; max-width: 50rem;" class="card mt-3">
 
-        <div class="card-block narrower">
-            <h5 class="card-title">Notes for this Plan:</h5>
+            <div class="card-block narrower">
+                <h5 class="card-title">Notes for this Plan:</h5>
 
-            @if (isset($plan))
-                {{-- allow editor to change the whole note for upcoming events --}}
-                @if ( Auth::user()->isEditor() && $plan->date >= \Carbon\Carbon::today() )
+                @if (isset($plan))
+                    {{-- allow editor to change the whole note for upcoming events --}}
+                    @if ( Auth::user()->isEditor() && $plan->date >= \Carbon\Carbon::today() )
 
-                    <p title="Click to edit!" class="editable-plan-info card-text narrow white-space-pre-wrap"
-                            onclick="location.href='#bottom';" 
-                            id="info-plan-id-{{ $plan->id }}">{!! $plan->info !!}</p>
-                    @if ( strlen($plan->info) > 0 )
-                        <span class="fa fa-eraser text-muted" onclick="erasePlanNote('{{ $plan->id }}')" title="Discard the whole note"></span>
+                        <p title="Click to edit!" class="editable-plan-info card-text narrow white-space-pre-wrap"
+                                onclick="location.href='#bottom';" 
+                                id="info-plan-id-{{ $plan->id }}">{!! $plan->info !!}</p>
+                        @if ( strlen($plan->info) > 0 )
+                            <span class="fa fa-eraser text-muted" onclick="erasePlanNote('{{ $plan->id }}')" title="Discard the whole note"></span>
+                        @endif
+                    @else
+                
+                        <p class="card-text narrower white-space-pre-wrap">{!! $plan->info !!}</p>
+                        <p class="card-text narrower white-space-pre-wrap" id="showAddedPlanNote"></p>
+                        
+                        @include ('cspot.snippets.addnote')
+
+                        <a href="#" data-toggle="modal" data-target="#addPlanNoteModal" class="card-link">Add Note</a>
+                        <script>
+                            cSpot.plan = {id: {{ $plan->id }} };
+                            $('#addPlanNoteModal').css('top','inherit');
+                        </script>
                     @endif
                 @else
-            
-                    <p class="card-text narrower white-space-pre-wrap">{!! $plan->info !!}</p>
-                    <p class="card-text narrower white-space-pre-wrap" id="showAddedPlanNote"></p>
-                    
-                    @include ('cspot.snippets.addnote')
-
-                    <a href="#" data-toggle="modal" data-target="#addPlanNoteModal" class="card-link">Add Note</a>
-                    <script>
-                        cSpot.plan = {id: {{ $plan->id }} };
-                        $('#addPlanNoteModal').css('top','inherit');
-                    </script>
+                        <p class="card-text">{!! Form::textarea('info') !!}</p>
                 @endif
-            @else
 
-                <p class="card-text">{!! Form::textarea('info') !!}</p>
-                
-            @endif
+            </div>
 
         </div>
-
     </div>
 
 
@@ -662,6 +674,12 @@
         @else
             <script>document.forms.inputForm.type_id.focus()</script>
         @endif
+        <script>
+            // show list of plans if a date was already selected
+            $(document).ready( function() {
+                getListOfPlansByDate();
+            })
+        </script>
     @endif
 
     
