@@ -10,7 +10,7 @@
 
         <h1>{{ $btext->display }}</h1> 
         
-        <div class="bible-text-present" style="display: none;" >
+        {{-- <div class="bible-text-present" style="display: none;" > --}}
             @if (isset($verses)  && count($verses))
                 @php
                     if (gettype($verses)=='array')
@@ -25,7 +25,7 @@
             @else 
                 {!! $btext->text !!}
             @endif
-        </div>
+        {{-- </div> --}}
 
         <!-- {!! $btext->copyright !!} -->
         <hr>

@@ -270,7 +270,7 @@ function reFormatBibleText()
     $(p).each( function() {
         var text = $(this).text();
         var clas = $(this).attr('class')
-        ;;;console.log( 'CLASS: ' + clas + ' CONTENT: ' + $(this).html() );
+        // ;;;console.log( 'CLASS: ' + clas + ' CONTENT: ' + $(this).html() );
 
         if (!clas) return;
 
@@ -360,7 +360,7 @@ function reFormatBibleText()
                 var eltext = $(this).text();
                 var cls    = $(this).attr('class');
                 if (cls=='v' || cls=='reftext') {
-                    if (verse && verno != eltext) {
+                    if (verse  &&  verse.trim() != ''  &&  verno != eltext) {
                         appendBibleText('p',verse,verno); }
                     verno = eltext; 
                     verse = '('+eltext+') ';
@@ -1280,7 +1280,7 @@ function advancePresentation(direction)
     // make sure the list of indicators doesn't get too long
     checkSequenceIndicatorLength();
 
-    var seq, found, todo, i, thisID;
+    var seq, found, todo, i;
 
     if ($('#present-lyrics').length > 0) {
 
@@ -1361,39 +1361,45 @@ function advancePresentation(direction)
             return;
         }
 
+        // check if there is a setting to show more than one bible verse at a time
+        var howMany = localStorage.getItem('config-ShowVersCount') || 1;
+
         // loop through all sequence items and find the next that wasn't shown yet
         found = false;
         if (direction=='forward') {
             $(seq).each(function(entry){
                 if ( $(this).data().showStatus  == 'unshown' ) {
                     found = true;
-                    thisID = $(this).attr('id')
                     $(this).data().showStatus = 'done';
-                    showNextSlide(thisID,'.bible');
+                    showNextSlide( $(this).attr('id'),'.bible' );
                     return false; // escape the each loop...
                 }
             });
             if (! found) {
-                //$('.bible-text-present').fadeOut();
                 navigateTo('next-item');
                 return;
             }
         } 
         else {
             found=false;
+            // loop through all seq indicators (backwards) until we find the one for the currently shown verse(s)
             for (i = seq.length - 1; i >= 0; i--) {
-                if ( $(seq[i]).data().showStatus == 'done') {
-                    thisID = $(seq[i]).attr('id')
-                    if (i<1) {break;} // we can't move any further back....
-                    found=true;
-                    $(seq[i]).data().showStatus = 'unshown';  // make this part 'unshown'
-                    thisID = $(seq[i-1]).attr('id')
-                    showNextSlide(thisID,'.bible');
+                if ( $(seq[i]).attr('class').indexOf('bg-danger') >= 0 ) {
+                    // we have found the first verse currently shown, now we must find the previous verse NOT currently shown
+                    for (var j = i-1; j >= 0; j--) {
+                        if ( $(seq[j]).attr('class').indexOf('bg-danger') < 0) 
+                            break;
+                    }
+                    if (j < 0)  // we can't move any further back....
+                        break;
+                    found = true;
+                    i = j - (howMany-1)
+                    if (i<0) i=0;
+                    showNextSlide( $(seq[i]).attr('id'),'.bible' );
                     break; // escape the for loop...
                 }
             }
             if (! found) {
-                //$('.bible-text-present').fadeOut();
                 navigateTo('previous-item');
                 return;
             }
@@ -1728,14 +1734,15 @@ function bibleShow(what)
 
     if (! parts.length) return; // only run this if there are verses to show
 
-    if (!what) { // this is used to re-draw the verses slides 
+    if (!what) // this is used to re-draw the verses slides 
         what = $(parts[0]).attr('id');
-        $(parts).hide();
-        $(indic).data('showStatus', 'unshown');
-    }
 
+    // reset all show indicators
+    $(indic).data('showStatus', 'unshown');
     // remove current indicator colours
     $(indic).removeClass('bg-danger')
+    // hide all parts for now
+    $(parts).hide();
 
     // check if there is a setting to show more than one bible verse at a time
     var howMany = localStorage.getItem('config-ShowVersCount') || 1;
@@ -1755,7 +1762,7 @@ function bibleShow(what)
             $(parts[i]).show();
             $(indic[i]).addClass('bg-danger');
             $(indic[i]).data('showStatus', 'done');
-            console.log('showing BV slide '+i);
+            // console.log('showing BV slide '+i);
             usedHeight += $(parts[i]).height();
             // check if we need to show more than one verse per slide
             if (howMany > 1) {
@@ -1768,7 +1775,7 @@ function bibleShow(what)
                     $(indic[j]).addClass('bg-danger');
                     $(indic[j]).data('showStatus', 'done');
                     howMany -= 1;
-                    console.log('showing BV slide '+j);
+                    // console.log('showing BV slide '+j);
                 }
                 // sync with the outer loop
                 i = j;
@@ -1780,7 +1787,7 @@ function bibleShow(what)
             if ($(indic[i]).data())
                 $(indic[i]).data('showStatus', 'unshown');
             $(parts[i]).hide();
-            console.log('hiding future BV slide '+i);
+            // console.log('hiding future BV slide '+i);
         }
         // hide all previous verses
         else
@@ -1788,7 +1795,7 @@ function bibleShow(what)
             $(parts[i]).hide();
             $(indic[i]).removeClass('bg-danger');
             $(indic[i]).data('showStatus', 'done');
-            console.log('hiding previous BV slide '+i);
+            // console.log('hiding previous BV slide '+i);
         }
     }
 }
