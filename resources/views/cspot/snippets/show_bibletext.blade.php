@@ -14,9 +14,11 @@
             @if (isset($verses)  && count($verses))
                 @php
                     if (gettype($verses)=='array')
-                        $verses = $verses[0];
+                        $versesPart = $verses[ $loop->index ];
+                    else
+                        $versesPart = $verses;
                 @endphp
-                @foreach ($verses as $verse)
+                @foreach ($versesPart as $verse)
                     <p class="p">
                         <sup class="v">{{ $verse->verse }}</sup> 
                         <span>{{ $verse->text }}</span>

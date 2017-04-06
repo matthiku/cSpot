@@ -7,15 +7,17 @@
 @php
 	// at this moment, we do not support multiple references within one Plan Item (we only use the first)
 	if (gettype($verses)=='array')
-		$verses = $verses[0];
+		$versesPart = $verses[ $loop->index ];
+    else
+        $versesPart = $verses;
 
-    $versionID = $verses->first()->bibleversion->id;
-    $bookID   = $verses->first()->biblebook->id;
-    $chapter = $verses->first()->chapter;
+    $versionID = $versesPart->first()->bibleversion->id;
+    $bookID   = $versesPart->first()->biblebook->id;
+    $chapter = $versesPart->first()->chapter;
 @endphp
 
 
-@foreach ($verses as $verse)
+@foreach ($versesPart as $verse)
     <p class="mb-1"><sup>{{ $verse->verse }}</sup> 
         <span class="hover-show{{ Auth::user()->isEditor() ? ' editable-bible-text' : '' }}" id="verse-{{ $versionID.'-'.$bookID.'-'.$chapter.'-'.$verse->verse }}"
         >{{ $verse->text }}</span>

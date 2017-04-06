@@ -669,17 +669,17 @@ function formatBibleRefHeader( exisText, newText) {
         if (rfc.book==bRef.book) {
             // same chapter
             if (rfc.chapter==bRef.chapter) {
-                $('#bible-text-ref-header').text(exisRef+','+bRef.verse_from+'-'+bRef.verse_to+' '+bRef.version);
+                $('#bible-text-ref-header').text(exisRef+','+bRef.verse_from+'-'+bRef.verse_to);
             }
             // different chapter
             else {
-                $('#bible-text-ref-header').text(exisRef+';'+bRef.chapter+':'+bRef.verse_from+'-'+bRef.verse_to+' '+bRef.version);
+                $('#bible-text-ref-header').text(exisRef+';'+bRef.chapter+':'+bRef.verse_from+'-'+bRef.verse_to);
             }
             return;
         }
         // different book
         else {
-            $('#bible-text-ref-header').text(exisRef+';'+bRef.book+' '+bRef.chapter+':'+bRef.verse_from+'-'+bRef.verse_to+' '+bRef.version);
+            $('#bible-text-ref-header').text(exisRef+';'+bRef.book+' '+bRef.chapter+':'+bRef.verse_from+'-'+bRef.verse_to);
         }
     }
     $('#bible-text-ref-header').append('; ' + newText);   
