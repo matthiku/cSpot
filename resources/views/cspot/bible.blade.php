@@ -31,10 +31,22 @@
             aria-controls="navbarBiblesText" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <a class="navbar-brand" href="{{ route('bibleversions.index') }}">{{ $bookName . ' ' . $chapter . ' (' . $versionName . ')' }}</a>
+        <a class="navbar-brand show-bible-text-brand" href="{{ route('bibleversions.index') }}">{{ $bookName . ' ' . $chapter . ' (' . $versionName . ')' }}</a>
 
         <div class="collapse navbar-collapse" id="navbarBiblesText">
             <form class="form-inline my-2 my-lg-0 ml-auto">
+
+                {{-- search input field --}}
+                <div class="input-group float-right mr-2" 
+                    title="Search within the currently selected bible version.
+Enter any word or words to do a full-text search throughout the whole bible.
+Use '+' or '-' signs right in front of a word to indicate it must be included or excluded from the search.">
+                    <input type="text" class="form-control bible-search-string" onkeydown="if (event.keyCode == 13) { fulltextBibleSearch({{ $versionID }});return false;}"
+                        placeholder="Search for...">
+                    <span class="input-group-btn">
+                        <button class="btn btn-secondary" onclick="fulltextBibleSearch({{ $versionID }})" type="button">&#128270; Go!</button>
+                    </span>
+                </div>
             
                 {{-- Create a Drop-Down Selection for the chapters --}}
                 @if ($chapters>1)
@@ -73,7 +85,9 @@
                 <select class="custom-select float-right mr-2" 
                         onchange="showSpinner();location.href=location.pathname+'?version='+this.value+'&book={{ $bookID }}&chapter={{ $chapter }}';">
                     <option selected>Select Version...</option>
+                    <script>cSpot.bibleVersions={};</script>
                     @foreach ($versions as $version)
+                        <script>cSpot.bibleVersions['{{ $version->id }}']='{{ $version->name }}';</script>
                         <option value="{{ $version->id }}"{{ $version->id == $versionID ? 'disabled' : '' }}>{{ 
                             $version->name }}</option>
                     @endforeach
@@ -84,19 +98,27 @@
     </nav>
 
 
+    <div class="append-alert-area-here"></div>
 
 
-    @if ($verses->count())
-                
 
-        <div class="mw-60 ml-lg-3 pt-2">
+    <div class="show-bible-text mw-60 ml-lg-3 pt-2">
+        
+        @if ($verses->count())
 
             @include ('cspot.snippets.show_verses')
 
-        </div>
+        @else
+            No verses found for this version in the storage!
+        @endif
 
-    @else
-        No verses found for this version in the storage!
-    @endif
+    </div>
+
+
+
+    <script>
+        // cSpot.bibleVersions = {!! json_encode($versions) !!};
+        cSpot.bibleBooks    = {!! json_encode($books) !!};
+    </script>
 
 @stop

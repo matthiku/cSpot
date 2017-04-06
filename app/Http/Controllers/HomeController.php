@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests;
 use Illuminate\Http\Request;
 
+use App\Models\User;
 use App\Models\Song;
 use App\Models\Item;
 use App\Models\SongPart;
@@ -76,6 +77,7 @@ class HomeController extends Controller
         $cSpot = [
 
             'user' => json_decode( json_encode(Auth::user()) ),
+            'userRoles' => json_decode( json_encode( User::find(Auth::user()->id)->roles()->get()->implode('name', ',') ) ),
 
             'lastSongUpdated_at' => getLastSongUpdated_at(),
 
@@ -99,6 +101,7 @@ class HomeController extends Controller
                 'apiGetSongList'=> route('getsonglist'           ),
                 'setPositionURL'=> route('presentation.position.set' ),
                 'eventSource'   => route('presentation.sync'         ),
+                'apiBiblesSearch' => route('api.bibles.search'       ),
                 'apiItemsFileUnlink' => route('api.items.file.unlink'),
                 'apiSongsFileUnlink' => route('api.songs.file.unlink'),
                 'apiBibleBooksAllVerses' => route('bible.books.all.verses' ),

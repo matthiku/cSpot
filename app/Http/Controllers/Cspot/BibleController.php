@@ -557,5 +557,23 @@ class BibleController extends Controller
     }
 
 
+    /**
+     * Fulltext Search in bible texts
+     */
+    public function apiSearchBibles(Request $request)
+    {
+        // get search string
+        if ( ! $request->has('search') )
+            return 'search string missing';
+
+        $version_id = 1;
+        if ($request->has('version'))
+            $version_id = $request->version;
+
+        $result = DB::select("SELECT * FROM bibles WHERE match (text) AGAINST ('$request->search') AND bibleversion_id=$version_id LIMIT 25;");
+
+        return response()->json($result);
+    }
+
 }
 

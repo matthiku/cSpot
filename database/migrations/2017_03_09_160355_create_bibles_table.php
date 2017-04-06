@@ -32,6 +32,9 @@ class CreateBiblesTable extends Migration
             $table->index('verse');
             $table->index(['bibleversion_id', 'biblebook_id', 'chapter', 'verse'])->unique();
         });
+
+        // add fulltext search index
+        DB::raw('ALTER TABLE bibles ADD FULLTEXT INDEX `bibles_text_fulltext_index` (`text`);')
     }
 
     /**

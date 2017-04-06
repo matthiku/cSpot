@@ -108,6 +108,77 @@ function getListOfPlansByDate()
 }
 
 
+/* Full-text bible search
+*/
+function fulltextBibleSearch(version)
+{
+    // wait for cSpot to get ready
+    if (cSpot.const === undefined) {
+        console.log('waiting for c-SPOT to get ready');
+        setTimeout( fulltextBibleSearch, 500);
+        return;
+    }
+    // get search string from input field
+    var search = $('.bible-search-string').val();
+
+    if (search.length < 4) {
+        showAlertBox('Search string missing or too short. (Must be at least 4 characters)', '.append-alert-area-here');
+        return;
+    }
+
+    var versionID = version || 1;
+
+    $('.show-bible-text-brand' ).text('('+cSpot.bibleVersions[versionID] +') Searching for "'+search+'":');
+    $('.append-alert-area-here').html('');
+    $('.show-bible-text').html('');
+
+    $.ajax({
+        url:    cSpot.routes.apiBiblesSearch,
+        method: 'GET',
+        data: { 
+            search: search,
+            version: versionID,
+        }
+    })
+    .done(function(data){
+        if (data.length) {
+            ;;;console.log(data.length + ' verses found when searching for "'+search+'"');
+            var result, cloneP, cloneSp;
+            // create a new DOM element to show search results
+            // (the code here tries to replicate the code in views/cspot/snippets/show_verses.blade.php)
+            var elemP = document.createElement('p');
+            $(elemP).addClass('mb-1');
+            var elemSp = document.createElement('span');
+            $(elemSp).addClass('hover-show');
+            if (cSpot.userRoles.search('editor')) {
+                $(elemSp).addClass('editable-bible-text');
+                $(elemP).append('<span class="hover-only fa fa-pencil text-muted ml-1"></span>');
+            }
+            // show each search result in a separate element
+            for (var i = 0; i < data.length; i++) {
+                result = data[i];
+                cloneSp = $(elemSp).clone();
+                cloneP  = $(elemP).clone();
+                $(cloneSp).attr('id', 'verse-'+result.bibleversion_id+'-'+result.biblebook_id+'-'+result.chapter+'-'+result.verse);
+                $(cloneSp).text(result.text);
+                $(cloneP).prepend(cloneSp);
+                // show bible reference of search result as a link to the corresponding chapter
+                $(cloneP).prepend('<a href="?version='+result.bibleversion_id+'&book='+result.biblebook_id+'&chapter='+result.chapter
+                    + '" title="Read the whole chapter"><strong>'
+                    + cSpot.bibleBooks[result.biblebook_id-1].name+' '+result.chapter+':'+result.verse+'</strong></a> ');
+                $('.show-bible-text').append(cloneP);
+            }
+            // make editable areas above editable again
+            makeAreasEditable();
+        }
+        else {
+            showAlertBox('Search was unsuccessful. Please try again.', '.append-alert-area-here');
+        }
+    })
+}
+
+
+
 
 /*\__________________________________________________________________________  ONSONG data handling
 \*/

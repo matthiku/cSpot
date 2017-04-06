@@ -48531,6 +48531,182 @@ function getLocalStorageItem(key, defaultValue)
 
 
 
+/* show bootstrap alert box
+
+    param text  (string) Text to be shown in the alert box
+    param where (string) css locator indicating into which element the AlertBox should be inserted
+    param type  (string) Can be 'info', 'success', 'warning' or 'danger'
+                         (default is 'warning')
+*/
+function showAlertBox(text, where, type)
+{
+    var tp = type || 'warning';
+    
+    // for variation, replace 'warning' with 'success', 'info' or 'danger'
+    var elem = '<div class="alert alert-' + tp + '" role="alert">'
+        + '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
+        + '<div class="alert-area-text"></div></div>';
+
+    // make sure AlertBox is empty
+    $(where).html('');
+
+    // insert new AlertBox
+    $(where).append(elem);
+    // modify alert text
+    $('.alert-area-text').text(text);
+
+}
+
+
+/* 
+    Load configuration data from backend
+
+    (called from document.ready)
+*/
+function loadConfigData()
+{
+    // AJAX call
+    $.get( cSpot.getConfigRoute+'?item_id='+$("#item_id").val() )
+
+    .done( function(data) {
+        for ( var item in data) {
+            cSpot[item] = data[item];
+        }
+
+        cSpot.config = {};
+        // some common html elements
+        cSpot.const = {};
+        cSpot.const.waitspinner = '<i class="fa fa-spinner fa-spin fa-fw"></i>';
+        cSpot.const.editIcon    = '<i class="fa fa-edit"></i>';
+        cSpot.const.deleteIcon  = '<i class="fa fa-trash"></i>';
+        
+        // presentation type might have been set in the view
+        if (cSpot.presentationType) {
+            cSpot.presentation.type = cSpot.presentationType;
+            
+            // load cached presentation data
+            if ( cSpot.presentationType=='lyrics' && cSpot.presentation.plan )
+                loadCachedPresentation(cSpot.presentation.plan.id);
+
+            if ( cSpot.presentationType=='chords' 
+              || cSpot.presentationType=='sheetmusic' 
+              || cSpot.presentationType=='leader' )
+                // for chords presentation
+                prepareChordsPresentation(cSpot.presentationType);
+        }
+
+        // we need the config data to run these functions:
+        loadFromLocalCache();
+
+        if ( cSpot.env.presentationEnableSync )
+            prepareSyncPresentation();
+
+        // watch blank slide status in presentation
+        cSpot.presentation.screenBlank = true;
+        ;;;console.log('**** Config Data loaded from back-end ****');
+    })
+
+    .fail( function(data) {
+        alert('c-SPOT might not work properly as it could not load config data from backend server!');
+    });
+}
+
+
+
+/**
+ * Make certain content editable
+ *
+ * (see http://www.appelsiini.net/projects/jeditable)
+ */
+function makeAreasEditable()
+{
+    $('.editable').editable(cSpot.appURL + '/cspot/api/items/update', {
+        onblur      : 'cancel',
+        cssclass    : 'editable-input-field',
+        style       : 'display: inline',
+        placeholder : '<span class="fa fa-pencil text-muted">&nbsp;</span>',
+        data        : function(value, settings) {
+            // strip any html code off the field value
+            var tmp = document.createElement("DIV");
+            tmp.innerHTML = value;
+            return tmp.textContent || tmp.innerText || "";
+        }
+    });
+
+    // song sequence field on the item details page
+    $('.editable-song-field').editable(cSpot.appURL + '/cspot/api/songs/update', {
+        style       : 'display: inline',
+        cancel      : 'Cancel',
+        submit      : 'Update',
+        onblur      : 'ignore',
+        indicator   : '<span class="fa fa-refresh fa-spin"> </span> saving...',
+        placeholder : '<span class="fa fa-pencil text-muted">&nbsp;</span>',
+    });
+
+    // lyrics and chords textareas on the item details page
+    $('.edit_area').editable(cSpot.appURL + '/cspot/api/songs/update', {
+        type        : 'textarea',
+        cancel      : 'Cancel',
+        submit      : 'Update',
+        onblur      : 'ignore',
+        placeholder : '<span class="fa fa-pencil text-muted">&nbsp;</span>',
+    });
+
+    // comment field in the resources list of a plan
+    $('.editable-resource').editable(cSpot.appURL + '/cspot/api/plans/resource/update', {
+        style       : 'display: inline',
+        placeholder : '<span class="fa fa-pencil text-muted">&nbsp;</span>',
+        event       : 'mouseover',
+        onblur      : 'cancel',
+    });
+
+
+    // comment field or private notes on the Item Detail page
+    $('.editable-item-field').editable(cSpot.appURL + '/cspot/api/items/update', {
+        type        : 'textarea',
+        width       : '100%',
+        rows        : '3',
+        cancel      : 'Cancel',
+        submit      : 'Save',
+        onblur      : 'ignore',
+        indicator   : '<span class="fa fa-refresh fa-spin"> </span> saving...',
+        placeholder : '<span class="fa fa-edit">&nbsp;</span>',
+    });
+
+    $('.editable-item-field-present').editable(cSpot.appURL + '/cspot/api/items/update', {
+        type        : 'textarea',
+        cancel      : 'Cancel',
+        submit      : 'Save',
+        onblur      : 'cancel',
+        indicator   : '<span class="fa fa-refresh fa-spin"> </span> saving...',
+        placeholder : '<span class="fa fa-edit">&nbsp;</span>',
+    });
+
+    // Plan Detail page - update Plan Note
+    $('.editable-plan-info').editable(cSpot.appURL + '/cspot/api/plan/update', {
+        type        : 'textarea',
+        cancel      : 'Cancel',
+        width       : '90%',
+        rows        : '3',
+        submit      : 'Save',
+        onblur      : 'ignore',
+        indicator   : '<span class="fa fa-refresh fa-spin"> </span> saving...',
+        placeholder : '<span class="fa fa-edit">&nbsp;</span>',
+    });
+
+
+    // update Bible texts of server-based bibles
+    $('.editable-bible-text').editable(cSpot.appURL + '/admin/api/bible/update', {
+        type        : 'textarea',
+        cancel      : 'Cancel',
+        width       : '100%',
+        rows        : '3',
+        submit      : 'Update',
+        onblur      : 'ignore',
+        indicator   : '<span class="fa fa-refresh fa-spin"> </span> saving...',
+        placeholder : '<span class="fa fa-edit">&nbsp;</span>',
+    });
+}
 
 
 
@@ -49967,51 +50143,8 @@ $(document).ready(function() {
 
     /* Get Config data from backend
     */
-    if (location.pathname.search('cspot')>=0)
-        $.get( cSpot.getConfigRoute+'?item_id='+$("#item_id").val() )
-
-        .done( function(data) {
-            for ( var item in data) {
-                cSpot[item] = data[item];
-            }
-
-            cSpot.config = {};
-            // some common html elements
-            cSpot.const = {};
-            cSpot.const.waitspinner = '<i class="fa fa-spinner fa-spin fa-fw"></i>';
-            cSpot.const.editIcon    = '<i class="fa fa-edit"></i>';
-            cSpot.const.deleteIcon  = '<i class="fa fa-trash"></i>';
-            
-            // presentation type might have been set in the view
-            if (cSpot.presentationType) {
-                cSpot.presentation.type = cSpot.presentationType;
-                
-                // load cached presentation data
-                if ( cSpot.presentationType=='lyrics' && cSpot.presentation.plan )
-                    loadCachedPresentation(cSpot.presentation.plan.id);
-
-                if ( cSpot.presentationType=='chords' 
-                  || cSpot.presentationType=='sheetmusic' 
-                  || cSpot.presentationType=='leader' )
-                    // for chords presentation
-                    prepareChordsPresentation(cSpot.presentationType);
-            }
-
-            // we need the config data to run these functions:
-            loadFromLocalCache();
-
-            if ( cSpot.env.presentationEnableSync )
-                prepareSyncPresentation();
-
-            // watch blank slide status in presentation
-            cSpot.presentation.screenBlank = true;
-            ;;;console.log('**** Config Data loaded from back-end ****');
-        })
-
-        .fail( function(data) {
-            alert('c-SPOT might not work properly as it could not load config data from backend server!');
-        });
-
+    if ( location.pathname.search('cspot')>=0  ||  location.pathname.search('bibles')>0 )
+        loadConfigData();
 
 
     /**
@@ -50019,93 +50152,7 @@ $(document).ready(function() {
      *
      * (see http://www.appelsiini.net/projects/jeditable)
      */
-    $('.editable').editable(cSpot.appURL + '/cspot/api/items/update', {
-        onblur      : 'cancel',
-        cssclass    : 'editable-input-field',
-        style       : 'display: inline',
-        placeholder : '<span class="fa fa-pencil text-muted">&nbsp;</span>',
-        data        : function(value, settings) {
-            // strip any html code off the field value
-            var tmp = document.createElement("DIV");
-            tmp.innerHTML = value;
-            return tmp.textContent || tmp.innerText || "";
-        }
-    });
-
-    // song sequence field on the item details page
-    $('.editable-song-field').editable(cSpot.appURL + '/cspot/api/songs/update', {
-        style       : 'display: inline',
-        cancel      : 'Cancel',
-        submit      : 'Update',
-        onblur      : 'ignore',
-        indicator   : '<span class="fa fa-refresh fa-spin"> </span> saving...',
-        placeholder : '<span class="fa fa-pencil text-muted">&nbsp;</span>',
-    });
-
-    // lyrics and chords textareas on the item details page
-    $('.edit_area').editable(cSpot.appURL + '/cspot/api/songs/update', {
-        type        : 'textarea',
-        cancel      : 'Cancel',
-        submit      : 'Update',
-        onblur      : 'ignore',
-        placeholder : '<span class="fa fa-pencil text-muted">&nbsp;</span>',
-    });
-
-    // comment field in the resources list of a plan
-    $('.editable-resource').editable(cSpot.appURL + '/cspot/api/plans/resource/update', {
-        style       : 'display: inline',
-        placeholder : '<span class="fa fa-pencil text-muted">&nbsp;</span>',
-        event       : 'mouseover',
-        onblur      : 'cancel',
-    });
-
-
-    // comment field or private notes on the Item Detail page
-    $('.editable-item-field').editable(cSpot.appURL + '/cspot/api/items/update', {
-        type        : 'textarea',
-        width       : '100%',
-        rows        : '3',
-        cancel      : 'Cancel',
-        submit      : 'Save',
-        onblur      : 'ignore',
-        indicator   : '<span class="fa fa-refresh fa-spin"> </span> saving...',
-        placeholder : '<span class="fa fa-edit">&nbsp;</span>',
-    });
-
-    $('.editable-item-field-present').editable(cSpot.appURL + '/cspot/api/items/update', {
-        type        : 'textarea',
-        cancel      : 'Cancel',
-        submit      : 'Save',
-        onblur      : 'cancel',
-        indicator   : '<span class="fa fa-refresh fa-spin"> </span> saving...',
-        placeholder : '<span class="fa fa-edit">&nbsp;</span>',
-    });
-
-    // Plan Detail page - update Plan Note
-    $('.editable-plan-info').editable(cSpot.appURL + '/cspot/api/plan/update', {
-        type        : 'textarea',
-        cancel      : 'Cancel',
-        width       : '90%',
-        rows        : '3',
-        submit      : 'Save',
-        onblur      : 'ignore',
-        indicator   : '<span class="fa fa-refresh fa-spin"> </span> saving...',
-        placeholder : '<span class="fa fa-edit">&nbsp;</span>',
-    });
-
-
-    // update Bible texts of server-based bibles
-    $('.editable-bible-text').editable(cSpot.appURL + '/admin/api/bible/update', {
-        type        : 'textarea',
-        cancel      : 'Cancel',
-        width       : '100%',
-        rows        : '3',
-        submit      : 'Update',
-        onblur      : 'ignore',
-        indicator   : '<span class="fa fa-refresh fa-spin"> </span> saving...',
-        placeholder : '<span class="fa fa-edit">&nbsp;</span>',
-    });
-
+    makeAreasEditable();
 
 
     /**
@@ -50636,6 +50683,77 @@ function getListOfPlansByDate()
             elem.text('No plans found for ' + planDtFm);
     });
 }
+
+
+/* Full-text bible search
+*/
+function fulltextBibleSearch(version)
+{
+    // wait for cSpot to get ready
+    if (cSpot.const === undefined) {
+        console.log('waiting for c-SPOT to get ready');
+        setTimeout( fulltextBibleSearch, 500);
+        return;
+    }
+    // get search string from input field
+    var search = $('.bible-search-string').val();
+
+    if (search.length < 4) {
+        showAlertBox('Search string missing or too short. (Must be at least 4 characters)', '.append-alert-area-here');
+        return;
+    }
+
+    var versionID = version || 1;
+
+    $('.show-bible-text-brand' ).text('('+cSpot.bibleVersions[versionID] +') Searching for "'+search+'":');
+    $('.append-alert-area-here').html('');
+    $('.show-bible-text').html('');
+
+    $.ajax({
+        url:    cSpot.routes.apiBiblesSearch,
+        method: 'GET',
+        data: { 
+            search: search,
+            version: versionID,
+        }
+    })
+    .done(function(data){
+        if (data.length) {
+            ;;;console.log(data.length + ' verses found when searching for "'+search+'"');
+            var result, cloneP, cloneSp;
+            // create a new DOM element to show search results
+            // (the code here tries to replicate the code in views/cspot/snippets/show_verses.blade.php)
+            var elemP = document.createElement('p');
+            $(elemP).addClass('mb-1');
+            var elemSp = document.createElement('span');
+            $(elemSp).addClass('hover-show');
+            if (cSpot.userRoles.search('editor')) {
+                $(elemSp).addClass('editable-bible-text');
+                $(elemP).append('<span class="hover-only fa fa-pencil text-muted ml-1"></span>');
+            }
+            // show each search result in a separate element
+            for (var i = 0; i < data.length; i++) {
+                result = data[i];
+                cloneSp = $(elemSp).clone();
+                cloneP  = $(elemP).clone();
+                $(cloneSp).attr('id', 'verse-'+result.bibleversion_id+'-'+result.biblebook_id+'-'+result.chapter+'-'+result.verse);
+                $(cloneSp).text(result.text);
+                $(cloneP).prepend(cloneSp);
+                // show bible reference of search result as a link to the corresponding chapter
+                $(cloneP).prepend('<a href="?version='+result.bibleversion_id+'&book='+result.biblebook_id+'&chapter='+result.chapter
+                    + '" title="Read the whole chapter"><strong>'
+                    + cSpot.bibleBooks[result.biblebook_id-1].name+' '+result.chapter+':'+result.verse+'</strong></a> ');
+                $('.show-bible-text').append(cloneP);
+            }
+            // make editable areas above editable again
+            makeAreasEditable();
+        }
+        else {
+            showAlertBox('Search was unsuccessful. Please try again.', '.append-alert-area-here');
+        }
+    })
+}
+
 
 
 
