@@ -112,10 +112,12 @@ function getListOfPlansByDate()
 */
 function fulltextBibleSearch(version)
 {
+    var versionID = version || 1;
+
     // wait for cSpot to get ready
     if (cSpot.const === undefined) {
         console.log('waiting for c-SPOT to get ready');
-        setTimeout( fulltextBibleSearch, 500);
+        setTimeout( fulltextBibleSearch, 500, versionID);
         return;
     }
     // get search string from input field
@@ -126,11 +128,11 @@ function fulltextBibleSearch(version)
         return;
     }
 
-    var versionID = version || 1;
-
+    // indicate that we are searching ....
     $('.show-bible-text-brand' ).text('('+cSpot.bibleVersions[versionID] +') Searching for "'+search+'":');
     $('.append-alert-area-here').html('');
     $('.show-bible-text').html('');
+    $('.select-chapter-or-book').hide();
 
     $.ajax({
         url:    cSpot.routes.apiBiblesSearch,

@@ -61,6 +61,8 @@
                         <i class="fa fa-btn fa-tv fa-lg"></i> &nbsp; Videoclips</a>
                     <a class="dropdown-item" href="{{ url('cspot/songs') }}?filterby=title_2&filtervalue=slides">
                         <i class="fa fa-btn fa-clone fa-lg"></i> &nbsp; Slides</a>
+                    <a class="dropdown-item" href="{{ url('admin/bibles') }}">
+                        <i class="fa fa-btn fa-book fa-lg"></i> &nbsp; Scripture</a>
                     @if (Auth::user()->isEditor())
                         <a class="dropdown-item" href="{{ url('admin/song_parts') }}">
                             <i class="fa fa-btn fa-server fa-lg"></i> &nbsp; Song Parts Names</a>
