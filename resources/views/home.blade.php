@@ -86,16 +86,14 @@
                             </a>
                         </span>
 
-                        @if (Auth::user()->isAdmin())
-                            <span class="btn btn-outline-success md-full mr-2" 
-                                    title="Available Bible versions stored on the server: {{ DB::table('bibleversions')->select('name')->get()->implode('name', ',') }}">
-                                <a href="{{ url('admin/bibles') }}">
-                                    <i class="fa fa-btn fa-book fa-lg float-left"> </i>
-                                    &nbsp; Bibles ({{ DB::table('bibleversions')->count() }})
-                                    <i class="fa fa-btn fa-book fa-lg float-right hidden-md-up"></i>
-                                </a>
-                            </span>
-                        @endif
+                        <span class="btn btn-outline-success md-full mr-2" 
+                                title="Available Bible versions stored on the server: {{ DB::table('bibleversions')->select('name')->get()->implode('name', ',') }}">
+                            <a href="{{ url('admin/bibles') }}">
+                                <i class="fa fa-btn fa-book fa-lg float-left"> </i>
+                                &nbsp; Bibles ({{ DB::table('bibleversions')->count() }})
+                                <i class="fa fa-btn fa-book fa-lg float-right hidden-md-up"></i>
+                            </a>
+                        </span>
 
                         <button class="btn btn-outline-primary md-full mr-2">
                             <a href="{{ url('cspot/songs?only=slides') }}">

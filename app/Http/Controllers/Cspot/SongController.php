@@ -289,13 +289,17 @@ class SongController extends Controller
         // find plans using this song
         $plans = $song->plansUsingThisSong();
 
+        // get year of earliest plan
+        $firstYear = Plan::orderBy('date')->first()->date->year;
+
         if ($plans->count()) {
             $heading = 'Show Plans using the Song "'.$song->title.'"';
             return view( 'cspot.plans', [
-                'plans' => $plans, 
-                'types'  => Type::get(),
-                'heading' => $heading,
-                'songParts' => SongPart::orderby('sequence')->get(),
+                'plans'     => $plans, 
+                'allPlans'  => $plans, 
+                'types'     => Type::get(),
+                'heading'   => $heading,
+                'firstYear' => $firstYear,
             ]);
         }
 

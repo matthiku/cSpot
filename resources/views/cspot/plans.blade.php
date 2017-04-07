@@ -146,7 +146,7 @@
 					<span class="events-table hidden">Page {{ $plans->currentPage() }} of {{ $plans->lastPage() }}</span>
 				@endif
 
-				@if ( isset($plans) )
+				@if ( isset($plans)  &&  get_class($plans) != 'Illuminate\Database\Eloquent\Collection' )
 					<small>(Total: {{ $plans->total() }} Events)</small>
 				@endif
 			</center>

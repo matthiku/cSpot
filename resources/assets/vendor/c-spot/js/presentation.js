@@ -156,7 +156,8 @@ function preparePresentation()
 }
 
 
-
+/* Show digital clock in presentation mode
+*/
 function show_time()
 {
     var date = new Date();
@@ -669,11 +670,11 @@ function formatBibleRefHeader( exisText, newText) {
         if (rfc.book==bRef.book) {
             // same chapter
             if (rfc.chapter==bRef.chapter) {
-                $('#bible-text-ref-header').text(exisRef+','+bRef.verse_from+'-'+bRef.verse_to);
+                $('#bible-text-ref-header').text(exisRef+', '+bRef.verse_from+'-'+bRef.verse_to);
             }
             // different chapter
             else {
-                $('#bible-text-ref-header').text(exisRef+';'+bRef.chapter+':'+bRef.verse_from+'-'+bRef.verse_to);
+                $('#bible-text-ref-header').text(exisRef+'; '+bRef.chapter+':'+bRef.verse_from+'-'+bRef.verse_to);
             }
             return;
         }
