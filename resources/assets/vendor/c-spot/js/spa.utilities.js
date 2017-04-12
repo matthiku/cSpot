@@ -131,7 +131,7 @@ function fulltextBibleSearch(version)
     // indicate that we are searching ....
     $('.show-bible-text-brand' ).text('('+cSpot.bibleVersions[versionID] +') Searching for "'+search+'":');
     $('.append-alert-area-here').html('');
-    $('.show-bible-text').html('');
+    $('.show-bible-text').html(cSpot.const.waitspinner + ' searching ...');
     $('.select-chapter-or-book').hide();
 
     $.ajax({
@@ -145,6 +145,7 @@ function fulltextBibleSearch(version)
     .done(function(data){
         if (data.length) {
             ;;;console.log(data.length + ' verses found when searching for "'+search+'"');
+            $('.show-bible-text').html(data.length + ' references found for "' + search + '"');
             var result, cloneP, cloneSp;
             // create a new DOM element to show search results
             // (the code here tries to replicate the code in views/cspot/snippets/show_verses.blade.php)
@@ -175,6 +176,7 @@ function fulltextBibleSearch(version)
         }
         else {
             showAlertBox('Search was unsuccessful. Please try again.', '.append-alert-area-here');
+            $('.show-bible-text').html('');
         }
     })
 }

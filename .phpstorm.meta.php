@@ -3,7 +3,7 @@ namespace PHPSTORM_META {
 
    /**
     * PhpStorm Meta file, to provide autocomplete information for PhpStorm
-    * Generated on 2017-03-24.
+    * Generated on 2017-04-07.
     *
     * @author Barry vd. Heuvel <barryvdh@gmail.com>
     * @see https://github.com/barryvdh/laravel-ide-helper
@@ -47,6 +47,7 @@ namespace PHPSTORM_META {
             'memcached.connector' instanceof \Illuminate\Cache\MemcachedConnector,
             'command.cache.clear' instanceof \Illuminate\Cache\Console\ClearCommand,
             'Illuminate\Broadcasting\BroadcastManager' instanceof \Illuminate\Broadcasting\BroadcastManager,
+            'Illuminate\Contracts\Broadcasting\Broadcaster' instanceof \Illuminate\Broadcasting\Broadcasters\PusherBroadcaster,
             'Illuminate\Bus\Dispatcher' instanceof \Illuminate\Bus\Dispatcher,
             'command.clear-compiled' instanceof \Illuminate\Foundation\Console\ClearCompiledCommand,
             'command.auth.resets.clear' instanceof \Illuminate\Auth\Console\ClearResetsCommand,
@@ -167,6 +168,7 @@ namespace PHPSTORM_META {
             'memcached.connector' instanceof \Illuminate\Cache\MemcachedConnector,
             'command.cache.clear' instanceof \Illuminate\Cache\Console\ClearCommand,
             'Illuminate\Broadcasting\BroadcastManager' instanceof \Illuminate\Broadcasting\BroadcastManager,
+            'Illuminate\Contracts\Broadcasting\Broadcaster' instanceof \Illuminate\Broadcasting\Broadcasters\PusherBroadcaster,
             'Illuminate\Bus\Dispatcher' instanceof \Illuminate\Bus\Dispatcher,
             'command.clear-compiled' instanceof \Illuminate\Foundation\Console\ClearCompiledCommand,
             'command.auth.resets.clear' instanceof \Illuminate\Auth\Console\ClearResetsCommand,
@@ -287,6 +289,7 @@ namespace PHPSTORM_META {
             'memcached.connector' instanceof \Illuminate\Cache\MemcachedConnector,
             'command.cache.clear' instanceof \Illuminate\Cache\Console\ClearCommand,
             'Illuminate\Broadcasting\BroadcastManager' instanceof \Illuminate\Broadcasting\BroadcastManager,
+            'Illuminate\Contracts\Broadcasting\Broadcaster' instanceof \Illuminate\Broadcasting\Broadcasters\PusherBroadcaster,
             'Illuminate\Bus\Dispatcher' instanceof \Illuminate\Bus\Dispatcher,
             'command.clear-compiled' instanceof \Illuminate\Foundation\Console\ClearCompiledCommand,
             'command.auth.resets.clear' instanceof \Illuminate\Auth\Console\ClearResetsCommand,
@@ -407,6 +410,7 @@ namespace PHPSTORM_META {
             'memcached.connector' instanceof \Illuminate\Cache\MemcachedConnector,
             'command.cache.clear' instanceof \Illuminate\Cache\Console\ClearCommand,
             'Illuminate\Broadcasting\BroadcastManager' instanceof \Illuminate\Broadcasting\BroadcastManager,
+            'Illuminate\Contracts\Broadcasting\Broadcaster' instanceof \Illuminate\Broadcasting\Broadcasters\PusherBroadcaster,
             'Illuminate\Bus\Dispatcher' instanceof \Illuminate\Bus\Dispatcher,
             'command.clear-compiled' instanceof \Illuminate\Foundation\Console\ClearCompiledCommand,
             'command.auth.resets.clear' instanceof \Illuminate\Auth\Console\ClearResetsCommand,

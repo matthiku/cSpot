@@ -13,6 +13,7 @@ use Auth;
 
 use Log;
 
+use App\Jobs\SyncPresentation;
 
 
 class PresentationController extends Controller
@@ -154,6 +155,10 @@ class PresentationController extends Controller
             // save to cache
             Cache::put('showPosition', $data, 600);
 
+            // broadcast this new setting to all clients
+            dispatch(new SyncPresentation($data))
+
+
             Log::info('new show pos recvd: '.json_encode($data));
 
             return response()->json( ['status' => 202, 'data' => $data['id'] ], 202 );
@@ -207,6 +212,10 @@ class PresentationController extends Controller
 
         // no further action needed if user just want to state that he is not a Main Presenter...
         if ($removeMe) {
+
+            // broadcast this new setting to all clients
+            dispatch(new SyncPresentation($mainPresenter))
+
             return response()->json( ['status' => 205, 'data' => $mainPresenter], 202 ); // 202 = "accepted"
         }
 
@@ -216,6 +225,12 @@ class PresentationController extends Controller
         // set expiration date for this setting
         $expiresAt = Carbon::now()->addDays( env('PRESENTATION_EXPIRATION_DAYS', 1) );
         Cache::put( 'MainPresenter', $value, $expiresAt );
+
+
+        // broadcast this new setting to all clients
+        dispatch(new SyncPresentation($value))
+
+
 
         Log::info('User became Main Presenter: (id:'.$user->id.') '.$user->name);
 

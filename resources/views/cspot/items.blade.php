@@ -352,7 +352,7 @@
 
 							@if ( $item->song->ccli_no > 1000 && 'MP'.$item->song->ccli_no != $item->song->book_ref 
 							  && Auth::user()-> isEditor() 
-							  && $plan->date < \Carbon\Carbon::tomorrow() )
+							  && $plan->date_end < \Carbon\Carbon::now() )   {{-- changed 12/04-2017 for issue #186 item 7  --}}
 								{{-- show a different icon color depending on status of reporting 
 								 	 red    - no date in field 'reported_at'  - no action has taken place yet
 								 	 yellow - date present, but time is 00:00 - user started reporting, but hasn't confirmed it yet

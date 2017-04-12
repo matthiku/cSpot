@@ -9,7 +9,7 @@ use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class SyncPresentation
+class SyncPresentation implements ShouldBroadcast
 {
     use InteractsWithSockets, SerializesModels;
 
@@ -20,10 +20,10 @@ class SyncPresentation
      *
      * @return void
      */
-    public function __construct(Item $item)
+    public function __construct($syncData)
     {
         //
-        $this->item = $item;
+        $this->syncData = $syncData;
     }
 
     /**
