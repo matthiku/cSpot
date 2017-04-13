@@ -13,7 +13,7 @@ use Auth;
 
 use Log;
 
-use App\Jobs\SyncPresentation;
+use App\Events\SyncPresentation;
 
 
 class PresentationController extends Controller
@@ -156,7 +156,7 @@ class PresentationController extends Controller
             Cache::put('showPosition', $data, 600);
 
             // broadcast this new setting to all clients
-            dispatch(new SyncPresentation($data))
+            event(new SyncPresentation($data));
 
 
             Log::info('new show pos recvd: '.json_encode($data));
@@ -214,7 +214,7 @@ class PresentationController extends Controller
         if ($removeMe) {
 
             // broadcast this new setting to all clients
-            dispatch(new SyncPresentation($mainPresenter))
+            event(new SyncPresentation($mainPresenter));
 
             return response()->json( ['status' => 205, 'data' => $mainPresenter], 202 ); // 202 = "accepted"
         }
@@ -228,7 +228,7 @@ class PresentationController extends Controller
 
 
         // broadcast this new setting to all clients
-        dispatch(new SyncPresentation($value))
+        event(new SyncPresentation($value));
 
 
 

@@ -108,9 +108,10 @@ class HomeController extends Controller
             ],
 
             'presentation' => [
-                'sync' => false,
+                'sync'  => false,
                 'slide' => 'start',
-                'mainPresenter' => getMainPresenter(),
+                'setPositionURL'      => route('presentation.position.set'),
+                'mainPresenter'       => getMainPresenter(),
                 'mainPresenterSetURL' => route('presentation.mainPresenter.set'),
             ],
 
@@ -136,7 +137,8 @@ class HomeController extends Controller
 
                 'sync' => false,
                 'slide' => 'start',
-                'mainPresenter' => getMainPresenter(),
+                'setPositionURL'      => route('presentation.position.set'),
+                'mainPresenter'       => getMainPresenter(),
                 'mainPresenterSetURL' => route('presentation.mainPresenter.set'),
 
                 'plan' => json_decode( json_encode($item->plan) ),

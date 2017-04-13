@@ -33,6 +33,6 @@ class SyncPresentation implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('sync-presentation');
+        return new Channel('sync-presentation');
     }
 }

@@ -803,6 +803,9 @@ function prepareSyncPresentation()
       || window.location.pathname.indexOf('/sheetmusic')> 10 
       || window.location.pathname.indexOf('/leader')    > 10 ) {
 
+        if (cSpot.presentation.eventSource === undefined)
+            return;
+
         // prepare Server-Sent Events
         var es = new EventSource( cSpot.presentation.eventSource );
         // handle generic messages
