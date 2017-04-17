@@ -24,22 +24,22 @@
                     </button>
 
                     <h5 class="modal-title mb-1">
-                        <span id="searchSongModalLabel">Select what to insert</span> <span id="modal-show-item-id"></span>
+                        <span id="searchSongModalLabel">Select what to insert</span> <span id="modal-DONT-show-item-id"></span>
                     </h5>
 
-                    <span class="btn btn-outline-primary modal-pre-selection mb-1"
+                    <span class="btn btn-outline-primary modal-pre-selection link mb-1"
                         onclick="showModalSelectionItems('song')"      ><strong><i class="big fa fa-music"></i> &nbsp; Song</strong></span>
 
-                    <span class="btn btn-outline-success modal-pre-selection mb-1 font-weight-bold"
+                    <span class="btn btn-outline-success modal-pre-selection link mb-1 font-weight-bold"
                         onclick="showModalSelectionItems('scripture')"><strong><i class="big fa fa-book"></i> Scripture Text</strong></span>
 
-                    <span class="btn btn-outline-warning modal-pre-selection mb-1"
+                    <span class="btn btn-outline-warning modal-pre-selection link mb-1"
                         onclick="showModalSelectionItems('clips')"><i class="big fa fa-television"></i> VideoClip / Slides</span>
 
-                    <span class="btn btn-outline-danger modal-pre-selection mb-1"
+                    <span class="btn btn-outline-danger modal-pre-selection link mb-1"
                         onclick="showModalSelectionItems('file')"      ><i class="big fa fa-file-picture-o"></i> &nbsp; Image</span>
 
-                    <span class="btn btn-outline-info modal-pre-selection mb-1 font-weight-bold"
+                    <span class="btn btn-outline-info modal-pre-selection link mb-1 font-weight-bold"
                         onclick="showModalSelectionItems('comment')"   ><i class="big fa fa-comments"></i> Comment or Notes</span>
 
                 </div>

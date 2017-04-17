@@ -9,7 +9,10 @@ It allows all participants to use, add or modify their relevant information - us
 It allows the management of song **lyrics**, **music scores**, **guitar chords**, event resources and teams in a user-friendly web application.
 
 
-#### Main Features:
+#### [Main Features Video Demo](https://www.youtube.com/watch?v=0GOu0ouvQN0)
+
+
+#### Main Features List:
 
 - Front-end with **Responsive design** - runs on *any* device with an up-to-date browser with JavaScript!
 - Create the **Order of Service** with all relevant data (team (leaders, musicians, other functions), resources, songs, free slides, embedded videoclips etc)
