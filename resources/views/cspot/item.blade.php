@@ -715,6 +715,8 @@
             });
         });
 
+
+        // add function to allow authorized users to upload sheetmusic to a song
         @if (isset($song))
             $(function () {
                 $('#fileuploadsheetmusic').fileupload({

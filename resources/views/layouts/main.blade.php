@@ -24,7 +24,7 @@
 
     <link href="https://fonts.googleapis.com/css?family=Lora|Shadows+Into+Light|Vollkorn" rel="stylesheet">
 
-    <meta name="csrf-token" content="{{ csrf_token() }}">    
+    <meta name="csrf-token" content="{!! csrf_token() !!}">
 
     <title>c-SPOT @yield('title')</title>
 

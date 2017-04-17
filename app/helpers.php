@@ -279,8 +279,10 @@ function songSearch( $search )
              orWhere('ccli_no', 'like', $search)->
              orWhere('book_ref','like', $search)->
              orWhere('author',  'like', $search)->
-             orWhere('lyrics',  'like', $search)->
+             orWhereRaw("match (lyrics) AGAINST ('$search' in boolean mode)")->
              take(10)->get();
+    // alternatively, using the fulltext index of the lyrics field:
+    //DB::select("SELECT * FROM songs WHERE match (lyrics) AGAINST ('$search') AND bibleversion_id=$version_id LIMIT 10;")
 }
 
 /**

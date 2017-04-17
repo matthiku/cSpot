@@ -29,6 +29,9 @@ class CreateSongsTable extends Migration
             $table->softDeletes(); // in order to retain DB integrity, songs are only marked as deleted
             $table->timestamps();
         });
+
+        // add fulltext search index
+        DB::raw('ALTER TABLE songs ADD FULLTEXT INDEX `lyrics_fulltext_index` (`lyrics`);');
     }
 
     /**

@@ -34,7 +34,7 @@ class CreateBiblesTable extends Migration
         });
 
         // add fulltext search index
-        DB::raw('ALTER TABLE bibles ADD FULLTEXT INDEX `bibles_text_fulltext_index` (`text`);')
+        DB::raw('ALTER TABLE bibles ADD FULLTEXT INDEX `bibles_text_fulltext_index` (`text`);');
     }
 
     /**

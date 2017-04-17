@@ -5,7 +5,7 @@
 
 <div class="table-responsive">
 	<table class="table table-items
-		{{ count($plan->items)>5 ? 'table-sm mb-0' : 'mt-3 p-b-3'}} {{ count($plan->items)>10 ? 'table-xs' : ''}}">
+		{{ count($plan->items)>5 ? 'table-sm mb-0' : 'mt-3 p-b-3'}} {{ count($plan->items)>10 ? 'table-xs' : ''}}" onmouseleave="removeDemoRow()">
 
 		<tbody id="tbody-items">
 	    @foreach( $plan->items as $key => $item )
@@ -418,10 +418,11 @@
 
 
 							{{-- new MODAL POPUP to add song/scripture/comment --}}
-							<button type="button" class="btn btn-secondary btn-sm text-info" data-toggle="modal" data-target="#searchSongModal"
+							<button type="button" class="btn btn-secondary btn-sm text-info insert-item-button" data-toggle="modal" data-target="#searchSongModal"
+								onmouseenter="showInsertRow(this)"
 								data-plan-id="{{$plan->id}}" data-item-id="{{$item->id}}" data-seq-no="before-{{$item->seq_no}}" data-item-action="insert-item"
 								href='#' title="insert song, scripture or comment before this item">
-								<i class="fa fa-indent"></i><sup>+</sup>
+								<i class="fa fa-indent"></i><span class="sup">+</span>
 							</button>
 
 
@@ -523,6 +524,28 @@
 		});
 	</script>
 @endif
+
+
+<script type="text/javascript">
+	// demonstrate to user where a new row would be inserted
+	function showInsertRow(that)
+	{
+		$('.insert-item-button').removeClass('btn-primary');
+		$('.insert-item-button').addClass('btn-secondary');
+		$('.remove-me').remove();
+		$(that).removeClass('btn-secondary');
+		$(that).addClass('btn-primary');
+		// find the parent row
+		var row = $(that).parents('tr');
+		row.before('<tr class="remove-me"><td colspan="20" class="text-right small bg-info text-whtie py-0">click to insert a new item here ...</td></tr>');
+	}
+	function removeDemoRow()
+	{
+		$('.insert-item-button').addClass('btn-secondary');
+		$('.insert-item-button').removeClass('btn-primary');
+		$('.remove-me').remove();
+	}
+</script>
 
 
 <script src="https://www.blueletterbible.org/assets/scripts/blbToolTip/BLB_ScriptTagger-min.js" type="text/javascript"></script>

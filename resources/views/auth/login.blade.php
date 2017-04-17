@@ -47,7 +47,9 @@
 
             <form class="form-horizontal" role="form" method="POST" id="inputForm" oninput="enableSubmitButton()"
                 action="{{ url('login') }}">
+
                 {!! csrf_field() !!}
+
 
                 <div class="row mt-1 form-group{{ $errors->has('email') ? ' has-error' : '' }}">
                     <label class="col-md-4 text-xs-right control-label">E-Mail Address</label>

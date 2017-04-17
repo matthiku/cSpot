@@ -13176,7 +13176,10 @@ red {
     padding: .5rem;
 }
 
-
+.sup {
+    vertical-align: super;
+    line-height: 0;    
+}
 
 
 
@@ -13940,5 +13943,5 @@ textarea.md-full {
 }
 
 .small-pw-input {
-  width: 5em;
+  width: 7em;
 }

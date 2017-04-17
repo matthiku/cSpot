@@ -124,7 +124,10 @@ red {
     padding: .5rem;
 }
 
-
+.sup {
+    vertical-align: super;
+    line-height: 0;    
+}
 
 
 

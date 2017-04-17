@@ -129,9 +129,9 @@ Out of the box, c-SPOT uses a mySQL database to save all the data. However, Lara
 
 #### Mandatory Steps
 1. In the root of your web server's http or html directory (depending on Apache or Nginx), run the command `git clone https://github.com/matthiku/cSpot.git` to download c-SPOT and install it into the folder 'cspot'. (The folder can be renamed to your liking)
-2. In the root folder of the project, copy the file **.env.example** to **.env** and customize it for your environment. Mainly, configure your database name, db user name and db password for c-SPOT and enter the connectivity details for your mail server in order to be able to send confirmation emails to users.
-3. Run `php artisan key:generate` to initialize they key for the Laravel framework
-4. Run `composer update` to install all the dependencies
+2. In the root folder of the project, copy the file **.env.example** to **.env** and customize it for your environment. Mainly, configure your database name, db user name and db password for c-SPOT and enter the connectivity details for your mail server in order to be able to send confirmation emails to users. Important: Also update the domain name!
+3. Run `composer update` to install all the dependencies
+4. Run `php artisan key:generate` to initialize they key for the Laravel framework
 5. Create a new (empty) database on your mySQL server with the aforementioned parameters (db name, user name and password etc.).
 6. Run `php artisan migrate` to initialize your c-SPOT database
 7. Edit the file .env and replace all values enclosed in <...> with their proper values!
@@ -146,9 +146,13 @@ Out of the box, c-SPOT uses a mySQL database to save all the data. However, Lara
 6. Start creating new plans and add items accordingly
 7. Modify the predefined list of user roles according to your needs
 
+#### Development
+In order to develop (program) c-SPOT, you need to have learned some Laravel development basics. Node.js and NPM need to be installed, then run "NPM install" to have all the assets available. 
+Check https://laravel.com/docs/5.3/elixir for further information.
+
 ### Future Enhancements (c-SPOT 2.0)
 
 - Pre-populate the songs database with popular **public domain** lyrics
-- Program the frontend as a Single Page App using AngularJS and the backend as a RESTful API
+- Program the frontend as a Single Page App using AngularJS or better Vue.js and the backend as a RESTful API
 - Enable user to programmatically select Bible references (done)
 - Add feature to send lyrics and Bible verses to a projector (done)

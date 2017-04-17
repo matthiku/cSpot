@@ -114,7 +114,7 @@
     --}}
     @if ( Auth::guest() )
         <form class="form-inline ml-auto hidden-md-down" method="POST" role="form" action="{{ url('login') }}">
-            Log in using @include('auth.social', ['hideLblText' => 'true']) or: 
+            Log in using &nbsp;@include('auth.social', ['hideLblText' => 'true']) &nbsp;or: &nbsp;
             {!! csrf_field() !!}
             <div class="form-group">
                 <input type="email" name="email" class="form-control-sm" id="inputEmail" placeholder="Enter email">
