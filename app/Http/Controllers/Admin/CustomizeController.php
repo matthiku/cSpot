@@ -15,8 +15,6 @@ class CustomizeController extends Controller
     protected function updateDotEnv($key, $newValue, $delim='')
     {
 
-        Log::info('Request to update key '.$key.' to new value: '.$newValue);
-
         $path = base_path('.env');
         // get old value from current env
         $oldValue = env($key);
@@ -71,6 +69,9 @@ class CustomizeController extends Controller
         }
         if ($request->has('church_ccli')) {
             $this->updateDotEnv('CHURCH_CCLI', $request->church_ccli);
+        }
+        if ($request->has('hymnbook_name')) {
+            $this->updateDotEnv('CHURCH_HYMNBOOK_NAME', $request->hymnbook_name, '"');
         }
         if ($request->has('church_youtube_playlist_id')) {
             $this->updateDotEnv('CHURCH_YOUTUBE_PLAYLIST_ID', $request->church_youtube_playlist_id);

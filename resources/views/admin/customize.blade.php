@@ -75,6 +75,11 @@
                         {!! Form::text('bible_versions', env('BIBLE_VERSIONS')); !!}
                    </div>
 
+                    <div class="form-group full-width">
+                        {!! Form::label('hymnbook_name', 'Hymnbook Name:', ['class' => 'mb-0']) !!}<br>
+                        {!! Form::text('hymnbook_name', env('CHURCH_HYMNBOOK_NAME')); !!}
+                   </div>
+
 
                 </div>
 

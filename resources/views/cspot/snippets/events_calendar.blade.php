@@ -130,11 +130,11 @@
 			? ' mr-1' 
 			: '' }} rounded">
 
-<h3 class="mb-0 py-0 {{ $startDay->month != $firstDay->month ? ' text-muted' : '' }}">{{ $firstDay->day }}
-	@if (Auth::user()->isEditor() && $firstDay >= $today)
-<a href="{{ url('cspot/plans/create') }}?date={{ $firstDay->toDateString() }}" title="Create a new event for this day" class="float-right text-muted link small">+</a>
-	@endif
-</h3>
+<h3 class="mb-0 p-0 float-right{{ $startDay->month != $firstDay->month ? ' text-muted' : '' }}{{ $firstDay->dayOfWeek==0 ? ' text-danger' : '' }}">{!!
+	(Auth::user()->isEditor() && $firstDay >= $today) 
+		? '<a href="'.url('cspot/plans/create').'?date='.$firstDay->toDateString()
+			. '" title="Create a new event for this day" class="btn btn-sm btn-outline-info text-muted link small align-top">+</a>'
+		: '' !!}{{ $firstDay->day }}</h3>
 @foreach ($allPlans as $plan)
   @if ($plan->date->toDateString() == $firstDay->toDateString())
 	<a href="{{ url('cspot/plans/'.$plan->id) }}/edit" class="d-block items-calendar-day{{ 
