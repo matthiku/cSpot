@@ -9,7 +9,7 @@ It allows all participants to use, add or modify their relevant information - us
 It allows the management of song **lyrics**, **music scores**, **guitar chords**, event resources and teams in a user-friendly web application.
 
 
-#### [Main Features Video Demo](https://www.youtube.com/watch?v=0GOu0ouvQN0)
+#### [Watch the Main Features Video Demo](https://www.youtube.com/watch?v=0GOu0ouvQN0)
 
 
 #### Main Features List:

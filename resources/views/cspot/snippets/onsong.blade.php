@@ -514,7 +514,8 @@
 
 
 <div class="show-onsong-format-hint hidden rounded-bottom py-2 px-3 bg-faded text-right text-primary small">
-	If the imported text contains tab-stopps, define how many spaces they should be replaced with:
+	Select the appropriate editor! (See help under "Onsong Help"-Button!)<br><br>
+	For importing: if the imported text contains tab-stopps, define how many spaces they should be replaced with:
 	<input type="number" id="onsong-import-tab-size" value=4 style="width: 2rem" onchange="updateTabToSpacesRatio(this);">
 </div>
 

@@ -92,7 +92,7 @@
                              id="haystack" onkeyup="showSongHints('#txtHint', this.value)">
                     <div class="search-form-item modal-select-song" id="txtHint"></div>
 
-                    <label class="search-form-item modal-select-song mt-1 mb-0" for="MPselect">...or select Mission Praise number:</label>
+                    <label class="search-form-item modal-select-song mt-1 mb-0" for="MPselect">...or select {{ env('CHURCH_HYMNBOOK_NAME') }} number:</label>
                     <select class="form-control mb-1 search-form-item modal-select-song" id="MPselect" onchange="$('#searchForSongsButton').click();">
                         <option value="0">select....</option>
                     </select>

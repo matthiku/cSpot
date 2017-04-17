@@ -22,8 +22,8 @@ class ResourceController extends Controller
      * define view names
      */
     protected $view_all = 'admin.resources';
-    protected $view_idx = 'admin.resources.index';
     protected $view_one = 'admin.resource';
+    protected $route_idx = 'resources.index';
 
 
 
@@ -78,7 +78,7 @@ class ResourceController extends Controller
         //
         Resource::create($request->all());
         $status = 'New Resource added.';
-        return \Redirect::route($this->view_idx)
+        return \Redirect::route($this->route_idx)
                         ->with(['status' => $status]);
     }
 
@@ -122,7 +122,7 @@ class ResourceController extends Controller
         }
         //
         $message = 'Error! Resource with id "' . $id . '" not found';
-        return \Redirect::route($this->view_idx)
+        return \Redirect::route($this->route_idx)
                         ->with(['status' => $message]);
     }
 
@@ -144,7 +144,7 @@ class ResourceController extends Controller
                 ->update($request->except(['_method','_token']));
 
         $message = 'Resource with id "' . $id . '" updated';
-        return \Redirect::route($this->view_idx)
+        return \Redirect::route($this->route_idx)
                         ->with(['status' => $message]);
     }
 
@@ -162,12 +162,12 @@ class ResourceController extends Controller
         if ($output) {
             $output->delete();
             $message = 'Resource with id "' . $id . '" deleted.';
-            return \Redirect::route($this->view_idx)
+            return \Redirect::route($this->route_idx)
                             ->with(['status' => $message]);
         }
         //
         $message = 'Error! Resource with ID "' . $id . '" not found';
-        return \Redirect::route($this->view_idx)
+        return \Redirect::route($this->route_idx)
                         ->with(['status' => $message]);
     }
 }
