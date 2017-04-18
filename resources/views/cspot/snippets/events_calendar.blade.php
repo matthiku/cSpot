@@ -130,14 +130,10 @@
 			? ' mr-1' 
 			: '' }} rounded">
 
-<h3 class="mb-0 p-0 float-right{{ $startDay->month != $firstDay->month ? ' text-muted' : '' }}{{ $firstDay->dayOfWeek==0 ? ' text-danger' : '' }}">{!!
-	(Auth::user()->isEditor() && $firstDay >= $today) 
-		? '<a href="'.url('cspot/plans/create').'?date='.$firstDay->toDateString()
-			. '" title="Create a new event for this day" class="btn btn-sm btn-outline-info text-muted link small align-top">+</a>'
-		: '' !!}{{ $firstDay->day }}</h3>
+<h3 class="mb-0 p-0 rounded float-right{{ $startDay->month != $firstDay->month ? ' text-muted' : '' }}{{ $firstDay->dayOfWeek==0 ? ' text-danger' : '' }}">{{ $firstDay->day }}</h3>
 @foreach ($allPlans as $plan)
   @if ($plan->date->toDateString() == $firstDay->toDateString())
-	<a href="{{ url('cspot/plans/'.$plan->id) }}/edit" class="d-block items-calendar-day{{ 
+	<a href="{{ url('cspot/plans/'.$plan->id) }}/edit" class="d-block lh-1 mb-1 items-calendar-day{{ 
 		$firstDay < $today ? ' text-muted' : '' 
 			}}{{ $plan->leader_id==Auth::user()->id || $plan->teacher_id==Auth::user()->id ? ' text-info' : '' }}"
 		title="Click to open. Leader: {{ 
@@ -156,8 +152,11 @@
 					($plan->subtitle ? '<small class="hidden-md-down">('.$plan->subtitle.')</small>' : ' ') 
 			!!}</a>
   @endif
-@endforeach
-	</div>
+@endforeach{!!
+	(Auth::user()->isEditor() && $firstDay >= $today) 
+		? '<a href="'.url('cspot/plans/create').'?date='.$firstDay->toDateString()
+			. '" title="Create a new event for this day" class="cal-new-event-btn btn btn-sm btn-outline-info text-muted link py-0 align-top">+</a>'
+		: '' !!}</div>
 
 	<?php 
 		$firstDay->addDay(); 

@@ -442,6 +442,14 @@ function setIdealCalendarRowHeight()
             $(this).height(max);
         });
     });
+    // show "+" button in the bottom right corner of the day area
+    $('.cal-new-event-btn').each( function() {
+        $(this).position({
+            my: 'right bottom',
+            at: 'right-3 bottom-3',
+            of: $(this).parent()
+        });
+    })
 }
 /* Plans List Calendar view: show results from previous or next year
 */
