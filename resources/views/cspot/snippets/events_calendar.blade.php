@@ -130,7 +130,15 @@
 			? ' mr-1' 
 			: '' }} rounded">
 
-<h3 class="mb-0 p-0 rounded float-right{{ $startDay->month != $firstDay->month ? ' text-muted' : '' }}{{ $firstDay->dayOfWeek==0 ? ' text-danger' : '' }}">{{ $firstDay->day }}</h3>
+<div><h3 class="mb-0 p-0 rounded float-right{{ 
+	$startDay->month != $firstDay->month 
+		? ' text-muted' 
+		: '' }}{{ 
+			$firstDay->dayOfWeek==0 
+				? ' text-danger' 
+				: '' }}">{{ 
+					$firstDay->day 
+}}</h3></div>
 @foreach ($allPlans as $plan)
   @if ($plan->date->toDateString() == $firstDay->toDateString())
 	<a href="{{ url('cspot/plans/'.$plan->id) }}/edit" class="d-block lh-1 mb-1 items-calendar-day{{ 
@@ -188,6 +196,7 @@
 		disabled: [0],
 		activate: function() {
 			calculateEventsPerMonth();
+			setIdealCalendarRowHeight();
 		}
 	});
 

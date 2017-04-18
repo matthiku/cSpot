@@ -13142,7 +13142,7 @@ red {
     font-family: 'Shadows Into Light', cursive;
 }
 
-.overflow-hidden {
+.overflow-hidden, .o-h {
     overflow: hidden;
 }
 .overflow-scroll {

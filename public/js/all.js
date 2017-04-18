@@ -48768,7 +48768,7 @@ function setIdealCalendarRowHeight()
     $('.cal-new-event-btn').each( function() {
         $(this).position({
             my: 'right bottom',
-            at: 'right-3 bottom-3',
+            at: 'right-3 bottom-6',
             of: $(this).parent()
         });
     })
