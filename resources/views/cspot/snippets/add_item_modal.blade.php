@@ -8,7 +8,7 @@
 
     <div class="modal fade" id="searchSongModal" tabindex="-1" role="dialog" aria-labelledby="searchSongModalLabel" aria-hidden="true">
 
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-lg" role="document">
 
             <div class="modal-content draggable" id="makeMeDraggable">
 
