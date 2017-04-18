@@ -150,6 +150,10 @@
 						<a href="{{ $item->comment }}" target="new">{{ $item->comment }}<i class="fa fa-globe"></i></a>
 
 					@elseif ( $plan->date > \Carbon\Carbon::yesterday() && Auth::user()->ownsPlan( $plan->id ))
+						<span class="add-scripture-ref" style="display: none" title="Show this comment as title of the slide presentation">&#127937;
+			                {{-- checkbox to indicate if public note should be shown in the presentation --}}
+			                @include ('cspot.snippets.toggle-show-comment', ['label' => false])</span>
+
 						<span id="comment-item-id-{{ $item->id }}" class="editable comment-textcontent hover-show">{{ $item->comment }}</span>
 
 						{{-- show editing icon only when comment is not empty and when hovering over it --}}
