@@ -13238,8 +13238,10 @@ red {
  /*  building an events calendar using flexbox */
 /* -------------------------------------------*/
 /* month names in title row */
-.ui-tabs-anchor {
-    padding: .5em !important;
+@media (min-width: 34em) {
+    .ui-tabs-anchor {
+        padding: .5em !important;
+    }
 }
 .calendar-container {
     height: 95%;
@@ -13291,6 +13293,7 @@ red {
     -webkit-flex: 1 1 8.33%;
       -ms-flex: 1;
     flex: 1;
+    margin-right: 1px !important;
 }
 
 
@@ -13859,6 +13862,14 @@ textarea.md-full {
 
     .xs-widht-half {
         min-width: 50%;
+    }
+
+    .calendar-month-row {
+        margin-right: 1px !important;
+    }
+    .ui-tabs-anchor {
+        margin: 0.1em !important;
+        padding: 0.1em !important;
     }
 }
 

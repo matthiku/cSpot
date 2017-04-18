@@ -241,6 +241,8 @@
 				at: 'right top',
 				of: 'li.calendar-year'
 			});
+		// hide this data on XS devices
+		$('.calendar-month-show-events-count').addClass('hidden-xs-down');
 	}
 
 	// once the page is fully loaded, properly format the calendar and show the events counters
