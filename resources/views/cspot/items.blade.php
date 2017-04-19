@@ -141,20 +141,28 @@
 				-->
 				<td class="hidden-lg-down center comment-cell" title="click to change"
 					@if (Auth::user()->ownsPlan( $plan->id ))
-						onmouseover="$(this).children('.add-scripture-ref').show()" onmouseout="$('.add-scripture-ref').hide()"
-					@endif
-					>
+						onmouseover="
+							$(this).children('.add-scripture-ref').removeClass('invisible');
+							// only show the toggle button if the comment(note) is not empty
+							if ($('#comment-item-id-{{ $item->id }}').text().length > 1)
+								$(this).children('.add-scripture-ref-toggle').removeClass('invisible');" 
+						onmouseout="
+							$('.add-scripture-ref').addClass('invisible');
+							$('.add-scripture-ref-toggle').addClass('invisible');"
+					@endif>
 
 					{{-- is the comment text a link? --}}
 					@if ( substr($item->comment, 0,4 )=='http' )
 						<a href="{{ $item->comment }}" target="new">{{ $item->comment }}<i class="fa fa-globe"></i></a>
 
 					@elseif ( $plan->date > \Carbon\Carbon::yesterday() && Auth::user()->ownsPlan( $plan->id ))
-						<span class="add-scripture-ref" style="display: none" title="Show this comment as title of the slide presentation">&#127937;
-			                {{-- checkbox to indicate if public note should be shown in the presentation --}}
-			                @include ('cspot.snippets.toggle-show-comment', ['label' => false])</span>
+						<span class="add-scripture-ref-toggle invisible" title="Show this comment as title of the slide presentation">&#127937;{{-- 
+							checkbox to indicate if public note should be shown in the presentation 
+							--}}@include ('cspot.snippets.toggle-show-comment', ['label' => false])</span>
 
-						<span id="comment-item-id-{{ $item->id }}" class="editable comment-textcontent hover-show">{{ $item->comment }}</span>
+						<span id="comment-item-id-{{ $item->id }}" class="editable comment-textcontent hover-show">{{ 
+							$item->comment }}
+						</span>
 
 						{{-- show editing icon only when comment is not empty and when hovering over it --}}
 						@if ($item->comment)
@@ -162,7 +170,7 @@
 						@endif
 
 						{{-- icon to add scripture reference --}}
-						<span class="text-muted add-scripture-ref" style="display: none" title="add scripture reference"
+						<span class="text-muted add-scripture-ref invisible" title="add scripture reference"
 							data-toggle="modal" data-target="#searchSongModal" data-item-id="{{ $item->id }}"
 							data-plan-id="{{ $plan->id }}" data-item-action="update-scripture" data-seq-no="{{ $item->seq_no }}" 
 							data-action-url="{!! route('cspot.api.items.update', $item->id) !!}">
@@ -420,19 +428,9 @@
 
 						@if (! $item->deleted_at)
 
-
-							{{-- new MODAL POPUP to add song/scripture/comment --}}
-							<button type="button" class="btn btn-secondary btn-sm text-info insert-item-button" data-toggle="modal" data-target="#searchSongModal"
-								onmouseenter="showInsertRow(this)"
-								data-plan-id="{{$plan->id}}" data-item-id="{{$item->id}}" data-seq-no="before-{{$item->seq_no}}" data-item-action="insert-item"
-								href='#' title="insert song, scripture or comment before this item">
-								<i class="fa fa-indent"></i><span class="sup">+</span>
-							</button>
-
-
 							{{-- new DROPDOWN MENU for editing or deleting items --}}
 							<div class="btn-group {{ count($plan->items)-3 < $key  &&  $key > 0 ? 'dropup' : '' }}">
-								<button type="button" class="btn btn-secondary btn-sm dropdown-toggle" 
+								<button type="button" class="btn btn-secondary btn-sm dropdown-toggle"
 									data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 									<i class="fa fa-ellipsis-v hidden-xs-down"></i>
 								</button>
@@ -450,6 +448,16 @@
 										<i class="fa fa-trash fa-lg"></i>&nbsp; &nbsp;Remove item</a>
 								</div>
 							</div>
+
+
+							{{-- new MODAL POPUP to add song/scripture/comment --}}
+							<button type="button" class="btn btn-secondary btn-sm text-info insert-item-button" data-toggle="modal" data-target="#searchSongModal"
+								onmouseenter="showInsertRow(this, '{{ $item->id }}')" id="insert-item-btn-{{ $item->id }}"
+								data-plan-id="{{ $plan->id }}" data-item-id="{{ $item->id }}" data-seq-no="before-{{ $item->seq_no }}" data-item-action="insert-item"
+								href='#' title="insert song, scripture or comment before this item">
+								<i class="fa fa-indent"></i><span class="sup">+</span>
+							</button>
+
 
 						@endif
 					@endif
@@ -480,8 +488,7 @@
 
 {{-- show cached items data 
 --}}
-<div 	class="small float-right ml-2" id="showCachedItems" 
-	 	style="display: {{ $plan->planCaches()->count() ? 'initial' : 'none' }}">
+<div class="small float-right ml-2" id="showCachedItems" style="display: {{ $plan->planCaches()->count() ? 'initial' : 'none' }}">
 	Items-Cache contains {{ $plan->planCaches()->count() }} pre-rendered items. 
 	@if( Auth::user()->ownsPlan($plan->id) )
 		<a href="#showCachedItems" onclick="clearServerCache({{ $plan->id }});"><i class="fa fa-trash"></i>&nbsp;Delete.</a>
@@ -512,7 +519,6 @@
 	@if (count($plan->items) > 5)
 		@include ('cspot.snippets.add_item_button')
 	@endif
-
 @endif
 
 
@@ -532,7 +538,7 @@
 
 <script type="text/javascript">
 	// demonstrate to user where a new row would be inserted
-	function showInsertRow(that)
+	function showInsertRow(that, item_id)
 	{
 		$('.insert-item-button').removeClass('btn-primary');
 		$('.insert-item-button').addClass('btn-secondary');
@@ -541,7 +547,9 @@
 		$(that).addClass('btn-primary');
 		// find the parent row
 		var row = $(that).parents('tr');
-		row.before('<tr class="remove-me"><td colspan="20" class="text-right small bg-info text-whtie py-0">click to insert a new item here ...</td></tr>');
+		var html = '<tr class="remove-me" style="display: none;" onclick="$(' + "'#insert-item-btn-" + item_id + "').click();";
+		row.before(html + '"><td colspan="20" class="text-right small bg-gray text-whtie py-0">click to insert a new item here ...</td></tr>');
+		$('.remove-me').fadeIn('slow');
 	}
 	function removeDemoRow()
 	{
