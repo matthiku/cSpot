@@ -547,9 +547,9 @@
 		$(that).addClass('btn-primary');
 		// find the parent row
 		var row = $(that).parents('tr');
-		var html = '<tr class="remove-me" style="display: none;" onclick="$(' + "'#insert-item-btn-" + item_id + "').click();";
+		var html = '<tr class="remove-me p-0" style="font-size: 1px;" onclick="$(' + "'#insert-item-btn-" + item_id + "').click();";
 		row.before(html + '"><td colspan="20" class="text-right small bg-gray text-whtie py-0">click to insert a new item here ...</td></tr>');
-		$('.remove-me').fadeIn('slow');
+		$('.remove-me').animate({'fontSize': '14px'}, 'slow');
 	}
 	function removeDemoRow()
 	{
