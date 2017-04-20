@@ -76,12 +76,18 @@
         @else
             <script>
                 // make sure the image use all but does not exceed the visible area
-                $(document).ready( function() {
+                function resizeSheetmusic() {
                     $('.figure-img').css({
                         'height': $(window).height()-45,
                         'width':  $(window).width(),
                         'display' : 'inline',
                     });
+                }
+                $(document).ready( function() {
+                    resizeSheetmusic();
+                    $(document).on('resize', function() {
+                        resizeSheetmusic();
+                    })
                 });
             </script>
         @endif
