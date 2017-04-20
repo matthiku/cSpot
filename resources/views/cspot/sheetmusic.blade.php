@@ -29,57 +29,54 @@
 
 
 
+        {{-- is this item indeed a song? --}}
         @if ($item->song_id )
 
             @if ($item->key)
                 <h4 class="red">{{ $item->key }}</h4>
             @endif
 
+            {{-- check if we have proper musci sheets for this song --}}
             @if ($type=='sheetmusic' && count($item->song->files)>0 )
                 <div class="mb-3">
                     @foreach ($item->song->files as $file)
-                        <img class="figure-img img-fluid img-rounded"  
+                        <img class="figure-img img-fluid img-rounded"
                             src="{{ url(config('files.uploads.webpath')).'/'.$file->token }}">
                     @endforeach
                 </div>
 
+            {{-- alternatively, check if there are onsong chords --}}
+            @elseif ( isset($onSongChords)  &&  $onSongChords->count() )
+
+                @include ('cspot.snippets.present_chords')
+
+            {{-- otherwise, there could be ordinary chords --}}
             @elseif ($item->song->chords )
                 <div class="mb-3">
                     <pre class="big" id="chords">{{ $item->song->chords }}</pre>
                 </div>
 
-            @elseif ( isset($onSongChords)  &&  $onSongChords->count() )
-                
-                @include ('cspot.snippets.present_chords')
-
+            {{-- if all else fails, show the plain lyrics --}}
             @else
                 <pre class="big mb-3">{{ $item->song->onsongs ? $item->song->onSongLyrics() : $item->song->lyrics }}</pre>
-                
+
             @endif
         @endif
 
 
 
-
-        @if ($item->files)
+        {{-- does this item has one or more files linked to it? --}}
+        @if ($item->files->count())
             @foreach ($item->files as $file)
                 <figure class="figure">
-                    <img class="figure-img img-fluid img-rounded full-width" 
+                    <img class="figure-img img-fluid img-rounded full-width"
                            src="{{ url(config('files.uploads.webpath')).'/thumb-'.$file->token }}">
                 </figure>
             @endforeach
-            <script>
-                $(document).ready( function() {
-                    $('.figure-img').css({
-                        'max-height': $(window).height()-45,
-                        'max-width':  $(window).width(),
-                        'display' : 'inline',
-                    });
-                });
-            </script>
         @endif
-        
 
+
+        {{-- maybe this item has a scripture text --}}
         @if ($bibleTexts)
             <div class="col-xl-6">
                 @foreach ($bibleTexts as $btext)
@@ -89,12 +86,25 @@
                     <hr>
                 @endforeach
             </div>
+        {{-- in all other cases, show a jumbotron and include the item comment text --}}
         @else
             <div class="jumbotron">
                 <h1 class="display-3 center">
                     <span class="text-muted">{{ $item->comment ? '('.$item->comment.')' : '' }}</span>
                 </h1>
             </div>
+            <script>
+                // make sure the image use all but does not exceed the visible area
+                $(document).ready( function() {
+                    $('.figure-img').css({
+                        'height': $(window).height()-45,
+                        'width':  $(window).width(),
+                        'display' : 'inline',
+                    });
+                    // don't show any scrollbars
+                    $('.app-content').css('overflow','hidden')
+                });
+            </script>
         @endif
 
     </div>
