@@ -73,6 +73,17 @@
                            src="{{ url(config('files.uploads.webpath')).'/thumb-'.$file->token }}">
                 </figure>
             @endforeach
+        @else
+            <script>
+                // make sure the image use all but does not exceed the visible area
+                $(document).ready( function() {
+                    $('.figure-img').css({
+                        'height': $(window).height()-45,
+                        'width':  $(window).width(),
+                        'display' : 'inline',
+                    });
+                });
+            </script>
         @endif
 
 
@@ -88,23 +99,13 @@
             </div>
         {{-- in all other cases, show a jumbotron and include the item comment text --}}
         @else
-            <div class="jumbotron">
-                <h1 class="display-3 center">
-                    <span class="text-muted">{{ $item->comment ? '('.$item->comment.')' : '' }}</span>
-                </h1>
-            </div>
-            <script>
-                // make sure the image use all but does not exceed the visible area
-                $(document).ready( function() {
-                    $('.figure-img').css({
-                        'height': $(window).height()-45,
-                        'width':  $(window).width(),
-                        'display' : 'inline',
-                    });
-                    // don't show any scrollbars
-                    $('.app-content').css('overflow','hidden')
-                });
-            </script>
+            @if ($item->comment)
+                <div class="jumbotron">
+                    <h1 class="display-3 center">
+                        <span class="text-muted">({{ $item->comment }})</span>
+                    </h1>
+                </div>
+            @endif
         @endif
 
     </div>
