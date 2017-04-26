@@ -1,7 +1,7 @@
 
-{{-- 
+{{--
 	code to show the OnSong parts of a song
-	and to provide the necessary tools to modify same (add, edit, delete) 
+	and to provide the necessary tools to modify same (add, edit, delete)
 --}}
 
 
@@ -10,94 +10,96 @@
 
 
 
-{{-- Show and edit the SEQUENCE 
+
+{{-- Show and edit the SEQUENCE
 --}}
 <div class="row bg-faded rounded mx-1 p-1">
 
-	<div class="col-12 pl-0">
-		<h5 class="mb-1">
-			Sequence: &nbsp;
-			<span class="small link">
-				<a onclick="$('.sequence-help-text').toggle();" class="small text-info">
-					(<span class="sequence-help-text">show</span><span class="sequence-help-text hidden">hide</span> help)</a>
-			</span>
-			<span class="float-right">
-		        @if (Auth::user()->isEditor())
-		            <span id="sequence-song-id-{{ $song->id }}" onclick="$('.show-input-hint').show();" 
-		               class="editable-song-field lora link">{{ $song->sequence }}</span>
-		        @endif
-			</span>
-		</h5>
-	</div>
-
-	<div id="song-parts-sequence" class="col-12{{ $song->onsongs->count() ? '' : ' hidden' }}">
-
-		<span id="song-parts-drag-zone" class="pt-1">
-			@php 
-				$partCodeMissing = false; 
-				$missingCodes  = '';
-				$existingCodes = '';
-			@endphp
-			@foreach ($song->onsongs as $onsong)
-				@php $partCode = $onsong->song_part->code; @endphp
-				@if ($partCode != 'm')
-					<span class="p-1 rounded edit-chords partcodes-draggable bg-warning text-white mr-1" 
-						id="partcodes-draggable-{{ $partCode }}">{{ $partCode }}</span>
-					@php $existingCodes .= $partCode . ', '; @endphp
-				@endif
-			@endforeach
-		</span>
-		
-		<span id="wastebin-or-moving-zone">	
-			<span id="sequence-drop-zone" class="mx-1 bg-danger text-white rounded p-1">
-				@if ($song->sequence)
-					@foreach (explode(',', $song->sequence) as $seq)
-						<span class="p-1 rounded edit-chords item bg-success text-white mr-1" id="partcodes-sequence-{{ $seq }}">{{ $seq }}</span>
-						@php 
-							if (strpos($existingCodes, $seq) === false) {
-								$partCodeMissing = true; 
-								if (strpos($missingCodes, $seq) === false)
-									$missingCodes .= $seq . ', ';
-							}
-						@endphp
-					@endforeach
-				@endif
-			</span>
-
-			<span id="song-parts-wastebin-zone" class="btn btn-sm bg-faded text-white align-top"
-				title="drag codes from the red drop-zone into the waste bin to remove them from the sequence">
-				<big>&#128465;</big> Bin</span>
-
-			<span id="clear-sequence-btn" class="btn btn-sm btn-outline-danger link align-top" onclick="clearSequenceArea(this)" 
-				title="clear the whole the sequence (you still have to save this!)">
-				<big>&#128497;</big> Clear Seq.</span>
-
-			<span id="submit-sequence-button" class="btn btn-sm bg-success text-white align-text-top link hidden ml-2" onclick="submitChangedSequence();" 
-			   		title="submit new or changed sequence">
-			   <big>&#128427; </big> Confirm!</span>
-		</span>
-
-		<span id="create-default-seq-button" class="p-1 ml-2{{ $song->sequence ? ' hidden' : '' }}">
-			<span class="mx-1 btn btn-sm btn-secondary link" onclick="createDefaultSequence();" 
-			   		title="auto-create the default sequence from the existing song parts (Won't work if song contains irregular parts!)">
-			   create default seq.</span>
-		</span>
-
-	</div>
-
-
-	@if ($song->onsongs->count())
-		<div class="small col-12 mt-2 px-0{{ $partCodeMissing ? '' : ' hidden'}} missing-parts-help-text">
-			<span class="text-danger big">Warning! </span>This sequence contains code(s)<span 
-				  class="bg-success mx-1 px-1 rounded text-white">{{ substr($missingCodes, 0, strlen($missingCodes)-2) }}</span>
-				  for which the corresponding song parts (below) are missing!
+	@if (Auth::user()->isEditor())
+		<div class="col-12 pl-0">
+			<h5 class="mb-1">
+				Sequence: &nbsp;
+				<span class="small link">
+					<a onclick="$('.sequence-help-text').toggle();" class="small text-info">
+						(<span class="sequence-help-text">show</span><span class="sequence-help-text hidden">hide</span> help)</a>
+				</span>
+				<span class="float-right">
+			        @if (Auth::user()->isEditor())
+			            <span id="sequence-song-id-{{ $song->id }}" onclick="$('.show-input-hint').show();"
+			               class="editable-song-field lora link">{{ $song->sequence }}</span>
+			        @endif
+				</span>
+			</h5>
 		</div>
-	@else
-		<div class="small col-12 mt-2 px-0 hidden missing-parts-help-text">
-			<span class="text-danger big">Warning! </span>This sequence contains code(s)<span 
-				  class="bg-success mx-1 px-1 rounded text-white show-missing-codes"></span>
-				  for which the corresponding song parts (below) are missing!
+
+		<div id="song-parts-sequence" class="col-12{{ $song->onsongs->count() ? '' : ' hidden' }}">
+
+			<span id="song-parts-drag-zone" class="pt-1">
+				@php
+					$missingCodes  = '';
+					$existingCodes = '';
+					$partCodeMissing = false;
+				@endphp
+				@foreach ($song->onsongs as $onsong)
+					@php $partCode = $onsong->song_part->code; @endphp
+					@if ($partCode != 'm')
+						<span class="p-1 rounded edit-chords partcodes-draggable bg-warning text-white mr-1"
+							id="partcodes-draggable-{{ $partCode }}">{{ $partCode }}</span>
+						@php $existingCodes .= $partCode . ', '; @endphp
+					@endif
+				@endforeach
+			</span>
+
+			<span id="wastebin-or-moving-zone">
+				<span id="sequence-drop-zone" class="mx-1 bg-danger text-white rounded p-1">
+					@if ($song->sequence)
+						@foreach (explode(',', $song->sequence) as $seq)
+							<span class="p-1 rounded edit-chords item bg-success text-white mr-1" id="partcodes-sequence-{{ $seq }}">{{ $seq }}</span>
+							@php
+								if (strpos($existingCodes, $seq) === false) {
+									$partCodeMissing = true;
+									if (strpos($missingCodes, $seq) === false)
+										$missingCodes .= $seq . ', ';
+								}
+							@endphp
+						@endforeach
+					@endif
+				</span>
+
+				<span id="song-parts-wastebin-zone" class="btn btn-sm bg-faded text-white align-top"
+					title="drag codes from the red drop-zone into the waste bin to remove them from the sequence">
+					<big>&#128465;</big> Bin</span>
+
+				<span id="clear-sequence-btn" class="btn btn-sm btn-outline-danger link align-top" onclick="clearSequenceArea(this)"
+					title="clear the whole the sequence (you still have to save this!)">
+					<big>&#128497;</big> Clear Seq.</span>
+
+				<span id="submit-sequence-button" class="btn btn-sm bg-success text-white align-text-top link hidden ml-2" onclick="submitChangedSequence();"
+				   		title="submit new or changed sequence">
+				   <big>&#128427; </big> Confirm!</span>
+			</span>
+
+			<span id="create-default-seq-button" class="p-1 ml-2{{ $song->sequence ? ' hidden' : '' }}">
+				<span class="mx-1 btn btn-sm btn-secondary link" onclick="createDefaultSequence();"
+				   		title="auto-create the default sequence from the existing song parts (Won't work if song contains irregular parts!)">
+				   create default seq.</span>
+			</span>
+
 		</div>
+
+		@if ($song->onsongs->count())
+			<div class="small col-12 mt-2 px-0{{ $partCodeMissing ? '' : ' hidden'}} missing-parts-help-text">
+				<span class="text-danger big">Warning! </span>This sequence contains code(s)<span
+					  class="bg-success mx-1 px-1 rounded text-white">{{ substr($missingCodes, 0, strlen($missingCodes)-2) }}</span>
+					  for which the corresponding song parts (below) are missing!
+			</div>
+		@else
+			<div class="small col-12 mt-2 px-0 hidden missing-parts-help-text">
+				<span class="text-danger big">Warning! </span>This sequence contains code(s)<span
+					  class="bg-success mx-1 px-1 rounded text-white show-missing-codes"></span>
+					  for which the corresponding song parts (below) are missing!
+			</div>
+		@endif
 	@endif
 
 
@@ -106,12 +108,12 @@
 	</div>
 
 	<div class="small col-12 mt-2 px-0 hidden sequence-help-text">
-		To <span class="text-primary">create/modify</span> the sequence, drag the 
-			<span class="bg-warning text-white rounded px-1">part</span> <span class="bg-warning text-white rounded px-1">codes</span> and drop them into the 
+		To <span class="text-primary">create/modify</span> the sequence, drag the
+			<span class="bg-warning text-white rounded px-1">part</span> <span class="bg-warning text-white rounded px-1">codes</span> and drop them into the
 			<span class="bg-danger text-white rounded px-1">red&nbsp;zone (sequence)</span>. Then move them to the desired place.
 		<br>
-		To <span class="text-primary">remove</span> a part from the sequence, drag it from the 
-			<span class="bg-danger text-white rounded px-1">sequence</span> into the 
+		To <span class="text-primary">remove</span> a part from the sequence, drag it from the
+			<span class="bg-danger text-white rounded px-1">sequence</span> into the
 			<span class="bg-inverse text-white rounded px-1">bin</span>. To remove all, click on the "Clear Seq" button.
 		<br>
 		<strong>Note:</strong> You can't delete a song part from the list below while it's still listed in the
@@ -171,7 +173,7 @@
 	    	dragPartIntoSequence('e');
 
 	    // hide the button who called this function
-		$('#create-default-seq-button').hide();	
+		$('#create-default-seq-button').hide();
 		$('#clear-sequence-btn').show();
 
 		adaptMinWidthOfDropZone($('#sequence-drop-zone'));
@@ -195,7 +197,7 @@
 		// click on the 'Submit' button
 		$($('.editable-song-field > form > button')[0]).click();
 		// hide the 'Save' button again
-		$('#submit-sequence-button').hide();		
+		$('#submit-sequence-button').hide();
 		$('#clear-sequence-btn').show();
 	}
 
@@ -205,7 +207,7 @@
 		parts.each(function(i) {
 			seq += $(parts[i]).text().trim() + ',';
 		})
-		if (seq=='') 
+		if (seq=='')
 			seq ='_';
 		else
 			// remove trailing comma
@@ -214,7 +216,7 @@
 	}
 
 	// make the part codes dragg-able (must be a callable function as its needed after adding a new part)
-	function makePartCodesDraggable() {	
+	function makePartCodesDraggable() {
 		$( ".partcodes-draggable" ).draggable({
 		  	containment: '#sequence-drop-zone',
 		  	helper: 'clone',
@@ -225,8 +227,8 @@
 
 	// make the drop-zone drop-able
 	$("#sequence-drop-zone" ).droppable({
-	  	drop: 
-		  	function(event, ui) { 
+	  	drop:
+		  	function(event, ui) {
 		  		// hide auto-creation button now but make sure Clear btn is visible
 		  		$('#create-default-seq-button').hide();
 				$('#clear-sequence-btn').show();
@@ -273,11 +275,11 @@
 		});
 	}
 	makeSequenceItemsDraggable();
-	
+
 	// the waste bin ....
 	$( "#song-parts-wastebin-zone" ).droppable({
-	  	drop: 
-		  	function(event, ui) { 
+	  	drop:
+		  	function(event, ui) {
 		  		// only allow items from the drop-zone to be removed
 		  		if (ui.draggable[0].classList.contains('item'))
 		  			$(ui.draggable).remove();
@@ -311,7 +313,7 @@
         $('#song-parts-wastebin-zone').removeClass('bg-faded');
         $('#song-parts-wastebin-zone').addClass('bg-inverse');
 	});
-	
+
 </script>
 
 
@@ -337,15 +339,15 @@
 --}}
 <div id="onsong-parts"
 
-	 class="container-fluid px-0 px-sm-1" 
+	 class="container-fluid px-0 px-sm-1"
 
-	 data-song-id="{{ isset($song) ? $song->id : '0' }}" 
+	 data-song-id="{{ isset($song) ? $song->id : '0' }}"
 	 data-update-onsong-url="{{ route('updateonsongparts') }}">
 
 
 
 
-	{{-- insert each OnSong part as a div into the DOM 
+	{{-- insert each OnSong part as a div into the DOM
 	--}}
     @if ( isset($song) )
 
@@ -356,7 +358,7 @@
 
 				{{-- show the part name and code above the onsong data
 				--}}
-				<div class="cell-part-name bg-info pl-2 py-1 link rounded-top" role="tab" data-part-code="{{ $onsong->song_part->code }}" 
+				<div class="cell-part-name bg-info pl-2 py-1 link rounded-top" role="tab" data-part-code="{{ $onsong->song_part->code }}"
         				data-toggle="collapse" data-parent="#onsong-parts" href="#collapse-{{ $onsong->song_part_id }}"
         									  aria-expanded="true" aria-controls="collapse-{{ $onsong->song_part_id }}"
 						id="heading-{{ $onsong->song_part_id }}">
@@ -364,7 +366,7 @@
         				<a onclick="removeNewOnSongRow($(this).parents('.onsong-row'));">
 							<span class="float-right mr-1">&#9660;</span>
 							<span class="float-right">&#9664;</span>
-							<span class="song-part-name">								
+							<span class="song-part-name">
 								{{  $onsong->song_part->name }}
 								@if ($onsong->song_part->code != 'm')
 									<span class="text-white">({{ $onsong->song_part->code }})</span>
@@ -407,7 +409,7 @@
 				<a onclick="removeNewOnSongRow($(this).parents('.onsong-row'));">
 					<span class="float-right mr-1">&#9660;</span>
 					<span class="float-right">&#9664;</span>
-					<span class="song-part-name">								
+					<span class="song-part-name">
 						Select song-part name and enter new lyrics/chords or other text:
 					</span>
 	        	</a>
@@ -425,50 +427,50 @@
 
 
 
-{{-- Row with button to add new song part 
+{{-- Row with button to add new song part
 --}}
 <div class="insertNewOnSongRow-link bg-inverse rounded pr-2" style="padding: 2px;">
 
 	@if (Auth::user()->isEditor())
-		<span onclick="insertNewOnSongRow();" 
-			title="Manually add (or paste) a singe OnSong part to this song" 
+		<span onclick="insertNewOnSongRow();"
+			title="Manually add (or paste) a singe OnSong part to this song"
 			class="btn btn-sm btn-success link onsong-add-button"><i class="fa fa-plus"></i> Add new Part</span>
 
 		@if (isset($song) && ! $song->onsongs->count())
 			<span onclick="
 					$('.show-onsong-paste-hint').hide();
 					$('.show-onsong-upload-hint').toggle();
-					$('#onsong-submit-method').val('POST');" 
+					$('#onsong-submit-method').val('POST');"
 				title="Import an existing OnSong or ChordPro file from your computer"
 				class="btn btn-sm btn-info link ml-2 onsong-import-buttons">&#9088; Import OnSong File</span>
 
 			<span onclick="
 					$('.show-onsong-upload-hint').hide();
-					$('.show-onsong-paste-hint').toggle();" 
+					$('.show-onsong-paste-hint').toggle();"
 				title="Past a complete song with chords (of any format) and convert it into OnSong parts"
 				class="btn btn-sm btn-info link ml-2 onsong-import-buttons">&#9088; Paste Whole Song</span>
 
 			@if ($song->chords)
 				<span onclick="
 						$('.onsong-import-areas').hide();
-						convertChordsToOnSongParts();" 
+						convertChordsToOnSongParts();"
 					title="Use the existing chords data of this song and convert it into OnSong parts"
 					class="btn btn-sm btn-info link ml-2 onsong-import-buttons">&#9088; Convert Existing Chords</span>
 			@endif
 		@endif
 	@endif
 
-	<span class="small float-right mt-1">		
-		<a href="http://www.logue.net/xp/" target="new"><span class="text-info">Transposing Tool</span>
-			<i class="fa fa-external-link text-white"></i></a>
-	</span>
+	@if ( Auth::user()->isEditor())  &&  isset($song) && $song->onsongs->count() )
+		<span class="small float-right mt-1">
+			<a href="http://www.logue.net/xp/" target="new"><span class="text-info">Transposing Tool</span>
+				<i class="fa fa-external-link text-white"></i></a>
+		</span>
 
-	@if (isset($song) && $song->onsongs->count())
 		<span onclick="
 				$('.onsong-import-areas').hide();
 				$('.show-onsong-transpose-hint').toggle();
 				location.href = '#tbl-bottom';
-				$('#transpose-oldkey').focus();" 
+				$('#transpose-oldkey').focus();"
 			title="Transpose this song"
 			class="btn btn-sm btn-info link mx-2 onsong-import-buttons">&#9088; Transpose Song</span>
 	@endif
@@ -476,7 +478,7 @@
 
 
 
-{{-- provide UPLOAD facility for a full song 
+{{-- provide UPLOAD facility for a full song
 --}}
 <div class="show-onsong-upload-hint onsong-import-areas hidden rounded-bottom py-2 px-3 bg-faded text-primary small">
 	Select (or drop here) a <strong>valid OnSong file</strong> to be processed for this song:
@@ -489,16 +491,16 @@
 
 
 
-{{-- provide textarea to PASTE full song 
+{{-- provide textarea to PASTE full song
 --}}
 <div class="show-onsong-paste-hint onsong-import-areas hidden rounded-bottom py-2 px-3 bg-faded text-center text-primary small">
 
 	Copy a complete <strong>OnSong-formatted</strong> or <strong>Chords-over-Lyrics</strong>-formatted song into the input area below:
 
-	<textarea id="onsong-paste-song" class="fully-width rounded" 
+	<textarea id="onsong-paste-song" class="fully-width rounded"
 		onkeyup="calculateTextAreaHeight(this);" style="min-height: 10rem;"></textarea>
 
-	Make sure everything is correct then: 
+	Make sure everything is correct then:
 	<button type="button" class="btn btn-primary" onclick="submitPastedOnSongText();">Submit</button>
 </div>
 
@@ -525,8 +527,8 @@
 <a id="tbl-bottom"></a>
 
 
-{{-- file-upload function 
-	see: https://github.com/blueimp/jQuery-File-Upload/wiki/Basic-plugin 
+{{-- file-upload function
+	see: https://github.com/blueimp/jQuery-File-Upload/wiki/Basic-plugin
 --}}
 @if (isset($song) && ! $song->onsongs->count())
 	<script>
@@ -549,7 +551,7 @@
 			    		processOnSongFile(data);
 			    	}
 			    	else
-			    		console.log(data);		    		
+			    		console.log(data);
 			    },
 		    });
 		});

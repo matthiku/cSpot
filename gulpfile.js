@@ -36,12 +36,12 @@ var path = {
     'c_spot'        : bower_path + '/c-spot',
 };
 
-/* 
+/*
     Themes for jQuery-UI
     other good ones: base, pepper-grinder, smoothness, redmond, overcast, sunny, flick, cuppertino, ui-lightness
     see: http://jqueryui.com/themeroller/
 */
-var ui_theme = 'redmond'; 
+var ui_theme = 'redmond';
 
 
 
@@ -62,7 +62,7 @@ elixir(function(mix) {
 
         path.c_spot         + '/css/style.css',
         path.c_spot         + '/css/signin.css',
-        
+
     ], 'public/css/all.css', './');
 
 
@@ -87,14 +87,14 @@ elixir(function(mix) {
         path.c_spot         + '/js/presentation.js',
 
     ], 'public/js/all.js', './');
-    
+
 
     // allow for versioning
     mix.version(['css/all.css', 'js/all.js']);
 
 
-    /* 
-        copy static files 
+    /*
+        copy static files
 
         1. FONTS
     */

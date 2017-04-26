@@ -13054,7 +13054,7 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
  *
  * c-SPOT specific style sheet
  *
- * see https://github.com/matthiku/cSpot 
+ * see https://github.com/matthiku/cSpot
  *
  * (C) M.Kuhs Ireland, 2016
  */
@@ -13178,7 +13178,7 @@ red {
 
 .sup {
     vertical-align: super;
-    line-height: 0;    
+    line-height: 0;
 }
 
 
@@ -13192,7 +13192,7 @@ red {
 .ui-state-disabled {
     opacity: 1 !important;
     cursor: initial !important;
-    pointer-events: initial !important;
+    pointer-events: auto !important;
 }
 .ui-state-disabled>.ui-tabs-anchor {
     background-color: white !important;
@@ -13202,8 +13202,8 @@ red {
     text-align: center;
 }
 /* placeholder for jQuery UI sortable function */
-.ui-state-highlight { 
-    height: 1.3em; 
+.ui-state-highlight {
+    height: 1.3em;
 }
 .ui-widget {
     font-size: inherit;
@@ -13252,7 +13252,7 @@ red {
 }
 #calendar {
     box-sizing: border-box;
-    height: 90%; 
+    height: 90%;
 }
 .calendar-day, .calendar-col {
     -webkit-box-flex: 1;
@@ -13305,7 +13305,7 @@ red {
 /* -------------------------------------------*/
 
 
-/* So we wont impact the original bootstrap menu 
+/* So we wont impact the original bootstrap menu
 or it's pseudo call-out arrow the menu is wrapped
 in a sub dropdown-menu with a chained scroll-menu
 see: https://ugate.wordpress.com/2013/06/28/scrollable-twitter-bootstrap-menus/
@@ -13409,7 +13409,7 @@ div.scroll-menu {
     background-color: #fff;
 }
 .training-videos-title {
-    padding-bottom: 5px;    
+    padding-bottom: 5px;
 }
 .training-videos-card {
     border-width: 2px;
@@ -13445,7 +13445,7 @@ textarea {
 
 /* for error messages below input fields */
 .help-block {
-    color: red;    
+    color: red;
 }
 
 /* editable input field: space before submit button */
@@ -13511,7 +13511,7 @@ a[disabled] {
 }
 
 /* Minimum size of JEDITABLE text input element */
-.editable>form>input, 
+.editable>form>input,
 .editable-resource>form>input {
     min-width: 150px;
 }
@@ -13520,15 +13520,15 @@ a[disabled] {
 .edit_area>form>textarea {
     display: block;
 }
-.editable-item-field>form>textarea { 
+.editable-item-field>form>textarea {
     display: block;
 }
-.editable-item-field-present>form>textarea { 
+.editable-item-field-present>form>textarea {
     display: block;
 }
 
 
-.modal-select-song, .modal-select-scripture, .modal-select-comment,  {
+.modal-select-song, .modal-select-scripture, .modal-select-comment  {
     display: none !important;
 }
 
@@ -13692,7 +13692,7 @@ pre.text-present {
 .c-inputs-stacked {
     background-color: lavender;
     border-radius: 5px;
-    padding: 0 4px;    
+    padding: 0 4px;
 }
 .c-inputs-stacked.even {
     background-color: initial;
@@ -13740,7 +13740,7 @@ pre.text-present {
 
 .full-btn {
     padding-left: 1px;
-    padding-right: 1px;    
+    padding-right: 1px;
 }
 
 .link {
@@ -13799,7 +13799,7 @@ textarea.md-full {
     .nowrap {
         white-space: normal;
     }
-    
+
     .btn-select {
         margin-bottom: 2px;
         min-width: 50%;
@@ -13839,7 +13839,7 @@ textarea.md-full {
     .items-calendar-day {
         font-size: 40%;
     }
-    
+
     .btn-select {
         margin-bottom: 2px;
         min-width: 100%;
@@ -13879,7 +13879,7 @@ textarea.md-full {
     h1,h2,h3,h4,h5 {
         font-size: 140%;
     }
-    
+
     .btn-select {
         margin-bottom: 2px;
         min-width: 75%;
@@ -13899,7 +13899,7 @@ textarea.md-full {
 }
 
 @media (min-width: 34em) and (max-width: 85em) {
-   
+
     .btn-select {
         margin-bottom: 2px;
         min-width: 75%;

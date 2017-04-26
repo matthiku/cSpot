@@ -1,2 +1,25 @@
 // @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
 
+
+
+// see https://github.com/twbs/bootstrap/issues/21943#issuecomment-293260750
+$sizes: (
+  25: 25%,
+  50: 50%,
+  75: 75%,
+  100: 100%,
+  60px: 60px,
+  80px: 80px,
+  100px: 100px
+);
+
+@each $breakpoint in map-keys($grid-breakpoints) {
+  @include media-breakpoint-up($breakpoint) {
+    $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
+    @each $prop, $abbrev in (width: w, height: h) {
+      @each $size, $length in $sizes {
+        .#{$abbrev}#{$infix}-#{$size} { #{$prop}: $length !important; }
+      }
+    }
+  }
+}
