@@ -2,6 +2,10 @@
 
 <!-- # (C) 2016 Matthias Kuhs, Ireland -->
 
+@php
+	// helper var to see if user has the rights to edit this plan
+	$isPlanEditable = Auth::user()->ownsPlan($plan->id)  &&  $plan->date >= \Carbon\Carbon::yesterday();
+@endphp
 
 <div class="table-responsive">
 	<table class="table table-items
@@ -42,7 +46,7 @@
 
 				<th class="hidden-sm-down {{ Auth::user()->isUser() ? 'drag-item ' : ''}}dont-print" scope="row" title="drag item into the new position">
 					<span class="float-right text-success">{{ $item->seq_no }}</span>
-					@if ( Auth::user()->ownsPlan($plan->id) && $plan->date >= \Carbon\Carbon::today() )
+					@if ( $isPlanEditable )
 						<i class="p-r-1 fa fa-arrows-v">
 					@endif
 				</th>
@@ -69,7 +73,7 @@
 				{{-- Song Details editable via popup dialog
 				--}}
 				<td class="hidden-md-down center always-print link show-songbook-ref"
-					@if( Auth::user()->isUser() )
+					@if( $isPlanEditable )
 						data-toggle="modal" data-target="#searchSongModal" data-item-id="before-{{ $item->id }}"
 						data-plan-id="{{ $plan->id }}" data-item-action="update-song" data-seq-no="before-{{ $item->seq_no }}"
 						data-action-url="{!! route('cspot.api.items.update', $item->id) !!}"
@@ -121,7 +125,7 @@
 					@endif
 					>
 					<span class="hover-show"
-						@if( Auth::user()->isUser() )
+						@if( $isPlanEditable )
 							data-toggle="modal" data-target="#searchSongModal" data-item-id="{{ $item->id }}"
 							data-plan-id="{{ $plan->id }}" data-item-action="update-song" data-seq-no="{{ $item->seq_no }}"
 						@endif
@@ -132,7 +136,9 @@
 							{{ $item->song->title_2 ? ' ('. $item->song->title_2 .')' : '' }}
 						@endif
 					</span>
-					<span class="hover-only fa fa-pencil text-muted"></span>
+					@if( $isPlanEditable )
+						<span class="hover-only fa fa-pencil text-muted"></span>
+					@endif
 				</td>
 
 
@@ -155,7 +161,7 @@
 					@if ( substr($item->comment, 0,4 )=='http' )
 						<a href="{{ $item->comment }}" target="new">{{ $item->comment }}<i class="fa fa-globe"></i></a>
 
-					@elseif ( $plan->date > \Carbon\Carbon::yesterday() && Auth::user()->ownsPlan( $plan->id ))
+					@elseif ( $isPlanEditable  )
 						<span class="add-scripture-ref-toggle invisible" title="Show this comment as title of the slide presentation">&#127937;{{--
 							checkbox to indicate if public note should be shown in the presentation
 							--}}@include ('cspot.snippets.toggle-show-comment', ['label' => false])</span>
@@ -301,7 +307,7 @@
 					@endif
 					@if ( $item->key=='announcements' )
 						<big title="Announcements Slide!">&#128364;</big>
-					@elseif ( $plan->date > \Carbon\Carbon::yesterday() && Auth::user()->ownsPlan($plan->id) )
+					@elseif ( $isPlanEditable )
 						{{-- MODAL POPUP to attach file (image) to this item --}}
 						<a href="#" class="text-muted link" data-toggle="modal" data-target="#searchSongModal"
 						    id="add-file-button-item-{{ $item->id }}" data-song-id="{{$item->song_id}}"
@@ -412,7 +418,7 @@
 						&nbsp;<i class="fa fa-tv fa-lg"></i>&nbsp;</a>
 					@endif
 
-					@if( (Auth::user()->ownsPlan($plan->id) && $plan->date >= \Carbon\Carbon::yesterday()){{--  || Auth::user()->isAdmin() --}} )
+					@if ( $isPlanEditable )
 						<span class="trashedButtons" style="display: {{ $item->deleted_at ? 'initial' : 'none' }}">
 							<a class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="left" title="Restore this item"
 								href='{{ url('cspot/items/'.$item->id) }}/restore'>
@@ -498,7 +504,7 @@
 
 {{-- show deleted items data
 --}}
-@if( Auth::user()->ownsPlan($plan->id) && $plan->date >= \Carbon\Carbon::yesterday() )
+@if ( $isPlanEditable )
 
 	<div class="float-right ml-2" id="trashedItems"
 		 style="display: {{ $trashedItemsCount ? 'initial' : 'none' }}">
