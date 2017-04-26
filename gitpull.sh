@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 if [ -z "$1" ]; then
 	echo Running migrations and optionally installing Composer packages
         echo usage: $0 directory
