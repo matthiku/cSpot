@@ -7,7 +7,9 @@ use App\Models\Plan;
 use App\Models\Team;
 
 use Illuminate\Contracts\Mail\Mailer;
+use App\Mail\EmailNotification;
 use Auth;
+use Mail;
 
 class AppMailer
 {
@@ -59,9 +61,7 @@ class AppMailer
      *
      * @var array
      */
-    protected $data = [];
-
-
+    public $data = [];
 
 
     /**
@@ -96,16 +96,13 @@ class AppMailer
 
 
     /**
-     * Notify Admin via email 
+     * Notify Admin via email
      *
      * @param  User $user
      * @return void
      */
     public function notifyAdmin(User $user, $note)
     {
-        // not needed on local dev installations...
-        if (env('APP_ENV')=='local') return;
-
         $this->to      = findAdmins('email');
         $this->cc      = 'church.ennis@gmail.com';
         $this->subject = $note;
@@ -119,7 +116,7 @@ class AppMailer
     /**
      * Notify Leader or teacher of a plan
      *
-     * @param  
+     * @param
      * @return void
      */
     public function planReminder(User $recipient, Plan $plan, $role)
@@ -129,7 +126,7 @@ class AppMailer
         $this->to  = $recipient->email;
         $this->subject = env('CHURCH_NAME', 'c-SPOT-App').' - missing items for your Service Plan';
         $this->view    = 'cspot.emails.reminder';
-        $this->data    = compact( 'user', 'recipient', 'plan', 'role' );
+        $this->data    = compact('user', 'recipient', 'plan', 'role');
 
         $this->deliver();
     }
@@ -140,7 +137,7 @@ class AppMailer
     /**
      * Get confirmation for plan membership
      *
-     * @param  
+     * @param
      * @return void
      */
     public function getPlanMemberConfirmation(User $recipient, Plan $plan, Team $team)
@@ -157,22 +154,16 @@ class AppMailer
 
 
     /**
-     * Deliver the email.
+     * Deliver the email using a Queueable Mail class
      *
      * @return void
      */
     public function deliver()
     {
-        $this->mailer->send( 
-            $this->view, 
-            $this->data, 
-            function ($message) {
-                 $message->from(   $this->from, 'c-SPOT Administrator' )
-                         ->to(     $this->to )
-                         ->cc(     $this->cc )
-                         ->subject($this->subject );
-            }
-        );
+        Mail::to($this->to)
+            ->cc($this->cc)
+            ->send(new EmailNotification( $this->subject, $this->view, $this->data ));
+        return;
     }
 
 

@@ -2,8 +2,6 @@
 
 # (C) 2016 Matthias Kuhs, Ireland
 
-//use DB;
-
 use App\Models\Item;
 use App\Models\Plan;
 use App\Models\Type;
@@ -20,6 +18,8 @@ use App\Models\Biblebook;
 use App\Models\Bibleversion;
 
 use App\Events\CspotItemUpdated;
+
+use App\Jobs\SendIntMsgNotification;
 
 use App\Http\Controllers\Cspot\BibleController;
 
@@ -39,7 +39,7 @@ use Intervention\Image\ImageManager;
  * @param  string $message
  * @return void
  */
-function flash($message) 
+function flash($message)
 {
     session()->flash('message', $message);
 }
@@ -51,7 +51,7 @@ function flash($message)
  * @param  string $message
  * @return void
  */
-function unFlash() 
+function unFlash()
 {
     session()->flash('message', '');
 }
@@ -63,7 +63,7 @@ function unFlash()
  * @param  string $message
  * @return void
  */
-function flashError($message) 
+function flashError($message)
 {
     session()->flash('error', $message);
 }
@@ -92,7 +92,7 @@ function findAdmins( $field='all' )
 
 
 /*\ __________________________________________________
- *  
+ *
  *                      F I L E S
  *  __________________________________________________
 \*/
@@ -114,10 +114,10 @@ function correctFileSequence($item)
     }
 }
 /**
- * Of the files attached to an item, get the highest sequence number 
+ * Of the files attached to an item, get the highest sequence number
  */
 function getLatestSeqNoOfFilesAttachedToItem($item)
-{ 
+{
     // get all files attached to this item
     $files = $item->files()->get();
     $seq = 0;
@@ -179,7 +179,7 @@ function saveUploadedFile($request)
         'file_category_id' => $cat_id,
         'maxfilesize' => $maxfilesize,
     ]);
-    return $file;  
+    return $file;
 }
 /**
   * create a thumbnail copy of a file
@@ -208,7 +208,7 @@ function createThumbs($fPath, $fName) {
         ->crop(250, 125, 0, 0 );
     $img->save($fPath.'/'.'thumb-'.$fName, 80);
     // resize for mini thumbnail
-    $img = $img->resize(125, null, 
+    $img = $img->resize(125, null,
             function ($constraint) {
                 $constraint->aspectRatio();
             });
@@ -259,7 +259,7 @@ function createThumbsForAll()
 
 
 /*\ __________________________________________________
- *  
+ *
  *                  S O N G S
  *  __________________________________________________
 \*/
@@ -288,11 +288,11 @@ function songSearch( $search )
 /**
  * Create array of songs with a book reference for easy selection
  *
- * @return JSON array 
+ * @return JSON array
  */
 function MPsongList()
 {
-    // TODO: 
+    // TODO:
     //   1.) add new field containing only the numeric value of the book_ref field
     //   2.) inject the song stats into each song or do this with an extra AJAX request
     // removed: where('book_ref', 'like', 'MP%') as we do the filtering in the view
@@ -330,14 +330,14 @@ function getLastSongUpdated_at()
  */
 function readOnSongFile($path)
 {
-    $parts = collect();    
+    $parts = collect();
 }
 
 
 
 
 /*\ __________________________________________________
- *  
+ *
  *                  I T E M S
  *  __________________________________________________
 \*/
@@ -387,12 +387,12 @@ function nextItem($plan_id, $item_id, $direction)
         // find item with the seq no
         // third element is the actual seq no
         $curItem = Item::where([
-            [ 'plan_id', $plan_id      ], 
+            [ 'plan_id', $plan_id      ],
             [ 'seq_no',  $Ar_seq_no[2] ]
         ])->first();
         if (! $curItem->count())
             return 0;
-    } 
+    }
 
     // we only received the current item id
     else {
@@ -413,18 +413,18 @@ function nextItem($plan_id, $item_id, $direction)
         } else {
             $new_seq_no = $curItem->seq_no-1;
         }
-    } 
+    }
     elseif ($direction == 'swap') {
         $new_seq_no = $curItem->seq_no;
     }
 
     // find the new item id
     foreach ($items as $item) {
-        if     ($direction == 'next'     && $item->seq_no >= $new_seq_no) 
+        if     ($direction == 'next'     && $item->seq_no >= $new_seq_no)
             return $item->id;
         elseif ($direction == 'previous' && $item->seq_no <= $new_seq_no)
-            return $item->id;        
-        elseif ($item->seq_no == $new_seq_no) 
+            return $item->id;
+        elseif ($item->seq_no == $new_seq_no)
             return $item->id;
     }
     return $item->id;
@@ -447,7 +447,7 @@ function getItemTitle($item, $direction='next')
 /**
  * Insert a new item into the list of items of a plan
  *
- * Make sure the new sequence number fits sequentially into 
+ * Make sure the new sequence number fits sequentially into
  *    the list of sequence numbers of the existing items for a plan
  *    and that all current sequence numbers are in 1.0 steps
  *
@@ -470,7 +470,7 @@ function insertItem( $request )
     // We are going to number all the items of this plan, starting with 1.0
     $counter = 1.0;
 
-    // if the new item already has a seq_no of 1 or smaller, we change it to one 
+    // if the new item already has a seq_no of 1 or smaller, we change it to one
     //    and increase the counter, so that all subsequent items have the correct seq_no
 
     if ($new_seq_no <= $counter) {
@@ -478,7 +478,7 @@ function insertItem( $request )
         $counter = 2;
     }
 
-    // Loop through each item of the plan, making sure the 
+    // Loop through each item of the plan, making sure the
     //      seq_no of each item is always 1.0 bigger than the previous
 
     foreach ($items as $item) {
@@ -498,7 +498,7 @@ function insertItem( $request )
             $item->seq_no = $counter;
 
             # Now get  the actual DB record
-            $i = Item::find($item->id); 
+            $i = Item::find($item->id);
 
             // update the item accordingly
             $i->seq_no = $counter; $i->save();
@@ -522,7 +522,7 @@ function insertItem( $request )
         $newItem->song_freshness = calculateSongFreshness( $request->song_id, $plan->leader_id, $plan->date );
         $newItem->song_id = $request->song_id;
     }
-    else 
+    else
         $newItem->song_id = NULL;   // make sure we do not reference a song!
 
     // saving the new Item via the relationship to the Plan
@@ -550,7 +550,7 @@ function insertItem( $request )
         else {
             flash('Uploaded file could not be validated!');
         }
-    } 
+    }
 
     // handle file linking
     if ($request->has('file_id')) {
@@ -580,7 +580,7 @@ function insertItem( $request )
 /**
  * Calculate Song Freshness (0...100%)
  *
- * ... based on the 
+ * ... based on the
  * - amount of times this song was used in general
  * - amount of times this song was used by this leader
  * - time span since the song was last used
@@ -648,7 +648,7 @@ function moveItem($id, $direction)
             $i->seq_no = $counter;        # update the seq_no
             $i->save();                   # save the record
         }
-        $counter += 1.0;        
+        $counter += 1.0;
     }
     return true;
 }
@@ -661,7 +661,7 @@ function moveItem($id, $direction)
  *
  * (the model migth allow soft deletes!)
  *
- * Make sure the new sequence number fits sequentially into 
+ * Make sure the new sequence number fits sequentially into
  *    the list of sequence numbers of the existing items for a plan
  *    and that all current sequence numbers are in 1.0 steps
  *
@@ -682,18 +682,18 @@ function deleteItem($id)
     $counter = 1.0;
     foreach ($items as $item) {
         if ($item->id == $id) {
-            $moveItem->delete();            
+            $moveItem->delete();
         } else {
             if ($item->seq_no <> $counter) {
                 $i = Item::find($item->id); # get the actual DB record
                 # if found, update the current selection
-                if ($i) { 
-                    $item->seq_no = $counter; 
+                if ($i) {
+                    $item->seq_no = $counter;
                     $i->seq_no = $counter;      # update the seq_no
                     $i->save();                 # save the record
-                }  
+                }
             }
-            $counter += 1.0;        
+            $counter += 1.0;
         }
     }
     return $moveItem;
@@ -702,11 +702,11 @@ function deleteItem($id)
 
 
 /**
- * RESTORE an item 
+ * RESTORE an item
  *
  * (the model migth allow soft deletes!)
  *
- * Make sure the new sequence number fits sequentially into 
+ * Make sure the new sequence number fits sequentially into
  *    the list of sequence numbers of the existing items for a plan
  *    and that all current sequence numbers are in 1.0 steps
  *
@@ -734,7 +734,7 @@ function restoreItem($id)
             $i->seq_no = $counter;      # update the seq_no
             $i->save();                 # save the record
         }
-        $counter += 1.0;        
+        $counter += 1.0;
     }
     return true;
 }
@@ -742,13 +742,13 @@ function restoreItem($id)
 
 
 /**
- * check if string contains bible references, 
+ * check if string contains bible references,
  * returns the bible texts as an array
  *
  * @param string $refString
  * @return array bible text from bibles.org
  */
-function getBibleTexts($refString, $local=false) 
+function getBibleTexts($refString, $local=false)
 {
     // regex pattern to match bible references (http://stackoverflow.com/questions/22254746/bible-verse-regex)
     $pattern = '/(\d*)\s*([a-z]+)\s*(\d+)(?::(\d+))?(\s*-\s*(\d+)(?:\s*([a-z]+)\s*(\d+))?(?::(\d+))?)?/i';
@@ -767,7 +767,7 @@ function getBibleTexts($refString, $local=false)
             $version = explode(')', $parts[1] );
             $bref    = preg_split( '/[\s,:-]+/', $parts[0] );
             $num = 0;
-            // check if the first word really is the name of a bible book 
+            // check if the first word really is the name of a bible book
             foreach ($bref as $key => $br) {
                 if ( ( $br=='1' || $br=='2' || $br=='3' ) && in_array($br.' '.$bref[$key+1], $books) ) {
                     break;
@@ -775,7 +775,7 @@ function getBibleTexts($refString, $local=false)
                 if ( ! in_array( ucfirst($br), $books)) {
                     $num += 1;
                 } else { break; }
-            } 
+            }
             // No correct book name found?
             if (sizeof($bref)-$num < 3 ) continue;
 
@@ -785,14 +785,14 @@ function getBibleTexts($refString, $local=false)
                 $num++;
             } else {
                 $book    = $bref[$num];
-            } 
+            }
             $chapter = $bref[$num+1];
-            $verseFr = $bref[$num+2];   
-            $verseTo = '';         
+            $verseFr = $bref[$num+2];
+            $verseTo = '';
             if ( isset($bref[$num+3]) ) $verseTo = $bref[$num+3];
             if ( $verseTo == '' || ! is_numeric($verseTo) ) {
                 $verseTo = $verseFr;
-            } 
+            }
 
             // if bible version is stored locally, we can get it directly from our DB
             if ($local) {
@@ -803,7 +803,7 @@ function getBibleTexts($refString, $local=false)
                 //      while avoiding conflicts like "Psalms" vs. "Psalm" or "Song of Songs" vs "Song of Solomon"
                 if (strlen($book)>4)
                     $bbook = Biblebook::where('name', 'like', substr($book,0,5).'%')->first();
-                else 
+                else
                     $bbook = Biblebook::where('name', $book)->first();
 
                 // get the actual collection of verses
@@ -875,7 +875,7 @@ function deleteCachedItemsFromPastPlans($plan_id)
 
 
 /** __________________________________________________
- *  
+ *
  *                  P L A N S
  *  __________________________________________________
  */
@@ -886,11 +886,11 @@ function deleteCachedItemsFromPastPlans($plan_id)
 /**
  * getUsersRolesAndInstruments
  *
- * Create an array of all users, their roles and instruments 
+ * Create an array of all users, their roles and instruments
  *
  * @return arary
  */
-function getUsersRolesAndInstruments() 
+function getUsersRolesAndInstruments()
 {
 
     // produce array with users and all their roles
@@ -905,9 +905,9 @@ function getUsersRolesAndInstruments()
         }
         // provide data about user's music instruments
         foreach ($user->instruments as $value) {
-            array_push($instruments, ['instrument_id'=>$value->id, 'name'=>$value->name] ); 
+            array_push($instruments, ['instrument_id'=>$value->id, 'name'=>$value->name] );
         }
-        $userRoles[$user->id] = ['name'=>$user->name, 'roles'=>$roles, 'instruments'=>$instruments];       
+        $userRoles[$user->id] = ['name'=>$user->name, 'roles'=>$roles, 'instruments'=>$instruments];
     }
     return $userRoles;
 }
@@ -915,10 +915,10 @@ function getUsersRolesAndInstruments()
 
 
 /**
- * Create a List of Service Plans 
+ * Create a List of Service Plans
  *    filtered by user (leader/teacher) or by plan type and/or ordered by certain fields
  *
- * @param  filterby     (user|type|date|future) 
+ * @param  filterby     (user|type|date|future)
  *                      Show only plans for a certain user, of a certain type, a certain date or all events
  *                      default is 'user'
  *
@@ -926,12 +926,12 @@ function getUsersRolesAndInstruments()
  *                      default is plans for current user only
  *
  * @param  timeframe    (all|future)
- *                      Show only future plans or all 
+ *                      Show only future plans or all
  *                      default is only future plans
  *
  * @param  orderBy      Field by which the list must be sorted by. Default: Date
  * @param  order        (desc|asc) default is 'asc' = ascending order. Default: Asc
- * 
+ *
  */
 function getPlans($request)
 {
@@ -952,13 +952,13 @@ function getPlans($request)
 
     if (isset($request->year))
         $timeframe = 'all';
-    
+
 
     $plans = [];
     $heading = 'should not appear!';
 
     // show only plans for certain user ids or all users
-    if ($filterby=='user') 
+    if ($filterby=='user')
     {
         $plans = Plan::with('type');
 
@@ -967,26 +967,26 @@ function getPlans($request)
             $plans->where( function ($query) use ($filtervalue) {
                     $query
                         ->where('leader_id', $filtervalue)
-                        ->orWhere('teacher_id', $filtervalue); 
+                        ->orWhere('teacher_id', $filtervalue);
                     });
 
         if ($timeframe != 'all') {
             $plans->whereDate('date', '>', Carbon::yesterday());
             $heading = 'Upcoming Events for ';
         }
-        else 
+        else
             $heading = 'All Events for ';
 
         $plans->orderBy($orderBy, $order);
 
         if ($filtervalue == 'all')
             $heading .= 'all users';
-        else 
+        else
             $heading .= User::find($filtervalue)->first_name;
     }
 
     // show only plans of certain type
-    elseif ($filterby=='type') 
+    elseif ($filterby=='type')
     {
         if (is_numeric($filtervalue)) {
             if ($timeframe=='all') {
@@ -1008,14 +1008,14 @@ function getPlans($request)
         else {
             $filtervalue = json_decode($filtervalue);
             $heading = "Various Upcoming Event Types";
-            
+
             if ($timeframe=='all') {
                 $plans = Plan::with('type')
                     ->whereIn('type_id', $filtervalue)
                     ->orderBy($orderBy, $order);
                 $heading = "Various Event Types";
             }
-            else 
+            else
                 $plans = Plan::with('type')
                     ->whereDate('date', '>', Carbon::yesterday())
                     ->whereIn('type_id', $filtervalue)
@@ -1024,7 +1024,7 @@ function getPlans($request)
     }
 
     // show all future plans
-    elseif ($filterby=='future') 
+    elseif ($filterby=='future')
     {
         // get ALL future plans incl today
         $heading = 'Upcoming Services';
@@ -1038,7 +1038,7 @@ function getPlans($request)
         }
     }
 
-    elseif ($filterby=='date') 
+    elseif ($filterby=='date')
     {
         // list only plans of a certain date
         $plans = Plan::with(['type', 'leader', 'teacher'])
@@ -1069,16 +1069,16 @@ function listOfPlansForUser()
 
 
 function addDefaultRolesAndResourcesToPlan($plan)
-{        
+{
     // add leader/teacher roles to the team for this plan
     $team = $plan->teams()->create([
-        'user_id' => $plan->leader_id, 
+        'user_id' => $plan->leader_id,
         'role_id' => env('LEADER_ID', 5)  // default is 4 if not set in .env
     ]);
 
     if ($plan->teacher_id) {
         $plan->teams()->create([
-            'user_id' => $plan->teacher_id, 
+            'user_id' => $plan->teacher_id,
             'role_id' => env('TEACHER_ID', 4)   // default is 5 if not set in .env
         ]);
     }
@@ -1116,7 +1116,7 @@ function checkIfLeaderOrTeacherWasChanged($request, $plan)
 
         // find the corresponding team record for the leader
         $leader = Team::where([
-            ['plan_id', $plan->id], 
+            ['plan_id', $plan->id],
             ['role_id', env('LEADER_ID', 4)]  // default is 4 if not set in .env
         ]);
 
@@ -1127,7 +1127,7 @@ function checkIfLeaderOrTeacherWasChanged($request, $plan)
             addDefaultRolesAndResourcesToPlan($plan);
         }
 
-        // affected users must be notified of this change accordingly 
+        // affected users must be notified of this change accordingly
         $new_leader = User::find($request->leader_id);
         $recipient = $new_leader->id;
         $subject = 'Leader changed for Event on '.Carbon::parse($plan->date)->format('l, jS \\of F Y');
@@ -1146,7 +1146,7 @@ function checkIfLeaderOrTeacherWasChanged($request, $plan)
 
         // find the corresponding team record for the teacher
         $teacher = Team::where([
-            ['plan_id', $plan->id], 
+            ['plan_id', $plan->id],
             ['role_id', env('TEACHER_ID', 5)]  // default is 5 if not set in .env
         ]);
 
@@ -1157,7 +1157,7 @@ function checkIfLeaderOrTeacherWasChanged($request, $plan)
             addDefaultRolesAndResourcesToPlan($plan);
         }
 
-        // affected users must be notified of this change accordingly 
+        // affected users must be notified of this change accordingly
         $new_teacher = User::find($request->teacher_id);
         $recipient = $new_teacher->id;
         $subject = 'Teacher changed for Event on '.Carbon::parse($plan->date)->format('l, jS \\of F Y');
@@ -1174,8 +1174,8 @@ function checkIfLeaderOrTeacherWasChanged($request, $plan)
 
         // also create a history record for this change
         $history = new History([
-            'user_id'=>Auth::user()->id, 
-            'changes'=> $subject . "\n" . $msg, 
+            'user_id'=>Auth::user()->id,
+            'changes'=> $subject . "\n" . $msg,
             'reason'=>$request->reasonForChange
         ]);
         $plan->histories()->save($history);
@@ -1189,7 +1189,7 @@ function checkIfLeaderOrTeacherWasChanged($request, $plan)
 
 
 /** __________________________________________________
- *  
+ *
  *              M E S S A G E S
  *  __________________________________________________
  */
@@ -1254,10 +1254,15 @@ function deleteConfirmRequestThread($id)
 /**
  * Send Email notification of new internal messages
  *
- * @param Message $message 
+ * @param Message $message
  */
 function sendEmailNotification(Message $message)
 {
+    Log::debug('starting dispatch to SendIntMsgNotification');
+
+    dispatch(New SendIntMsgNotification($message));
+    return;
+
     $subject = 'c-SPOT internal message notification';
     $thread = Thread::find($message->thread_id);
     $thread_subject = $thread->subject;
@@ -1267,7 +1272,8 @@ function sendEmailNotification(Message $message)
         $user = $recipient->user;
         # check if user actually wants to be notified
         if ($user->notify_by_email) {
-            Mail::send('cspot.emails.notification', 
+
+            Mail::send('cspot.emails.notification',
                 ['user'=>$user, 'subject'=>$subject, 'messi'=>$message],
                 function ($msg) use ($user, $subject) {
                     $msg->from(findAdmins()[0]->email, 'c-SPOT Admin');
@@ -1276,14 +1282,14 @@ function sendEmailNotification(Message $message)
                 }
             );
         }
-    }    
+    }
 }
 
 
 
 
 /** __________________________________________________
- *  
+ *
  *              V A R I O U S
  *  __________________________________________________
  */
@@ -1329,11 +1335,11 @@ function getMainPresenter()
     $mainPresenter['name'] = 'none';
 
     // Do we already have a Main Presenter?
-    if (Cache::has('MainPresenter')) 
+    if (Cache::has('MainPresenter'))
     {
         $mainPresenter = Cache::get('MainPresenter');
-    } 
-    
+    }
+
     return $mainPresenter;
 }
 
@@ -1348,8 +1354,8 @@ function getMainPresenter()
 function checkRights($plan) {
 
     if ( auth()->user()->isEditor() // editor and higher can always
-      || auth()->user()->id == $plan->teacher_id 
-      || auth()->user()->id == $plan->leader_id  ) 
+      || auth()->user()->id == $plan->teacher_id
+      || auth()->user()->id == $plan->leader_id  )
          return true;
 
     flash('Only the leader or teacher or editors can modify this plan.');
@@ -1429,7 +1435,7 @@ function getTypeBasedPlanData($type)
     // get default weekday for this plan type
     $weekday = $type->weekday;
 
-    // set proposed date according to default weekday for this event type 
+    // set proposed date according to default weekday for this event type
     $planDate = Carbon::now();
     $weekdayNames = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
     if ($weekday!==null && $weekday>=0 && $weekday<7)
@@ -1446,7 +1452,7 @@ function getTypeBasedPlanData($type)
 
 
 /**
- * Check for duplicates and non-integer sequence number 
+ * Check for duplicates and non-integer sequence number
  * in the list of default items for a specific event type
  * @param int $type_id
  */
@@ -1462,6 +1468,3 @@ function checkDefaultItemsSequencing($type_id)
     }
 
 }
-
-
-

@@ -91,7 +91,7 @@ class RegisterController extends Controller
 
         // fire an event
         //event(new UserRegistered($user));
-        
+
         return $user;
     }
 
@@ -105,7 +105,7 @@ class RegisterController extends Controller
      * @param  AppMailer $mailer
      * @return \Redirect
      */
-    public function register(Request $request, AppMailer $mailer) 
+    public function register(Request $request, AppMailer $mailer)
     {
         Log::info($request->ip().' - trying to validate user registration');
 
@@ -122,10 +122,10 @@ class RegisterController extends Controller
 
         // $user = User::create( $request->all() );
 
-        //Assign Role
+        //Assign default Role
         $role = Role::whereName('user')->first();
         $user->assignRole($role);
-        
+
         Log::info($request->ip().' - trying to send registration email to '.$user->name);
         $mailer->notifyAdmin( $user, 'new user registration from IP '.$request->ip() );
 
@@ -156,7 +156,7 @@ class RegisterController extends Controller
         $user = User::whereToken($token)->first();
         if (!$user) {
             flash('You\'re already confirmed. Please sign in');
-        } 
+        }
         else {
             // remove token from user record
             $user->confirmEmail();
@@ -222,7 +222,7 @@ class RegisterController extends Controller
             $sameSocialId = Social::where('social_id', '=', $user->id)->where('provider', '=', $provider )->first();
             if( empty($sameSocialId) )
             {
-                // As there is no combination of this social id and provider, 
+                // As there is no combination of this social id and provider,
                 // we create a new one
                 $newSocialUser = new User;
 
