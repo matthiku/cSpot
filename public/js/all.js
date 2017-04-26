@@ -48381,7 +48381,7 @@ function hideSpinner() {
 
 
 
-            
+
 /**
  * Array to keep a list of future plan dates for highlighing in the calendar widget
  */
@@ -48458,8 +48458,8 @@ function serializeForUrl(obj)
 }
 
 
-/* 
-    Apply the biggest value of width or height of each element 
+/*
+    Apply the biggest value of width or height of each element
     in a collection to all elements of that collection
 
     @param array collection Array of HTML elements
@@ -48496,7 +48496,7 @@ function delayedCloseFlashingModals(selector) {
 function closeMyModal(selector) {
     $(selector).modal('hide');
     // set focus again on main input field
-    $('.main-input').focus();    
+    $('.main-input').focus();
 }
 
 
@@ -48541,7 +48541,7 @@ function getLocalStorageItem(key, defaultValue)
 function showAlertBox(text, where, type)
 {
     var tp = type || 'warning';
-    
+
     // for variation, replace 'warning' with 'success', 'info' or 'danger'
     var elem = '<div class="alert alert-' + tp + '" role="alert">'
         + '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
@@ -48558,7 +48558,7 @@ function showAlertBox(text, where, type)
 }
 
 
-/* 
+/*
     Load configuration data from backend
 
     (called from document.ready)
@@ -48579,17 +48579,17 @@ function loadConfigData()
         cSpot.const.waitspinner = '<i class="fa fa-spinner fa-spin fa-fw"></i>';
         cSpot.const.editIcon    = '<i class="fa fa-edit"></i>';
         cSpot.const.deleteIcon  = '<i class="fa fa-trash"></i>';
-        
+
         // presentation type might have been set in the view
         if (cSpot.presentationType) {
             cSpot.presentation.type = cSpot.presentationType;
-            
+
             // load cached presentation data
             if ( cSpot.presentationType=='lyrics' && cSpot.presentation.plan )
                 loadCachedPresentation(cSpot.presentation.plan.id);
 
-            if ( cSpot.presentationType=='chords' 
-              || cSpot.presentationType=='sheetmusic' 
+            if ( cSpot.presentationType=='chords'
+              || cSpot.presentationType=='sheetmusic'
               || cSpot.presentationType=='leader' )
                 // for chords presentation
                 prepareChordsPresentation(cSpot.presentationType);
@@ -48719,7 +48719,7 @@ function makeAreasEditable()
 \*/
 
 
-/* Event Calendar: 
+/* Event Calendar:
     Calculate ideal height for each calendar week row
 */
 function setIdealCalendarRowHeight()
@@ -48729,24 +48729,24 @@ function setIdealCalendarRowHeight()
         return
 
     /* find out remaining white space which can be distrubted to the rows */
-    var remainingWhiteSpace = 
-        $('.calendar-container').height() 
+    var remainingWhiteSpace =
+        $('.calendar-container').height()
             - $('#calendar-tabs').height();
 
     // we need a minimal amount of white space available to be distributed
-    if (remainingWhiteSpace < 6 ) 
+    if (remainingWhiteSpace < 6 )
         remainingWhiteSpace = 5;
 
     // get maximum available space for the calendar
-    var totalAvailableHeight = 
-        $('.calendar-container').height() 
+    var totalAvailableHeight =
+        $('.calendar-container').height()
             - $('.calendar-month-row').parent().height();
             - $('.calendar-col').parent().height();
 
     // check if there is no additional NavBar as on the "Upcoming Events" page
     if ( ! $('.calendar-container').siblings('div.row').length )
-        totalAvailableHeight = 
-            $('.app-content').height() 
+        totalAvailableHeight =
+            $('.app-content').height()
                 - $('.calendar-month-row').parent().height();
                 - $('.calendar-col').parent().height();
 
@@ -48757,7 +48757,7 @@ function setIdealCalendarRowHeight()
         var rows = calendarWeek.length;
 
         // make sure each the max heigt per week row is not exceeding the available space
-        max = totalAvailableHeight / rows - 10; // cater for padding or gutter 
+        max = totalAvailableHeight / rows - 10; // cater for padding or gutter
 
         // now assign the height value to each week row
         calendarWeek.each( function(j) {
@@ -48834,7 +48834,7 @@ function addYearToPlansListSelection(that)
     window.location.href = myUrl.pathname + serializeForUrl(myUrl.params);
 }
 
-/* 
+/*
     List filtering: Reload page with alternate filtering
     (plans.blade.php)
 */
@@ -48864,10 +48864,10 @@ function toogleAllorFuturePlans(selection)
     if (selection=='allusers-future')
         newUrl += '?filterby=future';
     else {
-        // add new query string 
+        // add new query string
         newUrl += '?timeframe='+time;
 
-        if (user=='allusers') 
+        if (user=='allusers')
             newUrl += '&filterby=user&filtervalue=all';
     }
 
@@ -48898,7 +48898,7 @@ function autoAdvance()
     // stop after the last slide
     if (cSpot.presentation.max_seq_no == cSpot.presentation.seq_no)
         gonext = '#';
-    
+
     if (gonext  && gonext != '#') {
         console.log("now advancing to next item: " + gonext);
         location.href = gonext + "?advance=auto";
@@ -48907,12 +48907,12 @@ function autoAdvance()
         gonext = $('#go-back').attr('href');
         if (gonext) {
             console.log("going back to plan details page: " + gonext);
-            location.href = gonext;        
+            location.href = gonext;
         }
     }
 }
 
-function startAutoAdvance() 
+function startAutoAdvance()
 {
     var currUrl = parseURLstring();
     if (currUrl.search) return;
@@ -48933,8 +48933,8 @@ function positionZoomButtons(what) {
     $('#zoom-'+what+'-textarea').show();
     if ($('#zoom-'+what+'-textarea').is(':visible'))
         $('#zoom-'+what+'-textarea').position({
-            my: 'right bottom', 
-            at: 'right top', 
+            my: 'right bottom',
+            at: 'right top',
             of: 'textarea[name="'+what+'"]'
         });
 }
@@ -48965,12 +48965,12 @@ function toggleVideoTabs(on, off)
 
 
 
-/* 
-    provide certain (locally cached) data accross all cSpot  views 
+/*
+    provide certain (locally cached) data accross all cSpot  views
 */
-function loadFromLocalCache() 
+function loadFromLocalCache()
 {
-    if (window.location.pathname.indexOf('cspot/')>0) 
+    if (window.location.pathname.indexOf('cspot/')>0)
     {
         /*  check if songList exists in local cache and if it is still up-to-date,
             otherwise grab an update from the server
@@ -48982,13 +48982,13 @@ function loadFromLocalCache()
         var songListDate = localStorage.getItem('songList.updated_at');
         if ( !songListDate || (songListDate && ( songListDate == "[object Object]"  || songListDate.substr(0,1)!='{' )) )
             cSpot.songList = null;
-        else 
+        else
             cSpot.songList.updated_at = JSON.parse( songListDate );
 
         // not found in local storage, or not up-to-date
         // so get it from the server
         if ( !songListDate || !cSpot.songList || cSpot.songList.updated_at.date != cSpot.lastSongUpdated_at.date) {
-            
+
             ;;;console.log("Song list must be reloaded from server!");
 
             $.get(cSpot.routes.apiGetSongList, function(data, status) {
@@ -49002,11 +49002,11 @@ function loadFromLocalCache()
                     addOptionsToMPsongSelect();
                 }
             });
-        } 
+        }
         else {
             addOptionsToMPsongSelect();
         }
-        
+
 
 
         /***
@@ -49060,7 +49060,7 @@ function loadFromLocalCache()
     /**
      * check sync setting for chords or sheetmusic presentation
      */
-    if ( window.location.pathname.indexOf('/chords')>10 || window.location.pathname.indexOf('/sheetmusic')>10 ) 
+    if ( window.location.pathname.indexOf('/chords')>10 || window.location.pathname.indexOf('/sheetmusic')>10 )
     {
         // check if we want to syncronise our own presentation with the Main Presenter
         var configSyncPresentationSetting = localStorage.getItem('configSyncPresentation');
@@ -49101,15 +49101,15 @@ function checkOfflineMode()
 
     // use the offline mode (Local Storage) - Default is: Yes
     cSpot.presentation.useOfflineMode = getLocalStorageItem('config-OfflineMode', 'true') == 'true';
-    
+
     // if the value in LocalStorage was set to 'true', then we activate the checkbox:
     changeCheckboxIcon('#config-OfflineModeItem', cSpot.presentation.useOfflineMode);
 }
 
 
-// save changes to the 
+// save changes to the
 function updateTabToSpacesRatio(that)
-{ 
+{
     cSpot.config.tabToSpacesRatio = $(that).val();
     localStorage.setItem('config-tabToSpacesRatio', cSpot.config.tabToSpacesRatio);
     ;;;console.log('Updating tab-to-spaces-ratio to: ' + cSpot.config.tabToSpacesRatio);
@@ -49128,9 +49128,9 @@ function prepareSyncPresentation()
 {
 
     // only on presentation pages
-    if ( window.location.pathname.indexOf('/present')   > 10 
-      || window.location.pathname.indexOf('/chords')    > 10 
-      || window.location.pathname.indexOf('/sheetmusic')> 10 
+    if ( window.location.pathname.indexOf('/present')   > 10
+      || window.location.pathname.indexOf('/chords')    > 10
+      || window.location.pathname.indexOf('/sheetmusic')> 10
       || window.location.pathname.indexOf('/leader')    > 10 ) {
 
         if (cSpot.presentation.eventSource === undefined)
@@ -49149,7 +49149,7 @@ function prepareSyncPresentation()
             ;;;console.log('New sync request received: ' + e.data);
             // has user requested a syncchronisation?
             if (cSpot.presentation.sync) {
-                // call function to sync 
+                // call function to sync
                 syncPresentation(cSpot.presentation.syncData);
             }
         });
@@ -49193,7 +49193,7 @@ function sendShowPosition(slideName) {
 
 
 /*
-    In the Song Search modal popup, show list of max 5 songs that 
+    In the Song Search modal popup, show list of max 5 songs that
     correspond to the entered search string (needle)
 */
 function showSongHints(that, needle, limit)
@@ -49209,8 +49209,8 @@ function showSongHints(that, needle, limit)
     var found = 'no match';
     needle = needle.toLowerCase();
     for (var i=0; i<haystackMP.length; i++) {
-        if ( haystackMP[i].title.toLowerCase().indexOf(needle) >= 0 
-          || haystackMP[i].title_2.toLowerCase().indexOf(needle) >= 0 
+        if ( haystackMP[i].title.toLowerCase().indexOf(needle) >= 0
+          || haystackMP[i].title_2.toLowerCase().indexOf(needle) >= 0
           || haystackMP[i].book_ref.toLowerCase().indexOf(needle) >= 0 ) {
 
             // are we limited to only show videoclips or slide items?
@@ -49219,7 +49219,7 @@ function showSongHints(that, needle, limit)
                     continue;
             }
             if (count===0) found='';
-            
+
             found+='<div class="radio"><label class="text-muted link"><input type="radio" onclick="$(\'#searchForSongsButton\').click();" name="haystack" id="needle-';
             found+=haystackMP[i].id + '" value="'+ haystackMP[i].id;
             found+='">' + haystackMP[i].book_ref + ' ' + haystackMP[i].title + (haystackMP[i].title_2 ? ' ('+haystackMP[i].title_2+')' : '') + '</label></div>';
@@ -49331,7 +49331,7 @@ function fillPlanDefaultValues(that)
     // propose a date for this event based on the weekday property of the default values
     var n = moment();
     // first check if the plan still has the default date value of today!
-    var p = moment($('input[name="date"]').val());     
+    var p = moment($('input[name="date"]').val());
     if (selSerType.weekday !== null && n.dayOfYear()==p.dayOfYear()) {
         var newDate = moment();
         var diff = selSerType.weekday - newDate.weekday();
@@ -49341,7 +49341,7 @@ function fillPlanDefaultValues(that)
     }
 
     // fill default leader name
-    if (selSerType.leader_id !== null) 
+    if (selSerType.leader_id !== null)
     {
         $('#leader_id').val(selSerType.leader_id);
     }
@@ -49427,7 +49427,7 @@ function cancelForm()
         return;
     }
 
-    showSpinner(); 
+    showSpinner();
     var newLoc = $('.cancel-button').attr('href');
     if (newLoc === undefined)
         newLoc = $('.cancel-button').parent().attr('href');
@@ -49444,7 +49444,7 @@ function cancelForm()
 }
 
 
-/* 
+/*
     List sorting: Reload page with the 'orderBy' segment and the given field name
 */
 function reloadListOrderBy(field)
@@ -49454,7 +49454,7 @@ function reloadListOrderBy(field)
     var currUrl = window.location.href.split('?');
     var newUrl  = currUrl[0] + '?';
     var orderbyFound;
-    if (currUrl.length > 1) 
+    if (currUrl.length > 1)
     {
         var queryStr = currUrl[1].split('&');
         orderbyFound = false;
@@ -49468,16 +49468,16 @@ function reloadListOrderBy(field)
                 if (parms[0]=='order') {
                     parms[1]=='asc'  ?  parms[1]='desc'  :  parms[1]='asc';
                     queryStr[i] = 'order='+parms[1];
-                }                
+                }
                 newUrl += queryStr[i];
                 if (i > 0) newUrl += '&';
             }
-        } 
+        }
         else {
             // retain the existing query string
             newUrl += queryStr[0];
         }
-    } 
+    }
     // check if existing query string already contained a orderby param
     if (currUrl.length > 1 && ! orderbyFound) newUrl += '&';
     if (currUrl.length < 2 || ! orderbyFound) {
@@ -49493,7 +49493,7 @@ function reloadListOrderBy(field)
  * Function to open plan selected via date picker
  * better name: "openPlanByDate"
  */
-function openPlanByDate(date) 
+function openPlanByDate(date)
 {
     $('#show-spinner').modal({keyboard: false});
     window.location.href = cSpot.appURL + '/cspot/plans/by_date/' + date.value;
@@ -49523,10 +49523,10 @@ function showYTvideoInModal(ytid, that)
 
 
 /**
-    When user presses enter in the Songs List view, check 
+    When user presses enter in the Songs List view, check
     which filter field is open and trigger its function
  */
-function findOpenFilterField() 
+function findOpenFilterField()
 {
     // check which search fields open
     var searchFields = $("[id^=filter-]");
@@ -49551,11 +49551,11 @@ function showFilterField(field, that)
 
     var currUrl, newUrl;
     // Is this field already visible?
-    if ($('#filter-'+field+'-clear').is(':visible')) 
+    if ($('#filter-'+field+'-clear').is(':visible'))
     {
         currUrl  = parseURLstring(window.location.href);
         // check if there is a query string in the URL (But not when we are searching for a song to be added to a plan!)
-        if ( (currUrl.search.indexOf('plan_id') < 0  && currUrl.search.length > 1) || that == 'clear' )  { 
+        if ( (currUrl.search.indexOf('plan_id') < 0  && currUrl.search.length > 1) || that == 'clear' )  {
             // clear existing filter and reload page without a filter
             showSpinner();
             // remove filter elements from URL query string
@@ -49587,19 +49587,19 @@ function showFilterField(field, that)
             }
         }
     });
-         
+
     // define html code for search input field
     var newHtml = '<input id="filter-fffff-input" style="line-height: normal;" type="text" placeholder="search fffff">'
     newHtml    += '<i id="filter-fffff-submit" class="fa fa-check-square big"> </i>';
     // did user click on the visible search icon?
-    if ($('#filter-'+field+'-show').is(':visible')) 
+    if ($('#filter-'+field+'-show').is(':visible'))
     {
         // add new html code, replacing all placeholders with current field name
         $('#'+field+'-search').append(newHtml.replace(/fffff/g, field));
         $('#filter-'+field+'-input').delay(800).focus();
         $('#filter-'+field+'-show').hide();
-    } 
-    else 
+    }
+    else
     {
         // Did user enter search data?
         if ( $('#filter-'+field+'-input').length  &&  $('#filter-'+field+'-input').val().length > 0 ) {
@@ -49629,11 +49629,11 @@ function showFilterField(field, that)
 
 /**
  * On the Team page, show the role select element once the user was selected
- * 
+ *
  * param 'who' refers to the element from which this method was called
  */
 function showRoleSelect(who, role_id)
-{    
+{
     // default value for role_id
     role_id = role_id || undefined;
 
@@ -49644,13 +49644,13 @@ function showRoleSelect(who, role_id)
     $('#comment-input').fadeIn();
     $('#submit-button').fadeIn();
 
-    // grab the div around the radio buttons 
+    // grab the div around the radio buttons
     var roleSelectBox = $('#select-role-box');
     // create a radio item
     var radio1 = '<label class="c-input c-radio role-selector-items"><input id="';
     var radio2 = '" name="role_id" type="radio"><span class="c-indicator"></span>';
     var radio3 = '</label>';
-    
+
     // make sure we have a proper JSON object with all users and all their roles
     // ('userRolesArray' was created in a javascript snippet in the team.blade.php file)
     if (typeof(userRolesArray)=='object') {
@@ -49669,14 +49669,14 @@ function showRoleSelect(who, role_id)
             roleSelectBox.append(radio);
         }
         var instruments = user.instruments;
-        if (instruments.length > 0) { 
+        if (instruments.length > 0) {
             $('#show-instruments').html('(plays: '); }
         else {
             $('#show-instruments').html(); }
         for (var j in instruments) {
             var text = instruments[j].name;
             if (j < instruments.length-1) {
-                text += ', '; } 
+                text += ', '; }
             else {
                 text += ')'; }
             $('#show-instruments').append(text);
@@ -49724,7 +49724,7 @@ function toggleTrashed() {
 
 
 /* take one DOM element, get it's text content
- *    and write it back as individual lines of chords and lyrics 
+ *    and write it back as individual lines of chords and lyrics
  */
 function rewriteOnsong(element)
 {
@@ -49744,20 +49744,20 @@ function rewriteOnsong(element)
             }
         }
 
-        // don't add an empty line 
+        // don't add an empty line
         if ( tx.chords.trim()!='' ) {
             newText += '<pre class="chords">' + tx.chords + '</pre>';
             region2 = false;    // if there are chords, we can't be in region2
         }
-        
+
         if ( tx.lyrics.trim()=='' )
             region2 = false; // region 2 ends when a new slide begins
 
-        if ( tx.lyrics.substr(0,1)=='('  
+        if ( tx.lyrics.substr(0,1)=='('
           && tx.lyrics.substr(-1,1)==')' )
             newText += '<pre class="mb-0 text-primary lh-1h">' + tx.lyrics + "</pre>";
 
-        else if ( !region2  &&  tx.lyrics  && tx.lyrics.substr(0,1)!='#' ) 
+        else if ( !region2  &&  tx.lyrics  && tx.lyrics.substr(0,1)!='#' )
         {
             tx.lyrics = checkForSingerInstructions(tx.lyrics);
             newText += '<pre class="lyrics">' + tx.lyrics + "</pre>";
@@ -49804,11 +49804,11 @@ function convertOnSongToChordsOverLyrics(text)
         if ( tx.chords.trim()!='' ) // don't add an empty line
             newText += tx.chords + "\n";
 
-        if ( tx.lyrics.substr(0,1)=='('  
+        if ( tx.lyrics.substr(0,1)=='('
           && tx.lyrics.substr(-1,1)==')' )
             newText += tx.lyrics + "\n";
 
-        else if (tx.lyrics 
+        else if (tx.lyrics
               && tx.lyrics.substr(0,1)!='#')
             newText += tx.lyrics + "\n";
         else
@@ -49828,7 +49828,7 @@ function convertOnSongToChordsOverLyrics(text)
 function splitOnSong(onsong)
 {
     var result = {}, lyrics='', chords='', spl, maxl=0, next, padd, padl, lyric, chord;
-    
+
     var parts = onsong.split('[');
     for (var i = 0; i < parts.length; i++) {
 
@@ -49838,7 +49838,7 @@ function splitOnSong(onsong)
         lyric = '';
         if (spl[1]) lyric = spl[1];
         // if there are leading blanks, make sure we have max one!
-        if (lyric && lyric.trim() && lyric.substr(0,2)=='  ') 
+        if (lyric && lyric.trim() && lyric.substr(0,2)=='  ')
             lyric = ' '+lyric.trimLeft();
 
         // does this part contain both chord and lyrics?
@@ -49859,7 +49859,7 @@ function splitOnSong(onsong)
             // if the chords are longer than the lyrics text, we must insert placeholders ('- ')
             padd = createLyricsPlaceholder(padl, maxl);
             lyrics += (lyric+padd).substr(0,maxl);
-        } 
+        }
         // no chords in this section, just lyrics
         else {
             lyrics += spl[0];
@@ -49889,7 +49889,7 @@ function createLyricsPlaceholder( string, length)
 }
 
 
-/*** 
+/***
  * Join separate lines of chords and lyrics into an OnSong formatted line
  * (this requires that the first line always contains only chords!)
  * Also, we must have a even number of lines for this to work properly
@@ -49906,7 +49906,7 @@ function joinLyricsAndChordsToOnSong(chords)
         if (chordsFound) break;
     }
     if (!chordsFound) return chords;
-    
+
     var result = '';
 
     // iterate through each line, TWO at a time
@@ -49916,20 +49916,20 @@ function joinLyricsAndChordsToOnSong(chords)
         var chline = lines[i];
         var lyline = lines[1+i];
 
-        // ignore empty lines
-        if (! chline.trim().length  ||  chline == ' ') {
-            if (chline.trim().length)
-                result += chline + "\n";
-            i -= 1; 
-            continue;
-        }
+        // don't ignore empty lines, as we do need them to divide slides
+        // if (! chline.trim().length  ||  chline == ' ') {
+        //     if (chline.trim().length)
+        //         result += chline + "\n";
+        //     i -= 1;
+        //     continue;
+        // }
         // ignore parts headers or other instructions
         if (identifyHeadings(chline).length  ||  !identifyChords(chline)) {
-            result += chline + "\n";            
+            result += chline + "\n";
             i -= 1;
             continue;
         }
-        
+
         // find locations of chords
         var chordsLocations = findChords(chline);
         // array of actual chords
@@ -49956,7 +49956,7 @@ function joinLyricsAndChordsToOnSong(chords)
     // return the result and make sure we have no trailing newline chars
     return result.trimRight();
 }
-/* create array of the textual postion of chords in a string 
+/* create array of the textual postion of chords in a string
 */
 function findChords(text)
 {
@@ -49997,7 +49997,7 @@ function findChords(text)
 |*|
 |*| (called from scripture_input.blade.php)
 \*/
-function showNextSelect(fromOrTo, what) 
+function showNextSelect(fromOrTo, what)
 {
     book    = $('#from-book').val();
     chapter = $('#from-chapter').val();
@@ -50040,13 +50040,13 @@ function showNextSelect(fromOrTo, what)
         }
         if (fromOrTo=='from' && what=='verse') {
             showNextSelect('to', 'verse');
-            $('.select-version').show();                
+            $('.select-version').show();
         }
     };
 }
 function populateComment() {
     // ignore if nothing was selected
-    if ($('#from-book').val()===null || $('#from-book').val()==' ') { 
+    if ($('#from-book').val()===null || $('#from-book').val()==' ') {
         return; }
 
     // check existing comment
@@ -50059,7 +50059,7 @@ function populateComment() {
     $('#comment').val( oldComment +
         $('#from-book').val()+' ' +
         $('#from-chapter').val()+':' +
-        $('#from-verse').val() + 
+        $('#from-verse').val() +
         ($('#to-verse').val() != $('#from-verse').val() ? '-'+$('#to-verse').val() : '') + ' (' +
         $('#version').val() + ')'
     );
@@ -50080,7 +50080,7 @@ function populateComment() {
     $('#searchForSongsSubmit').focus()
 }
 function emptyRefSelect(fromOrTo, what) {
-    // get the <select> element 
+    // get the <select> element
     var x = document.getElementById(fromOrTo+'-'+what);
     $(x).hide();
     // clear the element of all current options
@@ -50088,33 +50088,33 @@ function emptyRefSelect(fromOrTo, what) {
         x.remove(i);
     }
 }
-function showScriptureText(version,book,chapter,fromVerse,toVerse) 
+function showScriptureText(version,book,chapter,fromVerse,toVerse)
 {
     book = book.replace(' ', '+');
 
-    $.get(cSpot.appURL+'/bible/passage/'+version+'/'+book+'/'+chapter+'/'+fromVerse+'/'+toVerse , 
-        function(data, status) 
+    $.get(cSpot.appURL+'/bible/passage/'+version+'/'+book+'/'+chapter+'/'+fromVerse+'/'+toVerse ,
+        function(data, status)
         {
-            if ( status == 'success') 
+            if ( status == 'success')
             {
                 $('#waiting').hide();
                 passage = data.response.search.result.passages;
-                if (passage.length>0) 
+                if (passage.length>0)
                 {
                     text = (passage[0].text).replace(/h3/g, 'strong');
                     text = text.replace(/h2/g, 'i');
-                    $('#bible-passages').append( 
+                    $('#bible-passages').append(
                         '<h5>' + passage[0].display +' ('+passage[0].version_abbreviation + ')</h5>' +
                         '<div>'+ text + '</div>' +
-                        '<div class="small">' + passage[0].copyright + '</div><hr>'                        
-                    );                         
-                } 
-                else 
+                        '<div class="small">' + passage[0].copyright + '</div><hr>'
+                    );
+                }
+                else
                 {
                     $('#show-passages').html('(passage not found)');
                 }
             }
-            else 
+            else
             {
                 $('#waiting').append(' Not found! ' + data);
             }

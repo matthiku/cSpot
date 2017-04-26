@@ -21,7 +21,7 @@ class Song extends Model
     // in cases where a song is still referred to by a plan
     use SoftDeletes;
 
-    
+
 
     protected $fillable = [
         'title',
@@ -48,7 +48,7 @@ class Song extends Model
     /**
      * Relationship with the Items table
      */
-    public function items() 
+    public function items()
     {
         return $this->hasMany('App\Models\Item');
     }
@@ -58,7 +58,7 @@ class Song extends Model
     /**
      * Relationship with the files table
      */
-    public function files() 
+    public function files()
     {
         return $this->hasMany('App\Models\File');
     }
@@ -67,10 +67,10 @@ class Song extends Model
 
     /**
      * A song has a corresponding song text, divided into song parts
-     * 
+     *
      * this text contains both lyrics with chords interspersed (like the OnSong format)
      */
-    public function onsongs() 
+    public function onsongs()
     {
         return $this->hasMany('App\Models\OnSong');
     }
@@ -78,7 +78,7 @@ class Song extends Model
 
     /**
 
-     *  Get the full lyrics text with encoded part headers 
+     *  Get the full lyrics text with encoded part headers
 
      */
     public function onSongLyrics() {
@@ -90,7 +90,7 @@ class Song extends Model
         foreach ($this->onSongChords() as $onsong) {
 
             // ignore parts containing music instructions (like 'Capo')
-            if ( $onsong->song_part->code != 'm'  &&  $onsong->song_part->code != 'i' ) {
+            if ( ! strpos( $onsong->song_part->code, '_msi') ) {
 
                 // Add newline char, but not on the very first line
                 if ( ! $start ) 
@@ -107,10 +107,10 @@ class Song extends Model
                 foreach ($lines as $line) {
                     if ( substr($line,0,1)=='#'  ||  (substr($line,0,1)=='(' && substr($line,-1,1)==')')  )
                         $lyrics .= "\n";
-                    elseif ( substr($line,0,3) == "[re" ) 
+                    elseif ( substr($line,0,3) == "[re" )
                         $lyrics .= "\n" . $line;
                     else {
-                        if ($lkey > 0) 
+                        if ($lkey > 0)
                             $lyrics .= "\n"; // newline char not on the first line
                         $lyrics .= preg_replace("/\[[^\]]+\]/m", '', $line);
                         $lkey++;
@@ -131,7 +131,7 @@ class Song extends Model
 
 
     /**
-     * Get the full chords according to the given sequence 
+     * Get the full chords according to the given sequence
      */
     public function onSongChords()
     {
@@ -143,12 +143,12 @@ class Song extends Model
             $onsongs[$onsong->song_part->code] = $onsong;
         }
 
-        // the song sequence contains a list of comma-separated 
+        // the song sequence contains a list of comma-separated
         // codes and MUST start with the 'm' section for the metadata
         $sequence = $this->sequence;
 
         $result = collect();
-        if ($sequence) {    
+        if ($sequence) {
             if ( strpos($sequence, 'm') !== 0)
                 $sequence = 'm,'.$sequence;
             $seqs = explode(',', $sequence);
@@ -185,7 +185,7 @@ class Song extends Model
 
         // get list of plans using this song
         $plans = Plan::whereHas('items', function ($query) use ($id) {
-            $query->where('song_id', $id) 
+            $query->where('song_id', $id)
                   ->where('date', '<', Carbon::now());
         })->orderBy('date', 'desc')->get();
 
@@ -237,7 +237,7 @@ class Song extends Model
 
         // get list of plans using this song
         $plan = Plan::whereHas('items', function ($query) use ($id) {
-            $query->where('song_id', $id) 
+            $query->where('song_id', $id)
                   ->where('date', '<', Carbon::now());
         })->orderBy('date', 'desc')->first();
 
@@ -268,7 +268,7 @@ class Song extends Model
 
         // get list of plans using this song
         $plan = Plan::whereHas('items', function ($query) use ($id) {
-            $query->where('song_id', $id) 
+            $query->where('song_id', $id)
                   ->where('date', '<', Carbon::now());
         })->orderBy('date', 'desc')->first();
 
@@ -355,7 +355,7 @@ class Song extends Model
             $this->attributes['ccli_no'] = $value;
         }
         // special treatment if value is empty -> null
-        else 
+        else
             $this->attributes['ccli_no'] = null;
     }
 
@@ -397,9 +397,9 @@ class Song extends Model
     public function getLicenseEnum()
     {
         $versions = explode("','", substr(DB::select("SHOW COLUMNS FROM ".(new \App\Models\Song)->getTable()." LIKE 'license'")[0]->Type, 6, -2));
-        return $versions;        
+        return $versions;
     }
 
 
-    
+
 }
