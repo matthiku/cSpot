@@ -26,6 +26,14 @@ class RouteServiceProvider extends ServiceProvider
         //
 
         parent::boot();
+
+        // see: https://github.com/laravel/framework/issues/2554
+        if (url('/')=='http://localhost') {
+            /** @var \Illuminate\Routing\UrlGenerator $url */
+            $url = $this->app['url'];
+            // Force the application URL
+            $url->forceRootUrl(config('app.url'));
+        }
     }
 
 
@@ -38,7 +46,7 @@ class RouteServiceProvider extends ServiceProvider
     public function map()
     {
         Route::group(
-            ['namespace' => $this->namespace], 
+            ['namespace' => $this->namespace],
             function ($router) {
                 require app_path('Http/routes.php');
             }
