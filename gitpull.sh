@@ -6,6 +6,12 @@ if [ -z "$1" ]; then
         exit
 fi
 
+echo ' '
+echo "restarting the queue workers"
+supervisorctl restart all
+
+
+
 if [ "$1" = "plan" ]; then
 
 	echo 'Updating plan.eec.ie'
@@ -19,7 +25,7 @@ if [ "$1" = "plan" ]; then
         echo '-------------------------------------------------------------------------------'
     fi
 
-   
+
 	php artisan migrate
 
 
@@ -49,5 +55,3 @@ fi
 
 
 echo $1 not yet implemented
-
-
