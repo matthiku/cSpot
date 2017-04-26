@@ -53513,7 +53513,7 @@ function updateFileInformation()
 if (typeof($)===undefined) {
     var $, cSpot;
 }
- 
+
 
 /*
  * Prepare the presentation of lyrics, chords etc.
@@ -53529,20 +53529,20 @@ function preparePresentation()
     }
 
     // instead, have just lyrics or bible verses or images
-    else { 
+    else {
         if ($('#present-lyrics').length) {
             // re-format the lyrics
-            reDisplayLyrics(); 
+            reDisplayLyrics();
         }
 
         // start showing bible parts if this is a bible reference
         if ($('.bible-text-present').length) {
-            reFormatBibleText(); 
+            reFormatBibleText();
         }
 
         // center and maximise images
         if ( $('.slide-background-image').length ) {
-            prepareImages(); 
+            prepareImages();
         }
     }
 
@@ -53614,16 +53614,16 @@ function preparePresentation()
 
     if ($('.bible-text-present').length) {
         // all is set and we can show the first verse
-        advancePresentation(); 
+        advancePresentation();
     }
 
 
     // check if we have a predefined sequence from the DB
     var sequence = ($('#sequence').text()).split(',');
 
-    // check if there are more lyric parts than 
+    // check if there are more lyric parts than
     // indicated in the sequence due to blank lines discoverd in the lyrics
-    if (sequence.length>1) 
+    if (sequence.length>1)
         compareLyricPartsWithSequence();
 
     // auto-detect sequence if it is missing
@@ -53632,7 +53632,7 @@ function preparePresentation()
         sequence = ($('#sequence').text()).split(',');
     }
 
-    // make sure the sequence indicator isn't getting too big! 
+    // make sure the sequence indicator isn't getting too big!
     checkSequenceIndicatorLength();
 
     // make sure the main content covers all the display area, but that no scrollbar appears
@@ -53648,7 +53648,7 @@ function preparePresentation()
      */
     if (cSpot.presentation.useOfflineMode) {
         saveMainContentToLocalStorage();
-    } 
+    }
 
     // start showing the time in the presentation
     show_time();
@@ -53668,7 +53668,7 @@ function show_time()
     if (m<10)
         m = "0"+m;
     var result = h+":"+m;
-    
+
     var id = 'time-of-day';
     document.getElementById(id).innerHTML = result;
     setTimeout('show_time("'+id+'");','60000');
@@ -53684,11 +53684,11 @@ function show_time()
 
 /**
  * show multiple images as subsequent slides
- *  
+ *
  * This function is called from the preparePresentation function, when it finds this element:
  *      $('.slide-background-image')
  */
-function prepareImages() 
+function prepareImages()
 {
     // do nothing if cSpot is not active
     if (!cSpot.presentation) return;
@@ -53699,7 +53699,7 @@ function prepareImages()
         $('.slide-background-image' ).height( window.innerHeight - $('#bottom-fixed-navbar').height());
     $('.slide-background-image' ).css('max-width', window.innerWidth);
     $('.app-content'            ).css('padding', 0);
-    
+
     // get list of all images and prepare them as individual slides
     var bgImages = $('.slide-background-image');
 
@@ -53731,7 +53731,7 @@ function prepareImages()
 /*
     Re-Formatting of Bible Texts
 
-    Bible texts are delivered from the backend in the format in which either 
+    Bible texts are delivered from the backend in the format in which either
         bibleApi.org or biblehub.com delivers them.
     Both formats contain HTML code. This code must be removed and replaced
         in order to display all bible versions in a similar, controllable fashion.
@@ -53743,7 +53743,7 @@ function prepareImages()
     This function is called in the preparePresentation method, when it finds this element:
         $('.bible-text-present')
 */
-function reFormatBibleText() 
+function reFormatBibleText()
 {
     // get bible reference text from item comment
     var refList = $('#item-comment').text().split(';');
@@ -53761,8 +53761,8 @@ function reFormatBibleText()
     // empty the pre-formatted bible text containter and make it visible
     $('#bible-text-present-all').html('');
     // (the container initially was hidden by the backend. That way we avoid flickering!)
-    $('#bible-text-present-all').show(); 
-    
+    $('#bible-text-present-all').show();
+
     // helper vars
     var verseList = [], verse_from=0, verse_to=199, verse='', verno=1;
 
@@ -53792,7 +53792,7 @@ function reFormatBibleText()
                 // is the bible text in the html source the same as in the reference?
                 if (ref.book+ref.chapter == rfc.book+rfc.chapter ) {
                     // check if there was a vers unprinted from the previous Ref
-                    if (verse !== undefined && verse.length>2  &&  verseList.indexOf(verno)>=0 ) { 
+                    if (verse !== undefined && verse.length>2  &&  verseList.indexOf(verno)>=0 ) {
                         appendBibleText('p',verse,verno); verse = ''; }
                     // print the new Ref
                     if (refNo == index) {
@@ -53805,7 +53805,7 @@ function reFormatBibleText()
                     // if verse_to is ommitted, we use verse_from
                     if (rfc.verse_to !== undefined)
                         verse_to   = rfc.verse_to;
-                    else 
+                    else
                         verse_to   = rfc.verse_from;
                     verseList = verseList.concat( updateVerseList(verse_from, verse_to) );
                 }
@@ -53832,14 +53832,14 @@ function reFormatBibleText()
                     if (verse && verno != eltext) {
                         // only append text that is within the reference
                         if ( verseList.indexOf(1*verno) >= 0 ) {
-                            appendBibleText('p', verse, verno); 
-                            verse = ''; 
+                            appendBibleText('p', verse, verno);
+                            verse = '';
                         }
-                        // format subsequent verses in this chapter, but 
+                        // format subsequent verses in this chapter, but
                         //      do not show them - unless requested by the presenter!
                         else if ( 1*verno > 1*verse_to ) {
-                            appendBibleText('p', verse, verno, false); 
-                            verse = ''; 
+                            appendBibleText('p', verse, verno, false);
+                            verse = '';
                         }
                         verno = eltext;
                     }
@@ -53862,7 +53862,7 @@ function reFormatBibleText()
                 if (cls=='v' || cls=='reftext') {
                     if (verse  &&  verse.trim() != ''  &&  verno != eltext) {
                         appendBibleText('p',verse,verno); }
-                    verno = eltext; 
+                    verno = eltext;
                     verse = '('+eltext+') ';
                 }
                 else {
@@ -53877,11 +53877,11 @@ function reFormatBibleText()
     });
     // write remaining verse if not empty or beyond scope
     if ( verse !== undefined  &&  verse.length > 2  &&  (1*verno <= 1*verse_to || !$.isNumeric(verno)) ) {
-        appendBibleText( 'p', verse, verno ) 
+        appendBibleText( 'p', verse, verno )
     }
     // also write remaining verse (if any), but hide it (only for NIV texts)
     else if ( verse !== undefined  &&  verse.length > 2  &&  $.isNumeric(verno) ) {
-        appendBibleText( 'p', verse, verno, false ) 
+        appendBibleText( 'p', verse, verno, false )
     }
 }
 /* create array of numbers taken from the arguments 'from' and 'to' */
@@ -53906,11 +53906,11 @@ function splitBref(text)
     var ref = text.split(' ');
     var nr = 0
     // check if book name starts with a number
-    if ($.isNumeric(ref[0])) { 
+    if ($.isNumeric(ref[0])) {
         arr.book = ref[nr++] +' '+ ref[nr++]; }
     else if (text.substr(1,1)=='_') {
         arr.book = ref[nr++].replace('_',' '); }
-    else { 
+    else {
         arr.book = ref[nr++]; }
     // detect chapter and verse
     var chve = ref[nr++].split(':');
@@ -53928,7 +53928,7 @@ function splitBref(text)
         }
         if (arr.verse_to===undefined)
             arr.verse_to=arr.verse_from;
-    } 
+    }
     // no verse references detected, use generic values
     else {
         arr.verse_from = 0;
@@ -53941,14 +53941,14 @@ function splitBref(text)
         arr.version = arr.version.replace(/(\(|\))/g,'');
 
     // problem with differing naming conventions for Psalm in NIV vs others
-    if (arr.book=='Psalms') 
+    if (arr.book=='Psalms')
         arr.book='Psalm';
     return arr;
 }
 /* save a chapter to the local storage for later reference
     if it's not already cached...
 */
-function localCacheBibleText( bRef ) 
+function localCacheBibleText( bRef )
 {
     // body...
     var refName = bRef.version+'.'+bRef.book+'.'+bRef.chapter;
@@ -53975,7 +53975,7 @@ function recallNextBibleverse()
     // first, get the last verse of the original bible ref
     var hdr = $('#bible-text-ref-header');
     var bRef = $(hdr).text();
-    if (bRef) 
+    if (bRef)
         bRef = splitBref(bRef);
     else
         return; // no bible reference found!
@@ -53985,7 +53985,7 @@ function recallNextBibleverse()
     // is it an existing element?? "lastVerse" ??
 
     // now check if we already have the last verse in a chapter
-    if ( $(lastVerse).css('display')=='none'  ||  
+    if ( $(lastVerse).css('display')=='none'  ||
          $(lastVerse).css('display')===undefined ) {
         // make sure we have the current chapter in local storage
         localCacheBibleText( bRef );
@@ -54024,7 +54024,7 @@ function recallNextBibleverse()
         stor = getLocalStoreBref(bRef);
         if (stor) stor = JSON.parse(stor);
         else return;
-        // we also need to remove from the DOM all verses from the previous chapter, 
+        // we also need to remove from the DOM all verses from the previous chapter,
         // as their IDs are the actual verse number and would be duplicates!
         $('.bible-text-present-parts').remove();
     }
@@ -54037,7 +54037,7 @@ function recallNextBibleverse()
     var nivText;
     if (bRef.version=='NIV') {
         nivText = stor[0].text;
-        if (nivText===undefined) 
+        if (nivText===undefined)
             return;
         $(lastVerse).hide();
         var nextID = $(lastVerse).attr('id');
@@ -54053,7 +54053,7 @@ function recallNextBibleverse()
 
         // find the next verse in the array of verses
         var a = stor.verses.find(findVerse, bRef.verse_to);
-        if (a===undefined) 
+        if (a===undefined)
             return;
 
         // hide the previous verses
@@ -54068,7 +54068,7 @@ function recallNextBibleverse()
 
         // modify the new verse paragraph accordingly
         $(nextVerse).children('h3').remove();        // remove a possible paragraph header
-        $(nextVerse).attr('id', bRef.verse_to);                // add the usual id 
+        $(nextVerse).attr('id', bRef.verse_to);                // add the usual id
 
     }
     // new bible text ref header
@@ -54109,7 +54109,7 @@ function getLocalStoreBref(bRef)
     if (stor)
         return stor;
     // as it's not yet in local storage, get it from the server
-    localCacheBibleText( bRef );    
+    localCacheBibleText( bRef );
 }
 
 function findVerse(element, index, array)
@@ -54134,13 +54134,13 @@ function appendBibleText(type, text, verno, show)
 
     // actual bible text is inserted as <p> element, and hidden at first
     if (type=='p') {
-        if (show) insertSeqNavInd( verno, verno, 'bible' ); 
+        if (show) insertSeqNavInd( verno, verno, 'bible' );
         style=' style="display: none"';
         parts='-parts" ';
     }
     // if the text is a bible reference, will be treated as H1 element
     if (type=='h1') {
-        // if there are multiple bible references in one item, we only 
+        // if there are multiple bible references in one item, we only
         // want to have one H1 element, so we attach the next bible ref to the existing H1
         var hText = $('#bible-text-ref-header').text();
         if (hText != '') {
@@ -54151,9 +54151,9 @@ function appendBibleText(type, text, verno, show)
     // append the constructed element now to the existing element
     $('#bible-text-present-all').append(
         '<'+type+style+' class="bible-text-present'+parts+id+text+'</'+type+'>'
-        );   
+        );
 }
-/* 
+/*
     If an item contains more than one bible reference, we must format
     the header in an appropriate way to show the various references appropriately
 */
@@ -54182,7 +54182,7 @@ function formatBibleRefHeader( exisText, newText) {
             $('#bible-text-ref-header').text(exisRef+';'+bRef.book+' '+bRef.chapter+':'+bRef.verse_from+'-'+bRef.verse_to);
         }
     }
-    $('#bible-text-ref-header').append('; ' + newText);   
+    $('#bible-text-ref-header').append('; ' + newText);
 }
 
 
@@ -54194,7 +54194,7 @@ function formatBibleRefHeader( exisText, newText) {
 
 
 /*
-    check if there are more lyric parts than 
+    check if there are more lyric parts than
         indicated in the spre-defined equence due to blank lines discoverd in the lyrics
 */
 function compareLyricPartsWithSequence()
@@ -54226,31 +54226,31 @@ function compareLyricPartsWithSequence()
     }
 }
 
-/* 
+/*
     Create Default Lyric Sequence -
-        if there is no pre-defined sequence in the songs DB table, 
+        if there is no pre-defined sequence in the songs DB table,
         we can attempt to create our own based on the hints (headers) in the lyrics
 */
-function createDefaultLyricSequence() 
+function createDefaultLyricSequence()
 {
     // get all lyric parts created so far
     var lyrList = $('.lyrics-parts');
 
     // if a bridge is included or no lyric parts exists: FAIL!
-    if ( $('[id^=bridge]').length>0  ||  lyrList.length==0) 
+    if ( $('[id^=bridge]').length>0  ||  lyrList.length==0)
         return;
 
     console.log('Trying to auto-detect song structure');
 
     var chorus = false;   // we still need to find out if a chorus exists
     var nr = 0;          // indicates current lyric part number
-    var verseNumInt = 0 // 
+    var verseNumInt = 0 //
     var insChorus = 1; // indicates verse number afer which we have to insert a chorus
     var chorusSeq=[]; // contains CSV list of chorus parts
     var sequence;
 
     // go through the list of lyric parts (as generated in function "reDisplayLyrics()")
-    $(lyrList).each(function(entry) 
+    $(lyrList).each(function(entry)
     {
         var id = $(this).attr('id');  // get name of that lyric part
         var pname = id.substr(0,5);
@@ -54277,7 +54277,7 @@ function createDefaultLyricSequence()
         // collect all chorus parts until we insert them before the next verse or at the end
         if (pname == 'choru') {
             chorus = true;
-            chorusSeq.push( 'c1'+id.substr(7) );  
+            chorusSeq.push( 'c1'+id.substr(7) );
         }
     });
     // insert remaining chorus, if needed
@@ -54317,7 +54317,7 @@ function reDisplayLyrics()
     $('#present-lyrics').text('');
 
     var newLyr = '';
-    var lines  = 0;         // counter for number of lines per each song part 
+    var lines  = 0;         // counter for number of lines per each song part
     var headerCode = 'z'    // identifies the code within the sequence data
     // default song part if there are no headings
     var newDiv = '<div id="start-lyrics" class="lyrics-parts" ';
@@ -54333,15 +54333,15 @@ function reDisplayLyrics()
 
         lyricsLine = lyrics[i].trim();  // get pure text
 
-        // ignore last line if its empty
-        if (i==lyrics.length-1 && lyricsLine=='')
+        // ignore first or last line if its empty
+        if ( (i==0 || i==lyrics.length-1) && lyricsLine=='' )
             break;
 
         // treat empty lines as start for a new slide!
         if ((lyrics[i]).trim().length==0) {
             if (i==0) continue; // but not a leading empty line....
             // if there is no heading in this lyris - invent one
-            if (curPart == '') { 
+            if (curPart == '') {
                 hdr = curPart = 'verse1';
                 insertNewLyricsSlide(newDiv, newLyr, divNam, lines);
                 divNam = hdr;
@@ -54356,13 +54356,13 @@ function reDisplayLyrics()
         }
 
         // or we already have a pre-defined header line for this song part
-        else { 
+        else {
             // find verse indicator (can be first word in the lyrics line, like: "[1] first line of lyrics")
             // or it could be like [chorus 2]
-            var hdr = identifyLyricsHeadings( lyricsLine.split('] ')[0] ); 
-            if (hdr.length>0) { 
+            var hdr = identifyLyricsHeadings( lyricsLine.split('] ')[0] );
+            if (hdr.length>0) {
                 // verse indicator was found!
-                curPart = hdr; 
+                curPart = hdr;
                 apdxNam= 97; // = 'a': reset appendix indicator (for forced lyric parts)
                 // use 2nd part of initial lyricsline as actualy lyrics
                 lyricsLine = lyricsLine.split('] ')[1]; // this will be 'undefined' if line was just the indicator!
@@ -54375,7 +54375,7 @@ function reDisplayLyrics()
             imageNo = lyricsLine.substr(6).split(']');
             if (imageNo.length>1)
                 lyricsLine = imageNo[1];
-            else 
+            else
                 lyricsLine = undefined;
             imageNo = imageNo[0].trim();
         }
@@ -54454,7 +54454,7 @@ function checkForAlternateLyricsOrSingerInstructions(text)
         text = text.replace('(', '<i class="text-present-region2">(');
         text = text.replace(')', ')</i>');
     }
-    return text;    
+    return text;
 }
 
 // insert new SLIDE into the presentation
@@ -54466,7 +54466,7 @@ function insertNewLyricsSlide(newDiv, newLyr, divNam, lines, imageNo)
     // don't insert the same verse (or verse part) twice!
     if ($('#'+divNam).length) return;
 
-    // add the image number to be shown for the current slide to the header ID 
+    // add the image number to be shown for the current slide to the header ID
     if (imageNo)
         newDiv += ' data-show-image="'+imageNo+'"';
 
@@ -54477,7 +54477,7 @@ function insertNewLyricsSlide(newDiv, newLyr, divNam, lines, imageNo)
     // make sure this part is still hidden
     $('#'+divNam).hide();
     // make the hidden select button for this part visible
-    $('#btn-show-'+divNam).show();    
+    $('#btn-show-'+divNam).show();
     ;;;console.log( 'Inserted new SLIDE (lyrics part) called ' + divNam );
 }
 function headerCode(divNam) {
@@ -54493,7 +54493,7 @@ function headerCode(divNam) {
 
 
 
-/* grab all existing OnSong elements and rewrite 
+/* grab all existing OnSong elements and rewrite
    them with seperate lines of chords and lyrics */
 function reFormatOnsongLyrics()
 {
@@ -54521,7 +54521,7 @@ function prepareChordsPresentation(what)
     // make type of presentation globally available
     if (cSpot.presentation)
         cSpot.presentation.type = what;
-    else 
+    else
         cSpot.presentationType = what
 
     // check if user has changed the default font size for the presentation
@@ -54538,9 +54538,9 @@ function prepareChordsPresentation(what)
         return false;
     });
 
-    // check if rendered items for this plan are 
+    // check if rendered items for this plan are
     // cached no the server - then load it into local storage
-    loadCachedPresentation(cSpot.presentation.plan_id); 
+    loadCachedPresentation(cSpot.presentation.plan_id);
 
     // save the final rendition of this page to LocalStorage
     saveMainContentToLocalStorage(what);
@@ -54583,18 +54583,18 @@ function identifyHeadings(str)
     // identify headers by the first word in a line, case-insensitive
 
     var patt = /^(coda|end)/i;
-    if ( patt.test(str) ) 
+    if ( patt.test(str) )
         return ' pl-3 bg-info$';
 
     patt = /^(Verse)/i;
     if ( patt.test(str) ) {
-        var nm=''; var n=str.split(' '); 
+        var nm=''; var n=str.split(' ');
         if (n.length>1) {
-            nm=n[1].substr(0,1); 
+            nm=n[1].substr(0,1);
             $('#jumplist').show();
             $('#jump-verse'+nm).show();
         }
-        return ' pl-3 bg-success$verse'+nm; 
+        return ' pl-3 bg-success$verse'+nm;
     }
     patt = /^(Chorus)/i;
     if ( patt.test(str) ) {
@@ -54616,24 +54616,24 @@ function identifyHeadings(str)
     }
 
     patt = /^(Capo|Key|Timing|\()/;
-    if ( patt.test(str) ) 
+    if ( patt.test(str) )
         return ' big text-primary$';
 
     patt = /^(Intro|Other|\()/;
-    if ( patt.test(str) ) 
+    if ( patt.test(str) )
         return ' text-primary$';
 
     return '';
 }
 function identifyChords(str)
 {
-    
+
     var patt = /[klopqrtvwxyz1368]/g;
     if ( patt.test(str) ) return false;
-    
+
     patt = /\b[CDEFGAB](?:#{1,2}|b{1,2})?(?:maj7?|min7?|sus2?|sus4?|m?)\b/g;
     if ( patt.test(str) ) return true;
-    
+
     patt = /\b[CDEFGB]\b/g;
     if ( patt.test(str) ) return true;
 
@@ -54658,7 +54658,7 @@ function countLines(where) {
 }
 
 
-// the Sequence indicators at the bottom right could 
+// the Sequence indicators at the bottom right could
 // get too long, so we need to hide some parts
 function checkSequenceIndicatorLength()
 {
@@ -54690,15 +54690,15 @@ function checkSequenceIndicatorLength()
     // first remove all old 'more' indicators
     $('.more-indicator').remove();
 
-    // walk through the list of indicators and hide those 
-    // that are too far away from the currently active one 
+    // walk through the list of indicators and hide those
+    // that are too far away from the currently active one
     $(seq).each(function(entry){
         // get this element's ID number
         var thisID = 1*getProgressIDnumber(this);
         if ( thisID+limit-2 < active_id  ||  thisID-limit > active_id ) {
             $(this).hide();
-        } else { 
-            $(this).show(); 
+        } else {
+            $(this).show();
             if (thisID+limit-2 == active_id) {
                 $(this).prepend(moreIndBW);}
             if (thisID-limit == active_id) {
@@ -54718,7 +54718,7 @@ function getProgressIDnumber(fromWhat)
 
 
 
-// Insert the Sequence Navigation indicators into the navbar 
+// Insert the Sequence Navigation indicators into the navbar
 function insertSeqNavInd(what, nr, where, hidden)
 {
     // do not add the same number again...
@@ -54746,12 +54746,12 @@ function formatSeqInd(code){
     var char1 = code.substr(0,1);
     var char2 = code.substr(1,1);
     if ($.isNumeric(char1)) {
-        if ( code.length==1  ||  $.isNumeric(char2) ) 
+        if ( code.length==1  ||  $.isNumeric(char2) )
             return code;
         return '<span class="text-muted">'+char1+'<sup>'+char2+'</sup></span>';
     }
     char1 = char1.toUpperCase();
-    if (code.length==1) 
+    if (code.length==1)
         return char1;
     if (char1 != 'C')
         return char1+'<sup>'+char2+'</sup>';
@@ -54785,7 +54785,7 @@ function advancePresentation(direction)
     if ($('#present-lyrics').length > 0) {
 
         // make sure the main lyrics div is visible
-        $('#present-lyrics').show(); 
+        $('#present-lyrics').show();
 
         // do we have a specific sequence provided?
         seq = $('.lyrics-progress-indicator');
@@ -54832,8 +54832,8 @@ function advancePresentation(direction)
                 if ($(seq[i]).hasClass('bg-danger')) {
                     ;;;console.log('currently active part is # '+i+' with text: '+$(seq[i]).text() );
                     // we have reached the first part, going further back means previous plan item!
-                    if (i==0) { 
-                        navigateTo('previous-item'); 
+                    if (i==0) {
+                        navigateTo('previous-item');
                         return; }
                     $(seq[i]).data().showStatus = 'unshown';
                     $('.lyrics-progress-indicator').removeClass('bg-danger');
@@ -54841,9 +54841,9 @@ function advancePresentation(direction)
                     todo = $(seq[i-1]).attr('onclick');
                     eval( todo );
                     return;
-                } 
+                }
             }
-            // all song parts have been shown, so we must be at 
+            // all song parts have been shown, so we must be at
             //     the first and now have to go to the previous plan item
             navigateTo('previous-item');
             return;
@@ -54879,7 +54879,7 @@ function advancePresentation(direction)
                 navigateTo('next-item');
                 return;
             }
-        } 
+        }
         else {
             found=false;
             // loop through all seq indicators (backwards) until we find the one for the currently shown verse(s)
@@ -54887,7 +54887,7 @@ function advancePresentation(direction)
                 if ( $(seq[i]).attr('class').indexOf('bg-danger') >= 0 ) {
                     // we have found the first verse currently shown, now we must find the previous verse NOT currently shown
                     for (var j = i-1; j >= 0; j--) {
-                        if ( $(seq[j]).attr('class').indexOf('bg-danger') < 0) 
+                        if ( $(seq[j]).attr('class').indexOf('bg-danger') < 0)
                             break;
                     }
                     if (j < 0)  // we can't move any further back....
@@ -54924,7 +54924,7 @@ function advancePresentation(direction)
                 navigateTo('next-item');
                 return;
             }
-        } 
+        }
         else {
             found=false;
             for (i = seq.length - 1; i >= 0; i--) {
@@ -54943,7 +54943,7 @@ function advancePresentation(direction)
         }
     }
     // we're not showing a song, so we simply move to the next plan item
-    else if (direction=='forward') 
+    else if (direction=='forward')
         { navigateTo('next-item'); }
     else {
         navigateTo('previous-item');
@@ -54956,11 +54956,11 @@ function jumpTo(where)
 {
     // the lyrics presentation page uses buttons to show parts and hide the rest
     if ($('#present-lyrics').length > 0) {
-        $('#present-lyrics').show(); 
+        $('#present-lyrics').show();
         $('#btn-show-'+where).click();
     }
     // the chords page uses anchors to jump to...
-    else 
+    else
         window.location.href = '#'+where;
 }
 
@@ -54986,12 +54986,12 @@ function showNextSlide(thisID,what,direction)
 }
 
 
-/** 
+/**
  * Navigate to next slide or item
  *
  * @string direction - part of the ID of an anchor on the calling page that executes the navigation
  */
-function navigateTo(where) 
+function navigateTo(where)
 {
     console.log('Navigating to '+where);
 
@@ -55019,7 +55019,7 @@ function navigateTo(where)
         // check if there is an empty slide/item (an item without lyrics, bibletext or images)
         var reg = /^[\s]+$/; // regex for a string containing only white space.
         var main  = $('#main-content').text();
-        // check if there are images 
+        // check if there are images
         var images = $('.slide-background-image');
         // if the slide contains anything but spaces, we were still presenting something
         // and we now show an empty (blank) slide
@@ -55041,7 +55041,7 @@ function navigateTo(where)
 
 
     /*\
-       > For OFFLINE MODE: check if the next (or previous) item is cached in LocalStorage 
+       > For OFFLINE MODE: check if the next (or previous) item is cached in LocalStorage
     \*/
     if ( where!='edit' && where!='back' && cSpot.presentation.useOfflineMode) {
 
@@ -55059,7 +55059,7 @@ function navigateTo(where)
         // Rewrite the page content with the cached data from Local Storage (LS)
         if (where == 'next-item')
             ;;;console.log('Next page from cache would be: '+next_seq_no);
-        
+
         // test if direction is forward and if next item exists in LS
         if ( where == 'next-item'     && isInLocalStore(next_seq_no) ) {
 
@@ -55112,7 +55112,7 @@ function navigateTo(where)
 
     var goWhere = $(goWhereButton).attr('href');
 
-    if (goWhere != '#') 
+    if (goWhere != '#')
         // inform server of current position if we are presenter
         sendShowPosition(where);
     else {
@@ -55124,7 +55124,7 @@ function navigateTo(where)
         // try to go to the location defined in href
         window.location.href = goWhere;
         return;
-    }    
+    }
     // otherwise, try to simulate a click on this element
     goWhereButton.click();
 }
@@ -55159,7 +55159,7 @@ function calculateFollowingSeqNos(cur_seq_no, cur_plan_id)
 }
 
 
-// change the item-id to seq-no in the href element of the 'next' and 'previous' buttons 
+// change the item-id to seq-no in the href element of the 'next' and 'previous' buttons
 function modifyHRefOfJumpbutton(next_seq_no, prev_seq_no)
 {
     // provide seq no for both buttons
@@ -55185,7 +55185,7 @@ function modifyHRefOfJumpbutton(next_seq_no, prev_seq_no)
     }
 
     // hide spinner, if present
-    $('#show-spinner').modal('hide')    
+    $('#show-spinner').modal('hide')
 }
 
 
@@ -55201,21 +55201,21 @@ function slidesShow(what)
     var indic = $('.slides-progress-indicator');
     var found = false;
     // loop through all bible verses until number 'what' is found...
-    for (var i=0; i<parts.length; i++) 
+    for (var i=0; i<parts.length; i++)
     {
-        if ($(parts[i]).data().slidesId == what)             
+        if ($(parts[i]).data().slidesId == what)
         {
             found = true;
             $(parts[i]).show();
             $(indic[i]).addClass('bg-danger');
             $(indic[i]).data().showStatus = 'done';
-        } 
+        }
         else if ( found ) {
             $(indic[i]).data().showStatus = 'unshown';
             $(indic[i]).removeClass('bg-danger');
             $(parts[i]).hide();
         }
-        else 
+        else
         {
             $(parts[i]).hide();
             $(indic[i]).removeClass('bg-danger');
@@ -55234,7 +55234,7 @@ function bibleShow(what)
 
     if (! parts.length) return; // only run this if there are verses to show
 
-    if (!what) // this is used to re-draw the verses slides 
+    if (!what) // this is used to re-draw the verses slides
         what = $(parts[0]).attr('id');
 
     // reset all show indicators
@@ -55250,10 +55250,10 @@ function bibleShow(what)
     // how much space do we have to show verses?
     var availHeight = $('.app-content').height();
     // counter to collect the heights of all visible verses
-    var usedHeight = $('#bible-text-ref-header').height(); 
+    var usedHeight = $('#bible-text-ref-header').height();
 
     // loop through all bible verses until number 'what' is found...
-    for (var i=0; i<parts.length; i++) 
+    for (var i=0; i<parts.length; i++)
     {
         // is this the next verse to be shown?
         if ($(parts[i]).attr('id') == what)
@@ -55280,7 +55280,7 @@ function bibleShow(what)
                 // sync with the outer loop
                 i = j;
             }
-        } 
+        }
         // otherwise, if the target verse was already found,
         //      mark the other (future) verses as unshown and hide them
         else if ( found>=0 ) {
@@ -55349,10 +55349,10 @@ function lyricsShow(what)
 
     if (cSpot.presentation.BGimageControl!='defined'  &&  cSpot.presentation.BGimageCount > 0)
         showNextBGimage();
-    
+
     // inform server accordingly
     sendShowPosition(what);
-    
+
     // first, fade out the currently shown text, then fade in the new text
     $('.lyrics-parts').fadeOut().promise().done( function() { $('#'+what).fadeIn() } );
 
@@ -55371,7 +55371,7 @@ function decompPartCode(what) {
     var apdx = '';
     var fc = what.substr(0,1);
     if ( $.isNumeric(fc) || fc != 'c' ) {
-        apdx = what.substr(1);   
+        apdx = what.substr(1);
         what = identifyLyricsHeadings('['+fc+']')+apdx;
     } else {
         apdx = what.substr(2);
@@ -55395,6 +55395,7 @@ function identifyLyricsHeadings(str)
         case '[9]': return 'verse9';
         case '[prechorus]': return 'prechorus';
         case '[p]': return 'prechorus';
+        case '[s]': return 'instrumental';
         case '[z]': return 'start-lyrics';
         case '[chorus 2]': return 'chorus2';
         case '[t]': return 'chorus2';
@@ -55437,7 +55438,7 @@ function showNextBGimage()
 
 // --------------------------------------------------------------------------------------- GET
 
-function getLocalConfiguration() 
+function getLocalConfiguration()
 {
     // check if we want to be Main Presenter
     // if the value in LocalStorage was set to 'true', then we activate the checkbox:
@@ -55446,7 +55447,7 @@ function getLocalConfiguration()
         if ( cSpot.presentation.mainPresenter ) {
             // someone else is already ....
             localStorage.setItem('config-MainPresenter', 'false');
-        } 
+        }
         else {
             // make sure the Server knows we want to be presenter (if we are allowed to...)
             setMainPresenter();
@@ -55456,7 +55457,7 @@ function getLocalConfiguration()
             localStorage.setItem('config-SyncPresentation', 'false');
 
             // now broadcast our current position!
-            sendShowPosition('start');  // will include plan_id and item_id 
+            sendShowPosition('start');  // will include plan_id and item_id
         }
     }
 
@@ -55473,9 +55474,9 @@ function getLocalConfiguration()
 
         // save in global namespace
         cSpot.presentation.sync = true;
-    } 
-    else 
-        cSpot.presentation.sync = false; 
+    }
+    else
+        cSpot.presentation.sync = false;
 
 
 
@@ -55489,7 +55490,7 @@ function getLocalConfiguration()
 
     // use the offline mode (Local Storage) - Default is: Yes
     cSpot.presentation.useOfflineMode = getLocalStorageItem('config-OfflineMode', 'true') == 'true';
-    
+
     // if the value in LocalStorage was set to 'true', then we activate the checkbox:
     changeCheckboxIcon('#config-OfflineModeItem', cSpot.presentation.useOfflineMode);
 
@@ -55510,7 +55511,7 @@ function getLocalConfiguration()
 
 }
 
-/* 
+/*
     Read and apply locally defined text format settings from Local Storage
 
     The format of the keys for those values is:
@@ -55519,7 +55520,7 @@ function getLocalConfiguration()
 
     Because of that, we can simply loop through all keys and apply them easily!
 */
-function applyLocallyDefinedTextFormatting(reset) 
+function applyLocallyDefinedTextFormatting(reset)
 {
 
     $.each(localStorage, function(key, value) {
@@ -55547,17 +55548,17 @@ function applyLocallyDefinedTextFormatting(reset)
 
             ;;;console.log('formatting "'+ selector + '" with style "' + attribute + '" as "' + value + '"');
 
-            if ( attribute=='font-size'  &&  $.isNumeric(value) ) 
+            if ( attribute=='font-size'  &&  $.isNumeric(value) )
                 $( selector ).css( k[2], parseInt(value) );
             else
                 $( selector ).css( k[2], value );
-            
+
         }
     });
 
     // having applied all locally defined formatting, we can now show the lyrics...
     $('.text-present').show();
-}    
+}
 
 /*  Reset all locally defined formatting values
 */
@@ -55660,7 +55661,7 @@ function changeNumberOfVersesPerSlide(how)
             $('.decrease-number-of-verses').removeClass('cursor-deny');
         } else {
             $('.decrease-number-of-verses').removeClass('link');
-            $('.decrease-number-of-verses').addClass('cursor-deny');        
+            $('.decrease-number-of-verses').addClass('cursor-deny');
         }
     }
 
@@ -55725,9 +55726,9 @@ function writeCachedDataIntoDOM(identifier) {
 
     var type = cSpot.presentation.type || cSpot.presentationType;
 
-    if ( type == 'chords'  
-      || type == 'sheetmusic' 
-      || type == 'leader' ) 
+    if ( type == 'chords'
+      || type == 'sheetmusic'
+      || type == 'leader' )
     {
         $('#main-content'       ).html(localStorage.getItem(identifier + '-mainContent-'+ type));
         $('#present-navbar'     ).html(localStorage.getItem(identifier + '-present-navbar' ));
@@ -55748,7 +55749,7 @@ function writeCachedDataIntoDOM(identifier) {
     var plan_id = cSpot.presentation.plan_id;
 
     $.post( cSpot.routes.apiGetPlan, { 'plan_id' : plan_id } )
-        .done( 
+        .done(
             function(data) {
                 ;;;console.log(data);
                 cSpot.presentation.plan = data;
@@ -55770,7 +55771,7 @@ function isCachedPlanStillUptodate(plan_id) {
 
 
 // save main content html to local storage
-function saveMainContentToLocalStorage(what) {    
+function saveMainContentToLocalStorage(what) {
 
     // only if activated ....
     if ( !cSpot.presentation.useOfflineMode ) {
@@ -55791,7 +55792,7 @@ function saveMainContentToLocalStorage(what) {
     // check if items in plan cache have expired since plan has been updated meanwhile
     if ( isCachedPlanStillUptodate(plan_id) ) {
         ;;;console.log('Presentation Cache for plan id '+plan_id+' is still valid or has just been created.');
-    } 
+    }
     else {
         // save the new datetime of the last update to this plan
         saveLocallyAndRemote(plan_id, 'offline-'+plan_id+'-0-planUpdatedAt', cSpot.presentation.plan.updated_at);
@@ -55803,7 +55804,7 @@ function saveMainContentToLocalStorage(what) {
     saveLocallyAndRemote(plan_id, itemIdentifier +'-seqIndicator',      $('#lyrics-parts-indicators').html());
     // sequence navigator element
     saveLocallyAndRemote(plan_id, itemIdentifier +'-sequenceNav',       $('#lyrics-sequence-nav').html());
-    // item label 
+    // item label
     saveLocallyAndRemote(plan_id, itemIdentifier +'-itemNavBar',        $('#item-navbar-label').html());
     saveLocallyAndRemote(plan_id, itemIdentifier +'-itemNavBarNext',    $('#item-navbar-next-label').html());
     saveLocallyAndRemote(plan_id, itemIdentifier +'-itemGoEditBtn',     $('#go-edit').parent().html());
@@ -55814,7 +55815,7 @@ function saveMainContentToLocalStorage(what) {
 }
 
 // Make sure LocalStorage contains only one plan cached for the presentation for offline use
-function checkLocalStorageForPresentation(plan_id) 
+function checkLocalStorageForPresentation(plan_id)
 {
     // only if activated ....
     if ( plan_id < 99999  &&  cSpot.presentation && !cSpot.presentation.useOfflineMode ) {
@@ -55823,11 +55824,11 @@ function checkLocalStorageForPresentation(plan_id)
 
     // do nothing if parameter is missing
     if (!plan_id) return;
-    
+
     // loop through each localStorage item
     for (var key in localStorage) {
 
-        // look for key names with a specific structure: 
+        // look for key names with a specific structure:
         //      "offline-<ppp>-<s>-<text....>"
         // (where: ppp=planId, s=seq.no and text is element name)
         var ident = key.split('-');
@@ -55855,18 +55856,18 @@ function isInLocalStore(identifier)
     if ( ! isCachedPlanStillUptodate(ik[1]) ) {
         return false;
     }
-    
+
     // loop through each localStorage item
     for (var key in localStorage) {
 
-        // look for key names with a specific structure: 
+        // look for key names with a specific structure:
         //      "offline-<ppp>-<s>-<text....>"
         // (where: ppp=planId, s=seq.no and text is element name)
         var sk = key.split('-');
 
         if (sk[0]!='offline') continue;
 
-        if ( ik[0]==sk[0]  &&  ik[1]==sk[1]  &&  ik[2]==sk[2] ) 
+        if ( ik[0]==sk[0]  &&  ik[1]==sk[1]  &&  ik[2]==sk[2] )
         {
             // we found a valid cache for this type of presentation
             if ( (type == 'lyrics' && sk[3]=='seqIndicator') || sk[4]==type )
@@ -55883,7 +55884,7 @@ function saveLocallyAndRemote(plan_id, key, value)
         return;
     }
 
-    // compare with value already existing in cache 
+    // compare with value already existing in cache
     var existingValue = localStorage.getItem(key);
     // do nothing if identical !
     if ( existingValue  &&  existingValue.localeCompare(value) == 0 ) {
@@ -55927,7 +55928,7 @@ function loadCachedPresentation(plan_id)
         return;
 
     // is local caching enabled?
-    if ( getLocalStorageItem('config-OfflineMode', 'true') == 'false' ) 
+    if ( getLocalStorageItem('config-OfflineMode', 'true') == 'false' )
         return
 
     // get data via AJAX call
@@ -55942,7 +55943,7 @@ function loadCachedPresentation(plan_id)
 
             // write plan updated_at date into cache
             saveLocallyAndRemote(plan_id, 'offline-'+plan_id+'-0-planUpdatedAt', cSpot.presentation.plan.updated_at);
-            
+
             ;;;console.log('Saving server-cached pre-rendered items to LocalStorage');
 
             // get each key/value pair and save it to LocalStorage
@@ -55952,7 +55953,7 @@ function loadCachedPresentation(plan_id)
                 var seq_no = planCache[item].key.split('-')[2];
                 $('#in-cache-seq-no-'+seq_no+'\\.0').show();
 
-                // but first check if an identical item doesn't already exists locally 
+                // but first check if an identical item doesn't already exists locally
                 var existingValue = localStorage.getItem(planCache[item].key);
                 // do nothing if identical !
                 if ( existingValue  &&  existingValue.localeCompare(planCache[item].value) == 0 ) {
@@ -55962,7 +55963,7 @@ function loadCachedPresentation(plan_id)
                 // now save new item to local store
                 localStorage.setItem( planCache[item].key, planCache[item].value );
                 // ;;;console.log('saved/replaced in cache: ' + planCache[item].key + ' Length: '+ planCache[item].value.length )
-            }            
+            }
         }
     });
 }
@@ -56009,16 +56010,16 @@ function changeMainPresenter() {
     ;;;console.log('User tries to change setting for "Become Main Presenter" to ' + sett );
 
     if (sett==false) {
-        // User is no longer the Main Presenter, so make sure he can sync 
+        // User is no longer the Main Presenter, so make sure he can sync
         $('#config-SyncPresentation').parent().parent().parent().show();
-        
+
         // inform the server accordingly
         setMainPresenter('false');
 
         localStorage.setItem('config-MainPresenter', sett);
 
-    } 
-    else {    
+    }
+    else {
         // inform the server accordingly
         setMainPresenter();
     }
@@ -56056,7 +56057,7 @@ function setMainPresenter(trueOrFalse) {
 
             // show the dropup menu again so that the user can see the changed setting
             $('#presentConfigDropUpMenu').dropdown('toggle')
-            
+
             // user was accepted     or  was already the active Main Presenter
             if (data.status == '201' || (data.status == '202' && data.data.id == cSpot.user.id) ) {
                 // Hide the Sync checkbox as the Main Presenter can't sync with another presenter...
@@ -56065,7 +56066,7 @@ function setMainPresenter(trueOrFalse) {
                 changeCheckboxIcon( '#setMainPresenterItem', true);
                 ;;;console.log('User was accepted as "Main Presenter"' );
                 localStorage.setItem('config-MainPresenter', 'true');
-                // show presenter name 
+                // show presenter name
                 $('.showPresenterName').text(' ('+data.data.name+')')
             }
             else {
@@ -56101,11 +56102,11 @@ function syncPresentation(syncData) {
     ;;;console.log('tyring to sync show for: ' + JSON.stringify(syncData));
 
     // do nothing if we are already at the right location...
-    if (cSpot.presentation.plan_id == syncData.plan_id 
-     && cSpot.presentation.item_id == syncData.item_id 
+    if (cSpot.presentation.plan_id == syncData.plan_id
+     && cSpot.presentation.item_id == syncData.item_id
      && cSpot.presentation.slide   == syncData.slide
      && syncData.slide != 'blank'   ) // (blank is a toggler!)
-    { 
+    {
             ;;;console.log('already in sync!');
             return;
     }
@@ -56133,19 +56134,19 @@ function syncPresentation(syncData) {
             if (slideNameParts[0]=='bible') {
                 console.log('jumping to bible verse ' + slideNameParts[2]);
                 bibleShow(slideNameParts[2]);
-            } 
+            }
             if (slideNameParts[0]=='slides') {
                 console.log('jumping to image slide ' + slideNameParts[2]);
                 slidesShow(slideNameParts[2]);
-            } 
-        } 
+            }
+        }
         else if (syncData.slide=='blank') {
             showBlankScreen();
         }
         else {
             lyricsShow(syncData.slide);
         }
-    else 
+    else
         navigateTo(syncData.slide);
 }
 
@@ -56162,4 +56163,3 @@ function syncPresentation(syncData) {
 |*|
 |*|
 \*/
-

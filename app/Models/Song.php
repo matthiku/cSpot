@@ -90,10 +90,11 @@ class Song extends Model
         foreach ($this->onSongChords() as $onsong) {
 
             // ignore parts containing music instructions (like 'Capo')
-            if ( ! strpos( $onsong->song_part->code, '_msi') ) {
+            // if ( stripos( $onsong->song_part->code, 'msi' === FALSE) ) {
+            if ( $onsong->song_part->code != 'm' && $onsong->song_part->code != 's' && $onsong->song_part->code != 'i' ) {
 
                 // Add newline char, but not on the very first line
-                if ( ! $start ) 
+                if ( ! $start )
                     $lyrics .= "\n";
                 $start = false;
 
@@ -106,7 +107,7 @@ class Song extends Model
                 $lkey = 0;
                 foreach ($lines as $line) {
                     if ( substr($line,0,1)=='#'  ||  (substr($line,0,1)=='(' && substr($line,-1,1)==')')  )
-                        $lyrics .= "\n";
+                        $lyrics .= "";
                     elseif ( substr($line,0,3) == "[re" )
                         $lyrics .= "\n" . $line;
                     else {
