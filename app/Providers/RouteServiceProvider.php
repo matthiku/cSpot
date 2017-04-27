@@ -24,16 +24,7 @@ class RouteServiceProvider extends ServiceProvider
     public function boot()
     {
         //
-
         parent::boot();
-
-        // see: https://github.com/laravel/framework/issues/2554
-        if (url('/')=='http://localhost') {
-            /** @var \Illuminate\Routing\UrlGenerator $url */
-            $url = $this->app['url'];
-            // Force the application URL
-            $url->forceRootUrl(config('app.url'));
-        }
     }
 
 

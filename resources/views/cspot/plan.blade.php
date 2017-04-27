@@ -23,12 +23,12 @@
 
 
 
-    {{-- html input form definition 
+    {{-- html input form definition
     --}}
     @if (isset($plan))
 
 
-        {{--  provide popup to add/insert new item 
+        {{--  provide popup to add/insert new item
         --}}
         @include('cspot.snippets.add_item_modal')
 
@@ -36,8 +36,8 @@
 
         @if (Auth::user()->isEditor())
             {!! Form::model( $plan, array(
-                'route'  => array('plans.update', $plan->id), 
-                'method' => 'put', 
+                'route'  => array('plans.update', $plan->id),
+                'method' => 'put',
                 'file'   => 'true',
                 'id'     => 'inputForm',
                 'class'  => 'form-horizontal'
@@ -52,67 +52,67 @@
     @endif
 
 
-    
-    {{--  page header  
+
+    {{--  page header
     --}}
-    
+
     <div class="row mx-auto">
         <div class="col-md-9 col-xl-8">
 
             @if ( isset($plan) && $plan->items()->count() )
 
 
-                {{-- show links to various plan presentation modes 
+                {{-- show links to various plan presentation modes
                 --}}
                 <div class="dont-print plan-details">
 
                     @if (Auth::user()->isMusician())
                         <div class="float-right ml-2">
                             <a title="Show sheetmusic (if available) for the songs on this plan"
-                                onclick="$('#show-spinner').modal({keyboard: false});" 
+                                onclick="$('#show-spinner').modal({keyboard: false});"
                                 href="{{ url('cspot/items/'.$plan->firstItem()->id.'/sheetmusic/') }}">
                                 &#127932;&nbsp;</i>Music</a>
                         </div>
                         <div class="float-right mx-1">
-                            <a title="Show guitar chords (if available) for the songs on this plan" 
-                                onclick="$('#show-spinner').modal({keyboard: false});" 
+                            <a title="Show guitar chords (if available) for the songs on this plan"
+                                onclick="$('#show-spinner').modal({keyboard: false});"
                                 href="{{ url('cspot/items/').'/'.$plan->firstItem()->id }}/chords">
                                 &#127928;Chords</a>
                         </div>
                     @endif
 
                     <div class="float-right mx-1">
-                        <a title="Start projector-enabled presentation of each song and scripture reading in this plan" 
-                            onclick="$('#show-spinner').modal({keyboard: false});" 
+                        <a title="Start projector-enabled presentation of each song and scripture reading in this plan"
+                            onclick="$('#show-spinner').modal({keyboard: false});"
                             href="{{ url('cspot/items/'.$plan->firstItem()->id.'/present/') }}">
                             <i class="fa fa-tv fa-lg"></i>Present</a>
                     </div>
 
                     @if (Auth::user()->ownsPlan( $plan->id ))
                         <div class="float-right mr-2">
-                            <a title="for the Leader: Event script with all items, slides and details" 
-                                onclick="$('#show-spinner').modal({keyboard: false});" 
+                            <a title="for the Leader: Event script with all items, slides and details"
+                                onclick="$('#show-spinner').modal({keyboard: false});"
                                 href="{{ url('cspot/items/'.$plan->firstItem()->id.'/leader/') }}">
                                 &#128483;Lead</a>
                         </div>
                     @endif
 
-                    {{-- 
+                    {{--
                         currently not used (see GitHub issue # 174!)
 
                     <div class="float-right mr-1">
-                        <a title="YouTube playlist of all songs" target="new" 
+                        <a title="YouTube playlist of all songs" target="new"
                             href="{{ env('YOUTUBE_PLAYLIST_URL', 'https://www.youtube.com/playlist?list=').env('CHURCH_YOUTUBE_PLAYLIST_ID', '') }}">
                             <i class="fa fa-youtube">&nbsp;</i>play all</a>
                     </div>
-                    --}}  
+                    --}}
 
                 </div>
             @endif
 
             @if ( isset($plan) )
 
-                {{-- Plan Title 
+                {{-- Plan Title
                 --}}
                 <h4 class="hidden-md-down">
                     <span class="text-success lora font-weight-bold">{{ $plan->type->generic ? $plan->subtitle : $plan->type->name }}</span>
@@ -141,7 +141,7 @@
         <div class="col-md-3 col-xl-4 right">
 
             @if (isset($plan))
-                {{-- Show team and resources 
+                {{-- Show team and resources
                 --}}
                 <div class="plan-details">
                     <span>
@@ -161,7 +161,7 @@
                             data-template='<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><pre class="tooltip-inner tooltip-medium"></pre></div>'
                             data-placement="bottom" data-toggle="tooltip" title="{{ $teamList }}">
                             <i class="fa fa-users"></i>&nbsp;Team<small>({{$plan->teams->count()}})</small>
-                        </a> 
+                        </a>
                         L.:&nbsp;<strong>{{ $plan->leader ? $plan->leader->name : $plan->leader_id }}</strong> &nbsp;
                         @if ( strtoupper($plan->teacher->name)<>'N/A' )
                             T.:&nbsp;<strong>{{ $plan->teacher->name }}</strong>
@@ -171,26 +171,26 @@
                         <?php
                             $resrcList = ''; // create the list of team members and their roles for this plan
                             foreach ( $plan->resources as $key => $resrc ) {
-                                $resrcList .= $resrc->name; 
-                                //$resrcList .= ' ('+$resrc->pivot->comment+')'; 
+                                $resrcList .= $resrc->name;
+                                //$resrcList .= ' ('+$resrc->pivot->comment+')';
                                 if ($key+1 < $plan->resources->count())
                                     $resrcList .= ",\n";
                             }
                         ?>
-                        <a href="{{ url('cspot/plans/'.$plan->id.'/resource') }}" class="ml-2 nowrap" 
+                        <a href="{{ url('cspot/plans/'.$plan->id.'/resource') }}" class="ml-2 nowrap"
                             data-placement="left" data-toggle="tooltip" title="{{ $resrcList }}">
                             <i class="fa fa-cubes"></i>&nbsp;Resources<small>({{$plan->resources->count()}})</small>
-                        </a> 
+                        </a>
                     </small>
                 </div>
-            
+
                 <div class="d-inline plan-details small" style="display: none;" title="{{ $plan->updated_at }}">
                     (last changed by {{ $plan->changer }} {{ Carbon::now()->diffForHumans( $plan->updated_at, true ) }} ago)
                 </div>
             @endif
 
 
-            {{-- Submit or Save button 
+            {{-- Submit or Save button
             --}}
             <div class="form-buttons float-left">
                 <big>
@@ -198,7 +198,7 @@
                         @if (Auth::user()->isEditor())
                             <span class="has-warning mr-1">
                             {!! Form::submit('Save changes', [
-                                'data-toggle'    => 'tooltip', 
+                                'data-toggle'    => 'tooltip',
                                 'data-placement' => 'left',
                                 'class'          => 'btn btn-outline-success submit-button disabled plan-details text-help',
                                 'id'             => 'form-submit-btn',
@@ -213,7 +213,7 @@
                         <input class="btn btn-outline-success btn-block submit-button{{ isset($defaultValues['type_id']) ? '' : ' disabled'}}" type="submit" value="Submit">
                     @endif
                 </big>
-            </div>  
+            </div>
 
 
 
@@ -221,7 +221,7 @@
     </div>
 
 
-    {{-- PLAN DETAILS 
+    {{-- PLAN DETAILS
     --}}
     <div class="plan-details row mx-1"{!! isset($plan) ? " style='display: none'" : '' !!}>
 
@@ -230,7 +230,7 @@
         @if (Auth::user()->isEditor())
 
 
-            {{-- Event Type and Subtitle 
+            {{-- Event Type and Subtitle
             --}}
             <div class="col-xl-4 col-lg-6">
                 <div class="card-block narrower bg-muted mb-1">
@@ -249,7 +249,7 @@
                         {!! Form::label('type', 'Event Type:', ['class'=>'d-block']); !!}
                     @endif
 
-                    <select name="type_id" id="type_id" class="form-control text-help plan-form-minw c-select" 
+                    <select name="type_id" id="type_id" class="form-control text-help plan-form-minw c-select"
                         onchange="fillPlanDefaultValues(this)">
                         @if (! isset($plan) && ! isset($defaultValues['type_id'] ))
                             <option selected>
@@ -257,7 +257,7 @@
                             </option>
                         @endif
                         @foreach ($types as $type)
-                            <option 
+                            <option
                                 @if( ( ''<>old('type_id') && $type->id==old('type_id') )  ||  isset($plan) && $plan->type_id==$type->id  ||  isset($defaultValues['type_id']) && $defaultValues['type_id']==$type->id )
                                     selected
                                 @endif
@@ -271,10 +271,10 @@
                             <strong>{{ $errors->first('type_id') }}</strong>
                         </span>
                     @endif
-                    
+
                     <p class="mt-1 mb-0" id="edit-subtitle">
                         <label for="type" class="d-block">Subtitle <span class="text-muted">(or: Title for generic events)</span>:</label>
-                        
+
                         @if ( isset($plan) )
                             {!! Form::text('subtitle', $plan->subtitle, ['onfocus' => 'enableSaveButton(this)']) !!}</p>
                         @elseif ( isset($defaultValues['type_id']) )
@@ -288,25 +288,25 @@
             </div>
 
 
-            {{-- Date, Start- and End times 
+            {{-- Date, Start- and End times
             --}}
             <div class="col-xl-3 col-lg-6 mb-1">
                 <div class="card-block narrower bg-muted">
                     <div class="form-group mb-0 text-center" id="editPlanDate">
                         {!! Form::label('date', 'Date and Times: ', ['class'=>'d-block']); !!}
                         @if ( isset($plan) )
-                            {!! Form::text( 
-                                'date', $plan->date, 
-                                ['class'    => 'plan-form-minw center' ] ) 
+                            {!! Form::text(
+                                'date', $plan->date,
+                                ['class'    => 'plan-form-minw center' ] )
                             !!}
                         @elseif (isset($defaultValues['date']))
-                            {!! Form::text( 
-                                'date', $defaultValues['date'], 
+                            {!! Form::text(
+                                'date', $defaultValues['date'],
                                 ['class' => 'plan-form-minw center' ] )
                             !!}
                         @else
-                            {!! Form::text( 
-                                'date', \Carbon\Carbon::now(), 
+                            {!! Form::text(
+                                'date', \Carbon\Carbon::now(),
                                 ['class' => 'plan-form-minw center' ] )
                             !!}
                         @endif
@@ -334,7 +334,7 @@
                             $($('#editPlanDate').children('input')[0]).attr('id', 'plan-date');
                             $($('#editPlanServiceTimes').children('input')[0]).attr('id', 'plan-date-start-time');
                             $($('#editPlanServiceTimes').children('input')[1]).attr('id', 'plan-date-end-time');
-                            
+
                             // set width of time input fields
                             $('#plan-date').css('width', '10rem');
                             $('#plan-date-start-time').css('width', '4rem');
@@ -391,8 +391,8 @@
                             })
                         </script>
                     </div>
-                </div>                    
-            </div>                    
+                </div>
+            </div>
         @endif
 
 
@@ -410,7 +410,7 @@
                         @endif
 
                         <label class="form-control-label">Leader: &nbsp; &nbsp;
-                            <select name="leader_id" id="leader_id" class="text-help c-select" 
+                            <select name="leader_id" id="leader_id" class="text-help c-select"
                                 onchange="enableSaveButton(this); $('.reasonForChange').show(); $('.reasonForChange>input').focus()"
                                     {{ Auth::user()->isEditor() ? '' : ' disabled' }}>
                                 @if (! isset($plan) && ! isset($defaultValues['leader_id']) )
@@ -420,9 +420,9 @@
                                 @endif
                                 @foreach ($users as $user)
                                     @if( $user->hasRole('leader'))
-                                        <option 
-                                            @if(   ( ''<>old('leader_id') && $user->id==old('leader_id') )  
-                                                || ( isset($plan) && $plan->leader_id==$user->id ) 
+                                        <option
+                                            @if(   ( ''<>old('leader_id') && $user->id==old('leader_id') )
+                                                || ( isset($plan) && $plan->leader_id==$user->id )
                                                 || ( isset($defaultValues['leader_id']) && $defaultValues['leader_id']==$user->id ) )
                                                     selected
                                             @endif
@@ -437,20 +437,20 @@
                                 </span>
                             @endif
                             @if ( isset($plan) && $plan->isFuture() && Auth::user()->isAuthor() )
-                                <a href="{{ url('cspot/plans/'.$plan->id.'/remind/'.$plan->leader_id) }}?role=leader" 
+                                <a href="{{ url('cspot/plans/'.$plan->id.'/remind/'.$plan->leader_id) }}?role=leader"
                                    class="btn btn-sm btn-secondary" role="button"
                                    data-toggle="tooltip" title="Send reminder to leader to insert missing items">
                                     <i class="fa fa-envelope"></i></a>
                             @endif
                         </label>
                     </div>
-                </div>          
+                </div>
 
 
                 <div class="col-xs-12">
                     <div class="form-group nowrap mb-0">
                         <label class="form-control-label">Teacher: &nbsp;
-                            <select name="teacher_id" class="text-help c-select" 
+                            <select name="teacher_id" class="text-help c-select"
                                 onchange="enableSaveButton(this); $('.reasonForChange').show(); $('.reasonForChange>input').focus()"
                                     {{ Auth::user()->isEditor() ? '' : ' disabled' }}>
                                 @if (! isset($plan))
@@ -461,8 +461,8 @@
                                 @endif
                                 @foreach ($users as $user)
                                     @if( $user->hasRole('teacher'))
-                                        <option 
-                                            @if(   ( ''<>old('teacher_id') && $user->id==old('teacher_id') )  
+                                        <option
+                                            @if(   ( ''<>old('teacher_id') && $user->id==old('teacher_id') )
                                                 || ( isset($plan) && $plan->teacher_id==$user->id ) )
                                                 selected
                                             @endif
@@ -484,7 +484,7 @@
                                 </span>
                             @endif
                             @if ( isset($plan) && $plan->isFuture()  &&  Auth::user()->ownsPlan($plan->id) )
-                                <a href="{{ url('cspot/plans/'.$plan->id.'/remind/'.$plan->teacher_id) }}?role=teacher" 
+                                <a href="{{ url('cspot/plans/'.$plan->id.'/remind/'.$plan->teacher_id) }}?role=teacher"
                                    class="btn btn-sm btn-secondary" role="button" data-placement="left"
                                    data-toggle="tooltip" title="Send reminder to teacher to insert missing items">
                                     <i class="fa fa-envelope"></i></a>
@@ -492,17 +492,17 @@
                         </label>
                     </div>
                 </div>
-        
+
                 @if (isset($plan))
-                    <div class="col-xs-12 reasonForChange mb-1" style="display: none;">                
+                    <div class="col-xs-12 reasonForChange mb-1" style="display: none;">
                         <span class="label label-default">Please provide reason for this change:</span>
                         <input type="text" name="reasonForChange" class="fully-width">
                     </div>
                 @endif
 
 
-            </div>                    
-        </div>                    
+            </div>
+        </div>
 
     </div>
 
@@ -513,15 +513,15 @@
 
 
     @if (isset($plan))
-        {{-- 
-            Show items for existing plan 
+        {{--
+            Show items for existing plan
             ____________________________
         --}}
 
 
 
-        {{-- 
-            List all plan items here 
+        {{--
+            List all plan items here
         --}}
         @include('cspot.items')
 
@@ -530,7 +530,7 @@
 
 
         @if ($plan->songsFreshness()>0 && Auth::user()->ownsPlan( $plan->id ))
-            <small class="hidden-sm-down mx-4"><span class="hidden-md-down">Songs </span>overall: 
+            <small class="hidden-sm-down mx-4"><span class="hidden-md-down">Songs </span>overall:
                     <big>{{ $plan->songsFreshness()>50 ? '&#127823;' : '&#127822;' }}</big> {{ number_format( $plan->songsFreshness(), 0 ) }}% 'freshness'
                 <a href="#" title="What's that?" onclick="showSongFreshnessHelp()">
                 <i class="fa fa-question-circle fa-lg text-danger"></i></a>
@@ -538,20 +538,20 @@
         @endif
 
         @if (Auth::user()->ownsPlan($plan->id))
-            <a href="#" title="" class="ml-4 hidden-sm-down bg-warning rounded px-1" 
-                onclick="showYTvideoInModal('{{ App\Models\Song::where('book_ref', 'tr02')->value('youtube_id') }}', this)" 
+            <a href="#" title="" class="ml-4 hidden-sm-down bg-warning rounded px-1"
+                onclick="showYTvideoInModal('{{ App\Models\Song::where('book_ref', 'tr02')->value('youtube_id') }}', this)"
                 data-toggle="tooltip" data-song-title="Learn how to use this page" data-original-title="Watch this short video to quickly learn how to work on this page."
                 ><span class="nowrap"
                 ><i class="fa fa-youtube-play red"></i> Learn <span class="hidden-lg-down">to use this page</span>(P<span class="hidden-lg-down">art</span> 1)</span></a>
-            <a href="#" title="" class="ml-1 hidden-sm-down bg-warning rounded px-1" 
-                onclick="showYTvideoInModal('{{ App\Models\Song::where('book_ref', 'tr02b')->value('youtube_id') }}', this)" 
+            <a href="#" title="" class="ml-1 hidden-sm-down bg-warning rounded px-1"
+                onclick="showYTvideoInModal('{{ App\Models\Song::where('book_ref', 'tr02b')->value('youtube_id') }}', this)"
                 data-toggle="tooltip" data-song-title="Learn how to use this page" data-original-title="Watch this short video to quickly learn how to work on this page.">
                 <i class="fa fa-youtube-play red"></i> Part 2</a>
         @endif
 
         @if (Auth::user()->ownsPlan($plan->id) && $plan->isFuture() )
             <a href="{{ url('cspot/songs?plan_id='.$plan->id) }}"  onclick="showSpinner()"
-                title="Search for a song via the full song listing" 
+                title="Search for a song via the full song listing"
                 class="btn btn-sm btn-info float-right">
                     <i class="fa fa-plus"></i><i class="fa fa-music"></i>&nbsp; <span class="hidden-md-down">- Search and </span>add song</a>
         @endif
@@ -576,13 +576,13 @@
                     <input checked="checked" type="checkbox" value="Y" name="defaultItems">
                     Insert default items for this plan? <span class="text-muted">(See list of <a target="new" href="{{ url('admin/default_items') }}">Default Items</a>)</span>
                 </label>
-            </div>    
+            </div>
 
             <!-- what to do after creating this plan? Either go to the new plan or add another one of this type -->
             <input type="hidden" name="addAnother" value="false">
             <div class="checkbox">
                 <label>
-                    <input 
+                    <input
                     {{ isset($defaultValues['type_id']) ? 'checked="checked"' : '' }}
                     type="checkbox" value="Y" name="addAnother">
                     Keep adding new Event Plans of the same type after this one?
@@ -597,7 +597,7 @@
 
 
 
-    {{-- =================   Plan Notes 
+    {{-- =================   Plan Notes
     --}}
     <div class="container">
         <div style="clear:both; max-width: 50rem;" class="card mt-3">
@@ -610,16 +610,16 @@
                     @if ( Auth::user()->isEditor() && $plan->date >= \Carbon\Carbon::today() )
 
                         <p title="Click to edit!" class="editable-plan-info card-text narrow white-space-pre-wrap"
-                                onclick="location.href='#bottom';" 
+                                onclick="location.href='#bottom';"
                                 id="info-plan-id-{{ $plan->id }}">{!! $plan->info !!}</p>
                         @if ( strlen($plan->info) > 0 )
                             <span class="fa fa-eraser text-muted" onclick="erasePlanNote('{{ $plan->id }}')" title="Discard the whole note"></span>
                         @endif
                     @else
-                
+
                         <p class="card-text narrower white-space-pre-wrap">{!! $plan->info !!}</p>
                         <p class="card-text narrower white-space-pre-wrap" id="showAddedPlanNote"></p>
-                        
+
                         @include ('cspot.snippets.addnote')
 
                         <a href="#" data-toggle="modal" data-target="#addPlanNoteModal" class="card-link">Add Note</a>
@@ -646,7 +646,7 @@
         @if (Auth::user()->isEditor())
             <span class="has-warning" onclick="showSpinner()">
             {!! Form::submit('Save changes', [
-                'data-toggle' => 'tooltip', 
+                'data-toggle' => 'tooltip',
                 'class'       => 'form-submit text-help submit-button plan-details',
                 'style'       => 'display: none',
                 'title'       => 'Click to save changes to notes, event type, date, leader or teacher',
@@ -660,9 +660,9 @@
 
         @endif
 
-        @if ( Auth::user()->isAdmin()  &&  $plan->items->count()==0 ) &nbsp; 
+        @if ( Auth::user()->isAdmin()  &&  $plan->items->count()==0 ) &nbsp;
             <a class="btn btn-danger btn-sm" type="button" data-toggle="tooltip"  onclick="showSpinner()"
-                title="You can only delete a plan that contains no items." 
+                title="You can only delete a plan that contains no items."
                 href="{{ url('cspot/plans/delete/'.$plan->id) }}">
                 <i class="fa fa-trash" > </i> &nbsp; Delete an empty Plan
             </a>
@@ -682,11 +682,11 @@
         </script>
     @endif
 
-    
+
     {!! Form::close() !!}
 
     <script>
-        
+
         @if (isset($types))
             cSpot.serviceTypes = JSON.parse('{!! addslashes( json_encode($types, JSON_HEX_APOS | JSON_HEX_QUOT) ) !!}');
         @endif
@@ -706,10 +706,10 @@
                 .html(modalContent);
 
             // open the modal
-            $('.help-modal').modal();            
+            $('.help-modal').modal();
         }
 
-    </script>   
+    </script>
 
 
     <div id="bottom">&nbsp;</div>
