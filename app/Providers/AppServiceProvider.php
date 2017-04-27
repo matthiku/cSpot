@@ -22,7 +22,16 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        // First, we need to cater for the installation stage,
+
+        /**
+        * For queued services, we need to provide the proper URL schema and hostname,
+        * as it would otherwise be 'http://localhost'!
+        */
+        $url = \Request::url();
+        view()->share('schemaAndHostname', parse_url( $url, PHP_URL_SCHEME) . '://' . parse_url( $url, PHP_URL_HOST));
+
+
+        // We need to cater for the installation stage,
         // when there are no tables present in the database
         // in order to avoid an error in "PHP Artisan" commands, when no migration has happened yet!
         if (\Schema::hasTable('users'))
@@ -54,8 +63,8 @@ class AppServiceProvider extends ServiceProvider
             // provide the PATH to the (custom) logos to all views
             if ( strtolower(env('USE_CUSTOM_LOGOS')) == 'yes' ) {
                 view()->share('logoPath', 'images/custom/');
-            } else { 
-                view()->share('logoPath', 'images/'); 
+            } else {
+                view()->share('logoPath', 'images/');
             }
 
 

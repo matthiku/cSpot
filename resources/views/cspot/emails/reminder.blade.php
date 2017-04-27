@@ -26,7 +26,7 @@
         @endif
         </strong>into the plan for<br>
 
-        <h4><a href="{{ Request::url() . '/cspot/plans/'.$plan->id }}">{{ $plan->type->name }}
+        <h4><a href="{{ $schemaAndHostname . '/cspot/plans/'.$plan->id }}">{{ $plan->type->name }}
             on {{ $plan->date->formatLocalized('%A, %d %B %Y') }}</a>
             <small>(click to open)</small>
         </h4>
