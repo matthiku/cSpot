@@ -21,13 +21,13 @@
     </details>
 
     <hr>
-    <p>Please do not reply to this message, use <a href="{{ url('messages').'/'.$messi->thread_id }}">this link</a> to reply!</p>
+    <p>Please do not reply to this message, use <a href="{{ Config::get('app.url') . '/messages'.'/'.$messi->thread_id }}">this link</a> to reply!</p>
 
-    <p>Best Regards,<br>    
+    <p>Best Regards,<br>
     Your c-SPOT Admin
     </p>
 
-    <small>You can always unsubscribe from these kind of notifications <a href="{{ url('admin/users').'/'.$user->id }}">here</a>.</small>
+    <small>You can always unsubscribe from these kind of notifications <a href="{{ Config::get('app.url') . '/admin/users'.'/'.$user->id }}">here</a>.</small>
 
 </body>
 

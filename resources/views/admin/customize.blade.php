@@ -13,7 +13,7 @@
     @include('layouts.flashing')
 
 
-    
+
 
         {!! Form::open( array('action' => 'Admin\CustomizeController@update', 'id' => 'inputForm', 'files'  => true, ) ) !!}
 
@@ -34,7 +34,7 @@
                    </div>
 
                     <div class="form-group full-width">
-                        {!! Form::label('church_url', 'Church website:', ['class' => 'mb-0']) !!}<br>
+                        {!! Form::label('church_url', 'Link to Church website:', ['class' => 'mb-0']) !!}<br>
                         {!! Form::text('church_url', env('CHURCH_URL')); !!}
                    </div>
 
@@ -47,7 +47,7 @@
 
                     <div class="card card-block">
                         <h5 class="card-title">
-                            Current Favicon (Browser Icon): 
+                            Current Favicon (Browser Icon):
                             <img src="{{ url($logoPath.'favicon.ico') }}">
                         </h5>
                         <p class="card-text">
@@ -60,7 +60,7 @@
 
                     <div class="card card-block">
                         <h5 class="card-title">
-                            Your Church Logo: 
+                            Your Church Logo:
                             <img src="{{ url($logoPath.env('CHURCH_LOGO_FILENAME')) }}" height="30px">
                         </h5>
                         <p class="card-text">
@@ -90,20 +90,31 @@
                 <div class="col-md-6">
                     <h3 class="text-success">System Configuration</h3>
 
-                    {{-- default value for checkbox --}}
-                    <input type="hidden" name="enable_sync" value="false">
-                    <div class="form-group">
-                        {!! Form::checkbox('enable_sync', 'true', env('PRESENTATION_ENABLE_SYNC')); !!}
-                        {!! Form::label('enable_sync', 'Presentation Synchronisation', ['class' => 'mb-0']) !!}
-                        <div class="small">Provide option to synchronise the presentation between partizipating clients</div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{-- default value for checkbox --}}
+                            <input type="hidden" name="enable_sync" value="false">
+                            <div class="form-group">
+                                {!! Form::checkbox('enable_sync', 'true', env('PRESENTATION_ENABLE_SYNC')); !!}
+                                {!! Form::label('enable_sync', 'Presentation Synchronisation', ['class' => 'mb-0']) !!}
+                                <div class="small">Provide option to synchronise the presentation between partizipating clients</div>
+                           </div>
+                       </div>
+                       <div class="col-md-6">
+                            {{-- default value for checkbox --}}
+                            <input type="hidden" name="enable_debug" value="false">
+                            <div class="form-group">
+                                {!! Form::checkbox('enable_debug', 'true', env('APP_DEBUG')); !!}
+                                {!! Form::label('enable_debug', 'Enable debugging', ['class' => 'mb-0']) !!}
+                                <div class="small text-danger">Warning! Debugging slows down the app! Use only temporarily.</div>
+                           </div>
+                       </div>
                    </div>
 
-                    {{-- default value for checkbox --}}
-                    <input type="hidden" name="enable_debug" value="false">
-                    <div class="form-group">
-                        {!! Form::checkbox('enable_debug', 'true', env('APP_DEBUG')); !!}
-                        {!! Form::label('enable_debug', 'Enable debugging', ['class' => 'mb-0']) !!}
-                        <div class="small text-danger">Warning! Debugging slows down the app! Use only temporarily.</div>
+
+                    <div class="form-group full-width">
+                        {!! Form::label('app_url', 'C-SPOT Base URL:', ['class' => 'mb-0']) !!} <small> (e.g. http://cspot.dev)</small><br>
+                        {!! Form::text('app_url', env('APP_URL')); !!}
                    </div>
 
 

@@ -8,14 +8,14 @@
     <p>Dear {{ $user->fullName }},</p>
     <p>Thanks for signing up to c-SPOT!</p>
     <p>
-        Before you can log in, we just need you to <a href='{{ url("register/confirm/{$user->token}") }}'>confirm your email address</a> real quick!
+        Before you can log in, we just need you to <a href='{{ Config::get('app.url') . "/register/confirm/{$user->token}" }}'>confirm your email address</a> real quick!
     </p>
 
     <p>You can also copy and paste the following link into your browser address field:</p>
-    <p>{{ url("register/confirm/{$user->token}") }}</p>
+    <p>{{ Config::get('app.url') . "/register/confirm/{$user->token}" }}</p>
 
     <p>Also, please remember, after you've logged in, you only have very basic access rights. Let the administrator know that you've signed up and you will get more access according to your role(s).</p>
-    
+
     <p>Best Regards,<br>
     Your c-SPOT Admin
     </p>

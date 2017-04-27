@@ -23,13 +23,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
 
-        /**
-        * For queued services, we need to provide the proper URL schema and hostname,
-        * as it would otherwise be 'http://localhost'!
-        */
-        $url = \Request::url();
-        view()->share('schemaAndHostname', parse_url( $url, PHP_URL_SCHEME) . '://' . parse_url( $url, PHP_URL_HOST));
-
 
         // We need to cater for the installation stage,
         // when there are no tables present in the database

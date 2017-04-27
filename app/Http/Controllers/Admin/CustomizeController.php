@@ -34,11 +34,11 @@ class CustomizeController extends Controller
 
         // rewrite file content with changed data
         if (file_exists($path)) {
-            // replace current value with new value 
+            // replace current value with new value
             file_put_contents(
                 $path, str_replace(
-                    $key.'='.$delim.$oldValue.$delim, 
-                    $key.'='.$delim.$newValue.$delim, 
+                    $key.'='.$delim.$oldValue.$delim,
+                    $key.'='.$delim.$newValue.$delim,
                     file_get_contents($path)
                 )
             );
@@ -77,6 +77,9 @@ class CustomizeController extends Controller
             $this->updateDotEnv('CHURCH_YOUTUBE_PLAYLIST_ID', $request->church_youtube_playlist_id);
         }
 
+        if ($request->has('app_url')) {
+            $this->updateDotEnv('APP_URL', $request->app_url);
+        }
         if ($request->has('songselect_url')) {
             $this->updateDotEnv('SONGSELECT_URL', $request->songselect_url);
         }
@@ -110,10 +113,10 @@ class CustomizeController extends Controller
 
         if ($request->has('enable_sync')) {
             $this->updateDotEnv('PRESENTATION_ENABLE_SYNC', $request->get('enable_sync'));
-        } 
+        }
         if ($request->has('enable_debug')) {
             $this->updateDotEnv('APP_DEBUG', $request->get('enable_debug'));
-        } 
+        }
 
         if ($request->hasFile('favicon_file')) {
             if ($request->file('favicon_file')->isValid()) {
@@ -145,5 +148,3 @@ class CustomizeController extends Controller
     }
 
 }
-
-
