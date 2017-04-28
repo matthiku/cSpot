@@ -48726,12 +48726,11 @@ function setIdealCalendarRowHeight()
 {
     // do nothing if the calendar is not visible
     if ( ! $('.calendar-container').is(':visible'))
-        return
+        return;
 
     /* find out remaining white space which can be distrubted to the rows */
     var remainingWhiteSpace =
-        $('.calendar-container').height()
-            - $('#calendar-tabs').height();
+        $('.calendar-container').height() - $('#calendar-tabs').height();
 
     // we need a minimal amount of white space available to be distributed
     if (remainingWhiteSpace < 6 )
@@ -50599,7 +50598,7 @@ $(document).ready(function() {
 if (typeof($)===undefined) {
     var $, cSpot;
 }
- 
+
 
 
 function setCurrentPageAsStartupPage(that)
@@ -50622,15 +50621,15 @@ function setCurrentPageAsStartupPage(that)
 
 /* Record a user's availability for a certain plan
  * (called when user clicks on the 'available' icon on plans.blade.php) */
-function userAvailableForPlan(that, plan_id) 
+function userAvailableForPlan(that, plan_id)
 {
     // make sure the tooltip is hidden now
-    $(that).parent().parent().tooltip('hide')
+    $(that).parent().parent().tooltip('hide');
     $('#user-available-for-plan-id-'+plan_id).html( cSpot.const.waitspinner );
 
     var teamPage = false;
     // was this function called from within the Team page?
-    if (that.checked == undefined) {
+    if (that.checked === undefined) {
         showSpinner();
         teamPage = true;
         // inverse the current available status
@@ -50647,7 +50646,7 @@ function userAvailableForPlan(that, plan_id)
         })
         .fail(function() {
             $('#user-available-for-plan-id-'+plan_id).text( "error" );
-        })        
+        });
     }
 }
 
@@ -50670,14 +50669,14 @@ function getListOfPlansByDate()
     var momentDt = moment(planDate, "YYYY-MM-DD");
 
     // do nothing if we have no valid date set
-    if (! momentDt._isAMomentObject) return
+    if (! momentDt._isAMomentObject) return;
 
     var planDtFm = momentDt.format("dddd, Do MMMM YYYY");
     var elem = $('.show-list-of-plans-for-this-day');
     elem.text('Searching for existing events on ' + planDtFm + ' ...');
 
     $.ajax({
-        url:    cSpot.routes.apiGetPlanList, 
+        url:    cSpot.routes.apiGetPlanList,
         method: 'GET',
         data: { date: planDate}
     })
@@ -50690,7 +50689,7 @@ function getListOfPlansByDate()
                 elem.append(data[i].type.name + '<br>');
             }
         }
-        else 
+        else
             elem.text('No plans found for ' + planDtFm);
     });
 }
@@ -50725,7 +50724,7 @@ function fulltextBibleSearch(version)
     $.ajax({
         url:    cSpot.routes.apiBiblesSearch,
         method: 'GET',
-        data: { 
+        data: {
             search: search,
             version: versionID,
         }
@@ -50754,9 +50753,9 @@ function fulltextBibleSearch(version)
                 $(cloneSp).text(result.text);
                 $(cloneP).prepend(cloneSp);
                 // show bible reference of search result as a link to the corresponding chapter
-                $(cloneP).prepend('<a href="?version='+result.bibleversion_id+'&book='+result.biblebook_id+'&chapter='+result.chapter
-                    + '" title="Read the whole chapter"><strong>'
-                    + cSpot.bibleBooks[result.biblebook_id-1].name+' '+result.chapter+':'+result.verse+'</strong></a> ');
+                $(cloneP).prepend('<a href="?version='+result.bibleversion_id+'&book='+result.biblebook_id+'&chapter='+result.chapter +
+                    '" title="Read the whole chapter"><strong>' +
+                    cSpot.bibleBooks[result.biblebook_id-1].name+' '+result.chapter+':'+result.verse+'</strong></a> ');
                 $('.show-bible-text').append(cloneP);
             }
             // make editable areas above editable again
@@ -50766,7 +50765,7 @@ function fulltextBibleSearch(version)
             showAlertBox('Search was unsuccessful. Please try again.', '.append-alert-area-here');
             $('.show-bible-text').html('');
         }
-    })
+    });
 }
 
 
@@ -50776,7 +50775,7 @@ function fulltextBibleSearch(version)
 \*/
 
 
-function transposeSongChords() 
+function transposeSongChords()
 {
     var oldkey = $('#transpose-oldkey').val();
     var newkey = $('#transpose-newkey').val();
@@ -50798,7 +50797,7 @@ function transposeSongChords()
     songParts.each( function(i) {
         var row, cell, plaintext, lines, chols='', elm, chords, nwk, newText;
         row = $(songParts[i]);
-        
+
         // continue with next child if this is not a song part
         if (row.hasClass('onsong-meta-data')  || row.attr('id')=='new-onsong-row') return true;
 
@@ -50835,13 +50834,13 @@ function transposeSongChords()
     $('.onsong-import-areas').hide();
     $('.show-onsong-transpose-hint').hide();
     $('.show-onsong-upload-hint')
-        .html('<p class="bg-warning text-center text-danger big">Chords have been transposed from <strong>'
-            +oldkey+'</strong> to <strong>'+newkey+'</strong>. You still have to review each key!</p>');
+        .html('<p class="bg-warning text-center text-danger big">Chords have been transposed from <strong>' +
+            oldkey+'</strong> to <strong>'+newkey+'</strong>. You still have to review each key!</p>');
     location.href = '#tbl-bottom';
 }
-/* 
+/*
 see: http://stackoverflow.com/questions/7936843 */
-function transposeChord(chord, oldkey, newkey) 
+function transposeChord(chord, oldkey, newkey)
 {
     var scales = {
         // scale_form = [1-7, #1-7, b1-7, *1-7, bb1-7]
@@ -50867,11 +50866,11 @@ function transposeChord(chord, oldkey, newkey)
     var newKeyScale = scales[newkey + "Scale"];
     var transposedChord;
 
-    transposedChord = chord.replace(/(([CDEFGAB]#\*)|([CDEFGAB]#)|([CDEFGAB]b+)|([CDEFGAB]\**))/g, 
+    transposedChord = chord.replace(/(([CDEFGAB]#\*)|([CDEFGAB]#)|([CDEFGAB]b+)|([CDEFGAB]\**))/g,
         function(match) {
             var i = oldKeyScale.indexOf(match);
             return newKeyScale[i];
-        })
+        });
 
     return transposedChord;
 }
@@ -50881,11 +50880,11 @@ function transposeChord(chord, oldkey, newkey)
 function convertChordsToOnSongParts()
 {
     // wait until cSPOT is fully ready ....
-    if ( cSpot.song_parts_by_code  == undefined ) {
+    if ( cSpot.song_parts_by_code  === undefined ) {
         showSpinner();
         console.log('waiting for c-SPOT to get ready');
-        setTimeout( convertChordsToOnSongParts,500)
-        return
+        setTimeout( convertChordsToOnSongParts,500);
+        return;
     }
 
     // First, get the chords field of the current song
@@ -50932,7 +50931,7 @@ function processOnSongFile(data)
     // needed in the context of the Song Details page
     $('#onsong-submit-method').val('PUT');
 
-    var onsong = data.split('\n');    
+    var onsong = data.split('\n');
     var hdr, partName='m', verse='', tmp;
 
     // monitor list of created parts by their code
@@ -50948,7 +50947,7 @@ function processOnSongFile(data)
     // loop through each line of the file and start the importing of the song parts
     for (var i = 0; i <= onsong.length - 1; i++) {
         // ignore empty lines etc
-        if (onsong[i].length==0  || onsong[i].trim()=='') 
+        if (onsong[i].length===0  || onsong[i].trim()==='')
             continue;
 
         // check if we have a new part name
@@ -50995,17 +50994,17 @@ function processOnSongFile(data)
 function identifyPartCode(str)
 {
     var patt = /^(coda|end)/i;
-    if ( patt.test(str)  &&  str.length < 10 ) 
+    if ( patt.test(str)  &&  str.length < 10 )
         return 'e';
 
     patt = /^(Verse)/i;
     if ( patt.test(str) ) {
-        var nm=''; var n=str.split(' '); 
+        var nm=''; var n=str.split(' ');
         if (n.length>1)
-            nm=n[1].substr(0,1); 
+            nm=n[1].substr(0,1);
         else
             nm='1';
-        return nm; 
+        return nm;
     }
     // also allow verse codes from easislides
     patt = /^\[[1-9]\]$/;
@@ -51015,9 +51014,9 @@ function identifyPartCode(str)
 
     patt = /^(Chorus)/i;
     if ( patt.test(str) ) {
-        var num=str.split(' '); 
+        var num=str.split(' ');
         if (num.length>1 && num[1].substr(0,1)=='2') {
-            return 't'; 
+            return 't';
         }
         return 'c';
     }
@@ -51035,7 +51034,7 @@ function identifyPartCode(str)
     }
 
     patt = /^(Intro|Other|\()/;
-    if ( patt.test(str) ) 
+    if ( patt.test(str) )
         return 'i';
 
     return '';
@@ -51063,11 +51062,11 @@ function writePartCodeAndSaveVerse(partName, text)
 {
     // check if this partName is valid and still exists
     console.log('Checking in new OnSong part: '+ partName);
-    var partNo = cSpot.song_parts_by_code[partName].id
+    var partNo = cSpot.song_parts_by_code[partName].id;
     $('#new-onsong-part-selection').val(partNo);
 
     if (!partNo  || $('#new-onsong-part-selection').val() != partNo ) {
-        console.log('This part code is invalid or has already been used.')
+        console.log('This part code is invalid or has already been used.');
         return;
     }
 
@@ -51080,7 +51079,7 @@ function writePartCodeAndSaveVerse(partName, text)
     var new_row = $('#adding-new-song-part');
 
     // insert the OnSong text into the teaxtarea input field
-    new_row.children('.cell-part-text').children('.plaintext-editor').val(text)
+    new_row.children('.cell-part-text').children('.plaintext-editor').val(text);
 
     // now submit the new OnSong part
     showSpinner();
@@ -51095,7 +51094,7 @@ function writePartCodeAndSaveVerse(partName, text)
 
 
 /*
-    Prepare New OnSong Row 
+    Prepare New OnSong Row
     - launch modal for user to select the part code
     - prepare textarea for user to enter actual onsong data
     - save as a new row in the list of onSong parts
@@ -51108,7 +51107,7 @@ function insertNewOnSongRow(part_id)
     $('#adding-new-song-part').attr('id', '');
 
     // collapse the current song parts
-    $('.cell-part-text').removeClass('show');    
+    $('.cell-part-text').removeClass('show');
 
     // clone the existing and hidden, empty row and show it
     $('#new-onsong-row').clone().attr('id', 'very-new-onsong-row').appendTo('#onsong-parts');
@@ -51139,14 +51138,14 @@ function insertNewOnSongRow(part_id)
     // make sure this part is not collapsed
     $('#adding-new-song-part > .cell-part-text').addClass('show');
 
-    // make sure to hide the new row if user clicks outside the modal to hide it        
+    // make sure to hide the new row if user clicks outside the modal to hide it
     $('#selectSongPartCodeModal').on('hidden.bs.modal', function () {
         removeNewOnSongRow($('#adding-new-song-part'));
     });
 
     // do not trigger the modal if this was called programmatically (and not by the user)
     if (part_id)
-        return
+        return;
 
     // make sure all is in the visible viewport
     window.location.href = "#tbl-bottom";
@@ -51156,15 +51155,15 @@ function insertNewOnSongRow(part_id)
         // move the part-type selection dialog down to the bottom
         var mo = $('.modal-content.select-songpart-code')[0];
         $(mo).position({my:'left top', at:'left bottom', of:$('#adding-new-song-part > .cell-part-name')});
-        // set the focus on the part-type selection 
+        // set the focus on the part-type selection
         $('#new-onsong-part-selection').focus();
-    })
+    });
 
     // call (show) Modal for onsong part name selection
     $('#selectSongPartCodeModal').modal('show');
 }
 
-function editPartNameForSelection(code, what) 
+function editPartNameForSelection(code, what)
 {
     var sel = $('#new-onsong-part-selection');
     if (what=='remove') {
@@ -51184,7 +51183,7 @@ function editPartNameForSelection(code, what)
 */
 function insertSelectedPartCode()
 {
-    // remove that event from the modal      
+    // remove that event from the modal
     $('#selectSongPartCodeModal').off('hidden.bs.modal');
 
     var newCodeId = $('#new-onsong-part-selection').val();
@@ -51194,7 +51193,7 @@ function insertSelectedPartCode()
     if (newCodeId) {
         // write html code to show Part name and part code
         var html = newCodeName + (newCodeCode!='m' ? ' <span class="text-white">('+newCodeCode+')</span>' : '');
-        
+
         if (newCodeCode=='m')
             $('.hints-for-onsong-metadata').show();
 
@@ -51226,7 +51225,7 @@ function findNextPossibleOnSongPart() {
             var code = elem.song_part.code;
             if ( !isNaN(code))
                 max = Math.max(max,code);
-            if (code=='c') 
+            if (code=='c')
                 guess = 'c';
         });
         // we already have a chorus
@@ -51235,12 +51234,12 @@ function findNextPossibleOnSongPart() {
         // we have verse 1 but no chorus yet
         if (max==1 && guess===undefined)
             guess='c';
-        else 
+        else
             guess = 1*1+max;
 
         ;;;console.log('guessing next possible song part as '+guess);
         return cSpot.song_parts_by_code[guess].id;
-    } 
+    }
     // or use the sequence for guessing the next one
     else if (cSpot.item.song.sequence) {
         return 1;
@@ -51267,14 +51266,14 @@ function removeNewOnSongRow(row, cancel)
     $('.error-msg').hide();
     $('.insertNewOnSongRow-link').show();
     $('.for-existing-items').show();
-    $('.toggle-onsong-buttons').show(); 
+    $('.toggle-onsong-buttons').show();
 
     // remove row in case of a just added, empty row
     if (!onsong_id) {
         row.remove();
         return;
     }
-    
+
     $(row).removeClass('table-warning');
 
     // reinstate row layout for existing rows
@@ -51283,17 +51282,17 @@ function removeNewOnSongRow(row, cancel)
     $(onsongArea).children('.show-onsong-text').show();
     $(onsongArea).children('.write-onsong-text').show();
     $(onsongArea).children('textarea').hide();
-    
-    // if the user was editing an existing song part but aborted 
+
+    // if the user was editing an existing song part but aborted
     //      the action, we need to reset the textarea content
     if (cancel=='cancel') {
-        // NOTE: val()  is the content as perhaps modified by the user 
+        // NOTE: val()  is the content as perhaps modified by the user
         //       html() is the original content that will not change by edits in the textarea
         $(onsongArea).children('.plaintext-editor').val($(onsongArea).children('.plaintext-editor').html());
         $(onsongArea).children('.chords-over-lyrics-editor').val($(onsongArea).children('.chords-over-lyrics-editor').html());
     }
-    
-    // if the user was editing an existing song part and the result was 
+
+    // if the user was editing an existing song part and the result was
     //      saved successfully, we need to also update the original values
     if (cancel=='save') {
         $(onsongArea).children('.plaintext-editor').html($(onsongArea).children('.plaintext-editor').val());
@@ -51305,7 +51304,7 @@ function removeNewOnSongRow(row, cancel)
     // show correct action buttons
     $('.cell-part-action').hide();
     var cell =  $(onsongArea).children('.cell-part-action');
-    $(cell).children('.for-existing-items').show(); 
+    $(cell).children('.for-existing-items').show();
 
     // show Submit Sequence Button if existing sequence and new sequence is identical
     var oldseq = $('.editable-song-field').text().trim();
@@ -51314,7 +51313,7 @@ function removeNewOnSongRow(row, cancel)
     var newseq = $('#sequence-drop-zone').children().text();
     if (oldseq == newseq)
         $('#submit-sequence-button').hide();
-    else 
+    else
         $('#submit-sequence-button').show();
 
     // show post-import hints, if available:
@@ -51326,10 +51325,10 @@ function closeAdvOnSongEditor(row)
 {
     row.removeClass('table-warning');
 
-    var cell = row.children('.cell-part-text'); 
-    cell.children('.editor-hints').hide(); 
-    cell.children('.cell-part-action').children('.for-existing-items').show(); 
-    cell.children('.show-onsong-text').show(); 
+    var cell = row.children('.cell-part-text');
+    cell.children('.editor-hints').hide();
+    cell.children('.cell-part-action').children('.for-existing-items').show();
+    cell.children('.show-onsong-text').show();
     // empty and hide the editor
     cell.children('.advanced-editor').html('').hide();
 
@@ -51339,7 +51338,7 @@ function closeAdvOnSongEditor(row)
 
 /* show or hide the Editor selection buttons
 */
-function toggleOnSongEditButtons(row) 
+function toggleOnSongEditButtons(row)
 {
     // make sure we have no "outdated" min-height
     row.css('min-height', 0);
@@ -51348,13 +51347,13 @@ function toggleOnSongEditButtons(row)
     if (! $('.show-onsong-format-hint').is(':visible')) {
 
         // are we already EDITing another song part?
-        if ($('.cell-part-action').is(':visible')) 
+        if ($('.cell-part-action').is(':visible'))
         {
             $('.cell-part-action').hide();
             $('#insertNewOnSongRow-link').show();
             $('.toggle-onsong-buttons').show();
-        } 
-        else 
+        }
+        else
         {
             // $('.cell-part-action').hide();
             $('.toggle-onsong-buttons').hide();
@@ -51368,7 +51367,7 @@ function toggleOnSongEditButtons(row)
             var partCode = $(row.children('.cell-part-name')[0]).data('partCode');
 
             // write original song text into a data attribute
-            //  in order to later be able see if anything was changed 
+            //  in order to later be able see if anything was changed
             row.data('orig-onsong-text', text);
 
             row.addClass('table-warning');
@@ -51379,7 +51378,7 @@ function toggleOnSongEditButtons(row)
             $('.show-onsong-format-hint').show();
 
             // check if this song part is still part of the SEQUENCE code list
-            isThisPartInSequenceListThenHideDeleteBtn(row)
+            isThisPartInSequenceListThenHideDeleteBtn(row);
 
             // Use Plaintext Editor -
             //    - if the original text and the converted text are the same (indicating that it contains no chords)
@@ -51409,7 +51408,7 @@ function toggleOnSongEditButtons(row)
             $(cell).children('.cell-part-action').position({my: 'right bottom', at: 'right bottom', of: cell});
         }
     }
-}       
+}
 
 // Compares the list of codes in the SEQUENCE field with the code of the current row.
 // If the code is listed in the sequence, the DELETE button will not be shown
@@ -51425,14 +51424,14 @@ function isThisPartInSequenceListThenHideDeleteBtn(row)
 
 /* Activate the Advanced OnSong editor
 */
-function showAdvOnSongEditor(row) 
+function showAdvOnSongEditor(row)
 {
     // keep the height of the row while editing
     var height = row.css('height');
     row.css('min-height', height);
 
     // hide the editor selection buttons
-    row.children('.cell-part-text').children('.cell-part-action').children('.for-existing-items').hide(); 
+    row.children('.cell-part-text').children('.cell-part-action').children('.for-existing-items').hide();
 
     // get the existing OnSong data
     var textDiv = row.children('.cell-part-text').children('textarea');
@@ -51446,9 +51445,9 @@ function showAdvOnSongEditor(row)
     });
 
     // show the editor, hide the other stuff
-    row.children('.cell-part-text').children('.show-onsong-text').hide(); 
-    row.children('.cell-part-text').children('.editor-hints').show(); 
-    row.children('.cell-part-text').children('.advanced-editor').html(newHtml).show(); 
+    row.children('.cell-part-text').children('.show-onsong-text').hide();
+    row.children('.cell-part-text').children('.editor-hints').show();
+    row.children('.cell-part-text').children('.advanced-editor').html(newHtml).show();
 
 
     // make the chords draggable
@@ -51474,7 +51473,7 @@ function showPlaintextEditor(row)
     row.css('min-height', height);
 
     // show correct action buttons
-    $('.for-existing-items').hide(); 
+    $('.for-existing-items').hide();
 
     // get handle on input elements etc
     var cell = row.children('.cell-part-text');
@@ -51488,7 +51487,7 @@ function showPlaintextEditor(row)
 
     // textarea height according to the number of lines in the OnSong text - but at least 3
     cell.children('.plaintext-editor').attr(
-        'rows', 
+        'rows',
         Math.max(cell.children('.plaintext-editor').val().split('\n').length, 3)
     );
     cell.children('.plaintext-editor').focus();
@@ -51510,7 +51509,7 @@ function showChOLyEditor(row)
     row.css('min-height', height);
 
     // show correct action buttons
-    $('.for-existing-items').hide(); 
+    $('.for-existing-items').hide();
 
     // get handle on input elements etc
     var cell = row.children('.cell-part-text');
@@ -51529,7 +51528,7 @@ function showChOLyEditor(row)
 
     // textarea height according to the number of lines in the OnSong text - but at least 3
     cell.children('.chords-over-lyrics-editor').attr(
-        'rows', 
+        'rows',
         Math.max(cell.children('.chords-over-lyrics-editor').val().split('\n').length, 3)
     );
     cell.children('.chords-over-lyrics-editor').focus();
@@ -51570,7 +51569,7 @@ function saveNewOnSongText(row, del)
     var part_id = $($('#adding-new-song-part')[0]).data('part-id');
 
     var onsong_id = row.data('onsongId'); // (undefined for new elements)
-    if (onsong_id && !part_id) 
+    if (onsong_id && !part_id)
         part_id = $(row).data('partId').toString();   // for existing elements (can be 0 and that is still valid!)
 
     // is the text from the plaintext or the Chords-over-Lyrics editor?
@@ -51579,7 +51578,7 @@ function saveNewOnSongText(row, del)
     if ( textarea.length>1  &&  $(textarea[1]).val() )
         // use the text from the chords-over-lyrics editor if present
         text = $(textarea[1]).val() || $(textarea[0]).val();
-    else 
+    else
         text = $(textarea).val();
 
     // no valid pard name (id) provided
@@ -51615,9 +51614,9 @@ function saveNewOnSongText(row, del)
 
 
     // all good, we can proceed. Hide the action buttons
-    var oldCellHtml = cell.html(); 
-    cell.html('<div class="bg-warning text-white fully-width text-xs-center"> '+cSpot.const.waitspinner
-        + (del == 'delete' ? ' deleting ...' : ' saving ...') + '</div>'); 
+    var oldCellHtml = cell.html();
+    cell.html('<div class="bg-warning text-white fully-width text-xs-center"> ' + cSpot.const.waitspinner +
+        (del == 'delete' ? ' deleting ...' : ' saving ...') + '</div>');
 
     // is this a delete request?
     if (del == 'delete') {
@@ -51627,9 +51626,9 @@ function saveNewOnSongText(row, del)
             var cd = my[1].split(')')[0];
             var nm = my[0].trim();
         }
-        var code = { 
-            'id'   : part_id, 
-            'code' : cd, 
+        var code = {
+            'id'   : part_id,
+            'code' : cd,
             'name' : nm,
         };
     }
@@ -51648,7 +51647,7 @@ function saveNewOnSongText(row, del)
         .done( function(data) {
 
             // remove waitspinner
-            cell.html(oldCellHtml); 
+            cell.html(oldCellHtml);
 
             // no proper data returned if user is not authorised for this call
             if (data.data === undefined) {
@@ -51659,7 +51658,7 @@ function saveNewOnSongText(row, del)
                 return false; }
 
             // post-processing returned data after submitting OnSong updates
-            postProcessingOnSongSubmission(row, data, textarea, onsong_id, code, cd)
+            postProcessingOnSongSubmission(row, data, textarea, onsong_id, code, cd);
         })
         .fail(function(data) {
             // show error
@@ -51680,7 +51679,7 @@ function removeFromLocalOnSongParts(which)
 
 function postProcessingOnSongSubmission(row, data, textarea, onsong_id, code, cd)
 {
-    // make sure this is visible now 
+    // make sure this is visible now
     $('.show-collapse-expand-parts-link').show();
     // on the Song Details page, make sure the old-style sequence field is not longer used!
     $('.old-style-song-sequence-input-field').remove();
@@ -51740,7 +51739,7 @@ function postProcessingOnSongSubmission(row, data, textarea, onsong_id, code, cd
             //TODO TODO
 
             row.remove();
-        } 
+        }
         else {
             row.children('.cell-part-text').children('textarea').hide();
             $('.cell-part-action').hide();
@@ -51750,7 +51749,7 @@ function postProcessingOnSongSubmission(row, data, textarea, onsong_id, code, cd
     }
 
     // remove the editor hints and buttons
-    removeNewOnSongRow(row, 'save'); 
+    removeNewOnSongRow(row, 'save');
 
     // enable ADD button
     $('.insertNewOnSongRow-link').show();
@@ -51789,8 +51788,8 @@ function submitEditedOnSong(row)
     saveNewOnSongText(row);
 }
 
-/* Split OnSong lines (with interspersed chords in square brackets) 
-    into spans of chords and lyrics 
+/* Split OnSong lines (with interspersed chords in square brackets)
+    into spans of chords and lyrics
 */
 function splitOnSongLines(line) {
     var spans = '';
@@ -51825,8 +51824,8 @@ function createNewSpan(ch, isChord) {
         span += ' class="px-0 edit-chords bg-warning btn btn-sm">';
         span += '<span class="invisible">[</span>'+ch;
         span += '<span class="invisible">]</span></span>';
-    } 
-    else 
+    }
+    else
         span += '>'+ch+'</span>';
     return span;
 }
@@ -51840,12 +51839,12 @@ function createNewSpan(ch, isChord) {
 
 
 
-/* allow Admins/Authors/Plan owners to delete an attached file (image)    
+/* allow Admins/Authors/Plan owners to delete an attached file (image)
 */
 function deleteFile(id)
 {
     // Prompt for confirmation as this is irrevocable:
-    if ( ! confirm('Are you sure to finally remove this file?') ) 
+    if ( ! confirm('Are you sure to finally remove this file?') )
         return;
 
     // show wait spinner
@@ -51854,7 +51853,7 @@ function deleteFile(id)
 
     // get token from form field
     $.ajax({
-        url:    '/cspot/files/'+id+'/delete', 
+        url:    '/cspot/files/'+id+'/delete',
         method: 'DELETE',
     })
     .done(function(data) {
@@ -51882,7 +51881,7 @@ function unlinkFile(item_id, file_id)
 
     $.ajax({
         url:    cSpot.routes.apiItemsFileUnlink,
-        data:   {'item_id': item_id, 'file_id': file_id}, 
+        data:   {'item_id': item_id, 'file_id': file_id},
         method: 'PUT',
     }).done(function(data) {
         $('#file-'+file_id).html(data.data);
@@ -51906,15 +51905,15 @@ function unlinkSongFile(song_id, file_id)
     $('#file-figure-'+file_id).html('<i class="fa fa-spinner fa-spin fa-fw"></i>');
 
     // wait until cSPOT is fully ready ....
-    if ( cSpot.song_parts_by_code  == undefined ) {
+    if ( cSpot.song_parts_by_code  === undefined ) {
         console.log('waiting for c-SPOT to get ready');
         setTimeout(unlinkSongFile,900, song_id, file_id);
-        return
+        return;
     }
 
     $.ajax({
         url:    cSpot.routes.apiSongsFileUnlink,
-        data:   {'song_id': song_id, 'file_id': file_id}, 
+        data:   {'song_id': song_id, 'file_id': file_id},
         method: 'PUT',
     }).done(function(data) {
         $('#file-figure-'+file_id).html(data.data);
@@ -51939,13 +51938,13 @@ function unlinkSong(that, item_id, song_id, plan_url)
 
     // send unlink request
     $.ajax({
-        url:    '/cspot/items/'+item_id+'/unlinkSong/'+song_id+'', 
+        url:    '/cspot/items/'+item_id+'/unlinkSong/'+song_id+'',
         method: 'PUT',
     })
     .done(function(data) {
         console.log(data);
         $(that).children('small').text(data.data);
-        // go back to plan 
+        // go back to plan
         //window.location.href = plan_url;
     })
     .fail(function(data) {
@@ -51961,18 +51960,18 @@ function unlinkSong(that, item_id, song_id, plan_url)
 
 /* toggle field 'show_comment'
 */
-function toggleShowComment(that, id, actionUrl) 
+function toggleShowComment(that, id, actionUrl)
 {
     // replace current note with spinner while doing AJAX
     $('#'+id).html('<i class="fa fa-spinner fa-spin fa-fw"></i>');
 
-    $.post( 
-        actionUrl, 
-        { 
-            'id'    : id, 
+    $.post(
+        actionUrl,
+        {
+            'id'    : id,
             'value' : $(that).prop('checked'),
         })
-    .done( 
+    .done(
         function(data) {
             // show result
             if (data == 'true')
@@ -51986,20 +51985,20 @@ function toggleShowComment(that, id, actionUrl)
 
 /* toggle field 'show_comment'
 */
-function toggleHideTitle(that, id, actionUrl) 
+function toggleHideTitle(that, id, actionUrl)
 {
     var oldText = $('#'+id).text();
 
     // replace current note with spinner while doing AJAX
     $('#'+id).html('<i class="fa fa-spinner fa-spin fa-fw"></i>');
 
-    $.post( 
-        actionUrl, 
-        { 
-            'id'    : id, 
+    $.post(
+        actionUrl,
+        {
+            'id'    : id,
             'value' : $(that).prop('checked'),
         })
-    .done( 
+    .done(
         function(data) {
             // show result
             if (data == '1' || data == '0')
@@ -52018,18 +52017,18 @@ function toggleHideTitle(that, id, actionUrl)
 
 /* toggle field 'key' in order to use item as Announcements Slide
 */
-function toggleShowAnnouncement(that, id, actionUrl) 
+function toggleShowAnnouncement(that, id, actionUrl)
 {
     // replace current note with spinner while doing AJAX
     $('#'+id).html('<i class="fa fa-spinner fa-spin fa-fw"></i>');
 
-    $.post( 
-        actionUrl, 
-        { 
-            'id'    : id, 
+    $.post(
+        actionUrl,
+        {
+            'id'    : id,
             'value' : $(that).prop('checked') ? 'announcements' : 'none',
         })
-    .done( 
+    .done(
         function(data) {
             // show result
             if (data == 'announcements')
@@ -52043,18 +52042,18 @@ function toggleShowAnnouncement(that, id, actionUrl)
 
 /* empty (clear) a public or private note of an item
 */
-function deleteItemNote(which, id, actionUrl) 
+function deleteItemNote(which, id, actionUrl)
 {
     // replace current note with spinner while doing AJAX
     $('#'+id).html('<i class="fa fa-spinner fa-spin fa-fw"></i>');
 
-    $.post( 
-        actionUrl, 
-        { 
-            'id'    : id, 
-            'value' : '_' 
+    $.post(
+        actionUrl,
+        {
+            'id'    : id,
+            'value' : '_'
         })
-    .done( 
+    .done(
         function(data) {
             // remove old text from note element
             $('#'+id).html('');
@@ -52076,7 +52075,7 @@ function changeForLeadersEyesOnly(that) {
     // construct values for the AJAX call
     var actionURL = data.itemUpdateAction;
     // desired value is the reverse of the current value
-    var value     = $(that).data('value')=='1' ? '0' : '1'; 
+    var value     = $(that).data('value')=='1' ? '0' : '1';
     var id        = 'forLeadersEyesOnly-item-id-' + data.itemId;
 
     ;;;console.log('Changing visibility of this item. Desired value: '+value);
@@ -52087,35 +52086,35 @@ function changeForLeadersEyesOnly(that) {
     $(that).children('i').addClass('fa-spin fa-spinner');
 
     // AJAX update
-    $.post( actionURL, 
+    $.post( actionURL,
         {
             value : value,
             id    : id,
         })
-        .done( function(data) 
+        .done( function(data)
         {
             ;;;console.log('Result from change request. New value: '+data);
             $(that).children('i').removeClass('fa-spin fa-spinner');
             // show correct icon according to new setting
-            $(that).children('i').addClass( data==0 
+            $(that).children('i').addClass( data===0
                 ? 'fa-eye'
                 : 'fa-eye-slash red');
             // reflect new setting also in the data attribute
-            $(that).attr('data-value', data); 
+            $(that).attr('data-value', data);
             $(that).data('value', data);
             // reflect new setting also in the data attribute
-            $(that).attr('title', data==0 
-                ? "Item is visible for all users. Click to change!" 
+            $(that).attr('title', data===0
+                ? "Item is visible for all users. Click to change!"
                 : "Item visible for leader's eyes only. Click to change!");
             $(that).tooltip(); // refresh the tooltip...
             // on the Item Detail page, also show the right text for the new setting
             $(that).children('small').toggle();
-            if (data==0)
+            if (data===0)
                 $('.item-comment-public').show();
             else
                 $('.item-comment-public').hide();
         })
-        .fail( function(data) 
+        .fail( function(data)
         {
             $(that).children('i').removeClass('fa-eye');
             $(that).children('i').removeClass('fa-eye-slash');
@@ -52160,18 +52159,18 @@ function rearrangeItem() {
 
 /* Reset the song search form
 */
-function resetSearchForSongs() 
+function resetSearchForSongs()
 {
     ;;;console.log('resetting modal popup');
 
-    $('.modal-content').css('background-color', '#fff');    
+    $('.modal-content').css('background-color', '#fff');
     $('.modal-select-song').hide();
     $('.modal-select-file').hide();
     $('.modal-select-clips').hide();
     $('.modal-select-comment').hide();
     $('.modal-select-scripture').hide();
     $('.modal-pre-selection').show();
-    $('#searching').hide();    
+    $('#searching').hide();
     $('#search-result').html('');
     $('#searchForSongsSubmit').hide();
     $('.show-location-selection').hide();
@@ -52194,7 +52193,7 @@ function resetSearchForSongs()
     $('#show-video-clip').children('div').html(''); // reset video preview
 }
 
-                
+
 /*\
 |*|----------------------------------------------------------------------
 |*|    Insert NEW or update EXISTING ITEMS on the Plan Overview page
@@ -52263,11 +52262,11 @@ function insertNewOrUpdateExistingItems( event )
         $('#searchSongModalLabel').text('Select a scripture');
 
         titleText = 'for item No ' + item.seq_no;
-    } 
+    }
 
     else if (item.action=="add-file") {
         // make sure the form is partially hidden initially
-        $('.show-file-add-button').hide()
+        $('.show-file-add-button').hide();
 
         // directly activate the file selection
         showModalSelectionItems('file');
@@ -52275,12 +52274,12 @@ function insertNewOrUpdateExistingItems( event )
         //$('#comment').val('new image added');
 
         titleText = 'for item No ' + item.seq_no;
-    } 
+    }
 
     else if (item.action=="insert-item") {
 
         titleText = 'after item No ' + ar_seq[1];
-    } 
+    }
 
     // set title text for popup dialog
     $('#modal-show-item-id').text( titleText+':' );
@@ -52294,7 +52293,7 @@ function insertNewOrUpdateExistingItems( event )
     $('#haystack').focus(); // make sure the search string input field has focus
 
 
-    // prevent the Song Search Form from being submitted when 
+    // prevent the Song Search Form from being submitted when
     //      the ENTER key is used; instead, perform the actual search
     $("#searchSongForm").submit(function(event){
 
@@ -52311,7 +52310,7 @@ function insertNewOrUpdateExistingItems( event )
             return false; // form should NOT be submitted
         }
 
-        if (! $('#searchForSongsButton').is(':visible') ||  $('#song_id').val()=='')
+        if (! $('#searchForSongsButton').is(':visible') ||  $('#song_id').val()==='')
             return false;
 
     });
@@ -52327,7 +52326,7 @@ function insertNewOrUpdateExistingItems( event )
 }
 
 
-/* User has selected WHAT he wants to insert, 
+/* User has selected WHAT he wants to insert,
    now we present the appropriate input elements */
 function showModalSelectionItems(what)
 {
@@ -52336,14 +52335,14 @@ function showModalSelectionItems(what)
     cSpot.item.type = what;
 
     // hide all pre-selection parts of the modal
-    $('.modal-pre-selection').hide();               
+    $('.modal-pre-selection').hide();
 
     // show all parts for selecting a song or entering a comment
-    $('.modal-select-'+what).show();                
+    $('.modal-select-'+what).show();
 
     // different background color during song selection
     if (what=='song')
-        $('.modal-content').css('background-color', '#c2c2d6'); 
+        $('.modal-content').css('background-color', '#c2c2d6');
 
     $('#searchSongModalLabel').text('Insert '+ (what=='file' ? 'image' : what) );
 
@@ -52365,7 +52364,7 @@ function showModalSelectionItems(what)
     // make sure the FILE form is partially hidden initially
     if (what=='file') {
         // the user wants to insert a NEW item with a file
-        if ( cSpot.item.action==undefined || cSpot.item.action=='insert-item' ) {
+        if ( cSpot.item.action===undefined || cSpot.item.action=='insert-item' ) {
             ;;;console.log('user wants to insert a new item with a file(image) attached');
             cSpot.item.action = 'insert-file-item';
         }
@@ -52380,8 +52379,8 @@ function showModalSelectionItems(what)
 }
 
 
-/* Called from the Modal popup on the PLAN details page, 
-   this function searches for songs, presents a list and/or 
+/* Called from the Modal popup on the PLAN details page,
+   this function searches for songs, presents a list and/or
    song history information; uses AJAX to do the full-text search */
 function searchForSongs()
 {
@@ -52418,10 +52417,10 @@ function searchForSongs()
     if ( $('#searchForSongsButton').is(':visible')  ) {
         var search       = $('#search-string').val();
         var mp_song_id   = $('#MPselect').val();
-        if (!mp_song_id || mp_song_id==0)    // perhaps it was a clip that was selected
+        if (!mp_song_id || mp_song_id===0)    // perhaps it was a clip that was selected
             mp_song_id = $('#ClipSelect').val();
         var haystack_id  = $('input[name=haystack]:checked', '#searchSongForm').val();
-        if (search=='' && mp_song_id==0  && haystack_id==undefined) {
+        if (search==='' && mp_song_id===0  && haystack_id===undefined) {
             return;         // search string was empty...
         }
         if (mp_song_id>0) {
@@ -52429,7 +52428,7 @@ function searchForSongs()
             ;;;console.log('user is searching for this: '+mp_song_id);
         }
         if (haystack_id) {
-            search = '(song id: '+mp_song_id+')'; 
+            search = '(song id: '+mp_song_id+')';
             mp_song_id = haystack_id;
             ;;;console.log('user selected this song id: '+mp_song_id);
         }
@@ -52445,13 +52444,13 @@ function searchForSongs()
         // get the action URL
         var actionURL = $('#plan_id').data('search-url');
 
-        // update via AJAX 
+        // update via AJAX
         $.post( actionURL, { search: search, song_id: mp_song_id })
             .done(function(data) {
                 if (typeof(data)!='object')
                     data.data = "[]"; // simulate empty result
                 var result = JSON.parse(data.data);
-                if (result.length==0 || !result ) {
+                if (result.length===0 || !result ) {
                     noSongFound(search, type);
                     return;
                 }
@@ -52485,7 +52484,7 @@ function searchForSongs()
 
     // was this called via 'showUpdateSongForm' function?
     if (action == "update-song") {
-        if (song_id!=undefined) {
+        if (song_id !== undefined) {
             // attach lyrics to song_id input field, so that when user selects this song, we can attach it as title to the table cell
             // (we get this from the selection in the search results to whose parent element the lyrics were attached)
             $('#song_id').attr(  'title',  $('input[name=searchRadios]:checked', '#searchSongForm').parent().attr('title')  );
@@ -52507,13 +52506,13 @@ function searchForSongs()
     // reset search form back to normal
     resetSearchForSongs();
 
-    showSpinner()
+    showSpinner();
     $('#searchForSongsButton').toggle();
     $('#searchForSongsSubmit').toggle();
-    
+
     // write it into the form
     $('#song_id').val(song_id);
-    ;;;console.log('Writing the selected song_id as value of the hidden input element: '+song_id)
+    ;;;console.log('Writing the selected song_id as value of the hidden input element: '+song_id);
 
     // restore the original search form
     $('#searchSongModal').modal('hide');    // close the modal
@@ -52521,10 +52520,10 @@ function searchForSongs()
     $('#search-string').val('');            // reset the search string
     $('#searching').hide();                 // hide the spinner
 
-    // if this is called from the Presentation view, 
+    // if this is called from the Presentation view,
     // we will make the insertion via an AJAX call
     if (  location.pathname.indexOf('/present') > 0  ||  location.pathname.search('chords') > 0  ) {
-        
+
         // this function inserts the new item via AJAX
         insertNewItemIntoPlan( plan_id, seq_no, song_id, comment );
 
@@ -52550,7 +52549,7 @@ function searchForSongs()
 
 /*
 */
-function noSongFound(search,type) 
+function noSongFound(search,type)
 {
     var msg = 'Nothing found for "'+search+'", please try again:';
     $('#search-result').text(msg);
@@ -52559,10 +52558,10 @@ function noSongFound(search,type)
     $('#searching').hide();
     if (type!='song') {
         $('#search-action-label').text(msg);
-        $('.search-form-item').show();  
+        $('.search-form-item').show();
         $('#haystack').focus();
     }
-        
+
     showModalSelectionItems(type);
     if (type=='song')
         $('#search-string').focus();
@@ -52575,7 +52574,7 @@ function createAndShowSearchResult(elem, result)
     ;;;console.log('building the search-result list now');
 
     // make sure the place is empty at first
-    var html = '';  
+    var html = '';
     $(elem).html(html);
 
     // loop through each item
@@ -52589,10 +52588,10 @@ function createAndShowSearchResult(elem, result)
         var lastPlanDate = false;           //date of last time this song was used ("2016-05-08 00:00:00")
 
         if (result[i].plans.length) {
-            lastPlanDate = result[i].plans[0].date; 
+            lastPlanDate = result[i].plans[0].date;
         }
 
-        // create a new DOM element 
+        // create a new DOM element
         var anchor;
 
         // song Count indicator
@@ -52643,7 +52642,7 @@ function createAndShowSearchResult(elem, result)
         // 2. the <small> element containing Title 2 and the song info
         var sml = document.createElement('small');
         sml.className = 'hidden-sm-down';
-        $(sml).append(result[i].title_2); 
+        $(sml).append(result[i].title_2);
         $(sml).append('<br>');      // make sure it starts on a new line
         sml.appendChild(spnleft);
 
@@ -52717,7 +52716,7 @@ function updateSong(song_id)
                 }
             }
         })
-        
+
         .fail(function(data) {
             myCell.children('.show-song-title').text('Failed! Press F12 for more');
             console.log("Update failed! Please notify admin! " + JSON.stringify(data));
@@ -52806,17 +52805,17 @@ function uploadSingleFile(selector, category)
             data : formData,
             processData: false,  // tell jQuery not to process the data
             contentType: false,  // tell jQuery not to set contentType
-        }).done( 
+        }).done(
             function( data ) {
                 console.log(data.data);
                 $('.show-file-add-button').html(cSpot.const.waitspinner + ' Success! Reloading page ... ');
                 // reload page and show latest upload
                 location.href = location.pathname+"?newest=yes";
-            
+
         }).fail( function( data ) {
             $('.show-file-add-button').text('Error, pres F12 to see more!');
             console.log("File Upload Error Output:");
-            console.log( data );        
+            console.log( data );
         })
 }
 
@@ -52920,7 +52919,7 @@ function insertNextSelectionImage(data, parentElem, path, visible)
     location.href="#bottom";
 }
 
-/*  hide the current and show the next (or previous) images in the images selection 
+/*  hide the current and show the next (or previous) images in the images selection
 */
 function showNextImages(direction)
 {
@@ -52954,7 +52953,7 @@ function showNextImages(direction)
                 }
             }
         }
-    } 
+    }
     else {
         for (var i = all.length - 1; i >= 0; i--) {
 
@@ -53009,7 +53008,7 @@ function addItemWithFileOrAddFileToItem(file_id, that)
 
     if ( cSpot.item.action == 'add-file' ) {
         $.post(
-            cSpot.routes.apiAddFiles, 
+            cSpot.routes.apiAddFiles,
             { 'item_id' : item_id, 'file_id' : file_id }
         )
         .done( function(data) {
@@ -53021,7 +53020,7 @@ function addItemWithFileOrAddFileToItem(file_id, that)
         .fail(function( data ) {
 
             console.log("AJAX Error Output:");
-            console.log( data );            
+            console.log( data );
             $('#search-result').html('Error! '+data);
 
         });
@@ -53078,7 +53077,7 @@ function insertNewItemIntoPlan( plan_id, seq_no, song_id, comment )
         seq_no = 1 * sno[1] + 0.1;
     }
 
-    $.post( cSpot.routes.apiItems, 
+    $.post( cSpot.routes.apiItems,
     {
         'plan_id' : plan_id,
         'seq_no'  : seq_no,
@@ -53097,7 +53096,7 @@ function insertNewItemIntoPlan( plan_id, seq_no, song_id, comment )
             nextButton.click();
 
             // this won't work when we already show the last item, as the button is disabled
-            // so wee need another strategy - get the URL from the button and replace the 
+            // so wee need another strategy - get the URL from the button and replace the
             // current item_id with the item_id that we jsut received!
 
             // but first, clean up the item id....
@@ -53167,7 +53166,7 @@ function addScriptureRef()
     var that = $('#'+TRid).children(".comment-cell");                 // show spinner while updating
     $(that).children(".comment-textcontent").html( cSpot.const.waitspinner );
 
-    $.post( cSpot.routes.apiItemUpdate, { 
+    $.post( cSpot.routes.apiItemUpdate, {
             value : newText,
             id    : $(that).children(".comment-textcontent").attr('id'),
         })
@@ -53185,7 +53184,7 @@ function addScriptureRef()
 
 /* show comment text again
 */
-function resetCommentText(id, newText) 
+function resetCommentText(id, newText)
 {
     that = $('#'+id).children(".comment-cell");
     $(that).children(".comment-textcontent").text(newText);
@@ -53209,7 +53208,7 @@ function eraseThisComment(that, item_id)
     var id    = 'comment-item-id-'+item_id;
     var value = '_'; // underscore denotes an empty value in the ItemController
 
-    $.post( cSpot.routes.apiItemUpdate, { 
+    $.post( cSpot.routes.apiItemUpdate, {
             id    : id,
             value : value,
         })
@@ -53235,7 +53234,7 @@ function erasePlanNote(plan_id)
     var id    = 'info-plan-id-'+plan_id;
     var value = '_'; // underscore denotes an empty value in the ItemController
 
-    $.post( cSpot.routes.apiPlanUpdate, { 
+    $.post( cSpot.routes.apiPlanUpdate, {
             id    : id,
             value : value,
         })
@@ -53266,7 +53265,7 @@ function reportSongUsageToCCLI(that, item_id, reported_at)
 
         // update reported_at to today with time = 00:00
         $.post(
-            cSpot.routes.apiItemUpdate, 
+            cSpot.routes.apiItemUpdate,
             {
                 'id'    : 'reported_at-item-id-'+item_id,
                 'value' : dt.toDateString(),
@@ -53274,7 +53273,7 @@ function reportSongUsageToCCLI(that, item_id, reported_at)
         )
         .done( function(data) {
             console.log(data);
-            $(that).html(currHtml);         // restore old button content 
+            $(that).html(currHtml);         // restore old button content
 
             $(that).removeClass('btn-outline-danger');
             $(that).addClass('btn-outline-warning');
@@ -53298,7 +53297,7 @@ function reportSongUsageToCCLI(that, item_id, reported_at)
         var dt = new Date();
         // update reported_at to today with time = 00:00
         $.post(
-            cSpot.routes.apiItemUpdate, 
+            cSpot.routes.apiItemUpdate,
             {
                 'id'    : 'reported_at-item-id-'+item_id,
                 'value' : dt.toJSON(),
@@ -53306,7 +53305,7 @@ function reportSongUsageToCCLI(that, item_id, reported_at)
         )
         .done( function(data) {
             console.log(data);
-            
+
             $(that).html('<i class="fa fa-copyright"></i><i class="fa fa-check"></i>');
             $(that).addClass('narrow');
             $(that).removeClass('btn-outline-warning');
@@ -53339,14 +53338,14 @@ function addNoteToPlan( event )
 
     // get note from modal
     var note = $('#textareaAddPlanNote').val();
-    
+
     // user should click close if he doesn't want to a dd a note...
     if (note=='') return;
 
     $('#showAddedPlanNote').html(cSpot.const.waitspinner);
-    $('#addPlanNoteModal').modal('hide');        
+    $('#addPlanNoteModal').modal('hide');
 
-    // 
+    //
     // send new note to controller
     $.post( cSpot.routes.apiAddNote, {
         note: note,
@@ -53367,7 +53366,7 @@ function addNoteToPlan( event )
 
 /* change status of 'private' setting of plan
 */
-function togglePlanPrivate( that, plan_id ) 
+function togglePlanPrivate( that, plan_id )
 {
     console.log('trying to change "private" setting for plan id '+plan_id+' to '+that.checked);
 
@@ -53379,16 +53378,16 @@ function togglePlanPrivate( that, plan_id )
     var id    = 'private-plan-id-'+plan_id;
     var value = that.checked;
 
-    $.post( cSpot.routes.apiPlanUpdate, { 
+    $.post( cSpot.routes.apiPlanUpdate, {
             id    : id,
             value : value,
         })
         .done(function(data) {
             $('.plan-private-field').html(origtext);
-            if (data==1) 
+            if (data==1)
                 $('#plan-private-'+plan_id).html('&#10003;');
             else
-                $('#plan-private-'+plan_id).html('&#10007;');            
+                $('#plan-private-'+plan_id).html('&#10007;');
         })
         .fail(function(data) {
             $('.plan-private-field').html(data.responseJSON.data);
@@ -53424,7 +53423,7 @@ function uploadNewFile()
     })
     .fail(function( data ) {
         console.log("AJAX Error Output:");
-        console.log( data );        
+        console.log( data );
         $('#search-result').html('Error! '+data);
     });
 }
@@ -53435,7 +53434,7 @@ function uploadNewFile()
 
 
 
-/* Called from the Modal popup on the FILES LIST page, 
+/* Called from the Modal popup on the FILES LIST page,
    this function will save the updated file information via AJAX */
 function updateFileInformation()
 {
@@ -53449,7 +53448,7 @@ function updateFileInformation()
     var newFC = $('#file_category_id').val()
 
     // ignore and close dialog if nothing was changed
-    if (oldData.file_category_id == newFC 
+    if (oldData.file_category_id == newFC
              && oldData.filename == newFn) return;
 
     // show spinner
@@ -53461,7 +53460,7 @@ function updateFileInformation()
     // get the action URL
     var actionURL = $('#file-id').data('action-url')+fileID;
 
-    // update via AJAX 
+    // update via AJAX
     $.post( actionURL, { id: fileID, filename: newFn, file_category_id: newFC })
         .done(function(data) {
             ;;;console.log('update successful:');
@@ -53478,7 +53477,7 @@ function updateFileInformation()
             console.log(data);
             $('.fileshow-filename-'+fileID).text("Update failed! Please notify admin! Press F12 for more details." + JSON.stringify(data));
         });
-    
+
     // close the modal and update the data on the screen
     $('#fileEditModal').modal('hide');
 }
@@ -53492,10 +53491,6 @@ function updateFileInformation()
 |*#===========================================================================================    END   OF SPA UTILITIES
 |*|
 \*/
-
-
-
-
 
 /*\
 |*|

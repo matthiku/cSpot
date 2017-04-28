@@ -404,12 +404,11 @@ function setIdealCalendarRowHeight()
 {
     // do nothing if the calendar is not visible
     if ( ! $('.calendar-container').is(':visible'))
-        return
+        return;
 
     /* find out remaining white space which can be distrubted to the rows */
     var remainingWhiteSpace =
-        $('.calendar-container').height()
-            - $('#calendar-tabs').height();
+        $('.calendar-container').height() - $('#calendar-tabs').height();
 
     // we need a minimal amount of white space available to be distributed
     if (remainingWhiteSpace < 6 )

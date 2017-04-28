@@ -167,8 +167,7 @@
 							--}}@include ('cspot.snippets.toggle-show-comment', ['label' => false])</span>
 
 						<span id="comment-item-id-{{ $item->id }}" class="editable comment-textcontent hover-show">{{
-							$item->comment }}
-						</span>
+							$item->comment }}</span>
 
 						{{-- show editing icon only when comment is not empty and when hovering over it --}}
 						@if ($item->comment)
