@@ -551,7 +551,7 @@
 
         @if (Auth::user()->ownsPlan($plan->id) && $plan->isFuture() )
             <a href="{{ url('cspot/songs?plan_id='.$plan->id) }}"  onclick="showSpinner()"
-                title="Search for a song via the full song listing"
+                title="Search for a song (or slide/clip etc) via the full song listing"
                 class="btn btn-sm btn-info float-right">
                     <i class="fa fa-plus"></i><i class="fa fa-music"></i>&nbsp; <span class="hidden-md-down">- Search and </span>add song</a>
         @endif

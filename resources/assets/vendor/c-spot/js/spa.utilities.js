@@ -1830,10 +1830,10 @@ function searchForSongs()
     if ( $('#searchForSongsButton').is(':visible')  ) {
         var search       = $('#search-string').val();
         var mp_song_id   = $('#MPselect').val();
-        if (!mp_song_id || mp_song_id===0)    // perhaps it was a clip that was selected
+        if (!mp_song_id || mp_song_id==="0")    // perhaps it was a clip that was selected
             mp_song_id = $('#ClipSelect').val();
         var haystack_id  = $('input[name=haystack]:checked', '#searchSongForm').val();
-        if (search==='' && mp_song_id===0  && haystack_id===undefined) {
+        if (search==='' && mp_song_id==="0"  && haystack_id===undefined) {
             return;         // search string was empty...
         }
         if (mp_song_id>0) {
