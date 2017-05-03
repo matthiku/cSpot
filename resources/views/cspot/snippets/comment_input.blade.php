@@ -1,8 +1,8 @@
 
-{{--  
-    Items Detail Page 
+{{--
+    Items Detail Page
 
-    comment input field 
+    comment input field
  --}}
 
 <div class="full-width">
@@ -13,13 +13,17 @@
         <div class="card-block">
 
             <h5 data-item-update-action="{{ route('cspot.api.items.update', $item->id) }}"
-                data-item-id="{{ $item->id }}" 
-                class="card-title"><i class="fa fa-sticky-note"> </i> 
+                data-item-id="{{ $item->id }}"
+                class="card-title"><i class="fa fa-sticky-note"> </i>
 
             {{-- is this item for leader's eyes only? --}}
-            <a      href="#" class="float-right link small{{ $item->forLeadersEyesOnly ? ' bg-danger': '' }}" onclick="changeForLeadersEyesOnly(this)" 
+            @if( Auth::user()->ownsPlan($plan->id) )
+                <a  href="#" class="float-right link small{{ $item->forLeadersEyesOnly ? ' bg-danger': '' }}" onclick="changeForLeadersEyesOnly(this)"
                     data-value="{{ $item->forLeadersEyesOnly }}"
                     title="Make item visible for {{ $item->forLeadersEyesOnly ? 'everyone': "leader's eyes only (useful for personal notes etc.)" }}">
+            @else
+                <a href="#" class="float-right small">
+            @endif
                 @if ($item->forLeadersEyesOnly)
                     <i class="fa fa-eye-slash"></i>
                 @else
@@ -36,9 +40,9 @@
             @if( Auth::user()->ownsPlan($plan->id) )
 
                 {{-- show link to clear the public note --}}
-                <a      href="#" title="Discard notes text" 
+                <a      href="#" title="Discard notes text"
                         class="btn btn-outline-secondary float-right item-comment-public" id="public-notes-erase-link"
-                        onclick="deleteItemNote('public', 'comment-item-id-{{ $item->id }}', '{{ route('cspot.api.item.update') }}')" 
+                        onclick="deleteItemNote('public', 'comment-item-id-{{ $item->id }}', '{{ route('cspot.api.item.update') }}')"
                         style="max-width: 150px; display: {{ $item->comment ? 'initial' : 'none' }}">
                     <i class="fa fa-remove text-muted"></i> erase
                 </a>
@@ -67,14 +71,14 @@
                 <br>
                 <span class="btn btn-secondary float-left item-comment-public">
                     <label class="custom-control custom-checkbox">
-                        <input type="checkbox" id="toggle-show-announcements" 
+                        <input type="checkbox" id="toggle-show-announcements"
                               class="custom-control-input" {{ $item->key == 'announcements' ? 'checked="checked"' : '' }}
                             onclick="toggleShowAnnouncement(this, 'key-item-id-{{ $item->id }}', '{{ route('cspot.api.item.update') }}')"
                             {{ Auth::user()->ownsPlan($plan->id) ? '' : ' disabled' }}>
                         <span class="custom-control-indicator"></span>
                         <span class="custom-control-description" id="key-item-id-{{ $item->id }}"
-                            >{{ $item->key=='announcements' 
-                                ? 'This item will show the announcements' 
+                            >{{ $item->key=='announcements'
+                                ? 'This item will show the announcements'
                                 : 'Use this item to show the announcements' }} in the presentation</span>
                     </label>
                 </span>
@@ -87,7 +91,7 @@
 
     {{-- ____________________________________
 
-            show form for private notes 
+            show form for private notes
         _____________________________________
     --}}
     <div class="card mx-auto mt-2 item-comment-public" style="max-width: 40rem;">
@@ -97,12 +101,12 @@
             <h6 class="card-subtitle text-muted">(only visible to you!)</h6>
 
             <p class="card-text">
-                <pre id="notes-item-id-{{ $item->id }}" class="editable-item-field form-control form-control-success">{{ 
+                <pre id="notes-item-id-{{ $item->id }}" class="editable-item-field form-control form-control-success">{{
                     $item->itemNotes->where('user_id', Auth::user()->id)->first() ? $item->itemNotes->where('user_id', Auth::user()->id)->first()->text : '' }}</pre>
             </p>
 
-            <a      href="#" class="card-link float-right form-control" id="private-notes-erase-link"  
-                    onclick="deleteItemNote('private', 'notes-item-id-{{ $item->id }}', '{{ route('cspot.api.item.update') }}')" 
+            <a      href="#" class="card-link float-right form-control" id="private-notes-erase-link"
+                    onclick="deleteItemNote('private', 'notes-item-id-{{ $item->id }}', '{{ route('cspot.api.item.update') }}')"
                     style="max-width: 150px; display: {{ $item->itemNotes->where('user_id', Auth::user()->id)->first() ? 'initial' : 'none' }}">
                 <small><i class="fa fa-remove text-muted"></i> clear note</small>
             </a>
@@ -115,7 +119,7 @@
 
     {{-- _______________________________________________
 
-          Option to re-arrange item within the plan  
+          Option to re-arrange item within the plan
         ________________________________________________
     --}}
     <div class="card mx-auto mt-2 item-rearrange" style="max-width: 40rem;">
@@ -132,18 +136,18 @@
                     <label class="btn btn-outline-primary" onclick="$('.rearrange-select-item').removeAttr('disabled');">
                         <input type="radio" name="before-or-after" id="after"  autocomplete="off"> after
                     </label>
-                     
+
                     <select class="rearrange-select-item custom-select angled-left" disabled onchange="$('.rearrange-submit-button').removeAttr('disabled');">
                         <option selected>(select item ...)</option>
                         @foreach ($items as $selItem)
                             @if($selItem->id != $item->id)
                                 <option value="{{ $selItem->seq_no }}">{{ $selItem->seq_no }}
-                                    @php 
+                                    @php
                                         if ($selItem->song_id && $selItem->song->title) {
                                             if ( $selItem->song->title_2=='slides' || $selItem->song->title_2=='video' )
                                                 $text = '(' . ucfirst($selItem->song->title_2) . ') ' . $selItem->song->title;
                                             else
-                                                $text = '&#127926;' . $selItem->song->title; 
+                                                $text = '&#127926;' . $selItem->song->title;
                                         } else
                                             $text = $selItem->comment;
                                         echo substr($text, 0, 45);
@@ -155,7 +159,7 @@
 
                 </div>
 
-                <button type="button" disabled onclick="rearrangeItem();" 
+                <button type="button" disabled onclick="rearrangeItem();"
                     class="rearrange-submit-button btn btn-primary btn-sm btn-block">Submit</button>
             </p>
 
@@ -166,7 +170,7 @@
 
 
 
-</div> 
+</div>
 
 @if ($item->forLeadersEyesOnly)
     <script>
