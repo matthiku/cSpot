@@ -58,7 +58,7 @@ class UserController extends Controller
             }
             $heading = 'Show Active Users';
 
-            return view( 
+            return view(
                 $this->view_all, [
                     'users' => $users,
                     'heading' => $heading,
@@ -70,7 +70,7 @@ class UserController extends Controller
         // get all users in the requested order (default by id)
         $users = User::
             orderBy(
-                isset($request->orderby)     ? $request->orderby     : 'id', 
+                isset($request->orderby)     ? $request->orderby     : 'id',
                 isset($request->order)       ? $request->order       : 'asc'
             );
 
@@ -84,7 +84,7 @@ class UserController extends Controller
                 $role       = Role::find($request->filtervalue);
                 $users      = $role->users();
                 $heading    = 'All Users with Role "'.ucfirst($role->name).'"';
-            } 
+            }
             else if ($request->filterby=='instrument') {
                 // get all -- USERS -- with this specific instrument id
                 $instrument = Instrument::find($request->filtervalue);
@@ -95,7 +95,7 @@ class UserController extends Controller
             }
         }
 
-        return view( 
+        return view(
             $this->view_all, [
                 'users' => $users->get(),
                 'heading' => $heading,
@@ -148,7 +148,7 @@ class UserController extends Controller
         foreach ($instruments as $instrument) {
             if ($request->has( str_replace(' ','_',$instrument->name)) ) {
                 $user->assignInstrument($instrument);
-            } 
+            }
             else {
                 $user->removeInstrument($instrument);
             }
@@ -252,7 +252,7 @@ class UserController extends Controller
         foreach ($instruments as $instrument) {
             if ($request->has( str_replace(' ','_',$instrument->name)) ) {
                 $user->assignInstrument($instrument);
-            } 
+            }
             else {
                 $user->removeInstrument($instrument);
             }
@@ -264,7 +264,7 @@ class UserController extends Controller
         foreach ($roles as $role) {
             if ($request->has( str_replace(' ','_',$role->name) ) ) {
                 $user->assignRole($role);
-            } 
+            }
             else {
                 if ($user->id == Auth::user()->id && $role->name=='administrator' ) {
                     $alert = 'Admin rights cannot be removed from current user! Ask a new Admin to do that.';
@@ -314,11 +314,13 @@ class UserController extends Controller
         // Prevent first user to be deleted
         if ( $id==1 || !$user ) {
             $message = 'User with id "' . $id . '" cannot be deleted!';
-        } 
+        }
         else {
-            //  first remove any roles and notes 
+            //  first remove any roles, instruments and notes
             if ($user->roles->count())
                 $user->roles()->detach(); // (use "detach" since it's a many-to-many relationship)
+            if ($user->instruments->count())
+                $user->instruments()->detach(); // (use "detach" since it's a many-to-many relationship)
             if ($user->itemNotes->count())
                 $user->itemNotes()->delete(); //
 

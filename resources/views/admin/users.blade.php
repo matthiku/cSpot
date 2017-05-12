@@ -15,13 +15,13 @@
 	@include('layouts.flashing')
 
 
-	{{-- 	-	-	-	-	USERS LIST Navigation Bar 
+	{{-- 	-	-	-	-	USERS LIST Navigation Bar
 	--}}
 
 	<nav class="navbar navbar-toggleable-md navbar-light bg-info rounded-top">
 
-	  	<button class="navbar-toggler navbar-toggler-right" type="button" 
-	  			data-toggle="collapse" data-target="#navbarUserList" 
+	  	<button class="navbar-toggler navbar-toggler-right" type="button"
+	  			data-toggle="collapse" data-target="#navbarUserList"
 	  			aria-controls="navbarUserList" aria-expanded="false" aria-label="Toggle navigation">
     		<span class="navbar-toggler-icon"></span>
   		</button>
@@ -73,8 +73,8 @@
 					<select class="custom-select" id="rolefilter" onchange="location.href='{{url('admin/users')}}?filterby=role&filtervalue='+$(this).val()">
 						<option {{ Request::has('filterby') && Request::get('filterby')=='role' ? '' : 'selected' }} value="all">(select role)</option>
 						@foreach ($roles as $role)
-							<option 
-								{{ (Request::has('filterby') && Request::get('filterby')=='role' && Request::get('filtervalue')==$role->id) ? 'selected' : '' }} 
+							<option
+								{{ (Request::has('filterby') && Request::get('filterby')=='role' && Request::get('filtervalue')==$role->id) ? 'selected' : '' }}
 								value="{{$role->id}}">{{$role->name}}</option>
 						@endforeach
 					</select>
@@ -87,8 +87,8 @@
 					<select class="custom-select" id="instrumentfilter" onchange="location.href='{{url('admin/users')}}?filterby=instrument&filtervalue='+$(this).val()">
 						<option {{ Request::has('filterby') && Request::get('filterby')=='instrument' ? '' : 'selected' }} value="all">(select...)</option>
 						@foreach ($instruments as $instrument)
-							<option 
-								{{ (Request::has('filterby') && Request::get('filterby')=='instrument' && Request::get('filtervalue')==$instrument->id) ? 'selected' : '' }} 
+							<option
+								{{ (Request::has('filterby') && Request::get('filterby')=='instrument' && Request::get('filtervalue')==$instrument->id) ? 'selected' : '' }}
 								value="{{$instrument->id}}">{{$instrument->name}}</option>
 						@endforeach
 					</select>
@@ -100,7 +100,7 @@
 
 
 
-	<table class="table table-striped table-bordered 
+	<table class="table table-striped table-bordered
 				@if(count($users)>15)
 				 table-sm
 				@endif
@@ -148,35 +148,35 @@
 
         @foreach( $users as $user )
 
-			<?php 
+			<?php
 				$tdl = '';
 				if (Auth::user()->isAdmin())
-						$tdl = 'onclick="location.href =' . url('admin/users/'.$user->id) . '/edit';
+						$tdl = 'onclick="location.href=\'' . url('admin/users/'.$user->id) . '/edit\'"';
 					?>
 			<tr>
-				<th {{$tdl}} class="link" scope="row">{{ $user->id }}</th>
+				<th {!! $tdl !!} class="link" scope="row">{{ $user->id }}</th>
 
 
-				<td {{$tdl}} class="link">{{ $user->first_name }}</td>
+				<td {!! $tdl !!} class="link">{{ $user->first_name }}</td>
 
 
-				<td {{$tdl}} class="link hidden-lg-down">{{ $user->last_name }}</td>
+				<td {!! $tdl !!} class="link hidden-lg-down">{{ $user->last_name }}</td>
 
 
-				<td {{$tdl}} class="link hidden-md-down">{{ $user->name  }}</td>
+				<td {!! $tdl !!} class="link hidden-md-down">{{ $user->name  }}</td>
 
 
 				@if ( Auth::user()->isEditor() )
-					<td {{$tdl}} class="link hidden-sm-down small">{{ $user->email }}</td>
+					<td {!! $tdl !!} class="link hidden-sm-down small">{{ $user->email }}</td>
 				@endif
 
 
-				<td {{$tdl}} class="link small">@foreach ($user->roles as $key => $role)
+				<td {!! $tdl !!} class="link small">@foreach ($user->roles as $key => $role)
                 	{{ ucfirst($role->name) }}{{ $key+1<$user->roles->count() ? ',' : '' }}
 					@endforeach</td>
 
 
-				<td {{$tdl}} class="link small">@foreach ($user->instruments as $key => $instrument)
+				<td {!! $tdl !!} class="link small">@foreach ($user->instruments as $key => $instrument)
                 	{{ ucfirst($instrument->name) }}{{ $key+1<$user->instruments->count() ? ',' : '' }}
 					@endforeach</td>
 
@@ -203,24 +203,24 @@
 
 				@if (Auth::user()->isAdmin())
 
-					<td class="hidden-md-down small center" title = "{{ $user->last_access }}">{{ 
+					<td class="hidden-md-down small center" title = "{{ $user->last_access }}">{{
 						( $user->last_access && $user->last_access->ne(Carbon\Carbon::create(0,0,0,0,0,0)) )
-							? $user->last_access->diffForHumans() 
+							? $user->last_access->diffForHumans()
 							: 'never'
 						}}</td>
 
-					<td class="hidden-md-down small center" title = "{{ $user->last_login }}">{{ 
+					<td class="hidden-md-down small center" title = "{{ $user->last_login }}">{{
 						( $user->last_login && $user->last_login->ne(Carbon\Carbon::create(0,0,0,0,0,0)) )
-							? $user->last_login->diffForHumans() 
+							? $user->last_login->diffForHumans()
 							: 'never'
 						}}</td>
 
 				@endif
 
 
-				<td class="hidden-lg-down small center">{{ 
+				<td class="hidden-lg-down small center">{{
 					( $user->created_at && $user->created_at->ne(Carbon\Carbon::create(0,0,0,0,0,0)) )
-						? $user->created_at->formatLocalized('%d-%b-%y %H:%M') 
+						? $user->created_at->formatLocalized('%d-%b-%y %H:%M')
 						: 'n/a'
 					}}</td>
 
@@ -244,5 +244,5 @@
 	</table>
 
 
-	
+
 @stop
