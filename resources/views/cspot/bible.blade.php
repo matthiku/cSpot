@@ -27,11 +27,11 @@
 
 
     <nav class="navbar navbar-toggleable-sm navbar-light bg-faded">
-        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarBiblesText" 
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarBiblesText"
             aria-controls="navbarBiblesText" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <a class="navbar-brand show-bible-text-brand" href="{{ route('bibleversions.index') }}">{{ 
+        <a class="navbar-brand show-bible-text-brand" href="{{ route('bibleversions.index') }}">{{
             Request::has('search') ? 'Searching ... ' : $bookName . ' ' . $chapter . ' (' . $versionName . ')' }}</a>
 
         <div class="collapse navbar-collapse" id="navbarBiblesText">
@@ -39,7 +39,7 @@
 
 
                 {{-- search input field --}}
-                <div class="input-group float-right mr-2" 
+                <div class="input-group float-right mr-2"
                     title="Search within the currently selected bible version.
 Enter any word or words to do a full-text search throughout the whole bible.
 Use '+' or '-' signs right in front of a word to indicate it must be included or excluded from the search.">
@@ -50,8 +50,8 @@ Use '+' or '-' signs right in front of a word to indicate it must be included or
                     </span>
                 </div>
 
-            
-                <div class="select-chapter-or-book">                
+
+                <div class="select-chapter-or-book">
                     {{-- Create a Drop-Down Selection for the chapters --}}
                     @if ($chapters>1)
                     <div class="dropdown float-right mr-2">
@@ -65,8 +65,8 @@ Use '+' or '-' signs right in front of a word to indicate it must be included or
                                     <div class="btn-group mx-2" role="group" aria-label="First group">
                                 @endif
                                 <button type="button" class="btn btn-secondary"{{ $i+1 == $chapter ? ' disabled' : '' }}
-                                    onclick="showSpinner();location.href=location.pathname+'?version={{ Request::get('version') }}&book={{ $bookID }}&chapter={{ $i+1 }}'" 
-                                    style="min-width: {{ $chapters>99 ? '62' : ($chapters>9 ? '52' : '45') }}px;">{{ 
+                                    onclick="showSpinner();location.href=location.pathname+'?version={{ Request::get('version') }}&book={{ $bookID }}&chapter={{ $i+1 }}'"
+                                    style="min-width: {{ $chapters>99 ? '62' : ($chapters>9 ? '52' : '45') }}px;">{{
                                         $i+1 }}</button>
                             @endfor
                             </div>
@@ -75,11 +75,11 @@ Use '+' or '-' signs right in front of a word to indicate it must be included or
                     @endif
 
                     {{-- DropDown Selection of all books --}}
-                    <select class="custom-select float-right mr-2" 
+                    <select class="custom-select float-right mr-2"
                             onchange="showSpinner();location.href=location.pathname+'?version={{ Request::get('version') }}&book='+this.value">
                         <option selected>Select Book...</option>
                         @foreach ($books as $book)
-                            <option value="{{ $book->id }}"{{ $book->id == $bookID ? 'disabled' : '' }}>{{ 
+                            <option value="{{ $book->id }}"{{ $book->id == $bookID ? 'disabled' : '' }}>{{
                                 $book->name }}</option>
                         @endforeach
                     </select>
@@ -87,14 +87,14 @@ Use '+' or '-' signs right in front of a word to indicate it must be included or
 
 
                 {{-- DropDown selection of all available Versions --}}
-                <select class="custom-select float-right mr-2" 
+                <select class="custom-select float-right mr-2"
                         onchange="
                             showSpinner();
                             var search = $('.bible-search-string').val();
-                            var srchStr = ''; 
+                            var srchStr = '';
                             if (search.length)
                                 srchStr = '&search=' + search;
-                            location.href = location.pathname 
+                            location.href = location.pathname
                                                 + '?version=' + this.value
                                                 + '&book={{ $bookID }}&chapter={{ $chapter }}'
                                                 + srchStr;">
@@ -102,7 +102,7 @@ Use '+' or '-' signs right in front of a word to indicate it must be included or
                     <script>cSpot.bibleVersions={};</script>
                     @foreach ($versions as $version)
                         <script>cSpot.bibleVersions['{{ $version->id }}']='{{ $version->name }}';</script>
-                        <option value="{{ $version->id }}"{{ $version->id == $versionID ? 'disabled' : '' }}>{{ 
+                        <option value="{{ $version->id }}"{{ $version->id == $versionID ? 'disabled' : '' }}>{{
                             $version->name }}</option>
                     @endforeach
                 </select>
@@ -117,10 +117,10 @@ Use '+' or '-' signs right in front of a word to indicate it must be included or
 
 
     <div class="show-bible-text mw-60 mx-auto pt-2">
-        
+
 
         @if ( !Request::has('search') )
-            
+
             @if ( $verses->count() )
 
                 @include ('cspot.snippets.show_verses')
@@ -131,6 +131,11 @@ Use '+' or '-' signs right in front of a word to indicate it must be included or
 
         @else
             One moment ...
+
+            {{--
+            SQL code for search-and-replace:
+            UPDATE `bibles` SET text = REPLACE(text, 'labor', 'labour') WHERE INSTR(text, 'labor') > 0;
+            --}}
         @endif
 
     </div>
@@ -142,7 +147,7 @@ Use '+' or '-' signs right in front of a word to indicate it must be included or
 
         // check if we already have a search string the URL
         // if (location.search.indexOf('search=')) {
-        @if (Request::has('search')) 
+        @if (Request::has('search'))
             $('.bible-search-string').val('{{ Request::get('search') }}')
             fulltextBibleSearch({{ Request::has('version') ? Request::get('version') : '' }});
         @endif

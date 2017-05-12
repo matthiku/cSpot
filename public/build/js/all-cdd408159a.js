@@ -52096,14 +52096,14 @@ function changeForLeadersEyesOnly(that) {
             ;;;console.log('Result from change request. New value: '+data);
             $(that).children('i').removeClass('fa-spin fa-spinner');
             // show correct icon according to new setting
-            $(that).children('i').addClass( data===0
+            $(that).children('i').addClass( data==="0"
                 ? 'fa-eye'
                 : 'fa-eye-slash red');
             // reflect new setting also in the data attribute
             $(that).attr('data-value', data);
             $(that).data('value', data);
             // reflect new setting also in the data attribute
-            $(that).attr('title', data===0
+            $(that).attr('title', data==="0"
                 ? "Item is visible for all users. Click to change!"
                 : "Item visible for leader's eyes only. Click to change!");
             $(that).tooltip(); // refresh the tooltip...
