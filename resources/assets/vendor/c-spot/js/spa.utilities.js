@@ -666,7 +666,8 @@ function removeNewOnSongRow(row, cancel)
     var onsong_id = $(row).data('onsong-id') || 0; // (undefined for new elements)
 
     // Do nothing if a song-parts editor is currently open
-    if ( cancel != 'cancel'  &&  ($('.plaintext-editor').is(':visible') || $('.chords-over-lyrics-editor').is(':visible')) )
+    if ( cancel != 'cancel'   &&  cancel != 'save'
+        &&  ($('.plaintext-editor').is(':visible') || $('.chords-over-lyrics-editor').is(':visible')) )
         return;
 
     // make sure we have no "outdated" min-height

@@ -460,7 +460,7 @@
 		@endif
 	@endif
 
-	@if ( Auth::user()->isEditor())  &&  isset($song) && $song->onsongs->count() )
+	@if ( Auth::user()->isEditor()  &&  isset($song) && $song->onsongs->count() )
 		<span class="small float-right mt-1">
 			<a href="http://www.logue.net/xp/" target="new"><span class="text-info">Transposing Tool</span>
 				<i class="fa fa-external-link text-white"></i></a>
@@ -528,8 +528,8 @@
 
 
 {{-- file-upload function
-	see: https://github.com/blueimp/jQuery-File-Upload/wiki/Basic-plugin
---}}
+	see: https://github.com/blueimp/jQuery-File-Upload/wiki/Basic-plugin --}}
+
 @if (isset($song) && ! $song->onsongs->count())
 	<script>
 		$(function () {

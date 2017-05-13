@@ -10,7 +10,8 @@ echo ----
 git status
 echo ----
 echo
-echo 'This script runs "git add .", "git commit ...." and "git push" (to the master) but also pushes to the test server (staging) and optionally, to the production server'
+echo 'This script runs "git add .", "git commit ...." and "git push" (to the master)'
+echo 'but also pushes to the test server (staging) and optionally, to the production server'
 echo
 
 # you also need to have a working a SSH connection to your server 
