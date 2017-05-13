@@ -4,6 +4,7 @@
 # of course you need to copy the corresponding 'gitpull.sh' to the home folder of root
 # and you need to change the server name here:
 HOSTNAME="root@eec.ie"
+# you also need to have a working a SSH connection to your server 
 
 
 echo ----
@@ -14,10 +15,7 @@ echo 'This script runs "git add .", "git commit ...." and "git push" (to the mas
 echo 'but also pushes to the test server (staging) and optionally, to the production server'
 echo
 
-# you also need to have a working a SSH connection to your server 
-# and a simple script called gitpull.sh with 2 lines:
-#    cd <path to your laravel project root folder>
-#    git pull
+
 
 
 # the description can come as commandline argument or it will be requested here:
@@ -80,7 +78,7 @@ echo ----
 
 # push to the staging (or test) server
 # 	needs to be defined first:
-#									'git remote add staging ssh://root@example.com/var/repo/site.git'
+#									'git remote add staging ssh://root@yourserver.com/var/repo/site.git'
 # (see: http://devmarketer.io/learn/deploy-laravel-5-app-lemp-stack-ubuntu-nginx)
 echo
 echo ----
@@ -99,6 +97,8 @@ if [ "$PRODUCTION" = "n" ]; then
 fi
 
 # push the current master branch to our production server
+# 	needs to be defined first:
+#									'git remote add production ssh://root@yourserver.com/var/repo/prod.git'
 echo
 echo ----
 echo "pushing to the PRODUCTION server"
