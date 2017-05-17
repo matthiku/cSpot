@@ -4,7 +4,7 @@
 
 namespace App\Models;
 
-use Plan;
+use App\Models\Plan;
 use Auth;
 
 use Cmgmyr\Messenger\Traits\Messagable;
@@ -106,6 +106,11 @@ class User extends Authenticatable //implements Authenticatable //, Contract, Ca
     public function histories()
     {
         return $this->hasMany('App\Models\History');
+    }
+
+    public function notes()
+    {
+        return $this->hasMany('App\Models\Note');
     }
 
     /**

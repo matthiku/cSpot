@@ -14,6 +14,8 @@
 
     <p>IP address: {{ $user->last_login_ip }}</p>
 
+    <p>Login timestamp: {{ $user->last_login }}</p>
+
 </body>
 
 </html>

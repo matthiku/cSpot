@@ -23,12 +23,11 @@ class Plan extends Model
 		'leader_id',
 		'teacher_id',
 		'type_id',
-        'subtitle',
 		'info',
 		'state',
         'changer',
 		'private',
-		'subtitle', 
+		'subtitle',
 		'updated_at',
 	];
 	protected $hidden = [
@@ -48,19 +47,19 @@ class Plan extends Model
 
 
 	// the leader_id points to the id on the users table
-	public function leader() 
+	public function leader()
 	{
 		return $this->belongsTo('App\Models\User', 'leader_id');
 	}
 
 	// the teacher_id points to the id on the users table
-	public function teacher() 
+	public function teacher()
 	{
 		return $this->belongsTo('App\Models\User', 'teacher_id');
 	}
 
 	// the type_id points to the id on the types table (the type of service of this plan)
-	public function type() 
+	public function type()
 	{
 		return $this->belongsTo('App\Models\Type');
 	}
@@ -102,12 +101,18 @@ class Plan extends Model
     }
 
 
+    public function notes()
+    {
+        return $this->hasMany('App\Models\Note');
+    }
+
+
 
 
 
     /*  get all or just the first or just last item for this plan
     */
-    public function allItems() 
+    public function allItems()
     {
         $items = Item::where('plan_id', $this->id);
         // Users without ownership of this plan won't see the FLEO items
@@ -117,23 +122,23 @@ class Plan extends Model
 
         return $items->orderBy('seq_no')->get();
     }
-    public function firstItem() 
+    public function firstItem()
     {
         // Users without ownership of this plan won't see the FLEO items
         if ( Auth::User()->ownsPlan($this->id) )
             $items = $this->items;
-        else 
+        else
             $items = $this->items
                 ->where('forLeadersEyesOnly', false);
 
         return $items->sortBy('seq_no')->first();
     }
-    public function lastItem() 
+    public function lastItem()
     {
         // Users without ownership of this plan won't see the FLEO items
         if ( Auth::User()->ownsPlan($this->id) )
             $items = $this->items;
-        else 
+        else
             $items = $this->items
                 ->where('forLeadersEyesOnly', false);
 
