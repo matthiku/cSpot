@@ -7,6 +7,7 @@ use Log;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\Social;
+use App\Models\Login;
 
 //use Validator;
 use Auth;
@@ -18,6 +19,7 @@ use Carbon\Carbon;
 use App\Mailers\AppMailer;
 
 use App\Events\UserRegistered;
+use App\Events\UserLogin;
 
 use Illuminate\Http\Request;
 use Illuminate\Auth\Events\Registered;
@@ -172,7 +174,7 @@ class RegisterController extends Controller
 
 
     /**
-     //* User clicked on Social Auth button, redirect them to their provider for consent
+     * User clicked on Social Auth button, redirect them to their provider for consent
      */
     public function getSocialRedirect( Request $request, $provider )
     {
@@ -267,8 +269,8 @@ class RegisterController extends Controller
         // $this->auth->login($socialUser, true);
         Auth::login($socialUser, true);
 
-        // write last login field in users table
-        Auth::user()->update(['last_login' => Carbon::now()]);
+        // user login event
+        broadcast(new UserLogin($request, Auth::user()));
 
         return redirect()->intended($this->redirectPath());
 

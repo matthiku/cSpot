@@ -27,7 +27,7 @@
 
 	@if (count($instruments))
 
-		<table class="table table-striped table-bordered 
+		<table class="table table-striped table-bordered
 					@if(count($instruments)>15)
 					 table-sm
 					@endif
@@ -42,7 +42,7 @@
 			</thead>
 			<tbody>
 	        @foreach( $instruments as $instrument )
-				<tr class="link" onclick="location.href='{{ url('/admin/instruments/' . $instrument->id) }}/edit'">
+				<tr class="link" onclick="showSpinner();location.href='{{ url('/admin/instruments/' . $instrument->id) }}/edit'">
 					<td scope="row">{{ $instrument->id }}</td>
 					<td>{{ ucfirst($instrument->name) }}</td>
 					<td onclick="location.href='{{ url('admin/instruments/'.$instrument->id) }}'" class="link" title="Show users with that instrument">
@@ -65,5 +65,5 @@
 
 	@endif
 
-	
+
 @stop

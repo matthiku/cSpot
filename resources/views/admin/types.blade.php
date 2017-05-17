@@ -67,7 +67,7 @@
 
                     <td class="center hidden-xs-down" scope="row">{{ $type->id }}</td>
 
-                    <?php   $tdl = 'link center" title="Click to edit" onclick="location.href='."'".url('admin/types/'.$type->id).'/edit'."'"; ?>
+                    <?php   $tdl = 'link center" title="Click to edit" onclick="showSpinner();location.href='."'".url('admin/types/'.$type->id).'/edit'."'"; ?>
 
                     <td class="{!! $tdl !!}">{{ $type->name }}</td>
 
@@ -85,12 +85,12 @@
 
                     <td class="hidden-sm-down {!! $tdl !!}">{{ $type->default_resource ? $type->default_resource->name : '' }}</td>
 
-                    <td class="link center" onclick="location.href='{{ url('admin/default_items?filterby=type&filtervalue='.$type->id) }}'" 
+                    <td class="link center" onclick="location.href='{{ url('admin/default_items?filterby=type&filtervalue='.$type->id) }}'"
                         title="Show Default Items for this Event Type">{{ $type->defaultItems->count() }} <sup><small><small><i class="text-muted fa fa-search"></i></small></small></sup></td>
 
-                    <td class="link center" onclick="location.href='{{ url('cspot/plans?filterby=type&filtervalue='.$type->id) }}&show=all'" 
+                    <td class="link center" onclick="location.href='{{ url('cspot/plans?filterby=type&filtervalue='.$type->id) }}&show=all'"
                         title="Show all Plans of this Type of Service">{{ $type->plans->count() }} <sup><small><small><i class="text-muted fa fa-search"></i></small></small></sup>
-                        <a class="btn btn-secondary btn-sm ml-1" title="Show all future Plans" 
+                        <a class="btn btn-secondary btn-sm ml-1" title="Show all future Plans"
                                 href='{{ url('cspot/plans?show=future&filterby=type&filtervalue='.$type->id ) }}'>
                             <i class="fa fa-filter"></i></a>
                     </td>
@@ -101,15 +101,15 @@
                         <td class="center">
 
                             @if (! $type->plans->count())
-                                <a class="btn btn-danger btn-sm" title="Delete!" 
+                                <a class="btn btn-danger btn-sm" title="Delete!"
                                         href='{{ url('admin/types/'.$type->id) }}/delete'>
                                     <i class="fa fa-trash"></i></a>
                             @endif
 
-                            <a class="btn btn-outline-primary btn-sm" title="Edit" 
+                            <a class="btn btn-outline-primary btn-sm" title="Edit"
                                     href='{{ url('admin/types/'.$type->id) }}/edit'>&#9997;</a>
 
-                            <a class="btn btn-outline-warning btn-sm" 
+                            <a class="btn btn-outline-warning btn-sm"
                                     href="{{ url('cspot/plans/create') }}?type_id={{ $type->id }}"
                                     title="Create a new Event of this type - Note: proposed date will be newer than the newest existing event of this type!">
                                 <i class="fa fa-plus"> </i>
@@ -134,5 +134,5 @@
 
     @endif
 
-    
+
 @stop

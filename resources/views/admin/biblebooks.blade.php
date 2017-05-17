@@ -34,7 +34,7 @@
 		@endforeach
 	</select>
 
-	
+
 
     <h2>{{ $heading . $versionText }}</h2>
 
@@ -65,7 +65,7 @@
             			$versecount = \App\Models\Bible::where('bibleversion_id', $request->version)
             							->where('biblebook_id', $biblebook->id)
             							->count();
-        			else 
+        			else
 	        	    	$versecount = $biblebook->bibles->count();
 	        	@endphp
 
@@ -75,7 +75,7 @@
 
 
 					@if( Auth::user()->isEditor() )
-						<td class="link" title="Edit this name" onclick="location.href='{{ url('/admin/biblebooks/' . $biblebook->id) }}/edit'">{{ $biblebook->name }}</td>
+						<td class="link" title="Edit this name" onclick="showSpinner();location.href='{{ url('/admin/biblebooks/' . $biblebook->id) }}/edit'">{{ $biblebook->name }}</td>
 					@elseif ($versecount>0)
 						<td>
 							<a class="btn btn-secondary btn-sm" title="Show Bible Text" href='{{ url('admin/bibles?version='.$vers->id.'&book='.$biblebook->id) }}'>
@@ -105,7 +105,7 @@
 						@endif
 					</td>
 
-					
+
 					@if( Auth::user()->isEditor() )
 						<td class="nowrap">
 							<a class="btn btn-outline-primary btn-sm" title="Edit" href='{{ url('admin/biblebooks/'.$biblebook->id) }}/edit'><i class="fa fa-pencil"></i></a>
@@ -130,5 +130,5 @@
 
 	@endif
 
-	
+
 @stop

@@ -133,6 +133,8 @@
 					@include('cspot.snippets.theader', ['thfname' => 'last_access', 'thdisp' => 'Last Access', 'thsearch'=>false, 'thclass'=>'hidden-md-down center'])
 
 					@include('cspot.snippets.theader', ['thfname' => 'last_login', 'thdisp' => 'Last Login', 'thsearch'=>false, 'thclass'=>'hidden-md-down center'])
+
+					@include('cspot.snippets.theader', ['thfname' => 'last_login_ip', 'thdisp' => 'Last IP', 'thsearch'=>false, 'thclass'=>'hidden-md-down center'])
 				@endif
 
 				@include('cspot.snippets.theader', ['thfname' => 'created_at', 'thdisp' => 'Joined', 'thsearch'=>false, 'thclass'=>'hidden-lg-down center'])
@@ -151,7 +153,7 @@
 			<?php
 				$tdl = '';
 				if (Auth::user()->isAdmin())
-						$tdl = 'onclick="location.href=\'' . url('admin/users/'.$user->id) . '/edit\'"';
+						$tdl = 'onclick="showSpinner();location.href=\'' . url('admin/users/'.$user->id) . '/edit\'"';
 					?>
 			<tr>
 				<th {!! $tdl !!} class="link" scope="row">{{ $user->id }}</th>
@@ -214,6 +216,8 @@
 							? $user->last_login->diffForHumans()
 							: 'never'
 						}}</td>
+
+					<td class="hidden-md-down small center" title = "{{ $user->last_login_ip }}">{{ $user->last_login_ip }}</td>
 
 				@endif
 

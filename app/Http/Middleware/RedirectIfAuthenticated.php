@@ -5,6 +5,9 @@ namespace App\Http\Middleware;
 use Log;
 use Closure;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Login;
+use App\Events\UserLogin;
+
 
 class RedirectIfAuthenticated
 {
@@ -20,7 +23,7 @@ class RedirectIfAuthenticated
     {
         if (Auth::guard($guard)->check()) {
 
-            Log::info('User logged in successfully: '.Auth::user()->fullName );
+            broadcast(new UserLogin($request, Auth::user() ));
 
             return redirect('/');
         }

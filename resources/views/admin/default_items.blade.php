@@ -61,7 +61,7 @@
 
 	@if (count($default_items))
 
-		<table class="table table-striped table-bordered 
+		<table class="table table-striped table-bordered
 					@if(count($default_items)>15)
 					 table-sm
 					@endif
@@ -83,7 +83,7 @@
 			<tbody>
 
 	        @foreach( $default_items as $default_item )
-				<tr class="link" onclick="location.href ='{{ url('admin/default_items/' . $default_item->id) }}/edit'">
+				<tr class="link" onclick="showSpinner();location.href ='{{ url('admin/default_items/' . $default_item->id) }}/edit'">
 
 					<td scope="row">{{ $default_item->id }}</td>
 
@@ -93,7 +93,7 @@
 
 					<td>{{ $default_item->text }}</td>
 
-					<td 
+					<td
 						@if ($default_item->file)
 							title="Default Image" data-toggle="tooltip" data-placement="left"
 							data-template='
@@ -105,23 +105,23 @@
 						@endif
 						>{{ $default_item->file ? $default_item->file->filename : '' }}</td>
 
-					<td class="center">{!! $default_item->forLeadersEyesOnly 
+					<td class="center">{!! $default_item->forLeadersEyesOnly
 							? '&#10004;'
 							: '' !!}</td>
 
-					<td class="center">{!! $default_item->showItemText 
+					<td class="center">{!! $default_item->showItemText
 							? '&#10004;'
 							: '' !!}</td>
 
-					<td class="center">{!! $default_item->showAnnouncements 
+					<td class="center">{!! $default_item->showAnnouncements
 							? '&#10004;'
 							: '' !!}</td>
 
 					<td class="nowrap center">
 						 @if( Auth::user()->isEditor() )
-							<a class="btn btn-outline-primary btn-sm hidden-lg-down" title="Edit" 
+							<a class="btn btn-outline-primary btn-sm hidden-lg-down" title="Edit"
 								href="{{ url('admin/default_items/'.$default_item->id) }}/edit"><i class="fa fa-pencil"></i></a>
-							<a class="btn btn-danger btn-sm" title="Delete!" 
+							<a class="btn btn-danger btn-sm" title="Delete!"
 								href="{{ url('admin/default_items/'.$default_item->id) }}/delete"><i class="fa fa-trash"></i></a>
 						@endif
 					</td>

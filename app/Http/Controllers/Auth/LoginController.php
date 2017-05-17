@@ -7,6 +7,7 @@ use Log;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\Social;
+use App\Models\Login;
 
 //use Validator;
 use Auth;
@@ -120,7 +121,7 @@ class LoginController extends Controller
 
 
         if (Auth::guard()->attempt($credentials, $request->has('remember'))) {
-            
+
             //return $this->handleUserWasAuthenticated($request);  // old 5.2
             return $this->sendLoginResponse($request);      // new 5.3
         }
@@ -142,14 +143,11 @@ class LoginController extends Controller
      */
     protected function authenticated(Request $request, User $user)
     {
-        // notify admin 
+        // notify admin
         // $mailer->notifyAdmin( $user, $user->fullName .' logged in on IP '.$request->ip() );
 
-        // write last login field in users table
-        $user->update(['last_login' => Carbon::now()]);
-
         //
-        broadcast(new UserLogin($user));
+        broadcast(new UserLogin($request, $user));
     }
 
 

@@ -43,10 +43,10 @@
 
 	        @foreach( $bibleversions as $bibleversion )
 
-	        	@php 
+	        	@php
 	        		$verseCount = $bibleversion->bibles->count();
 	        		$books      = $bibleversion->books;
-	        		$booksCount = count($books); 
+	        		$booksCount = count($books);
         		@endphp
 
 				<tr>
@@ -54,7 +54,7 @@
 					<td scope="row">{{ $bibleversion->id }}</td>
 
 					@if( Auth::user()->isEditor() )
-						<td class="link" title="Edit this name" onclick="location.href='{{ url('/admin/bibleversions/' . $bibleversion->id) }}/edit'">{{ $bibleversion->name }}</td>
+						<td class="link" title="Edit this name" onclick="showSpinner();location.href='{{ url('/admin/bibleversions/' . $bibleversion->id) }}/edit'">{{ $bibleversion->name }}</td>
 					@else
 						<td>
 							<a class="btn btn-secondary btn-sm" title="Show Books in this Version" href='{{ url('admin/biblebooks?version='.$bibleversion->id) }}'>
@@ -67,11 +67,11 @@
 								{{ $booksCount }}
 							</a>
 			                {{-- DropDown Selection of all books --}}
-			                <select class="custom-select float-right mr-2" 
+			                <select class="custom-select float-right mr-2"
 			                		onchange="showSpinner();location.href='{{ url('admin/bibles') }}?version={{ $bibleversion->id }}&book='+this.value">
 			                    <option selected>Open Book...</option>
 			                    @foreach ($books as $key => $book)
-			                        <option value="{{ $key+1 }}">{{ 
+			                        <option value="{{ $key+1 }}">{{
 			                            $book }}</option>
 			                    @endforeach
 			                </select>
@@ -111,5 +111,5 @@
 
 	@endif
 
-	
+
 @stop

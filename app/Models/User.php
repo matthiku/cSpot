@@ -4,7 +4,7 @@
 
 namespace App\Models;
 
-use App\Models\Plan;
+use Plan;
 use Auth;
 
 use Cmgmyr\Messenger\Traits\Messagable;
@@ -38,11 +38,11 @@ class User extends Authenticatable //implements Authenticatable //, Contract, Ca
      * @var array
      */
     protected $fillable = [
-        'name', 
-        'first_name', 
-        'last_name', 
-        'email', 
-        'password', 
+        'name',
+        'first_name',
+        'last_name',
+        'email',
+        'password',
         'notify_by_email',
         'startPage',
         'last_login',
@@ -62,13 +62,20 @@ class User extends Authenticatable //implements Authenticatable //, Contract, Ca
 
 
     /**
+     * Relationship to Logins table
+     */
+    public function logins()
+    {
+        return $this->hasMany('App\Models\Login');
+    }
+
+    /**
      * Relationship to Social table
      */
-    public function social() 
+    public function social()
     {
         return $this->hasMany('App\Models\Social');
     }
-
 
     /**
      * Relationship to the Plan model
@@ -85,31 +92,21 @@ class User extends Authenticatable //implements Authenticatable //, Contract, Ca
         return $this->hasMany('App\Models\Plan', 'teacher_id');
     }
 
-
-
     /**
      * Relationship with the Item Notes
      */
-    public function itemNotes() 
+    public function itemNotes()
     {
         return $this->hasMany('App\Models\ItemNote');
     }
 
-
-
-
     /**
      * Relationship with the History records
      */
-    public function histories() 
+    public function histories()
     {
         return $this->hasMany('App\Models\History');
     }
-
-
-
-
-
 
     /**
      * Many-to-many relationship with instruments table
@@ -118,6 +115,9 @@ class User extends Authenticatable //implements Authenticatable //, Contract, Ca
     {
         return $this->belongsToMany('App\Models\Instrument')->withTimestamps();
     }
+
+
+
 
     public function hasInstrument($name)
     {
@@ -151,12 +151,21 @@ class User extends Authenticatable //implements Authenticatable //, Contract, Ca
 
 
 
-    public function getFullNameAttribute() 
+    public function getFullNameAttribute()
     {
         return $this->first_name.' '.$this->last_name;
     }
 
 
+
+    public function getLastLoginIpAttribute()
+    {
+        // get all logins from this user
+        $logins = $this->logins;
+        if ($logins->count())
+            return $logins->last()->addr; // return only the newest
+        return 'n/a';
+    }
 
 
 
@@ -253,7 +262,7 @@ class User extends Authenticatable //implements Authenticatable //, Contract, Ca
      * or as leader or teacher of a plan
      */
     public function ownsPlan($plan_id)
-    {        
+    {
         if ( Auth::user()->isAuthor() ) return true;
 
         // find the Plan
@@ -301,5 +310,5 @@ class User extends Authenticatable //implements Authenticatable //, Contract, Ca
     {
         return $this->hasRole('musician') || $this->hasRole('lead musician');
     }
-    
+
 }

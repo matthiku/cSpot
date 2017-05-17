@@ -33,7 +33,7 @@
 
 	@if (count($resources))
 
-		<table class="table table-striped table-bordered 
+		<table class="table table-striped table-bordered
 					@if(count($resources)>15)
 					 table-sm
 					@endif
@@ -50,7 +50,7 @@
 			</thead>
 			<tbody>
 	        @foreach( $resources as $resource )
-				<tr class="link" onclick="location.href='{{ url('/admin/resources/' . $resource->id) }}/edit'">
+				<tr class="link" onclick="showSpinner();location.href='{{ url('/admin/resources/' . $resource->id) }}/edit'">
 					<td scope="row">{{ $resource->id }}</td>
 					<td>{{ ucfirst($resource->name) }}</td>
 					<td>{{ $resource->type }}</td>
@@ -75,5 +75,5 @@
 
 	@endif
 
-	
+
 @stop

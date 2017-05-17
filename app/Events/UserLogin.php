@@ -2,6 +2,8 @@
 
 namespace App\Events;
 
+use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -18,9 +20,11 @@ class UserLogin
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Request $request, User $user)
     {
         //
+        $this->user = $user;
+        $this->request = $request;
     }
 
     /**

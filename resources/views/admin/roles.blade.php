@@ -33,7 +33,7 @@
 
 	@if (count($roles))
 
-		<table class="table table-striped table-bordered 
+		<table class="table table-striped table-bordered
 					@if(count($roles)>15)
 					 table-sm
 					@endif
@@ -48,7 +48,7 @@
 			</thead>
 			<tbody>
 	        @foreach( $roles as $role )
-				<tr class="link" onclick="location.href='{{ url('/admin/roles/' . $role->id) }}/edit'">
+				<tr class="link" onclick="showSpinner();location.href='{{ url('/admin/roles/' . $role->id) }}/edit'">
 					<td scope="row">{{ $role->id }}</td>
 					<td>{{ ucfirst($role->name) }}</td>
 					<td onclick="location.href='{{ url('admin/roles/'.$role->id) }}'" class="link" title="Show users with that role">
@@ -74,5 +74,5 @@
 
 	@endif
 
-	
+
 @stop

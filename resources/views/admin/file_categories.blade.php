@@ -51,7 +51,7 @@
 						{{ $file_category->id }}
 					</td>
 
-					<td class="link" onclick="location.href ='{{ url('admin/file_categories/' . $file_category->id) }}/edit'">
+					<td class="link" onclick="showSpinner();location.href ='{{ url('admin/file_categories/' . $file_category->id) }}/edit'">
 						{{ $file_category->name }}
 					</td>
 
@@ -62,23 +62,23 @@
 					</td>
 
 					<td class="nowrap center">
-							<a class="btn btn-secondary hidden-sm-down btn-sm" title="Show Files of this category" 
+							<a class="btn btn-secondary hidden-sm-down btn-sm" title="Show Files of this category"
 								href='{{ url('cspot/files').'?bycategory='.$file_category->id }}'>
 								<i class="fa fa-filter"></i></a>
 						 @if ( Auth::user()->isEditor() )
-							<a class="btn btn-outline-primary btn-sm hidden-xs-down" title="Edit" 
+							<a class="btn btn-outline-primary btn-sm hidden-xs-down" title="Edit"
 								href="{{ url('admin/file_categories/'.$file_category->id) }}/edit"><i class="fa fa-pencil"></i></a>
 							@if ($file_category->id>1)
-								<a class="btn btn-danger btn-sm" title="Delete!" 
+								<a class="btn btn-danger btn-sm" title="Delete!"
 									href="{{ url('admin/file_categories/'.$file_category->id) }}/delete"><i class="fa fa-trash"></i></a>
 							@else
-								<a tabindex="0" href="#" class="ml-1" 
+								<a tabindex="0" href="#" class="ml-1"
 					    			data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="focus"
 					    			data-content="system default values cannot be deleted!">
 					    			<i class="fa fa-question-circle"></i></a>
 							@endif
 						@endif
-					</td>					
+					</td>
 				</tr>
 	        @endforeach
 			</tbody>
@@ -90,5 +90,5 @@
 
 	@endif
 
-	
+
 @stop

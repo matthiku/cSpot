@@ -12,7 +12,7 @@
 
     <p>Email address: {{ $user->email }}</p>
 
-    <p>IP address: {{ Request::ip() }}</p>
+    <p>IP address: {{ $user->last_login_ip }}</p>
 
 </body>
 
