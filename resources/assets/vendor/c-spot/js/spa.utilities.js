@@ -2768,7 +2768,8 @@ function addNoteToPlan( event )
     .done( function(data) {
         // on success, add note to existing <p> in plan view
         $('#showAddedPlanNote').text(data);
-        // close modal again
+        // reload plan in order to redraw the notes
+        location.reload();
     })
     .fail( function(data) {
         console.log(data);

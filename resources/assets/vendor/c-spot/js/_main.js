@@ -116,7 +116,7 @@ function parseURLstring(urlstring)
             var spl = param[i].split('=');
             if (spl.length>1)
                 params[spl[0]] = spl[1];
-        })
+        });
     }
     url.params = params;
 
@@ -130,7 +130,7 @@ function serializeForUrl(obj)
     var str = '?';
     $.each(obj, function(elem) {
         str += elem + '=' + obj[elem] + '&';
-    })
+    });
     // remove trailing &
     return str.substring(0, str.length-1);
 }
@@ -152,14 +152,14 @@ function matchSize(collection, what)
             max = Math.max(max, $(collection[elem]).width());
         if (what=='height')
             max = Math.max(max, $(collection[elem]).height());
-    })
+    });
     // apply same to all elements
     $.each(collection, function(elem) {
         if (what=='width')
             $(collection[elem]).width( max );
         if (what=='height')
             $(collection[elem]).height( max );
-    })
+    });
 }
 
 
@@ -448,7 +448,7 @@ function setIdealCalendarRowHeight()
             at: 'right-3 bottom-6',
             of: $(this).parent()
         });
-    })
+    });
 }
 /* Plans List Calendar view: show results from previous or next year
 */
@@ -491,7 +491,7 @@ function selectServiceType(that)
                 timeframe = '';
             else
                 options.push( this.value.split('-')[1] );
-    })
+    });
     var url = $('#multi-filter-dropdown').data('url');
     showSpinner();
     if (options.length)
@@ -521,7 +521,7 @@ function toogleAllorFuturePlans(selection)
     if (selection=='nothing') return;
 
     var sel = selection.split('-');
-    if (sel.length!=2) return
+    if (sel.length!=2) return;
     var user = sel[0];
     var time = sel[1];
 
@@ -756,7 +756,7 @@ function loadFromLocalCache()
      * Check some user-defined settings in the Local Storage of the browser
      */
     if ( window.location.pathname.indexOf('/leader')>10 ) {
-        getLocalConfiguration()
+        getLocalConfiguration();
     }
 
 
@@ -1109,7 +1109,7 @@ function cancelForm()
     if (newLoc === undefined)
         newLoc = $('.cancel-button').parent().attr('href');
     if (newLoc == undefined) {
-        ;;;console.log('going back on history! History count: '+ window.history.length)
+        ;;;console.log('going back on history! History count: '+ window.history.length);
         if (window.history.length) {
             history.go(-1);
             return false;
@@ -1266,7 +1266,7 @@ function showFilterField(field, that)
     });
 
     // define html code for search input field
-    var newHtml = '<input id="filter-fffff-input" style="line-height: normal;" type="text" placeholder="search fffff">'
+    var newHtml = '<input id="filter-fffff-input" style="line-height: normal;" type="text" placeholder="search fffff">';
     newHtml    += '<i id="filter-fffff-submit" class="fa fa-check-square big"> </i>';
     // did user click on the visible search icon?
     if ($('#filter-'+field+'-show').is(':visible'))

@@ -264,13 +264,13 @@ class RegisterController extends Controller
         }
 
         Log::info($request->ip().' - getSocialHandle - trying to do social-sign in');
-        $mailer->notifyAdmin( $socialUser, 'User confirmed via '.$provider );
-
         // $this->auth->login($socialUser, true);
         Auth::login($socialUser, true);
 
         // user login event
         broadcast(new UserLogin($request, Auth::user()));
+
+        $mailer->notifyAdmin( $socialUser, 'User confirmed via '.$provider );
 
         return redirect()->intended($this->redirectPath());
 

@@ -19,6 +19,7 @@ use App\Http\Requests\StorePlanRequest;
 use App\Http\Controllers\Controller;
 
 use App\Models\Plan;
+use App\Models\Note;
 use App\Models\PlanCache;
 use App\Models\Team;
 use App\Models\Item;
@@ -78,7 +79,7 @@ class PlanController extends Controller
             $plan = $plan
                 ->whereBetween('type_id', [0,1])
                 ->whereDate('date', '>', Carbon::yesterday());
-        } 
+        }
         // when all plans, then only thosw which haven't started yet
         else {
             $plan = $plan
@@ -95,7 +96,7 @@ class PlanController extends Controller
         }
 
         // issue #27 (error when no plan was found)
-        if ($plan) {            
+        if ($plan) {
             // call the edit action for a single plan
             return $this->edit($plan->id);
         }
@@ -152,11 +153,11 @@ class PlanController extends Controller
 
 
     /**
-     * Display a List of Service Plans 
+     * Display a List of Service Plans
      *    filtered by user (leader/teacher) or by plan type and/or ordered by certain fields
      *
      *
-     * @param  filterby     (user|type|date|future) 
+     * @param  filterby     (user|type|date|future)
      *                      Show only plans for a certain user, of a certain type, a certain date or all events
      *                      default is 'user'
      *
@@ -164,7 +165,7 @@ class PlanController extends Controller
      *                      default is plans for current user only
      *
      * @param  timeframe    (all|future)
-     *                      Show only future plans or all 
+     *                      Show only future plans or all
      *                      default is only future plans
      *
      * @param  orderBy      Field by which the list must be sorted by
@@ -216,12 +217,12 @@ class PlanController extends Controller
         $firstYear = Plan::orderBy('date')->first()->date->year;
 
         // provide all the data to and show the view
-        return view( 
-            $this->view_all, 
+        return view(
+            $this->view_all,
             array(
-                'plans'     => $somePlans, 
-                'allPlans'  => $allPlans->get(), 
-                'heading'   => $heading, 
+                'plans'     => $somePlans,
+                'allPlans'  => $allPlans->get(),
+                'heading'   => $heading,
                 'userIsPlanMember' => listOfPlansForUser(),
                 'types'     => Type::get(),
                 'firstYear' => $firstYear
@@ -250,7 +251,7 @@ class PlanController extends Controller
         $firstYear = Plan::orderBy('date')->first()->date->year;
 
         return view(
-            'cspot.calendar', 
+            'cspot.calendar',
             [
                 'allPlans'  => $plans,
                 'heading'   => 'Events for '.$year,
@@ -325,7 +326,7 @@ class PlanController extends Controller
         // Event Type is already defined in the request
         if ($request->has('type_id')) {
 
-            // get the Event Type 
+            // get the Event Type
             $type = Type::find($request->type_id);
 
             // use heper function to calculate next date for this plan
@@ -354,7 +355,7 @@ class PlanController extends Controller
                 'end'       => '00:00',
                 'leader_id' => null,
                 'subtitle'  => ''
-            ]);            
+            ]);
         }
 
         // get list of service types
@@ -404,7 +405,7 @@ class PlanController extends Controller
         if ($request->has('private') && $request->private=='on')
             $plan->private = true;
         else
-            $plan->private = false;            
+            $plan->private = false;
 
 
         $plan->save();
@@ -416,12 +417,12 @@ class PlanController extends Controller
 
             // get list of all default items for this plan type
             $dItems = DefaultItem::where('type_id', $plan->type_id)->get();
-            
+
             // add each default item as new item to the new plan
             foreach ($dItems as $dItem) {
                 // get single default item to create a nwe Item object
                 $iNew = new Item([
-                    'seq_no'            => $dItem->seq_no, 
+                    'seq_no'            => $dItem->seq_no,
                     'comment'           => $dItem->text,
                     'forLeadersEyesOnly'=> $dItem->forLeadersEyesOnly,
                     'show_comment'      => $dItem->showItemText,
@@ -481,7 +482,7 @@ class PlanController extends Controller
     {
         // get plan with items ordered by seq no
         $plan = Plan::with([
-                'items' => function ($query) use ($id) { 
+                'items' => function ($query) use ($id) {
                     if (! Auth::User()->ownsPlan($id) )
                         // do not provide the 'FLEO' items to non-leaders
                         $query->where('forLeadersEyesOnly', '<>', '1')->orderBy('seq_no');
@@ -494,15 +495,15 @@ class PlanController extends Controller
         // get list of users
         $users = User::orderBy('first_name')->get();
 
-        return view( 
-            $this->view_one, 
+        return view(
+            $this->view_one,
             array(
-                'plan'         => $plan, 
-                'types'        => $types, 
-                'users'        => $users, 
+                'plan'         => $plan,
+                'types'        => $types,
+                'users'        => $users,
                 'versionsEnum' => json_decode(env('BIBLE_VERSIONS')),   // array of possible bible versions
                 'newest_item_id'  => 0,
-                'trashedItemsCount' => 0, 
+                'trashedItemsCount' => 0,
             )
         );
     }
@@ -511,13 +512,13 @@ class PlanController extends Controller
 
 
 
-    
+
 
     /**
      * PLAN DETAILS form
      *
      * @param  int  $id
-     * @param  int  $new_item_id    indicates a newly inserted item 
+     * @param  int  $new_item_id    indicates a newly inserted item
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -525,7 +526,7 @@ class PlanController extends Controller
 
         // find a single plan by ID
         $plan = Plan::with([
-                'items' => function ($query) use ($id) { 
+                'items' => function ($query) use ($id) {
                     if (! Auth::User()->ownsPlan($id) )
                         // do not provide the 'FLEO' items to non-leaders
                         $query->where('forLeadersEyesOnly', '<>', '1')->orderBy('seq_no');
@@ -556,20 +557,20 @@ class PlanController extends Controller
                 $plan->end   = Carbon::instance($plan->date_end)->toTimeString();
             else
                 $plan->end = "23:59";
-            
-            return view( 
-                $this->view_one, 
+
+            return view(
+                $this->view_one,
                 array(
                     'plan'         => $plan,
-                    'types'        => $types, 
-                    'users'        => $users, 
+                    'types'        => $types,
+                    'users'        => $users,
                     'versionsEnum' => json_decode(env('BIBLE_VERSIONS')),   // array of possible bible versions
                     'newest_item_id'  => $newest_item_id,
-                    'trashedItemsCount' => $trashedItemsCount, 
-                ) 
+                    'trashedItemsCount' => $trashedItemsCount,
+                )
             );
         }
-        
+
         flashError('Plan with id "' . $id . '" not found');
         return \Redirect::route($this->view_idx);
     }
@@ -610,9 +611,9 @@ class PlanController extends Controller
         if ($request->has('private') && $request->private=='on')
             $plan->private = true;
         else
-            $plan->private = false;            
+            $plan->private = false;
         $plan->save();
-        
+
 
         flash('Plan with id "' . $id . '" updated');
         return redirect()->back();
@@ -655,13 +656,13 @@ class PlanController extends Controller
             // update this Plan
             $plan = Plan::find($request->id);
 
-            $changer = Auth::user()->first_name;
-            $note = 'Note from '. $changer.': ('.Carbon::now()->formatLocalized('%e-%m-%g %H:%M').')'.chr(0x0a). $request->note;
+            // Plan notes are now seperate models belonging to a plan and a user
+            $note = New Note;
+            $note->text = $request->note;
+            $note->user_id = Auth::user()->id;
+            $plan->notes()->save($note);
 
-            $plan->info = $plan->info . chr(0x0a) . chr(0x0a) . $note;
-            $plan->save();
-
-            return $note;
+            return $note->text;
         }
 
         return response()->json(['status' => 405, 'data' => 'APIupdate: : incorrect parameters!']);
@@ -765,7 +766,7 @@ class PlanController extends Controller
             // is there already a value for that key?
             $cache = PlanCache::where('key', $request->key)->first();
 
-            // NOTE: If the original length and the stored length of the value differs, itmight be because of an 
+            // NOTE: If the original length and the stored length of the value differs, itmight be because of an
             //       invalid charachter (higher Unicode) in the value, which cannot be stored in the database!
 
             if ($cache) {
@@ -773,10 +774,10 @@ class PlanController extends Controller
                 $cache->update(['value' => $request->value]);
                 // return ok response
                 return response()->json(['status' => 200, 'data' => $cache->key." updated! Value length was ".strlen($cache->value)], 200);
-            } 
+            }
 
             // extract item id from request
-            if ($request->has('item_id')) 
+            if ($request->has('item_id'))
                 $item_id = $request->item_id;
             else
                 $item_id = 9999999;
@@ -788,7 +789,7 @@ class PlanController extends Controller
                     'item_id' => $item_id
                 ]);
             $plan->planCaches()->save($cache);
-            
+
             // return ok response
             return response()->json(['status' => 200, 'data' => $cache->key." inserted! Value length was ".strlen($cache->value)], 200);
         }

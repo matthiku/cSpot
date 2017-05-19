@@ -21,6 +21,7 @@
 
     @include('cspot/snippets/modal')
 
+    @include ('cspot.snippets.addnote')
 
 
     {{-- html input form definition
@@ -599,44 +600,16 @@
 
     {{-- =================   Plan Notes
     --}}
-    <div class="container">
-        <div style="clear:both; max-width: 50rem;" class="card mt-3">
-
-            <div class="card-block narrower">
-                <h5 class="card-title">Notes for this Plan:</h5>
-
-                @if (isset($plan))
-                    {{-- allow editor to change the whole note for upcoming events --}}
-                    @if ( Auth::user()->isEditor() && $plan->date >= \Carbon\Carbon::today() )
-
-                        <p title="Click to edit!" class="editable-plan-info card-text narrow white-space-pre-wrap"
-                                onclick="location.href='#bottom';"
-                                id="info-plan-id-{{ $plan->id }}">{!! $plan->info !!}</p>
-                        @if ( strlen($plan->info) > 0 )
-                            <span class="fa fa-eraser text-muted" onclick="erasePlanNote('{{ $plan->id }}')" title="Discard the whole note"></span>
-                        @endif
-                    @else
-
-                        <p class="card-text narrower white-space-pre-wrap">{!! $plan->info !!}</p>
-                        <p class="card-text narrower white-space-pre-wrap" id="showAddedPlanNote"></p>
-
-                        @include ('cspot.snippets.addnote')
-
-                        <a href="#" data-toggle="modal" data-target="#addPlanNoteModal" class="card-link">Add Note</a>
-                        <script>
-                            cSpot.plan = {id: {{ $plan->id }} };
-                            $('#addPlanNoteModal').css('top','inherit');
-                        </script>
-                    @endif
-                @else
-                        <p class="card-text">{!! Form::textarea('info') !!}</p>
-                @endif
-
+    @if ( ! isset($plan) )
+        <div class="container">
+            <div style="clear:both; max-width: 50rem;" class="card mt-3">
+                <div class="card-block narrower">
+                    <h5 class="card-title">Notes for this Plan:</h5>
+                    <p class="card-text">{!! Form::textarea('info') !!}</p>
+                </div>
             </div>
-
         </div>
-    </div>
-
+    @endif
 
 
 
@@ -656,6 +629,9 @@
                 // define field that should always get input focus
                 document.forms.inputForm.date.focus();
                 document.forms.inputForm.date.setAttribute('class', 'main-input');
+
+                // needed for the plan notes modal processing
+                cSpot.plan = {id: {{ $plan->id }} };
             </script>
 
         @endif
