@@ -665,9 +665,43 @@ class PlanController extends Controller
             return $note->text;
         }
 
-        return response()->json(['status' => 405, 'data' => 'APIupdate: : incorrect parameters!']);
+        return response()->json(['status' => 405, 'data' => 'APIupdate: : incorrect parameters!'], 405);
     }
 
+
+    /**
+     * Update/delete a user's note for a whole plan
+     *
+     * Only the authore of that note can also edit/delete it
+     *
+     * @param \Illuminate\Http\Request  $request - request must contain an id and a value
+     */
+    public function APIupdateNote( Request $request )
+    {
+        // request should contain the unique ID of the note
+        if ($request->has('id') && $request->has('value') ) {
+            $arr_id = explode('-', $request->id);
+            $note_id = $arr_id[2];
+            $text = $request->value;
+            // find the corresponding Note model
+            $note = Note::find($note_id);
+            if ($note) {
+                // only the original author can manipulate this note
+                if ($note->user_id == Auth::user()->id) {
+                    //TODO: when value == '_', then delete this note...
+                    if ($text === '_') {
+                        $note->delete();
+                        return '- note deleted -';
+                    }
+                    $note->update(['text' => $text]);
+                    return $note->text;
+                }
+                return response()->json(['status' => 401, 'data' => 'Not authorized'], 401);
+            }
+            return response()->json(['status' => 404, 'data' => 'Note not found!'], 404);
+        }        
+        return response()->json(['status' => 405, 'data' => 'APIupdate: : incorrect parameters!'], 405);
+    }
 
 
     public function APIupdate(Request $request)
@@ -701,7 +735,7 @@ class PlanController extends Controller
                 return response()->json(['status' => 404, 'data' => "APIupdate: plan $plan_id not found!"], 404);
             }
         }
-        return response()->json(['status' => 405, 'data' => 'APIupdate: : incorrect parameters!']);
+        return response()->json(['status' => 405, 'data' => 'APIupdate: : incorrect parameters!'], 405);
 
     }
 

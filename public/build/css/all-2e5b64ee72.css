@@ -13339,6 +13339,13 @@ div.scroll-menu {
     box-shadow: none;
 }
 
+.cursor-text {
+    cursor: text;
+}
+.cursor-pointer {
+    cursor: pointer;
+}
+
 
 /* file upload progress bar */
 .bar {

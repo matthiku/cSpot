@@ -361,6 +361,19 @@ function makeAreasEditable()
     });
 
     // Plan Detail page - update Plan Note
+    $('.editable-plan-note').editable(cSpot.appURL + '/cspot/api/plan/updateNote', {
+        type        : 'textarea',
+        cancel      : 'Cancel',
+        width       : '100%',
+        rows        : '3',
+        submit      : 'Save',
+        onblur      : 'ignore',
+        indicator   : '<span class="fa fa-refresh fa-spin"> </span> saving...',
+        placeholder : '<span class="fa fa-edit">&nbsp;</span>',
+    });
+
+
+    // Plan Detail page - update Plan Note
     $('.editable-plan-info').editable(cSpot.appURL + '/cspot/api/plan/update', {
         type        : 'textarea',
         cancel      : 'Cancel',

@@ -1478,6 +1478,7 @@ function deleteItemNote(which, id, actionUrl)
 }
 
 
+
 /* FLEO - Plan leader can mark an item as "for leader's eyes only"
 */
 function changeForLeadersEyesOnly(that) {
@@ -2756,8 +2757,8 @@ function addNoteToPlan( event )
     // user should click close if he doesn't want to a dd a note...
     if (note=='') return;
 
-    $('#showAddedPlanNote').html(cSpot.const.waitspinner);
     $('#addPlanNoteModal').modal('hide');
+    showSpinner();
 
     //
     // send new note to controller
@@ -2776,6 +2777,31 @@ function addNoteToPlan( event )
         console.log('Failed to add new note to plan!');
         $('#showAddedPlanNote').text('Failed to add new note to plan! Press F12 to see more and notify Admin!');
     });
+}
+
+/* delete a users's note on a plan
+*/
+function deleteUsersPlanNote(id, actionUrl)
+{
+    // replace current note with spinner while doing AJAX
+    $('#plan-note-'+id).html('<i class="fa fa-spinner fa-spin fa-fw"></i>');
+
+    $.post(
+        actionUrl,
+        {
+            'id'    : 'plan-note-' + id,
+            'value' : '_'
+        })
+    .done(
+        function(data) {
+            // remove old text from note element
+            $('#plan-note-'+id).parent().parent().remove();
+        })
+    .fail(
+        function(data) {
+            // show error in note text field
+            $('#plan-note-'+id).html(data);
+        });
 }
 
 

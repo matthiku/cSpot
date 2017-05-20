@@ -101,8 +101,10 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     Route::post('api/plan/get',                    'Cspot\PlanController@APIgetPlan')->name('api.plan.get');
     // API update    
     Route::post('api/plan/update',                 'Cspot\PlanController@APIupdate' )->name('api.plan.update');
-    // update (append) the note for a plan
-    Route::post('plans/addNote',                   'Cspot\PlanController@APIaddNote')->name('api.addNote');
+    // append a note to a plan
+    Route::post('api/plan/addNote',                'Cspot\PlanController@APIaddNote')->name('api.addNote');
+    // update the note for a plan
+    Route::post('api/plan/updateNote',             'Cspot\PlanController@APIupdateNote')->name('api.updateNote');
 
 
     /*

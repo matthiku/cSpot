@@ -18,35 +18,43 @@
             <div class="container-fluid">
                 <div class="row">
                     @if ($plan->info)
+                        {{-- show legacy plan info text --}}
                         <p>{{ $plan->info }}</p>
                     @endif
-                    @foreach ($plan->notes as $note)
+                </div>
+
+                @foreach ($plan->notes as $note)
+                    <div class="row">
                         <div class="col-md-2">
                             <p>{{ $note->user->name }}<br>
-                                <span class="small">{{ $note->updated_at->formatLocalized('%a, %d %b') }}</span>
+                                <span class="small rounded bg-grey px-1" title="{{ $note->updated_at }}">
+                                    {{ $note->updated_at->formatLocalized('%a, %d %b') }}</span>
                             </p>
                         </div>
                         <div class="col-md-9">
                             @if (Auth::user()->id == $note->user->id)
-                                <p class="editable" title="click to edit">{{ $note->text }}</p>
+                                <p class="editable-plan-note cursor-text" id="plan-note-{{ $note->id }}" title="click to edit">{{ $note->text }}</p>
                             @else
                                 <p>{{ $note->text }}</p>
                             @endif
                         </div>
-                        <div class="col-md-1">
+                        <div class="col-md-1 cursor-pointer">
                             @if (Auth::user()->id == $note->user->id)
-                                <i class="fa fa-pencil fa-lg"></i> <i class="fa fa-trash fa-lg"></i>
+                                <i class="fa fa-trash fa-lg" onclick="deleteUsersPlanNote({{ $note->id }}, '{{ route('api.updateNote') }}')"></i>
                             @endif
                         </div>
                         <div class="col-md-12">
                             <hr>
                         </div>
-                    @endforeach
+                    </div>
+                @endforeach
+
+                <div class="row">
                     <div class="col-md-2">
-                        <label>Add a note:</label>
+                        <label>Add a Note:</label>
                     </div>
                     <div class="col-md-10">
-                        <textarea id="textareaAddPlanNote" rows="4" class="w-100"></textarea>
+                        <textarea id="textareaAddPlanNote" rows="3" class="w-100"></textarea>
                     </div>
                 </div>
             </div>
