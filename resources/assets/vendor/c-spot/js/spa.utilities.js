@@ -2743,7 +2743,7 @@ function reportSongUsageToCCLI(that, item_id, reported_at)
 
 /* Even 'normal' users can add a note to a plan
 */
-function addNoteToPlan( event )
+function addNoteToPlan( plan_id, event )
 {
     if (event != undefined) {
         $('#showAddedPlanNote').text('');
@@ -2760,11 +2760,10 @@ function addNoteToPlan( event )
     $('#addPlanNoteModal').modal('hide');
     showSpinner();
 
-    //
     // send new note to controller
     $.post( cSpot.routes.apiAddNote, {
         note: note,
-        id  : cSpot.plan.id,
+        id  : plan_id,
     })
     .done( function(data) {
         // on success, add note to existing <p> in plan view
@@ -2777,6 +2776,29 @@ function addNoteToPlan( event )
         console.log('Failed to add new note to plan!');
         $('#showAddedPlanNote').text('Failed to add new note to plan! Press F12 to see more and notify Admin!');
     });
+}
+
+function markPlanNoteAsRead(that, id, actionUrl)
+{
+    var elem = $(that).parent()
+    elem.html(cSpot.const.waitspinner);
+
+    $.post(
+        actionUrl,
+        {
+            'id'    : 'plan-note-' + id,
+        })
+    .done(
+        function(data) {
+            // remove reminder
+            $('#note-unconfirmed-'+id).remove();
+            $(elem).html('OK!');
+        })
+    .fail(
+        function(data) {
+            // show error in note text field
+            $('#plan-note-'+id).html(data);
+        });
 }
 
 /* delete a users's note on a plan

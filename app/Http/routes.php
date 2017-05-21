@@ -105,6 +105,8 @@ Route::group(['prefix' => 'cspot', 'middleware' => ['web', 'auth']], function() 
     Route::post('api/plan/addNote',                'Cspot\PlanController@APIaddNote')->name('api.addNote');
     // update the note for a plan
     Route::post('api/plan/updateNote',             'Cspot\PlanController@APIupdateNote')->name('api.updateNote');
+    // Plan Leader can mark a note as read (cnofirmed)
+    Route::post('api/plan/markPlanNoteAsRead',     'Cspot\PlanController@APImarkPlanNoteAsRead')->name('api.markPlanNoteAsRead');
 
 
     /*

@@ -680,6 +680,7 @@ class PlanController extends Controller
     {
         // request should contain the unique ID of the note
         if ($request->has('id') && $request->has('value') ) {
+            // id comes in the form of 'plan-note-[id]'
             $arr_id = explode('-', $request->id);
             $note_id = $arr_id[2];
             $text = $request->value;
@@ -688,18 +689,44 @@ class PlanController extends Controller
             if ($note) {
                 // only the original author can manipulate this note
                 if ($note->user_id == Auth::user()->id) {
-                    //TODO: when value == '_', then delete this note...
+                    // when value == '_', then delete this note...
                     if ($text === '_') {
                         $note->delete();
                         return '- note deleted -';
                     }
-                    $note->update(['text' => $text]);
+                    // update the note and reset the read_by_leader flag in order to raise awareness for the update
+                    $note->update(['text' => $text, 'read_by_leader' => false]);
                     return $note->text;
                 }
                 return response()->json(['status' => 401, 'data' => 'Not authorized'], 401);
             }
             return response()->json(['status' => 404, 'data' => 'Note not found!'], 404);
         }        
+        return response()->json(['status' => 405, 'data' => 'APIupdate: : incorrect parameters!'], 405);
+    }
+
+    /**
+     * Plan leader can mark a note to a plan (from another user) as being read
+     */
+    public function APImarkPlanNoteAsRead(Request $request)
+    {
+        if ($request->has('id')) {
+            // id comes in the form of 'plan-note-[id]'
+            $arr_id = explode('-', $request->id);
+            $note_id = $arr_id[2];
+            // find the corresponding Note model
+            $note = Note::find($note_id);
+            if ($note) {
+                // only the leader of this plan can mark a note as read
+                if ($note->plan->leader_id == Auth::user()->id) {
+                    // update the note and reset the read_by_leader flag in order to raise awareness for the update
+                    $note->update(['read_by_leader' => true]);
+                    return 'confirmed!';
+                }
+                return response()->json(['status' => 401, 'data' => 'Not authorized'], 401);
+            }
+            return response()->json(['status' => 404, 'data' => 'Note not found!'], 404);
+        }
         return response()->json(['status' => 405, 'data' => 'APIupdate: : incorrect parameters!'], 405);
     }
 

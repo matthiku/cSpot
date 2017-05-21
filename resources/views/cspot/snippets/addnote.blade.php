@@ -35,12 +35,24 @@
                             @if (Auth::user()->id == $note->user->id)
                                 <p class="editable-plan-note cursor-text" id="plan-note-{{ $note->id }}" title="click to edit">{{ $note->text }}</p>
                             @else
-                                <p>{{ $note->text }}</p>
+                                <p class="mb-0">{{ $note->text }}</p>
+                                @if (Auth::user()->id == $plan->leader_id  &&  ! $note->read_by_leader )
+                                    <small id="note-unconfirmed-{{ $note->id }}" 
+                                        class="bg-warning px-1 rounded float-right">New or updated. Please confirm: </small>
+                                @endif
                             @endif
                         </div>
-                        <div class="col-md-1 cursor-pointer">
+                        <div class="col-md-1 cursor-pointer center">
                             @if (Auth::user()->id == $note->user->id)
                                 <i class="fa fa-trash fa-lg" onclick="deleteUsersPlanNote({{ $note->id }}, '{{ route('api.updateNote') }}')"></i>
+                            @endif
+                            @if (Auth::user()->id == $plan->leader_id  &&  ! $note->read_by_leader )
+                                <span title="Mark as read">
+                                    <i class="fa fa-check fa-lg" onclick="
+                                        markPlanNoteAsRead( this, {{ $note->id }}, '{{ route('api.markPlanNoteAsRead') }}' );">
+                                    </i><small>confirm</small></span>
+                            @else
+                                <span>OK!</span>
                             @endif
                         </div>
                         <div class="col-md-12">
@@ -63,7 +75,7 @@
 
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" onclick="addNoteToPlan()">Save changes</button>
+        <button type="button" class="btn btn-primary" onclick="addNoteToPlan({{ $plan->id }})">Save changes</button>
       </div>
     </div>
   </div>

@@ -107,7 +107,14 @@ class Plan extends Model
     }
 
 
-
+    /**
+     * return true or false if current user (should be the leader) has already seen all notes for his plan
+     * (each note has a field 'read_by_leader' indicating this)
+     */
+    public function notesRead()
+    {
+        return $notes = $this->notes->where('read_by_leader', false)->count();
+    }
 
 
     /*  get all or just the first or just last item for this plan

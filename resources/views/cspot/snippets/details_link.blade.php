@@ -6,24 +6,24 @@
 
 @if ( Auth::user()->isEditor() && isset($plan) && $plan->date >= \Carbon\Carbon::yesterday() )
 
-    <div class="ml-2 d-inline small">
+    <div class="ml-2 d-inline small nowrap cursor-pointer text-primary">
     	<span class="small">
-	        <a href="#" onclick="$('.plan-details').toggle()" class="small">
-	        	<span class="plan-details">show</span>
+	        <span onclick="$('.plan-details').toggle()" class="small">
 	        	<span class="plan-details hidden">hide</span>
-	        	plan details
-	    	</a>
+	        	plan&nbsp;details
+	    	</span>
     	</span>
     </div>
 @endif
 
-<div class="ml-2 d-inline small">
+<div class="ml-2 d-inline small nowrap cursor-pointer text-primary">
 	<span class="small">
         @if ($plan->notes->count()  ||  $plan->info)
-            <a href="#" data-toggle="modal" data-target="#addPlanNoteModal" class="small">
-                Plan Notes ({{ $plan->notes->count() ? $plan->notes->count() : '1' }})</a>
+            <span data-toggle="modal" data-target="#addPlanNoteModal" class="small{{ 
+                    Auth::user()->ownsPlan($plan->id)  && $plan->notesRead()  ? ' bg-danger text-white rounded px-1' : '' }}">
+                plan&nbsp;notes&nbsp;({{ $plan->notes->count() ? $plan->notes->count() : '1' }})</span>
         @else
-            <a href="#" data-toggle="modal" data-target="#addPlanNoteModal" class="small">Add Note</a>
+            <span data-toggle="modal" data-target="#addPlanNoteModal" class="small">add&nbsp;note</span>
         @endif
 	</span>
 </div>
