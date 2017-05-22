@@ -36,21 +36,22 @@
                                 <p class="editable-plan-note cursor-text" id="plan-note-{{ $note->id }}" title="click to edit">{{ $note->text }}</p>
                             @else
                                 <p class="mb-0">{{ $note->text }}</p>
-                                @if (Auth::user()->id == $plan->leader_id  &&  ! $note->read_by_leader )
-                                    <small id="note-unconfirmed-{{ $note->id }}" 
+                                {{-- @if (Auth::user()->id == $plan->leader_id  &&  ! $note->read_by_leader )
+                                    <small id="note-unconfirmed-{{ $note->id }}"
                                         class="bg-warning px-1 rounded float-right">New or updated. Please confirm: </small>
-                                @endif
+                                @endif --}}
                             @endif
                         </div>
-                        <div class="col-md-1 cursor-pointer center">
+                        <div class="col-md-1 text-right align-bottom">
                             @if (Auth::user()->id == $note->user->id)
                                 <i class="fa fa-trash fa-lg" onclick="deleteUsersPlanNote({{ $note->id }}, '{{ route('api.updateNote') }}')"></i>
                             @endif
                             @if (Auth::user()->id == $plan->leader_id  &&  ! $note->read_by_leader )
-                                <span title="Mark as read">
-                                    <i class="fa fa-check fa-lg" onclick="
+                                <small>confirm:</small>
+                                <span title="Mark as read" class="plan-notes-alert cursor-pointer bg-danger text-white rounded px-1" onclick="
                                         markPlanNoteAsRead( this, {{ $note->id }}, '{{ route('api.markPlanNoteAsRead') }}' );">
-                                    </i><small>confirm</small></span>
+                                    <i class="fa fa-check fa-lg"></i></span>
+                                <script>blink($('.pan-notes-alert'))</script>
                             @else
                                 <span>OK!</span>
                             @endif

@@ -72,7 +72,7 @@
                             <a title="Show sheetmusic (if available) for the songs on this plan"
                                 onclick="$('#show-spinner').modal({keyboard: false});"
                                 href="{{ url('cspot/items/'.$plan->firstItem()->id.'/sheetmusic/') }}">
-                                &#127932;&nbsp;</i>Music</a>
+                                &#127932;</i>Music</a>
                         </div>
                         <div class="float-right mx-1">
                             <a title="Show guitar chords (if available) for the songs on this plan"
