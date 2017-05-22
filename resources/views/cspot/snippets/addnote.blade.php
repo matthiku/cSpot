@@ -1,5 +1,7 @@
+@if (isset($plan))
+
 {{--
-    Modal to add or edit plan notes
+    provide popup Modal to add or edit plan notes
 --}}
 
 <div class="modal fade" id="addPlanNoteModal" data-dirty="0" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -16,61 +18,61 @@
 
       <div class="modal-body">
             <div class="container-fluid">
-                <div class="row">
-                    @if ($plan->info)
-                        {{-- show legacy plan info text --}}
-                        <p>{{ $plan->info }}</p>
-                    @endif
-                </div>
-
-                @foreach ($plan->notes as $note)
                     <div class="row">
-                        <div class="col-md-12 col-lg-2 lh-1 text-right">
-                            <span class="text-success">{{ $note->user->name }}</span>
-                            <span class="small rounded bg-grey px-1 nowrap" title="{{ $note->updated_at }}">
-                                {{ $note->updated_at->formatLocalized('%a, %d %b') }}</span>
-                            <small>{{ $note->updated_at->formatLocalized('%H:%M') }}</small>
-                        </div>
+                        @if ($plan->info)
+                            {{-- show legacy plan info text --}}
+                            <p>{{ $plan->info }}</p>
+                        @endif
+                    </div>
 
-                        <div class="col-md-12 col-lg-9">
-                            <div class="card">
-                                @if (Auth::user()->id == $note->user->id)
-                                    <div class="card-block p-0">
-                                        <small class="show-note-pencil text-muted float-right" style="text-align: left;"><i class="fa fa-pencil fa-lg"></i></small>
-                                        <p class="editable-plan-note cursor-text mb-0" onclick="$('.show-note-pencil').hide()"
-                                            id="plan-note-{{ $note->id }}" title="click to edit">{{ $note->text }}</p>
-                                @else
-                                    <div class="card-block p-0 text-muted">
-                                        <p id="plan-note-{{ $note->id }}">{{ $note->text }}</p>
-                                @endif
+                    @foreach ($plan->notes as $note)
+                        <div class="row">
+                            <div class="col-md-12 col-lg-2 lh-1 text-right">
+                                <span class="text-success">{{ $note->user->name }}</span>
+                                <span class="small rounded bg-grey px-1 nowrap" title="{{ $note->updated_at }}">
+                                    {{ $note->updated_at->formatLocalized('%a, %d %b') }}</span>
+                                <small>{{ $note->updated_at->formatLocalized('%H:%M') }}</small>
+                            </div>
+
+                            <div class="col-md-12 col-lg-9">
+                                <div class="card">
+                                    @if (Auth::user()->id == $note->user->id)
+                                        <div class="card-block p-0">
+                                            <small class="show-note-pencil text-muted float-right" style="text-align: left;"><i class="fa fa-pencil fa-lg"></i></small>
+                                            <p class="editable-plan-note cursor-text mb-0" onclick="$('.show-note-pencil').hide()"
+                                                id="plan-note-{{ $note->id }}" title="click to edit">{{ $note->text }}</p>
+                                    @else
+                                        <div class="card-block p-0 text-muted">
+                                            <p id="plan-note-{{ $note->id }}">{{ $note->text }}</p>
+                                    @endif
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="col-md-12 col-lg-1 text-right align-bottom lh-1">
-                            @if ( (Auth::user()->id == $note->user->id  &&  ! $note->read_by_leader)  ||  Auth::user()->id == $plan->leader_id )
-                                <i class="fa fa-trash fa-lg cursor-pointer" title="click to delete this note"
-                                    onclick="deleteUsersPlanNote({{ $note->id }}, '{{ route('api.updateNote') }}')"></i>
-                            @endif
-                            @if ( ! $note->read_by_leader )
-                                @if (Auth::user()->id == $plan->leader_id)
-                                    <span title="Mark as read" class="plan-notes-alert cursor-pointer bg-danger text-white rounded px-1 lh-2" onclick="
-                                            markPlanNoteAsRead( this, {{ $note->id }}, '{{ route('api.markPlanNoteAsRead') }}' );">
-                                        <i class="fa fa-check fa-lg"></i></span>
-                                    <script>blink($('.plan-notes-alert'))</script>
-                                @else
-                                    <small>uncon&shy;firmed</small>
+                            <div class="col-md-12 col-lg-1 text-right align-bottom lh-1">
+                                @if ( (Auth::user()->id == $note->user->id  &&  ! $note->read_by_leader)  ||  Auth::user()->id == $plan->leader_id )
+                                    <i class="fa fa-trash fa-lg cursor-pointer text-danger float-lg-left" title="click to delete this note"
+                                        onclick="deleteUsersPlanNote({{ $note->id }}, '{{ route('api.updateNote') }}')"></i>
                                 @endif
-                            @elseif (Auth::user()->id != $note->user->id  &&  Auth::user()->id != $plan->leader_id)
-                                <small>con&shy;firmed</small>
-                            @endif
-                        </div>
+                                @if ( ! $note->read_by_leader )
+                                    @if (Auth::user()->id == $plan->leader_id)
+                                        <span title="Mark as read" class="plan-notes-alert cursor-pointer bg-danger text-white rounded px-1 lh-2" onclick="
+                                                markPlanNoteAsRead( this, {{ $note->id }}, '{{ route('api.markPlanNoteAsRead') }}' );">
+                                            <i class="fa fa-check fa-lg"></i></span>
+                                        <script>blink($('.plan-notes-alert'))</script>
+                                    @else
+                                        <small>uncon&shy;firmed</small>
+                                    @endif
+                                @elseif (Auth::user()->id != $plan->leader_id)
+                                    <small>con&shy;firmed</small>
+                                @endif
+                            </div>
 
-                        <div class="col-md-12">
-                            <hr class="my-1">
+                            <div class="col-md-12">
+                                <hr class="my-1">
+                            </div>
                         </div>
-                    </div>
-                @endforeach
+                    @endforeach
 
                 <div class="row">
                     <div class="col-md-2">
@@ -97,3 +99,5 @@
     // make the modal draggable
     $('.draggable').draggable();
 </script>
+
+@endif

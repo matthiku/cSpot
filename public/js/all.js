@@ -50313,9 +50313,10 @@ $(document).ready(function() {
     /*  Start SPA utility once the modal popup is being launched
     */
     $('#addPlanNoteModal').on('hidden.bs.modal', function (event) {
-        if ($('#addPlanNoteModal').data('dirty') == '1')
+        if ($('#addPlanNoteModal').data('dirty') == '1') {
             showSpinner();
             location.reload();
+        }
     });
 
 
