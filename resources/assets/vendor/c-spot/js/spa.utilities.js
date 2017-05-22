@@ -666,8 +666,7 @@ function removeNewOnSongRow(row, cancel)
     var onsong_id = $(row).data('onsong-id') || 0; // (undefined for new elements)
 
     // Do nothing if a song-parts editor is currently open
-    if ( cancel != 'cancel'   &&  cancel != 'save'
-        &&  ($('.plaintext-editor').is(':visible') || $('.chords-over-lyrics-editor').is(':visible')) )
+    if ( cancel != 'cancel'   &&  cancel != 'save'  &&  ($('.plaintext-editor').is(':visible') || $('.chords-over-lyrics-editor').is(':visible')) )
         return;
 
     // make sure we have no "outdated" min-height
@@ -1829,9 +1828,10 @@ function searchForSongs()
 
     // are we still searching or has the user already selected a song?
     var modus = 'selecting';
+    var search, mp_song_id;
     if ( $('#searchForSongsButton').is(':visible')  ) {
-        var search       = $('#search-string').val();
-        var mp_song_id   = $('#MPselect').val();
+        search       = $('#search-string').val();
+        mp_song_id   = $('#MPselect').val();
         if (!mp_song_id || mp_song_id==="0")    // perhaps it was a clip that was selected
             mp_song_id = $('#ClipSelect').val();
         var haystack_id  = $('input[name=haystack]:checked', '#searchSongForm').val();
@@ -2793,6 +2793,8 @@ function markPlanNoteAsRead(that, id, actionUrl)
             // remove reminder
             $('#note-unconfirmed-'+id).remove();
             $(elem).html('OK!');
+            // modal popup has field to indicate that plan should be reloaded when modal is closed
+            $('#addPlanNoteModal').data('dirty', '1');
         })
     .fail(
         function(data) {

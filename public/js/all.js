@@ -50157,7 +50157,7 @@ function showScriptureText(version,book,chapter,fromVerse,toVerse)
 if (typeof($)===undefined) {
     var $, cSpot;
 }
- 
+
 
 
 $(document).ready(function() {
@@ -50188,7 +50188,7 @@ $(document).ready(function() {
           || ($(this).attr('href')  != undefined && $(this).attr('href').substr(0,1) == '#') )
             return;
         $('#show-spinner').modal({keyboard: false});
-    })
+    });
 
 
     /*
@@ -50216,7 +50216,7 @@ $(document).ready(function() {
     $(function () {
         // activate the tooltips
         $('[data-toggle="tooltip"]').tooltip({
-            animation: false 
+            animation: false
         });
 
         // activate popovers
@@ -50226,7 +50226,7 @@ $(document).ready(function() {
             trigger: 'focus'
         });
     });
-  
+
 
     /**
      * On 'Home' page, get list of future plans and show calendar widget
@@ -50236,15 +50236,15 @@ $(document).ready(function() {
             function(result){
                 $.each(result, function(i, field) {
                     // map each resulting event to the appropriate DAY element of the datepicker
-                    var hint = field.type.name+' led by '+field.leader.first_name; 
+                    var hint = field.type.name+' led by '+field.leader.first_name;
                     if ( field.teacher.first_name != "n/a" ) {
                         hint +='(teacher: ' + field.teacher.first_name +')'; }
                     var dt = new Date(field.date.split(' ')[0]).toLocaleDateString();
-                    if (SelectedDates[dt]==undefined)
+                    if (SelectedDates[dt]===undefined)
                         SelectedDates[dt] = hint;
                     else if (SelectedDates[dt]=="Today")
                         SelectedDates[dt] = "Today: " + hint;
-                    else 
+                    else
                         SelectedDates[dt] = SelectedDates[dt]+'; '+hint;
                 });
                 // get the current browser window dimension (width)
@@ -50263,7 +50263,7 @@ $(document).ready(function() {
                         changeYear    : true,
                         maxDate       : "+4m",
                         dateFormat    : "yy-mm-dd",
-                        beforeShowDay : 
+                        beforeShowDay :
                             function(date) {
                                 var dot=date.toLocaleDateString();
                                 var ui_class = '';
@@ -50274,8 +50274,8 @@ $(document).ready(function() {
                                     return [true, "ui-highlighted", highlight]; }
                                 else {
                                     if (date.getDay()==0)
-                                        return [true, 'ui-datepicker-sunday', '']; 
-                                    return [true, '', '']; 
+                                        return [true, 'ui-datepicker-sunday', ''];
+                                    return [true, '', ''];
                                 }
                             }
                     });
@@ -50300,14 +50300,22 @@ $(document).ready(function() {
     */
     $('#searchSongForm').on('show.bs.modal', function (event) {
         insertNewOrUpdateExistingItems( event);
-    })
+    });
 
 
     /*  Start SPA utility once the modal popup is being launched
     */
     $('#addPlanNoteModal').on('shown.bs.modal', function (event) {
         addNoteToPlan( event );
-    })
+    });
+
+
+    /*  Start SPA utility once the modal popup is being launched
+    */
+    $('#addPlanNoteModal').on('hidden.bs.modal', function (event) {
+        if ($('#addPlanNoteModal').data('dirty') == '1')
+            location.reload();
+    });
 
 
 
@@ -50341,8 +50349,8 @@ $(document).ready(function() {
      * Put focus on textarea when user opens the feedback modal dialog
      */
     $('#createMessage').on('shown.bs.modal', function () {
-        $('#feedbackMessage').focus()
-    })
+        $('#feedbackMessage').focus();
+    });
 
     /**
      * Mark modified form fields with a new background
@@ -50400,23 +50408,23 @@ $(document).ready(function() {
                 if ( sib.dataset.itemId == movedItem.id ) {
                     changed = sib;
                     break;
-                } 
+                }
                 else {
                     should_seq_no = 0.0 + sib.id.split('-')[2];
                     if (changed)
-                        break; 
+                        break;
                 }
             }
             if (changed) {
                 should_seq_no = 1 * should_seq_no;
                 window.location.href = cSpot.appURL + '/cspot/items/' + changed.dataset.itemId + '/seq_no/'+ (0.5 + should_seq_no);
                 return;
-            } 
+            }
         },
         }).disableSelection();
     }
 
-    
+
     /**
      * On the Songs List page, allow some key codes
      */
@@ -50427,18 +50435,18 @@ $(document).ready(function() {
             switch (event.keyCode) {
                 case 13: findOpenFilterField(); break; // Enter key
                 default: break;
-            }            
+            }
         });
 
     }
-    
+
 
 
 
     /*
-        On presentation views, 
+        On presentation views,
         - allow mouse-click to advance to next or previous item
-        - check if aut-advance mode is on 
+        - check if aut-advance mode is on
     */
     if ($('#main-content').length) {
         // intercept mouse clicks into the presentation area
@@ -50464,7 +50472,7 @@ $(document).ready(function() {
 
 
     /**
-     * Handle Keyboard events 
+     * Handle Keyboard events
      */
     $(document).keydown(function( event ) {
 
@@ -50476,7 +50484,7 @@ $(document).ready(function() {
             // do nothing while a modal is open
             if ($('.modal-content').is(':visible')) return;
 
-            // key codes: 37=left arrow, 39=right, 38=up, 40=down, 34=PgDown, 33=pgUp, 
+            // key codes: 37=left arrow, 39=right, 38=up, 40=down, 34=PgDown, 33=pgUp,
             //            36=home, 35=End, 32=space, 27=Esc, 66=e
             //
             ;;;console.log('pressed key code: '+event.keyCode);
@@ -50525,7 +50533,7 @@ $(document).ready(function() {
 
 
     function KeyPress(e) {
-        var evtobj = window.event? event : e
+        var evtobj = window.event ? event : e
         if (evtobj.keyCode == 13 && evtobj.ctrlKey) {
             $('#inputForm').submit();
         }
@@ -50545,7 +50553,7 @@ $(document).ready(function() {
     }
 
 
-    
+
     /**
      * re-design the showing of lyrics interspersed with guitar chords
      */
@@ -50596,7 +50604,6 @@ $(document).ready(function() {
 |*+------------------------------------------ END of    document.ready.js   ------------------------------------
 |*|
 \*/
-
 
 
 /*\
@@ -51266,8 +51273,7 @@ function removeNewOnSongRow(row, cancel)
     var onsong_id = $(row).data('onsong-id') || 0; // (undefined for new elements)
 
     // Do nothing if a song-parts editor is currently open
-    if ( cancel != 'cancel'   &&  cancel != 'save'
-        &&  ($('.plaintext-editor').is(':visible') || $('.chords-over-lyrics-editor').is(':visible')) )
+    if ( cancel != 'cancel'   &&  cancel != 'save'  &&  ($('.plaintext-editor').is(':visible') || $('.chords-over-lyrics-editor').is(':visible')) )
         return;
 
     // make sure we have no "outdated" min-height
@@ -52429,9 +52435,10 @@ function searchForSongs()
 
     // are we still searching or has the user already selected a song?
     var modus = 'selecting';
+    var search, mp_song_id;
     if ( $('#searchForSongsButton').is(':visible')  ) {
-        var search       = $('#search-string').val();
-        var mp_song_id   = $('#MPselect').val();
+        search       = $('#search-string').val();
+        mp_song_id   = $('#MPselect').val();
         if (!mp_song_id || mp_song_id==="0")    // perhaps it was a clip that was selected
             mp_song_id = $('#ClipSelect').val();
         var haystack_id  = $('input[name=haystack]:checked', '#searchSongForm').val();
@@ -53393,6 +53400,8 @@ function markPlanNoteAsRead(that, id, actionUrl)
             // remove reminder
             $('#note-unconfirmed-'+id).remove();
             $(elem).html('OK!');
+            // modal popup has field to indicate that plan should be reloaded when modal is closed
+            $('#addPlanNoteModal').data('dirty', '1');
         })
     .fail(
         function(data) {

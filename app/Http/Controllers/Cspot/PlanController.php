@@ -656,10 +656,13 @@ class PlanController extends Controller
             // update this Plan
             $plan = Plan::find($request->id);
 
-            // Plan notes are now seperate models belonging to a plan and a user
+            // Plan notes are now separate models belonging to a plan and a user
             $note = New Note;
             $note->text = $request->note;
             $note->user_id = Auth::user()->id;
+            // if the leader himself has added a note, we immediately mark it as read
+            if ($plan->leader_id == Auth::user()->id)
+                $note->read_by_leader = true;
             $plan->notes()->save($note);
 
             return $note->text;
@@ -695,13 +698,16 @@ class PlanController extends Controller
                         return '- note deleted -';
                     }
                     // update the note and reset the read_by_leader flag in order to raise awareness for the update
-                    $note->update(['text' => $text, 'read_by_leader' => false]);
+                    $unread = false;
+                    // if the leader himself has added a note, we immediately mark it as read
+                    if ($note->plan->leader_id == Auth::user()->id) $unread = true;
+                    $note->update(['text' => $text, 'read_by_leader' => $unread]);
                     return $note->text;
                 }
                 return response()->json(['status' => 401, 'data' => 'Not authorized'], 401);
             }
             return response()->json(['status' => 404, 'data' => 'Note not found!'], 404);
-        }        
+        }
         return response()->json(['status' => 405, 'data' => 'APIupdate: : incorrect parameters!'], 405);
     }
 
