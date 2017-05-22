@@ -36,33 +36,33 @@
                             <div class="card">
                                 @if (Auth::user()->id == $note->user->id)
                                     <div class="card-block p-0">
-                                        <p class="editable-plan-note cursor-text mb-0" id="plan-note-{{ $note->id }}" title="click to edit">{{ $note->text }}</p>
+                                        <small class="show-note-pencil text-muted float-right" style="text-align: left;"><i class="fa fa-pencil fa-lg"></i></small>
+                                        <p class="editable-plan-note cursor-text mb-0" onclick="$('.show-note-pencil').hide()"
+                                            id="plan-note-{{ $note->id }}" title="click to edit">{{ $note->text }}</p>
                                 @else
                                     <div class="card-block p-0 text-muted">
-                                        <p>{{ $note->text }}</p>
+                                        <p id="plan-note-{{ $note->id }}">{{ $note->text }}</p>
                                 @endif
                                 </div>
                             </div>
                         </div>
 
                         <div class="col-md-12 col-lg-1 text-right align-bottom lh-1">
-                            @if (Auth::user()->id == $note->user->id  &&  ! $note->read_by_leader)
-                                <i class="fa fa-trash fa-lg cursor-pointer" onclick="deleteUsersPlanNote({{ $note->id }}, '{{ route('api.updateNote') }}')"></i>
+                            @if ( (Auth::user()->id == $note->user->id  &&  ! $note->read_by_leader)  ||  Auth::user()->id == $plan->leader_id )
+                                <i class="fa fa-trash fa-lg cursor-pointer" title="click to delete this note"
+                                    onclick="deleteUsersPlanNote({{ $note->id }}, '{{ route('api.updateNote') }}')"></i>
                             @endif
                             @if ( ! $note->read_by_leader )
                                 @if (Auth::user()->id == $plan->leader_id)
-                                    <small>confirm:</small>
-                                    <span title="Mark as read" class="plan-notes-alert cursor-pointer bg-danger text-white rounded px-1" onclick="
+                                    <span title="Mark as read" class="plan-notes-alert cursor-pointer bg-danger text-white rounded px-1 lh-2" onclick="
                                             markPlanNoteAsRead( this, {{ $note->id }}, '{{ route('api.markPlanNoteAsRead') }}' );">
                                         <i class="fa fa-check fa-lg"></i></span>
                                     <script>blink($('.plan-notes-alert'))</script>
                                 @else
                                     <small>uncon&shy;firmed</small>
                                 @endif
-                            @elseif (Auth::user()->id != $note->user->id)
+                            @elseif (Auth::user()->id != $note->user->id  &&  Auth::user()->id != $plan->leader_id)
                                 <small>con&shy;firmed</small>
-                            @else
-                                <small class="text-muted float-left" style="text-align: left;">click text to edit!</small>
                             @endif
                         </div>
 

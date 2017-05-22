@@ -690,8 +690,8 @@ class PlanController extends Controller
             // find the corresponding Note model
             $note = Note::find($note_id);
             if ($note) {
-                // only the original author can manipulate this note
-                if ($note->user_id == Auth::user()->id) {
+                // only the original author or plan leader can manipulate this note
+                if ($note->user_id == Auth::user()->id  ||  $note->plan->leader_id == Auth::user()->id  ) {
                     // when value == '_', then delete this note...
                     if ($text === '_') {
                         $note->delete();

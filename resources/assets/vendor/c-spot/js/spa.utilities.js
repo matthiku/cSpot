@@ -2818,8 +2818,10 @@ function deleteUsersPlanNote(id, actionUrl)
         })
     .done(
         function(data) {
-            // remove old text from note element
-            $('#plan-note-'+id).parent().parent().remove();
+            // remove row containing the deleted note
+            $('#plan-note-'+id).parents('.row').remove();
+            // modal popup has data field indicating that page should be reloaded when modal is closed
+            $('#addPlanNoteModal').data('dirty', '1');
         })
     .fail(
         function(data) {

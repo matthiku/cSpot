@@ -173,6 +173,7 @@ $(document).ready(function() {
     */
     $('#addPlanNoteModal').on('hidden.bs.modal', function (event) {
         if ($('#addPlanNoteModal').data('dirty') == '1')
+            showSpinner();
             location.reload();
     });
 
