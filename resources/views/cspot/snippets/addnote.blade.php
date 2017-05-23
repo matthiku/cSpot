@@ -17,13 +17,16 @@
 
 
       <div class="modal-body">
-            <div class="container-fluid">
-                    <div class="row">
-                        @if ($plan->info)
-                            {{-- show legacy plan info text --}}
-                            <p>{{ $plan->info }}</p>
-                        @endif
-                    </div>
+            <div class="container-fluid px-1">
+                    @if ($plan->info)
+                        {{-- show legacy plan info text --}}
+                        <div class="card mb-2 p-0">
+                            <div class="card-block py-0">
+                                <p class="white-space-pre-wrap m-0">{{ $plan->info }}</p>
+                            </div>
+                        </div>
+                        <hr class="my-2">
+                    @endif
 
                     @foreach ($plan->notes as $note)
                         <div class="row">
@@ -39,11 +42,11 @@
                                     @if (Auth::user()->id == $note->user->id)
                                         <div class="card-block p-0">
                                             <small class="show-note-pencil text-muted float-right" style="text-align: left;"><i class="fa fa-pencil fa-lg"></i></small>
-                                            <p class="editable-plan-note cursor-text mb-0" onclick="$('.show-note-pencil').hide()"
+                                            <p class="white-space-pre-wrap editable-plan-note cursor-text mb-0" onclick="$('.show-note-pencil').hide()"
                                                 id="plan-note-{{ $note->id }}" title="click to edit">{{ $note->text }}</p>
                                     @else
                                         <div class="card-block p-0 text-muted">
-                                            <p id="plan-note-{{ $note->id }}">{{ $note->text }}</p>
+                                            <p class="white-space-pre-wrap mb-0" id="plan-note-{{ $note->id }}">{{ $note->text }}</p>
                                     @endif
                                     </div>
                                 </div>
@@ -63,7 +66,7 @@
                                     @else
                                         <small>uncon&shy;firmed</small>
                                     @endif
-                                @elseif (Auth::user()->id != $plan->leader_id)
+                                @elseif (Auth::user()->id != $plan->leader_id  &&  Auth::user()->id == $note->user_id )
                                     <small>con&shy;firmed</small>
                                 @endif
                             </div>

@@ -792,6 +792,8 @@ class PlanController extends Controller
             }
             // delete team members for this plan (if any)
             $plan->teams()->delete();
+            // delete notes for this plan (if any)
+            $plan->notes()->delete();
             // delete resources for this plan (if any)
             $plan->resources()->detach(); // as it is a Many-To-Many relationship....
             // delete the plan
