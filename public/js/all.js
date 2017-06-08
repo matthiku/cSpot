@@ -54738,6 +54738,10 @@ function checkSequenceIndicatorLength()
     if (window.innerWidth > 1250) {
         limit = 5; }
 
+    // check if there is a setting to show more than one bible verse at a time
+    var howMany = localStorage.getItem('config-ShowVersCount') || 1;
+    limit += howMany - 1;
+
     var what = '.lyrics';
 
     // get the list of sequence indicators
