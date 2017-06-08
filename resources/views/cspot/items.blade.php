@@ -7,7 +7,7 @@
 	$isPlanEditable = Auth::user()->ownsPlan($plan->id)  &&  $plan->date >= \Carbon\Carbon::yesterday();
 @endphp
 
-<div class="table-responsive">
+<div class="table-responsive table-striped">
 	<table class="table table-items
 		{{ count($plan->items)>5 ? 'table-sm mb-0' : 'mt-3 p-b-3'}} {{ count($plan->items)>10 ? 'table-xs' : ''}}" onmouseleave="removeDemoRow()">
 
