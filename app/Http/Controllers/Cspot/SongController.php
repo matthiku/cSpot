@@ -61,7 +61,7 @@ class SongController extends Controller
 
         $heading = 'Songs Repository';
 
-        // do we need to filter the ilst of songs?
+        // do we need to filter the list of songs?
         if (isset($request->filterby) && $request->filterby!='songs' && isset($request->filtervalue)) {
 
             // first, we need to set the Pagination currentPage to 0,
@@ -69,7 +69,7 @@ class SongController extends Controller
             if (isset($request->page)) {
                 if (isset($request->page))
                     $currentPage = $request->page;
-                else 
+                else
                     $currentPage = 0;
                 Paginator::currentPageResolver(function() use ($currentPage) {
                     return $currentPage;
@@ -79,14 +79,16 @@ class SongController extends Controller
 
             if ($request->filterby=='fulltext') {
                 $heading = 'Songs containing "'.$request->filtervalue.'"';
-                $songs = Song::withCount('items')
-                    ->orderBy($orderBy, $order)
-                    ->where(  'title',    'like', '%'.$request->filtervalue.'%')
-                    ->orWhere('title_2',  'like', '%'.$request->filtervalue.'%')
-                    ->orWhere('author',   'like', '%'.$request->filtervalue.'%')
-                    ->orWhere('book_ref', 'like', '%'.$request->filtervalue.'%')
-                    ->orWhere('lyrics',   'like', '%'.$request->filtervalue.'%');
-            } 
+                // $songs = Song::withCount('items')
+                //     ->orderBy($orderBy, $order)
+                //     ->where(  'title',    'like', '%'.$request->filtervalue.'%')
+                //     ->orWhere('title_2',  'like', '%'.$request->filtervalue.'%')
+                //     ->orWhere('author',   'like', '%'.$request->filtervalue.'%')
+                //     ->orWhere('book_ref', 'like', '%'.$request->filtervalue.'%')
+                //     ->orWhere('lyrics',   'like', '%'.$request->filtervalue.'%');
+                // allow for 'fuzzy' search
+                $songs = songSearch($request->filtervalue);
+            }
             elseif ($request->filterby=='title') {
                 $heading = 'Song title like "'.$request->filtervalue.'"';
                 $songs = Song::withCount('items')
@@ -105,7 +107,7 @@ class SongController extends Controller
                 $songs = Song::orderBy($orderBy, $order)
                     ->where(  $request->filterby, 'like', '%'.$request->filtervalue.'%');
             }
-        } 
+        }
 
         // show just videoclip or slideshow items
         elseif (isset($request->only) && ($request->only=='slides' || $request->only=='video') )
@@ -131,7 +133,7 @@ class SongController extends Controller
         // special case for filterby OnSong part name
         if ($request->filterby == 'onsong') {
             $heading = "Songs containing certain OnSong parts";
-            // get code id for the requested code 
+            // get code id for the requested code
             $code = SongPart::where('code', $request->filtervalue)->first();
             if ($code)
                 $songs = Song::withCount('items')
@@ -150,12 +152,12 @@ class SongController extends Controller
                 ->groupBy('songs.id')
                 ->selectRaw('songs.*, max(plans.date) as last_used')
                 ->where('plans.date', '<>', null)
-                ->orderBy('last_used', $order); 
+                ->orderBy('last_used', $order);
         }
 
 
 
-        if ( isset($request->filterby) && $request->filtervalue=='video' ) 
+        if ( isset($request->filterby) && $request->filtervalue=='video' )
             $heading = 'Manage Videoclips';
 
         if ( isset($request->filterby) && $request->filtervalue=='slides' )
@@ -164,7 +166,7 @@ class SongController extends Controller
         // Get list of rarely used songs
         if (isset($request->filterby) && $request->filterby=='songs' && isset($request->filtervalue) && $request->filtervalue=='rare') {
             $heading = 'Rarely Used Songs';
-            $songs = Song::withCount('items') 
+            $songs = Song::withCount('items')
                 ->leftJoin('items', 'items.song_id', '=', 'songs.id')
                 ->leftJoin('plans', 'plans.id', '=', 'items.plan_id')
                 ->groupBy('songs.id')
@@ -183,7 +185,7 @@ class SongController extends Controller
         $songs = $songs->paginate(20)->appends($querystringArray);
 
         return view( $this->view_all, array(
-            'songs'       => $songs, 
+            'songs'       => $songs,
             'heading'     => $heading,
             'plan_id'     => $plan_id,
             'currentPage' => $songs->currentPage(),
@@ -205,7 +207,7 @@ class SongController extends Controller
         $heading = 'c-Spot Training Videos';
 
         return view( 'cspot.training', array(
-            'songs'       => $songs, 
+            'songs'       => $songs,
             'heading'     => $heading,
         ));
     }
@@ -249,7 +251,7 @@ class SongController extends Controller
             $type = $song->title_2;
         }
 
-        // default route for 'normal' songs 
+        // default route for 'normal' songs
         if ($type=='song') {
             flash('New Song or Item added: '.$request->title );
             return \Redirect::route( $this->view_idx );
@@ -295,8 +297,8 @@ class SongController extends Controller
         if ($plans->count()) {
             $heading = 'Show Plans using the Song "'.$song->title.'"';
             return view( 'cspot.plans', [
-                'plans'     => $plans, 
-                'allPlans'  => $plans, 
+                'plans'     => $plans,
+                'allPlans'  => $plans,
                 'types'     => Type::get(),
                 'heading'   => $heading,
                 'firstYear' => $firstYear,
@@ -304,13 +306,13 @@ class SongController extends Controller
         }
 
         flash('No plans found that are using this song!');
-        return \Redirect::back();        
+        return \Redirect::back();
     }
 
 
 
 
-    
+
 
     /**
      * Show the form for editing the specified resource.
@@ -326,7 +328,7 @@ class SongController extends Controller
             // get the Pagination
             if ($request->has('currentPage')) {
                 $currentPage = $request->currentPage;
-            } 
+            }
             elseif ( strpos($request->server('HTTP_REFERER'), '=' ) !== FALSE ) {
                 $currentPage = explode('=', $request->server('HTTP_REFERER'))[1];
                 if (! is_numeric($currentPage)) { $currentPage = 0; }
@@ -340,7 +342,7 @@ class SongController extends Controller
             $licensesEnum = $l->getLicenseEnum();
 
             return view( $this->view_one, array(
-                'song'         => $song, 
+                'song'         => $song,
                 'licensesEnum'   => $licensesEnum,
                 'currentPage'      => $currentPage,
                 'songParts'         => SongPart::orderby('sequence')->get(),
@@ -391,20 +393,20 @@ class SongController extends Controller
         }
 
         // set license type to CCLI if not set but CCLI_NO was given
-        if (  $request->has('ccli_no') 
+        if (  $request->has('ccli_no')
         && ( !$request->has('license') || ($request->has('license') && $request->license=='') )  ) {
             $song->license = 'CCLI';
         }
 
         // set license type to PD if not set but hymnaldotnet_id was given
-        if (  $request->has('hymnaldotnet_id') 
+        if (  $request->has('hymnaldotnet_id')
         && ( !$request->has('license') || ($request->has('license') && $request->license=='') )  ) {
             $song->license = 'PD';
         }
 
         // update from request
         $song->update($request->except(['_method','_token','youtube_id']));
-        
+
         // handle yt id seperately in order to use the Song Model setter method
         $song->youtube_id = $request->youtube_id;
         $song->save();
@@ -416,7 +418,7 @@ class SongController extends Controller
         $currentPage = 9;
         if ($request->has('currentPage')) {
             $currentPage = $request->currentPage;
-        } 
+        }
 
         // instead of flashing, maybe show the field 'updated_at' in the form?
         return redirect()->back()->with('currentPage', $currentPage);
@@ -439,7 +441,7 @@ class SongController extends Controller
             $request->value = '';
         }
 
-        // the id field in the request was taken from the 'id' attribute 
+        // the id field in the request was taken from the 'id' attribute
         //      of the html element that triggered this request.
         //  It's format is: <field_name>-song-id-<song_id>
         $identity   = explode('-', $request->id);
@@ -461,7 +463,7 @@ class SongController extends Controller
 
             // delete possible cached items which contain this song
             deleteCachedItemsContainingSongId( $song );
-        
+
             // return text to sender
             return $song[$field_name];
         }
@@ -517,7 +519,7 @@ class SongController extends Controller
         $song_id = $request->has('song_id') ? $request->song_id : 0;
         $part_id = $request->has('part_id') ? $request->part_id : 0;
         $text    = $request->has('text')    ? $request->text    : 0;
-        if ($song_id===0 || $part_id===0 || $text===0) 
+        if ($song_id===0 || $part_id===0 || $text===0)
             return response()->json(['status' => 400, 'data' => 'API: songId or part_id or text missing!'], 400);
 
         // is this a request to update an existing song part?
@@ -577,9 +579,9 @@ class SongController extends Controller
         if ($song->onsongs)
             return response()->json(['status' => 400, 'data' => 'API: Song already has OnSong parts, delete them first!'], 400);
 
-        if ( ! $song  ) 
+        if ( ! $song  )
             return response()->json(['status' => 409, 'data' => 'API: song not found: '.$song_id], 409);
-        if ( ! $request->hasFile('onsongfile') ) 
+        if ( ! $request->hasFile('onsongfile') )
             return response()->json(['status' => 409, 'data' => 'API: no file submitted!'], 409);
 
         if ( $request->file('onsongfile')->isValid() ) {
@@ -591,7 +593,7 @@ class SongController extends Controller
             // return a success response with the content of the file
             return response()->json(['status' => 201, 'data' => json_encode( $file )], 201);
         }
-        
+
         // provided or local data was incoherent
         return response()->json(['status' => 409, 'data' => 'API: File could not be validated!'], 409);
     }
@@ -609,9 +611,9 @@ class SongController extends Controller
 
         $song = Song::find($song_id);
 
-        if ( ! $song  ) 
+        if ( ! $song  )
             return response()->json(['status' => 409, 'data' => 'API: song not found: '.$song_id], 409);
-        if ( ! $request->hasFile('file') ) 
+        if ( ! $request->hasFile('file') )
             return response()->json(['status' => 409, 'data' => 'API: no file submitted!'], 409);
 
         if ( $request->file('file')->isValid() ) {
@@ -630,7 +632,7 @@ class SongController extends Controller
             // return a success response with the content of the file
             return response()->json(['status' => 201, 'data' => json_encode($file)], 201);
         }
-        
+
         // provided or local data was incoherent
         return response()->json(['status' => 409, 'data' => 'API: File could not be validated!'], 409);
     }
@@ -667,7 +669,8 @@ class SongController extends Controller
         // we are still searching....
         elseif (isset($request->search)) {
             // search
-            $result = songSearch('%'.$request->search.'%');
+            $result = songSearch($request->search);
+            $result = $result->limit(10)->get();
             // get usage statistics
             foreach ($result as $song) {
                 # get list of plans
