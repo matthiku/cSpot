@@ -72,7 +72,22 @@
             <div class="col-xl-6" id="bibletext">
                 @foreach ($bibleTexts as $btext)
                     <h3>{{ $btext->display }} ({{ $btext->version_abbreviation }})</h3>
-                    <div>{!! $btext->text !!}</div>
+                    @if (isset($verses)  && count($verses))
+                        @php
+                            if (gettype($verses)=='array')
+                                $versesPart = $verses[ $loop->index ];
+                            else
+                                $versesPart = $verses;
+                        @endphp
+                        @foreach ($versesPart as $verse)
+                            <p class="p mb-0">
+                                <sup class="v">{{ $verse->verse }}</sup> 
+                                <span>{{ $verse->text }}</span>
+                            </p>
+                        @endforeach
+                    @else 
+                        <div>{!! $btext->text !!}</div>
+                    @endif
                     <div class="small">{!! $btext->copyright !!}</div>
                     <hr>
                 @endforeach

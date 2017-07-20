@@ -11,22 +11,22 @@
         <h1>{{ $btext->display }}</h1> 
         
         {{-- <div class="bible-text-present" style="display: none;" > --}}
-            @if (isset($verses)  && count($verses))
-                @php
-                    if (gettype($verses)=='array')
-                        $versesPart = $verses[ $loop->index ];
-                    else
-                        $versesPart = $verses;
-                @endphp
-                @foreach ($versesPart as $verse)
-                    <p class="p">
-                        <sup class="v">{{ $verse->verse }}</sup> 
-                        <span>{{ $verse->text }}</span>
-                    </p>
-                @endforeach
-            @else 
-                {!! $btext->text !!}
-            @endif
+        @if (isset($verses)  && count($verses))
+            @php
+                if (gettype($verses)=='array')
+                    $versesPart = $verses[ $loop->index ];
+                else
+                    $versesPart = $verses;
+            @endphp
+            @foreach ($versesPart as $verse)
+                <p class="p">
+                    <sup class="v">{{ $verse->verse }}</sup> 
+                    <span>{{ $verse->text }}</span>
+                </p>
+            @endforeach
+        @else 
+            {!! $btext->text !!}
+        @endif
         {{-- </div> --}}
 
         <!-- {!! $btext->copyright !!} -->
