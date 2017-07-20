@@ -52478,8 +52478,8 @@ function searchForSongs()
                     noSongFound(search, type);
                     return;
                 }
-                $('#search-action-label').html('<span class="bg-info mr-1">Select the desired Song:</span>');
-                $('#search-action-label').append('<span class="pull-xs-right small text-muted">Preview:</span>');
+                $('#search-action-label').html('<span class="bg-info mr-1">Click to select the desired Song:</span>');
+                $('#search-action-label').append('<span class="pull-right small text-muted">Preview:</span>');
                 $('#searching').hide();
                 $('#searchForSongsSubmit').hide();
 
@@ -52628,7 +52628,7 @@ function createAndShowSearchResult(elem, result)
         var spn2 = document.createElement('span');
         spn2.className = "label label-default";
         var lastUse = lastPlanDate ? moment(lastPlanDate, 'YYYY-MM-DD HH:mm:ss').fromNow() : 'never used!!';
-        spn2.innerHTML = '<b>Last used: '+lastUse+'</b> Total: ';
+        spn2.innerHTML = 'Last used: <b>'+lastUse+'</b> Total: ';
         spn2.appendChild(bold);
         if ( lastUse.split(' ')[1]=='days' && lastUse.split(' ')[0]<12 )
             $(spn2).addClass('red') // make it all red if the song has been used just recently
@@ -52637,7 +52637,7 @@ function createAndShowSearchResult(elem, result)
         // spn containing the youtube link
         var spnYT = document.createElement('span');
         if ( result[i].youtube_id.length>0 ) {
-            spnYT.className = "pull-xs-right";
+            spnYT.className = "btn btn-sm btn-outline-primary pull-right mt-2 mx-1";
             spnYT.title     = "preview song";
             anchor = document.createElement('a');
             anchor.href = '#';
@@ -52649,7 +52649,7 @@ function createAndShowSearchResult(elem, result)
         // spn containing the CCLI SongSelect link
         var spnSS = document.createElement('span');
         if ( result[i].ccli_no>10000 ) {
-            spnSS.className = "pull-xs-right m-r-1";
+            spnSS.className = "btn btn-sm btn-outline-primary pull-right mt-2 mx-1";
             spnSS.title     = "review song on SongSelect";
             anchor = document.createElement('a');
             anchor.href = cSpot.env.songSelectUrl + result[i].ccli_no;
@@ -52660,7 +52660,7 @@ function createAndShowSearchResult(elem, result)
 
         // the span that pulls it left...
         var spnleft = document.createElement('span');
-        spnleft.className = "pull-xs-left";
+        spnleft.className = "pull-left";
         spnleft.appendChild(spn2);
 
         // 2. the <small> element containing Title 2 and the song info
@@ -52674,18 +52674,18 @@ function createAndShowSearchResult(elem, result)
         var lbl = document.createElement('label');
         lbl.className="c-input link c-radio";
         lbl.title = result[i].lyrics.replace(/"/g,"&quot;");
-        $(lbl).append('<input type="radio" name="searchRadios" value="'+result[i].id+'">');
+        $(lbl).append('<input type="radio" class="hidden" name="searchRadios" value="'+result[i].id+'">');
         $(lbl).append('<span class="c-indicator"> </span>');
-        $(lbl).append( (result[i].book_ref ? '('+result[i].book_ref+') ' : ' ' ) + result[i].title + ' ');
+        $(lbl).append( (result[i].book_ref ? '<span class="font-weight-normal">('+result[i].book_ref+')</span> ' : ' ' ) + result[i].title + ' ');
         lbl.appendChild(sml);
 
         // 1. The overall DIV
         var div = document.createElement('div');
         div.className="c-inputs-stacked search-result-items"+ (i%2!=0 ? ' even' : '');
         $(div).attr('onclick', "$('#searchForSongsSubmit').click()");
+        div.appendChild(lbl);
         div.appendChild(spnYT);
         div.appendChild(spnSS);
-        div.appendChild(lbl);
 
         $(elem).append(div);
     }

@@ -97,7 +97,7 @@
                         <option value="0">select....</option>
                     </select>
 
-                    <label id="search-action-label" class="center-block modal-select-song mb-0">Full-text search incl. lyrics:</label>
+                    <label id="search-action-label" class="center-block modal-select-song w-100 mb-0">Full-text search incl. lyrics:</label>
                     <input type="text"   id="search-string" class="search-input search-form-item center-block modal-select-song">
 
 
