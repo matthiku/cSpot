@@ -103,6 +103,7 @@
 
 
                     <div id="search-result"></div>
+                    <div id="bible-passages"></div>
 
 
                     <div id="show-video-clip" style="display: none;">

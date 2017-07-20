@@ -42,7 +42,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('bible/books/{book}/chapters/{chapter}', 'Cspot\BibleController@verses');        // get verse numbers of a chapter
     // get bible texts
     Route::get('bible/text/{version}/{book}/{chapter}/','Cspot\BibleController@getChapter')->name('bible.chapter');     // get bible text
-    Route::get('bible/passage/{version}/{book}/{chapter}/{verseFrom}/{verseTo}/','Cspot\BibleController@getBibleText'); // get bible passage
+    Route::get('bible/passage/{version}/{book}/{chapter}/{verseFrom?}/{verseTo?}/','Cspot\BibleController@getBibleText')->name('bible.passage'); // get bible passage
 
     // user confirms his partizipation with TOKEN (no login needed!)
     Route::get( 'cspot/plans/{plan_id}/team/{team_id}/confirm/{token}',                'Cspot\TeamController@confirm');
