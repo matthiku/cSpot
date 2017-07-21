@@ -249,8 +249,8 @@
 	$(document).ready( function() 
 	{
 		setIdealCalendarRowHeight();
-
 		calculateEventsPerMonth();
+
 		$(window).resize( function() {
 			calculateEventsPerMonth();
 			setIdealCalendarRowHeight();

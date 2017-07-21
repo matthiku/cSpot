@@ -251,10 +251,10 @@ class SongController extends Controller
             $type = $song->title_2;
         }
 
-        // default route for 'normal' songs
+        // default route for 'normal' songs: show the edit form of the new song
         if ($type=='song') {
-            flash('New Song or Item added: '.$request->title );
-            return \Redirect::route( $this->view_idx );
+            flash('New Song or Item added: '.$request->title . '. - Remember to add at least the Lyrics!');
+            return $this->edit($request, $song->id);
         }
 
         flash('New '.$song->title_2.' added, titled: '.$request->title );

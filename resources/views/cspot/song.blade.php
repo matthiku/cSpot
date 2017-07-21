@@ -3,7 +3,7 @@
 
 @extends('layouts.main')
 
-@section('title', "Create or Update a Song")
+@section('title', "Create or Update Song or Item")
 
 @section('plans', 'active')
 
@@ -48,7 +48,7 @@
 
             @if (isset($song))
 
-                <h2 class="hidden-xs-down text-success lora">Song/Item Details</h2>
+                <h2 class="hidden-xs-down text-success lora">{{ $song->title_2=='training' || $song->title_2=='video' || $song->title_2=='slides' ? 'Item': 'Song'}} Details</h2>
     
                 @if (isset($song->updated_at))
                     <small title="{{ $song->updated_at->formatLocalized('%a, %d %b %Y, %H:%M') }}">Last 
@@ -458,9 +458,25 @@
                     <div id="collapseLyrics" class="panel-collapse collapse{{ ( !isset($song) || (isset($song) && $song->title_2=='slides') ) ? ' in' : '' }}" 
                             role="tabpanel" aria-labelledby="lyrics-panel">
 
-                        <textarea name="lyrics" class="md-full" rows=4 onkeyup="calculateTextAreaHeight(this);">{{ isset($song) ? $song->lyrics : '' }}</textarea>
+                        Note: While the lyrics are not used for the presentation, they are still used for the full-text search!
+
+                        <textarea name="lyrics" id="lyrics" class="md-full" rows=4 onkeyup="calculateTextAreaHeight(this);">{{ isset($song) ? $song->lyrics : '' }}</textarea>
+                        <textarea name="onSongLyrics" id="onSongLyrics" class="hidden md-full" rows=4 onkeyup="calculateTextAreaHeight(this);">{{ isset($song) ? $song->onSongLyrics() : '' }}</textarea>
 
                         <button id="lyrics-copy-btn" class="float-right"><i class="fa fa-copy"></i>&nbsp;copy text</button>
+
+                        @if( isset($song)  &&  $song->onsongs->count()  &&  strlen($song->lyrics) != strlen(str_replace("\n",'  ',$song->onSongLyrics())) )
+                            {{-- show a button to replace the existing lyrics with the lyrics from the OnSong data --}}
+                            <span 
+                                class="btn btn-sm btn-outline-primary link" 
+                                title="replace existing lyrics with lyrics from OnSong data"
+                                onclick="$('#lyrics').remove();
+                                         $('#onSongLyrics').show();
+                                         $('#onSongLyrics').attr('name', 'lyrics');
+                                         enableSubmitButton();
+                                         $(this).remove()";
+                                ><i class="fa fa-paste"></i>&nbsp;use onsong lyrics</span>
+                        @endif
 
                         {{-- zoom size of textarea --}}
                         <small id="zoom-lyrics-textarea" style="display: none;">textbox size:

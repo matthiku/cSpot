@@ -113,7 +113,9 @@ class Song extends Model
                     else {
                         if ($lkey > 0)
                             $lyrics .= "\n"; // newline char not on the first line
-                        $lyrics .= preg_replace("/\[[^\]]+\]/m", '', $line);
+                          
+                        // remove the chords and all excess whitespace
+                        $lyrics .= trim(preg_replace('/\s+/', ' ', preg_replace("/\[[^\]]+\]/m", '', $line)));
                         $lkey++;
                     }
                 }
