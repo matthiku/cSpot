@@ -196,9 +196,20 @@ function prepareImages()
 
     // make sure the images have the correct size, filling either width or height
     $('#main-content'           ).css('text-align', 'center');
-    if ( $('#bottom-fixed-navbar').length )
-        $('.slide-background-image' ).height( window.innerHeight - $('#bottom-fixed-navbar').height());
-    $('.slide-background-image' ).css('max-width', window.innerWidth);
+
+    if ( $('#bottom-fixed-navbar').length   &&  ! $('.slide-background-image' ).hasClass('slide-announcements-image') )
+        $('.slide-background-image').height( window.innerHeight - $('#bottom-fixed-navbar').height());
+
+    if (! $('.slide-background-image').hasClass('slide-announcements-image') )
+        $('.slide-background-image').css('max-width', window.innerWidth);
+    else {
+        $('.slide-announcements-image').css('width', 'initial');
+        $('.slide-announcements-image').css('position', 'absolute');
+        $('.slide-announcements-image').css('top', window.innerHeight - 15 - $('.slide-announcements-image').height());
+        $('.slide-announcements-image').css('right', 0);
+        setTimeout(moveAnnouncementBGimg, 500, 'up', 'left');
+    }
+
     $('.app-content'            ).css('padding', 0);
 
     // get list of all images and prepare them as individual slides
@@ -222,6 +233,35 @@ function prepareImages()
     eval(todo);
 }
 
+function moveAnnouncementBGimg(horiz, vertic) {
+    var curTop = $('.slide-announcements-image').css('top').split('px')[0];
+    if (curTop < $('.slide-announcements-image').height())
+        horiz = 'down';
+    if (curTop  >  (window.innerHeight - 15 - $('.slide-announcements-image').height()) )
+        horiz = 'up';
+
+    if (horiz=='down')
+        curTop = 1 * curTop + 1;
+    else
+        curTop = curTop - 1;
+
+    var curRgt = $('.slide-announcements-image').css('right').split('px')[0];
+    if ( curRgt > (window.innerWidth - $('.slide-announcements-image').width()) )
+        vertic = 'right';
+    if (curRgt < 1)
+        vertic = 'left';
+
+    if (vertic == 'left')
+        curRgt = 1 * curRgt + 1;
+    else
+        curRgt = curRgt - 1;
+
+    //;;;console.log(horiz + ' - announcement image position: TOP: ' + curTop + ',  RIGHT: ' + curRgt);
+    $('.slide-announcements-image').css('top', curTop);
+    $('.slide-announcements-image').css('right', curRgt+'px');
+
+    setTimeout(moveAnnouncementBGimg, 50, horiz, vertic);
+}
 
 
 /*\

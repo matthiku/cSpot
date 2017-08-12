@@ -6,9 +6,11 @@
 	$columnDay = $item->plan->date; 
 	$firstThisDay = true;	// first event of the day?
 	$nextWeek 	  = $item->plan->date->addDays(7);
+	if (! isset($positioned))
+		$positioned = 'no';
 ?>
 
-<div class="announce-text-present">
+<div class="announce-text-present" style="{{ $positioned=='yes' ? 'position: absolute; left: auto; top: 0px; width: 100%;' : '' }}">
 
 
 	<div class="hidden-lg-down text-success font-weight-bold font-italic display-3 mb-1">

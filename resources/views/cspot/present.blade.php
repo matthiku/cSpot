@@ -102,7 +102,13 @@
                     $key    = 1; // we can't use a $key in the foreach statement as it's a re-sorted collection!
                 ?>
                 @foreach ($files as $file)
-                    <img class="slide-background-image hidden{{ ($bibleTexts || strtolower($file->file_category->name) != 'presentation') ? ' song-background-image ' : ' ' }}mb-2"
+                    <img class="slide-background-image hidden{{ 
+                            ($bibleTexts || strtolower($file->file_category->name) != 'presentation') 
+                                ? ' song-background-image ' 
+                                : ' ' 
+                        }}{{
+                            $item->key=='announcements' ? ' slide-announcements-image ' : ' '
+                        }}mb-2"
                         data-slides-id="{{ $key }}"
                            src="{{ url(config('files.uploads.webpath')).'/'.$file->token }}">
                     <?php $key++; ?>
@@ -117,6 +123,10 @@
 
                 @if ($bibleTexts)
                     @include('cspot.snippets.show_bibletext', ['positioned' => 'yes'])
+                @endif
+
+                @if ( $item->key=='announcements' )
+                    @include('cspot.snippets.announcements', ['positioned' => 'yes'])
                 @endif
 
             </div>

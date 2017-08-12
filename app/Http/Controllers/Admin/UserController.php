@@ -70,8 +70,8 @@ class UserController extends Controller
         // get all users in the requested order (default by id)
         $users = User::
             orderBy(
-                isset($request->orderby)     ? $request->orderby     : 'id',
-                isset($request->order)       ? $request->order       : 'asc'
+                isset($request->orderby)     ? $request->orderby     : 'last_access',
+                isset($request->order)       ? $request->order       : 'desc'
             );
 
         $heading = 'List of all Users';
