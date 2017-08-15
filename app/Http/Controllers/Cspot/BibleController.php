@@ -296,7 +296,7 @@ class BibleController extends Controller
 
         // find the relvant book id
         $book_id = Biblebook::where('name', $book)->first();
-        if ($book_id->count()) $book_id = $book_id->id;
+        if ($book_id && $book_id->count()) $book_id = $book_id->id;
         else {        
             $p[0]->copyright = 'Unable to find this bible book: '.$book;
             $p[0]->version_abbreviation = Bibleversion::find($version_id)->name;
@@ -399,9 +399,16 @@ class BibleController extends Controller
      */
     public function getBibleText($version, $book, $chapter, $verseFrom=1, $verseTo=null)
     {
-        $versions = array( 'NASB', 'ESV', 'MSG', 'AMP', 'CEVUK', 'KJVA');
+        // check to see if this version is available in our DB
+        $version_id = Bibleversion::where('name', $version)->first();
+        if ($version_id) {
+            $version_id = $version_id->id;
+            return $this->getLocallyStoredBibletext($version_id, $book, $chapter, $verseFrom, $verseTo);
+        }
 
         // only certain versions are accessible via the bibles.org API
+        $versions = array( 'NASB', 'ESV', 'MSG', 'AMP', 'CEVUK', 'KJVA');
+
         if ( in_array($version, $versions) ) {
             // create the url and query string
             $book = str_replace(' ', '+', $book);
@@ -418,14 +425,6 @@ class BibleController extends Controller
             if ($result) {
                 return response()->json( $result );
             }                
-        }
-
-        // check to see if this version is available in our DB
-        $version_id = Bibleversion::where('name', $version)->first();
-
-        if ($version_id) {
-            $version_id = $version_id->id;
-            return $this->getLocallyStoredBibletext($version_id, $book, $chapter, $verseFrom, $verseTo);
         }
 
         // book name needs to be corrected for use on biblehub.com
