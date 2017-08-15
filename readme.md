@@ -1,8 +1,8 @@
 # The *C*hurch *S*ervices *P*lanning *O*nline *T*ool
 
-c-SPOT is a Collaboration Web Application designed to help (small) churches plan their Sunday and Midweek services as well as other events.
+c-SPOT is a Web Collaboration Application designed to help (small) churches plan their Sunday and Midweek services as well as other events.
 
-c-SPOT is a tool which helps to manage all event information and processes - the **Order of Service**, staff, resources, worship song lists for worship leaders, musicians and every other person involved in the service or event.
+c-SPOT helps to manage all event information and processes - the **Order of Service**, staff, resources, worship song lists for worship leaders, musicians and every other person involved in the service or event.
 
 It allows all participants to use, add or modify their relevant information - using any platform or device of their choice!
 
@@ -130,7 +130,7 @@ Out of the box, c-SPOT uses a mySQL database to save all the data. However, Lara
 #### Mandatory Steps
 1. In the root of your web server's http or html directory (depending on Apache or Nginx), run the command `git clone https://github.com/matthiku/cSpot.git` to download c-SPOT and install it into the folder 'cspot'. (The folder can be renamed to your liking)
 2. In the root folder of the project, copy the file **.env.example** to **.env** and customize it for your environment. Mainly, configure your database name, db user name and db password for c-SPOT and enter the connectivity details for your mail server in order to be able to send confirmation emails to users. Important: Also update the domain name!
-3. Run `composer update` to install all the dependencies
+3. Run `composer install` to install all the dependencies
 4. Run `php artisan key:generate` to initialize they key for the Laravel framework
 5. Create a new (empty) database on your mySQL server with the aforementioned parameters (db name, user name and password etc.).
 6. Run `php artisan migrate` to initialize your c-SPOT database

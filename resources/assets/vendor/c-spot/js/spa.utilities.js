@@ -1652,8 +1652,9 @@ function insertNewOrUpdateExistingItems( event )
     var ar_seq = item.seq_no.split('-');
     var titleText = 'before item No '+item.seq_no;
 
-    // was modal opened from existing item?
-    // if (item.action=="update-song" || location.pathname.search('chords') > 0) {
+    // check if modal was opened from existing item
+
+    // only update the selected song
     if ( item.action=="update-song" ) {
         // directly activate the song selection
         showModalSelectionItems('song');
@@ -1665,11 +1666,12 @@ function insertNewOrUpdateExistingItems( event )
             titleText = 'after item No '+ar_seq[1];
     }
 
+    // update (amend) the scripture reference in the comment field
     else if (item.action=="update-scripture") {
         // directly activate the scripture selection
         showModalSelectionItems('scripture');
         // use current comment text as initial value
-        var curCom = button.siblings().first().text().trim();
+        var curCom = $('#comment-item-id-'+item.item_id).text();
         $('#comment').val( curCom=='Click to edit' ? '' : curCom );
         // URL needed to update the comment as derived from the calling element
         $('#searchSongForm'      ).attr('data-action', item.actionUrl);
