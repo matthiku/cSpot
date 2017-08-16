@@ -18,11 +18,13 @@
       </button>
       <strong>Info:</strong> {{ session('message') }}
    </div>
+   <script>$('#app-layout').on('click', function() { $('.alert').alert('close'); })</script>
 @endif
 
 
 
 @if ( session('status')  &&  ! session('status')==''  )
+   <script>$('#app-layout').on('click', function() { $('.alert').alert('close'); })</script>
    <div class="alert alert-success alert-dismissible fade show" role="alert">
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
