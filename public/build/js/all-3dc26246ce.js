@@ -52210,6 +52210,7 @@ function resetSearchForSongs()
     $('#searchSongModalLabel').text('Select what to insert');
     $('#search-action-label').text('Full-text search incl. lyrics:');
     $('#txtHint').html('');
+    $('#bible-passages').html(''); // clear bible text preview area
     $('#haystack').val('');
     $('#show-images-for-selection').html('');
     $('#comment').val('');
@@ -52254,8 +52255,6 @@ function insertNewOrUpdateExistingItems( event )
     item.actionUrl= button.data('action-url');
     item.buttonID = button.attr('id');
     cSpot.item = item;
-
-    ;;;console.log( 'cSpot.item = ' + JSON.stringify(item) );
 
     // prepare title text for popup dialog
     var ar_seq = item.seq_no.split('-');
@@ -52302,9 +52301,17 @@ function insertNewOrUpdateExistingItems( event )
     }
 
     else if (item.action=="insert-item") {
-
         titleText = 'after item No ' + ar_seq[1];
     }
+
+    else if (item.action=="append-item") {
+        item.seq_no = 'after-' + ar_seq[1];
+        item.item_id = 'after-' + item.item_id;
+        // revert data-item-action of button back to normal
+        $("#insert-item-btn-"+item.item_id).data('item-action', 'insert-item');
+    }
+
+    ;;;console.log( 'cSpot.item = ' + JSON.stringify(item) );
 
     // set title text for popup dialog
     $('#modal-show-item-id').text( titleText+':' );

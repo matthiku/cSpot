@@ -527,7 +527,7 @@
 @endif
 
 
-{{-- make sure the screen scrolls down to the jsut inserted item
+{{-- make sure the screen scrolls down to the just inserted item
 --}}
 @if ( isset($newest_item_seq_no) )
 	<script>
@@ -536,6 +536,13 @@
 			window.location.href = "#tr-item-{{ $newest_item_seq_no }}";
 			// alternative scroll solution, see http://stackoverflow.com/a/13736194/3202115
 			// document.getElementById('tr-item-{{ $newest_item_seq_no }}').scrollIntoView();
+
+			// show "Insert New Item" popup window again by clicking on the relevant button
+			// first, we need to find the relevant item id
+			var item_id = $("#tr-item-{{ $newest_item_seq_no }}").data('item-id');
+			// then we need to change the action data so that the next item is inserted AFTER the current
+			$("#insert-item-btn-"+item_id).data('item-action', 'append-item');
+			$("#insert-item-btn-"+item_id).click();
 		});
 	</script>
 @endif
