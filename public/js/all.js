@@ -48776,6 +48776,9 @@ function setIdealCalendarRowHeight()
             $(this).height(max);
         });
     });
+    alignCalAddEventBtn();
+}
+function alignCalAddEventBtn() {
     // show "+" button in the bottom right corner of the day area
     $('.cal-new-event-btn').each( function() {
         $(this).position({
@@ -48784,7 +48787,9 @@ function setIdealCalendarRowHeight()
             of: $(this).parent()
         });
     });
+
 }
+
 /* Plans List Calendar view: show results from previous or next year
 */
 function choosePrevNextYearForPlansList(direction)

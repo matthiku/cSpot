@@ -392,7 +392,9 @@
                     </p>
                 </div>
 
-                {!! $item->files->count() ? '' : '<p class="small mx-auto">(no images attached yet)</p>' !!}
+                @if (! $item->files->count()) 
+                    <p class="small mx-auto">(no images attached yet)</p>
+                @endif
 
                 @if( Auth::user()->ownsPlan($plan->id) )
                     <?php

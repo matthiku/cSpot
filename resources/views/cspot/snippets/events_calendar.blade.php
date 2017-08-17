@@ -197,6 +197,9 @@
 		activate: function() {
 			calculateEventsPerMonth();
 			setIdealCalendarRowHeight();
+		},
+		load: function() {
+			alignCalAddEventBtn();
 		}
 	});
 
