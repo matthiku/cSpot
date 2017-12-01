@@ -37,8 +37,7 @@ $(document).ready(function() {
     makeAreasEditable();
 
 
-    /**
-     * Show WAIT spinner for all navbar anchor items
+    /* Show WAIT spinner for all navbar anchor items
      */
     $('a, input:submit, input.form-submit').click( function() {
         // do not use for anchors with their own click handling
@@ -50,8 +49,7 @@ $(document).ready(function() {
     });
 
 
-    /*
-        formatting of pagination buttons (links)
+    /* formatting of pagination buttons (links)
     */
     if ($('.pagination').length>0) {
         $(function() {
@@ -69,8 +67,7 @@ $(document).ready(function() {
 
 
 
-    /**
-     * enabling certain Bootstrap UI features (Tooltips, Popovers)
+    /* enabling certain Bootstrap UI features (Tooltips, Popovers)
      */
     $(function () {
         // activate the tooltips
@@ -87,8 +84,7 @@ $(document).ready(function() {
     });
 
 
-    /**
-     * On 'Home' page, get list of future plans and show calendar widget
+    /* On 'Home' page, get list of future plans and show calendar widget
      */
     if ( window.location.href == cSpot.appURL + '/home' ) {
         $.getJSON( cSpot.appURL + '/cspot/plans?filterby=future&api=api',
@@ -146,8 +142,7 @@ $(document).ready(function() {
 
 
 
-    /**
-     * On list pages, when a new item was inserted and highlighted,
+    /* On list pages, when a new item was inserted and highlighted,
      *      slowly fade out the highlighting
      */
     if ($('.newest-item').length) {
@@ -180,8 +175,7 @@ $(document).ready(function() {
 
 
 
-    /*
-         in Presentation mode, modify the modal's position and outlook
+    /*   in Presentation mode, modify the modal's position and outlook
     */
     if ( window.location.pathname.indexOf('/present') > 10 ) {
 
@@ -206,15 +200,13 @@ $(document).ready(function() {
 
 
 
-    /**
-     * Put focus on textarea when user opens the feedback modal dialog
+    /* Put focus on textarea when user opens the feedback modal dialog
      */
     $('#createMessage').on('shown.bs.modal', function () {
         $('#feedbackMessage').focus();
     });
 
-    /**
-     * Mark modified form fields with a new background
+    /* Mark modified form fields with a new background
      * and show the submit/save buttons
      */
     $("#file").on('mouseover', function() {
@@ -235,8 +227,7 @@ $(document).ready(function() {
 
 
 
-    /**
-     * Allow items on Plan page to be moved into new positions
+    /* Allow items on Plan page to be moved into new positions
      */
     if ($("#tbody-items").length) {
         $("#tbody-items").sortable({
@@ -286,8 +277,7 @@ $(document).ready(function() {
     }
 
 
-    /**
-     * On the Songs List page, allow some key codes
+    /* On the Songs List page, allow some key codes
      */
     if (window.location.pathname.indexOf('cspot/songs')>0) {
 
@@ -304,8 +294,7 @@ $(document).ready(function() {
 
 
 
-    /*
-        On presentation views,
+    /*  On presentation views,
         - allow mouse-click to advance to next or previous item
         - check if aut-advance mode is on
     */
@@ -332,8 +321,7 @@ $(document).ready(function() {
     }
 
 
-    /**
-     * Handle Keyboard events
+    /* Handle Keyboard events
      */
     $(document).keydown(function( event ) {
 
@@ -415,8 +403,7 @@ $(document).ready(function() {
 
 
 
-    /**
-     * re-design the showing of lyrics interspersed with guitar chords
+    /* re-design the showing of lyrics interspersed with guitar chords
      */
     if ( $('#chords').text() != '' ) {
         // only do this for PRE tags, not on input fields etc...

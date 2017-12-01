@@ -48382,8 +48382,7 @@ function hideSpinner() {
 
 
 
-/**
- * Array to keep a list of future plan dates for highlighing in the calendar widget
+/* Array to keep a list of future plan dates for highlighing in the calendar widget
  */
 var SelectedDates = {};
 SelectedDates[new Date().toLocaleDateString()] = 'Today';
@@ -48391,8 +48390,7 @@ SelectedDates[new Date().toLocaleDateString()] = 'Today';
 
 
 
-/*
-    Cause UI elements (e.g. buttons) to flash in order to get attention....
+/*  Cause UI elements (e.g. buttons) to flash in order to get attention....
 */
 function blink(selector){
     $(selector).show();
@@ -48406,8 +48404,7 @@ function blink(selector){
 }
 
 
-/*
-    turn an URL string into a DOM object
+/*  turn an URL string into a DOM object
 
     @param string url (default: current url)
     @returns object
@@ -48458,8 +48455,7 @@ function serializeForUrl(obj)
 }
 
 
-/*
-    Apply the biggest value of width or height of each element
+/*  Apply the biggest value of width or height of each element
     in a collection to all elements of that collection
 
     @param array collection Array of HTML elements
@@ -48485,8 +48481,7 @@ function matchSize(collection, what)
 }
 
 
-/*
-    Automatically close the info modals after a timeout
+/*  Automatically close the info modals after a timeout
     (called from layouts\flasing.modal.php)
 */
 var timeoutID;
@@ -48501,8 +48496,7 @@ function closeMyModal(selector) {
 
 
 
-/*
-    changes the class of the selected html element so that
+/*  changes the class of the selected html element so that
     it either shows a checked tickbox or an unchecked tickbox
 */
 function changeCheckboxIcon(selector, onOrOff)
@@ -48520,8 +48514,7 @@ function changeCheckboxIcon(selector, onOrOff)
 }
 
 
-/*
-    Gets the value from the Local Storage for a given key
+/*  Gets the value from the Local Storage for a given key
     or returns a default value if the key doesn't exist
 */
 function getLocalStorageItem(key, defaultValue)
@@ -48558,8 +48551,7 @@ function showAlertBox(text, where, type)
 }
 
 
-/*
-    Load configuration data from backend
+/*  Load configuration data from backend
 
     (called from document.ready)
 */
@@ -48613,8 +48605,7 @@ function loadConfigData()
 
 
 
-/**
- * Make certain content editable
+/* Make certain content editable
  *
  * (see http://www.appelsiini.net/projects/jeditable)
  */
@@ -50183,8 +50174,7 @@ $(document).ready(function() {
     makeAreasEditable();
 
 
-    /**
-     * Show WAIT spinner for all navbar anchor items
+    /* Show WAIT spinner for all navbar anchor items
      */
     $('a, input:submit, input.form-submit').click( function() {
         // do not use for anchors with their own click handling
@@ -50196,8 +50186,7 @@ $(document).ready(function() {
     });
 
 
-    /*
-        formatting of pagination buttons (links)
+    /* formatting of pagination buttons (links)
     */
     if ($('.pagination').length>0) {
         $(function() {
@@ -50215,8 +50204,7 @@ $(document).ready(function() {
 
 
 
-    /**
-     * enabling certain Bootstrap UI features (Tooltips, Popovers)
+    /* enabling certain Bootstrap UI features (Tooltips, Popovers)
      */
     $(function () {
         // activate the tooltips
@@ -50233,8 +50221,7 @@ $(document).ready(function() {
     });
 
 
-    /**
-     * On 'Home' page, get list of future plans and show calendar widget
+    /* On 'Home' page, get list of future plans and show calendar widget
      */
     if ( window.location.href == cSpot.appURL + '/home' ) {
         $.getJSON( cSpot.appURL + '/cspot/plans?filterby=future&api=api',
@@ -50292,8 +50279,7 @@ $(document).ready(function() {
 
 
 
-    /**
-     * On list pages, when a new item was inserted and highlighted,
+    /* On list pages, when a new item was inserted and highlighted,
      *      slowly fade out the highlighting
      */
     if ($('.newest-item').length) {
@@ -50326,8 +50312,7 @@ $(document).ready(function() {
 
 
 
-    /*
-         in Presentation mode, modify the modal's position and outlook
+    /*   in Presentation mode, modify the modal's position and outlook
     */
     if ( window.location.pathname.indexOf('/present') > 10 ) {
 
@@ -50352,15 +50337,13 @@ $(document).ready(function() {
 
 
 
-    /**
-     * Put focus on textarea when user opens the feedback modal dialog
+    /* Put focus on textarea when user opens the feedback modal dialog
      */
     $('#createMessage').on('shown.bs.modal', function () {
         $('#feedbackMessage').focus();
     });
 
-    /**
-     * Mark modified form fields with a new background
+    /* Mark modified form fields with a new background
      * and show the submit/save buttons
      */
     $("#file").on('mouseover', function() {
@@ -50381,8 +50364,7 @@ $(document).ready(function() {
 
 
 
-    /**
-     * Allow items on Plan page to be moved into new positions
+    /* Allow items on Plan page to be moved into new positions
      */
     if ($("#tbody-items").length) {
         $("#tbody-items").sortable({
@@ -50432,8 +50414,7 @@ $(document).ready(function() {
     }
 
 
-    /**
-     * On the Songs List page, allow some key codes
+    /* On the Songs List page, allow some key codes
      */
     if (window.location.pathname.indexOf('cspot/songs')>0) {
 
@@ -50450,8 +50431,7 @@ $(document).ready(function() {
 
 
 
-    /*
-        On presentation views,
+    /*  On presentation views,
         - allow mouse-click to advance to next or previous item
         - check if aut-advance mode is on
     */
@@ -50478,8 +50458,7 @@ $(document).ready(function() {
     }
 
 
-    /**
-     * Handle Keyboard events
+    /* Handle Keyboard events
      */
     $(document).keydown(function( event ) {
 
@@ -50561,8 +50540,7 @@ $(document).ready(function() {
 
 
 
-    /**
-     * re-design the showing of lyrics interspersed with guitar chords
+    /* re-design the showing of lyrics interspersed with guitar chords
      */
     if ( $('#chords').text() != '' ) {
         // only do this for PRE tags, not on input fields etc...
@@ -53600,8 +53578,7 @@ if (typeof($)===undefined) {
 }
 
 
-/*
- * Prepare the presentation of lyrics, chords etc.
+/* Prepare the presentation of lyrics, chords etc.
  *
  * called from loadFromLocalCache method in main.js
  */
@@ -53767,8 +53744,7 @@ function show_time()
 \*/
 
 
-/**
- * show multiple images as subsequent slides
+/* show multiple images as subsequent slides
  *
  * This function is called from the preparePresentation function, when it finds this element:
  *      $('.slide-background-image')
@@ -53853,8 +53829,7 @@ function moveAnnouncementBGimg(horiz, vertic) {
 \*/
 
 
-/*
-    Re-Formatting of Bible Texts
+/*  Re-Formatting of Bible Texts
 
     Bible texts are delivered from the backend in the format in which either
         bibleApi.org or biblehub.com delivers them.
@@ -54020,8 +53995,7 @@ function updateVerseList(fr,to)
     }
     return arr;
 }
-/*
-    Split a bible reference into an array of book, chapter, verse_from, verse_to
+/* Split a bible reference into an array of book, chapter, verse_from, verse_to
 */
 function splitBref(text)
 {
@@ -54242,8 +54216,7 @@ function findVerse(element, index, array)
     return element.verse == this;
 }
 
-/*
-    Append the reformatted bible text to the presentation and add a reference
+/*  Append the reformatted bible text to the presentation and add a reference
     into the Sequence Indicator list in the Navbar (bottom right)
 */
 function appendBibleText(type, text, verno, show)
@@ -54278,8 +54251,7 @@ function appendBibleText(type, text, verno, show)
         '<'+type+style+' class="bible-text-present'+parts+id+text+'</'+type+'>'
         );
 }
-/*
-    If an item contains more than one bible reference, we must format
+/*  If an item contains more than one bible reference, we must format
     the header in an appropriate way to show the various references appropriately
 */
 function formatBibleRefHeader( exisText, newText) {
@@ -54316,8 +54288,7 @@ function formatBibleRefHeader( exisText, newText) {
 \*/
 
 
-/*
-    check if there are more lyric parts than
+/*  check if there are more lyric parts than
         indicated in the spre-defined equence due to blank lines discoverd in the lyrics
 */
 function compareLyricPartsWithSequence()
@@ -54349,8 +54320,7 @@ function compareLyricPartsWithSequence()
     }
 }
 
-/*
-    Create Default Lyric Sequence -
+/*  Create Default Lyric Sequence -
         if there is no pre-defined sequence in the songs DB table,
         we can attempt to create our own based on the hints (headers) in the lyrics
 */
@@ -54421,8 +54391,7 @@ function createDefaultLyricSequence()
     $('#sequence').text(sequence);
 }
 
-/*
-    Show lyrics in presentation mode
+/*  Show lyrics in presentation mode
 
     mainly: divide lyrics into blocks (verses, chorus etc) to be able to show them individually
 
@@ -54632,8 +54601,7 @@ function reFormatOnsongLyrics()
 \*/
 
 
-/*
-    called from document.ready.js
+/*  called from document.ready.js
 
     this MUST run after reDisplayChords!
 
@@ -55151,8 +55119,13 @@ function navigateTo(where)
         // if the slide contains anything but spaces, we were still presenting something
         // and we now show an empty (blank) slide
         if (! reg.test(main) || images) {
-            $('#main-content').html('<div>.</div>');
-            ;;;console.log('inserting empty slide...');
+            if ( cSpot.presentation.configImageSlide ) {
+                ;;;console.log('inserting IMAGE slide...');
+                $('#main-content').html('<img src="'+cSpot.appURL+'/images/background/blankslideimage.jpg" style="width:100%">');
+            } else {
+                ;;;console.log('inserting empty slide...');
+                $('#main-content').html('<div>.</div>');
+            }
             // hide current slide title to indicate blank slide
             $('#item-navbar-label').hide();
             $('#show-blank-screen').addClass('ui-state-active')
@@ -55167,9 +55140,8 @@ function navigateTo(where)
 
 
 
-    /*\
-       > For OFFLINE MODE: check if the next (or previous) item is cached in LocalStorage
-    \*/
+    /* For OFFLINE MODE: check if the next (or previous) item is cached in LocalStorage
+    */
     if ( where!='edit' && where!='back' && cSpot.presentation.useOfflineMode) {
 
         // get the current item identification values
@@ -55602,9 +55574,9 @@ function getLocalConfiguration()
         // save in global namespace
         cSpot.presentation.sync = true;
     }
-    else
+    else {
         cSpot.presentation.sync = false;
-
+    }
 
 
     // show a blank slide between items (default: no)
@@ -55612,6 +55584,13 @@ function getLocalConfiguration()
 
     // if the value in LocalStorage was set to 'true', then we activate the checkbox:
     changeCheckboxIcon('#config-BlankSlidesItem', cSpot.presentation.configBlankSlides);
+
+
+    // show a Image slide between items (default: just a blank slide)
+    cSpot.presentation.configImageSlide = getLocalStorageItem('config-ImageSlides', 'false') == 'true';
+
+    // if the value in LocalStorage was set to 'true', then we activate the checkbox:
+    changeCheckboxIcon('#config-ImageSlidesItem', cSpot.presentation.configImageSlide);
 
 
 
@@ -55638,8 +55617,7 @@ function getLocalConfiguration()
 
 }
 
-/*
-    Read and apply locally defined text format settings from Local Storage
+/*  Read and apply locally defined text format settings from Local Storage
 
     The format of the keys for those values is:
 
@@ -55698,12 +55676,25 @@ function resetLocalFormatting()
 // --------------------------------------------------------------------------------------- SET
 
 // called from the links in the configuration popup
-function changeBlankSlidesConfig() {
+function changeBlankSlideConfig() {
     cSpot.presentation.configBlankSlides = ! cSpot.presentation.configBlankSlides;
     var sett = cSpot.presentation.configBlankSlides;
-    ;;;console.log('User changed setting for "Show empty slides between items" to ' + sett );
+    ;;;console.log('User changed setting for "Show empty slide between items" to ' + sett );
     changeCheckboxIcon('#config-BlankSlidesItem', sett);
     localStorage.setItem('config-BlankSlides', sett);
+    if (sett)
+        $('#config-ImageSlidesItem').parent().removeClass('disabled')
+    else 
+        $('#config-ImageSlidesItem').parent().addClass('disabled')
+}
+function changeImageSlideConfig() {
+  cSpot.presentation.configImageSlide = !cSpot.presentation.configImageSlide;
+  var sett = cSpot.presentation.configImageSlide;
+  console.log(
+    'User changed setting for "Show IMAGE slide between items" to ' + sett
+  );
+  changeCheckboxIcon("#config-ImageSlidesItem", sett);
+  localStorage.setItem("config-ImageSlides", sett);
 }
 
 function changeOfflineModeConfig() {

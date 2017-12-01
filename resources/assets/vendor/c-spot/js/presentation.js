@@ -16,8 +16,7 @@ if (typeof($)===undefined) {
 }
 
 
-/*
- * Prepare the presentation of lyrics, chords etc.
+/* Prepare the presentation of lyrics, chords etc.
  *
  * called from loadFromLocalCache method in main.js
  */
@@ -183,8 +182,7 @@ function show_time()
 \*/
 
 
-/**
- * show multiple images as subsequent slides
+/* show multiple images as subsequent slides
  *
  * This function is called from the preparePresentation function, when it finds this element:
  *      $('.slide-background-image')
@@ -269,8 +267,7 @@ function moveAnnouncementBGimg(horiz, vertic) {
 \*/
 
 
-/*
-    Re-Formatting of Bible Texts
+/*  Re-Formatting of Bible Texts
 
     Bible texts are delivered from the backend in the format in which either
         bibleApi.org or biblehub.com delivers them.
@@ -436,8 +433,7 @@ function updateVerseList(fr,to)
     }
     return arr;
 }
-/*
-    Split a bible reference into an array of book, chapter, verse_from, verse_to
+/* Split a bible reference into an array of book, chapter, verse_from, verse_to
 */
 function splitBref(text)
 {
@@ -658,8 +654,7 @@ function findVerse(element, index, array)
     return element.verse == this;
 }
 
-/*
-    Append the reformatted bible text to the presentation and add a reference
+/*  Append the reformatted bible text to the presentation and add a reference
     into the Sequence Indicator list in the Navbar (bottom right)
 */
 function appendBibleText(type, text, verno, show)
@@ -694,8 +689,7 @@ function appendBibleText(type, text, verno, show)
         '<'+type+style+' class="bible-text-present'+parts+id+text+'</'+type+'>'
         );
 }
-/*
-    If an item contains more than one bible reference, we must format
+/*  If an item contains more than one bible reference, we must format
     the header in an appropriate way to show the various references appropriately
 */
 function formatBibleRefHeader( exisText, newText) {
@@ -732,8 +726,7 @@ function formatBibleRefHeader( exisText, newText) {
 \*/
 
 
-/*
-    check if there are more lyric parts than
+/*  check if there are more lyric parts than
         indicated in the spre-defined equence due to blank lines discoverd in the lyrics
 */
 function compareLyricPartsWithSequence()
@@ -765,8 +758,7 @@ function compareLyricPartsWithSequence()
     }
 }
 
-/*
-    Create Default Lyric Sequence -
+/*  Create Default Lyric Sequence -
         if there is no pre-defined sequence in the songs DB table,
         we can attempt to create our own based on the hints (headers) in the lyrics
 */
@@ -837,8 +829,7 @@ function createDefaultLyricSequence()
     $('#sequence').text(sequence);
 }
 
-/*
-    Show lyrics in presentation mode
+/*  Show lyrics in presentation mode
 
     mainly: divide lyrics into blocks (verses, chorus etc) to be able to show them individually
 
@@ -1048,8 +1039,7 @@ function reFormatOnsongLyrics()
 \*/
 
 
-/*
-    called from document.ready.js
+/*  called from document.ready.js
 
     this MUST run after reDisplayChords!
 
@@ -1567,8 +1557,13 @@ function navigateTo(where)
         // if the slide contains anything but spaces, we were still presenting something
         // and we now show an empty (blank) slide
         if (! reg.test(main) || images) {
-            $('#main-content').html('<div>.</div>');
-            ;;;console.log('inserting empty slide...');
+            if ( cSpot.presentation.configImageSlide ) {
+                ;;;console.log('inserting IMAGE slide...');
+                $('#main-content').html('<img src="'+cSpot.appURL+'/images/background/blankslideimage.jpg" style="width:100%">');
+            } else {
+                ;;;console.log('inserting empty slide...');
+                $('#main-content').html('<div>.</div>');
+            }
             // hide current slide title to indicate blank slide
             $('#item-navbar-label').hide();
             $('#show-blank-screen').addClass('ui-state-active')
@@ -1583,9 +1578,8 @@ function navigateTo(where)
 
 
 
-    /*\
-       > For OFFLINE MODE: check if the next (or previous) item is cached in LocalStorage
-    \*/
+    /* For OFFLINE MODE: check if the next (or previous) item is cached in LocalStorage
+    */
     if ( where!='edit' && where!='back' && cSpot.presentation.useOfflineMode) {
 
         // get the current item identification values
@@ -2018,9 +2012,9 @@ function getLocalConfiguration()
         // save in global namespace
         cSpot.presentation.sync = true;
     }
-    else
+    else {
         cSpot.presentation.sync = false;
-
+    }
 
 
     // show a blank slide between items (default: no)
@@ -2028,6 +2022,13 @@ function getLocalConfiguration()
 
     // if the value in LocalStorage was set to 'true', then we activate the checkbox:
     changeCheckboxIcon('#config-BlankSlidesItem', cSpot.presentation.configBlankSlides);
+
+
+    // show a Image slide between items (default: just a blank slide)
+    cSpot.presentation.configImageSlide = getLocalStorageItem('config-ImageSlides', 'false') == 'true';
+
+    // if the value in LocalStorage was set to 'true', then we activate the checkbox:
+    changeCheckboxIcon('#config-ImageSlidesItem', cSpot.presentation.configImageSlide);
 
 
 
@@ -2054,8 +2055,7 @@ function getLocalConfiguration()
 
 }
 
-/*
-    Read and apply locally defined text format settings from Local Storage
+/*  Read and apply locally defined text format settings from Local Storage
 
     The format of the keys for those values is:
 
@@ -2114,12 +2114,25 @@ function resetLocalFormatting()
 // --------------------------------------------------------------------------------------- SET
 
 // called from the links in the configuration popup
-function changeBlankSlidesConfig() {
+function changeBlankSlideConfig() {
     cSpot.presentation.configBlankSlides = ! cSpot.presentation.configBlankSlides;
     var sett = cSpot.presentation.configBlankSlides;
-    ;;;console.log('User changed setting for "Show empty slides between items" to ' + sett );
+    ;;;console.log('User changed setting for "Show empty slide between items" to ' + sett );
     changeCheckboxIcon('#config-BlankSlidesItem', sett);
     localStorage.setItem('config-BlankSlides', sett);
+    if (sett)
+        $('#config-ImageSlidesItem').parent().removeClass('disabled')
+    else 
+        $('#config-ImageSlidesItem').parent().addClass('disabled')
+}
+function changeImageSlideConfig() {
+  cSpot.presentation.configImageSlide = !cSpot.presentation.configImageSlide;
+  var sett = cSpot.presentation.configImageSlide;
+  console.log(
+    'User changed setting for "Show IMAGE slide between items" to ' + sett
+  );
+  changeCheckboxIcon("#config-ImageSlidesItem", sett);
+  localStorage.setItem("config-ImageSlides", sett);
 }
 
 function changeOfflineModeConfig() {

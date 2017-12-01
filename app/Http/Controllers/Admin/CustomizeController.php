@@ -57,7 +57,7 @@ class CustomizeController extends Controller
 
 
 
-    // show current configuration
+    // update current configuration
     public function update(Request $request)
     {
         // change env settings
@@ -141,6 +141,17 @@ class CustomizeController extends Controller
                 flash('New file '.$request->file('logo_file')->getClientOriginalName()
                     .' saved as '.env('CHURCH_LOGO_FILENAME')
                     .' size was '.$request->file('logo_file')->getClientSize() );
+            }
+        }
+
+        if ($request->hasFile('blank_slide')) {
+            if ($request->file('blank_slide')->isValid()) {
+                // move the new Blank-SLide image to the public folder, subfolder 'background', using the predefined name
+                $request->file('blank_slide')->move( public_path().'/images/background', 'blankslideimage.jpg' );
+
+                flash('New file '.$request->file('blank_slide')->getClientOriginalName()
+                    .' saved as blankslideimage.jpg'
+                    .' size was '.$request->file('blank_slide')->getClientSize() );
             }
         }
 

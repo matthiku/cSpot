@@ -60,8 +60,7 @@ function hideSpinner() {
 
 
 
-/**
- * Array to keep a list of future plan dates for highlighing in the calendar widget
+/* Array to keep a list of future plan dates for highlighing in the calendar widget
  */
 var SelectedDates = {};
 SelectedDates[new Date().toLocaleDateString()] = 'Today';
@@ -69,8 +68,7 @@ SelectedDates[new Date().toLocaleDateString()] = 'Today';
 
 
 
-/*
-    Cause UI elements (e.g. buttons) to flash in order to get attention....
+/*  Cause UI elements (e.g. buttons) to flash in order to get attention....
 */
 function blink(selector){
     $(selector).show();
@@ -84,8 +82,7 @@ function blink(selector){
 }
 
 
-/*
-    turn an URL string into a DOM object
+/*  turn an URL string into a DOM object
 
     @param string url (default: current url)
     @returns object
@@ -136,8 +133,7 @@ function serializeForUrl(obj)
 }
 
 
-/*
-    Apply the biggest value of width or height of each element
+/*  Apply the biggest value of width or height of each element
     in a collection to all elements of that collection
 
     @param array collection Array of HTML elements
@@ -163,8 +159,7 @@ function matchSize(collection, what)
 }
 
 
-/*
-    Automatically close the info modals after a timeout
+/*  Automatically close the info modals after a timeout
     (called from layouts\flasing.modal.php)
 */
 var timeoutID;
@@ -179,8 +174,7 @@ function closeMyModal(selector) {
 
 
 
-/*
-    changes the class of the selected html element so that
+/*  changes the class of the selected html element so that
     it either shows a checked tickbox or an unchecked tickbox
 */
 function changeCheckboxIcon(selector, onOrOff)
@@ -198,8 +192,7 @@ function changeCheckboxIcon(selector, onOrOff)
 }
 
 
-/*
-    Gets the value from the Local Storage for a given key
+/*  Gets the value from the Local Storage for a given key
     or returns a default value if the key doesn't exist
 */
 function getLocalStorageItem(key, defaultValue)
@@ -236,8 +229,7 @@ function showAlertBox(text, where, type)
 }
 
 
-/*
-    Load configuration data from backend
+/*  Load configuration data from backend
 
     (called from document.ready)
 */
@@ -291,8 +283,7 @@ function loadConfigData()
 
 
 
-/**
- * Make certain content editable
+/* Make certain content editable
  *
  * (see http://www.appelsiini.net/projects/jeditable)
  */

@@ -4,7 +4,7 @@
 # of course you need to copy the corresponding 'gitpull.sh' to the home folder of root
 # and you need to change the server name here:
 HOSTNAME="root@eec.ie"
-# you also need to have a working a SSH connection to your server 
+# you also need to have a working SSH connection to your server 
 
 
 echo ----

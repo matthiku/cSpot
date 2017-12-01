@@ -290,9 +290,13 @@
                                 onclick="changeNumberOfVersesPerSlide('increase')">&#10133;</span>
                     </p>
 
-                    <a      href="#" class="dropdown-item" onclick="changeBlankSlidesConfig()"
-                            title="Show empty slides between plan items">
-                        <i id="config-BlankSlidesItem" class="fa fa-square-o">&nbsp;</i>insert blank slides between items?</a>
+                    <a      href="#" class="dropdown-item" onclick="changeBlankSlideConfig()"
+                            title="Show empty slide between plan items">
+                        <i id="config-BlankSlidesItem" class="fa fa-square-o">&nbsp;</i>insert blank slide between items?</a>
+
+                    <a      href="#" class="dropdown-item" onclick="changeImageSlideConfig()"
+                            title="Show image slide between plan items?">
+                        <i id="config-ImageSlidesItem" class="fa fa-square-o">&nbsp;</i>show image slide between items?</a>
 
                     <a      href="#" class="dropdown-item" onclick="changeOfflineModeConfig()"
                             title="Work off-line and get slides from local storage instead of from the server">
