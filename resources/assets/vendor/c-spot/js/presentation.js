@@ -1546,8 +1546,8 @@ function navigateTo(where)
     if ( document.baseURI.search('/present')<10 )
         showSpinner();
 
-    // in presentation Mode, do we want a blank slide between items?
-    if ( cSpot.presentation.configBlankSlides  &&  cSpot.presentation.screenBlank ) {
+    // in (lyrics) presentation Mode, do we want a blank slide between items?
+    if ( cSpot.presentationType=='lyrics'  &&  cSpot.presentation.configBlankSlides  &&  cSpot.presentation.screenBlank ) {
         cSpot.presentation.screenBlank = false;
         // check if there is an empty slide/item (an item without lyrics, bibletext or images)
         var reg = /^[\s]+$/; // regex for a string containing only white space.
