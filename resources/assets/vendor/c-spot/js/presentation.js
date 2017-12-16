@@ -1558,8 +1558,13 @@ function navigateTo(where)
         // and we now show an empty (blank) slide
         if (! reg.test(main) || images) {
             if ( cSpot.presentation.configImageSlide ) {
-                ;;;console.log('inserting IMAGE slide...');
-                $('#main-content').html('<img src="'+cSpot.appURL+'/images/background/blankslideimage.jpg" style="width:100%">');
+                ;;;console.log('inserting IMAGE slide on blank page...');
+                $('#main-content').html(
+                    '<img src="' + cSpot.appURL + 
+                    '/images/background/blankslideimage.jpg" ' +
+                    'class="song-background-image" ' +
+                    'style="max-height:' + $('#main-content').css('height') + '">'
+                );
             } else {
                 ;;;console.log('inserting empty slide...');
                 $('#main-content').html('<div>.</div>');
