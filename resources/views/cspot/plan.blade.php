@@ -164,7 +164,7 @@
                             <i class="fa fa-users"></i>&nbsp;Team<small>({{$plan->teams->count()}})</small>
                         </a>
                         L.:&nbsp;<strong>{{ $plan->leader ? $plan->leader->name : $plan->leader_id }}</strong> &nbsp;
-                        @if ( strtoupper($plan->teacher->name)<>'N/A' )
+                        @if ( $plan->teacher && strtoupper($plan->teacher->name)<>'N/A' )
                             T.:&nbsp;<strong>{{ $plan->teacher->name }}</strong>
                         @endif
                     </span>

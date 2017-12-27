@@ -250,7 +250,11 @@ class ItemController extends Controller
             else {
                 // get all current items of this plan and find the item with the highest seq.no 
                 $last_item = $plan->items->sortBy('seq_no')->last();
-                $seq_no = 1 * $last_item->seq_no + 1;
+                // **** next 4 lines edited by matthiku, 2017-12-27: item 18 of GitHub issue # 190 ****
+                if ($last_item)
+                    $seq_no = 1 * $last_item->seq_no + 1;
+                else // in case plan was empty 
+                    $seq_no = 1;
             }
 
             // create a new items object add it to this plan
