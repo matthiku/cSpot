@@ -319,7 +319,7 @@ function MPsongList()
 function getLastSongUpdated_at()
 {
     // during the installation phase, there is no songs....
-    $song = Song::select('updated_at')->orderby('updated_at', 'desc')->first();
+    $song = Song::latest('updated_at')->first();
     if ($song)
         return $song->updated_at;
     return null;
@@ -353,7 +353,7 @@ function readOnSongFile($path)
  * Go to next or previous item in the list of items of a plan
  *      or swap between chords and sheetmusic
  */
-function nextItem($plan_id, $item_id, $direction)
+function nextItem($plan_id, $item_id, $direction, $request=null)
 {
     // get the full plan
     $plan    = Plan::find($plan_id);
@@ -364,7 +364,7 @@ function nextItem($plan_id, $item_id, $direction)
         $orderBy = 'desc';
 
     // Get list of items for this plan, full or without FLEO items
-    if ( Auth::user()->ownsPlan($plan_id) ) {
+    if ( Auth::user()->ownsPlan($plan_id)  && $request && !$request->is('*/present') ) {
         // get all the items for this plan
         $items = $plan->items()
             ->orderBy('seq_no', $orderBy)

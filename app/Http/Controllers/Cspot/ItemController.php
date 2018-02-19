@@ -418,7 +418,7 @@ class ItemController extends Controller
     public function next(Request $request, $plan_id, $item_id, $direction, $chords=null)
     {
         // get item id of next or previous item from helper function
-        $new_item_id = nextItem( $plan_id, $item_id, $direction );
+        $new_item_id = nextItem( $plan_id, $item_id, $direction, $request );
 
         // call edit with new item id 
         if ($chords==null) {
