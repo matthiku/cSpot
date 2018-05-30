@@ -319,7 +319,8 @@ function MPsongList()
 function getLastSongUpdated_at()
 {
     // during the installation phase, there is no songs....
-    $song = Song::latest('updated_at')->first();
+    // (Use DB instead of model -> cSpot issue #194, item 2)    
+    $song = DB::table('songs')->latest('updated_at')->first();
     if ($song)
         return $song->updated_at;
     return null;
@@ -376,6 +377,10 @@ function nextItem($plan_id, $item_id, $direction, $request=null)
             ->orderBy('seq_no', $orderBy)
             ->get();
     }
+
+    // if no items are presentable, return the id of the first item
+    // (cSpot issue #194, item 3)
+    if (!$items->count()) return $plan->items()->first()->id;
 
     // what is the highest seq_no in this plan?
     if ($orderBy=='asc')
