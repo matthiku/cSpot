@@ -6,9 +6,9 @@
     "type": "project",
     "require": {
         "php": ">=5.5.9",
-        "laravel/framework": "5.3.*",
-        "laravel/socialite": "^2.0",
-        "laravelcollective/html": "5.3.*",
+        "laravel/framework": "5.4.*",
+        "laravel/socialite": "^3.0",
+        "laravelcollective/html": "5.4.*",
         "doctrine/dbal": "^2.5",
         "snap/bible-books": "0.1.*@dev",
         "cmgmyr/messenger": "~2.0",
@@ -18,12 +18,13 @@
         "barryvdh/laravel-ide-helper": "^2.2",
         "predis/predis": "^1.1",
         "barryvdh/laravel-debugbar": "^2.2",
-        "pusher/pusher-php-server": "^2.6"
+        "pusher/pusher-php-server": "^2.6",
+        "laravel/tinker": "^1.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
         "mockery/mockery": "0.9.*",
-        "phpunit/phpunit": "~4.0",
+        "phpunit/phpunit": "~5.7",
         "symfony/css-selector": "2.8.*|3.1.*",
         "symfony/dom-crawler": "2.8.*|3.1.*"
     },

@@ -147,10 +147,13 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
-
+        
         // new in 5.3
         Illuminate\Notifications\NotificationServiceProvider::class,
 
+        // new in 5.4
+        Laravel\Tinker\TinkerServiceProvider::class,
+        
         /*
          * Application Service Providers...
          */
