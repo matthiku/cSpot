@@ -3,6 +3,8 @@
   "short_name": "c-Spot",
   "description": "Helps churches organize their Sunday and Midweek Services as well as other events",
   "display": "standalone",
+  "background_color": "#fff",
+  "theme_color": "#3f51b5",
   "icons": [
     {
       "src": "images/cspoticon36.png",
