@@ -123,7 +123,7 @@ class HomeController extends Controller
         $referer = explode( '/', $request->header('referer') );
         $len = count($referer);
 
-        if ( $referer[$len-3] == 'items' )
+        if ( $len > 2 && $referer[$len-3] == 'items' )
             $item = Item::find( $referer[$len-2] );
 
         if ( $request->has('item_id') && is_numeric($request->item_id))
