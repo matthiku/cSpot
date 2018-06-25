@@ -112,7 +112,7 @@ Chrome's menu and a new icon will appear on your homescreen:
 ## Technical Blah blah
 ### Code
 ##### Backend
-This PHP project is based on the [Laravel 5.3 framework](https://laravel.com/) with the [Socialite](https://github.com/laravel/socialite) and [LaravelCollective](https://laravelcollective.com) extensions. 
+This PHP project is based on the [Laravel framework](https://laravel.com/) with the [Socialite](https://github.com/laravel/socialite) and [LaravelCollective](https://laravelcollective.com) extensions. 
 ##### Frontend
 The design is intended to be fully responsive with a mobile-first approach and uses the [Bootstrap framework](http://v4-alpha.getbootstrap.com/) in version 4. (Which is still in alpha but hopefully will be fully released before this project is out of beta!)
 
