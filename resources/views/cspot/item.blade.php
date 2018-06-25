@@ -219,7 +219,7 @@
                                 <div class="row justify-content-between text-muted">
                                     <div class="col-12 text-center">
                                         @if ($item->song_freshness)
-                                            <strong>Song 'Freshness': {{ $item->song_freshness > 50 ? '&#127823;' : '&#127822;' }}<small>{{ $item->song_freshness }}%</small></strong>
+                                            <strong>Song 'Freshness': {!! $item->song_freshness > 50 ? '&#127823;' : '&#127822;' !!}<small>{{ $item->song_freshness }}%</small></strong>
                                             <br>
                                         @endif
                                         @if ( $usageCount )

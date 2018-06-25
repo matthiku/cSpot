@@ -532,7 +532,7 @@
 
         @if ($plan->songsFreshness()>0 && Auth::user()->ownsPlan( $plan->id ))
             <small class="hidden-sm-down mx-4"><span class="hidden-md-down">Songs </span>overall:
-                    <big>{{ $plan->songsFreshness()>50 ? '&#127823;' : '&#127822;' }}</big> {{ number_format( $plan->songsFreshness(), 0 ) }}% 'freshness'
+                    <big>{!! $plan->songsFreshness()>50 ? '&#127823;' : '&#127822;' !!}</big> {{ number_format( $plan->songsFreshness(), 0 ) }}% 'freshness'
                 <a href="#" title="What's that?" onclick="showSongFreshnessHelp()">
                 <i class="fa fa-question-circle fa-lg text-danger"></i></a>
             </small>
