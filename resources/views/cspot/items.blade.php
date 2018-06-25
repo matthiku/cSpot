@@ -104,7 +104,7 @@
 							$item->song->leadersUsingThisSong($plan->leader_id)->count() }} times {{
 								"\nLastly used: " }}{{ get_class($item->song->lastTimeUsed)=='Carbon\Carbon' ? $item->song->lastTimeUsed->diffForHumans() : 'never' }}">
 						@if ($item->song_freshness)
-							{{ $item->song_freshness > 50 ? '&#127823;' : '&#127822;' }}<small>{{ $item->song_freshness }}%</small>
+							{!! $item->song_freshness > 50 ? '&#127823;' : '&#127822;' !!}<small>{{ $item->song_freshness }}%</small>
 						@endif
 					</td>
 				@else
