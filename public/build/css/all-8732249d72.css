@@ -13107,6 +13107,9 @@ body {
 red {
     color: red !important;
 }
+.neon-green {
+    color: #00ff00;
+}
 .text-shadow {
     text-shadow: 4px 4px 4px #aaa;
 }

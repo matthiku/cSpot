@@ -17,7 +17,7 @@
 		<img class="float-left" height="140px" src="{{ url($logoPath.env('CHURCH_LOGO_FILENAME')) }}">
 		<img class="float-right" height="140px" src="{{ url($logoPath.env('CHURCH_LOGO_FILENAME')) }}">
 		<div class="header mb-0" style="line-height: 1.0; vertical-align: middle;">This Week's Announcements
-			<div class="smaller text-muted">Week from {{$columnDay->formatLocalized('%d %b')}} to {{$nextWeek->formatLocalized('%d %b')}}</div>
+			<div class="smaller neon-green">Week from {{$columnDay->formatLocalized('%d %b')}} to {{$nextWeek->formatLocalized('%d %b')}}</div>
 		</div>
 	</div>
 
@@ -25,7 +25,7 @@
 		<img class="float-left" height="60px" src="{{ url($logoPath.env('CHURCH_LOGO_FILENAME')) }}">
 		<img class="float-right" height="60px" src="{{ url($logoPath.env('CHURCH_LOGO_FILENAME')) }}">
 		<div class="header mb-0" style="line-height: 1.0; vertical-align: middle;">This Week's Announcements
-			<div class="smaller text-muted">Week from {{$columnDay->formatLocalized('%d %b')}} to {{$nextWeek->formatLocalized('%d %b')}}</div>
+			<div class="smaller neon-green">Week from {{$columnDay->formatLocalized('%d %b')}} to {{$nextWeek->formatLocalized('%d %b')}}</div>
 		</div>
 	</div>
 
@@ -132,7 +132,7 @@
 					<div class="{{ $firstThisDay ? '' : 'mt-2'}}">
 						<span class="rounded d-block bg-info nowrap">{{ $event->date }}</span>
 						<div>{{ $event->type->generic ? '' : $event->type->name }}{!! $event->type->generic ? '' : '<br>' !!}
-							 {!! $event->subtitle ? '<span class="text-muted">'.$event->subtitle.'</span>' : '' !!}</div>
+							 {!! $event->subtitle ? '<span class="neon-green">'.$event->subtitle.'</span>' : '' !!}</div>
 					</div>
 
 					<?php 
