@@ -309,6 +309,10 @@ class User extends Authenticatable //implements Authenticatable //, Contract, Ca
     {
         return $this->hasRole('administrator') || $this->hasRole('editor') || $this->hasRole('author') || $this->hasRole('leader') || $this->hasRole('musician') || $this->hasRole('user');
     }
+    public function isNonUser()
+    {
+        return $this->hasRole('nonUser');
+    }
 
     // we need this in order to not show certain content that is only of interest for musicians
     public function hasMusician()

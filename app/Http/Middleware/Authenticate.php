@@ -36,6 +36,12 @@ class Authenticate
         // update last access info in user table        
         Auth::user()->update(['last_access' => \Carbon\Carbon::now()]);
 
+        // Non users can only see home
+        if ($request->user()->hasRole('nonUser')) {
+            if ($request->path() !== 'home')
+                return redirect('home');
+        }
+
         return $next( $request );
 
     }

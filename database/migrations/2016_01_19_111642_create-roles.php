@@ -20,6 +20,7 @@ class CreateRoles extends Migration
         Schema::create('roles', function (Blueprint $table) {
             $table->increments('id');
             $table->text('name');
+            $table->char('icon', 25);
             $table->boolean('for_events')->default(true);
             $table->timestamps();
         });

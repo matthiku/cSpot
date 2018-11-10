@@ -18,7 +18,7 @@ class RoleMiddleware
     public function handle($request, Closure $next, $role)
     {
 
-        if ( ! $request->user()->hasRole($role) )
+        if ( ! $request->user()->hasRole($role) || $request->user()->isNonUser() )
         {
             return redirect('home')->with('error', $role .' - You are unauthorized for this request.');
         }

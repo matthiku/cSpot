@@ -44,76 +44,78 @@
 
                     <hr>
 
+                    @if (! Auth::user()->isNonUser())
+                        <p class="card-text lora">
 
-                    <p class="card-text lora">
+                            <span class="btn btn-lg btn-success md-full mr-2">
+                                <a href="#" data-container="body" data-toggle="tooltip" data-placement="left" 
+                                        class="float-right" title="Go directly to next Sunday's Service Plan">
+                                    &nbsp; <i class="fa fa-question-circle"></i></a>
+                                <a href="{{ url('cspot/plans/next') }}" class="link">
+                                    Next Sunday's Plan
+                                </a>
+                            </span>
 
-                        <span class="btn btn-lg btn-success md-full mr-2">
-                            <a href="#" data-container="body" data-toggle="tooltip" data-placement="left" 
-                                    class="float-right" title="Go directly to next Sunday's Service Plan">
-                                &nbsp; <i class="fa fa-question-circle"></i></a>
-                            <a href="{{ url('cspot/plans/next') }}" class="link">
-                                Next Sunday's Plan
-                            </a>
-                        </span>
+                            <button class="btn btn-lg btn-primary md-full mr-2 link"
+                                    onclick="location.href='{{ url('cspot/plans/calendar') }}'">
+                                <a href="#" data-container="body" data-toggle="tooltip" data-placement="left" 
+                                        class="float-right" title="Show all upcoming Service Plans">
+                                    <i class="fa fa-question-circle bg-primary text-white ml-1"></i></a>
+                                Events Calendar
+                            </button>
 
-                        <button class="btn btn-lg btn-primary md-full mr-2 link"
-                                onclick="location.href='{{ url('cspot/plans/calendar') }}'">
-                            <a href="#" data-container="body" data-toggle="tooltip" data-placement="left" 
-                                    class="float-right" title="Show all upcoming Service Plans">
-                                <i class="fa fa-question-circle bg-primary text-white ml-1"></i></a>
-                            Events Calendar
-                        </button>
+                            <span class="btn btn-lg btn-info md-full">
+                                <a href="#" data-container="body" data-toggle="tooltip" data-placement="left" class="float-right" 
+                                        title="Show (future) plans where you are leader or teacher">
+                                    &nbsp; <i class="fa fa-question-circle"></i></a>
+                                <a href="{{ url('cspot/plans') }}" class="link">
+                                    Your Services/Events
+                                </a>
+                            </span>
 
-                        <span class="btn btn-lg btn-info md-full">
-                            <a href="#" data-container="body" data-toggle="tooltip" data-placement="left" class="float-right" 
-                                    title="Show (future) plans where you are leader or teacher">
-                                &nbsp; <i class="fa fa-question-circle"></i></a>
-                            <a href="{{ url('cspot/plans') }}" class="link">
-                                Your Services/Events
-                            </a>
-                        </span>
+                        </p>
+                        <hr>
 
-                    </p>
-                    <hr>
+                        <p class="card-text lora">
 
-                    <p class="card-text lora">
+                            <span class="btn btn-outline-success md-full mr-2">
+                                <a href="{{ url('cspot/songs') }}">
+                                    <i class="fa fa-btn fa-music fa-lg float-left"> </i>
+                                    &nbsp; Songs Repository <small>{{ isset($songsCount) ? '('.$songsCount.')' : '' }}</small>
+                                    <i class="fa fa-btn fa-music fa-lg float-right hidden-md-up"></i>
+                                </a>
+                            </span>
 
-                        <span class="btn btn-outline-success md-full mr-2">
-                            <a href="{{ url('cspot/songs') }}">
-                                <i class="fa fa-btn fa-music fa-lg float-left"> </i>
-                                &nbsp; Songs Repository <small>{{ isset($songsCount) ? '('.$songsCount.')' : '' }}</small>
-                                <i class="fa fa-btn fa-music fa-lg float-right hidden-md-up"></i>
-                            </a>
-                        </span>
+                            <span class="btn btn-outline-success md-full mr-2" 
+                                    title="Available Bible versions stored on the server: {{ DB::table('bibleversions')->select('name')->get()->implode('name', ',') }}">
+                                <a href="{{ url('admin/bibles') }}">
+                                    <i class="fa fa-btn fa-book fa-lg float-left"> </i>
+                                    &nbsp; Bibles ({{ DB::table('bibleversions')->count() }})
+                                    <i class="fa fa-btn fa-book fa-lg float-right hidden-md-up"></i>
+                                </a>
+                            </span>
 
-                        <span class="btn btn-outline-success md-full mr-2" 
-                                title="Available Bible versions stored on the server: {{ DB::table('bibleversions')->select('name')->get()->implode('name', ',') }}">
-                            <a href="{{ url('admin/bibles') }}">
-                                <i class="fa fa-btn fa-book fa-lg float-left"> </i>
-                                &nbsp; Bibles ({{ DB::table('bibleversions')->count() }})
-                                <i class="fa fa-btn fa-book fa-lg float-right hidden-md-up"></i>
-                            </a>
-                        </span>
+                            <button class="btn btn-outline-primary md-full mr-2">
+                                <a href="{{ url('cspot/songs?only=slides') }}">
+                                    <i class="fa fa-btn fa-clone fa-lg float-left"></i>
+                                    &nbsp; Slides 
+                                    <small>{{ isset($slideCount) ? '('.$slideCount.')' : '' }}</small>
+                                    <i class="fa fa-btn fa-clone fa-lg float-right hidden-md-up"></i>
+                                </a>
+                            </button>
 
-                        <button class="btn btn-outline-primary md-full mr-2">
-                            <a href="{{ url('cspot/songs?only=slides') }}">
-                                <i class="fa fa-btn fa-clone fa-lg float-left"></i>
-                                &nbsp; Slides 
-                                <small>{{ isset($slideCount) ? '('.$slideCount.')' : '' }}</small>
-                                <i class="fa fa-btn fa-clone fa-lg float-right hidden-md-up"></i>
-                            </a>
-                        </button>
+                            <span class="btn btn-outline-info md-full">
+                                <a href="{{ url('cspot/songs?only=video') }}">
+                                    <i class="fa fa-btn fa-tv fa-lg float-left"></i>
+                                    &nbsp; Videoclips 
+                                    <small>{{ isset($videoCount) ? '('.$videoCount.')' : '' }}</small>
+                                    <i class="fa fa-btn fa-tv fa-lg float-right hidden-md-up"></i>
+                                </a>
+                            </span>
 
-                        <span class="btn btn-outline-info md-full">
-                            <a href="{{ url('cspot/songs?only=video') }}">
-                                <i class="fa fa-btn fa-tv fa-lg float-left"></i>
-                                &nbsp; Videoclips 
-                                <small>{{ isset($videoCount) ? '('.$videoCount.')' : '' }}</small>
-                                <i class="fa fa-btn fa-tv fa-lg float-right hidden-md-up"></i>
-                            </a>
-                        </span>
+                        </p>
+                    @endif
 
-                    </p>
                     <hr>
 
                     <div id="inpDate" onchange="openPlanByDate(this)"></div>
