@@ -77,17 +77,12 @@ class PlanController extends Controller
         // all plans or just type 0 and 1?
         if (! $any) {
             $plan = $plan
-                ->whereBetween('type_id', [0,1])
-                ->whereDate('date', '>', Carbon::yesterday());
+                ->whereBetween('type_id', [0,1]);
         }
-        // when all plans, then only those which haven't started yet
-        else {
-            $plan = $plan
-                ->whereDate('date', '>', Carbon::yesterday());
-        }
-
+ 
         // from that list, git the oldest
         $plan = $plan
+            ->whereDate('date', '>', Carbon::yesterday())
             ->orderBy('date')
             ->first();
 
