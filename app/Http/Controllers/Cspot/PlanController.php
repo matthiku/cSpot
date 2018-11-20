@@ -60,7 +60,7 @@ class PlanController extends Controller
 
 
     /**
-     * Display the next Sunday's Service Plan
+     * Display the next Sunday's Service Plan (or any upcoming plan)
      *
      * WARNING: this depends on service type ids 0 and 1 to be Sunday Services!
      *
@@ -80,10 +80,10 @@ class PlanController extends Controller
                 ->whereBetween('type_id', [0,1])
                 ->whereDate('date', '>', Carbon::yesterday());
         }
-        // when all plans, then only thosw which haven't started yet
+        // when all plans, then only those which haven't started yet
         else {
             $plan = $plan
-                ->whereDate('date', '>', Carbon::now());
+                ->whereDate('date', '>', Carbon::yesterday());
         }
 
         // from that list, git the oldest
