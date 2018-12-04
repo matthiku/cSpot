@@ -12,6 +12,7 @@
 
 @if (session()->has('defaultValues'))
     <?php $defaultValues = session('defaultValues'); ?>
+    <!-- TEST {{ $defaultValues['date'] }} -->
 @endif
 
 @section('content')

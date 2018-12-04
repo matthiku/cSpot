@@ -33,7 +33,7 @@ use App\Mailers\AppMailer;
 use Carbon\Carbon;
 use Auth;
 use Log;
-
+use DB;
 
 
 
@@ -82,7 +82,7 @@ class PlanController extends Controller
  
         // from that list, git the oldest
         $plan = $plan
-            ->whereDate('date', '>', Carbon::yesterday())
+            ->where('date', '>', Carbon::now()->toDateString())
             ->orderBy('date')
             ->first();
 
@@ -324,7 +324,7 @@ class PlanController extends Controller
             // get the Event Type
             $type = Type::find($request->type_id);
 
-            // use heper function to calculate next date for this plan
+            // use helper function to calculate next date for this plan
             $newDate =  getTypeBasedPlanData($type);
 
             // send the default values to the View
