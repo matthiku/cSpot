@@ -150,6 +150,54 @@ Out of the box, c-SPOT uses a mySQL database to save all the data. However, Lara
 In order to develop (program) c-SPOT, you need to have learned some Laravel development basics. Node.js and NPM need to be installed, then run "NPM install" to have all the assets available. 
 Check https://laravel.com/docs/5.3/elixir for further information.
 
+#### Easy installation, using Docker
+You can instead do an easy, quick installation of cSpot in an isolated Docker container. Docker allows you to run multiple, preconfigured, isolated application environments which don't require any set up, and won't conflict with each other or your host machine operating system. This is terrific for running a development environment requiring a specific set of dependenciees, packages and libraries, or allowing an application such as cSpot to be portable on many kinds of production servers without reconfiguration.
+
+##### Basic use
+You will need Docker installed in your host machine (available for Linux, OSX and Windows), and to ensure that the Docker service/daemon is running. For help installing and starting Docker, vist https://docs.docker.com/get-docker/. Then, to start a cSpot Docker container, simply run the following in your command line/terminal (you may have to prefix the command with `sudo` in Linux):
+
+- `docker run -i -t -d -p 8080:80 --rm -e admin_email=<your-email-here> chris24walsh\cspot-ubuntu`
+
+This command will download a ready-made default image from https://hub.docker.com with cSpot fully installed, start a new docker container, configure your supplied email as the adminstrator email in cSpot and start cSpot itself along with apache2 and mysql. You can then access your local cSpot app in your browser by visiting http://localhost:8080/login, and gain access by resetting your administrator user password, sent to the email you provided. Everything you need to begin using and testing cSpot for yourself in one command!
+
+*Warning:* This pre-built image uses the default settings for mysql details e.g. database, user/password, and any other required parameters. Don't use this image and expose your server to the internet - build your own image with the commmands below after you have set unique values for the required parameters in the configuration files in the projects docker/ directory.
+
+You can remove the -d flag from the command if you want to stay attached to the (psuedo)terminal in the container, and see the output from the apache log files - useful for testing a connection. If you remove the `-e admin_email=<your-email-here>` parameter, the container will use the default admin email `admin@example.com` as configured in the Dockerfile.
+
+##### Building and running a custom image 
+To build a new image, including any modifications you have made to your local project directory, and run it, run the following commands:
+
+- `docker build -t <your-image-name-here> .`
+
+- `docker run -itdp 8080:80 --rm <your-image-name-here>`
+
+The first command builds a new local image, with the name tag <your-image-name-here>. The command must be run in the same directory as the Dockerfile, in the root of the project.
+
+The second command runs the <your-image-name-here> image in a new container, and, using the -p flag, exposes the containers port 80 to the host machines port 8080. The -d flag in the command launches the container in detached mode, so it will run in the background. The -i and -t flags allow the container to be attached to later, with a terminal to run commands.
+
+Before the above commands are run, you should change the default values in the docker/* files as appropriate, and the default administrator email address in line 77 in the Dockerfile.
+
+##### More commands
+To see your running containers, you can run:
+
+- `docker ps`
+
+Note the id for the cspot-ubuntu container, and stop it by running:
+
+- `docker stop <id>`
+
+You can start it again using:
+
+- `docker start <id>`
+
+You can connect to a detached container using:
+
+- `docker exec -it <id> /bin/bash`
+
+You can detach from a container, but leave it running, by pressing the key sequence CTRL+p, CTRL+q.
+
+For more information about using docker, type `docker help`, or visit 'https://docs.docker.com/get-started/'
+
 ### Future Enhancements (c-SPOT 2.0)
 
 - Pre-populate the songs database with popular **public domain** lyrics
