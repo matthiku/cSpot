@@ -135,7 +135,7 @@ return [
     |
     */
 
-    'domain' =>  env('DOMAIN', 'c-spot.app'),
+    'domain' =>  env('SESSION_DOMAIN', null),
 
     /*
     |--------------------------------------------------------------------------
