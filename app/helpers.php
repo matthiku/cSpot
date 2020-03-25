@@ -562,17 +562,19 @@ function insertItem( $request )
     }
 
     // handle file linking
-    if ($request->has('file_id')) {
+    if ($request->has('file_id') && $request->file_id) {
         // get the requested file as object
         $file = File::find($request->file_id);
         // and save it to the plan item
-        $item->files()->save($file);
+        if ($file) {
+            $item->files()->save($file);
 
-        // set item comment to filename
-        if ($item->comment==null || $item->comment==false || $item->comment=='' || $item->comment==' ' );
-            $item->update(['comment' => $file->filename]);
+            // set item comment to filename
+            if ($item->comment==null || $item->comment==false || $item->comment=='' || $item->comment==' ' );
+                $item->update(['comment' => $file->filename]);
 
-        flash('Image file was added to the plan');
+            flash('Image file was added to the plan');
+        }
     }
 
 
