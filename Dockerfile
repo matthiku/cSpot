@@ -71,7 +71,7 @@ RUN cp -r app/ App/
 # Create mysql database/user and initialise the db
 RUN service mysql start \
     && cat docker/cspot-mysql.sql | mysql \
-    && cp docker/.env .env \
+    && cp docker/.env.example .env \
     && composer install \
     && php artisan key:generate \
     && echo "admin@example.com" | php artisan migrate
