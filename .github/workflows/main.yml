@@ -22,57 +22,6 @@ jobs:
     - uses: actions/checkout@v2
 
     # Runs a set of commands using the runners shell
-    - name: Run a multi-line script
+    - name: Do a docker build
       run: |
-        # Update apt and add needed repository
-        sudo apt-get update && sudo apt-get upgrade -y
-        sudo apt-get install -y python-software-properties software-properties-common apt-utils \
-          && LC_ALL=C.UTF-8 sudo add-apt-repository ppa:ondrej/php \
-          && sudo apt-get update
-        # Install project dependencies
-        sudo apt-get install -y \
-          php7.2 \
-          php7.2-bz2 \
-          php7.2-cgi \
-          php7.2-cli \
-          php7.2-common \
-          php7.2-curl \
-          php7.2-dev \
-          php7.2-enchant \
-          php7.2-fpm \
-          php7.2-gd \
-          php7.2-gmp \
-          php7.2-imap \
-          php7.2-interbase \
-          php7.2-intl \
-          php7.2-json \
-          php7.2-ldap \
-          php7.2-mbstring \
-          php7.1-mcrypt \
-          php7.2-mysql \
-          php7.2-odbc \
-          php7.2-opcache \
-          php7.2-pgsql \
-          php7.2-phpdbg \
-          php7.2-pspell \
-          php7.2-readline \
-          php7.2-recode \
-          php7.2-snmp \
-          php7.2-sqlite3 \
-          php7.2-sybase \
-          php7.2-tidy \
-          php7.2-xmlrpc \
-          php7.2-xsl \
-          php7.2-zip
-        # Install webserver and database dependencies
-        sudo apt-get install -y apache2 libapache2-mod-php7.2 \
-          mariadb-common mariadb-server mariadb-client \
-          composer
-        # Install project with composer, and initialise the database
-        sudo service mysql start \
-          && cd $GITHUB_WORKSPACE \
-          && cat docker/cspot-mysql.sql | mysql \
-          && cp docker/.env.example .env \
-          && composer install \
-          && php artisan key:generate \
-          && echo "admin@example.com" | php artisan migrate
+        sudo docker build .
