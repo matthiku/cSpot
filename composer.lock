@@ -5421,6 +5421,7 @@
                 "shasum": ""
             },
             "require": {
+                "ext-filter": "^7.1",
                 "php": "^7.2",
                 "phpdocumentor/reflection-common": "^2.0",
                 "phpdocumentor/type-resolver": "^1.0",
