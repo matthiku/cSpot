@@ -11,9 +11,9 @@ LABEL Description="LAMP stack for the cSpot (Church Services Online Planning Too
 RUN apt-get update && apt-get upgrade -y
 
 # Install repo required for php7.2
-RUN apt-get install -y python-software-properties software-properties-common apt-utils \
-    && LC_ALL=C.UTF-8 add-apt-repository ppa:ondrej/php \
-    && apt-get update
+#RUN apt-get install -y python-software-properties software-properties-common apt-utils \
+#    && LC_ALL=C.UTF-8 add-apt-repository ppa:ondrej/php \
+#    && apt-get update
 
 # Install php7.2 and plugins
 RUN apt-get install -y \
