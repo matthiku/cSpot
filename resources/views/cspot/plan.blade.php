@@ -126,7 +126,7 @@
                     on <span class="text-danger">{{ $plan->date->formatLocalized('%a, %d %b') }}</span>
                     @include ('cspot.snippets.details_link')
                 </h4>
-                <small class="hidden-lg-down plan-details">{{ $plan->type->generic ? '' : $plan->subtitle ? '('.$plan->subtitle.')' : ''  }}</small>
+                <small class="hidden-lg-down plan-details">{{ $plan->type->generic ? '' : ($plan->subtitle ? '('.$plan->subtitle.')' : '')  }}</small>
 
 
             @else
