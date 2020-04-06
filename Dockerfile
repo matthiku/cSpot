@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM ubuntu:latest
 MAINTAINER Chris Walsh <chris24walsh@gmail.com>
 LABEL Description="LAMP stack for the cSpot (Church Services Online Planning Tool), based on Ubuntu 16.04 LTS. Includes dependencies, such as PHP7.2 and composer. Derived from the generic PHP 7.0 LAMP stack image maintained at fauria/lamp, https://hub.docker.com/r/fauria/lamp/dockerfile" \
     License="Apache License 2.0" \
@@ -11,9 +11,9 @@ LABEL Description="LAMP stack for the cSpot (Church Services Online Planning Too
 RUN apt-get update && apt-get upgrade -y
 
 # Install repo required for php7.2
-RUN apt-get install -y python-software-properties software-properties-common apt-utils \
-    && LC_ALL=C.UTF-8 add-apt-repository ppa:ondrej/php \
-    && apt-get update
+#RUN apt-get install -y python-software-properties software-properties-common apt-utils \
+#    && LC_ALL=C.UTF-8 add-apt-repository ppa:ondrej/php \
+#    && apt-get update
 
 # Install php7.2 and plugins
 RUN apt-get install -y \
