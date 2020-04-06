@@ -102,7 +102,10 @@
 						data-template='<div class="tooltip" role="tooltip"><div class="tooltip-narrow"></div><pre class="tooltip-inner"></pre></div>'
 						title="Song 'Freshness' Index:{{ "\n\nUsage total: ".$item->song->plansUsingThisSong()->count()." times, \n" }}&nbsp; &nbsp;by you: {{
 							$item->song->leadersUsingThisSong($plan->leader_id)->count() }} times {{
-								"\nLastly used: " }}{{ get_class($item->song->lastTimeUsed)=='Carbon\Carbon' ? $item->song->lastTimeUsed->diffForHumans() : 'never' }}">
+								"\nLastly used: " }}{{ 
+									($item->song->lastTimeUsed && get_class($item->song->lastTimeUsed)=='Carbon\Carbon' )
+										? $item->song->lastTimeUsed->diffForHumans() 
+										: 'never' }}">
 						@if ($item->song_freshness)
 							{!! $item->song_freshness > 50 ? '&#127823;' : '&#127822;' !!}<small>{{ $item->song_freshness }}%</small>
 						@endif
