@@ -33,6 +33,7 @@ RUN apt-get install -y \
     php7.2-intl \
     php7.2-json \
     php7.2-ldap \
+    php7.2-dom \
     php7.2-mbstring \
     php7.1-mcrypt \
     php7.2-mysql \
