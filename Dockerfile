@@ -18,43 +18,23 @@ RUN apt-get install -y python-software-properties software-properties-common apt
 # Install php7.2 and plugins
 RUN apt-get install -y \
     php7.2 \
-    php7.2-bz2 \
-    php7.2-cgi \
-    php7.2-cli \
-    php7.2-common \
     php7.2-curl \
-    php7.2-dev \
-    php7.2-enchant \
-    php7.2-fpm \
-    php7.2-gd \
-    php7.2-gmp \
-    php7.2-imap \
-    php7.2-interbase \
-    php7.2-intl \
-    php7.2-json \
-    php7.2-ldap \
+    php7.2-dom \
     php7.2-mbstring \
-    php7.1-mcrypt \
     php7.2-mysql \
-    php7.2-odbc \
-    php7.2-opcache \
-    php7.2-pgsql \
-    php7.2-phpdbg \
-    php7.2-pspell \
-    php7.2-readline \
-    php7.2-recode \
-    php7.2-snmp \
-    php7.2-sqlite3 \
-    php7.2-sybase \
-    php7.2-tidy \
-    php7.2-xmlrpc \
-    php7.2-xsl \
-    php7.2-zip
+    php7.2-zip \
+    unzip
 
 # Install apache, mysql and composer
 RUN apt-get install -y apache2 libapache2-mod-php7.2 \
-    mariadb-common mariadb-server mariadb-client \
-    composer
+    mariadb-common mariadb-server mariadb-client
+
+# Install latest composer manually
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
+    && php -r "if (hash_file('sha384', 'composer-setup.php') === 'e0012edf3e80b6978849f5eff0d4b4e4c79ff1609dd1e613307e16318854d24ae64f26d17af3ef0bf7cfb710ca74755a') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" \
+    && php composer-setup.php \
+    && mv composer.phar /usr/bin/composer \
+    && php -r "unlink('composer-setup.php');"
 
 
 ### Install cSpot
