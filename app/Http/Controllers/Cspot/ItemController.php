@@ -216,7 +216,7 @@ class ItemController extends Controller
 
         // back to full plan view
         //      but first, get plan id from the hidden input field in the form
-        return \Redirect::route( 'plans.edit', [ 'id' => $request->input('plan_id') ]);
+        return \Redirect::route( 'plans.show', [ 'plan' => $request->input('plan_id') ]);
     }
 
 
