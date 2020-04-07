@@ -366,6 +366,12 @@
                                     <i class="fa fa-pencil"></i> Edit this item
                             </a></div>
                         @endif
+                        @if ($item->song_id && $item->song->youtube_id)
+                            <a class="dropdown-item" target="new" 
+                                href="{{ env('YOUTUBE_PLAY', 'https://www.youtube.com/watch?v=').$item->song->youtube_id }}">
+                                <i class="red fa fa-youtube-play fa-lg"></i>Play on Youtube
+                            </a>
+                        @endif
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" id="go-back"
                             href="{{ url('cspot/plans/'.$item->plan_id) }}">
