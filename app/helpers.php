@@ -31,6 +31,8 @@ use Cmgmyr\Messenger\Models\Thread;
 
 use Intervention\Image\ImageManager;
 
+// added MKS 2020-04-21
+use Illuminate\Support\Str;
 
 
 /**
@@ -154,7 +156,8 @@ function is_image($mimeType)
 function saveUploadedFile($request)
 {
     $extension = $request->file('file')->getClientOriginalExtension();
-    $token     = str_random(32).'.'.$extension; // new, random, physical file name
+    // updated to new Laravel syntax - MKS 2020-04-21
+    $token     = str::random(32).'.'.$extension; // new, random, physical file name
     $filename  = $request->file('file')->getClientOriginalName();
     $filesize  = $request->file('file')->getClientSize();
     $maxfilesize = $request->file('file')->getMaxFilesize();

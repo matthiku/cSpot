@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cspot;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
 
 use App\Http\Requests;
@@ -71,7 +72,8 @@ class TeamController extends Controller
                                 ->with(['error' => $error]);
             }
             $team->requested = True;
-            $team->remember_token = str_random(32);
+            // updated to new Laravel syntax - MKS 2020-04-21
+            $team->remember_token = str::random(32);
 
             // send internal message to user
             $message = 'Please open <a href="' . url('cspot/plans/'.$plan_id) . '/team"> this plan </a> and confirm if you accept the given role.';

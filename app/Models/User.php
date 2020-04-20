@@ -9,6 +9,7 @@ use Auth;
 
 use Cmgmyr\Messenger\Traits\Messagable;
 
+use Illuminate\Support\Str;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -183,7 +184,8 @@ class User extends Authenticatable //implements Authenticatable //, Contract, Ca
     {
         parent::boot();
         static::creating(function ($user) {
-            $user->token = str_random(30);
+            // updated to new Laravel syntax - MKS 2020-04-21
+            $user->token = str::random(30);
         });
     }
 
