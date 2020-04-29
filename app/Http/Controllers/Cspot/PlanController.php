@@ -382,7 +382,8 @@ class PlanController extends Controller
 
         // insert default service TIMES if requested
         $type = Type::find($plan->type_id);
-        if ( count($type) && ! isset($request->start) ) {
+        // (updated 29-04-2020 MKS as count($type) failed to work in PHP>7.4 + Laravel>6.x)
+        if ( $type && $type->id && ! isset($request->start) ) {
             // default end time is only the time of day. We need to combine this with the plan date
             $startTme = Carbon::parse(   $type->start);
             $endTime  = Carbon::parse(   $type->end  );

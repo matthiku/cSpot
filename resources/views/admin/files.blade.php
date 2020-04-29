@@ -196,7 +196,7 @@
                             {{-- linked song id 
                             --}}
                             <td class="limit-td-width">
-                                @if (Auth::user()->isEditor())
+                                @if ($file->song_id && Auth::user()->isEditor())
                                     <a title="Song Details" href="{{ route('songs.edit', $file->song_id) }}">{{ $file->song_id }}</a>
                                 @else
                                     {{ $file->song_id }}
