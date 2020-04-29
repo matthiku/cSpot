@@ -880,7 +880,8 @@ function deleteCachedItemsFromPastPlans($plan_id)
 
     // check each cache item if it is outdated
     foreach ($caches as $cache) {
-        if ( $cache->plan->date < Carbon::now()
+        if ( $cache->plan  
+          && $cache->plan->date < Carbon::now()
           && $cache->plan->id != $plan_id ) {
             $cache->delete();
         }

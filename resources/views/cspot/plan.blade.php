@@ -85,7 +85,7 @@
 
                     <div class="float-right mx-1">
                         <a title="Start projector-enabled presentation of each song and scripture reading in this plan"
-                            onclick="$('#show-spinner').modal({keyboard: false});"
+                            target="new"
                             href="{{ url('cspot/items/'.$plan->firstItem()->id.'/present/') }}">
                             <i class="fa fa-tv fa-lg"></i>Present</a>
                     </div>

@@ -29,7 +29,7 @@ It allows the management of song **lyrics**, **music scores**, **guitar chords**
 - Allows ad-hoc insertion of songs and other items during the ongoing presentation
 - Helps and tracks **reporting** of song usage to CCLI and integrates with SongSelect (via links)
 
-As a free and open source project, you can download ('clone') the sources, modify (customize) them and run the tool from your own web site hoster.
+As a free and open source project, you can download ('clone') the sources, modify (customize) them and run the tool from your own web site hoster. **NOTE:** Basic [Laravel](https://laravel.com/) knowledge is required for development!
 
 **Developers**, please feel free to contribute and make pull requests! **Testers**, please send your bug reports and enhancement suggestions!
 
@@ -147,7 +147,7 @@ Out of the box, c-SPOT uses a mySQL database to save all the data. However, Lara
 7. Modify the predefined list of user roles according to your needs
 
 #### Development
-In order to develop (program) c-SPOT, you need to have learned some Laravel development basics. Node.js and NPM need to be installed, then run "NPM install" to have all the assets available. 
+In order to develop (program) c-SPOT, **you need to have learned some Laravel development basics**. Node.js and NPM need to be installed, then run "NPM install" to have all the assets available. 
 Check https://laravel.com/docs/5.3/elixir for further information.
 
 #### Easy installation, using Docker

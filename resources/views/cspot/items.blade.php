@@ -416,6 +416,7 @@
 					--}}
 					@if (! $item->deleted_at)
 					<a class=" hidden-xs-down" data-toggle="tooltip" data-placement="left" title="Start presentation from here"
+						target="new"
 						href='{{ url('cspot/items/'.$item->id) }}/present'>
 						&nbsp;<i class="fa fa-tv fa-lg"></i>&nbsp;</a>
 					@endif
