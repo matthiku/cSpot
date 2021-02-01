@@ -1,0 +1,55 @@
+Arguments: 
+  C:\Program Files\nodejs\node.exe C:\Program Files (x86)\Yarn\bin\yarn.js init
+
+PATH: 
+  C:\Users\Matthias Kuhs\bin;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\local\bin;C:\Program Files\Git\usr\bin;C:\Program Files\Git\usr\bin;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\bin;C:\Users\Matthias Kuhs\bin;C:\Python38\Scripts;C:\Python38;C:\Program Files\AdoptOpenJDK\jdk-8.0.242.08-hotspot\bin;C:\Program Files (x86)\Micro Focus\RUMBA\System;C:\Program Files (x86)\Micro Focus\Reflection;C:\Program Files (x86)\Micro Focus\RSecure;C:\ProgramData\Oracle\Java\javapath;C:\windows\system32;C:\windows;C:\windows\System32\Wbem;C:\windows\System32\WindowsPowerShell\v1.0\C;C:\Program Files\Git\Program Files (x86)\Shoreline Communications\ShoreWare Client;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\ProgramData\ComposerSetup\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0;C:\WINDOWS\System32\OpenSSH;C:\Program Files (x86)\Yarn\bin;C:\Program Files (x86)\Micro Focus\RUMBA;C:\Program Files\dotnet;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files (x86)\Micro Focus\RUMBA;C:\Program Files (x86)\Micro Focus\RUMBA\System;C:\Program Files\Intel\WiFi\bin;C:\Program Files\Common Files\Intel\WirelessCommon;C:\Program Files\Docker\Docker\resources\bin;C:\ProgramData\DockerDesktop\version-bin;C:\Program Files\nodejs;C:\ProgramData\chocolatey\bin;C:\Program Files\Git\cmd;C:\laragon\bin;C:\laragon\bin\apache\httpd-2.4.27-win64-VC14\bin;C:\laragon\bin\composer;C:\laragon\bin\git\bin;C:\laragon\bin\git\cmd;C:\laragon\bin\git\mingw64\bin;C:\laragon\bin\git\usr\bin;C:\laragon\bin\laragon\utils;C:\laragon\bin\mysql\mysql-5.7.19-winx64\bin;C:\laragon\bin\nginx\nginx-1.12.0;C:\laragon\bin\ngrok;C:\laragon\bin\nodejs\node-v8;C:\laragon\bin\notepad++;C:\laragon\bin\php\php-7.4.4-Win32-vc15-x64;C:\laragon\bin\php\php-7.2.19-Win32-VC15-x64;C:\laragon\bin\putty;C:\laragon\bin\redis\redis-x64-3.2.100;C:\laragon\bin\telnet;C:\laragon\bin\yarn\bin;C:\laragon\usr\bin;C:\Users\Matthias Kuhs\AppData\Local\Yarn\config\global\node_modules\.bin;C:\Users\Matthias Kuhs\AppData\Roaming\Composer\vendor\bin;C:\Users\Matthias Kuhs\AppData\Local\Programs\Python\Python37-32\Scripts;C:\Users\Matthias Kuhs\AppData\Local\Programs\Python\Python37-32;C:\Users\Matthias Kuhs\AppData\Local\Microsoft\WindowsApps;C:\Users\Matthias Kuhs\AppData\Local\Yarn\bin;C:\Users\Matthias Kuhs\OneDrive\Portables\vscode;C:\Program Files (x86)\GnuWin32\bin;C:\Python27;C:\Users\Matthias Kuhs\AppData\Roaming\npm;C:\Program Files\Git\usr\bin\vendor_perl;C:\Program Files\Git\usr\bin\core_perl
+
+Yarn version: 
+  1.9.4
+
+Node version: 
+  12.16.2
+
+Platform: 
+  win32 x64
+
+Trace: 
+  Error: canceled
+      at Interface.<anonymous> (C:\Program Files (x86)\Yarn\lib\cli.js:126002:13)
+      at Interface.emit (events.js:310:20)
+      at Interface._ttyWrite (readline.js:893:16)
+      at ReadStream.onkeypress (readline.js:198:10)
+      at ReadStream.emit (events.js:310:20)
+      at emitKeys (internal/readline/utils.js:438:14)
+      at emitKeys.next (<anonymous>)
+      at ReadStream.onData (readline.js:1160:36)
+      at ReadStream.emit (events.js:310:20)
+      at addChunk (_stream_readable.js:286:12)
+
+npm manifest: 
+  {
+    "private": true,
+    "devDependencies": {
+      "gulp": "^4.0.0"
+    },
+    "dependencies": {
+      "boom": "^7.3.0",
+      "cryptiles": "^4.1.3",
+      "hoek": "^6.1.3",
+      "js-yaml": "^3.13.1",
+      "laravel-echo": "^1.3.0",
+      "laravel-elixir": "^5.0.0",
+      "lodash": "^4.17.15",
+      "minimatch": "^3.0.4",
+      "moment": "^2.4.0",
+      "node-sass": "^4.13.1",
+      "pusher-js": "^4.3.1",
+      "shell-quote": "^1.7.2"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile

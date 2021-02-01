@@ -1,7 +1,7 @@
 {
   "private": true,
   "devDependencies": {
-    "gulp": "^3.9.1"
+    "gulp": "^4.0.0"
   },
   "dependencies": {
     "boom": "^7.3.0",
@@ -15,7 +15,6 @@
     "moment": "^2.4.0",
     "node-sass": "^4.13.1",
     "pusher-js": "^4.3.1",
-    "semantic-ui": "^2.4.2",
     "shell-quote": "^1.7.2"
   }
 }

@@ -5,9 +5,9 @@
     "license": "MIT",
     "type": "project",
     "require": {
-        "php": ">=5.5.9",
-        "laravel/framework": "6.0.*",
-        "laravel/socialite": "^4.0",
+        "php": ">=5.5.9|^8.0",
+        "laravel/framework": "^6.0.4",
+        "laravel/socialite": "^5.1",
         "laravelcollective/html": "6.0.*",
         "doctrine/dbal": "^2.10",
         "snap/bible-books": "0.1.*@dev",
@@ -24,7 +24,7 @@
     "require-dev": {
         "fzaninotto/faker": "~1.4",
         "mockery/mockery": "0.9.*",
-        "phpunit/phpunit": "~6.0",
+        "phpunit/phpunit": "^9.3",
         "symfony/css-selector": "2.8.*|3.1.*",
         "symfony/dom-crawler": "2.8.*|3.1.*",
         "filp/whoops": "~2.0"
